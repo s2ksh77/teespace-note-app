@@ -22,6 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+stats.html
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,react,macos,linux,windows,visualstudiocode,intellij,yarn,dotenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,react,macos,linux,windows,visualstudiocode,intellij,yarn,dotenv
