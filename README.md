@@ -54,3 +54,4 @@ git commit 메세지 컨벤션은 [본 문서](https://www.conventionalcommits.o
 ## 주의
 
 - 깨진 코드 (빌드 되지 않거나 동작하지 않는 코드)를 develop 브랜치에 머지 되면 안됩니다.
+- pull 받으실 때는 꼭 rebase pull 을 사용하세요. (git pull --rebase origin)
