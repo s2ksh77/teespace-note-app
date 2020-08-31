@@ -29,9 +29,7 @@ $ yarn install
 
 ### `yarn build`
 
-리액트 프로젝트를 운영환경으로 빌드 합니다. 최고의 성능을 낼 수 있도록 코드를 최적화 합니다.
-
-배포에 대한 자세한 내용은 [deployment](https://facebook.github.io/create-react-app/docs/deployment) 을 참고하세요.
+다른 프로젝트에서 사용할 수 있도록 각 컴포넌트를 노출 시킵니다. 노출 할 컴포넌트는 `src/export.js` 에 정의되어 있습니다.
 
 ## 기여 방법
 
