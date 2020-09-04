@@ -31,6 +31,9 @@ export const EditorTitleButton = styled.button`
     background-color: #1ea8df;
     cursor: pointer;
   }
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const EditorTitleTextField = styled.input`

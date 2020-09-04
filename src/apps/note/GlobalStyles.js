@@ -24,6 +24,9 @@ export const GlobalStyle = createGlobalStyle`
     border-left: 0px solid #dadada;
     border-right: 0px solid #dadada;
   }
+  .selected{
+    background-color: rgba(30,168,223,0.20);
+  }
 `;
 
 export const LNBContainer = styled.div`

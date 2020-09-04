@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useObserver } from 'mobx-react';
-import useStore from '../store/useStore';
+import React, { useState, useEffect } from "react";
+import { useObserver } from "mobx-react";
+import useStore from "../store/useStore";
 import {
   EditorTitle,
   EditorTitleContainer1,
@@ -9,27 +9,56 @@ import {
   EditorTitleContainer2,
   EditorTitleModifiedUser,
   EditorTitleModifiedTime,
-} from '../styles/titleStyle';
+} from "../styles/titleStyle";
+import SunEditor from "suneditor-react";
+import getEditorContent from "./editor";
 
 const EditorMenuTitle = () => {
   const { PageStore } = useStore();
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
+  const [btnTitle, setBtnTitle] = useState("수정");
 
-  const handleTitleInput = e => {
+  const handleClickBtn = (e) => {
+    const {
+      target: { innerText },
+    } = e;
+    if (innerText === "수정") {
+      PageStore.editStart(PageStore.currentPageData.note_id);
+    } else if (innerText === "저장") {
+      // PageStore.noneEdit(PageStore.currentPageData.note_id);
+      const updateDTO = {
+        dto: {
+          note_id: PageStore.currentPageData.note_id,
+          note_title: PageStore.noteTitle,
+          note_content: PageStore.noteContent,
+          parent_notebook: PageStore.currentPageData.parent_notebook,
+          is_edit: "",
+          TYPE: "EDIT_DONE",
+        },
+      };
+      PageStore.editDone(updateDTO);
+    }
+  };
+
+  const handleTitleInput = (e) => {
     const {
       target: { value },
     } = e;
-    setTitle(value);
+    PageStore.setTitle(value);
   };
 
   return useObserver(() => (
     <>
       <EditorTitle>
         <EditorTitleContainer1>
-          <EditorTitleButton>수정</EditorTitleButton>
+          <EditorTitleButton onClick={handleClickBtn}>
+            {PageStore.isEdit === null || PageStore.isEdit === ""
+              ? "수정"
+              : "저장"}
+          </EditorTitleButton>
           <EditorTitleTextField
             id="editorTitle"
-            value={PageStore.currentPageData.note_title || ''}
+            value={PageStore.noteTitle}
             onChange={handleTitleInput}
           />
         </EditorTitleContainer1>

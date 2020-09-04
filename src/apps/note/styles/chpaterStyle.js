@@ -10,6 +10,11 @@ export const ChapterContainerUl = styled.ul`
   font-size: 0.81rem;
   height: auto;
   width: auto;
+  &.folded{
+    .page-li {
+      display: none;
+    }
+  }
 }
 `;
 export const ChapterUlDIV = styled.div`
