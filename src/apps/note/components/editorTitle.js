@@ -10,13 +10,9 @@ import {
   EditorTitleModifiedUser,
   EditorTitleModifiedTime,
 } from "../styles/titleStyle";
-import SunEditor from "suneditor-react";
-import getEditorContent from "./editor";
 
 const EditorMenuTitle = () => {
   const { PageStore } = useStore();
-  const [title, setTitle] = useState("");
-  const [btnTitle, setBtnTitle] = useState("수정");
 
   const handleClickBtn = (e) => {
     const {

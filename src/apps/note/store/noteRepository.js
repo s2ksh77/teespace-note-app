@@ -39,7 +39,20 @@ class NoteRepository {
     );
     return data.text;
   }
-
+  createChapter(chapterTitle, chapterColor) {
+    return axios.post(`${this.URL}/notebooks`, {
+      dto: {
+        id: "",
+        note_channel_id: this.chId,
+        text: chapterTitle,
+        children: [],
+        type: "notebook",
+        USER_ID: this.USER_ID,
+        user_name: "김수현B",
+        color: chapterColor,
+      },
+    });
+  }
   createPage(pageName, chapterId) {
     return axios.post(`${this.URL}/note`, {
       dto: {

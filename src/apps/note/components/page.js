@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useObserver } from "mobx-react";
-import { toJS } from "mobx";
 import {
   PageList,
   PageliIcon,
@@ -18,11 +17,7 @@ import useStore from "../store/useStore";
 const PageContainer = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
   const { PageStore } = useStore();
-  const [curPageId, setPage] = useState(null);
 
-  useEffect(() => {
-    if (curPageId) selectPage(curPageId);
-  });
   const selectPage = async (targetId) => {
     await PageStore.getNoteInfoList(targetId);
   };
@@ -37,9 +32,11 @@ const PageContainer = ({ children, chapterId }) => {
         <PageList
           key={item.id}
           id={item.id}
-          className={"page-li" + (item.id === curPageId ? " selected" : "")}
+          className={
+            "page-li" + (item.id === PageStore.currentPageId ? " selected" : "")
+          }
           onClick={({ currentTarget: { id } }) => {
-            setPage(id);
+            selectPage(id);
           }}
         >
           <PageliIcon />

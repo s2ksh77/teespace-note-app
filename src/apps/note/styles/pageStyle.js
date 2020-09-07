@@ -7,7 +7,6 @@ export const PageList = styled.li`
   cursor: pointer;
   &:hover .ellipsisBtn{
       display: flex !important;
-      background-color: rgba(30, 168, 223, 0.2);
     }
   }
   &:hover:not(.ellipsisBtn){
@@ -57,6 +56,9 @@ export const PageEllipsis = styled.span`
   align-items: center;
   justify-content: center;
   color: #75757f;
+  &:hover {
+    background-color: rgba(30, 168, 223, 0.2);
+  }
 `;
 
 export const NewPageSpan = styled.span`

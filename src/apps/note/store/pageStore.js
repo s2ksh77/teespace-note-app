@@ -1,7 +1,5 @@
 import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
-import NoteStore from "./noteStore";
-import pageDTO from "../dto/pageDTO";
 import ChapterStore from "./chapterStore";
 
 const PageStore = observable({
@@ -48,6 +46,9 @@ const PageStore = observable({
           } = response;
           this.currentPageData = dto;
           ChapterStore.getChapterList();
+          this.isEdit = dto.is_edit;
+          this.noteTitle = dto.note_title;
+          this.currentPageId = dto.note_id;
         }
       }
     );

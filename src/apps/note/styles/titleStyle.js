@@ -105,6 +105,9 @@ export const LnbTitleNewButton = styled.button`
     background-color: #1ea8df;
     cursor: pointer;
   }
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const LnbTitleSearchContainer = styled.div`

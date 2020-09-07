@@ -24,7 +24,6 @@ export const ChapterUlDIV = styled.div`
   border-bottom: 0.0625rem solid #dadada;
   &:hover .ellipsisBtn {
     display: flex !important;
-    background-color: rgba(30, 168, 223, 0.2);
   }
   &:hover:not(.ellipsisBtn) {
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -92,4 +91,28 @@ export const ChapterFolderBtn = styled.span`
   cursor: pointer;
   margin-left: 0.2rem;
   justify-content: center;
+`;
+
+export const ChapterInput = styled.input`
+  font-size: 0.81rem !important;
+  color: #000000 !important;
+  height: 50%;
+  width: calc(100% - 1.6rem);
+  max-width: calc(100% - 1.6rem);
+  overflow: hidden;
+  align-self: center;
+  border: 0rem !important;
+  background-color: transparent !important;
+  margin-right: 0.9375rem;
+  padding-right: 0.3125rem;
+  &::placeholder {
+    color: #d0d0d0;
+  }
+  &::selection {
+    background: rgba(30, 168, 223, 0.2);
+    color: #000000;
+  }
+  &:focus {
+    outline: none;
+  }
 `;

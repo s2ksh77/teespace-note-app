@@ -12,6 +12,7 @@ import {
   faAngleUp,
   faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
+import ChapterStore from "../store/chapterStore";
 
 const ChapterText = ({ text }) => {
   const [isFold, setFold] = useState(false);

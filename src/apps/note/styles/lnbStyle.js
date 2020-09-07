@@ -15,3 +15,22 @@ export const LnbMenuChapterCover = styled.div`
   overflow-x: hidden;
   height: 100%;
 `;
+
+export const LnbMenuChapterTempUl = styled.ul`
+  user-select: none;
+  margin: 0rem 0.81rem;
+  padding: 0rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 100% !important;
+  font-size: 0.8125rem;
+  height: auto;
+  width: auto;
+`;
+
+export const LnbMenuChapterTempDiv = styled.div`
+  height: 2.81rem;
+  display: flex;
+  font-weight: 500;
+  border-bottom: 0.0625rem solid #dadada;
+`;
