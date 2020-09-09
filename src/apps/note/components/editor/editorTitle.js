@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useObserver } from "mobx-react";
-import useStore from "../store/useStore";
+import useStore from "../../store/useStore";
 import {
   EditorTitle,
   EditorTitleContainer1,
@@ -9,10 +9,10 @@ import {
   EditorTitleContainer2,
   EditorTitleModifiedUser,
   EditorTitleModifiedTime,
-} from "../styles/titleStyle";
+} from "../../styles/titleStyle";
 
 const EditorMenuTitle = () => {
-  const { PageStore } = useStore();
+  const { PageStore, TagStore } = useStore();
 
   const handleClickBtn = (e) => {
     const {
@@ -33,6 +33,8 @@ const EditorMenuTitle = () => {
         },
       };
       PageStore.editDone(updateDTO);
+      if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
+      if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
     }
   };
 

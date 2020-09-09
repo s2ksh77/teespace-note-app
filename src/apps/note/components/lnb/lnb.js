@@ -1,15 +1,15 @@
 import React from "react";
-import useStore from "../store/useStore";
+import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
-import ChapterColor from "./chapterColor";
-import ChapterText from "./chapterText";
-import PageContainer from "./page";
+import ChapterColor from "../chapter/chapterColor";
+import ChapterText from "../chapter/chapterText";
+import PageContainer from "../page/page";
 import {
   LnbMenuCover,
   LnbMenuChapterCover,
   LnbMenuChapterTempUl,
   LnbMenuChapterTempDiv,
-} from "../styles/lnbStyle";
+} from "../../styles/lnbStyle";
 import {
   ChapterContainerUl,
   ChapterUlDIV,
@@ -17,7 +17,7 @@ import {
   ChapterColorDiv,
   ChapterInput,
   ChapterTextContainer,
-} from "../styles/chpaterStyle";
+} from "../../styles/chpaterStyle";
 import LnbMenuTitle from "./lnbTitle";
 import LnbMenuTagCover from "./lnbTag";
 
@@ -45,8 +45,8 @@ const LNBMenuContainer = () => {
     <>
       <LnbMenuCover>
         <LnbMenuTitle />
+        <LnbMenuTagCover />
         <LnbMenuChapterCover>
-          <LnbMenuTagCover/>
           {ChapterStore.isNewChapter ? (
             <LnbMenuChapterTempUl>
               <LnbMenuChapterTempDiv>
@@ -70,7 +70,7 @@ const LNBMenuContainer = () => {
               </LnbMenuChapterTempDiv>
             </LnbMenuChapterTempUl>
           ) : null}
-          <ChapterList/>
+          <ChapterList />
         </LnbMenuChapterCover>
       </LnbMenuCover>
     </>
@@ -83,21 +83,23 @@ const ChapterList = () => {
     ChapterStore.getChapterList();
   }
 
-  const onClickChapterBtn = async (id,children) => {
+  const onClickChapterBtn = async (id, children) => {
     ChapterStore.setCurrentChapter(id);
-    let targetPage = '';
-    if (children.length) {      
+    let targetPage = "";
+    if (children.length) {
       targetPage = children[0]?.id;
-    };
+    }
     ChapterStore.setCurrentPage(targetPage);
     await PageStore.getNoteInfoList(targetPage);
     NoteStore.setShowPage(true);
-  }
+  };
   return useObserver(() => (
     <>
       {ChapterStore.chapterList.map((item) => (
         <ChapterContainerUl id={item.id} key={item.id} itemType="chapter">
-          <ChapterUlDIV onClick={onClickChapterBtn.bind(this, item.id,item.children)}>
+          <ChapterUlDIV
+            onClick={onClickChapterBtn.bind(this, item.id, item.children)}
+          >
             <ChapterColor color={item.color} chapterId={item.id} />
             <ChapterText text={item.text} chapterId={item.id} />
           </ChapterUlDIV>
@@ -108,6 +110,6 @@ const ChapterList = () => {
         </ChapterContainerUl>
       ))}
     </>
-  ))
-}
+  ));
+};
 export default LNBMenuContainer;

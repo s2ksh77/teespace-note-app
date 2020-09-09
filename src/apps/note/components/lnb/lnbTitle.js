@@ -1,12 +1,12 @@
 import React from "react";
-import useStore from "../store/useStore";
+import useStore from "../../store/useStore";
 import {
   LnbTitleCover,
   LnbTitleNewButton,
   LnbTitleSearchContainer,
   LnbTitleSearchIcon,
   LnbTitleSearchInput,
-} from "../styles/titleStyle";
+} from "../../styles/titleStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useObserver } from "mobx-react";

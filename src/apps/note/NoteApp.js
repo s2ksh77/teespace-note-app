@@ -1,9 +1,9 @@
 import React from 'react';
-import LNBMenuContainer from './components/lnb';
+import LNBMenuContainer from './components/lnb/lnb';
 import useStore from './store/useStore';
 import { GlobalStyle, LNBContainer, ContentContainer } from './GlobalStyles';
-import PageEditorContainer from './components/pageEditorContainer.js';
-import TagMenuContainer from './components/tagMenu';
+import PageEditorContainer from './components/page/pageEditorContainer';
+import TagMenuContainer from './components/tag/tagMenu';
 import { useObserver } from 'mobx-react';
 
 const TeeNote = () => {
@@ -18,7 +18,7 @@ const TeeNote = () => {
         <LNBMenuContainer />
       </LNBContainer>
       <ContentContainer>
-        {NoteStore.showPage ? <PageEditorContainer/> :<TagMenuContainer/>}
+        {NoteStore.showPage ? <PageEditorContainer /> : <TagMenuContainer />}
       </ContentContainer>
     </>
   ));

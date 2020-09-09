@@ -5,14 +5,13 @@ import {
   ChapterTextSpan,
   ChapterTextEllipsis,
   ChapterFolderBtn,
-} from "../styles/chpaterStyle";
+} from "../../styles/chpaterStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faAngleUp,
   faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
-import ChapterStore from "../store/chapterStore";
 
 const ChapterText = ({ text }) => {
   const [isFold, setFold] = useState(false);

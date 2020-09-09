@@ -2,11 +2,11 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 
 const NoteStore = observable({
-  workspaceId:'',
+  workspaceId: '',
   notechannel_id: '',
   noteFileList: [],
-  showPage:true, // editor 보고 있는지 태그 보고 있는지
-  isMaximumSize:true,
+  showPage: true, // editor 보고 있는지 태그 보고 있는지
+  isMaximumSize: true,
   editorButtonList: [
     [
       'undo',
@@ -44,7 +44,8 @@ const NoteStore = observable({
   getNoteFileList() {
     return this.noteFileList;
   },
-  setShowPage(showPage) { // true or false
+  setShowPage(showPage) {
+    // true or false
     this.showPage = showPage;
   },
   getShowPage() {
@@ -55,8 +56,7 @@ const NoteStore = observable({
   },
   setIsMaximumSize(isMaximum) {
     this.isMaximumSize = isMaximum;
-  }
+  },
 });
-
 
 export default NoteStore;

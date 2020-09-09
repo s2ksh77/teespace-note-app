@@ -9,27 +9,28 @@ import {
   NewPageSpan,
   NewPageBlock,
   NewPageBtn,
-} from "../styles/pageStyle";
+} from "../../styles/pageStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import useStore from "../store/useStore";
+import useStore from "../../store/useStore";
 
 const PageContainer = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
-  const { NoteStore, PageStore } = useStore();
+  const { NoteStore, PageStore, TagStore } = useStore();
 
   const selectPage = async (targetId) => {
     await PageStore.getNoteInfoList(targetId);
+    await TagStore.getNoteTagList(targetId);
   };
+
   const handleNewBtnClick = (targetId) => {
     PageStore.setCreatePageParent(targetId);
     PageStore.createPage();
   };
-
   const onClickLnbPage = (id) => {
     NoteStore.setShowPage(true);
     selectPage(id);
-  }
+  };
 
   return useObserver(() => (
     <>

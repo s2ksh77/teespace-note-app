@@ -27,6 +27,13 @@ class NoteRepository {
       `${this.URL}/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`
     );
   }
+  getNoteTagList(noteId) {
+    return axios.get(
+      `${
+        this.URL
+      }/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`
+    );
+  }
   getChapterColor(chapterId) {
     const { data } = axios.get(
       `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`
@@ -103,6 +110,22 @@ class NoteRepository {
         is_edit: "",
         parent_notebook: chapterId,
         TYPE: "NONEDIT",
+      },
+    });
+  }
+  createTag(tagText, noteId) {
+    return axios.post(`${this.URL}/tag`, {
+      dto: {
+        text: tagText,
+        note_id: noteId,
+      },
+    });
+  }
+  deleteTag(tagId, noteId) {
+    return axios.post(`${this.URL}/tag?action=Delete`, {
+      dto: {
+        tag_id: tagId,
+        note_id: noteId,
       },
     });
   }

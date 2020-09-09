@@ -36,6 +36,7 @@ export const PageText = styled.a`
   cursor: pointer;
   margin-left: 1.25rem;
   line-height: 130%;
+  color: #000000;
   align-self: center;
   max-width: calc(100% - 2rem);
   min-width: calc(100% - 2.775rem);
@@ -43,6 +44,9 @@ export const PageText = styled.a`
   /* text-overflow: ellipsis; */
   white-space: nowrap;
   font-weight: 300;
+  &:hover {
+    color: #000000;
+  }
 `;
 
 export const PageEllipsis = styled.span`
@@ -74,6 +78,8 @@ export const NewPageBlock = styled.p`
   height: 1.88rem;
   display: flex;
   justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   margin-left: 1.06rem;
   cursor: pointer;
   &:hover {

@@ -27,6 +27,27 @@ export const GlobalStyle = createGlobalStyle`
   .selected{
     background-color: rgba(30,168,223,0.20);
   }
+  .ant-tag{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.4375rem;
+    margin-top: 0.4375rem;
+    margin-right: 0.38rem;
+    color: #333333;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 0.0625rem solid #1EA8DF;
+    border-radius: 1.563rem;
+    min-width: 4.5rem;
+    max-width: 9.31rem;
+    height: 1.88rem;
+    z-index: 1;
+    float: left;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(30,168,223,0.20);
+  }
 `;
 
 export const LNBContainer = styled.div`
