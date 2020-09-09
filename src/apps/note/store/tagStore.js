@@ -5,6 +5,10 @@ import NoteStore from "./noteStore";
 const TagStore = observable({
   notetagList: [],
   tagSortList: [],
+  tagList: [],
+  getChannelTagList() {
+    return this.tagList;
+  },
   getNoteTagList() {
     return this.notetagList;
   },

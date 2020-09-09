@@ -6,6 +6,8 @@ import PageStore from "./pageStore";
 const ChapterStore = observable({
   chapterColor: "",
   chapterList: [],
+  currentChapter:'',
+  currentPage:'',
   chapterNewTitle: "",
   isNewChapterColor: "",
   isNewChapter: false,
@@ -22,6 +24,18 @@ const ChapterStore = observable({
     10: "#E780FF",
     11: "#FF7BA8",
   },
+  getCurrentChapter() {
+    return this.currentChapter;
+  },
+  setCurrentChapter(chapterId) {
+    this.currentChapter = chapterId;
+  },
+  getCurrentPage() {
+    return this.currentPage;
+  },
+  setCurrentPage(pageId) {
+    this.currentPage = pageId;
+  },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {
@@ -29,8 +43,14 @@ const ChapterStore = observable({
           data: { dto: notbookList },
         } = response;
         this.chapterList = notbookList.notbookList;
+        // 초기화
+        if (!this.currentChapter) this.currentChapter = this.chapterList[0].id;
+        if (!this.currentPage) this.currentPage = this.chapterList[0].children[0]?.id;    
+        // 고쳐야함    
+        NoteStore.setShowPage(true);
+        PageStore.getNoteInfoList(this.currentPage);
       }
-    );
+    )
     return this.chapterList;
   },
   async createChapter(chapterTitle, chapterColor) {

@@ -2,8 +2,10 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 
 const NoteStore = observable({
+  workspaceId:'',
   notechannel_id: '',
   noteFileList: [],
+  showPage:true, // editor 보고 있는지 태그 보고 있는지
   editorButtonList: [
     [
       'undo',
@@ -41,6 +43,13 @@ const NoteStore = observable({
   getNoteFileList() {
     return this.noteFileList;
   },
+  setShowPage(showPage) { // true or false
+    this.showPage = showPage;
+  },
+  getShowPage() {
+    return this.showPage;
+  }
 });
+
 
 export default NoteStore;

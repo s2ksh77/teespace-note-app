@@ -16,7 +16,7 @@ import useStore from "../store/useStore";
 
 const PageContainer = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
-  const { PageStore } = useStore();
+  const { NoteStore, PageStore } = useStore();
 
   const selectPage = async (targetId) => {
     await PageStore.getNoteInfoList(targetId);
@@ -25,6 +25,11 @@ const PageContainer = ({ children, chapterId }) => {
     PageStore.setCreatePageParent(targetId);
     PageStore.createPage();
   };
+
+  const onClickLnbPage = (id) => {
+    NoteStore.setShowPage(true);
+    selectPage(id);
+  }
 
   return useObserver(() => (
     <>
@@ -35,9 +40,7 @@ const PageContainer = ({ children, chapterId }) => {
           className={
             "page-li" + (item.id === PageStore.currentPageId ? " selected" : "")
           }
-          onClick={({ currentTarget: { id } }) => {
-            selectPage(id);
-          }}
+          onClick={onClickLnbPage.bind(null, item.id)}
         >
           <PageliIcon />
           <PageTextCover>
