@@ -6,6 +6,7 @@ const NoteStore = observable({
   notechannel_id: '',
   noteFileList: [],
   showPage:true, // editor 보고 있는지 태그 보고 있는지
+  isMaximumSize:true,
   editorButtonList: [
     [
       'undo',
@@ -48,6 +49,12 @@ const NoteStore = observable({
   },
   getShowPage() {
     return this.showPage;
+  },
+  getIsMaximumSize() {
+    return this.isMaximumSize;
+  },
+  setIsMaximumSize(isMaximum) {
+    this.isMaximumSize = isMaximum;
   }
 });
 

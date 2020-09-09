@@ -30,7 +30,7 @@ export default PageEditorContainer;
 
 // 페이지가 존재하지 않습니다
 export const ShowNonePage = () => {
-    return useObserver(() => (
+    return  (
         <>
             <div className="note-editor_page-none">
                 <div className="note-no_page_title">페이지가 없습니다.</div>
@@ -38,5 +38,5 @@ export const ShowNonePage = () => {
                 <img className="note-no_page_image" src={noPageImage} />
             </div>
         </>
-    ))
+    )
 }
