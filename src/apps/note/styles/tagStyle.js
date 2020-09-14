@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {Collapse, Tag} from 'antd';
 
 export const TagContainer = styled.div`
   white-space: nowrap;
@@ -60,3 +61,72 @@ export const TagInput = styled.input`
   color: #3b3b3b;
   outline: none;
 `;
+
+// lnbTag
+export const LnbTagContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: calc(100% - 1.62rem);
+  height: 2.81rem;
+  padding: 0rem 0.81rem 0rem 0.81rem;
+  font-size: 0.81rem;
+  cursor: pointer;
+  color:${props => props.color || ""};
+  &:hover .ellipsisBtn {
+    background-color: rgba(30, 168, 223, 0.2);
+  }
+  &:hover:not(.ellipsisBtn) {
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+export const TagImg = styled.img`
+  width: 1rem;
+  margin: 0 0.36rem 0 0.48rem;
+  filter:${props => props.filter || "invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)"};
+`;
+
+export const TagText = styled.span`
+  font-weight: 400;
+`;
+// contents가 tag일 때
+export const TagMenuHeader = styled.div`
+  height: 3rem;
+  width: 100%;
+  display: flex;
+  padding: 0 0.75rem;
+  box-sizing: border-box;
+  border-bottom: 0.0625rem solid #dadada;
+`;
+
+export const TagListContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow:scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:1.25rem 0.75rem;
+`;
+
+export const { Panel } = Collapse;
+
+export const StyledCollapse = styled(Collapse)`
+  width:100%;
+`;
+
+export const TagKeyBox = styled.div`
+  display:flex;
+  width:100%;
+`;
+
+export const TagKeyRow = styled.div`
+  width:100%;
+`
+
+export const EllipsisTag = styled(Tag)`
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+`

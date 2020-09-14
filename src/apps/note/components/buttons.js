@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import useStore from '../store/useStore';
 import maximize from '../assets/ts_maximize@3x.png';
 import minimize from '../assets/ts_minimize@3x.png';
@@ -21,7 +21,7 @@ const Button = styled.img`
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
     const {NoteStore} = useStore();
-    const style = {marginLeft:"0.69rem"}
+    const style = useMemo(() =>({marginLeft:"0.69rem"}), []);
 
     const ChangeSizeButton = () => {
         if (NoteStore.getIsMaximumSize()) return (<Button src={minimize} />);

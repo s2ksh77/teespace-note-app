@@ -98,7 +98,7 @@ const ChapterList = () => {
       {ChapterStore.chapterList.map((item) => (
         <ChapterContainerUl id={item.id} key={item.id} itemType="chapter">
           <ChapterUlDIV
-            onClick={onClickChapterBtn.bind(this, item.id, item.children)}
+            onClick={onClickChapterBtn.bind(null, item.id, item.children)}
           >
             <ChapterColor color={item.color} chapterId={item.id} />
             <ChapterText text={item.text} chapterId={item.id} />
