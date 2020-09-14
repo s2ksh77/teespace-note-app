@@ -3,7 +3,8 @@ import LNBMenuContainer from './components/lnb/lnb';
 import useStore from './store/useStore';
 import { GlobalStyle, LNBContainer, ContentContainer } from './GlobalStyles';
 import PageEditorContainer from './components/page/pageEditorContainer';
-import TagPanelContainer from './components/tag/tagMenu';
+// import TagPanelContainer from './components/tag/tagMenu';
+import TagMenuContainer from './components/tag/tagMenu';
 import { useObserver } from 'mobx-react';
 
 const TeeNote = () => {
