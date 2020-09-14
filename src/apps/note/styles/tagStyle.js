@@ -29,6 +29,7 @@ export const TagListDIV = styled.div`
   width: calc(100% - 2.4rem);
   box-sizing: border-box;
 `;
+export const TagTextSpan = styled.span``;
 
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;

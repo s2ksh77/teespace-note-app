@@ -35,6 +35,7 @@ const EditorMenuTitle = () => {
       PageStore.editDone(updateDTO);
       if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
       if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
+      if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     }
   };
 

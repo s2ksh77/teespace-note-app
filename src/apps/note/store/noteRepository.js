@@ -129,6 +129,14 @@ class NoteRepository {
       },
     });
   }
+  updateTag(tagId, tagText) {
+    return axios.post(`${this.URL}/tag?action=Update`, {
+      dto: {
+        tag_id: tagId,
+        text: tagText,
+      },
+    });
+  }
 }
 
 export default new NoteRepository();
