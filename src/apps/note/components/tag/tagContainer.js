@@ -59,17 +59,30 @@ const TagListContainer = () => {
       else if (TagStore.editTagValue === '') {
         TagStore.setEditTagIndex(-1);
       } else {
-        TagStore.notetagList[TagStore.editTagIndex].text =
-          TagStore.editTagValue;
-        TagStore.setUpdateTagList(TagStore.currentTagId, TagStore.editTagValue);
-        TagStore.setEditTagIndex(-1);
+        if (!TagStore.validTag(TagStore.editTagValue)) {
+          TagStore.notetagList[TagStore.editTagIndex].text =
+            TagStore.editTagValue;
+          TagStore.setUpdateTagList(
+            TagStore.currentTagId,
+            TagStore.editTagValue
+          );
+          TagStore.setEditTagIndex(-1);
+        } else TagStore.setEditTagIndex(-1);
       }
     }
   };
   const createTag = () => {
-    TagStore.setAddTagList(TagStore.tagText, PageStore.currentPageId);
-    TagStore.setIsNewFlag(false);
-    TagStore.notetagList.unshift({ text: TagStore.tagText });
+    if (TagStore.tagText === "") {
+      TagStore.setIsNewFlag(false);
+    } else {
+      if (!TagStore.validTag(TagStore.tagText)) {
+        TagStore.setAddTagList(TagStore.tagText, PageStore.currentPageId);
+        TagStore.setIsNewFlag(false);
+        TagStore.notetagList.unshift({ text: TagStore.tagText });
+      } else {
+        TagStore.setIsNewFlag(false);
+      }
+    }
   };
 
   return useObserver(() => (
@@ -80,11 +93,13 @@ const TagListContainer = () => {
       {TagStore.isNewTag ? (
         <TagInput
           onChange={handleTagInput}
-          onKeyPress={event => {
-            if (event.key === 'Enter') {
+          onBlur={createTag}
+          onKeyPress={(event) => {
+            if (event.key === "Enter") {
               createTag();
             }
           }}
+          autoFocus={true}
         />
       ) : null}
       <TagListDIV>
@@ -104,7 +119,7 @@ const TagListContainer = () => {
             />
           ) : (
             <Tag
-              key={item.tag_id}
+              key={index}
               id={item.tag_id}
               closable={
                 PageStore.isEdit === null || PageStore.isEdit === ''
@@ -125,7 +140,7 @@ const TagListContainer = () => {
                   : item.text}
               </TagTextSpan>
             </Tag>
-          ),
+          )
         )}
       </TagListDIV>
     </>

@@ -90,6 +90,14 @@ const TagStore = observable({
   getTagSortList() {
     return this.tagSortList;
   },
+  validTag(text) {
+    const targetTag = this.notetagList.find(function (tag) {
+      return tag.text === text;
+    });
+    const _idx = this.notetagList.indexOf(targetTag);
+    if (_idx !== -1) return true;
+    else return false;
+  },
 });
 
 export default TagStore;
