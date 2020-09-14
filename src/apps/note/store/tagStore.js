@@ -18,12 +18,15 @@ const TagStore = observable({
   allTagList: [],
   allSortedTagList:[],
   filteredTagObj:{},
+  // a,b,c 같은 키들만 담는다
   sortedTagList:{
     KOR:[],
     ENG:[],
     NUM:[],
     ETC:[]
   },
+  //filteredTagObj에 담을 때마다 render되는 것 같아서 loading 넣어줌
+  tagPanelLoading:true,
   getChannelTagList() {
     return this.tagList;
   },  
@@ -46,6 +49,7 @@ const TagStore = observable({
     return this.allTagList;
   },
   async getAllSortedTagList() {
+    this.tagPanelLoading = true;
     const res = await NoteRepository.getAllSortedTagList();
     const {data:{dto:{tag_index_list_dto}}} = res;    
     this.allSortedTagList = tag_index_list_dto;
@@ -96,6 +100,7 @@ const TagStore = observable({
         this.sortedTagList["ETC"].push(key);
       }
     })
+    this.tagPanelLoading=false;    
     return this.allSortedTagList;
   },
   setTagText(text) {

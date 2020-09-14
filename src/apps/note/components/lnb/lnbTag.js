@@ -11,7 +11,6 @@ const LnbMenuTagCover = memo(() => {
 
   const onClickTagMenuBtn = () => {
     NoteStore.setShowPage(false);
-    console.log('showPage?', NoteStore.showPage)
   };
   
   return useObserver(()=> (

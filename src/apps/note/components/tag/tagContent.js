@@ -4,17 +4,17 @@ import {Panel, TagKeyRow} from '../../styles/tagStyle';
 import {StyledCollapse} from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
 import TagKeyContainer from './tagKeyContainer'
+import LoadingImg from '../../assets/Tee_loading.gif';
 
 const TagContentContainer = () => {
-    const callback = () => {
-        console.log('callback')
-    }
-    const text = 'text'
     // 일단 KEY 별로 준다( ㄱ,ㄴ,ㄷ ... )
     const getSortedTagList = useMemo(()=> TagStore.getAllSortedTagList(), []);
+    const imgcontainer = useMemo(() => ({width:"5rem", margin:"auto"}),[]);
+
     return useObserver(()=> (
         <>
-            <StyledCollapse defaultActiveKey={['1', '2','3','4']} onChange={callback}>
+            { TagStore.tagPanelLoading == false ?
+            (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
                 <Panel header="ㄱ ~ ㅎ" key="1">
                 {TagStore.sortedTagList.KOR.map((tagKey) => {
                     console.log('tagKey', tagKey)
@@ -56,7 +56,9 @@ const TagContentContainer = () => {
                     )
                 })}
                 </Panel>
-            </StyledCollapse>,
+            </StyledCollapse>)
+            : <img style={imgcontainer} src={LoadingImg}/> }
+
         </>
     ))
 }

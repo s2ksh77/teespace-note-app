@@ -11,7 +11,6 @@ const TagKeyContainer = ({target}) => {
             tagKey.push(item);
         })
         tagKey.sort(); 
-        console.log(tagKey)
         return tagKey;      
     }
     const tagKey = useMemo(() => sortTagKeys(),[]);

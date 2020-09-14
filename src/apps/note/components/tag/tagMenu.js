@@ -10,14 +10,12 @@ import {TagMenuHeader, TagListContainer} from '../../styles/tagStyle'
 const TagPanelContainer = () => {
   // const tagList = TagStore.allTagList;
   const allTagList = useMemo(()=> TagStore.getAllTagList(), []);
-  console.log(TagStore.allTagList.length)
   return useObserver(()=> (
     <>
-      <TagMenuTitle />      
-      <div>주석처리</div>
-      {/* <TagListContainer>
+      <TagMenuTitle />  
+      <TagListContainer>
       {(TagStore.allTagList.length > 0) ? <TagContentContainer/> : <NoTagContainer/>}
-      </TagListContainer> */}
+      </TagListContainer>
     </>
   ));
 };
