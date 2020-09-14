@@ -2,7 +2,7 @@ import React from 'react';
 import useStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import EditorMenuContainer from '../editor/editor';
-import TagMenuContainer from '../tag/tagMenu';
+import TagPanelContainer from '../tag/tagMenu';
 import '../../styles/note.css';
 import noPageImage from '../../assets/no_file.png';
 
@@ -16,7 +16,7 @@ const PageEditorContainer = () => {
       else return <ShowNonePage />;
     } else {
       NoteStore.setShowPage(false);
-      return <TagMenuContainer />;
+      return <TagPanelContainer />;
     }
   };
 

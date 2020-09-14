@@ -1,39 +1,25 @@
-import React, { memo } from 'react';
+import React, {useMemo} from 'react';
+import { useObserver } from 'mobx-react';
 import TagStore from '../../store/tagStore';
 import TagContentContainer from './tagContent';
 import HeaderButtons from '../buttons';
 import styled from 'styled-components';
 import noPageImage from '../../assets/no_file.png';
+import {TagMenuHeader, TagListContainer} from '../../styles/tagStyle'
 
-const TagMenuHeader = styled.div`
-  height: 3rem;
-  width: 100%;
-  display: flex;
-  padding: 0 0.75rem;
-  box-sizing: border-box;
-  border-bottom: 0.0625rem solid #dadada;
-`;
-
-const TagContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-const TagMenuContainer = () => {
-  const tagList = TagStore.getChannelTagList();
-  return (
+const TagPanelContainer = () => {
+  // const tagList = TagStore.allTagList;
+  const allTagList = useMemo(()=> TagStore.getAllTagList(), []);
+  console.log(TagStore.allTagList.length)
+  return useObserver(()=> (
     <>
-      <TagMenuTitle />
-      <TagContainer>
-        <NoTagContainer />
-      </TagContainer>
-      {/* <TagMenuTitle/>
-			{(tagList.length > 0) ? <TagContentContainer tagList={tagList}/> : <NoTagContainer/>} */}
+      <TagMenuTitle />      
+      <div>주석처리</div>
+      {/* <TagListContainer>
+      {(TagStore.allTagList.length > 0) ? <TagContentContainer/> : <NoTagContainer/>}
+      </TagListContainer> */}
     </>
-  );
+  ));
 };
 
 const TagMenuTitle = () => {
@@ -62,4 +48,4 @@ const NoTagContainer = () => {
   );
 };
 
-export default TagMenuContainer;
+export default TagPanelContainer;
