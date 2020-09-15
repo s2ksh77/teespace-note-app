@@ -129,4 +129,22 @@ export const EllipsisTag = styled(Tag)`
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  padding : 0 0.63rem;
 `
+
+export const TagChipText = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: normal;
+  color: #000000;
+  margin: 0rem;
+`;
+
+export const TagChipNum = styled.div`
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  align-self: center;
+  color: #008CC8;
+`;

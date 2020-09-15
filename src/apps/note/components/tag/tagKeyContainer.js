@@ -7,6 +7,12 @@ import {TagKeyBox} from '../../styles/tagStyle';
 const TagKeyContainer = ({target}) => {
     const sortTagKeys = () => {        
         let tagKey = [];
+        /* 
+            {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
+                tagName2:{tagId:'', note_id:[]}}        
+            }
+            => [tagName1, tagName2]
+        */
         Object.keys(TagStore.filteredTagObj[target]).map((item) => {
             tagKey.push(item);
         })
@@ -15,7 +21,7 @@ const TagKeyContainer = ({target}) => {
     }
     const tagKey = useMemo(() => sortTagKeys(),[]);
 
-    return (
+    return useObserver(()=>(
         <>
             <TagKeyBox>
                 {tagKey.map((tagName)=>{
@@ -25,7 +31,7 @@ const TagKeyContainer = ({target}) => {
                 })}
             </TagKeyBox>
         </>
-    );
+    ));
 }
 
 export default TagKeyContainer;

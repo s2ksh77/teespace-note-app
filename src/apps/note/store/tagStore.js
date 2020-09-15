@@ -48,7 +48,7 @@ const TagStore = observable({
     this.allTagList = tagList;
     return this.allTagList;
   },
-  async getAllSortedTagList() {
+  async getAllSortedTagList() {  
     this.tagPanelLoading = true;
     const res = await NoteRepository.getAllSortedTagList();
     const {data:{dto:{tag_index_list_dto}}} = res;    
@@ -58,15 +58,15 @@ const TagStore = observable({
        this.filteredTagObj 만들기
        item : KEY별로
        this.filteredTagObj = 
-       {"ㄱ" : {tagId1:{text:'', note_id:[]},
-                tagId2:{text:'', note_id:[]}}        
+       {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
+                tagName2:{tagId:'', note_id:[]}}        
         }
     */
-    this.allSortedTagList.forEach((item) => {     
-      // {tag_id:{text:"", note_id:[]}}
+
+    this.allSortedTagList.forEach((item) => { 
       let resultObj = {};
+      // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
       let tagList = item.tag_indexdto.tagList;
-      // // 해당 KEY에 속한 TAG LIST
       tagList.forEach((tag) => {
         let target = resultObj[tag.text];
         if (target) target["note_id"].push(tag.note_id);
@@ -78,6 +78,7 @@ const TagStore = observable({
         }
       })
       this.filteredTagObj[item.KEY] = resultObj;
+      console.log(this.filteredTagObj[item.KEY])
     })
 
     // key 정렬
@@ -86,20 +87,29 @@ const TagStore = observable({
       tagKey.push(category["KEY"])
     })
     tagKey.sort();
+    
+    // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
+    let korArr = [], engArr = [], numArr = [], etcArr = [];
     tagKey.forEach((key) => {
       if( key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203 ){
-        this.sortedTagList["KOR"].push(key);
+        korArr.push(key)
       }
       else if(key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123){
-        this.sortedTagList["ENG"].push(key);
+        engArr.push(key);
       }
       else if(key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57){
-        this.sortedTagList["NUM"].push(key);
+        numArr.push(key);
       }
       else {
-        this.sortedTagList["ETC"].push(key);
+        etcArr.push(key);
       }
     })
+
+    this.sortedTagList["KOR"] = korArr;
+    this.sortedTagList["ENG"] = engArr;
+    this.sortedTagList["NUM"] = numArr;
+    this.sortedTagList["ETC"] = etcArr;
+    
     this.tagPanelLoading=false;    
     return this.allSortedTagList;
   },

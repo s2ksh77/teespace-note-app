@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {memo, useMemo, useEffect} from 'react';
 import { useObserver } from 'mobx-react';
 import {Panel, TagKeyRow} from '../../styles/tagStyle';
 import {StyledCollapse} from '../../styles/tagStyle';
@@ -6,18 +6,21 @@ import TagStore from '../../store/tagStore';
 import TagKeyContainer from './tagKeyContainer'
 import LoadingImg from '../../assets/Tee_loading.gif';
 
-const TagContentContainer = () => {
+const TagContentContainer = memo(() => {
     // 일단 KEY 별로 준다( ㄱ,ㄴ,ㄷ ... )
     const getSortedTagList = useMemo(()=> TagStore.getAllSortedTagList(), []);
     const imgcontainer = useMemo(() => ({width:"5rem", margin:"auto"}),[]);
 
+    // useEffect(() => {
+    //     TagStore.getAllSortedTagList();        
+    // },[])
+    
     return useObserver(()=> (
         <>
             { TagStore.tagPanelLoading == false ?
             (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
                 <Panel header="ㄱ ~ ㅎ" key="1">
                 {TagStore.sortedTagList.KOR.map((tagKey) => {
-                    console.log('tagKey', tagKey)
                     return (
                         <TagKeyRow key={tagKey}>
                             <div>{tagKey}</div>
@@ -61,6 +64,6 @@ const TagContentContainer = () => {
 
         </>
     ))
-}
+})
 
 export default TagContentContainer;
