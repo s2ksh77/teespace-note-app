@@ -78,7 +78,6 @@ const TagStore = observable({
         }
       })
       this.filteredTagObj[item.KEY] = resultObj;
-      console.log(this.filteredTagObj[item.KEY])
     })
 
     // key 정렬
