@@ -1,4 +1,4 @@
-import React, {memo, useMemo, useEffect} from 'react';
+import React, {memo, useMemo} from 'react';
 import { useObserver } from 'mobx-react';
 import {Panel, TagKeyRow} from '../../styles/tagStyle';
 import {StyledCollapse} from '../../styles/tagStyle';
@@ -8,12 +8,7 @@ import LoadingImg from '../../assets/Tee_loading.gif';
 
 const TagContentContainer = memo(() => {
     // 일단 KEY 별로 준다( ㄱ,ㄴ,ㄷ ... )
-    const getSortedTagList = useMemo(()=> TagStore.getAllSortedTagList(), []);
     const imgcontainer = useMemo(() => ({width:"5rem", margin:"auto"}),[]);
-
-    // useEffect(() => {
-    //     TagStore.getAllSortedTagList();        
-    // },[])
     
     return useObserver(()=> (
         <>

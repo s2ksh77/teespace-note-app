@@ -36,11 +36,11 @@ class NoteRepository {
   }
 
   // 태그 컨텐츠 관련
-  getAllTagList() {
-    return axios.get(
-      `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
-    )
-  }
+  // getAllTagList() {
+  //   return axios.get(
+  //     `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
+  //   )
+  // }
   getAllSortedTagList() {
     return axios.get(
       `${this.URL}/tagSort?action=List&note_channel_id=${this.chId}&t=${new Date().getTime().toString()}`

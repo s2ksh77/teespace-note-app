@@ -125,7 +125,7 @@ export const TagKeyRow = styled.div`
   width:100%;
 `
 
-export const EllipsisTag = styled(Tag)`
+export const TagChip = styled(Tag)`
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;

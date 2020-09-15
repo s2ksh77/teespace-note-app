@@ -15,7 +15,8 @@ const TagStore = observable({
   currentTagValue: "",
   editTagIndex: "",
   editTagValue: "",
-  allTagList: [],
+  // allTagList: [],
+  hasTag:false,
   allSortedTagList:[],
   filteredTagObj:{},
   // a,b,c 같은 키들만 담는다
@@ -41,18 +42,23 @@ const TagStore = observable({
     });
     return this.notetagList;
   },
-  async getAllTagList() {
-    const res = await NoteRepository.getAllTagList();
-    const {data:{dto:{tagList}}} = res;
-    //{dto:{tagList:[0,1,2,3,4]}
-    this.allTagList = tagList;
-    return this.allTagList;
-  },
+  // 없어도 될 것 같음
+  // async getAllTagList() {
+  //   const res = await NoteRepository.getAllTagList();
+  //   const {data:{dto:{tagList}}} = res;
+  //   //{dto:{tagList:[0,1,2,3,4]}
+  //   this.allTagList = tagList;
+  //   return this.allTagList;
+  // },
   async getAllSortedTagList() {  
     this.tagPanelLoading = true;
     const res = await NoteRepository.getAllSortedTagList();
     const {data:{dto:{tag_index_list_dto}}} = res;    
     this.allSortedTagList = tag_index_list_dto;
+    if (this.allSortedTagList.length === 0) {
+      this.hasTag = false;
+      return; 
+    } else this.hasTag = true;
 
     /*
        this.filteredTagObj 만들기
