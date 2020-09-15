@@ -1,4 +1,4 @@
-본 저장소는 TeeSpace Talk App에 대한 코드를 관리합니다.
+본 저장소는 TeeSpace Note App에 대한 코드를 관리합니다.
 
 ## 앱 모듈 개발 관련하여 주의 사항
 
