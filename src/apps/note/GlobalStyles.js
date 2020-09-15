@@ -27,6 +27,9 @@ export const GlobalStyle = createGlobalStyle`
   .selected{
     background-color: rgba(30,168,223,0.20);
   }
+  .selectedMenu {
+    color: #008CC8;
+  } 
   .ant-tag{
     display: flex;
     align-items: center;

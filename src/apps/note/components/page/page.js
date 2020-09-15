@@ -39,7 +39,7 @@ const PageContainer = ({ children, chapterId }) => {
           key={item.id}
           id={item.id}
           className={
-            "page-li" + (item.id === PageStore.currentPageId ? " selected" : "")
+            "page-li" + ((NoteStore.showPage && (item.id === PageStore.currentPageId)) ? " selected" : "")
           }
           onClick={onClickLnbPage.bind(null, item.id)}
         >

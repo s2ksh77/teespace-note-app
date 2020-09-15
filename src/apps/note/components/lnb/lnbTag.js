@@ -15,7 +15,7 @@ const LnbMenuTagCover = memo(() => {
   
   return useObserver(()=> (
     <>
-      <LnbTagContainer color={!NoteStore.showPage ? "#008CC8": ""} onClick={onClickTagMenuBtn}>
+      <LnbTagContainer className={!NoteStore.showPage ? "selectedMenu": ""} onClick={onClickTagMenuBtn}>
         <TagImg filter={!NoteStore.showPage ? filterColor: ""} src={tagImg} alt="tagImg" />
         <TagText>태그</TagText>
       </LnbTagContainer>

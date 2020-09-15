@@ -18,6 +18,9 @@ const PageStore = observable({
     } = e;
     return id;
   },
+  setCurrentPageId(pageId) {
+    this.currentPageId = pageId;
+  },
   getPageName(e) {
     const {
       target: { name },
@@ -59,6 +62,7 @@ const PageStore = observable({
       const {
         data: { dto: noteList },
       } = response;
+      console.log(noteList)
       this.noteInfoList = noteList.noteList[0];
       this.currentPageData = noteList.noteList[0];
       this.isEdit = noteList.noteList[0].is_edit;

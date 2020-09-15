@@ -8,12 +8,12 @@ import noPageImage from '../../assets/no_file.png';
 
 // 페이지 보여줄 때
 const PageEditorContainer = () => {
-  const { NoteStore, ChapterStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useStore();
   const targetPageComponent = () => {
-    if (ChapterStore.currentChapter) {
+    if (ChapterStore.currentChapterId) {
       NoteStore.setShowPage(true);
-      if (ChapterStore.currentPage) return <EditorMenuContainer />;
-      else return <ShowNonePage />;
+      if (PageStore.currentPageId) return <EditorMenuContainer />;
+      else return <ShowNoPage />;
     } else {
       NoteStore.setShowPage(false);
       return <TagPanelContainer />;
@@ -25,7 +25,7 @@ const PageEditorContainer = () => {
 export default PageEditorContainer;
 
 // 페이지가 존재하지 않습니다
-export const ShowNonePage = () => {
+export const ShowNoPage = () => {
   return (
     <>
       <div className="note-editor_page-none">
