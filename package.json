@@ -1,5 +1,5 @@
 {
-  "name": "teespace-apps",
+  "name": "teespace-note-app",
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.cjs.js",
@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^7.1.2",
     "antd": "^4.6.3",
     "axios": "^0.20.0",
+    "craco-less": "^1.17.0",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
@@ -26,9 +27,12 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "suneditor-react": "^2.13.2"
+    "suneditor-react": "^2.13.2",
+    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
   },
   "peerDependencies": {
+    "antd": "^4.6.3",
+    "axios": "^0.20.0",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
@@ -36,13 +40,27 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "suneditor-react": "^2.13.2"
   },
   "scripts": {
     "start": "craco start",
-    "build": "rollup -c",
+    "lib:start": "rollup -c -w",
+    "lib:build": "rollup -c",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prerelease": "rollup -c",
+    "release": "git add --force dist && standard-version -a"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,14 +78,17 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
+    "@babel/cli": "^7.11.5",
     "@babel/core": "^7.11.4",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-decorators": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.2",
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-image": "^2.0.5",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -76,12 +97,14 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "4.0.0",
+    "husky": "^4.3.0",
     "prettier": "^2.1.1",
-    "rollup": "^2.26.8",
+    "rollup": "^2.26.9",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-peer-deps-external": "^2.2.3",
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-url": "^3.0.1",
-    "rollup-plugin-visualizer": "^4.1.1"
+    "rollup-plugin-visualizer": "^4.1.1",
+    "standard-version": "^9.0.0"
   }
 }
