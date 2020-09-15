@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { CoreStoreProvider } from 'teespace-core';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <CoreStoreProvider
+    config={{
+      serviceURL: process.env.REACT_APP_SERVICE_URL,
+      websocketURL: process.env.REACT_APP_WEBSOCKET_URL,
+    }}
+  >
     <App />
-  </React.StrictMode>,
+  </CoreStoreProvider>,
   document.getElementById('root'),
 );
 

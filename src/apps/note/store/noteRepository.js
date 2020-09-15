@@ -1,149 +1,170 @@
-const { default: axios } = require("axios");
-const dotenv = require("dotenv");
+import { API } from 'teespace-core';
+
+const { default: axios } = require('axios');
+const dotenv = require('dotenv');
+
 dotenv.config();
 
 class NoteRepository {
-  URL = "http://222.122.50.70:8080/CMS/Note";
-  WS_ID = "8050f1ba-0b42-4fe1-a3e4-c0647a47d019";
-  CH_TYPE = "CHN0003";
-  USER_ID = "431ef2dd-08fd-495d-b192-db6ecd899496";
+  URL = '/Note';
+
+  WS_ID = '8050f1ba-0b42-4fe1-a3e4-c0647a47d019';
+
+  CH_TYPE = 'CHN0003';
+
+  USER_ID = '431ef2dd-08fd-495d-b192-db6ecd899496';
 
   constructor(url) {
     this.URL = url || this.URL;
   }
+
   setChannelId(targetchId) {
     this.chId = targetchId;
   }
+
   getChannelId() {
     return this.chId;
   }
+
   getChapterList(chId) {
-    return axios.get(
-      `${this.URL}/noteChapter?action=List&note_channel_id=${chId}`
+    return API.Get(
+      `${this.URL}/noteChapter?action=List&note_channel_id=${chId}`,
     );
   }
+
   getNoteInfoList(noteId) {
-    return axios.get(
-      `${this.URL}/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`
+    return API.Get(
+      `${this.URL}/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
     );
   }
+
   getNoteTagList(noteId) {
-    return axios.get(
+    return API.Get(
       `${
         this.URL
-      }/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`
+      }/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
     );
   }
 
   // 태그 컨텐츠 관련
   // getAllTagList() {
-  //   return axios.get(
+  //   return API.Get(
   //     `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
   getAllSortedTagList() {
-    return axios.get(
-      `${this.URL}/tagSort?action=List&note_channel_id=${this.chId}&t=${new Date().getTime().toString()}`
-    )
+    return API.Get(
+      `${this.URL}/tagSort?action=List&note_channel_id=${
+        this.chId
+      }&t=${new Date().getTime().toString()}`,
+    );
   }
 
   getChapterColor(chapterId) {
-    const { data } = axios.get(
-      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`
+    const { data } = API.Get(
+      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`,
     );
     return data.color;
   }
+
   getChapterText(chapterId) {
-    const { data } = axios.get(
-      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`
+    const { data } = API.Get(
+      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`,
     );
     return data.text;
   }
+
   createChapter(chapterTitle, chapterColor) {
-    return axios.post(`${this.URL}/notebooks`, {
+    return API.Post(`${this.URL}/notebooks`, {
       dto: {
-        id: "",
+        id: '',
         note_channel_id: this.chId,
         text: chapterTitle,
         children: [],
-        type: "notebook",
+        type: 'notebook',
         USER_ID: this.USER_ID,
-        user_name: "김수현B",
+        user_name: '김수현B',
         color: chapterColor,
       },
     });
   }
+
   createPage(pageName, chapterId) {
-    return axios.post(`${this.URL}/note`, {
+    return API.Post(`${this.URL}/note`, {
       dto: {
-        WS_ID: "8050f1ba-0b42-4fe1-a3e4-c0647a47d019",
-        CH_TYPE: "CHN0003",
-        USER_ID: "431ef2dd-08fd-495d-b192-db6ecd899496",
+        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        CH_TYPE: 'CHN0003',
+        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
         note_channel_id: this.chId,
-        user_name: "김수현B",
+        user_name: '김수현B',
         note_title: pageName,
-        is_edit: "431ef2dd-08fd-495d-b192-db6ecd899496",
+        is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
         parent_notebook: chapterId,
       },
     });
   }
 
   editStart(noteId, chapterId) {
-    return axios.post(`${this.URL}/note?action=Update`, {
+    return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
-        WS_ID: "8050f1ba-0b42-4fe1-a3e4-c0647a47d019",
-        CH_TYPE: "CHN0003",
-        USER_ID: "431ef2dd-08fd-495d-b192-db6ecd899496",
+        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        CH_TYPE: 'CHN0003',
+        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
         note_channel_id: this.chId,
-        user_name: "김수현b",
+        user_name: '김수현b',
         note_id: noteId,
-        is_edit: "431ef2dd-08fd-495d-b192-db6ecd899496",
+        is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
         parent_notebook: chapterId,
-        TYPE: "EDIT_START",
+        TYPE: 'EDIT_START',
       },
     });
   }
+
   editDone(updateDto) {
     updateDto.dto.WS_ID = this.WS_ID;
     updateDto.dto.note_channel_id = this.chId;
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
-    updateDto.dto.user_name = "김수현B";
+    updateDto.dto.user_name = '김수현B';
     console.log(updateDto);
-    return axios.post(`${this.URL}/note?action=Update`, updateDto);
+    return API.Post(`${this.URL}/note?action=Update`, updateDto);
   }
+
   nonEdit(noteId, chapterId) {
-    return axios.post(`${this.URL}/note?action=Update`, {
+    return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
-        WS_ID: "8050f1ba-0b42-4fe1-a3e4-c0647a47d019",
-        CH_TYPE: "CHN0003",
-        USER_ID: "431ef2dd-08fd-495d-b192-db6ecd899496",
+        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        CH_TYPE: 'CHN0003',
+        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
         note_channel_id: this.chId,
         note_id: noteId,
-        is_edit: "",
+        is_edit: '',
         parent_notebook: chapterId,
-        TYPE: "NONEDIT",
+        TYPE: 'NONEDIT',
       },
     });
   }
+
   createTag(tagText, noteId) {
-    return axios.post(`${this.URL}/tag`, {
+    return API.Post(`${this.URL}/tag`, {
       dto: {
         text: tagText,
         note_id: noteId,
       },
     });
   }
+
   deleteTag(tagId, noteId) {
-    return axios.post(`${this.URL}/tag?action=Delete`, {
+    return API.Post(`${this.URL}/tag?action=Delete`, {
       dto: {
         tag_id: tagId,
         note_id: noteId,
       },
     });
   }
+
   updateTag(tagId, tagText) {
-    return axios.post(`${this.URL}/tag?action=Update`, {
+    return API.Post(`${this.URL}/tag?action=Update`, {
       dto: {
         tag_id: tagId,
         text: tagText,
