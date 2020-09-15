@@ -42,7 +42,8 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "suneditor-react": "^2.13.2"
+    "suneditor-react": "^2.13.2",
+    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
   },
   "scripts": {
     "start": "craco start",
