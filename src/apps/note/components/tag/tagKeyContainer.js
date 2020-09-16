@@ -1,36 +1,27 @@
 import React, {useMemo} from 'react';
-import TagItem from './tagItem'
 import { useObserver } from 'mobx-react';
 import TagStore from '../../store/tagStore';
-import {TagKeyBox} from '../../styles/tagStyle';
+import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
-const TagKeyContainer = ({target}) => {
-    const sortTagKeys = () => {        
-        let tagKey = [];
-        /* 
-            {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
-                tagName2:{tagId:'', note_id:[]}}        
-            }
-            => [tagName1, tagName2]
-        */
-        Object.keys(TagStore.filteredTagObj[target]).map((item) => {
-            tagKey.push(item);
-        })
-        tagKey.sort(); 
-        return tagKey;      
-    }
-    const tagKey = useMemo(() => sortTagKeys(),[]);
+// "ㄱ", ["가나다", "고교구"]
+const TagKeyContainer = ({target, targetList}) => {	
+		const onClickTagBtn = () => {
 
+		}
+		const style = useMemo(()=> ({display:"flex", width:"100%"}),[]);
     return useObserver(()=>(
-        <>
-            <TagKeyBox>
-                {tagKey.map((tagName)=>{
-                    return (
-                        <TagItem key={tagName} tagName={tagName} tagInfo={TagStore.filteredTagObj[target][tagName]} />
-                    )
-                })}
-            </TagKeyBox>
-        </>
+			<>
+				<div style={style}>
+					{targetList.map((tagName)=>{
+						return (
+								<TagChip onClick={onClickTagBtn} key={tagName}>
+										<TagChipText>{tagName}</TagChipText>
+										<TagChipNum>{TagStore.filteredTagObj[target][tagName].note_id.length}</TagChipNum>
+								</TagChip>
+						)
+					})}
+				</div>
+			</>
     ));
 }
 

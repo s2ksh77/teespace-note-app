@@ -9,7 +9,7 @@ import {
     ChapterUlDIV,
   } from "../../styles/chpaterStyle";
 
-const ChapterList = () => {
+const ChapterList = ({type}) => {
     const { NoteStore, ChapterStore, PageStore } = useStore();
     
     useEffect(() => {

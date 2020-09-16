@@ -65,7 +65,9 @@ const LNBMenuContainer = () => {
               </LnbMenuChapterTempDiv>
             </LnbMenuChapterTempUl>
           ) : null}
-          <ChapterList />
+          <ChapterList type={"chapter"}/>
+          {/* <LnbMenuTagCover /> */}
+          {/* <ChapterList type={"shared"}/> */}
         </LnbMenuChapterCover>
       </LnbMenuCover>
     </>

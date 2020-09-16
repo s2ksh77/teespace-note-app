@@ -21,7 +21,7 @@ const PageEditorContainer = () => {
       if (ChapterStore.currentChapterId) {
         NoteStore.setShowPage(true);
         if (PageStore.currentPageId) return <><EditorMenuContainer /></>;
-        else return <><ShowNoPage /></>;
+        else return <><EditorNoPage /></>;
       } else {
         return <LoadingImgContainer />;
       }
@@ -33,7 +33,7 @@ const PageEditorContainer = () => {
 export default PageEditorContainer;
 
 // 페이지가 존재하지 않습니다
-export const ShowNoPage = () => {
+export const EditorNoPage = () => {
   return (
     <>
       <div className="note-editor_page-none">

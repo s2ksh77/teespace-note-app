@@ -26,8 +26,22 @@ const TagStore = observable({
     NUM:[],
     ETC:[]
   },
+  // 태그 검색
+  isSearching:false,
+  searchString:"",
+  searchResult:{
+    KOR:[],
+    ENG:[],
+    NUM:[],
+    ETC:[]
+  },
   //filteredTagObj에 담을 때마다 render되는 것 같아서 loading 넣어줌
   tagPanelLoading:true,
+  setSearchResult(category, key) {
+    console.log('set')
+    let targetKey = this.searchResult[category].indexOf(key);
+    if (targetKey === -1) this.searchResult[category].push(key);
+  },
   getChannelTagList() {
     return this.tagList;
   },  
@@ -48,8 +62,9 @@ const TagStore = observable({
   //   const {data:{dto:{tagList}}} = res;
   //   //{dto:{tagList:[0,1,2,3,4]}
   //   this.allTagList = tagList;
+  //   const target = tagList.filter((item) => item.text.includes('번'));
   //   return this.allTagList;
-  // },
+  // },  
   async getAllSortedTagList() {  
     this.tagPanelLoading = true;
     const res = await NoteRepository.getAllSortedTagList();
@@ -117,6 +132,24 @@ const TagStore = observable({
     
     this.tagPanelLoading=false;    
     return this.allSortedTagList;
+  },
+  getIsSearching() {
+    return this.isSearching;
+  },
+  setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+    this.searchResult = {
+      KOR:[],
+      ENG:[],
+      NUM:[],
+      ETC:[]
+    }
+  },
+  getSearchString() {
+    return this.searchString;
+  },
+  setSearchString(str) {
+    this.searchString = str;
   },
   setTagText(text) {
     this.tagText = text;

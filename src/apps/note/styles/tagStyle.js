@@ -95,6 +95,8 @@ export const TagMenuHeader = styled.div`
   height: 3rem;
   width: 100%;
   display: flex;
+  align-items:center;
+  justify-content: flex-end;
   padding: 0 0.75rem;
   box-sizing: border-box;
   border-bottom: 0.0625rem solid #dadada;
@@ -102,7 +104,7 @@ export const TagMenuHeader = styled.div`
 
 export const TagListContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 3rem);
   overflow:scroll;
   display: flex;
   flex-direction: column;
@@ -116,7 +118,7 @@ export const StyledCollapse = styled(Collapse)`
   width:100%;
 `;
 
-export const TagKeyBox = styled.div`
+export const TagKeyContainer = styled.div`
   display:flex;
   width:100%;
 `;

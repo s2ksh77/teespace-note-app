@@ -141,3 +141,15 @@ export const LnbTitleSearchInput = styled.input`
   border-radius: 25px;
   outline: none;
 `;
+
+export const TagTitleSearchContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  padding:0 0.63rem;
+  width: 10.5rem;
+  height: 1.88rem;
+  border-radius: 1.563rem 1.563rem;
+  border: 0.0625rem solid #c6ced6;
+  box-sizing: border-box;
+  margin-left:auto;
+`;

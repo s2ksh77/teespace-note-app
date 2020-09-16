@@ -1,64 +1,54 @@
-import React, {memo, useMemo} from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import {Panel, TagKeyRow} from '../../styles/tagStyle';
 import {StyledCollapse} from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
-import TagKeyContainer from './tagKeyContainer'
 import LoadingImg from '../../assets/Tee_loading.gif';
+import {Panel, TagKeyRow} from '../../styles/tagStyle';
+import TagKeyContainer from './tagKeyContainer';
 
-const TagContentContainer = memo(() => {
-    // 일단 KEY 별로 준다( ㄱ,ㄴ,ㄷ ... )
+const TagContentContainer = () => {
     const imgcontainer = useMemo(() => ({width:"5rem", margin:"auto"}),[]);
+    let categoryInfo = {"KOR":"ㄱ ~ ㅎ", "ENG":"A ~ Z","NUM":"0 ~ 9", "ETC":"기타"};
     
+    let resultTag = (tagKey) => {
+        if (TagStore.isSearching === false) {
+            return Object.keys(TagStore.filteredTagObj[tagKey])
+        } else {
+            return Object.keys(TagStore.filteredTagObj[tagKey]).filter((tagName) => {
+                return tagName.includes(TagStore.searchString);
+            })
+        }        
+    }
+
     return useObserver(()=> (
         <>
             { TagStore.tagPanelLoading === false ?
             (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
-                <Panel header="ㄱ ~ ㅎ" key="1">
-                {TagStore.sortedTagList.KOR.map((tagKey) => {
+                {["KOR","ENG","NUM","ETC"].map((type,idx) => {   
                     return (
-                        <TagKeyRow key={tagKey}>
-                            <div>{tagKey}</div>
-                            <TagKeyContainer target={tagKey} />
-                        </TagKeyRow>
+                        // "ㄱ~ㅎ"
+                        <Panel header={categoryInfo[type]} key={String(idx+1)} >
+                            {TagStore.sortedTagList[type].length > 0 && 				
+                                TagStore.sortedTagList[type].map((tagKey) => {
+                                    // "ㄱ", "ㄴ" ...
+                                    let result = resultTag(tagKey);
+                                    if (!result.length) return null;   
+                                    return (
+                                        <TagKeyRow key={tagKey}>
+                                            <div>{tagKey}</div>
+                                            <TagKeyContainer target={tagKey} targetList={result}/>
+                                        </TagKeyRow>
+                                    )
+                                })
+                            }
+			            </Panel> 
                     )
                 })}
-                </Panel>
-                <Panel header="A ~ Z" key="2">
-                {TagStore.sortedTagList.ENG.map((tagKey) => {
-                    return (
-                        <TagKeyRow key={tagKey}>
-                            <div>{tagKey}</div>
-                            <TagKeyContainer target={tagKey}/>
-                        </TagKeyRow>
-                    )
-                })}
-                </Panel>
-                <Panel header="0 ~ 9" key="3">
-                {TagStore.sortedTagList.NUM.map((tagKey) => {
-                    return (
-                        <TagKeyRow key={tagKey}>
-                            <div>{tagKey}</div>
-                            <TagKeyContainer target={tagKey}/>
-                        </TagKeyRow>
-                    )
-                })}
-                </Panel>
-                <Panel header="기타" key="4">
-                {TagStore.sortedTagList.ETC.map((tagKey) => {
-                    return (
-                        <TagKeyRow key={tagKey}>
-                            <div>{tagKey}</div>
-                            <TagKeyContainer target={tagKey}/>
-                        </TagKeyRow>
-                    )
-                })}
-                </Panel>
             </StyledCollapse>)
             : <img style={imgcontainer} src={LoadingImg}/> }
 
         </>
     ))
-})
+}
 
 export default TagContentContainer;

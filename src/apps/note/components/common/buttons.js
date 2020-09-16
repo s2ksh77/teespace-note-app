@@ -1,15 +1,15 @@
 import React, {useMemo} from 'react';
-import useStore from '../store/useStore';
-import maximize from '../assets/ts_maximize@3x.png';
-import minimize from '../assets/ts_minimize@3x.png';
-import cancel from '../assets/ts_cancel@3x.png'
-import '../styles/note.css';
+import useStore from '../../store/useStore';
+import maximize from '../../assets/ts_maximize@3x.png';
+import minimize from '../../assets/ts_minimize@3x.png';
+import cancel from '../../assets/ts_cancel@3x.png'
+import '../../styles/note.css';
 import styled from 'styled-components';
 
 const HeaderButtonContainer = styled.div`
     display: flex;
     align-items:center;
-    margin-left:auto;    
+    margin-left:0.75rem; 
 `;
 
 const Button = styled.img`
