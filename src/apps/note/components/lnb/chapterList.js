@@ -46,7 +46,6 @@ const ChapterList = () => {
             >
               <ChapterColor color={item.color} chapterId={item.id} />
               <ChapterText 
-                className={(item.id === ChapterStore.currentChapterId) ? "selectedMenu" : ""} 
                 text={item.text} chapterId={item.id} />
             </ChapterUlDIV>
             <PageContainer

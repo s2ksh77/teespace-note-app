@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
   ChapterTextContainer,
@@ -13,7 +14,9 @@ import {
   faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChapterText = ({ text }) => {
+const ChapterText = ({ text, chapterId }) => {
+  const {ChapterStore} = useStore();
+
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
     const {
@@ -30,7 +33,7 @@ const ChapterText = ({ text }) => {
   };
   return useObserver(() => (
     <>
-      <ChapterTextContainer>
+      <ChapterTextContainer className={chapterId===ChapterStore.currentChapterId ? "selectedMenu" : ""}>
         <ChapterTextSpan>{text}</ChapterTextSpan>
         <ChapterTextEllipsis className="ellipsisBtn">
           <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />

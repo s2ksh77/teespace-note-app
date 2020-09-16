@@ -1,5 +1,7 @@
 import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
+import ChapterStore from './chapterStore';
+import PageStore from './pageStore';
 
 const NoteStore = observable({
   workspaceId: '',
@@ -47,6 +49,10 @@ const NoteStore = observable({
   setShowPage(showPage) {
     // true or false
     this.showPage = showPage;
+    if (showPage === false) {
+      ChapterStore.currentChapterId = "";
+      PageStore.currentPageId = "";
+    }
   },
   getShowPage() {
     return this.showPage;

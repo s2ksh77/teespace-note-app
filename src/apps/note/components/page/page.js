@@ -16,7 +16,7 @@ import useStore from "../../store/useStore";
 
 const PageContainer = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
-  const { NoteStore, PageStore, TagStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
 
   const selectPage = async (targetId) => {
     await PageStore.getNoteInfoList(targetId);
@@ -30,6 +30,8 @@ const PageContainer = ({ children, chapterId }) => {
   const onClickLnbPage = (id) => {
     NoteStore.setShowPage(true);
     selectPage(id);
+    ChapterStore.setCurrentChapterId(chapterId);
+    PageStore.setCurrentPageId(id)
   };
 
   return useObserver(() => (
