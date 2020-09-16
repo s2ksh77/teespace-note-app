@@ -2,26 +2,34 @@ import React from 'react';
 import useStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import EditorMenuContainer from '../editor/editor';
-import TagPanelContainer from '../tag/tagMenu';
 import '../../styles/note.css';
 import noPageImage from '../../assets/no_file.png';
+import LoadingImgContainer from '../common/loadingImg';
 
 // 페이지 보여줄 때
 const PageEditorContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
-  const targetPageComponent = () => {
-    if (ChapterStore.currentChapterId) {
-      NoteStore.setShowPage(true);
-      if (PageStore.currentPageId) return <EditorMenuContainer />;
-      else return <ShowNoPage />;
-    } else {
-      NoteStore.setShowPage(false);
-      return <TagPanelContainer />;
-    }
-  };
 
-  return <>{targetPageComponent()}</>;
+  // useEffect(() => {
+  //   console.log('바뀌나')
+  //   console.log('15',ChapterStore.currentChapterId)
+  // },[ChapterStore.currentChapterId, PageStore.currentPageId])
+
+  return useObserver(() => (
+    <>
+    {(()=> {
+      if (ChapterStore.currentChapterId) {
+        NoteStore.setShowPage(true);
+        if (PageStore.currentPageId) return <><EditorMenuContainer /></>;
+        else return <><ShowNoPage /></>;
+      } else {
+        return <LoadingImgContainer />;
+      }
+    })()}
+    </>
+  ));
 };
+
 export default PageEditorContainer;
 
 // 페이지가 존재하지 않습니다

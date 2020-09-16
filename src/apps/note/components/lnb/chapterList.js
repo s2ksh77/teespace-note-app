@@ -14,15 +14,14 @@ const ChapterList = () => {
     
     useEffect(() => {
         (async () => {
-            console.log('test')
             if (ChapterStore.chapterList.length === 0) {
                 await ChapterStore.getChapterList();
-                if (ChapterStore.chapterList.length === 0) {NoteStore.showPage = false;return null;}
-                NoteStore.showPage = true;
-                const firstChapter = ChapterStore.chapterList[0];
-                const firstPage = firstChapter?.children?.[0];
-                if (firstChapter) ChapterStore.setCurrentChapterId(firstChapter.id)            
-                if (firstPage) PageStore.setCurrentPageId(firstPage.id);
+                if (ChapterStore.chapterList.length === 0) {NoteStore.setShowPage(false);return null;}
+                NoteStore.setShowPage(true);
+                const chapterId = ChapterStore.chapterList[0]?.id;
+                const pageId = ChapterStore.chapterList[0]?.children?.[0]?.id;
+                ChapterStore.setCurrentChapterId(chapterId)            
+                PageStore.setCurrentPageId(pageId);
             }
         })()
     },[]) 

@@ -12,7 +12,7 @@ const TagContentContainer = memo(() => {
     
     return useObserver(()=> (
         <>
-            { TagStore.tagPanelLoading == false ?
+            { TagStore.tagPanelLoading === false ?
             (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
                 <Panel header="ㄱ ~ ㅎ" key="1">
                 {TagStore.sortedTagList.KOR.map((tagKey) => {

@@ -62,3 +62,11 @@ export const LNBContainer = styled.div`
 export const ContentContainer = styled.div`
   width: 70%;
 `;
+
+export const CenterContentsContainer = styled.div`
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:cener;
+  justify-content:center;
+`
