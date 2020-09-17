@@ -22,12 +22,13 @@ const TagStore = observable({
   // key당 tagList
   filteredTagObj:{},
   // a,b,c 같은 키들만 담는다
-  sortedTagList:{
-    KOR:[],
-    ENG:[],
-    NUM:[],
-    ETC:[]
-  },
+  sortedTagList: {},
+  // sortedTagList:{
+  //   KOR:[],
+  //   ENG:[],
+  //   NUM:[],
+  //   ETC:[]
+  // },
   // 태그 검색
   isSearching:false,
   searchString:"",
@@ -117,10 +118,10 @@ const TagStore = observable({
       }
     })
 
-    this.sortedTagList["KOR"] = korObj;
-    this.sortedTagList["ENG"] = engObj;
-    this.sortedTagList["NUM"] = numObj;
-    this.sortedTagList["ETC"] = etcObj;
+    if ( Object.keys(korObj).length > 0 ) this.sortedTagList["KOR"] = korObj;
+    if ( Object.keys(engObj).length > 0 ) this.sortedTagList["ENG"] = engObj;
+    if ( Object.keys(numObj).length > 0 ) this.sortedTagList["NUM"] = numObj;
+    if ( Object.keys(etcObj).length > 0 ) this.sortedTagList["ETC"] = etcObj;
     
     this.tagPanelLoading=false;    
     return this.allSortedTagList;
@@ -138,9 +139,8 @@ const TagStore = observable({
     this.searchString = str;
     // search
     // {"KOR" : {"ㄱ" :["가나다", "고교구"]}}
-    let categoryArr = ["KOR", "ENG", "NUM","ETC"];
     this.searchResult = {};
-    let result = categoryArr.filter((category) => {
+    let result = Object.keys(this.sortedTagList).filter((category) => {
       let keyObj = {};
       let _keyList = Object.keys(this.sortedTagList[category]).filter((key) => {
         let tagObj = {};

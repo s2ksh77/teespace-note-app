@@ -39,7 +39,7 @@ const LnbMenuTitle = () => {
   }
 
   return useObserver(() => (
-    <>{console.log('render lnb title')}
+    <>
       <LnbTitleCover>
         <LnbTitleNewButton onClick={handleNewChapterClick}>
           새 챕터

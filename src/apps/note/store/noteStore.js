@@ -51,8 +51,8 @@ const NoteStore = observable({
     // true or false
     this.showPage = showPage;
     if (showPage === false) {
-      ChapterStore.currentChapterId = "";
-      PageStore.currentPageId = "";
+      ChapterStore.setCurrentChapterId("");
+      PageStore.setCurrentPageId("");
     } else {
       TagStore.setIsSearching(false);
       TagStore.setSearchString("");
