@@ -33,19 +33,8 @@
     "jodit-react": "git+https://github.com/s2ksh77/jodit-react.git#master"
   },
   "peerDependencies": {
-    "antd": "^4.6.3",
-    "axios": "^0.20.0",
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.3.0",
-    "node-sass": "^4.14.1",
-    "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3",
-    "styled-components": "^5.1.1",
-    "teespace-core": "git+ssh//git@192.168.158.12:teespace/teespace-core#develop",
-    "jodit": "git+http://192.168.158.12:9000/teespace/jodit#jodit_develop",
-    "jodit-react": "git+https://github.com/s2ksh77/jodit-react.git#master"
+    "react-dom": "^16.13.1"
   },
   "scripts": {
     "start": "craco start",
@@ -93,7 +82,6 @@
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-image": "^2.0.5",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",

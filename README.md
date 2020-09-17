@@ -4,8 +4,6 @@
 
 본 저장소는 독립적으로 구동될 수 있으며, TeeSpace 뿐만 아니라 다른 프로젝트에서 구동할 수 있어야 합니다. TeeSpace 와 관련되어 있는 모듈은 `teespace-core` 에서 제공하는 store와 유틸리티를 사용해주시면 됩니다. 별도의 axios나 웹소켓 관련 라이브러리를 사용하지 않고 `teespace-core`에서 제공하는 `API`와 `WebSocket` 모듈을 사용하시면 됩니다.
 
-또한, 본 저장소에서 사용하고 있는 NPM 라이브러리(`dependencies`)는 반드시 packages.json 파일 내 `peerDependencies` 필드에 존재하여야 합니다. 자세한 것은 packages.json 파일을 참고 해주시기 바랍니다.
-
 teespace-core 최신 버전으로 테스트 필요 시 [teespace-core 저장소](http://192.168.158.12:9000/teespace/teespace-core)의 `모듈 연동 방법` 항목을 참고 해주세요.
 
 개발 시 `yarn lib:start` 명령을 통해서 정상적으로 모듈이 컴파일 되는지 주기적으로 확인이 필요합니다.
