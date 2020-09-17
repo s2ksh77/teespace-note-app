@@ -39,8 +39,8 @@ const LnbMenuTitle = () => {
 
   const onClickCancelBtn = (e) => {
     setValue("");
-    ChapterStore.setIsSearching(false);
-    ChapterStore.setSearchString("");
+    // ChapterStore.setIsSearching(false);
+    // ChapterStore.setSearchString("");
   }
 
   return useObserver(() => (
