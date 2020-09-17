@@ -23,11 +23,28 @@ const ChapterStore = observable({
     10: "#E780FF",
     11: "#FF7BA8",
   },
+  isSearching:false,
+  searchString:"",
+  searchResult:[],
   getCurrentChapterId() {
     return this.currentChapterId;
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  getIsSearching() {
+    return this.isSearchingLnb;
+  },
+  setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+    // console.log(isSearching)
+    // console.log(this.chapterList)
+  },
+  getSearchString() {
+    return this.searchString;
+  },
+  setSearchString(str) {
+    this.searchString = str;
   },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
