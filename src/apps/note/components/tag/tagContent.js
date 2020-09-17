@@ -10,42 +10,36 @@ const TagContentContainer = () => {
     const imgcontainer = useMemo(() => ({width:"5rem", margin:"auto"}),[]);
     let categoryInfo = {"KOR":"ㄱ ~ ㅎ", "ENG":"A ~ Z","NUM":"0 ~ 9", "ETC":"기타"};
     
-    let resultTag = (tagKey) => {
-        if (TagStore.isSearching === false) {
-            return Object.keys(TagStore.filteredTagObj[tagKey])
+    const targetList = useObserver(() => {
+        if (TagStore.isSearching) {
+            return TagStore.searchResult;
         } else {
-            return Object.keys(TagStore.filteredTagObj[tagKey]).filter((tagName) => {
-                return tagName.includes(TagStore.searchString);
-            })
-        }        
-    }
+            return TagStore.sortedTagList;
+        }
+    })
 
     return useObserver(()=> (
         <>
-            { TagStore.tagPanelLoading === false ?
-            (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
-                {["KOR","ENG","NUM","ETC"].map((type,idx) => {   
-                    return (
-                        // "ㄱ~ㅎ"
-                        <Panel header={categoryInfo[type]} key={String(idx+1)} >
-                            {TagStore.sortedTagList[type].length > 0 && 				
-                                TagStore.sortedTagList[type].map((tagKey) => {
-                                    // "ㄱ", "ㄴ" ...
-                                    let result = resultTag(tagKey);
-                                    if (!result.length) return null;   
+            {(Object.keys(targetList).length > 0) ?
+                (<StyledCollapse defaultActiveKey={['1', '2','3','4']}>
+                    {Object.keys(targetList).map((category,idx) => {   
+                        return (
+                            // "ㄱ~ㅎ"
+                            <Panel header={categoryInfo[category]} key={String(idx+1)} >	
+                                {Object.keys(targetList[category])?.map((tagKey) => {
+                                    // "ㄱ", "ㄴ" ...       
                                     return (
                                         <TagKeyRow key={tagKey}>
                                             <div>{tagKey}</div>
-                                            <TagKeyContainer target={tagKey} targetList={result}/>
+                                            <TagKeyContainer category={category} tagKey={tagKey}/>
                                         </TagKeyRow>
                                     )
-                                })
-                            }
-			            </Panel> 
-                    )
-                })}
-            </StyledCollapse>)
-            : <img style={imgcontainer} src={LoadingImg}/> }
+                                })}
+                            </Panel> 
+                        )
+                    })}   
+                </StyledCollapse>)
+            : <div>검색 결과가 없습니다</div> }
 
         </>
     ))

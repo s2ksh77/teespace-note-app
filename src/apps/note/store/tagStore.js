@@ -17,7 +17,9 @@ const TagStore = observable({
   editTagValue: "",
   // allTagList: [],
   hasTag:false,
+  // 처음 받아오는 데이터
   allSortedTagList:[],
+  // key당 tagList
   filteredTagObj:{},
   // a,b,c 같은 키들만 담는다
   sortedTagList:{
@@ -29,19 +31,9 @@ const TagStore = observable({
   // 태그 검색
   isSearching:false,
   searchString:"",
-  searchResult:{
-    KOR:[],
-    ENG:[],
-    NUM:[],
-    ETC:[]
-  },
+  searchResult:{},
   //filteredTagObj에 담을 때마다 render되는 것 같아서 loading 넣어줌
   tagPanelLoading:true,
-  setSearchResult(category, key) {
-    console.log('set')
-    let targetKey = this.searchResult[category].indexOf(key);
-    if (targetKey === -1) this.searchResult[category].push(key);
-  },
   getChannelTagList() {
     return this.tagList;
   },  
@@ -109,26 +101,26 @@ const TagStore = observable({
     tagKey.sort();
     
     // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
-    let korArr = [], engArr = [], numArr = [], etcArr = [];
+    let korObj = {}, engObj = {}, numObj = {}, etcObj = {};
     tagKey.forEach((key) => {
       if( key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203 ){
-        korArr.push(key)
+        korObj[key] = this.filteredTagObj[key];
       }
       else if(key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123){
-        engArr.push(key);
+        engObj[key] = this.filteredTagObj[key];
       }
       else if(key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57){
-        numArr.push(key);
+        numObj[key] = this.filteredTagObj[key];
       }
       else {
-        etcArr.push(key);
+        etcObj[key] = this.filteredTagObj[key];
       }
     })
 
-    this.sortedTagList["KOR"] = korArr;
-    this.sortedTagList["ENG"] = engArr;
-    this.sortedTagList["NUM"] = numArr;
-    this.sortedTagList["ETC"] = etcArr;
+    this.sortedTagList["KOR"] = korObj;
+    this.sortedTagList["ENG"] = engObj;
+    this.sortedTagList["NUM"] = numObj;
+    this.sortedTagList["ETC"] = etcObj;
     
     this.tagPanelLoading=false;    
     return this.allSortedTagList;
@@ -138,18 +130,35 @@ const TagStore = observable({
   },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
-    this.searchResult = {
-      KOR:[],
-      ENG:[],
-      NUM:[],
-      ETC:[]
-    }
   },
   getSearchString() {
     return this.searchString;
   },
   setSearchString(str) {
     this.searchString = str;
+    // search
+    // {"KOR" : {"ㄱ" :["가나다", "고교구"]}}
+    let categoryArr = ["KOR", "ENG", "NUM","ETC"];
+    this.searchResult = {};
+    let result = categoryArr.filter((category) => {
+      let keyObj = {};
+      let _keyList = Object.keys(this.sortedTagList[category]).filter((key) => {
+        let tagObj = {};
+        let _tagList = Object.keys(this.filteredTagObj[key]).filter((tag) => {
+          let result = tag.includes(this.searchString);
+          if (result) tagObj[tag] = this.filteredTagObj[key][tag];
+          return result;
+        })        
+        if (_tagList.length > 0) {
+          keyObj[key] = tagObj;
+        }
+        return _tagList.length > 0
+      })
+      if (_keyList.length>0) {
+        this.searchResult[category] = keyObj
+      }
+      return _keyList.length > 0; 
+    });
   },
   setTagText(text) {
     this.tagText = text;
