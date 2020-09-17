@@ -28,8 +28,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "suneditor-react": "^2.13.2",
-    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop",
+    "jodit": "git+http://192.168.158.12:9000/teespace/jodit#jodit_develop",
+    "jodit-react": "1.0.63"
   },
   "peerDependencies": {
     "antd": "^4.6.3",
@@ -42,8 +43,9 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "suneditor-react": "^2.13.2",
-    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
+    "teespace-core": "git+ssh//git@192.168.158.12:teespace/teespace-core#develop",
+    "jodit": "git+ssh//git@github.com:s2ksh77/jodit#master",
+    "jodit-react": "git+ssh//git@github.com:s2ksh77/jodit-react#master"
   },
   "scripts": {
     "start": "craco start",

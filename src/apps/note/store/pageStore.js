@@ -1,17 +1,17 @@
-import { observable } from "mobx";
-import NoteRepository from "./noteRepository";
-import ChapterStore from "./chapterStore";
+import { observable } from 'mobx';
+import NoteRepository from './noteRepository';
+import ChapterStore from './chapterStore';
 
 const PageStore = observable({
-  notechannel_id: "",
+  notechannel_id: '',
   noteInfoList: [],
   currentPageData: [],
   returnData: [],
-  isEdit: "",
-  noteContent: "",
-  noteTitle: "",
-  currentPageId: "",
-  createParent: "",
+  isEdit: '',
+  noteContent: '',
+  noteTitle: '',
+  currentPageId: '',
+  createParent: '',
   getPageId(e) {
     const {
       target: { id },
@@ -27,6 +27,9 @@ const PageStore = observable({
     } = e;
     return name;
   },
+  isReadMode() {
+    return this.isEdit === null || this.isEdit === '';
+  },
   setContent(content) {
     this.noteContent = content;
   },
@@ -41,8 +44,8 @@ const PageStore = observable({
   },
 
   async createPage() {
-    await NoteRepository.createPage("제목 없음", this.createParent).then(
-      (response) => {
+    await NoteRepository.createPage('제목 없음', this.createParent).then(
+      response => {
         if (response.status === 200) {
           const {
             data: { dto },
@@ -53,12 +56,12 @@ const PageStore = observable({
           this.noteTitle = dto.note_title;
           this.currentPageId = dto.note_id;
         }
-      }
+      },
     );
   },
 
   async getNoteInfoList(noteId) {
-    await NoteRepository.getNoteInfoList(noteId).then((response) => {
+    await NoteRepository.getNoteInfoList(noteId).then(response => {
       const {
         data: { dto: noteList },
       } = response;
@@ -73,8 +76,8 @@ const PageStore = observable({
   async editStart(noteId) {
     await NoteRepository.editStart(
       noteId,
-      this.currentPageData.parent_notebook
-    ).then((response) => {
+      this.currentPageData.parent_notebook,
+    ).then(response => {
       if (response.status === 200) {
         const {
           data: { dto: returnData },
@@ -85,7 +88,7 @@ const PageStore = observable({
     return this.currentPageData;
   },
   async editDone(updateDto) {
-    await NoteRepository.editDone(updateDto).then((response) => {
+    await NoteRepository.editDone(updateDto).then(response => {
       if (response.status === 200) {
         const {
           data: { dto: returnData },
@@ -99,8 +102,8 @@ const PageStore = observable({
   async noneEdit(noteId) {
     await NoteRepository.nonEdit(
       noteId,
-      this.currentPageData.parent_notebook
-    ).then((response) => {
+      this.currentPageData.parent_notebook,
+    ).then(response => {
       if (response.status === 200) {
         const {
           data: { dto: returnData },
