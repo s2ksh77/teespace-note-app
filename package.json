@@ -52,8 +52,7 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "prerelease": "rollup -c",
-    "release": "git update-index --no-skip-worktree dist/*  && git add --force dist && standard-version -a && git update-index --skip-worktree dist/*",
-    "preinstall": "git update-index --skip-worktree dist/*"
+    "release": "git add --force dist && standard-version -a"
   },
   "husky": {
     "hooks": {
