@@ -4,18 +4,18 @@ import HeaderButtons from '../common/buttons';
 import {TagMenuHeader} from '../../styles/tagStyle';
 import {
   TagTitleSearchContainer,
-  LnbTitleSearchIcon,
   LnbTitleSearchInput,
 } from "../../styles/titleStyle";
 import TagStore from '../../store/tagStore';
 import { useObserver } from 'mobx-react';
+import searchImg from "../../assets/ts_m_search@3x.png";
+import {SearchImgInput} from '../../styles/commonStyle'
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import {Button} from '../../styles/commonStyle';
 
 const TagMenuTitle = memo(() => {
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
-  let cancelBtnStyle = {display:"none"};
 
   const onSubmitForm = (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ const TagMenuTitle = memo(() => {
       <TagMenuHeader>
         <form onSubmit={onSubmitForm}>
           <TagTitleSearchContainer>
-              <input type="image" border="0" alt=" " src="../../assets/ts_m_search@3x.png" />
+              <SearchImgInput type="image" border="0" alt=" " src={searchImg} />
               <LnbTitleSearchInput autocomplete="off" ref={inputRef} value={value} onChange={onChangeInput} placeholder="태그 검색" />
               <Button src={cancelImg} 
                 style={(value !== "") ? {display:""} : {display:"none"}} 
