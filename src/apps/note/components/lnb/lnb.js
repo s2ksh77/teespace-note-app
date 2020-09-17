@@ -16,6 +16,7 @@ import {
 import LnbMenuTitle from "./lnbTitle";
 import LnbMenuTagCover from "./lnbTag";
 import ChapterList from './chapterList';
+import LnbSearchResult from './lnbSearchResult';
 
 const LNBMenuContainer = () => {
   const { ChapterStore } = useStore();
@@ -41,7 +42,8 @@ const LNBMenuContainer = () => {
       <LnbMenuCover>
         <LnbMenuTitle />
         <LnbMenuTagCover />
-        <LnbMenuChapterCover>
+        {ChapterStore.isSearching ? <LnbSearchResult/>
+        : (<LnbMenuChapterCover>
           {ChapterStore.isNewChapter ? (
             <LnbMenuChapterTempUl>
               <LnbMenuChapterTempDiv>
@@ -68,7 +70,7 @@ const LNBMenuContainer = () => {
           <ChapterList type={"chapter"}/>
           {/* <LnbMenuTagCover /> */}
           {/* <ChapterList type={"shared"}/> */}
-        </LnbMenuChapterCover>
+        </LnbMenuChapterCover>)}
       </LnbMenuCover>
     </>
   ));

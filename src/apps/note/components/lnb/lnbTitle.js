@@ -27,6 +27,9 @@ const LnbMenuTitle = () => {
 
   const onSubmitSearchBtn = (e) => {
     e.preventDefault();
+    // ChapterStore.setIsSearching(true);
+    // console.log('submit')
+    // ChapterStore.setSearchString(value);
     inputRef.current.focus();
   }
 
@@ -36,6 +39,8 @@ const LnbMenuTitle = () => {
 
   const onClickCancelBtn = (e) => {
     setValue("");
+    ChapterStore.setIsSearching(false);
+    ChapterStore.setSearchString("");
   }
 
   return useObserver(() => (

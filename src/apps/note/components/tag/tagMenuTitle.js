@@ -19,7 +19,6 @@ const TagMenuTitle = memo(() => {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    // if ()
     TagStore.setIsSearching(true);
     TagStore.setSearchString(value);
     inputRef.current.focus();
