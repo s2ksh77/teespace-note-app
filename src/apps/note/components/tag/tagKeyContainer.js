@@ -6,8 +6,9 @@ import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyContainer = ({ category, tagKey }) => {
 	const onClickTagBtn = () => {
-
+		
 	}
+
 	const targetList = useObserver(() => ((TagStore.isSearching) 
 		? TagStore.searchResult[category][tagKey] : TagStore.sortedTagList[category][tagKey]));
 

@@ -110,25 +110,29 @@ export const LnbTitleNewButton = styled.button`
   }
 `;
 
-export const LnbTitleSearchContainer = styled.div`
+export const LnbTitleSearchContainer = styled.form`
   display: inline-flex;
   align-items: center;
-  padding-left: 0.63rem;
+  padding: 0 0.63rem;
   width: 14.81rem;
   height: 1.88rem;
   border-radius: 1.563rem 1.563rem;
   border: 0.0625rem solid #c6ced6;
   box-sizing: border-box;
   flex: 1;
+  margin:auto 0;
 `;
 
-export const LnbTitleSearchIcon = styled.span`
+export const LnbTitleSearchIcon = styled.button`
   display: flex;
   user-select: none;
   font-size: 0.82rem;
   color: #c6ced6;
   margin-right: 0.43rem;
   cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 0;
 `;
 
 export const LnbTitleSearchInput = styled.input`
