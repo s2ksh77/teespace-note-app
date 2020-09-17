@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import TagStore from './tagStore';
 
 const NoteStore = observable({
   workspaceId: '',
@@ -52,6 +53,9 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.currentChapterId = "";
       PageStore.currentPageId = "";
+    } else {
+      TagStore.setIsSearching(false);
+      TagStore.setSearchString("");
     }
   },
   getShowPage() {
