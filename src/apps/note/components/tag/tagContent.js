@@ -5,6 +5,7 @@ import TagStore from '../../store/tagStore';
 import LoadingImg from '../../assets/Tee_loading.gif';
 import { Panel, TagKeyRow } from '../../styles/tagStyle';
 import TagKeyContainer from './tagKeyContainer';
+import NoSearchResultPage from '../common/noSearchResultPage';
 
 const TagContentContainer = () => {
 	const imgcontainer = useMemo(() => ({ width: "5rem", margin: "auto" }), []);
@@ -39,8 +40,9 @@ const TagContentContainer = () => {
 						)
 					})}
 				</StyledCollapse>)
-				: <div>검색 결과가 없습니다</div>}
-
+				:
+				(<NoSearchResultPage />)
+				}
 		</>
 	))
 }
