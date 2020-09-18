@@ -45,20 +45,18 @@ const LNBContainer = () => {
           : (<LNBChapterCover>
             {ChapterStore.isNewChapter ? (
               <LNBNewChapter>
-                <NewChapter>
-                  <ChapterColor color={ChapterStore.isNewChapterColor} />
-                  <ChapterTitle>
-                    <ChapterInput
-                      placeholder="새 챕터"
-                      onChange={handleTitleInput}
-                      onKeyPress={(event) => {
-                        if (event.key === "Enter") {
-                          createNewChapter();
-                        }
-                      }}
-                    />
-                  </ChapterTitle>
-                </NewChapter>
+                <ChapterColor color={ChapterStore.isNewChapterColor} />
+                <ChapterTitle>
+                  <ChapterInput
+                    placeholder="새 챕터"
+                    onChange={handleTitleInput}
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        createNewChapter();
+                      }
+                    }}
+                  />
+                </ChapterTitle>
               </LNBNewChapter>
             ) : null}
             <ChapterList type={"chapter"} />
