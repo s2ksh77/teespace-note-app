@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.scss';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import HomePage from './pages/HomePage';
 import TalkPage from './pages/TalkPage';
 import CalendarPage from './pages/CalendarPage';
@@ -8,6 +9,8 @@ import NotePage from './pages/NotePage';
 import DrivePage from './pages/DrivePage';
 
 function App() {
+  const { i18n } = useTranslation();
+
   return (
     <BrowserRouter>
       <div className="teespace">
@@ -30,6 +33,18 @@ function App() {
               <Link to="/drive">드라이브</Link>
             </li>
           </ul>
+          <button
+            type="button"
+            onClick={() => {
+              if (i18n.language === 'kr') {
+                i18n.changeLanguage('en');
+              } else {
+                i18n.changeLanguage('kr');
+              }
+            }}
+          >
+            {i18n.language}
+          </button>
         </div>
         <div className="apps">
           <Switch>

@@ -1,27 +1,29 @@
-import React from "react";
-import useStore from "../../store/useStore";
-import { useObserver } from "mobx-react";
+import React from 'react';
+import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
+import useStore from '../../store/useStore';
 import {
   LnbMenuCover,
   LnbMenuChapterCover,
   LnbMenuChapterTempUl,
   LnbMenuChapterTempDiv,
-} from "../../styles/lnbStyle";
+} from '../../styles/lnbStyle';
 import {
   ChapterColorSpan,
   ChapterColorDiv,
   ChapterInput,
   ChapterTextContainer,
-} from "../../styles/chpaterStyle";
-import LnbMenuTitle from "./lnbTitle";
-import LnbMenuTagCover from "./lnbTag";
+} from '../../styles/chpaterStyle';
+import LnbMenuTitle from './lnbTitle';
+import LnbMenuTagCover from './lnbTag';
 import ChapterList from './chapterList';
 import LnbSearchResult from './lnbSearchResult';
 
 const LNBMenuContainer = () => {
+  const { t } = useTranslation();
   const { ChapterStore } = useStore();
-  
-  const handleTitleInput = (e) => {
+
+  const handleTitleInput = e => {
     const {
       target: { value },
     } = e;
@@ -32,7 +34,7 @@ const LNBMenuContainer = () => {
     if (ChapterStore.chapterNewTitle) {
       ChapterStore.createChapter(
         ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
+        ChapterStore.isNewChapterColor,
       );
     }
   };
@@ -42,35 +44,38 @@ const LNBMenuContainer = () => {
       <LnbMenuCover>
         <LnbMenuTitle />
         <LnbMenuTagCover />
-        {ChapterStore.isSearching ? <LnbSearchResult/>
-        : (<LnbMenuChapterCover>
-          {ChapterStore.isNewChapter ? (
-            <LnbMenuChapterTempUl>
-              <LnbMenuChapterTempDiv>
-                <ChapterColorDiv>
-                  <ChapterColorSpan
-                    color={ChapterStore.isNewChapterColor}
-                    background={ChapterStore.isNewChapterColor}
-                  />
-                </ChapterColorDiv>
-                <ChapterTextContainer>
-                  <ChapterInput
-                    placeholder="새 챕터"
-                    onChange={handleTitleInput}
-                    onKeyPress={(event) => {
-                      if (event.key === "Enter") {
-                        createNewChapter();
-                      }
-                    }}
-                  />
-                </ChapterTextContainer>
-              </LnbMenuChapterTempDiv>
-            </LnbMenuChapterTempUl>
-          ) : null}
-          <ChapterList type={"chapter"}/>
-          {/* <LnbMenuTagCover /> */}
-          {/* <ChapterList type={"shared"}/> */}
-        </LnbMenuChapterCover>)}
+        {ChapterStore.isSearching ? (
+          <LnbSearchResult />
+        ) : (
+          <LnbMenuChapterCover>
+            {ChapterStore.isNewChapter ? (
+              <LnbMenuChapterTempUl>
+                <LnbMenuChapterTempDiv>
+                  <ChapterColorDiv>
+                    <ChapterColorSpan
+                      color={ChapterStore.isNewChapterColor}
+                      background={ChapterStore.isNewChapterColor}
+                    />
+                  </ChapterColorDiv>
+                  <ChapterTextContainer>
+                    <ChapterInput
+                      placeholder={t('NewChapter')}
+                      onChange={handleTitleInput}
+                      onKeyPress={event => {
+                        if (event.key === 'Enter') {
+                          createNewChapter();
+                        }
+                      }}
+                    />
+                  </ChapterTextContainer>
+                </LnbMenuChapterTempDiv>
+              </LnbMenuChapterTempUl>
+            ) : null}
+            <ChapterList type={'chapter'} />
+            {/* <LnbMenuTagCover /> */}
+            {/* <ChapterList type={"shared"}/> */}
+          </LnbMenuChapterCover>
+        )}
       </LnbMenuCover>
     </>
   ));
