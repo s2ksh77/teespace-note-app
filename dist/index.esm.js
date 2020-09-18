@@ -9,7 +9,6 @@ import { faSearch, faEllipsisV, faAngleDown, faAngleUp, faLock } from '@fortawes
 import { Collapse, Tag } from 'antd';
 import 'antd/dist/antd.css';
 import JoditEditor from 'jodit-react';
-import Backend from 'i18next-http-backend';
 import i18next from 'i18next';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -2609,46 +2608,49 @@ var TagPanelContainer = function TagPanelContainer() {
   });
 };
 
-i18next.use(initReactI18next).use(Backend).init({
-  // resources: {
-  //   en: {
-  //     translation: {
-  //       NewChapter: 'New Chapter',
-  //       wtf: 'What the Fuck',
-  //       FormRules: 'What The Fuck',
-  //     },
-  //   },
-  //   kr: {
-  //     translation: {
-  //       NewChapter: '새 챕터',
-  //       wtf: '머선129',
-  //       FormRules: '머선129',
-  //     },
-  //   },
-  // },
+var NewChapter = "New Chapter";
+var translationEN = {
+	NewChapter: NewChapter
+};
+
+var NewChapter$1 = "새 챕터";
+var translationKO = {
+	NewChapter: NewChapter$1
+};
+
+i18next.use(initReactI18next).init({
+  resources: {
+    en: {
+      translation: translationEN
+    },
+    ko: {
+      translation: translationKO
+    }
+  },
   initImmediate: false,
-  lng: 'kr',
+  lng: 'ko',
+  fallbackLng: 'ko',
   debug: true,
   react: {
     useSuspense: false
-  },
-  backend: {
-    loadPath: '/note/{{lng}}.json'
   }
 });
 
 var TeeNote = function TeeNote(_ref) {
-  var i18n = _ref.i18n;
+  var language = _ref.language;
   var targetChId = '56ab0ee1-54df-456d-8100-3bc7ee7ca087';
 
   var _useStore = useStore(),
       NoteStore = _useStore.NoteStore;
 
   NoteStore.setChannelId(targetChId);
-  useEffect(function () {}, []);
+  useEffect(function () {
+    console.log(' !!! language : ', language);
+    i18next.changeLanguage(language);
+  }, [language]);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(I18nextProvider, {
-      i18n: i18n ? i18n : i18next
+      i18n: i18next
     }, /*#__PURE__*/React.createElement(GlobalStyle, null), /*#__PURE__*/React.createElement(LNBContainer, null, /*#__PURE__*/React.createElement(LNBMenuContainer, null)), /*#__PURE__*/React.createElement(ContentContainer, null, NoteStore.showPage ? /*#__PURE__*/React.createElement(PageEditorContainer, null) : /*#__PURE__*/React.createElement(TagPanelContainer, null)));
   });
 };

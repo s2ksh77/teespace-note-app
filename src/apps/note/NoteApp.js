@@ -9,13 +9,17 @@ import TagPanelContainer from './components/tag/tagMenu';
 import i18next from './i18n';
 import { I18nextProvider } from 'react-i18next';
 
-const TeeNote = ({ i18n }) => {
+const TeeNote = ({ language }) => {
   const targetChId = '56ab0ee1-54df-456d-8100-3bc7ee7ca087';
   const { NoteStore } = useStore();
   NoteStore.setChannelId(targetChId);
 
+  useEffect(() => {
+    i18next.changeLanguage(language);
+  }, [language]);
+
   return useObserver(() => (
-    <I18nextProvider i18n={i18n ? i18n : i18next}>
+    <I18nextProvider i18n={i18next}>
       <GlobalStyle />
       <LNBContainer>
         <LNBMenuContainer />

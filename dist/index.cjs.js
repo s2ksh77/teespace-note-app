@@ -13,7 +13,6 @@ var freeSolidSvgIcons = require('@fortawesome/free-solid-svg-icons');
 var antd = require('antd');
 require('antd/dist/antd.css');
 var JoditEditor = require('jodit-react');
-var Backend = require('i18next-http-backend');
 var i18next = require('i18next');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -21,7 +20,6 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var JoditEditor__default = /*#__PURE__*/_interopDefaultLegacy(JoditEditor);
-var Backend__default = /*#__PURE__*/_interopDefaultLegacy(Backend);
 var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -2621,46 +2619,49 @@ var TagPanelContainer = function TagPanelContainer() {
   });
 };
 
-i18next__default['default'].use(reactI18next.initReactI18next).use(Backend__default['default']).init({
-  // resources: {
-  //   en: {
-  //     translation: {
-  //       NewChapter: 'New Chapter',
-  //       wtf: 'What the Fuck',
-  //       FormRules: 'What The Fuck',
-  //     },
-  //   },
-  //   kr: {
-  //     translation: {
-  //       NewChapter: '새 챕터',
-  //       wtf: '머선129',
-  //       FormRules: '머선129',
-  //     },
-  //   },
-  // },
+var NewChapter = "New Chapter";
+var translationEN = {
+	NewChapter: NewChapter
+};
+
+var NewChapter$1 = "새 챕터";
+var translationKO = {
+	NewChapter: NewChapter$1
+};
+
+i18next__default['default'].use(reactI18next.initReactI18next).init({
+  resources: {
+    en: {
+      translation: translationEN
+    },
+    ko: {
+      translation: translationKO
+    }
+  },
   initImmediate: false,
-  lng: 'kr',
+  lng: 'ko',
+  fallbackLng: 'ko',
   debug: true,
   react: {
     useSuspense: false
-  },
-  backend: {
-    loadPath: '/note/{{lng}}.json'
   }
 });
 
 var TeeNote = function TeeNote(_ref) {
-  var i18n = _ref.i18n;
+  var language = _ref.language;
   var targetChId = '56ab0ee1-54df-456d-8100-3bc7ee7ca087';
 
   var _useStore = useStore(),
       NoteStore = _useStore.NoteStore;
 
   NoteStore.setChannelId(targetChId);
-  React.useEffect(function () {}, []);
+  React.useEffect(function () {
+    console.log(' !!! language : ', language);
+    i18next__default['default'].changeLanguage(language);
+  }, [language]);
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(reactI18next.I18nextProvider, {
-      i18n: i18n ? i18n : i18next__default['default']
+      i18n: i18next__default['default']
     }, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), /*#__PURE__*/React__default['default'].createElement(LNBContainer, null, /*#__PURE__*/React__default['default'].createElement(LNBMenuContainer, null)), /*#__PURE__*/React__default['default'].createElement(ContentContainer, null, NoteStore.showPage ? /*#__PURE__*/React__default['default'].createElement(PageEditorContainer, null) : /*#__PURE__*/React__default['default'].createElement(TagPanelContainer, null)));
   });
 };
