@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const EditorTitle = styled.div`
+export const EditorHeaderCover = styled.div`
   white-space: nowrap;
   width: calc(100% - 0px);
   height: 3rem;
@@ -10,7 +10,7 @@ export const EditorTitle = styled.div`
   box-sizing: border-box;
 `;
 
-export const EditorTitleContainer1 = styled.div`
+export const EditorHeaderContainer1 = styled.div`
   display: flex;
   flex: auto;
   position: relative;
@@ -18,7 +18,7 @@ export const EditorTitleContainer1 = styled.div`
   width: 80%;
 `;
 
-export const EditorTitleButton = styled.button`
+export const EditBtn = styled.button`
   width: 3.5rem;
   height: 1.69rem;
   color: white;
@@ -36,7 +36,7 @@ export const EditorTitleButton = styled.button`
   }
 `;
 
-export const EditorTitleTextField = styled.input`
+export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
   outline: none;
@@ -52,7 +52,7 @@ export const EditorTitleTextField = styled.input`
   border: 0rem solid #d3dbdf !important;
 `;
 
-export const EditorTitleContainer2 = styled.div`
+export const EditorHeaderContainer2 = styled.div`
   display: flex;
   flex: auto;
   position: relative;
@@ -60,7 +60,7 @@ export const EditorTitleContainer2 = styled.div`
   width: 20%;
 `;
 
-export const EditorTitleModifiedUser = styled.span`
+export const ModifiedUser = styled.span`
   width: auto;
   height: auto;
   color: rgb(0, 0, 0);
@@ -70,7 +70,7 @@ export const EditorTitleModifiedUser = styled.span`
   padding: 0 0.38rem 0 0 !important;
 `;
 
-export const EditorTitleModifiedTime = styled.span`
+export const ModifiedTime = styled.span`
   width: auto;
   height: auto;
   color: rgb(0, 0, 0);

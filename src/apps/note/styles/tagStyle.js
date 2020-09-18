@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import {Collapse, Tag} from 'antd';
+import { Collapse, Tag } from 'antd';
 
-export const TagContainer = styled.div`
+export const EditorTagCover = styled.div`
   white-space: nowrap;
   width: calc(100% - 0px);
   height: 2.94rem;
@@ -14,7 +14,7 @@ export const TagContainer = styled.div`
   align-items: center;
 `;
 
-export const TagNewBtnDIV = styled.div`
+export const TagNewBtn = styled.div`
   display: flex;
   flex: 0 0 1.25rem;
   border: none;
@@ -24,13 +24,13 @@ export const TagNewBtnDIV = styled.div`
   background-color: transparent;
 `;
 
-export const TagListDIV = styled.div`
+export const TagList = styled.div`
   display: flex !important;
   align-items: center !important;
   width: calc(100% - 2.4rem);
   box-sizing: border-box;
 `;
-export const TagTextSpan = styled.span``;
+export const TagText = styled.span``;
 
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;
@@ -87,7 +87,7 @@ export const TagImg = styled.img`
   filter:${props => props.filter || "invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)"};
 `;
 
-export const TagText = styled.span`
+export const TagTxt = styled.span`
   font-weight: 400;
 `;
 // contents가 tag일 때
@@ -97,12 +97,12 @@ export const TagMenuHeader = styled.div`
   display: flex;
   align-items:center;
   justify-content: flex-end;
-  padding: 0 0.75rem;
+  padding: 0 0.75rem; 
   box-sizing: border-box;
   border-bottom: 0.0625rem solid #dadada;
 `;
 
-export const TagListContainer = styled.div`
+export const TagContentCover = styled.div`
   width: 100%;
   height: calc(100% - 3rem);
   overflow:scroll;
@@ -118,12 +118,12 @@ export const StyledCollapse = styled(Collapse)`
   width:100%;
 `;
 
-export const TagKeyContainer = styled.div`
+export const TagKeyChildren = styled.div`
   display:flex;
   width:100%;
 `;
 
-export const TagKeyRow = styled.div`
+export const TagKeyContainer = styled.div`
   width:100%;
 `
 

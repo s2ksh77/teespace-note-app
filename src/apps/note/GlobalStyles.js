@@ -53,17 +53,17 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const LNBContainer = styled.div`
+export const LNB = styled.div`
   width: 30%;
   height: 100%;
   border-right: 1px solid #e3e7eb;
   display: block;
 `;
-export const ContentContainer = styled.div`
+export const Content = styled.div`
   width: 70%;
 `;
 
-export const CenterContentsContainer = styled.div`
+export const CenterContent = styled.div`
   width:100%;
   height:100%;
   display:flex;

@@ -1,25 +1,25 @@
 import React from 'react';
 import useStore from "../../store/useStore";
 import {
-  NoSearchResultPageCover,
+  SearchResultNotFoundCover,
   SearchKeyword,
   NoSearchResultTitle,
   NoSearchResultImg
 } from '../../styles/commonStyle';
 import noSearchResultImg from '../../assets/no_search_result.png';
 
-const NoSearchResultPage = () => {
-  const {TagStore} = useStore();
+const SearchResultNotFound = () => {
+  const { TagStore } = useStore();
 
   return (
     <>
-      <NoSearchResultPageCover>
+      <SearchResultNotFoundCover>
         <SearchKeyword>'{TagStore.searchString}'</SearchKeyword>
         <NoSearchResultTitle>검색 결과가 없습니다.</NoSearchResultTitle>
         <NoSearchResultImg src={noSearchResultImg} />
-      </NoSearchResultPageCover>
+      </SearchResultNotFoundCover>
     </>
   );
 }
 
-export default NoSearchResultPage;
+export default SearchResultNotFound;

@@ -1,13 +1,13 @@
 import React from 'react';
 import useStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
-import EditorMenuContainer from '../editor/editor';
+import EditorContainer from '../editor/EditorContainer';
 import '../../styles/note.css';
 import noPageImage from '../../assets/no_file.png';
 import LoadingImgContainer from '../common/loadingImg';
 
 // 페이지 보여줄 때
-const PageEditorContainer = () => {
+const PageContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
 
   // useEffect(() => {
@@ -17,23 +17,23 @@ const PageEditorContainer = () => {
 
   return useObserver(() => (
     <>
-    {(()=> {
-      if (ChapterStore.currentChapterId) {
-        NoteStore.setShowPage(true);
-        if (PageStore.currentPageId) return <><EditorMenuContainer /></>;
-        else return <><EditorNoPage /></>;
-      } else {
-        return <LoadingImgContainer />;
-      }
-    })()}
+      {(() => {
+        if (ChapterStore.currentChapterId) {
+          NoteStore.setShowPage(true);
+          if (PageStore.currentPageId) return <><EditorContainer /></>;
+          else return <><PageNotFound /></>;
+        } else {
+          return <LoadingImgContainer />;
+        }
+      })()}
     </>
   ));
 };
 
-export default PageEditorContainer;
+export default PageContainer;
 
 // 페이지가 존재하지 않습니다
-export const EditorNoPage = () => {
+export const PageNotFound = () => {
   return (
     <>
       <div className="note-editor_page-none">

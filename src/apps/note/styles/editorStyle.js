@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ReadModeTitle = styled.div`
+export const ReadModeContainer = styled.div`
   width: 100%;
   height: 2.81rem;
   border-top: 1px solid rgb(218, 218, 218);
@@ -9,7 +9,7 @@ export const ReadModeTitle = styled.div`
   flex-direction: row;
   color: #999999;
 `;
-export const ReadModeToolTip = styled.span`
+export const ReadModeText = styled.span`
   margin-left: 0.5rem;
   color: #999999;
   font-size: 0.75rem;

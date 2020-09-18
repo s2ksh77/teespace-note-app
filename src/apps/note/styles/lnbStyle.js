@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const LnbMenuCover = styled.div`
+export const LNBCover = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -10,13 +10,13 @@ export const LnbMenuCover = styled.div`
   height: 100%;
 `;
 
-export const LnbMenuChapterCover = styled.div`
+export const LNBChapterCover = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
 `;
 
-export const LnbMenuChapterTempUl = styled.ul`
+export const LNBNewChapter = styled.ul`
   user-select: none;
   margin: 0rem 0.81rem;
   padding: 0rem;
@@ -28,7 +28,7 @@ export const LnbMenuChapterTempUl = styled.ul`
   width: auto;
 `;
 
-export const LnbMenuChapterTempDiv = styled.div`
+export const NewChapter = styled.div`
   height: 2.81rem;
   display: flex;
   font-weight: 500;

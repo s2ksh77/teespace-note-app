@@ -3,9 +3,9 @@ import { useObserver } from 'mobx-react';
 import { StyledCollapse } from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
 import LoadingImg from '../../assets/Tee_loading.gif';
-import { Panel, TagKeyRow } from '../../styles/tagStyle';
-import TagKeyContainer from './tagKeyContainer';
-import NoSearchResultPage from '../common/noSearchResultPage';
+import { Panel, TagKeyContainer } from '../../styles/tagStyle';
+import TagKeyChildren from './TagKeyChildren';
+import SearchResultNotFound from '../common/SearchResultNotFound';
 
 const TagContentContainer = () => {
 	const imgcontainer = useMemo(() => ({ width: "5rem", margin: "auto" }), []);
@@ -30,10 +30,10 @@ const TagContentContainer = () => {
 								{Object.keys(targetList[category])?.map((tagKey) => {
 									// "ㄱ", "ㄴ" ...       
 									return (
-										<TagKeyRow key={tagKey}>
+										<TagKeyContainer key={tagKey}>
 											<div>{tagKey}</div>
-											<TagKeyContainer category={category} tagKey={tagKey} />
-										</TagKeyRow>
+											<TagKeyChildren category={category} tagKey={tagKey} />
+										</TagKeyContainer>
 									)
 								})}
 							</Panel>
@@ -41,8 +41,8 @@ const TagContentContainer = () => {
 					})}
 				</StyledCollapse>)
 				:
-				(<NoSearchResultPage />)
-				}
+				(<SearchResultNotFound />)
+			}
 		</>
 	))
 }

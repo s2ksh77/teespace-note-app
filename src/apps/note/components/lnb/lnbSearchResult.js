@@ -2,8 +2,8 @@ import React from 'react';
 import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 
-const LnbSearchResult = () => {
-	const {ChapterStore} = useStore();
+const LNBSearchResult = () => {
+	const { ChapterStore } = useStore();
 
 	return (
 		<>
@@ -14,4 +14,4 @@ const LnbSearchResult = () => {
 	)
 }
 
-export default LnbSearchResult;
+export default LNBSearchResult;

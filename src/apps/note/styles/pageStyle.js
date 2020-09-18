@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const PageList = styled.li`
+export const Page = styled.li`
   display: flex;
   width: 100%;
   height: 2.81rem;
@@ -14,7 +14,7 @@ export const PageList = styled.li`
   }
 `;
 
-export const PageliIcon = styled.span`
+export const PageMargin = styled.span`
   flex: 0 0 1.875rem;
   height: 100%;
   display: flex;
@@ -65,7 +65,7 @@ export const PageEllipsis = styled.span`
   }
 `;
 
-export const NewPageSpan = styled.span`
+export const NewPage = styled.span`
   display: flex;
   height: 2.81rem;
   align-items: center;
@@ -73,7 +73,7 @@ export const NewPageSpan = styled.span`
   /* margin-left: 2.94rem; */
   border-bottom: 0.0625rem solid #dadada;
 `;
-export const NewPageBlock = styled.p`
+export const NewPageBtn = styled.p`
   width: 9.38rem;
   height: 1.88rem;
   display: flex;
@@ -87,7 +87,7 @@ export const NewPageBlock = styled.p`
     border-radius: 0.94rem;
   }
 `;
-export const NewPageBtn = styled.span`
+export const NewPageText = styled.span`
   display: inline-block;
   cursor: pointer;
   align-self: center;

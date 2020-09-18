@@ -2,16 +2,16 @@ import React from "react";
 import { useObserver } from "mobx-react";
 import useStore from "../../store/useStore";
 import {
+  EditorHeaderCover,
+  EditorHeaderContainer1,
+  EditBtn,
   EditorTitle,
-  EditorTitleContainer1,
-  EditorTitleButton,
-  EditorTitleTextField,
-  EditorTitleContainer2,
-  EditorTitleModifiedUser,
-  EditorTitleModifiedTime,
+  EditorHeaderContainer2,
+  ModifiedUser,
+  ModifiedTime,
 } from "../../styles/titleStyle";
 
-const EditorMenuTitle = () => {
+const EditorHeader = () => {
   const { PageStore, TagStore } = useStore();
 
   const handleClickBtn = (e) => {
@@ -48,29 +48,29 @@ const EditorMenuTitle = () => {
 
   return useObserver(() => (
     <>
-      <EditorTitle>
-        <EditorTitleContainer1>
-          <EditorTitleButton onClick={handleClickBtn}>
+      <EditorHeaderCover>
+        <EditorHeaderContainer1>
+          <EditBtn onClick={handleClickBtn}>
             {PageStore.isEdit === null || PageStore.isEdit === ""
               ? "수정"
               : "저장"}
-          </EditorTitleButton>
-          <EditorTitleTextField
+          </EditBtn>
+          <EditorTitle
             id="editorTitle"
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
           />
-        </EditorTitleContainer1>
-        <EditorTitleContainer2>
-          <EditorTitleModifiedUser>
+        </EditorHeaderContainer1>
+        <EditorHeaderContainer2>
+          <ModifiedUser>
             {PageStore.currentPageData.user_name}
-          </EditorTitleModifiedUser>
-          <EditorTitleModifiedTime>
+          </ModifiedUser>
+          <ModifiedTime>
             {PageStore.currentPageData.modified_date}
-          </EditorTitleModifiedTime>
-        </EditorTitleContainer2>
-      </EditorTitle>
+          </ModifiedTime>
+        </EditorHeaderContainer2>
+      </EditorHeaderCover>
     </>
   ));
 };
-export default EditorMenuTitle;
+export default EditorHeader;

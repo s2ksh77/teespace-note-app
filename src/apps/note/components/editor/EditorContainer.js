@@ -1,17 +1,16 @@
 import React, { useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
-import EditorMenuTitle from './editorTitle';
-import { ReadModeTitle, ReadModeToolTip } from '../../styles/editorStyle';
+import EditorHeader from './EditorHeader';
+import { ReadModeContainer, ReadModeText } from '../../styles/editorStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import TagListContainer from '../tag/tagContainer';
-import { TagContainer } from '../../styles/tagStyle';
+import TagListContainer from '../tag/TagListContainer';
 import { modules, formats, config } from '../../store/editorStore';
 import { toJS } from 'mobx';
 import JoditEditor, { Jodit } from 'jodit-react';
 
-const EditorMenuContainer = () => {
+const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useStore();
   let noteEditor = useRef(null);
 
@@ -33,25 +32,25 @@ const EditorMenuContainer = () => {
 
   return useObserver(() => (
     <>
-      <EditorMenuTitle />
+      <EditorHeader />
       {PageStore.isReadMode() ? (
-        <ReadModeTitle style={{ display: 'flex' }}>
+        <ReadModeContainer style={{ display: 'flex' }}>
           <FontAwesomeIcon icon={faLock} className="readModeIcon" size={'1x'} />
-          <ReadModeToolTip>읽기 모드</ReadModeToolTip>
-          <ReadModeToolTip>
+          <ReadModeText>읽기 모드</ReadModeText>
+          <ReadModeText>
             편집하려면 수정 버튼을 클릭해주세요.
-          </ReadModeToolTip>
-        </ReadModeTitle>
+          </ReadModeText>
+        </ReadModeContainer>
       ) : (
-        // null 로 했더니 에디터 밑에 생겨버림
-        <ReadModeTitle style={{ display: 'none' }}>
-          <FontAwesomeIcon icon={faLock} className="readModeIcon" size={'1x'} />
-          <ReadModeToolTip>읽기 모드</ReadModeToolTip>
-          <ReadModeToolTip>
-            편집하려면 수정 버튼을 클릭해주세요.
-          </ReadModeToolTip>
-        </ReadModeTitle>
-      )}
+          // null 로 했더니 에디터 밑에 생겨버림
+          <ReadModeContainer style={{ display: 'none' }}>
+            <FontAwesomeIcon icon={faLock} className="readModeIcon" size={'1x'} />
+            <ReadModeText>읽기 모드</ReadModeText>
+            <ReadModeText>
+              편집하려면 수정 버튼을 클릭해주세요.
+          </ReadModeText>
+          </ReadModeContainer>
+        )}
       <JoditEditor
         editorRef={jodit => setNoteEditor(jodit)}
         onChange={getEditorContent}
@@ -66,11 +65,11 @@ const EditorMenuContainer = () => {
         }}
         value={PageStore.currentPageData.note_content}
       />
-      <TagContainer>
-        <TagListContainer />
-      </TagContainer>
+
+      <TagListContainer />
+
     </>
   ));
 };
 
-export default EditorMenuContainer;
+export default EditorContainer;

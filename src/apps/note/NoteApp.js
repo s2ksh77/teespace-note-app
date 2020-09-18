@@ -1,12 +1,12 @@
 import React from 'react';
-import LNBMenuContainer from './components/lnb/lnb';
+import LNBContainer from './components/lnb/LNBContainer';
 import useStore from './store/useStore';
-import { GlobalStyle, LNBContainer, ContentContainer } from './GlobalStyles';
-import PageEditorContainer from './components/page/pageEditorContainer';
-import TagPanelContainer from './components/tag/tagMenu';
+import { GlobalStyle, LNB, Content } from './GlobalStyles';
+import PageContainer from './components/page/PageContainer';
+import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 
-const TeeNote = () => {
+const NoteApp = () => {
   const targetChId = '56ab0ee1-54df-456d-8100-3bc7ee7ca087';
   const { NoteStore } = useStore();
   NoteStore.setChannelId(targetChId);
@@ -14,14 +14,14 @@ const TeeNote = () => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      <LNBContainer>
-        <LNBMenuContainer />
-      </LNBContainer>
-      <ContentContainer>
-        {NoteStore.showPage ? <PageEditorContainer /> : <TagPanelContainer />}
-      </ContentContainer>
+      <LNB>
+        <LNBContainer />
+      </LNB>
+      <Content>
+        {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
+      </Content>
     </>
   ));
 };
 
-export default TeeNote;
+export default NoteApp;

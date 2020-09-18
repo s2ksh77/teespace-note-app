@@ -4,12 +4,12 @@ import TagStore from '../../store/tagStore';
 import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
 // "ㄱ", ["가나다", "고교구"]
-const TagKeyContainer = ({ category, tagKey }) => {
+const TagKeyChildren = ({ category, tagKey }) => {
 	const onClickTagBtn = () => {
-		
+
 	}
 
-	const targetList = useObserver(() => ((TagStore.isSearching) 
+	const targetList = useObserver(() => ((TagStore.isSearching)
 		? TagStore.searchResult[category][tagKey] : TagStore.sortedTagList[category][tagKey]));
 
 	const style = useMemo(() => ({ display: "flex", width: "100%" }), []);
@@ -30,4 +30,4 @@ const TagKeyContainer = ({ category, tagKey }) => {
 	));
 }
 
-export default TagKeyContainer;
+export default TagKeyChildren;

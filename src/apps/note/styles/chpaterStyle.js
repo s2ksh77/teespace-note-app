@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ChapterContainerUl = styled.ul`
+export const ChapterContainer = styled.ul`
   position: relative;
   user-select: none;
   margin: 0rem 0.81rem 0rem 0.81rem;
@@ -17,7 +17,7 @@ export const ChapterContainerUl = styled.ul`
   }
 }
 `;
-export const ChapterUlDIV = styled.div`
+export const Chapter = styled.div`
   height: 2.81rem;
   display: flex;
   font-weight: 500;
@@ -30,13 +30,13 @@ export const ChapterUlDIV = styled.div`
   }
 `;
 
-export const ChapterColorDiv = styled.span`
+export const ColorCover = styled.span`
   display: flex;
   width: fit-content;
   align-items: center;
 `;
 
-export const ChapterColorSpan = styled.span`
+export const Color = styled.span`
   width: 0.25rem;
   height: 2.19rem;
   align-self: center;
@@ -45,7 +45,7 @@ export const ChapterColorSpan = styled.span`
   background: ${(props) => props.background};
 `;
 
-export const ChapterTextContainer = styled.span`
+export const ChapterTitle = styled.span`
   display: flex;
   flex: auto;
   margin-left: 1.19rem;

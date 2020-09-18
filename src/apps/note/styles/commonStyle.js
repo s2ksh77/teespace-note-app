@@ -22,7 +22,7 @@ export const SearchImgInput = styled.input`
     invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);
 `;
 
-export const NoSearchResultPageCover = styled.div`
+export const SearchResultNotFoundCover = styled.div`
     width: 100%;
     height: 100%;
     display: flex;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
-  ChapterTextContainer,
+  ChapterTitle,
   ChapterTextSpan,
   ChapterTextEllipsis,
   ChapterFolderBtn,
@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChapterText = ({ text, chapterId }) => {
-  const {ChapterStore} = useStore();
+  const { ChapterStore } = useStore();
 
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
@@ -33,12 +33,12 @@ const ChapterText = ({ text, chapterId }) => {
   };
   return useObserver(() => (
     <>
-      <ChapterTextContainer className={chapterId===ChapterStore.currentChapterId ? "selectedMenu" : ""}>
+      <ChapterTitle className={chapterId === ChapterStore.currentChapterId ? "selectedMenu" : ""}>
         <ChapterTextSpan>{text}</ChapterTextSpan>
         <ChapterTextEllipsis className="ellipsisBtn">
           <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />
         </ChapterTextEllipsis>
-      </ChapterTextContainer>
+      </ChapterTitle>
       <ChapterFolderBtn>
         <FontAwesomeIcon
           icon={isFold ? faAngleDown : faAngleUp}
