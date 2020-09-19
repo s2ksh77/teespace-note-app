@@ -19,6 +19,8 @@
     "autobind-decorator": "^2.4.0",
     "axios": "^0.20.0",
     "craco-less": "^1.17.0",
+    "jodit": "^3.4.26",
+    "jodit-react": "^1.0.63",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
@@ -28,9 +30,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop",
-    "jodit": "git+http://192.168.158.12:9000/teespace/jodit#jodit_develop",
-    "jodit-react": "git+https://github.com/s2ksh77/jodit-react.git#master"
+    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
   },
   "peerDependencies": {
     "react": "^16.13.1",
@@ -43,7 +43,9 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "prerelease": "rollup -c",
-    "release": "git add --force dist && standard-version -a"
+    "release": "git add --force dist && standard-version -a",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "husky": {
     "hooks": {
@@ -82,6 +84,11 @@
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-image": "^2.0.5",
     "@rollup/plugin-json": "^4.1.0",
+    "@storybook/addon-actions": "^6.0.21",
+    "@storybook/addon-essentials": "^6.0.21",
+    "@storybook/addon-links": "^6.0.21",
+    "@storybook/react": "^6.0.21",
+    "babel-loader": "^8.1.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
@@ -91,6 +98,7 @@
     "eslint-plugin-react-hooks": "4.0.0",
     "husky": "^4.3.0",
     "prettier": "^2.1.1",
+    "react-is": "^16.13.1",
     "rollup": "^2.26.9",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-peer-deps-external": "^2.2.3",

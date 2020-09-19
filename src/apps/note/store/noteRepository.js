@@ -1,9 +1,6 @@
 import { API } from 'teespace-core';
 
 const { default: axios } = require('axios');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 class NoteRepository {
   URL = '/Note';
