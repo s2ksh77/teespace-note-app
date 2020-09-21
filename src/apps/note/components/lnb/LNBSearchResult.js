@@ -10,21 +10,24 @@ import NoteStore from '../../store/noteStore';
 const LNBSearchResult = () => {
 	const { ChapterStore, PageStore } = useStore();
 	// 챕터 검색때만 초기화
-	const onClickChapterBtn = (chapterId, pageId, e) => {
+	const onClickChapterBtn = async (chapterId, pageId, e) => {
 		ChapterStore.setCurrentChapterId(chapterId);
 		PageStore.setCurrentPageId(pageId);
 		ChapterStore.setIsTagSearching(false);
 		ChapterStore.setIsSearching(false);
 		ChapterStore.setInputValue("");
+
+		await PageStore.getNoteInfoList(pageId);
 		NoteStore.setShowPage(true);
 	}
 
-	const onClickPageBtn = (chapterId, pageId, e) => {
+	const onClickPageBtn = async (chapterId, pageId, e) => {
 		ChapterStore.setCurrentChapterId(chapterId);
 		PageStore.setCurrentPageId(pageId);
 		// ChapterStore.setIsTagSearching(false);
 		// ChapterStore.setIsSearching(false);
 		// ChapterStore.setInputValue("");
+		await PageStore.getNoteInfoList(pageId);
 		NoteStore.setShowPage(true);
 	}
 	
@@ -40,7 +43,7 @@ const LNBSearchResult = () => {
 			})}
 			{ChapterStore.searchResult?.["page"]?.map((page) => {
 				return (
-					<PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page,page.chapterId, page.id)}>
+					<PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page.chapterId, page.id)}>
 						<PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
 						<PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
 					</PageSearchResult>

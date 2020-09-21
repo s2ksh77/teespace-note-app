@@ -10,6 +10,7 @@ import {
   ModifiedUser,
   ModifiedTime,
 } from "../../styles/titleStyle";
+import HeaderButtons from '../common/buttons';
 
 const EditorHeader = () => {
   const { PageStore, TagStore } = useStore();
@@ -69,6 +70,7 @@ const EditorHeader = () => {
             {PageStore.currentPageData.modified_date}
           </ModifiedTime>
         </EditorHeaderContainer2>
+        <HeaderButtons/>
       </EditorHeaderCover>
     </>
   ));
