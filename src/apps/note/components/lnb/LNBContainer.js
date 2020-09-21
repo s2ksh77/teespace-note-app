@@ -40,7 +40,6 @@ const LNBContainer = () => {
     <>
       <LNBCover>
         <LNBHeader />
-        <LNBTag />
         <LNBChapterCover>
             {ChapterStore.isNewChapter ? (
               <LNBNewChapter>
