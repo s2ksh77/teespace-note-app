@@ -24,27 +24,14 @@ const ChapterStore = observable({
     11: "#FF7BA8",
   },
   isSearching:false,
-  searchString:"",
-  searchResult:[],
+  inputValue:"", // lnb title 영역 input창 value
+  searchStr:"",
+  searchResult:{}, // {chapter:[], page:[]} 형태
   getCurrentChapterId() {
     return this.currentChapterId;
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
-  },
-  getIsSearching() {
-    return this.isSearchingLnb;
-  },
-  setIsSearching(isSearching) {
-    this.isSearching = isSearching;
-    // console.log(isSearching)
-    // console.log(this.chapterList)
-  },
-  getSearchString() {
-    return this.searchString;
-  },
-  setSearchString(str) {
-    this.searchString = str;
   },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
@@ -98,6 +85,59 @@ const ChapterStore = observable({
     const { value } = NoteRepository.getChapterText(chapterId);
     return value;
   },
+  // search 관련
+  getIsSearching() {
+    return this.isSearching;
+  },
+  setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+    if (!isSearching) this.searchResult={};
+  },
+  getInputValue() {
+    return this.inputValue;
+  },
+  setInputValue(value) {
+    this.inputValue = value;
+  },
+  getSearchStr() {
+    return this.searchStr;
+  },  
+  setSearchStr(str) {
+    this.searchStr = str;
+    // searchResult 만들기
+    let resultChapterArr=[], resultPageArr=[];
+    this.chapterList.map((chapter)=>{
+      // chapter 저장
+      if (chapter.text.includes(this.searchStr)) {
+        resultChapterArr.push({
+          id:chapter.id,
+          title:chapter.text,
+          color:chapter.color,
+          // 클릭하면 setCurrentPageId 해야해서 필요
+          firstPageId:(chapter.children.length>0 ? chapter.children[0].id : null)
+        })
+      }
+      // page 저장
+      chapter.children.map((page) => {
+        if (page.text.includes(this.searchStr)){
+          resultPageArr.push({
+            chapterId : chapter.id,
+            chapterTitle: chapter.text,
+            id: page.id,
+            title: page.text
+          })
+        }
+      })
+    })
+
+    this.searchResult = {
+      chapter: resultChapterArr,
+      page: resultPageArr
+    }
+  },
+  getSearchResult() {
+    return this.searchResult;
+  }
 });
 
 export default ChapterStore;

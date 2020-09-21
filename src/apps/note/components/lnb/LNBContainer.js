@@ -41,8 +41,7 @@ const LNBContainer = () => {
       <LNBCover>
         <LNBHeader />
         <LNBTag />
-        {ChapterStore.isSearching ? <LNBSearchResult />
-          : (<LNBChapterCover>
+        <LNBChapterCover>
             {ChapterStore.isNewChapter ? (
               <LNBNewChapter>
                 <ChapterColor color={ChapterStore.isNewChapterColor} />
@@ -59,10 +58,14 @@ const LNBContainer = () => {
                 </ChapterTitle>
               </LNBNewChapter>
             ) : null}
-            <ChapterList type={"chapter"} />
-            {/* <LNBTag /> */}
-            {/* <ChapterList type={"shared"}/> */}
-          </LNBChapterCover>)}
+            {ChapterStore.isSearching 
+            ? <LNBSearchResult /> :
+            <>
+              <ChapterList type={"chapter"} />
+              <LNBTag />
+              {/* <ChapterList type={"shared"}/> )}*/}
+            </>}            
+          </LNBChapterCover>
       </LNBCover>
     </>
   ));

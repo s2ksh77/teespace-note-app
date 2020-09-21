@@ -15,7 +15,6 @@ import { Button } from '../../styles/commonStyle';
 
 const LNBHeader = () => {
   const { ChapterStore } = useStore();
-  const [value, setValue] = useState('');
   const inputRef = useRef(null);
 
   const handleNewChapterClick = () => {
@@ -27,20 +26,19 @@ const LNBHeader = () => {
 
   const onSubmitSearchBtn = (e) => {
     e.preventDefault();
-    // ChapterStore.setIsSearching(true);
-    // console.log('submit')
-    // ChapterStore.setSearchString(value);
+    ChapterStore.setSearchStr(ChapterStore.inputValue);
+    ChapterStore.setIsSearching(true);
     inputRef.current.focus();
   }
 
   const onChangeInput = (e) => {
-    setValue(e.target.value);
+    ChapterStore.setInputValue(e.target.value);
   }
 
   const onClickCancelBtn = (e) => {
-    setValue("");
-    // ChapterStore.setIsSearching(false);
-    // ChapterStore.setSearchString("");
+    ChapterStore.setInputValue("");
+    ChapterStore.setSearchStr("");
+    ChapterStore.setIsSearching(false);
   }
 
   return useObserver(() => (
@@ -54,8 +52,9 @@ const LNBHeader = () => {
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
           <LnbTitleSearchInput
-            ref={inputRef} value={value} onChange={onChangeInput} placeholder="페이지, 챕터 검색" />
-          <Button src={cancelImg} style={(value !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
+            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput} placeholder="페이지, 챕터 검색" />
+          <Button src={cancelImg} 
+            style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
       </LnbTitleCover>
     </>
