@@ -7,7 +7,7 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 
 const NoteApp = () => {
-  const targetChId = '56ab0ee1-54df-456d-8100-3bc7ee7ca087';
+  const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
   const { NoteStore } = useStore();
   NoteStore.setChannelId(targetChId);
 

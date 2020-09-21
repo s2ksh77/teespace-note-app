@@ -3,7 +3,7 @@ import { API } from 'teespace-core';
 const { default: axios } = require('axios');
 
 class NoteRepository {
-  URL = '/Note';
+  URL = 'http://222.122.67.176:8080/CMS/Note';
 
   WS_ID = '8050f1ba-0b42-4fe1-a3e4-c0647a47d019';
 
