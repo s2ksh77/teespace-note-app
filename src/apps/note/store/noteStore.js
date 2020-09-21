@@ -53,9 +53,10 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterId("");
       PageStore.setCurrentPageId("");
-    } else {
+    } 
+    // [TODO] 혹시 몰라서 넣음, 뺄까?
+    else {
       TagStore.setIsSearching(false);
-      TagStore.setSearchString("");
     }
   },
   getShowPage() {

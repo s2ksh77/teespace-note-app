@@ -10,24 +10,16 @@ import SearchResultNotFound from '../common/SearchResultNotFound';
 const TagContentContainer = () => {
 	const imgcontainer = useMemo(() => ({ width: "5rem", margin: "auto" }), []);
 	let categoryInfo = { "KOR": "ㄱ ~ ㅎ", "ENG": "A ~ Z", "NUM": "0 ~ 9", "ETC": "기타" };
-
-	const targetList = useObserver(() => {
-		if (TagStore.isSearching) {
-			return TagStore.searchResult;
-		} else {
-			return TagStore.sortedTagList;
-		}
-	})
-
+	
 	return useObserver(() => (
 		<>
-			{(Object.keys(targetList).length > 0) ?
+			{(Object.keys(TagStore.targetTagList).length > 0) ?
 				(<StyledCollapse defaultActiveKey={['1', '2', '3', '4']}>
-					{Object.keys(targetList).map((category, idx) => {
+					{Object.keys(TagStore.targetTagList).map((category, idx) => {
 						return (
 							// "ㄱ~ㅎ"
 							<Panel header={categoryInfo[category]} key={String(idx + 1)} >
-								{Object.keys(targetList[category])?.map((tagKey) => {
+								{Object.keys(TagStore.targetTagList[category])?.map((tagKey) => {
 									// "ㄱ", "ㄴ" ...       
 									return (
 										<TagKeyContainer key={tagKey}>

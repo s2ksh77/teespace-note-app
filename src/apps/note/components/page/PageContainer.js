@@ -8,7 +8,7 @@ import LoadingImgContainer from '../common/loadingImg';
 
 // 페이지 보여줄 때
 const PageContainer = () => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { ChapterStore, PageStore } = useStore();
 
   // useEffect(() => {
   //   console.log('바뀌나')
@@ -19,7 +19,6 @@ const PageContainer = () => {
     <>
       {(() => {
         if (ChapterStore.currentChapterId) {
-          NoteStore.setShowPage(true);
           if (PageStore.currentPageId) return <><EditorContainer /></>;
           else return <><PageNotFound /></>;
         } else {

@@ -1,5 +1,6 @@
 import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
+import ChapterStore from "./chapterStore";
 import PageStore from "./pageStore";
 
 const TagStore = observable({
@@ -29,6 +30,8 @@ const TagStore = observable({
   //   NUM:[],
   //   ETC:[]
   // },
+  // 그릴 targetTagList(searching이냐 아니냐 따라서)
+  targetTagList:[],
   // 태그 검색
   isSearching:false,
   searchString:"",
@@ -126,11 +129,53 @@ const TagStore = observable({
     this.tagPanelLoading=false;    
     return this.allSortedTagList;
   },
+  async getTagNoteList(tagId) {
+    const res = await NoteRepository.getTagNoteList(tagId);
+    const {data:{dto:{noteList}}} = res; 
+    
+    let resultPageArr = [];
+    noteList.map((page) => {
+      const chapterId = page.parent_notebook;
+      const targetChapter = ChapterStore.chapterList.find((chapter)=>{
+        return chapter.id === chapterId;
+      });
+
+      resultPageArr.push({
+        chapterId : chapterId,
+        chapterTitle: targetChapter.text,
+        id: page.note_id,
+        title: page.note_title
+      })
+    })
+
+    ChapterStore.setSearchResult({chapter:[],page:resultPageArr});
+  },
+  getTargetTagList() {
+    return this.targetTagList;
+  },
+  // 안써서 일단 주석처리 : setIsSearching에서 set해준다
+  // setTargetTagList() {
+  //   if (this.isSearching) {
+  //     this.targetTagList = TagStore.searchResult;
+  //   } else {
+  //     this.targetTagList = TagStore.sortedTagList;
+  //   }
+  // },
   getIsSearching() {
     return this.isSearching;
   },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
+    if (this.isSearching) {
+      this.targetTagList = this.searchResult;
+    } else {
+      this.targetTagList = this.sortedTagList;
+    }
+    // 초기화
+    if (!isSearching) {
+      this.searchString = '';
+      this.searchResult = {};
+    }
   },
   getSearchString() {
     return this.searchString;
@@ -139,8 +184,8 @@ const TagStore = observable({
     this.searchString = str;
     // search
     // {"KOR" : {"ㄱ" :["가나다", "고교구"]}}
-    this.searchResult = {};
-    let result = Object.keys(this.sortedTagList).filter((category) => {
+    let searchResultObj = {};
+    Object.keys(this.sortedTagList).filter((category) => {
       let keyObj = {};
       let _keyList = Object.keys(this.sortedTagList[category]).filter((key) => {
         let tagObj = {};
@@ -155,10 +200,12 @@ const TagStore = observable({
         return _tagList.length > 0
       })
       if (_keyList.length>0) {
-        this.searchResult[category] = keyObj
+        searchResultObj[category] = keyObj
       }
       return _keyList.length > 0; 
     });
+    
+    this.searchResult = searchResultObj;
   },
   setTagText(text) {
     this.tagText = text;

@@ -24,6 +24,8 @@ const ChapterStore = observable({
     11: "#FF7BA8",
   },
   isSearching:false,
+  isTagSearching:false,//tag chip 클릭해서 tag chip 띄울 때 씀
+  targetSearchTagName:'',
   inputValue:"", // lnb title 영역 input창 value
   searchStr:"",
   searchResult:{}, // {chapter:[], page:[]} 형태
@@ -91,7 +93,11 @@ const ChapterStore = observable({
   },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
-    if (!isSearching) this.searchResult={};
+    if (!isSearching) {
+      this.searchResult={};
+      this.searchStr = '';
+      this.inputValue = '';
+    }
   },
   getInputValue() {
     return this.inputValue;
@@ -137,6 +143,29 @@ const ChapterStore = observable({
   },
   getSearchResult() {
     return this.searchResult;
+  },
+  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
+  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
+  setSearchResult(result) {
+    this.searchResult = result;
+  },
+  // 태그칩 클릭해서 lnblist 띄우기
+  getTargetSearchTagName() {
+    return this.targetSearchTagName;
+  },
+  setTargetSearchTagName(str) {
+    this.targetSearchTagName = str;
+  },
+  getIsTagSearching() {
+    return this.isTagSearching;
+  },
+  setIsTagSearching(isSearching) {
+    this.isTagSearching = isSearching;
+    if (!isSearching) {
+      this.targetSearchTagName = '';
+      this.searchResult = {};
+      // this.inputValue ='';//필요 없을 것 같다
+    }
   }
 });
 

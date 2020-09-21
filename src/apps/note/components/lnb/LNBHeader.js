@@ -12,6 +12,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
+import { SearchTagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
 const LNBHeader = () => {
   const { ChapterStore } = useStore();
@@ -36,9 +37,12 @@ const LNBHeader = () => {
   }
 
   const onClickCancelBtn = (e) => {
-    ChapterStore.setInputValue("");
-    ChapterStore.setSearchStr("");
     ChapterStore.setIsSearching(false);
+  }
+
+  // 태그칩에 있는 취소 버튼
+  const onClickCancelSearchTagBtn = (e) => {
+    ChapterStore.setIsTagSearching(false);
   }
 
   return useObserver(() => (
@@ -52,7 +56,16 @@ const LNBHeader = () => {
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
           <LnbTitleSearchInput
-            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput} placeholder="페이지, 챕터 검색" />
+            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput} 
+            placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"} 
+            disabled={ChapterStore.isTagSearching ? true : false} />
+          {ChapterStore.isTagSearching ? 
+          <>
+            <SearchTagChip>
+							<TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
+							<Button onClick={onClickCancelSearchTagBtn} style={{marginLeft:"0.69rem"}} src={cancelImg} />
+						</SearchTagChip>
+          </> : null}
           <Button src={cancelImg} 
             style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>

@@ -111,6 +111,7 @@ export const LnbTitleNewButton = styled.button`
 `;
 
 export const LnbTitleSearchContainer = styled.form`
+  position:relative;
   display: inline-flex;
   align-items: center;
   padding: 0 0.63rem;

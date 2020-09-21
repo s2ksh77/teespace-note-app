@@ -134,6 +134,17 @@ export const TagChip = styled(Tag)`
   padding : 0 0.63rem;
 `
 
+export const SearchTagChip = styled(Tag)`
+  position:absolute;
+  left:1.88rem;
+  max-width: calc(100% - 1.88rem) !important;
+  width: fit-content;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  padding : 0 0.63rem;
+`
+
 export const TagChipText = styled.div`
   display: flex;
   align-items: center;

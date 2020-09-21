@@ -19,8 +19,8 @@ const TagHeader = memo(() => {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    TagStore.setIsSearching(true);
     TagStore.setSearchString(value);
+    TagStore.setIsSearching(true);
     inputRef.current.focus();
   }
 
@@ -31,7 +31,6 @@ const TagHeader = memo(() => {
   const onClickCancelBtn = (e) => {
     setValue("");
     TagStore.setIsSearching(false);
-    TagStore.setSearchString("");
   }
 
   return useObserver(() => (

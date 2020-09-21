@@ -57,6 +57,13 @@ class NoteRepository {
     );
   }
 
+  getTagNoteList(tagId) {
+    return API.Get(
+      `${this.URL}/tagnote?action=List&tag_id=${tagId}&USER_ID=${this.USER_ID}
+      &note_channel_id=${this.chId}`,
+    );
+  }
+
   getChapterColor(chapterId) {
     const { data } = API.Get(
       `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`,

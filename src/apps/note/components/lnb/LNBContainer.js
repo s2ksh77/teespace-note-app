@@ -58,7 +58,7 @@ const LNBContainer = () => {
                 </ChapterTitle>
               </LNBNewChapter>
             ) : null}
-            {ChapterStore.isSearching 
+            {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> :
             <>
               <ChapterList type={"chapter"} />
