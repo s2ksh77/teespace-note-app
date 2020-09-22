@@ -12,6 +12,7 @@ const PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
+  deletePageList: [],
   getPageId(e) {
     const {
       target: { id },
@@ -42,6 +43,9 @@ const PageStore = observable({
   getCreatePageParent() {
     return this.createParent;
   },
+  setDeletePageList(page) {
+    this.deletePageList.push(page);
+  },
 
   async createPage() {
     await NoteRepository.createPage('제목 없음', this.createParent).then(
@@ -57,6 +61,26 @@ const PageStore = observable({
           this.currentPageId = dto.note_id;
         }
       },
+    );
+  },
+
+  async deletePage() {
+    await NoteRepository.deletePage(this.deletePageList).then(
+      (response) => {
+        if (response.status === 200) {
+          ChapterStore.getChapterList();
+        }
+      }
+    );
+  },
+
+  async renamePage(pageId, pageTitle, chapterId) {
+    await NoteRepository.renamePage(pageId, pageTitle, chapterId).then(
+      (response) => {
+        if (response.status === 200) {
+          ChapterStore.getChapterList();
+        }
+      }
     );
   },
 

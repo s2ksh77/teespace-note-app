@@ -93,6 +93,26 @@ class NoteRepository {
     });
   }
 
+  deleteChapter(chapterId) {
+    return API.Delete(
+      `${this.URL}/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`,
+    );
+  }
+
+  renameChapter(chapterId, chapterTitle, color) {
+    return API.PUT(`${this.URL}/notebooks?action=Update`, {
+      dto: {
+        USER_ID: this.USER_ID,
+        color: color,
+        id: chapterId,
+        note_channel_id: this.chId,
+        parent_notebook: '',
+        text: chapterTitle,
+        user_name: '김수현B',
+      }
+    });
+  }
+
   createPage(pageName, chapterId) {
     return API.Post(`${this.URL}/note`, {
       dto: {
@@ -105,6 +125,35 @@ class NoteRepository {
         is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
         parent_notebook: chapterId,
       },
+    });
+  }
+
+  deletePage(pageList) {
+    pageList.forEach((page) => {
+      page.USER_ID = this.USER_ID;
+      page.WS_ID = this.WS_ID;
+      page.note_channel_id = this.chId;
+      page.user_name = '김수현B';
+    });
+    return API.Post(`${this.URL}/note?action=Delete`, {
+      dto: {
+        noteList: pageList,
+      }
+    });
+  }
+
+  renamePage(pageId, pageTitle, chapterId) {
+    return API.PUT(`${this.URL}/note?action=Update`, {
+      dto: {
+        CH_TYPE: 'CHN0003',
+        TYPE: 'RENAME',
+        USER_ID: this.USER_ID,
+        WS_ID: this.WS_ID,
+        note_channel_id: this.chId,
+        note_id: pageId,
+        note_title: pageTitle,
+        parent_notebook: chapterId,
+      }
     });
   }
 

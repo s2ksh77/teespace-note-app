@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Dropdown } from 'antd';
 
 export const ChapterContainer = styled.ul`
   position: relative;
@@ -23,7 +24,7 @@ export const Chapter = styled.div`
   font-weight: 500;
   border-bottom: 0.0625rem solid #dadada;
   &:hover .ellipsisBtn {
-    display: flex !important;
+    visibility: visible;
   }
   &:hover:not(.ellipsisBtn) {
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -63,21 +64,6 @@ export const ChapterTextSpan = styled.span`
   min-width: calc(100% - 1.3rem);
   line-height: normal;
   font-weight: 400;
-`;
-export const ChapterTextEllipsis = styled.span`
-  display: none;
-  align-self: center;
-  flex: 0 0 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-  border-radius: 1.5rem 1.5rem;
-  align-items: center;
-  justify-content: center;
-  color: #75757f;
-  &:hover {
-    background-color: rgba(30, 168, 223, 0.2);
-  }
 `;
 
 export const ChapterFolderBtn = styled.span`

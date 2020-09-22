@@ -5,13 +5,11 @@ import {
   PageMargin,
   PageTextCover,
   PageText,
-  PageEllipsis,
   NewPage,
   NewPageBtn,
   NewPageText,
 } from "../../styles/pageStyle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import ContextMenu from "../common/ContextMenu";
 import useStore from "../../store/useStore";
 
 const PageList = ({ children, chapterId }) => {
@@ -48,9 +46,11 @@ const PageList = ({ children, chapterId }) => {
           <PageMargin />
           <PageTextCover>
             <PageText>{item.text}</PageText>
-            <PageEllipsis className="ellipsisBtn">
-              <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />
-            </PageEllipsis>
+            <ContextMenu
+              type={"page"}
+              chapterId={chapterId}
+              pageId={item.id}
+            />
           </PageTextCover>
         </Page>
       ))}

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Dropdown } from 'antd';
 
 export const HeaderButtonContainer = styled.div`
     display: flex;
@@ -46,3 +47,23 @@ export const NoSearchResultTitle = styled.span`
 
 export const NoSearchResultImg = styled.img`
 `
+
+export const ContextMenuCover = styled(Dropdown)`
+  display: flex;
+  visibility: hidden;
+  align-self: center;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  border-radius: 1.5rem 1.5rem;
+  align-items: center;
+  justify-content: center;
+  color: #75757f;
+  &:hover {
+    background-color: rgba(30, 168, 223, 0.2);
+  }
+`;
+
+export const ContextMenuIconCover = styled.span`
+`;

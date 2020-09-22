@@ -6,8 +6,7 @@ export const Page = styled.li`
   height: 2.81rem;
   cursor: pointer;
   &:hover .ellipsisBtn{
-      display: flex !important;
-    }
+    visibility: visible;
   }
   &:hover:not(.ellipsisBtn){
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -46,22 +45,6 @@ export const PageText = styled.a`
   font-weight: 300;
   &:hover {
     color: #000000;
-  }
-`;
-
-export const PageEllipsis = styled.span`
-  display: none;
-  align-self: center;
-  flex: 0 0 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-  border-radius: 1.5rem 1.5rem;
-  align-items: center;
-  justify-content: center;
-  color: #75757f;
-  &:hover {
-    background-color: rgba(30, 168, 223, 0.2);
   }
 `;
 

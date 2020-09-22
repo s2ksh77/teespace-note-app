@@ -60,6 +60,24 @@ const ChapterStore = observable({
       }
     );
   },
+  async deleteChapter(chapterId) {
+    await NoteRepository.deleteChapter(chapterId).then(
+      (response) => {
+        if (response.status === 200) {
+          ChapterStore.getChapterList();
+        }
+      }
+    );
+  },
+  async renameChapter(chapterId, chapterTitle, color) {
+    await NoteRepository.renameChapter(chapterId, chapterTitle, color).then(
+      (response) => {
+        if (response.status === 200) {
+          ChapterStore.getChapterList();
+        }
+      }
+    );
+  },
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
   },

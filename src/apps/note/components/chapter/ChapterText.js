@@ -4,17 +4,16 @@ import { useObserver } from "mobx-react";
 import {
   ChapterTitle,
   ChapterTextSpan,
-  ChapterTextEllipsis,
   ChapterFolderBtn,
 } from "../../styles/chpaterStyle";
+import ContextMenu from "../common/ContextMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faAngleUp,
-  faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChapterText = ({ text, chapterId }) => {
+const ChapterText = ({ text, chapterId, color }) => {
   const { ChapterStore } = useStore();
 
   const [isFold, setFold] = useState(false);
@@ -35,9 +34,11 @@ const ChapterText = ({ text, chapterId }) => {
     <>
       <ChapterTitle className={chapterId === ChapterStore.currentChapterId ? "selectedMenu" : ""}>
         <ChapterTextSpan>{text}</ChapterTextSpan>
-        <ChapterTextEllipsis className="ellipsisBtn">
-          <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />
-        </ChapterTextEllipsis>
+        <ContextMenu
+          type={"chapter"}
+          chapterId={chapterId}
+          color={color}
+        />
       </ChapterTitle>
       <ChapterFolderBtn>
         <FontAwesomeIcon

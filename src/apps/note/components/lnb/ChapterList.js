@@ -46,7 +46,7 @@ const ChapterList = ({ type }) => {
           >
             <ChapterColor color={item.color} chapterId={item.id} />
             <ChapterText
-              text={item.text} chapterId={item.id} />
+              text={item.text} chapterId={item.id} color={item.color} />
           </Chapter>
           <PageList
             children={JSON.stringify(item.children)}
