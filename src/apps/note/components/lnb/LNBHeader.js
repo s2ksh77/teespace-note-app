@@ -14,15 +14,20 @@ import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
 import { SearchTagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
-const LNBHeader = () => {
+const LNBHeader = ({createNewChapter}) => {
   const { ChapterStore } = useStore();
   const inputRef = useRef(null);
 
-  const handleNewChapterClick = () => {
+  const handleNewChapterClick = async () => { 
     if (!ChapterStore.isNewChapter) {
-      ChapterStore.setChapterTempUl(true);
+      ChapterStore.setChapterTempUl(true); // isNewChapter = true;
       ChapterStore.getChapterRandomColor();
-    } else ChapterStore.setChapterTempUl(false);
+    } else {
+      await createNewChapter();
+      ChapterStore.getChapterRandomColor();
+      ChapterStore.setChapterTempUl(true);
+    }
+    // else ChapterStore.setChapterTempUl(false);
   };
 
   const onSubmitSearchBtn = (e) => {
@@ -45,10 +50,11 @@ const LNBHeader = () => {
     ChapterStore.setIsTagSearching(false);
   }
 
+  // e.target에서 filtering하려고 data-btn 속성 추가
   return useObserver(() => (
     <>
       <LnbTitleCover>
-        <LnbTitleNewButton onClick={handleNewChapterClick}>
+        <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
           새 챕터
         </LnbTitleNewButton>
         <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn}>

@@ -42,7 +42,7 @@ const ChapterStore = observable({
           data: { dto: notbookList },
         } = response;
         this.chapterList = notbookList.notbookList;
-      }
+      }      
     );
     return this.chapterList;
   },
@@ -80,9 +80,35 @@ const ChapterStore = observable({
   },
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
+    if (flag===false) this.chapterNewTitle = '';
   },
   setChapterTitle(title) {
     this.chapterNewTitle = title;
+  },
+  // 사용자 input이 없을 때
+  getNewChapterTitle() {
+    const re = /^새 챕터 (\d+)$/gm;
+    let chapterTitle, temp;
+    let isNotAvailable = [];
+    let fullLength = this.chapterList.length;
+    isNotAvailable.length = fullLength+1;  
+
+    this.chapterList.forEach((chapter) => {
+      chapterTitle = chapter.text;
+      if (chapterTitle === '새 챕터') {
+        isNotAvailable[0] = 1;
+      } else if (re.test(chapterTitle)) {
+        temp = parseInt(chapterTitle.replace(re, "$1"));
+        if (temp <= fullLength) {
+          isNotAvailable[temp] = 1;
+        }
+      }
+    })
+
+    if (!isNotAvailable[0]) return "새 챕터";
+    for (let i=1;i<=fullLength;i++) {
+			if (!isNotAvailable[i]) return "새 챕터 " + i;
+		}
   },
   getChapterId(e) {
     const {
