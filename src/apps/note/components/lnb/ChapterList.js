@@ -7,6 +7,7 @@ import PageList from "../page/PageList";
 import {
   ChapterContainer,
   Chapter,
+  ChapterTextInput,
 } from "../../styles/chpaterStyle";
 
 const ChapterList = ({ type }) => {
@@ -37,6 +38,20 @@ const ChapterList = ({ type }) => {
     NoteStore.setShowPage(true);
   };
 
+  const handleChapterName = (e) => {
+    const {
+      target: { value },
+    } = e;
+    ChapterStore.setRenameChapterText(value);
+  };
+
+  const handleChapterTextInput = (color) => {
+    if (ChapterStore.isValidChapterText()) {
+      ChapterStore.renameChapter(color);
+    }
+    ChapterStore.setRenameChapterId('');
+  };
+
   return useObserver(() => (
     <>
       {ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map((item) => (
@@ -45,8 +60,22 @@ const ChapterList = ({ type }) => {
             onClick={onClickChapterBtn.bind(null, item.id, item.children)}
           >
             <ChapterColor color={item.color} chapterId={item.id} />
-            <ChapterText
-              text={item.text} chapterId={item.id} color={item.color} />
+            {ChapterStore.getRenameChapterId() === item.id ? (
+                <ChapterTextInput 
+                  value={ChapterStore.renameChapterText}
+                  onChange={handleChapterName}
+                  onBlur={handleChapterTextInput.bind(null, item.color)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { handleChapterTextInput(item.color); }
+                    else if (e.key === "Escape") { ChapterStore.setRenameChapterId(''); }
+                  }}
+                  autoFocus={true}
+                />
+              ) : (
+                <ChapterText 
+                  text={item.text} chapterId={item.id} color={item.color} />
+              )
+            }
           </Chapter>
           <PageList
             children={JSON.stringify(item.children)}

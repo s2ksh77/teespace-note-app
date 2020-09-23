@@ -9,19 +9,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
-const ContextMenu = ({ type, chapterId, pageId, color }) => {
+const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, color }) => {
   const { ChapterStore, PageStore } = useStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.
     switch (type) {
       case "chapter":
-        // 변경된 chapterTitle을 얻어온다.
+        ChapterStore.setRenameChapterId(chapterId);
+        ChapterStore.setRenameChapterText(chapterTitle);
         // ChapterStore.renameChapter(chapterId, chapterTitle, color);
         break;
       case "page":
-        // 변경된 pageTitle을 얻어온다.
-        // PageStore.renamePage(pageId, pageTitle, chapterId);
+        PageStore.setRenamePageId(pageId);
+        PageStore.setRenamePageText(pageTitle);
         break;
       default:
         break;

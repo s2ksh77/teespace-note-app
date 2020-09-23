@@ -100,7 +100,7 @@ class NoteRepository {
   }
 
   renameChapter(chapterId, chapterTitle, color) {
-    return API.PUT(`${this.URL}/notebooks?action=Update`, {
+    return API.Put(`${this.URL}/notebooks?action=Update`, {
       dto: {
         USER_ID: this.USER_ID,
         color: color,
@@ -143,7 +143,7 @@ class NoteRepository {
   }
 
   renamePage(pageId, pageTitle, chapterId) {
-    return API.PUT(`${this.URL}/note?action=Update`, {
+    return API.Put(`${this.URL}/note?action=Update`, {
       dto: {
         CH_TYPE: 'CHN0003',
         TYPE: 'RENAME',

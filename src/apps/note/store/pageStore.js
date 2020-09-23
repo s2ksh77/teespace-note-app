@@ -14,6 +14,8 @@ const PageStore = observable({
   currentPageId: '',
   createParent: '',
   deletePageList: [],
+  renamePageId: '',
+  renamePageText: '',
   getPageId(e) {
     const {
       target: { id },
@@ -47,6 +49,15 @@ const PageStore = observable({
   setDeletePageList(page) {
     this.deletePageList.push(page);
   },
+  setRenamePageId(pageId) {
+    this.renamePageId = pageId;
+  },
+  getRenamePageId() {
+    return this.renamePageId;
+  },
+  setRenamePageText(pageText) {
+    this.renamePageText = pageText;
+  },
 
   async createPage() {
     await NoteRepository.createPage('제목 없음', this.createParent).then(
@@ -76,8 +87,8 @@ const PageStore = observable({
     );
   },
 
-  async renamePage(pageId, pageTitle, chapterId) {
-    await NoteRepository.renamePage(pageId, pageTitle, chapterId).then(
+  async renamePage(chapterId) {
+    await NoteRepository.renamePage(this.renamePageId, this.renamePageText, chapterId).then(
       (response) => {
         if (response.status === 200) {
           ChapterStore.getChapterList();

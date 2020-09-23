@@ -46,6 +46,17 @@ export const Color = styled.span`
   background: ${(props) => props.background};
 `;
 
+export const ChapterTextInput = styled.input`
+  display: flex;
+  margin-left: 1.05rem;
+  margin-right: 0.2rem;
+  min-width: calc(100% - 1.5rem);
+  height: 100%;
+  font-weight: 300;
+  border: none;
+  outline: none;
+`;
+
 export const ChapterTitle = styled.span`
   display: flex;
   flex: auto;

@@ -5,6 +5,7 @@ import {
   PageMargin,
   PageTextCover,
   PageText,
+  PageTextInput,
   NewPage,
   NewPageBtn,
   NewPageText,
@@ -32,6 +33,18 @@ const PageList = ({ children, chapterId }) => {
     ChapterStore.setCurrentChapterId(chapterId);
     PageStore.setCurrentPageId(id)
   };
+  
+  const handlePageName = (e) => {
+    const {
+      target: { value },
+    } = e;
+    PageStore.setRenamePageText(value);
+  };
+
+  const handlePageTextInput = () => {
+    PageStore.renamePage(chapterId);
+    PageStore.setRenamePageId('');
+  };
 
   return useObserver(() => (
     <>
@@ -45,14 +58,30 @@ const PageList = ({ children, chapterId }) => {
           onClick={onClickLnbPage.bind(null, item.id)}
         >
           <PageMargin />
-          <PageTextCover>
-            <PageText>{item.text}</PageText>
-            <ContextMenu
-              type={"page"}
-              chapterId={chapterId}
-              pageId={item.id}
-            />
-          </PageTextCover>
+          {PageStore.getRenamePageId() === item.id ? (
+              <PageTextCover>
+                <PageTextInput
+                  value={PageStore.renamePageText}
+                  onChange={handlePageName}
+                  onBlur={handlePageTextInput}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { handlePageTextInput(); }
+                    else if (e.key === "Escape") { PageStore.setRenamePageId(''); }
+                  }}
+                  autoFocus={true}
+                />
+              </PageTextCover>
+            ) : (
+              <PageTextCover>
+                <PageText>{item.text}</PageText>
+                <ContextMenu
+                  type={"page"}
+                  chapterId={chapterId}
+                  pageId={item.id}
+                  pageTitle={item.text}
+                />
+              </PageTextCover>
+            )}
         </Page>
       ))}
       <NewPage className={"page-li"}>

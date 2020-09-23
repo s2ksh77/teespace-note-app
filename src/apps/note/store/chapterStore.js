@@ -29,11 +29,22 @@ const ChapterStore = observable({
   inputValue:"", // lnb title 영역 input창 value
   searchStr:"",
   searchResult:{}, // {chapter:[], page:[]} 형태
+  renameChapterId: '',
+  renameChapterText: '',
   getCurrentChapterId() {
     return this.currentChapterId;
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  setRenameChapterId(chapterId) {
+    this.renameChapterId = chapterId;
+  },
+  getRenameChapterId() {
+    return this.renameChapterId;
+  },
+  setRenameChapterText(chapterText) {
+    this.renameChapterText = chapterText;
   },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
@@ -69,8 +80,8 @@ const ChapterStore = observable({
       }
     );
   },
-  async renameChapter(chapterId, chapterTitle, color) {
-    await NoteRepository.renameChapter(chapterId, chapterTitle, color).then(
+  async renameChapter(color) {
+    await NoteRepository.renameChapter(this.renameChapterId, this.renameChapterText, color).then(
       (response) => {
         if (response.status === 200) {
           ChapterStore.getChapterList();
@@ -210,7 +221,15 @@ const ChapterStore = observable({
       this.searchResult = {};
       // this.inputValue ='';//필요 없을 것 같다
     }
-  }
+  },
+
+  isValidChapterText() {
+    let isValid = true;
+    this.chapterList.forEach((chapter) => {
+      if (chapter.text === this.renameChapterText) isValid = false;
+    })
+    return isValid;
+  },
 });
 
 export default ChapterStore;

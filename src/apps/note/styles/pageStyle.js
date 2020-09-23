@@ -48,6 +48,19 @@ export const PageText = styled.a`
   }
 `;
 
+export const PageTextInput = styled.input`
+  display: inline-block;
+  margin-left: 1.13rem;
+  line-height: 130%;
+  align-self: center;
+  min-width: calc(100% - 0.9rem);
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 300;
+  border: none;
+  outline: none;
+`;
+
 export const NewPage = styled.span`
   display: flex;
   height: 2.81rem;

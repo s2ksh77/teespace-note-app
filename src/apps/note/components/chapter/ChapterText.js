@@ -37,6 +37,7 @@ const ChapterText = ({ text, chapterId, color }) => {
         <ContextMenu
           type={"chapter"}
           chapterId={chapterId}
+          chapterTitle={text}
           color={color}
         />
       </ChapterTitle>
