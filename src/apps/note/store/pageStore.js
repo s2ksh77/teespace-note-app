@@ -1,6 +1,7 @@
 import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
+import TagStore from './tagStore';
 
 const PageStore = observable({
   notechannel_id: '',
@@ -59,6 +60,7 @@ const PageStore = observable({
           this.isEdit = dto.is_edit;
           this.noteTitle = dto.note_title;
           this.currentPageId = dto.note_id;
+          TagStore.setNoteTagList(dto.tagList);
         }
       },
     );

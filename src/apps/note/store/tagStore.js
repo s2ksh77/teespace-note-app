@@ -52,6 +52,9 @@ const TagStore = observable({
     });
     return this.notetagList;
   },
+  setNoteTagList(tagArr) {
+    this.notetagList = tagArr;
+  },
   // 없어도 될 것 같음
   // async getAllTagList() {
   //   const res = await NoteRepository.getAllTagList();

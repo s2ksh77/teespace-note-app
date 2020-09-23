@@ -21,9 +21,10 @@ const PageList = ({ children, chapterId }) => {
     await TagStore.getNoteTagList(targetId);
   };
 
-  const handleNewBtnClick = (targetId) => {
+  const handleNewBtnClick = async (targetId) => {
     PageStore.setCreatePageParent(targetId);
-    PageStore.createPage();
+    await PageStore.createPage();
+    NoteStore.setShowPage(true);
   };
   const onClickLnbPage = (id) => {
     NoteStore.setShowPage(true);
