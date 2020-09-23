@@ -52,7 +52,6 @@ const TagListContainer = () => {
     TagStore.setEditTagText(value);
   };
   const handleModifyInput = () => {
-    TagStore.setEditTagText(TagStore.editTagValue);
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
       if (TagStore.currentTagValue === TagStore.editTagValue)

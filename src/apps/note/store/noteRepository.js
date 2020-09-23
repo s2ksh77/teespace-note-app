@@ -5,11 +5,11 @@ const { default: axios } = require('axios');
 class NoteRepository {
   URL = 'http://222.122.67.176:8080/CMS/Note';
 
-  WS_ID = '8050f1ba-0b42-4fe1-a3e4-c0647a47d019';
+  WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
   CH_TYPE = 'CHN0003';
 
-  USER_ID = '431ef2dd-08fd-495d-b192-db6ecd899496';
+  USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
     this.URL = url || this.URL;
