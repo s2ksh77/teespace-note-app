@@ -72,6 +72,8 @@ export const LnbTagContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0.81rem;
   font-size: 0.81rem;
   cursor: pointer;
+  border-bottom: 0.0625rem solid #dadada;
+  margin: 0 0.81rem;
   color:${props => props.color || ""};
   &:hover .ellipsisBtn {
     background-color: rgba(30, 168, 223, 0.2);
