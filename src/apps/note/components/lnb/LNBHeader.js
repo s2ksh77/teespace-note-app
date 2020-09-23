@@ -32,6 +32,7 @@ const LNBHeader = ({createNewChapter}) => {
 
   const onSubmitSearchBtn = (e) => {
     e.preventDefault();
+    if (ChapterStore.isTagSearching || ChapterStore.inputValue === "") return;
     ChapterStore.setSearchStr(ChapterStore.inputValue);
     ChapterStore.setIsSearching(true);
     inputRef.current.focus();
