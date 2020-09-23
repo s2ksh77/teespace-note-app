@@ -24,13 +24,12 @@ const TagContentContainer = () => {
 	return useObserver(() => (
 		<>
 			{(Object.keys(TagStore.targetTagList).length > 0) ?
-				(<StyledCollapse accordion="true" defaultActiveKey={['1', '2', '3', '4']}
-            expandIcon={(panelProps) => customExpandIcon(panelProps)}
-            expandIconPosition={"right"}>
+				(<StyledCollapse defaultActiveKey={['KOR', 'ENG', 'NUM', 'ETC']}
+                    expandIcon={(panelProps) => customExpandIcon(panelProps)} expandIconPosition={"right"}>
 					{Object.keys(TagStore.targetTagList).map((category, idx) => {
 						return (
 							// "ㄱ~ㅎ"
-							<Panel header={categoryInfo[category]} key={String(idx + 1)} >
+							<Panel header={categoryInfo[category]} key={category} >
 								{Object.keys(TagStore.targetTagList[category])?.map((tagKey) => {
 									// "ㄱ", "ㄴ" ...       
 									return (
