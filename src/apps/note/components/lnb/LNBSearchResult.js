@@ -4,6 +4,7 @@ import { useObserver } from "mobx-react";
 import {ChapterSearchResult, ChapterSearchResultColor, ChapterSearchResultTitle,
 	PageSearchResult, PageSearchResultPageTitle, PageSearchResultChapterTitle} from '../../styles/lnbStyle';
 import NoteStore from '../../store/noteStore';
+import SearchResultNotFound from '../common/SearchResultNotFound';
 
 // chapter : id, title, color, firstPageId
 // page : chapterId, chapterTitle, id, title
@@ -32,24 +33,30 @@ const LNBSearchResult = () => {
 	}
 	
 	return useObserver(()=>(
-		<>
-			{ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
-				return (
-					<ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn.bind(null,chapter.id, chapter.firstPageId)}>
-						<ChapterSearchResultColor backgroundColor={chapter.color} />
-						<ChapterSearchResultTitle>{chapter.title}</ChapterSearchResultTitle>
-					</ChapterSearchResult>
-				)
-			})}
-			{ChapterStore.searchResult?.["page"]?.map((page) => {
-				return (
-					<PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page.chapterId, page.id)}>
-						<PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
-						<PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
-					</PageSearchResult>
-				)
-			})}
-		</>
+    <>
+      {(ChapterStore.searchResult?.["chapter"]?.length === 0 && 
+      ChapterStore.searchResult?.["page"]?.length === 0) 
+      ? <SearchResultNotFound searchStr={ChapterStore.searchStr} /> :
+        <>
+        {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
+          return (
+            <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn.bind(null,chapter.id, chapter.firstPageId)}>
+              <ChapterSearchResultColor backgroundColor={chapter.color} />
+              <ChapterSearchResultTitle>{chapter.title}</ChapterSearchResultTitle>
+            </ChapterSearchResult>
+          )
+        })}
+        {ChapterStore.searchResult?.["page"]?.map((page) => {
+          return (
+            <PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page.chapterId, page.id)}>
+              <PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
+              <PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
+            </PageSearchResult>
+          )
+        })}
+        </>
+      }
+    </>
 	));
 }
 

@@ -44,7 +44,7 @@ const TagContentContainer = () => {
 					})}
 				</StyledCollapse>)
 				:
-				(<SearchResultNotFound />)
+				(<SearchResultNotFound searchStr={TagStore.searchString}/>)
 			}
 		</>
 	))
