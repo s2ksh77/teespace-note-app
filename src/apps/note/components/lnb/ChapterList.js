@@ -71,6 +71,7 @@ const ChapterList = ({ type }) => {
             {ChapterStore.getRenameChapterId() === item.id ? (
                 <ChapterTextInput 
                   ref={inputRef}
+                  maxLength="200"
                   value={ChapterStore.renameChapterText}
                   onChange={handleChapterName}
                   onBlur={handleChapterTextInput.bind(null, item.color)}

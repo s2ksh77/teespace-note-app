@@ -71,6 +71,7 @@ const PageList = ({ children, chapterId }) => {
             <PageTextCover style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }}>
               <PageTextInput
                 ref={inputRef}
+                maxLength="200"
                 value={PageStore.renamePageText}
                 onChange={handlePageName}
                 onBlur={handlePageTextInput}

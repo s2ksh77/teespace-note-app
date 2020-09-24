@@ -60,6 +60,7 @@ const EditorHeader = () => {
           </EditBtn>
           <EditorTitle
             id="editorTitle"
+            maxLength="200"
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
           />

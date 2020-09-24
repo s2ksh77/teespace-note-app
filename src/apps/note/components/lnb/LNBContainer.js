@@ -91,6 +91,7 @@ const LNBContainer = () => {
                 <ChapterTitle>
                   <ChapterInput
                     placeholder="새 챕터"
+                    maxLength="200"
                     onChange={handleTitleInput}
                     onKeyDown={handleKeyDown}
                   />

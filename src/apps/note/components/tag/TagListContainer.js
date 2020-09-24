@@ -112,7 +112,7 @@ const TagListContainer = () => {
   }
 
   return useObserver(() => (
-    <>{console.log(PageStore.isEdit)}
+    <>
       <EditorTagCover>
         <Tooltip title={PageStore.isEdit ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
           <TagNewBtn>
@@ -121,6 +121,7 @@ const TagListContainer = () => {
         </Tooltip>
         {TagStore.isNewTag ? (
           <TagInput
+            maxLength="50"
             onChange={handleTagInput}
             onBlur={createTag}
             onKeyDown={handleKeyDown}
@@ -132,6 +133,7 @@ const TagListContainer = () => {
             TagStore.editTagIndex === index ? (
               <TagInput
                 key={item}
+                maxLength="50"
                 value={TagStore.editTagValue}
                 onChange={handleChangeName}
                 onBlur={handleModifyInput}
