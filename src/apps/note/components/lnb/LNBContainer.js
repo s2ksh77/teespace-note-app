@@ -34,11 +34,19 @@ const LNBContainer = () => {
     if (!ChapterStore.chapterNewTitle) {
       let autoName = ChapterStore.getNewChapterTitle();
       ChapterStore.setChapterTitle(autoName);
+      await ChapterStore.createChapter(
+        ChapterStore.chapterNewTitle,
+        ChapterStore.isNewChapterColor
+      );
+    } else if (ChapterStore.isValidChapterText(ChapterStore.chapterNewTitle)) {
+      await ChapterStore.createChapter(
+        ChapterStore.chapterNewTitle,
+        ChapterStore.isNewChapterColor
+      );
+    } else {
+      alert('중복된 이름이 있습니다')
     }
-    await ChapterStore.createChapter(
-      ChapterStore.chapterNewTitle,
-      ChapterStore.isNewChapterColor
-    );
+    
   };
 
   // 바깥 영역 클릭시
@@ -59,6 +67,19 @@ const LNBContainer = () => {
     }    
   }, [ChapterStore.isNewChapter])
 
+  const handleKeyDown = (event) => {
+    switch (event.key) {
+      case "Enter":
+        createNewChapter();
+        break;
+      case "Escape":
+        ChapterStore.setChapterTempUl(false);
+        break;
+      default:
+        break;
+    }
+  }
+
   return useObserver(() => (
     <>
       <LNBCover>
@@ -71,11 +92,7 @@ const LNBContainer = () => {
                   <ChapterInput
                     placeholder="새 챕터"
                     onChange={handleTitleInput}
-                    onKeyPress={(event) => {
-                      if (event.key === "Enter") {
-                        createNewChapter();
-                      }
-                    }}
+                    onKeyDown={handleKeyDown}
                   />
                 </ChapterTitle>
               </LNBNewChapter>
