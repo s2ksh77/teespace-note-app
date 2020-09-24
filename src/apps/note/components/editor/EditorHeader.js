@@ -11,9 +11,11 @@ import {
   ModifiedTime,
 } from "../../styles/titleStyle";
 import HeaderButtons from '../common/buttons';
+import editingImg from '../../assets/TeeSpace_working.gif';
 
 const EditorHeader = () => {
   const { PageStore, TagStore } = useStore();
+  const editingImgStyle = {width:"1.13rem", marginRight:"0.5rem"};
 
   const handleClickBtn = (e) => {
     const {
@@ -63,6 +65,7 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
+          {PageStore.isEdit ? <img style={editingImgStyle} src={editingImg} /> : null}
           <ModifiedUser>
             {PageStore.currentPageData.user_name}
           </ModifiedUser>

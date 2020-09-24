@@ -12,9 +12,11 @@ import {
 } from '../../styles/tagStyle';
 import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/tag_add.svg';
+import {Tooltip} from 'antd';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useStore();
+
   const handleCloseBtn = (targetId, targetText) => {
     if (targetId) {
       const curTag = TagStore.notetagList.filter(
@@ -40,6 +42,8 @@ const TagListContainer = () => {
     } = e;
     TagStore.setTagText(value);
   };
+  const handleFocus = (e) => e.target.select();
+
   const handleChangeTag = (text, index, id) => {
     TagStore.setCurrentTagData(id, text);
     TagStore.setEditTagText(text);
@@ -85,21 +89,41 @@ const TagListContainer = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    switch (event.key) {
+      case "Enter":
+        createTag();
+        break;
+      case "Escape":
+        toggleTagInput();
+        break;
+    }
+  }
+
+  const handleModifyingKeyDown = (event) => {
+    switch (event.key) {
+      case "Enter":
+        handleModifyInput();
+        break;
+      case "Escape":
+        toggleTagInput();
+        break;
+    }
+  }
+
   return useObserver(() => (
-    <>
+    <>{console.log(PageStore.isEdit)}
       <EditorTagCover>
-        <TagNewBtn>
-          <TagNewBtnIcon src={tagImage} onClick={toggleTagInput} />
-        </TagNewBtn>
+        <Tooltip title={PageStore.isEdit ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
+          <TagNewBtn>
+            <TagNewBtnIcon src={tagImage} onClick={toggleTagInput} />
+          </TagNewBtn>
+        </Tooltip>
         {TagStore.isNewTag ? (
           <TagInput
             onChange={handleTagInput}
             onBlur={createTag}
-            onKeyPress={(event) => {
-              if (event.key === "Enter") {
-                createTag();
-              }
-            }}
+            onKeyDown={handleKeyDown}
             autoFocus={true}
           />
         ) : null}
@@ -111,11 +135,8 @@ const TagListContainer = () => {
                 value={TagStore.editTagValue}
                 onChange={handleChangeName}
                 onBlur={handleModifyInput}
-                onKeyPress={event => {
-                  if (event.key === 'Enter') {
-                    handleModifyInput();
-                  }
-                }}
+                onKeyDown={handleModifyingKeyDown}
+                onFocus={handleFocus}
                 autoFocus={true}
               />
             ) : (

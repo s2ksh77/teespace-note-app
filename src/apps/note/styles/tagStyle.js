@@ -22,6 +22,7 @@ export const TagNewBtn = styled.div`
   margin-right: 0.88rem;
   align-self: center;
   background-color: transparent;
+  cursor:pointer;
 `;
 
 export const TagList = styled.div`
