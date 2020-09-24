@@ -106,7 +106,7 @@ const TagListContainer = () => {
         handleModifyInput();
         break;
       case "Escape":
-        toggleTagInput();
+        TagStore.setIsNewFlag(false);
         break;
     }
   }

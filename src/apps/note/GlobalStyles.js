@@ -30,6 +30,9 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
     user-select: none;
     background-color: rgba(30,168,223,0.20);
+    > .ant-tag-close-icon {
+      margin-left:auto !important;
+    }
   }
 `;
 
