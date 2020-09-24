@@ -11,7 +11,7 @@ export const LNBCover = styled.div`
 `;
 
 export const LNBChapterCover = styled.div`
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
 `;

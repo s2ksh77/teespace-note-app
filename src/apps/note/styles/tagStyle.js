@@ -107,7 +107,7 @@ export const TagMenuHeader = styled.div`
 export const TagContentCover = styled.div`
   width: 100%;
   height: calc(100% - 3rem);
-  overflow:scroll;
+  overflow:auto;
   display: flex;
   flex-direction: column;
   align-items: center;
