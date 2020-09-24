@@ -10,6 +10,11 @@ import {HeaderButtonContainer, Button} from '../../styles/commonStyle';
 const HeaderButtons = () => {
     const {NoteStore} = useStore();
     const style = useMemo(() =>({marginLeft:"0.69rem"}), []);
+    /** 
+     * EventBus.dispatch('onLayoutExpand')
+     * EventBus.dispatch('onLayoutCollapse')
+     * EventBus.dispatch('onLayoutClose')
+     * **/
 
     const ChangeSizeButton = () => {
         if (NoteStore.getIsMaximumSize()) return (<Button src={minimize} />);
