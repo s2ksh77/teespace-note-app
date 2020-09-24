@@ -45,6 +45,7 @@ const PageList = ({ children, chapterId }) => {
   const handlePageTextInput = () => {
     PageStore.renamePage(chapterId);
     PageStore.setRenamePageId('');
+    PageStore.setIsRename(false);
   };
 
   const handleInputRef = () => {
@@ -65,23 +66,23 @@ const PageList = ({ children, chapterId }) => {
           }
           onClick={onClickLnbPage.bind(null, item.id)}
         >
-          <PageMargin />
+          <PageMargin style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }} />
           {PageStore.getRenamePageId() === item.id ? (
-              <PageTextCover>
-                <PageTextInput
-                  ref={inputRef}
-                  value={PageStore.renamePageText}
-                  onChange={handlePageName}
-                  onBlur={handlePageTextInput}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") { handlePageTextInput(); }
-                    else if (e.key === "Escape") { PageStore.setRenamePageId(''); }
-                  }}
-                  onSelect={handleInputRef}
-                  autoFocus={true}
-                />
-              </PageTextCover>
-            ) : (
+            <PageTextCover style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }}>
+              <PageTextInput
+                ref={inputRef}
+                value={PageStore.renamePageText}
+                onChange={handlePageName}
+                onBlur={handlePageTextInput}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { handlePageTextInput(); }
+                  else if (e.key === "Escape") { PageStore.setRenamePageId(''); }
+                }}
+                onSelect={handleInputRef}
+                autoFocus={true}
+              />
+            </PageTextCover>
+          ) : (
               <PageTextCover>
                 <PageText>{item.text}</PageText>
                 <ContextMenu
@@ -93,7 +94,8 @@ const PageList = ({ children, chapterId }) => {
               </PageTextCover>
             )}
         </Page>
-      ))}
+      ))
+      }
       <NewPage className={"page-li"}>
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>

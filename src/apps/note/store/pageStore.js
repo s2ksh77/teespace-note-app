@@ -14,6 +14,7 @@ const PageStore = observable({
   currentPageId: '',
   createParent: '',
   deletePageList: [],
+  isRename: false,
   renameFlag: false,
   renamePageId: '',
   renamePageText: '',
@@ -49,6 +50,9 @@ const PageStore = observable({
   },
   setDeletePageList(page) {
     this.deletePageList.push(page);
+  },
+  setIsRename(flag) {
+    this.isRename = flag;
   },
   setRenameFlag(flag) {
     this.renameFlag = flag;

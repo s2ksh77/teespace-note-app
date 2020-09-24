@@ -24,6 +24,7 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
         PageStore.setRenameFlag(true);
         PageStore.setRenamePageId(pageId);
         PageStore.setRenamePageText(pageTitle);
+        PageStore.setIsRename(true);
         break;
       default:
         break;
