@@ -223,12 +223,13 @@ const ChapterStore = observable({
     }
   },
 
-  isValidChapterText() {
-    let isValid = true;
-    this.chapterList.forEach((chapter) => {
-      if (chapter.text === this.renameChapterText) isValid = false;
-    })
-    return isValid;
+  isValidChapterText(targetText) {
+    const isExist = this.chapterList.find((chapter) => {
+      return chapter.text === targetText;
+    });
+
+    if (isExist) return false;
+    else return true; 
   },
 });
 

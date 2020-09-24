@@ -46,7 +46,7 @@ const ChapterList = ({ type }) => {
   };
 
   const handleChapterTextInput = (color) => {
-    if (ChapterStore.isValidChapterText()) {
+    if (ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
       ChapterStore.renameChapter(color);
     }
     ChapterStore.setRenameChapterId('');
