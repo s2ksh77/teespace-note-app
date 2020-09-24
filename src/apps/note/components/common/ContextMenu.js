@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
@@ -9,18 +9,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
-const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, color }) => {
+const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
   const { ChapterStore, PageStore } = useStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.
     switch (type) {
       case "chapter":
+        ChapterStore.setRenameFlag(true);
         ChapterStore.setRenameChapterId(chapterId);
         ChapterStore.setRenameChapterText(chapterTitle);
-        // ChapterStore.renameChapter(chapterId, chapterTitle, color);
         break;
       case "page":
+        PageStore.setRenameFlag(true);
         PageStore.setRenamePageId(pageId);
         PageStore.setRenamePageText(pageTitle);
         break;

@@ -38,7 +38,6 @@ const ChapterText = ({ text, chapterId, color }) => {
           type={"chapter"}
           chapterId={chapterId}
           chapterTitle={text}
-          color={color}
         />
       </ChapterTitle>
       <ChapterFolderBtn>

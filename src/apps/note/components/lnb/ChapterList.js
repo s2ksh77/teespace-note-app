@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import ChapterColor from "../chapter/ChapterColor";
@@ -12,6 +12,7 @@ import {
 
 const ChapterList = ({ type }) => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
+  const inputRef = useRef();
 
   useEffect(() => {
     (async () => {
@@ -52,6 +53,13 @@ const ChapterList = ({ type }) => {
     ChapterStore.setRenameChapterId('');
   };
 
+  const handleInputRef = () => {
+    if (ChapterStore.renameFlag) {
+      inputRef.current.select();
+      ChapterStore.setRenameFlag(false);
+    }
+  };
+
   return useObserver(() => (
     <>
       {ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map((item) => (
@@ -62,6 +70,7 @@ const ChapterList = ({ type }) => {
             <ChapterColor color={item.color} chapterId={item.id} />
             {ChapterStore.getRenameChapterId() === item.id ? (
                 <ChapterTextInput 
+                  ref={inputRef}
                   value={ChapterStore.renameChapterText}
                   onChange={handleChapterName}
                   onBlur={handleChapterTextInput.bind(null, item.color)}
@@ -69,6 +78,7 @@ const ChapterList = ({ type }) => {
                     if (e.key === "Enter") { handleChapterTextInput(item.color); }
                     else if (e.key === "Escape") { ChapterStore.setRenameChapterId(''); }
                   }}
+                  onSelect={handleInputRef}
                   autoFocus={true}
                 />
               ) : (

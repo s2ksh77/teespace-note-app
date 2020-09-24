@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useObserver } from "mobx-react";
 import {
   Page,
@@ -16,6 +16,7 @@ import useStore from "../../store/useStore";
 const PageList = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
   const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
+  const inputRef = useRef();
 
   const selectPage = async (targetId) => {
     await PageStore.getNoteInfoList(targetId);
@@ -46,6 +47,13 @@ const PageList = ({ children, chapterId }) => {
     PageStore.setRenamePageId('');
   };
 
+  const handleInputRef = () => {
+    if (PageStore.renameFlag) {
+      inputRef.current.select();
+      PageStore.setRenameFlag(false);
+    }
+  };
+
   return useObserver(() => (
     <>
       {childrenList.map((item) => (
@@ -61,6 +69,7 @@ const PageList = ({ children, chapterId }) => {
           {PageStore.getRenamePageId() === item.id ? (
               <PageTextCover>
                 <PageTextInput
+                  ref={inputRef}
                   value={PageStore.renamePageText}
                   onChange={handlePageName}
                   onBlur={handlePageTextInput}
@@ -68,6 +77,7 @@ const PageList = ({ children, chapterId }) => {
                     if (e.key === "Enter") { handlePageTextInput(); }
                     else if (e.key === "Escape") { PageStore.setRenamePageId(''); }
                   }}
+                  onSelect={handleInputRef}
                   autoFocus={true}
                 />
               </PageTextCover>

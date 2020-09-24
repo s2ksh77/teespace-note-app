@@ -59,6 +59,7 @@ export const PageTextInput = styled.input`
   font-weight: 300;
   border: none;
   outline: none;
+  background-color: rgba(30,168,223,0.0);
 `;
 
 export const NewPage = styled.span`

@@ -29,6 +29,7 @@ const ChapterStore = observable({
   inputValue:"", // lnb title 영역 input창 value
   searchStr:"",
   searchResult:{}, // {chapter:[], page:[]} 형태
+  renameFlag: false,
   renameChapterId: '',
   renameChapterText: '',
   getCurrentChapterId() {
@@ -36,6 +37,9 @@ const ChapterStore = observable({
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  setRenameFlag(flag) {
+    this.renameFlag = flag;
   },
   setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
