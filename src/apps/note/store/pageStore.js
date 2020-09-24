@@ -15,7 +15,6 @@ const PageStore = observable({
   createParent: '',
   deletePageList: [],
   isRename: false,
-  renameFlag: false,
   renamePageId: '',
   renamePageText: '',
   getPageId(e) {
@@ -53,9 +52,6 @@ const PageStore = observable({
   },
   setIsRename(flag) {
     this.isRename = flag;
-  },
-  setRenameFlag(flag) {
-    this.renameFlag = flag;
   },
   setRenamePageId(pageId) {
     this.renamePageId = pageId;

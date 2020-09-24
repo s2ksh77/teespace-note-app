@@ -16,12 +16,10 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
     // 이름을 변경한다.
     switch (type) {
       case "chapter":
-        ChapterStore.setRenameFlag(true);
         ChapterStore.setRenameChapterId(chapterId);
         ChapterStore.setRenameChapterText(chapterTitle);
         break;
       case "page":
-        PageStore.setRenameFlag(true);
         PageStore.setRenamePageId(pageId);
         PageStore.setRenamePageText(pageTitle);
         PageStore.setIsRename(true);
