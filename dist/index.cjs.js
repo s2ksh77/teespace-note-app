@@ -7,9 +7,9 @@ var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var mobxReact = require('mobx-react');
 var styled = require('styled-components');
+var antd = require('antd');
 var reactFontawesome = require('@fortawesome/react-fontawesome');
 var freeSolidSvgIcons = require('@fortawesome/free-solid-svg-icons');
-var antd = require('antd');
 require('antd/dist/antd.css');
 var JoditEditor = require('jodit-react');
 
@@ -153,9 +153,9 @@ var NoteRepository = /*#__PURE__*/function () {
     _classCallCheck(this, NoteRepository);
 
     this.URL = 'http://222.122.67.176:8080/CMS/Note';
-    this.WS_ID = '8050f1ba-0b42-4fe1-a3e4-c0647a47d019';
+    this.WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
     this.CH_TYPE = 'CHN0003';
-    this.USER_ID = '431ef2dd-08fd-495d-b192-db6ecd899496';
+    this.USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
     this.URL = url || this.URL;
   }
 
@@ -233,6 +233,26 @@ var NoteRepository = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "deleteChapter",
+    value: function deleteChapter(chapterId) {
+      return teespaceCore.API.Delete("".concat(this.URL, "/notebook?action=Delete&id=").concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
+    }
+  }, {
+    key: "renameChapter",
+    value: function renameChapter(chapterId, chapterTitle, color) {
+      return teespaceCore.API.Put("".concat(this.URL, "/notebooks?action=Update"), {
+        dto: {
+          USER_ID: this.USER_ID,
+          color: color,
+          id: chapterId,
+          note_channel_id: this.chId,
+          parent_notebook: '',
+          text: chapterTitle,
+          user_name: '김수현B'
+        }
+      });
+    }
+  }, {
     key: "createPage",
     value: function createPage(pageName, chapterId) {
       return teespaceCore.API.Post("".concat(this.URL, "/note"), {
@@ -244,6 +264,39 @@ var NoteRepository = /*#__PURE__*/function () {
           user_name: '김수현B',
           note_title: pageName,
           is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
+          parent_notebook: chapterId
+        }
+      });
+    }
+  }, {
+    key: "deletePage",
+    value: function deletePage(pageList) {
+      var _this = this;
+
+      pageList.forEach(function (page) {
+        page.USER_ID = _this.USER_ID;
+        page.WS_ID = _this.WS_ID;
+        page.note_channel_id = _this.chId;
+        page.user_name = '김수현B';
+      });
+      return teespaceCore.API.Post("".concat(this.URL, "/note?action=Delete"), {
+        dto: {
+          noteList: pageList
+        }
+      });
+    }
+  }, {
+    key: "renamePage",
+    value: function renamePage(pageId, pageTitle, chapterId) {
+      return teespaceCore.API.Put("".concat(this.URL, "/note?action=Update"), {
+        dto: {
+          CH_TYPE: 'CHN0003',
+          TYPE: 'RENAME',
+          USER_ID: this.USER_ID,
+          WS_ID: this.WS_ID,
+          note_channel_id: this.chId,
+          note_id: pageId,
+          note_title: pageTitle,
           parent_notebook: chapterId
         }
       });
@@ -329,388 +382,6 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
-var PageStore = mobx.observable({
-  notechannel_id: '',
-  noteInfoList: [],
-  currentPageData: [],
-  returnData: [],
-  isEdit: '',
-  noteContent: '',
-  noteTitle: '',
-  currentPageId: '',
-  createParent: '',
-  getPageId: function getPageId(e) {
-    var id = e.target.id;
-    return id;
-  },
-  setCurrentPageId: function setCurrentPageId(pageId) {
-    this.currentPageId = pageId;
-  },
-  getPageName: function getPageName(e) {
-    var name = e.target.name;
-    return name;
-  },
-  isReadMode: function isReadMode() {
-    return this.isEdit === null || this.isEdit === '';
-  },
-  setContent: function setContent(content) {
-    this.noteContent = content;
-  },
-  setTitle: function setTitle(title) {
-    this.noteTitle = title;
-  },
-  setCreatePageParent: function setCreatePageParent(chapterId) {
-    this.createParent = chapterId;
-  },
-  getCreatePageParent: function getCreatePageParent() {
-    return this.createParent;
-  },
-  createPage: function createPage() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return NoteRepository$1.createPage('제목 없음', _this.createParent).then(function (response) {
-                if (response.status === 200) {
-                  var dto = response.data.dto;
-                  _this.currentPageData = dto;
-                  ChapterStore.getChapterList();
-                  _this.isEdit = dto.is_edit;
-                  _this.noteTitle = dto.note_title;
-                  _this.currentPageId = dto.note_id;
-                }
-              });
-
-            case 2:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
-  },
-  getNoteInfoList: function getNoteInfoList(noteId) {
-    var _this2 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return NoteRepository$1.getNoteInfoList(noteId).then(function (response) {
-                var noteList = response.data.dto;
-                _this2.noteInfoList = noteList.noteList[0];
-                _this2.currentPageData = noteList.noteList[0];
-                _this2.isEdit = noteList.noteList[0].is_edit;
-                _this2.noteTitle = noteList.noteList[0].note_title;
-                _this2.currentPageId = noteList.noteList[0].note_id;
-              });
-
-            case 2:
-              return _context2.abrupt("return", _this2.noteInfoList);
-
-            case 3:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }))();
-  },
-  editStart: function editStart(noteId) {
-    var _this3 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return NoteRepository$1.editStart(noteId, _this3.currentPageData.parent_notebook).then(function (response) {
-                if (response.status === 200) {
-                  var returnData = response.data.dto;
-
-                  _this3.getNoteInfoList(returnData.note_id);
-                }
-              });
-
-            case 2:
-              return _context3.abrupt("return", _this3.currentPageData);
-
-            case 3:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }))();
-  },
-  editDone: function editDone(updateDto) {
-    var _this4 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return NoteRepository$1.editDone(updateDto).then(function (response) {
-                if (response.status === 200) {
-                  var returnData = response.data.dto;
-
-                  _this4.getNoteInfoList(returnData.note_id);
-
-                  ChapterStore.getChapterList();
-                }
-              });
-
-            case 2:
-              return _context4.abrupt("return", _this4.currentPageData);
-
-            case 3:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
-    }))();
-  },
-  noneEdit: function noneEdit(noteId) {
-    var _this5 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              _context5.next = 2;
-              return NoteRepository$1.nonEdit(noteId, _this5.currentPageData.parent_notebook).then(function (response) {
-                if (response.status === 200) {
-                  var returnData = response.data.dto;
-
-                  _this5.getNoteInfoList(returnData.note_id);
-                }
-              });
-
-            case 2:
-              return _context5.abrupt("return", _this5.currentPageData);
-
-            case 3:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, _callee5);
-    }))();
-  }
-});
-
-var ChapterStore = mobx.observable({
-  chapterColor: "",
-  chapterList: [],
-  currentChapterId: "",
-  chapterNewTitle: "",
-  isNewChapterColor: "",
-  isNewChapter: false,
-  colorArray: {
-    1: "#FB7748",
-    2: "#FB891B",
-    3: "#E7B400",
-    4: "#B4CC1B",
-    5: "#65D03F",
-    6: "#14C0B3",
-    7: "#00C6E6",
-    8: "#4A99F5",
-    9: "#046305",
-    10: "#E780FF",
-    11: "#FF7BA8"
-  },
-  isSearching: false,
-  isTagSearching: false,
-  //tag chip 클릭해서 tag chip 띄울 때 씀
-  targetSearchTagName: '',
-  inputValue: "",
-  // lnb title 영역 input창 value
-  searchStr: "",
-  searchResult: {},
-  // {chapter:[], page:[]} 형태
-  getCurrentChapterId: function getCurrentChapterId() {
-    return this.currentChapterId;
-  },
-  setCurrentChapterId: function setCurrentChapterId(chapterId) {
-    this.currentChapterId = chapterId;
-  },
-  getChapterList: function getChapterList() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return NoteRepository$1.getChapterList(NoteStore.getChannelId()).then(function (response) {
-                var notbookList = response.data.dto;
-                _this.chapterList = notbookList.notbookList;
-              });
-
-            case 2:
-              return _context.abrupt("return", _this.chapterList);
-
-            case 3:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
-  },
-  createChapter: function createChapter(chapterTitle, chapterColor) {
-    var _this2 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return NoteRepository$1.createChapter(chapterTitle, chapterColor).then(function (response) {
-                if (response.status === 200) {
-                  var notbookList = response.data.dto;
-                  ChapterStore.getChapterList();
-                  PageStore.getNoteInfoList(notbookList.children[0].id);
-
-                  _this2.setChapterTempUl(false);
-                }
-              });
-
-            case 2:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }))();
-  },
-  setChapterTempUl: function setChapterTempUl(flag) {
-    this.isNewChapter = flag;
-  },
-  setChapterTitle: function setChapterTitle(title) {
-    this.chapterNewTitle = title;
-  },
-  getChapterId: function getChapterId(e) {
-    var id = e.target.id;
-    return id;
-  },
-  getChapterRandomColor: function getChapterRandomColor() {
-    var COLOR_ARRAY = Object.values(this.colorArray);
-    this.isNewChapterColor = COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
-  },
-  getChapterColor: function getChapterColor() {
-    var _this3 = this;
-
-    this.chapterList.forEach(function (chapter) {
-      _this3.chapterColor = chapter.color;
-      return _this3.chapterColor;
-    });
-  },
-  getChapterName: function getChapterName(chapterId) {
-    var _NoteRepository$getCh = NoteRepository$1.getChapterText(chapterId),
-        value = _NoteRepository$getCh.value;
-
-    return value;
-  },
-  // search 관련
-  getIsSearching: function getIsSearching() {
-    return this.isSearching;
-  },
-  setIsSearching: function setIsSearching(isSearching) {
-    this.isSearching = isSearching;
-
-    if (!isSearching) {
-      this.searchResult = {};
-      this.searchStr = '';
-      this.inputValue = '';
-    }
-  },
-  getInputValue: function getInputValue() {
-    return this.inputValue;
-  },
-  setInputValue: function setInputValue(value) {
-    this.inputValue = value;
-  },
-  getSearchStr: function getSearchStr() {
-    return this.searchStr;
-  },
-  setSearchStr: function setSearchStr(str) {
-    var _this4 = this;
-
-    this.searchStr = str; // searchResult 만들기
-
-    var resultChapterArr = [],
-        resultPageArr = [];
-    this.chapterList.map(function (chapter) {
-      // chapter 저장
-      if (chapter.text.includes(_this4.searchStr)) {
-        resultChapterArr.push({
-          id: chapter.id,
-          title: chapter.text,
-          color: chapter.color,
-          // 클릭하면 setCurrentPageId 해야해서 필요
-          firstPageId: chapter.children.length > 0 ? chapter.children[0].id : null
-        });
-      } // page 저장
-
-
-      chapter.children.map(function (page) {
-        if (page.text.includes(_this4.searchStr)) {
-          resultPageArr.push({
-            chapterId: chapter.id,
-            chapterTitle: chapter.text,
-            id: page.id,
-            title: page.text
-          });
-        }
-      });
-    });
-    this.searchResult = {
-      chapter: resultChapterArr,
-      page: resultPageArr
-    };
-  },
-  getSearchResult: function getSearchResult() {
-    return this.searchResult;
-  },
-  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
-  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
-  setSearchResult: function setSearchResult(result) {
-    this.searchResult = result;
-  },
-  // 태그칩 클릭해서 lnblist 띄우기
-  getTargetSearchTagName: function getTargetSearchTagName() {
-    return this.targetSearchTagName;
-  },
-  setTargetSearchTagName: function setTargetSearchTagName(str) {
-    this.targetSearchTagName = str;
-  },
-  getIsTagSearching: function getIsTagSearching() {
-    return this.isTagSearching;
-  },
-  setIsTagSearching: function setIsTagSearching(isSearching) {
-    this.isTagSearching = isSearching;
-
-    if (!isSearching) {
-      this.targetSearchTagName = '';
-      this.searchResult = {}; // this.inputValue ='';//필요 없을 것 같다
-    }
-  }
-});
-
 var TagStore = mobx.observable({
   notetagList: [],
   tagSortList: [],
@@ -775,6 +446,9 @@ var TagStore = mobx.observable({
         }
       }, _callee);
     }))();
+  },
+  setNoteTagList: function setNoteTagList(tagArr) {
+    this.notetagList = tagArr;
   },
   // 없어도 될 것 같음
   // async getAllTagList() {
@@ -1077,6 +751,541 @@ var TagStore = mobx.observable({
   }
 });
 
+var PageStore = mobx.observable({
+  notechannel_id: '',
+  noteInfoList: [],
+  currentPageData: [],
+  returnData: [],
+  isEdit: '',
+  noteContent: '',
+  noteTitle: '',
+  currentPageId: '',
+  createParent: '',
+  deletePageList: [],
+  renamePageId: '',
+  renamePageText: '',
+  getPageId: function getPageId(e) {
+    var id = e.target.id;
+    return id;
+  },
+  setCurrentPageId: function setCurrentPageId(pageId) {
+    this.currentPageId = pageId;
+  },
+  getPageName: function getPageName(e) {
+    var name = e.target.name;
+    return name;
+  },
+  isReadMode: function isReadMode() {
+    return this.isEdit === null || this.isEdit === '';
+  },
+  setContent: function setContent(content) {
+    this.noteContent = content;
+  },
+  setTitle: function setTitle(title) {
+    this.noteTitle = title;
+  },
+  setCreatePageParent: function setCreatePageParent(chapterId) {
+    this.createParent = chapterId;
+  },
+  getCreatePageParent: function getCreatePageParent() {
+    return this.createParent;
+  },
+  setDeletePageList: function setDeletePageList(page) {
+    this.deletePageList.push(page);
+  },
+  setRenamePageId: function setRenamePageId(pageId) {
+    this.renamePageId = pageId;
+  },
+  getRenamePageId: function getRenamePageId() {
+    return this.renamePageId;
+  },
+  setRenamePageText: function setRenamePageText(pageText) {
+    this.renamePageText = pageText;
+  },
+  createPage: function createPage() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return NoteRepository$1.createPage('제목 없음', _this.createParent).then(function (response) {
+                if (response.status === 200) {
+                  var dto = response.data.dto;
+                  _this.currentPageData = dto;
+                  ChapterStore.getChapterList();
+                  _this.isEdit = dto.is_edit;
+                  _this.noteTitle = dto.note_title;
+                  _this.currentPageId = dto.note_id;
+                  TagStore.setNoteTagList(dto.tagList);
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  deletePage: function deletePage() {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.deletePage(_this2.deletePageList).then(function (response) {
+                if (response.status === 200) {
+                  ChapterStore.getChapterList();
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
+  },
+  renamePage: function renamePage(chapterId) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return NoteRepository$1.renamePage(_this3.renamePageId, _this3.renamePageText, chapterId).then(function (response) {
+                if (response.status === 200) {
+                  ChapterStore.getChapterList();
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  },
+  getNoteInfoList: function getNoteInfoList(noteId) {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return NoteRepository$1.getNoteInfoList(noteId).then(function (response) {
+                var noteList = response.data.dto;
+                _this4.noteInfoList = noteList.noteList[0];
+                _this4.currentPageData = noteList.noteList[0];
+                _this4.isEdit = noteList.noteList[0].is_edit;
+                _this4.noteTitle = noteList.noteList[0].note_title;
+                _this4.currentPageId = noteList.noteList[0].note_id;
+              });
+
+            case 2:
+              return _context4.abrupt("return", _this4.noteInfoList);
+
+            case 3:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  editStart: function editStart(noteId) {
+    var _this5 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return NoteRepository$1.editStart(noteId, _this5.currentPageData.parent_notebook).then(function (response) {
+                if (response.status === 200) {
+                  var returnData = response.data.dto;
+
+                  _this5.getNoteInfoList(returnData.note_id);
+                }
+              });
+
+            case 2:
+              return _context5.abrupt("return", _this5.currentPageData);
+
+            case 3:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }))();
+  },
+  editDone: function editDone(updateDto) {
+    var _this6 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return NoteRepository$1.editDone(updateDto).then(function (response) {
+                if (response.status === 200) {
+                  var returnData = response.data.dto;
+
+                  _this6.getNoteInfoList(returnData.note_id);
+
+                  ChapterStore.getChapterList();
+                }
+              });
+
+            case 2:
+              return _context6.abrupt("return", _this6.currentPageData);
+
+            case 3:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }))();
+  },
+  noneEdit: function noneEdit(noteId) {
+    var _this7 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              _context7.next = 2;
+              return NoteRepository$1.nonEdit(noteId, _this7.currentPageData.parent_notebook).then(function (response) {
+                if (response.status === 200) {
+                  var returnData = response.data.dto;
+
+                  _this7.getNoteInfoList(returnData.note_id);
+                }
+              });
+
+            case 2:
+              return _context7.abrupt("return", _this7.currentPageData);
+
+            case 3:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }))();
+  }
+});
+
+var ChapterStore = mobx.observable({
+  chapterColor: "",
+  chapterList: [],
+  currentChapterId: "",
+  chapterNewTitle: "",
+  isNewChapterColor: "",
+  isNewChapter: false,
+  colorArray: {
+    1: "#FB7748",
+    2: "#FB891B",
+    3: "#E7B400",
+    4: "#B4CC1B",
+    5: "#65D03F",
+    6: "#14C0B3",
+    7: "#00C6E6",
+    8: "#4A99F5",
+    9: "#046305",
+    10: "#E780FF",
+    11: "#FF7BA8"
+  },
+  isSearching: false,
+  isTagSearching: false,
+  //tag chip 클릭해서 tag chip 띄울 때 씀
+  targetSearchTagName: '',
+  inputValue: "",
+  // lnb title 영역 input창 value
+  searchStr: "",
+  searchResult: {},
+  // {chapter:[], page:[]} 형태
+  renameChapterId: '',
+  renameChapterText: '',
+  getCurrentChapterId: function getCurrentChapterId() {
+    return this.currentChapterId;
+  },
+  setCurrentChapterId: function setCurrentChapterId(chapterId) {
+    this.currentChapterId = chapterId;
+  },
+  setRenameChapterId: function setRenameChapterId(chapterId) {
+    this.renameChapterId = chapterId;
+  },
+  getRenameChapterId: function getRenameChapterId() {
+    return this.renameChapterId;
+  },
+  setRenameChapterText: function setRenameChapterText(chapterText) {
+    this.renameChapterText = chapterText;
+  },
+  getChapterList: function getChapterList() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId()).then(function (response) {
+                var notbookList = response.data.dto;
+                _this.chapterList = notbookList.notbookList;
+              });
+
+            case 2:
+              return _context.abrupt("return", _this.chapterList);
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  createChapter: function createChapter(chapterTitle, chapterColor) {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.createChapter(chapterTitle, chapterColor).then(function (response) {
+                if (response.status === 200) {
+                  var notbookList = response.data.dto;
+                  ChapterStore.getChapterList();
+                  PageStore.getNoteInfoList(notbookList.children[0].id);
+
+                  _this2.setChapterTempUl(false);
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
+  },
+  deleteChapter: function deleteChapter(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return NoteRepository$1.deleteChapter(chapterId).then(function (response) {
+                if (response.status === 200) {
+                  ChapterStore.getChapterList();
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  },
+  renameChapter: function renameChapter(color) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return NoteRepository$1.renameChapter(_this3.renameChapterId, _this3.renameChapterText, color).then(function (response) {
+                if (response.status === 200) {
+                  ChapterStore.getChapterList();
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  setChapterTempUl: function setChapterTempUl(flag) {
+    this.isNewChapter = flag;
+    if (flag === false) this.chapterNewTitle = '';
+  },
+  setChapterTitle: function setChapterTitle(title) {
+    this.chapterNewTitle = title;
+  },
+  // 사용자 input이 없을 때
+  getNewChapterTitle: function getNewChapterTitle() {
+    var re = /^새 챕터 (\d+)$/gm;
+    var chapterTitle, temp;
+    var isNotAvailable = [];
+    var fullLength = this.chapterList.length;
+    isNotAvailable.length = fullLength + 1;
+    this.chapterList.forEach(function (chapter) {
+      chapterTitle = chapter.text;
+
+      if (chapterTitle === '새 챕터') {
+        isNotAvailable[0] = 1;
+      } else if (re.test(chapterTitle)) {
+        temp = parseInt(chapterTitle.replace(re, "$1"));
+
+        if (temp <= fullLength) {
+          isNotAvailable[temp] = 1;
+        }
+      }
+    });
+    if (!isNotAvailable[0]) return "새 챕터";
+
+    for (var i = 1; i <= fullLength; i++) {
+      if (!isNotAvailable[i]) return "새 챕터 " + i;
+    }
+  },
+  getChapterId: function getChapterId(e) {
+    var id = e.target.id;
+    return id;
+  },
+  getChapterRandomColor: function getChapterRandomColor() {
+    var COLOR_ARRAY = Object.values(this.colorArray);
+    this.isNewChapterColor = COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
+  },
+  getChapterColor: function getChapterColor() {
+    var _this4 = this;
+
+    this.chapterList.forEach(function (chapter) {
+      _this4.chapterColor = chapter.color;
+      return _this4.chapterColor;
+    });
+  },
+  getChapterName: function getChapterName(chapterId) {
+    var _NoteRepository$getCh = NoteRepository$1.getChapterText(chapterId),
+        value = _NoteRepository$getCh.value;
+
+    return value;
+  },
+  // search 관련
+  getIsSearching: function getIsSearching() {
+    return this.isSearching;
+  },
+  setIsSearching: function setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+
+    if (!isSearching) {
+      this.searchResult = {};
+      this.searchStr = '';
+      this.inputValue = '';
+    }
+  },
+  getInputValue: function getInputValue() {
+    return this.inputValue;
+  },
+  setInputValue: function setInputValue(value) {
+    this.inputValue = value;
+  },
+  getSearchStr: function getSearchStr() {
+    return this.searchStr;
+  },
+  setSearchStr: function setSearchStr(str) {
+    var _this5 = this;
+
+    this.searchStr = str; // searchResult 만들기
+
+    var resultChapterArr = [],
+        resultPageArr = [];
+    this.chapterList.map(function (chapter) {
+      // chapter 저장
+      if (chapter.text.includes(_this5.searchStr)) {
+        resultChapterArr.push({
+          id: chapter.id,
+          title: chapter.text,
+          color: chapter.color,
+          // 클릭하면 setCurrentPageId 해야해서 필요
+          firstPageId: chapter.children.length > 0 ? chapter.children[0].id : null
+        });
+      } // page 저장
+
+
+      chapter.children.map(function (page) {
+        if (page.text.includes(_this5.searchStr)) {
+          resultPageArr.push({
+            chapterId: chapter.id,
+            chapterTitle: chapter.text,
+            id: page.id,
+            title: page.text
+          });
+        }
+      });
+    });
+    this.searchResult = {
+      chapter: resultChapterArr,
+      page: resultPageArr
+    };
+  },
+  getSearchResult: function getSearchResult() {
+    return this.searchResult;
+  },
+  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
+  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
+  setSearchResult: function setSearchResult(result) {
+    this.searchResult = result;
+  },
+  // 태그칩 클릭해서 lnblist 띄우기
+  getTargetSearchTagName: function getTargetSearchTagName() {
+    return this.targetSearchTagName;
+  },
+  setTargetSearchTagName: function setTargetSearchTagName(str) {
+    this.targetSearchTagName = str;
+  },
+  getIsTagSearching: function getIsTagSearching() {
+    return this.isTagSearching;
+  },
+  setIsTagSearching: function setIsTagSearching(isSearching) {
+    this.isTagSearching = isSearching;
+
+    if (!isSearching) {
+      this.targetSearchTagName = '';
+      this.searchResult = {}; // this.inputValue ='';//필요 없을 것 같다
+    }
+  },
+  isValidChapterText: function isValidChapterText() {
+    var _this6 = this;
+
+    var isValid = true;
+    this.chapterList.forEach(function (chapter) {
+      if (chapter.text === _this6.renameChapterText) isValid = false;
+    });
+    return isValid;
+  }
+});
+
 var NoteStore = mobx.observable({
   workspaceId: '',
   notechannel_id: '',
@@ -1288,7 +1497,7 @@ function _templateObject8$1() {
 }
 
 function _templateObject7$1() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 1.5rem 1.5rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  max-width: 100%;\n  min-width: calc(100% - 1.3rem);\n  line-height: normal;\n  font-weight: 400;\n"]);
 
   _templateObject7$1 = function _templateObject7() {
     return data;
@@ -1298,7 +1507,7 @@ function _templateObject7$1() {
 }
 
 function _templateObject6$1() {
-  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  max-width: 100%;\n  min-width: calc(100% - 1.3rem);\n  line-height: normal;\n  font-weight: 400;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  margin-left: 1.19rem;\n  margin-right: 0.2rem;\n  height: 100%;\n  font-weight: 500;\n  max-width: calc(100% - 3.36rem);\n  align-items: center;\n  cursor: pointer;\n"]);
 
   _templateObject6$1 = function _templateObject6() {
     return data;
@@ -1308,7 +1517,7 @@ function _templateObject6$1() {
 }
 
 function _templateObject5$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  margin-left: 1.19rem;\n  margin-right: 0.2rem;\n  height: 100%;\n  font-weight: 500;\n  max-width: calc(100% - 3.36rem);\n  align-items: center;\n  cursor: pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  margin-left: 1.05rem;\n  margin-right: 0.2rem;\n  min-width: calc(100% - 1.5rem);\n  height: 100%;\n  font-weight: 300;\n  border: none;\n  outline: none;\n"]);
 
   _templateObject5$1 = function _templateObject5() {
     return data;
@@ -1338,7 +1547,7 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$1() {
-  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n  &:hover .ellipsisBtn {\n    display: flex !important;\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n  &:hover .ellipsisBtn {\n    visibility: visible;\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
 
   _templateObject2$1 = function _templateObject2() {
     return data;
@@ -1364,9 +1573,9 @@ var Color = styled__default['default'].span(_templateObject4$1(), function (prop
 }, function (props) {
   return props.background;
 });
-var ChapterTitle = styled__default['default'].span(_templateObject5$1());
-var ChapterTextSpan = styled__default['default'].span(_templateObject6$1());
-var ChapterTextEllipsis = styled__default['default'].span(_templateObject7$1());
+var ChapterTextInput = styled__default['default'].input(_templateObject5$1());
+var ChapterTitle = styled__default['default'].span(_templateObject6$1());
+var ChapterTextSpan = styled__default['default'].span(_templateObject7$1());
 var ChapterFolderBtn = styled__default['default'].span(_templateObject8$1());
 var ChapterInput = styled__default['default'].input(_templateObject9$1());
 
@@ -1515,6 +1724,26 @@ var TagTitleSearchContainer = styled__default['default'].div(_templateObject13()
 
 const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
+function _templateObject9$3() {
+  var data = _taggedTemplateLiteral(["\n"]);
+
+  _templateObject9$3 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject8$3() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  visibility: hidden;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 1.5rem 1.5rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n"]);
+
+  _templateObject8$3 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject7$3() {
   var data = _taggedTemplateLiteral(["\n"]);
 
@@ -1592,6 +1821,8 @@ var SearchResultNotFoundCover = styled__default['default'].div(_templateObject4$
 var SearchKeyword = styled__default['default'].span(_templateObject5$3());
 var NoSearchResultTitle = styled__default['default'].span(_templateObject6$3());
 var NoSearchResultImg = styled__default['default'].img(_templateObject7$3());
+var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject8$3());
+var ContextMenuIconCover = styled__default['default'].span(_templateObject9$3());
 
 function _templateObject19() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  margin-left: 0.5rem;\n  font-weight: bold;\n  align-self: center;\n  color: #008CC8;\n"]);
@@ -1693,20 +1924,20 @@ function _templateObject10$1() {
   return data;
 }
 
-function _templateObject9$3() {
+function _templateObject9$4() {
   var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  margin: 0 0.36rem 0 0.48rem;\n  filter:", ";\n"]);
 
-  _templateObject9$3 = function _templateObject9() {
+  _templateObject9$4 = function _templateObject9() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject8$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0.81rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  color:", ";\n  &:hover .ellipsisBtn {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+function _templateObject8$4() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0.81rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  color:", ";\n  &:hover .ellipsisBtn {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
 
-  _templateObject8$3 = function _templateObject8() {
+  _templateObject8$4 = function _templateObject8() {
     return data;
   };
 
@@ -1790,10 +2021,10 @@ var TagNewBtnIcon = styled__default['default'].img(_templateObject5$4());
 var TagInputDIV = styled__default['default'].div(_templateObject6$4());
 var TagInput = styled__default['default'].input(_templateObject7$4()); // lnbTag
 
-var LnbTagContainer = styled__default['default'].div(_templateObject8$3(), function (props) {
+var LnbTagContainer = styled__default['default'].div(_templateObject8$4(), function (props) {
   return props.color || "";
 });
-var TagImg = styled__default['default'].img(_templateObject9$3(), function (props) {
+var TagImg = styled__default['default'].img(_templateObject9$4(), function (props) {
   return props.filter || "invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)";
 });
 var TagTxt = styled__default['default'].span(_templateObject10$1()); // contents가 tag일 때
@@ -1809,21 +2040,55 @@ var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject17());
 var TagChipText = styled__default['default'].div(_templateObject18());
 var TagChipNum = styled__default['default'].div(_templateObject19());
 
-var LNBHeader = function LNBHeader() {
+var LNBHeader = function LNBHeader(_ref) {
+  var createNewChapter = _ref.createNewChapter;
+
   var _useStore = useStore(),
       ChapterStore = _useStore.ChapterStore;
 
   var inputRef = React.useRef(null);
 
-  var handleNewChapterClick = function handleNewChapterClick() {
-    if (!ChapterStore.isNewChapter) {
-      ChapterStore.setChapterTempUl(true);
-      ChapterStore.getChapterRandomColor();
-    } else ChapterStore.setChapterTempUl(false);
-  };
+  var handleNewChapterClick = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (ChapterStore.isNewChapter) {
+                _context.next = 5;
+                break;
+              }
+
+              ChapterStore.setChapterTempUl(true); // isNewChapter = true;
+
+              ChapterStore.getChapterRandomColor();
+              _context.next = 9;
+              break;
+
+            case 5:
+              _context.next = 7;
+              return createNewChapter();
+
+            case 7:
+              ChapterStore.getChapterRandomColor();
+              ChapterStore.setChapterTempUl(true);
+
+            case 9:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleNewChapterClick() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
 
   var onSubmitSearchBtn = function onSubmitSearchBtn(e) {
     e.preventDefault();
+    if (ChapterStore.isTagSearching || ChapterStore.inputValue === "") return;
     ChapterStore.setSearchStr(ChapterStore.inputValue);
     ChapterStore.setIsSearching(true);
     inputRef.current.focus();
@@ -1840,10 +2105,12 @@ var LNBHeader = function LNBHeader() {
 
   var onClickCancelSearchTagBtn = function onClickCancelSearchTagBtn(e) {
     ChapterStore.setIsTagSearching(false);
-  };
+  }; // e.target에서 filtering하려고 data-btn 속성 추가
+
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleCover, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
+      "data-btn": 'noteNewChapterBtn',
       onClick: handleNewChapterClick
     }, "\uC0C8 \uCC55\uD130"), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchContainer, {
       onSubmit: onSubmitSearchBtn
@@ -1910,9 +2177,87 @@ var ChapterColor = function ChapterColor(_ref) {
   });
 };
 
+var ContextMenu = function ContextMenu(_ref) {
+  var type = _ref.type,
+      chapterId = _ref.chapterId,
+      pageId = _ref.pageId,
+      chapterTitle = _ref.chapterTitle,
+      pageTitle = _ref.pageTitle,
+      color = _ref.color;
+
+  var _useStore = useStore(),
+      ChapterStore = _useStore.ChapterStore,
+      PageStore = _useStore.PageStore;
+
+  var renameComponent = function renameComponent() {
+    // 이름을 변경한다.
+    switch (type) {
+      case "chapter":
+        ChapterStore.setRenameChapterId(chapterId);
+        ChapterStore.setRenameChapterText(chapterTitle); // ChapterStore.renameChapter(chapterId, chapterTitle, color);
+
+        break;
+
+      case "page":
+        PageStore.setRenamePageId(pageId);
+        PageStore.setRenamePageText(pageTitle);
+        break;
+    }
+  };
+
+  var deleteComponent = function deleteComponent() {
+    // 챕터/페이지를 삭제한다.
+    switch (type) {
+      case "chapter":
+        ChapterStore.deleteChapter(chapterId);
+        break;
+
+      case "page":
+        PageStore.setDeletePageList({
+          note_id: pageId
+        });
+        PageStore.deletePage();
+        break;
+    }
+  };
+
+  var onClickContextMenu = function onClickContextMenu(_ref2) {
+    var key = _ref2.key,
+        domEvent = _ref2.domEvent;
+    domEvent.stopPropagation();
+    if (key === "0") renameComponent();else if (key === "1") deleteComponent();
+  };
+
+  var menu = /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
+    style: {
+      borderRadius: 5
+    },
+    onClick: onClickContextMenu
+  }, /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+    key: "0"
+  }, "\uC774\uB984 \uBCC0\uACBD"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+    key: "1"
+  }, "\uC0AD\uC81C"));
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(ContextMenuCover, {
+      className: "ellipsisBtn",
+      overlay: menu,
+      trigger: ['click'],
+      placement: "bottomRight",
+      onClick: function onClick(e) {
+        return e.stopPropagation();
+      }
+    }, /*#__PURE__*/React__default['default'].createElement(ContextMenuIconCover, null, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
+      icon: freeSolidSvgIcons.faEllipsisV,
+      size: "1x"
+    })));
+  });
+};
+
 var ChapterText = function ChapterText(_ref) {
   var text = _ref.text,
-      chapterId = _ref.chapterId;
+      chapterId = _ref.chapterId,
+      color = _ref.color;
 
   var _useStore = useStore(),
       ChapterStore = _useStore.ChapterStore;
@@ -1938,12 +2283,12 @@ var ChapterText = function ChapterText(_ref) {
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ChapterTitle, {
       className: chapterId === ChapterStore.currentChapterId ? "selectedMenu" : ""
-    }, /*#__PURE__*/React__default['default'].createElement(ChapterTextSpan, null, text), /*#__PURE__*/React__default['default'].createElement(ChapterTextEllipsis, {
-      className: "ellipsisBtn"
-    }, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faEllipsisV,
-      size: "1x"
-    }))), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, null, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
+    }, /*#__PURE__*/React__default['default'].createElement(ChapterTextSpan, null, text), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+      type: "chapter",
+      chapterId: chapterId,
+      chapterTitle: text,
+      color: color
+    })), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, null, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
       icon: isFold ? freeSolidSvgIcons.faAngleDown : freeSolidSvgIcons.faAngleUp,
       size: "2x",
       onClick: handleFoldClick
@@ -1951,20 +2296,20 @@ var ChapterText = function ChapterText(_ref) {
   });
 };
 
-function _templateObject9$4() {
+function _templateObject9$5() {
   var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
 
-  _templateObject9$4 = function _templateObject9() {
+  _templateObject9$5 = function _templateObject9() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject8$4() {
+function _templateObject8$5() {
   var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  align-self: center;\n  line-height: 100%;\n"]);
 
-  _templateObject8$4 = function _templateObject8() {
+  _templateObject8$5 = function _templateObject8() {
     return data;
   };
 
@@ -1992,7 +2337,7 @@ function _templateObject6$5() {
 }
 
 function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 1.5rem 1.5rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  margin-left: 1.13rem;\n  line-height: 130%;\n  align-self: center;\n  min-width: calc(100% - 0.9rem);\n  overflow: hidden;\n  white-space: nowrap;\n  font-weight: 300;\n  border: none;\n  outline: none;\n"]);
 
   _templateObject5$5 = function _templateObject5() {
     return data;
@@ -2032,7 +2377,7 @@ function _templateObject2$5() {
 }
 
 function _templateObject$5() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n      display: flex !important;\n    }\n  }\n  &:hover:not(.ellipsisBtn){\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n    visibility: visible;\n  }\n  &:hover:not(.ellipsisBtn){\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
 
   _templateObject$5 = function _templateObject() {
     return data;
@@ -2044,11 +2389,11 @@ var Page = styled__default['default'].li(_templateObject$5());
 var PageMargin = styled__default['default'].span(_templateObject2$5());
 var PageTextCover = styled__default['default'].span(_templateObject3$5());
 var PageText = styled__default['default'].a(_templateObject4$5());
-var PageEllipsis = styled__default['default'].span(_templateObject5$5());
+var PageTextInput = styled__default['default'].input(_templateObject5$5());
 var NewPage = styled__default['default'].span(_templateObject6$5());
 var NewPageBtn = styled__default['default'].p(_templateObject7$5());
-var NewPageText = styled__default['default'].span(_templateObject8$4());
-var EllipsisIcon = styled__default['default'].i(_templateObject9$4());
+var NewPageText = styled__default['default'].span(_templateObject8$5());
+var EllipsisIcon = styled__default['default'].i(_templateObject9$5());
 
 var PageList = function PageList(_ref) {
   var children = _ref.children,
@@ -2087,16 +2432,47 @@ var PageList = function PageList(_ref) {
     };
   }();
 
-  var handleNewBtnClick = function handleNewBtnClick(targetId) {
-    PageStore.setCreatePageParent(targetId);
-    PageStore.createPage();
-  };
+  var handleNewBtnClick = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(targetId) {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              PageStore.setCreatePageParent(targetId);
+              _context2.next = 3;
+              return PageStore.createPage();
+
+            case 3:
+              NoteStore.setShowPage(true);
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function handleNewBtnClick(_x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 
   var onClickLnbPage = function onClickLnbPage(id) {
     NoteStore.setShowPage(true);
     selectPage(id);
     ChapterStore.setCurrentChapterId(chapterId);
     PageStore.setCurrentPageId(id);
+  };
+
+  var handlePageName = function handlePageName(e) {
+    var value = e.target.value;
+    PageStore.setRenamePageText(value);
+  };
+
+  var handlePageTextInput = function handlePageTextInput() {
+    PageStore.renamePage(chapterId);
+    PageStore.setRenamePageId('');
   };
 
   return mobxReact.useObserver(function () {
@@ -2106,12 +2482,24 @@ var PageList = function PageList(_ref) {
         id: item.id,
         className: "page-li" + (NoteStore.showPage && item.id === PageStore.currentPageId ? " selected" : ""),
         onClick: onClickLnbPage.bind(null, item.id)
-      }, /*#__PURE__*/React__default['default'].createElement(PageMargin, null), /*#__PURE__*/React__default['default'].createElement(PageTextCover, null, /*#__PURE__*/React__default['default'].createElement(PageText, null, item.text), /*#__PURE__*/React__default['default'].createElement(PageEllipsis, {
-        className: "ellipsisBtn"
-      }, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
-        icon: freeSolidSvgIcons.faEllipsisV,
-        size: "1x"
-      }))));
+      }, /*#__PURE__*/React__default['default'].createElement(PageMargin, null), PageStore.getRenamePageId() === item.id ? /*#__PURE__*/React__default['default'].createElement(PageTextCover, null, /*#__PURE__*/React__default['default'].createElement(PageTextInput, {
+        value: PageStore.renamePageText,
+        onChange: handlePageName,
+        onBlur: handlePageTextInput,
+        onKeyDown: function onKeyDown(e) {
+          if (e.key === "Enter") {
+            handlePageTextInput();
+          } else if (e.key === "Escape") {
+            PageStore.setRenamePageId('');
+          }
+        },
+        autoFocus: true
+      })) : /*#__PURE__*/React__default['default'].createElement(PageTextCover, null, /*#__PURE__*/React__default['default'].createElement(PageText, null, item.text), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+        type: "page",
+        chapterId: chapterId,
+        pageId: item.id,
+        pageTitle: item.text
+      })));
     }), /*#__PURE__*/React__default['default'].createElement(NewPage, {
       className: "page-li"
     }, /*#__PURE__*/React__default['default'].createElement(NewPageBtn, {
@@ -2204,6 +2592,19 @@ var ChapterList = function ChapterList(_ref) {
     };
   }();
 
+  var handleChapterName = function handleChapterName(e) {
+    var value = e.target.value;
+    ChapterStore.setRenameChapterText(value);
+  };
+
+  var handleChapterTextInput = function handleChapterTextInput(color) {
+    if (ChapterStore.isValidChapterText()) {
+      ChapterStore.renameChapter(color);
+    }
+
+    ChapterStore.setRenameChapterId('');
+  };
+
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map(function (item) {
       return /*#__PURE__*/React__default['default'].createElement(ChapterContainer, {
@@ -2215,9 +2616,22 @@ var ChapterList = function ChapterList(_ref) {
       }, /*#__PURE__*/React__default['default'].createElement(ChapterColor, {
         color: item.color,
         chapterId: item.id
-      }), /*#__PURE__*/React__default['default'].createElement(ChapterText, {
+      }), ChapterStore.getRenameChapterId() === item.id ? /*#__PURE__*/React__default['default'].createElement(ChapterTextInput, {
+        value: ChapterStore.renameChapterText,
+        onChange: handleChapterName,
+        onBlur: handleChapterTextInput.bind(null, item.color),
+        onKeyDown: function onKeyDown(e) {
+          if (e.key === "Enter") {
+            handleChapterTextInput(item.color);
+          } else if (e.key === "Escape") {
+            ChapterStore.setRenameChapterId('');
+          }
+        },
+        autoFocus: true
+      }) : /*#__PURE__*/React__default['default'].createElement(ChapterText, {
         text: item.text,
-        chapterId: item.id
+        chapterId: item.id,
+        color: item.color
       })), /*#__PURE__*/React__default['default'].createElement(PageList, {
         children: JSON.stringify(item.children),
         chapterId: item.id
@@ -2317,20 +2731,93 @@ var LNBContainer = function LNBContainer() {
   var _useStore = useStore(),
       ChapterStore = _useStore.ChapterStore;
 
+  var outsideClickRef = React.useRef(null);
+
   var handleTitleInput = function handleTitleInput(e) {
-    var value = e.target.value;
+    var value = e.target.value; // set ChapterStore.chapterNewTitle
+
     ChapterStore.setChapterTitle(value);
   };
 
-  var createNewChapter = function createNewChapter() {
-    // 분기는 더 여러개 있어야하지만 우선 만드는걸로
-    if (ChapterStore.chapterNewTitle) {
-      ChapterStore.createChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
-    }
-  };
+  var createNewChapter = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var autoName;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              // 분기는 더 여러개 있어야하지만 우선 만드는걸로
+              if (!ChapterStore.chapterNewTitle) {
+                autoName = ChapterStore.getNewChapterTitle();
+                ChapterStore.setChapterTitle(autoName);
+              }
 
+              _context.next = 3;
+              return ChapterStore.createChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function createNewChapter() {
+      return _ref.apply(this, arguments);
+    };
+  }(); // 바깥 영역 클릭시
+
+
+  React.useEffect(function () {
+    if (outsideClickRef.current) {
+      var handleClickOutside = /*#__PURE__*/function () {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  if (!(e.target.dataset.btn === "noteNewChapterBtn")) {
+                    _context2.next = 2;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", true);
+
+                case 2:
+                  if (!(outsideClickRef.current && !outsideClickRef.current.contains(e.target))) {
+                    _context2.next = 5;
+                    break;
+                  }
+
+                  _context2.next = 5;
+                  return createNewChapter();
+
+                case 5:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }));
+
+        return function handleClickOutside(_x) {
+          return _ref2.apply(this, arguments);
+        };
+      }();
+
+      document.addEventListener("click", handleClickOutside);
+      return function () {
+        document.removeEventListener("click", handleClickOutside);
+      };
+    }
+  }, [ChapterStore.isNewChapter]);
   return mobxReact.useObserver(function () {
-    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNBCover, null, /*#__PURE__*/React__default['default'].createElement(LNBHeader, null), /*#__PURE__*/React__default['default'].createElement(LNBChapterCover, null, ChapterStore.isNewChapter ? /*#__PURE__*/React__default['default'].createElement(LNBNewChapter, null, /*#__PURE__*/React__default['default'].createElement(ChapterColor, {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNBCover, null, /*#__PURE__*/React__default['default'].createElement(LNBHeader, {
+      createNewChapter: createNewChapter
+    }), /*#__PURE__*/React__default['default'].createElement(LNBChapterCover, null, ChapterStore.isNewChapter ? /*#__PURE__*/React__default['default'].createElement(LNBNewChapter, {
+      ref: outsideClickRef
+    }, /*#__PURE__*/React__default['default'].createElement(ChapterColor, {
       color: ChapterStore.isNewChapterColor
     }), /*#__PURE__*/React__default['default'].createElement(ChapterTitle, null, /*#__PURE__*/React__default['default'].createElement(ChapterInput, {
       placeholder: "\uC0C8 \uCC55\uD130",
@@ -2559,8 +3046,6 @@ var TagListContainer = function TagListContainer() {
   };
 
   var handleModifyInput = function handleModifyInput() {
-    TagStore.setEditTagText(TagStore.editTagValue);
-
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
       if (TagStore.currentTagValue === TagStore.editTagValue) TagStore.setEditTagIndex(-1);else if (TagStore.editTagValue === '') {
@@ -2803,6 +3288,10 @@ var SearchResultNotFound = function SearchResultNotFound() {
   })));
 };
 
+const img$8 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAcNJREFUaAXtlj1KBEEUhNcjeBYRQQQRBBEExUsYCIKBoGCwYCAYCIKBF9ALGXgDM/EH/wW1PtxgGPoNrru9OzNWQUNvv+5X9b5gmU7HMgETMAETMAETMAETMAETMAETMAETMAETMAETMIECgQnt97Sue4s9Z60Ug51pfZUWZ60c+rQ0aHFwaq3SiaYpDpjac6cVOtYUqQFTZ9xttI6UPjVY1RlvGqlDpY4Gu1GNFdV52ygdKG00zK1qU73FPrpHj0aoq5TREHeqTRemYM9ZdL9buFvL7X5F+HvVZhKpOaMWDU3PWmpXqaLQD6rNVqSmxp3oPb1rpR2licI+qjb3i7Tc4W7UB49aaFspopBPqs33kZK7vIn64TVWbck9Cves2sIf0vGGt1FfPMeiTblGoV5UWxwgFW/pEfXHe6TakNunVirQq86XhpCGHvRKeeBNhpFoTS5Vwy4PMQW93rSiocmSXVdySAUg2EoGd3pGQ5Mlu1JfRu9yXc3oTG88yqDJkl3ncigaf+j3enbXHw+8it5kya5JOVxo8Tl4qTXIv7Ge9yW88MSbDGSxTMAETMAETMAETMAETMAETMAETMAETOCfE/gGLUwBZYn2l7IAAAAASUVORK5CYII=";
+
+const img$9 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAdVJREFUaAXtlt9GBlEUxb8eoVeJRCKRiOjPU0R0EVFE0UV0EVH0AvVAddEbdJf+6H9U66dvGGPOaarvfN/MWIvtnDn77L3WXhfjdDqGHbADdsAO2AE7YAfsgB2wA3bADtgBO2AH7IAdsAOtc2BYE50p7hTnimlFvwDXhQJuNKAlOU7F8JmLd+2XkrN+c8CV50ZLctyKIU/K/k0xn5CZ3nAUedGSHJdiKBLz/aqYS8BOT3qXcaIlORbF8KEoE/Ci89keKqAXPcu40LDQQ65oq2VlY0PPRKurJekRGxYNfcWK2Mqc5+xZ8Z+/N7X0CPWHeyBYFWtI1JNyU39QRQ21ob5wDhRrYg+Je1Ru8hfquEtNqB9ctcC6VIREPig3UUEld7gb6gNHrbApNSGx98qNR9SS406ofiNSO9DUVkQ0z8GxEnWckQsNS89aY0fqQuJ5GY3m1LMve7ll9du5u7Xe7kpdJrq43ig30g32xXz2TY9GYU9qM/HF9Vo5oniefVPbSOxLdTZE1ZWaRuNA6qsOy91W4FBT/DQ0d1qFY00TGvqoVZN2hxnSelIyNGfkWgkG40V21Q32rR1Wsxl2wA7YATtgB+yAHbADdsAO2AE7YAfsgB3ogwNf3XgBZWI0GlcAAAAASUVORK5CYII=";
+
 var TagContentContainer = function TagContentContainer() {
   var imgcontainer = React.useMemo(function () {
     return {
@@ -2816,9 +3305,30 @@ var TagContentContainer = function TagContentContainer() {
     "NUM": "0 ~ 9",
     "ETC": "기타"
   };
+
+  var customExpandIcon = function customExpandIcon(props) {
+    if (props.isActive) {
+      return /*#__PURE__*/React__default['default'].createElement("img", {
+        style: {
+          width: "0.62rem"
+        },
+        src: img$8
+      });
+    } else return /*#__PURE__*/React__default['default'].createElement("img", {
+      style: {
+        width: "0.62rem"
+      },
+      src: img$9
+    });
+  };
+
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, Object.keys(TagStore.targetTagList).length > 0 ? /*#__PURE__*/React__default['default'].createElement(StyledCollapse, {
-      defaultActiveKey: ['1', '2', '3', '4']
+      defaultActiveKey: ['KOR', 'ENG', 'NUM', 'ETC'],
+      expandIcon: function expandIcon(panelProps) {
+        return customExpandIcon(panelProps);
+      },
+      expandIconPosition: "right"
     }, Object.keys(TagStore.targetTagList).map(function (category, idx) {
       var _Object$keys;
 
@@ -2827,7 +3337,7 @@ var TagContentContainer = function TagContentContainer() {
         // "ㄱ~ㅎ"
         React__default['default'].createElement(Panel, {
           header: categoryInfo[category],
-          key: String(idx + 1)
+          key: category
         }, (_Object$keys = Object.keys(TagStore.targetTagList[category])) === null || _Object$keys === void 0 ? void 0 : _Object$keys.map(function (tagKey) {
           // "ㄱ", "ㄴ" ...       
           return /*#__PURE__*/React__default['default'].createElement(TagKeyContainer, {
@@ -2842,7 +3352,7 @@ var TagContentContainer = function TagContentContainer() {
   });
 };
 
-const img$8 = "data:image/png;base64,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";
+const img$a = "data:image/png;base64,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";
 
 var TagHeader = /*#__PURE__*/React.memo(function () {
   var _useState = React.useState(''),
@@ -2875,7 +3385,7 @@ var TagHeader = /*#__PURE__*/React.memo(function () {
       type: "image",
       border: "0",
       alt: " ",
-      src: img$8
+      src: img$a
     }), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchInput, {
       autocomplete: "off",
       ref: inputRef,
@@ -2930,11 +3440,11 @@ var NoteApp = function NoteApp() {
   });
 };
 
-const img$9 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/appList/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/appList/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M21%2c2 C21.5522847%2c2 22%2c2.44771525 22%2c3 L22%2c21 C22%2c21.5522847 21.5522847%2c22 21%2c22 L4%2c22 C3.44771525%2c22 3%2c21.5522847 3%2c21 L3%2c17 L2%2c17 C1.44771525%2c17 1%2c16.5522847 1%2c16 C1%2c15.4477153 1.44771525%2c15 2%2c15 L3%2c15 L3%2c13 L2%2c13 C1.44771525%2c13 1%2c12.5522847 1%2c12 C1%2c11.4477153 1.44771525%2c11 2%2c11 L3%2c11 L3%2c9 L2%2c9 C1.44771525%2c9 1%2c8.55228475 1%2c8 C1%2c7.44771525 1.44771525%2c7 2%2c7 L3%2c7 L3%2c3 C3%2c2.44771525 3.44771525%2c2 4%2c2 L21%2c2 Z M20%2c4 L5%2c4 L5%2c7 L6%2c7 C6.55228475%2c7 7%2c7.44771525 7%2c8 C7%2c8.55228475 6.55228475%2c9 6%2c9 L5%2c9 L5%2c11 L6%2c11 C6.55228475%2c11 7%2c11.4477153 7%2c12 C7%2c12.5522847 6.55228475%2c13 6%2c13 L5%2c13 L5%2c15 L6%2c15 C6.55228475%2c15 7%2c15.4477153 7%2c16 C7%2c16.5522847 6.55228475%2c17 6%2c17 L5%2c17 L5%2c20 L20%2c20 L20%2c4 Z M17%2c15 C17.5522847%2c15 18%2c15.4477153 18%2c16 C18%2c16.5522847 17.5522847%2c17 17%2c17 L11%2c17 C10.4477153%2c17 10%2c16.5522847 10%2c16 C10%2c15.4477153 10.4477153%2c15 11%2c15 L17%2c15 Z M17%2c11 C17.5522847%2c11 18%2c11.4477153 18%2c12 C18%2c12.5522847 17.5522847%2c13 17%2c13 L11%2c13 C10.4477153%2c13 10%2c12.5522847 10%2c12 C10%2c11.4477153 10.4477153%2c11 11%2c11 L17%2c11 Z M17%2c7 C17.5522847%2c7 18%2c7.44771525 18%2c8 C18%2c8.55228475 17.5522847%2c9 17%2c9 L11%2c9 C10.4477153%2c9 10%2c8.55228475 10%2c8 C10%2c7.44771525 10.4477153%2c7 11%2c7 L17%2c7 Z' id='Combined-Shape' fill='%23818181'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/appList/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/appList/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M21%2c2 C21.5522847%2c2 22%2c2.44771525 22%2c3 L22%2c21 C22%2c21.5522847 21.5522847%2c22 21%2c22 L4%2c22 C3.44771525%2c22 3%2c21.5522847 3%2c21 L3%2c17 L2%2c17 C1.44771525%2c17 1%2c16.5522847 1%2c16 C1%2c15.4477153 1.44771525%2c15 2%2c15 L3%2c15 L3%2c13 L2%2c13 C1.44771525%2c13 1%2c12.5522847 1%2c12 C1%2c11.4477153 1.44771525%2c11 2%2c11 L3%2c11 L3%2c9 L2%2c9 C1.44771525%2c9 1%2c8.55228475 1%2c8 C1%2c7.44771525 1.44771525%2c7 2%2c7 L3%2c7 L3%2c3 C3%2c2.44771525 3.44771525%2c2 4%2c2 L21%2c2 Z M20%2c4 L5%2c4 L5%2c7 L6%2c7 C6.55228475%2c7 7%2c7.44771525 7%2c8 C7%2c8.55228475 6.55228475%2c9 6%2c9 L5%2c9 L5%2c11 L6%2c11 C6.55228475%2c11 7%2c11.4477153 7%2c12 C7%2c12.5522847 6.55228475%2c13 6%2c13 L5%2c13 L5%2c15 L6%2c15 C6.55228475%2c15 7%2c15.4477153 7%2c16 C7%2c16.5522847 6.55228475%2c17 6%2c17 L5%2c17 L5%2c20 L20%2c20 L20%2c4 Z M17%2c15 C17.5522847%2c15 18%2c15.4477153 18%2c16 C18%2c16.5522847 17.5522847%2c17 17%2c17 L11%2c17 C10.4477153%2c17 10%2c16.5522847 10%2c16 C10%2c15.4477153 10.4477153%2c15 11%2c15 L17%2c15 Z M17%2c11 C17.5522847%2c11 18%2c11.4477153 18%2c12 C18%2c12.5522847 17.5522847%2c13 17%2c13 L11%2c13 C10.4477153%2c13 10%2c12.5522847 10%2c12 C10%2c11.4477153 10.4477153%2c11 11%2c11 L17%2c11 Z M17%2c7 C17.5522847%2c7 18%2c7.44771525 18%2c8 C18%2c8.55228475 17.5522847%2c9 17%2c9 L11%2c9 C10.4477153%2c9 10%2c8.55228475 10%2c8 C10%2c7.44771525 10.4477153%2c7 11%2c7 L17%2c7 Z' id='Combined-Shape' fill='%23818181'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='40px' height='40px' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/app_planet/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cdefs%3e %3ccircle id='path-1' cx='20' cy='20' r='20'%3e%3c/circle%3e %3cfilter x='-20.0%25' y='-20.0%25' width='140.0%25' height='140.0%25' filterUnits='objectBoundingBox' id='filter-3'%3e %3cfeOffset dx='0' dy='0' in='SourceAlpha' result='shadowOffsetOuter1'%3e%3c/feOffset%3e %3cfeGaussianBlur stdDeviation='1' in='shadowOffsetOuter1' result='shadowBlurOuter1'%3e%3c/feGaussianBlur%3e %3cfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.449221193 0 0 0 0 0.738507699 0 0 0 1 0' type='matrix' in='shadowBlurOuter1' result='shadowMatrixOuter1'%3e%3c/feColorMatrix%3e %3cfeMerge%3e %3cfeMergeNode in='shadowMatrixOuter1'%3e%3c/feMergeNode%3e %3cfeMergeNode in='SourceGraphic'%3e%3c/feMergeNode%3e %3c/feMerge%3e %3c/filter%3e %3c/defs%3e %3cg id='Icon/app_planet/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cg id='Group-2'%3e %3cg id='Group'%3e %3cmask id='mask-2' fill='white'%3e %3cuse xlink:href='%23path-1'%3e%3c/use%3e %3c/mask%3e %3cuse id='Oval' fill='%231EA8DF' xlink:href='%23path-1'%3e%3c/use%3e %3cpath d='M30.2674864%2c28.5651163 C32.1620013%2c28.8180521 35.8459876%2c28.1984249 38.2583669%2c27.9221149 C38.4371898%2c27.9016328 37.0788036%2c31.4377876 33.5358043%2c34.71428 C32.2764541%2c35.8789009 30.4660944%2c37.0683765 28.104725%2c38.2827069 C23.3480717%2c34.5292361 19.411693%2c32.4983871 16.295589%2c32.19016 C13.1794849%2c31.8819329 9.96579532%2c32.7915871 6.65452026%2c34.9191225 C6.07508216%2c34.3513228 5.66080219%2c33.9456821 5.41168034%2c33.7022004 C5.16255849%2c33.4587187 4.83170318%2c33.0689329 4.4191144%2c32.5328432 C6.61342804%2c29.1075672 10.4653048%2c27.0323459 15.9747446%2c26.3071794 C18.9157904%2c25.9200715 26.5120008%2c28.0637232 30.2674864%2c28.5651163 Z M36.2762913%2c8.40504532 C37.6298473%2c10.2563194 38.6529185%2c12.5003954 39.3455047%2c15.1372733 C40.038091%2c17.7741512 40.1657587%2c20.2053072 39.7285078%2c22.4307411 C38.015963%2c23.075421 36.0450505%2c23.3738791 33.8157703%2c23.3261155 C30.47185%2c23.2544701 27.302747%2c19.6880702 29.2957788%2c17.6745606 C30.6244667%2c16.3322209 32.9513042%2c13.2423825 36.2762913%2c8.40504532 Z M11.3133953%2c2.0686971 C18.4620509%2c-1.24913664 25.3877558%2c-0.576045104 32.0905098%2c4.08797172 C31.1587485%2c6.85505728 28.5638835%2c9.37616389 24.3059148%2c11.6512916 C20.3303252%2c13.7755377 16.2434004%2c12.9639842 11.6381726%2c14.0629582 C7.08121503%2c15.1504132 3.20351857%2c17.5672385 0.00508325094%2c21.3134341 C-0.0380355602%2c18.5142376 0.193162974%2c16.3144293 0.698678854%2c14.7140091 C2.68300461%2c8.43180305 6.15333106%2c4.46358591 11.3133953%2c2.0686971 Z' id='Combined-Shape' fill='%23008CC8' mask='url(%23mask-2)'%3e%3c/path%3e %3ccircle id='Oval-Copy-3' fill='%231EA8DF' style='mix-blend-mode: screen%3b' opacity='0.597470238' mask='url(%23mask-2)' cx='20' cy='10' r='20'%3e%3c/circle%3e %3cellipse id='Oval' fill='white' opacity='0.6' mask='url(%23mask-2)' transform='translate(10.652552%2c 7.029764) scale(-1%2c 1) rotate(35.000000) translate(-10.652552%2c -7.029764) ' cx='10.6525516' cy='7.02976381' rx='7' ry='2.5'%3e%3c/ellipse%3e %3c/g%3e %3c/g%3e %3cg id='note-2' filter='url(%23filter-3)' transform='translate(10.000000%2c 10.000000)'%3e %3cg id='note'%3e %3crect id='Rectangle' fill='white' x='2' y='0' width='18' height='20' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='8' y='5' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='8' y='9' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='8' y='13' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='0' y='5' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='0' y='9' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='0' y='13' width='6' height='2' rx='1'%3e%3c/rect%3e %3c/g%3e %3c/g%3e %3c/g%3e%3c/svg%3e";
+const img$c = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='40px' height='40px' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/app_planet/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cdefs%3e %3ccircle id='path-1' cx='20' cy='20' r='20'%3e%3c/circle%3e %3cfilter x='-20.0%25' y='-20.0%25' width='140.0%25' height='140.0%25' filterUnits='objectBoundingBox' id='filter-3'%3e %3cfeOffset dx='0' dy='0' in='SourceAlpha' result='shadowOffsetOuter1'%3e%3c/feOffset%3e %3cfeGaussianBlur stdDeviation='1' in='shadowOffsetOuter1' result='shadowBlurOuter1'%3e%3c/feGaussianBlur%3e %3cfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.449221193 0 0 0 0 0.738507699 0 0 0 1 0' type='matrix' in='shadowBlurOuter1' result='shadowMatrixOuter1'%3e%3c/feColorMatrix%3e %3cfeMerge%3e %3cfeMergeNode in='shadowMatrixOuter1'%3e%3c/feMergeNode%3e %3cfeMergeNode in='SourceGraphic'%3e%3c/feMergeNode%3e %3c/feMerge%3e %3c/filter%3e %3c/defs%3e %3cg id='Icon/app_planet/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cg id='Group-2'%3e %3cg id='Group'%3e %3cmask id='mask-2' fill='white'%3e %3cuse xlink:href='%23path-1'%3e%3c/use%3e %3c/mask%3e %3cuse id='Oval' fill='%231EA8DF' xlink:href='%23path-1'%3e%3c/use%3e %3cpath d='M30.2674864%2c28.5651163 C32.1620013%2c28.8180521 35.8459876%2c28.1984249 38.2583669%2c27.9221149 C38.4371898%2c27.9016328 37.0788036%2c31.4377876 33.5358043%2c34.71428 C32.2764541%2c35.8789009 30.4660944%2c37.0683765 28.104725%2c38.2827069 C23.3480717%2c34.5292361 19.411693%2c32.4983871 16.295589%2c32.19016 C13.1794849%2c31.8819329 9.96579532%2c32.7915871 6.65452026%2c34.9191225 C6.07508216%2c34.3513228 5.66080219%2c33.9456821 5.41168034%2c33.7022004 C5.16255849%2c33.4587187 4.83170318%2c33.0689329 4.4191144%2c32.5328432 C6.61342804%2c29.1075672 10.4653048%2c27.0323459 15.9747446%2c26.3071794 C18.9157904%2c25.9200715 26.5120008%2c28.0637232 30.2674864%2c28.5651163 Z M36.2762913%2c8.40504532 C37.6298473%2c10.2563194 38.6529185%2c12.5003954 39.3455047%2c15.1372733 C40.038091%2c17.7741512 40.1657587%2c20.2053072 39.7285078%2c22.4307411 C38.015963%2c23.075421 36.0450505%2c23.3738791 33.8157703%2c23.3261155 C30.47185%2c23.2544701 27.302747%2c19.6880702 29.2957788%2c17.6745606 C30.6244667%2c16.3322209 32.9513042%2c13.2423825 36.2762913%2c8.40504532 Z M11.3133953%2c2.0686971 C18.4620509%2c-1.24913664 25.3877558%2c-0.576045104 32.0905098%2c4.08797172 C31.1587485%2c6.85505728 28.5638835%2c9.37616389 24.3059148%2c11.6512916 C20.3303252%2c13.7755377 16.2434004%2c12.9639842 11.6381726%2c14.0629582 C7.08121503%2c15.1504132 3.20351857%2c17.5672385 0.00508325094%2c21.3134341 C-0.0380355602%2c18.5142376 0.193162974%2c16.3144293 0.698678854%2c14.7140091 C2.68300461%2c8.43180305 6.15333106%2c4.46358591 11.3133953%2c2.0686971 Z' id='Combined-Shape' fill='%23008CC8' mask='url(%23mask-2)'%3e%3c/path%3e %3ccircle id='Oval-Copy-3' fill='%231EA8DF' style='mix-blend-mode: screen%3b' opacity='0.597470238' mask='url(%23mask-2)' cx='20' cy='10' r='20'%3e%3c/circle%3e %3cellipse id='Oval' fill='white' opacity='0.6' mask='url(%23mask-2)' transform='translate(10.652552%2c 7.029764) scale(-1%2c 1) rotate(35.000000) translate(-10.652552%2c -7.029764) ' cx='10.6525516' cy='7.02976381' rx='7' ry='2.5'%3e%3c/ellipse%3e %3c/g%3e %3c/g%3e %3cg id='note-2' filter='url(%23filter-3)' transform='translate(10.000000%2c 10.000000)'%3e %3cg id='note'%3e %3crect id='Rectangle' fill='white' x='2' y='0' width='18' height='20' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='8' y='5' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='8' y='9' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='8' y='13' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='0' y='5' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='0' y='9' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='0' y='13' width='6' height='2' rx='1'%3e%3c/rect%3e %3c/g%3e %3c/g%3e %3c/g%3e%3c/svg%3e";
 
-const img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/appList/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/appList/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M21%2c2 C21.5522847%2c2 22%2c2.44771525 22%2c3 L22%2c21 C22%2c21.5522847 21.5522847%2c22 21%2c22 L4%2c22 C3.44771525%2c22 3%2c21.5522847 3%2c21 L3%2c17 L2%2c17 C1.44771525%2c17 1%2c16.5522847 1%2c16 C1%2c15.4477153 1.44771525%2c15 2%2c15 L3%2c15 L3%2c13 L2%2c13 C1.44771525%2c13 1%2c12.5522847 1%2c12 C1%2c11.4477153 1.44771525%2c11 2%2c11 L3%2c11 L3%2c9 L2%2c9 C1.44771525%2c9 1%2c8.55228475 1%2c8 C1%2c7.44771525 1.44771525%2c7 2%2c7 L3%2c7 L3%2c3 C3%2c2.44771525 3.44771525%2c2 4%2c2 L21%2c2 Z M20%2c4 L5%2c4 L5%2c7 L6%2c7 C6.55228475%2c7 7%2c7.44771525 7%2c8 C7%2c8.55228475 6.55228475%2c9 6%2c9 L5%2c9 L5%2c11 L6%2c11 C6.55228475%2c11 7%2c11.4477153 7%2c12 C7%2c12.5522847 6.55228475%2c13 6%2c13 L5%2c13 L5%2c15 L6%2c15 C6.55228475%2c15 7%2c15.4477153 7%2c16 C7%2c16.5522847 6.55228475%2c17 6%2c17 L5%2c17 L5%2c20 L20%2c20 L20%2c4 Z M17%2c15 C17.5522847%2c15 18%2c15.4477153 18%2c16 C18%2c16.5522847 17.5522847%2c17 17%2c17 L11%2c17 C10.4477153%2c17 10%2c16.5522847 10%2c16 C10%2c15.4477153 10.4477153%2c15 11%2c15 L17%2c15 Z M17%2c11 C17.5522847%2c11 18%2c11.4477153 18%2c12 C18%2c12.5522847 17.5522847%2c13 17%2c13 L11%2c13 C10.4477153%2c13 10%2c12.5522847 10%2c12 C10%2c11.4477153 10.4477153%2c11 11%2c11 L17%2c11 Z M17%2c7 C17.5522847%2c7 18%2c7.44771525 18%2c8 C18%2c8.55228475 17.5522847%2c9 17%2c9 L11%2c9 C10.4477153%2c9 10%2c8.55228475 10%2c8 C10%2c7.44771525 10.4477153%2c7 11%2c7 L17%2c7 Z' id='Combined-Shape' fill='%23cccccc'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$d = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/appList/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/appList/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M21%2c2 C21.5522847%2c2 22%2c2.44771525 22%2c3 L22%2c21 C22%2c21.5522847 21.5522847%2c22 21%2c22 L4%2c22 C3.44771525%2c22 3%2c21.5522847 3%2c21 L3%2c17 L2%2c17 C1.44771525%2c17 1%2c16.5522847 1%2c16 C1%2c15.4477153 1.44771525%2c15 2%2c15 L3%2c15 L3%2c13 L2%2c13 C1.44771525%2c13 1%2c12.5522847 1%2c12 C1%2c11.4477153 1.44771525%2c11 2%2c11 L3%2c11 L3%2c9 L2%2c9 C1.44771525%2c9 1%2c8.55228475 1%2c8 C1%2c7.44771525 1.44771525%2c7 2%2c7 L3%2c7 L3%2c3 C3%2c2.44771525 3.44771525%2c2 4%2c2 L21%2c2 Z M20%2c4 L5%2c4 L5%2c7 L6%2c7 C6.55228475%2c7 7%2c7.44771525 7%2c8 C7%2c8.55228475 6.55228475%2c9 6%2c9 L5%2c9 L5%2c11 L6%2c11 C6.55228475%2c11 7%2c11.4477153 7%2c12 C7%2c12.5522847 6.55228475%2c13 6%2c13 L5%2c13 L5%2c15 L6%2c15 C6.55228475%2c15 7%2c15.4477153 7%2c16 C7%2c16.5522847 6.55228475%2c17 6%2c17 L5%2c17 L5%2c20 L20%2c20 L20%2c4 Z M17%2c15 C17.5522847%2c15 18%2c15.4477153 18%2c16 C18%2c16.5522847 17.5522847%2c17 17%2c17 L11%2c17 C10.4477153%2c17 10%2c16.5522847 10%2c16 C10%2c15.4477153 10.4477153%2c15 11%2c15 L17%2c15 Z M17%2c11 C17.5522847%2c11 18%2c11.4477153 18%2c12 C18%2c12.5522847 17.5522847%2c13 17%2c13 L11%2c13 C10.4477153%2c13 10%2c12.5522847 10%2c12 C10%2c11.4477153 10.4477153%2c11 11%2c11 L17%2c11 Z M17%2c7 C17.5522847%2c7 18%2c7.44771525 18%2c8 C18%2c8.55228475 17.5522847%2c9 17%2c9 L11%2c9 C10.4477153%2c9 10%2c8.55228475 10%2c8 C10%2c7.44771525 10.4477153%2c7 11%2c7 L17%2c7 Z' id='Combined-Shape' fill='%23cccccc'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 function _templateObject$8() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: ", "px;\n  height: ", "px;\n\n  & > img {\n    height: auto;\n  }\n\n  &.icon--active > img {\n    width: ", "px;\n  }\n\n  &:not(.icon--active) > img {\n    width: ", "px;\n  }\n\n  &.icon--default:hover {\n    border-radius: 50%;\n    background: #dcddff;\n    cursor: pointer;\n  }\n"]);
@@ -2966,17 +3476,17 @@ function NoteIcon(_ref) {
     switch (state) {
       case 'default':
         return /*#__PURE__*/React__default['default'].createElement("img", {
-          src: img$9
+          src: img$b
         });
 
       case 'active':
         return /*#__PURE__*/React__default['default'].createElement("img", {
-          src: img$a
+          src: img$c
         });
 
       case 'disable':
         return /*#__PURE__*/React__default['default'].createElement("img", {
-          src: img$b
+          src: img$d
         });
 
       default:
@@ -3004,3 +3514,4 @@ var IconWrapper = styled__default['default'].div(_templateObject$8(), function (
 
 exports.NoteApp = NoteApp;
 exports.NoteIcon = NoteIcon;
+exports.useStore = useStore;
