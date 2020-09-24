@@ -36,10 +36,11 @@ export const GlobalStyle = createGlobalStyle`
 export const LNB = styled.div`
   height: 100%;
   border-right: 1px solid #e3e7eb;
-  display: block;
+  flex: 1 1 23.06rem;
+  min-width : 23.06rem;
 `;
 export const Content = styled.div`
-  flex: auto;
+  flex: 2 2 46rem;
   height: 100%;
 `;
 

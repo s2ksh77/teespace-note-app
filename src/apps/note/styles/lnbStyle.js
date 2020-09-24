@@ -4,9 +4,6 @@ export const LNBCover = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: 23.06rem;
-  flex: 1 1 23.06rem;
-  line-height: 100% !important;
   height: 100%;
 `;
 
