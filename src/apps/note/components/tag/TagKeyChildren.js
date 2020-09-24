@@ -22,10 +22,10 @@ const TagKeyChildren = ({ category, tagKey }) => {
 				{Object.keys(TagStore.targetTagList[category][tagKey]).map((tagName) => {
 					const tagInfo = TagStore.targetTagList[category][tagKey][tagName];
 					return (
-						<TagChip onClick={onClickTagBtn.bind(null, tagInfo.id, tagName)} key={tagInfo.id}>
-							<TagChipText>{tagName}</TagChipText>
-							<TagChipNum>{tagInfo.note_id.length}</TagChipNum>
-						</TagChip>
+            <TagChip onClick={onClickTagBtn.bind(null, tagInfo.id, tagName)} key={tagInfo.id}>
+              <TagChipText>{tagName}</TagChipText>
+              <TagChipNum>{tagInfo.note_id.length}</TagChipNum>
+            </TagChip>
 					)
 				})}
 			</div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import useStore from "../../store/useStore";
 import {
   LnbTitleCover,
@@ -12,7 +12,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
-import { SearchTagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
+import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
 
 const LNBHeader = ({createNewChapter}) => {
   const { ChapterStore } = useStore();
@@ -69,9 +69,9 @@ const LNBHeader = ({createNewChapter}) => {
           {ChapterStore.isTagSearching ? 
           <>
             <SearchTagChip>
-							<TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
-							<Button onClick={onClickCancelSearchTagBtn} style={{marginLeft:"0.69rem"}} src={cancelImg} />
-						</SearchTagChip>
+              <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
+              <Button onClick={onClickCancelSearchTagBtn} style={{marginLeft:"0.69rem"}} src={cancelImg} />
+            </SearchTagChip>
           </> : null}
           <Button src={cancelImg} 
             style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />

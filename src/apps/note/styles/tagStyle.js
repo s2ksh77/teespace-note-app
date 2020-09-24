@@ -130,9 +130,6 @@ export const TagKeyContainer = styled.div`
 `
 
 export const TagChip = styled(Tag)`
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
   padding : 0 0.63rem;
 `
 
@@ -148,12 +145,15 @@ export const SearchTagChip = styled(Tag)`
 `
 
 export const TagChipText = styled.div`
-  display: flex;
+  display: block;
   align-items: center;
   font-size: 0.8125rem;
   font-weight: normal;
   color: #000000;
   margin: 0rem;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 `;
 
 export const TagChipNum = styled.div`
