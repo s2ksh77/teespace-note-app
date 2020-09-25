@@ -65,7 +65,7 @@ const ChapterStore = observable({
             data: { dto: notbookList },
           } = response;
           ChapterStore.getChapterList();
-          PageStore.getNoteInfoList(notbookList.children[0].id);
+          PageStore.setCurrentPageId(notbookList.children[0].id);
           this.setChapterTempUl(false);
         }
       }

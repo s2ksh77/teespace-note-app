@@ -17,21 +17,15 @@ const PageList = ({ children, chapterId }) => {
   const childrenList = JSON.parse(children);
   const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
 
-  const selectPage = async (targetId) => {
-    await PageStore.getNoteInfoList(targetId);
-    await TagStore.getNoteTagList(targetId);
-  };
-
   const handleNewBtnClick = async (targetId) => {
     PageStore.setCreatePageParent(targetId);
     await PageStore.createPage();
     NoteStore.setShowPage(true);
   };
-  const onClickLnbPage = (id) => {
+  const onClickLnbPage = async (id) => {
     NoteStore.setShowPage(true);
-    selectPage(id);
     ChapterStore.setCurrentChapterId(chapterId);
-    PageStore.setCurrentPageId(id)
+    await PageStore.setCurrentPageId(id)
   };
   
   const handlePageName = (e) => {

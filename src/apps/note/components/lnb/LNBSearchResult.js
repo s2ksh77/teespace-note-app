@@ -13,12 +13,10 @@ const LNBSearchResult = () => {
 	// 챕터 검색때만 초기화
 	const onClickChapterBtn = async (chapterId, pageId, e) => {
 		ChapterStore.setCurrentChapterId(chapterId);
-		PageStore.setCurrentPageId(pageId);
+		await PageStore.setCurrentPageId(pageId);
 		ChapterStore.setIsTagSearching(false);
 		ChapterStore.setIsSearching(false);
 		ChapterStore.setInputValue("");
-
-		await PageStore.getNoteInfoList(pageId);
 		NoteStore.setShowPage(true);
 	}
 
@@ -28,7 +26,6 @@ const LNBSearchResult = () => {
 		// ChapterStore.setIsTagSearching(false);
 		// ChapterStore.setIsSearching(false);
 		// ChapterStore.setInputValue("");
-		await PageStore.getNoteInfoList(pageId);
 		NoteStore.setShowPage(true);
 	}
 	

@@ -23,8 +23,12 @@ const PageStore = observable({
     } = e;
     return id;
   },
-  setCurrentPageId(pageId) {
+  async setCurrentPageId(pageId) {
     this.currentPageId = pageId;
+    if (pageId) {
+      await PageStore.getNoteInfoList(pageId);
+      await TagStore.getNoteTagList(pageId); // tagList
+    }    
   },
   getPageName(e) {
     const {
@@ -110,10 +114,11 @@ const PageStore = observable({
       this.currentPageData = noteList.noteList[0];
       this.isEdit = noteList.noteList[0].is_edit;
       this.noteTitle = noteList.noteList[0].note_title;
-      this.currentPageId = noteList.noteList[0].note_id;
+      // this.currentPageId = noteList.noteList[0].note_id;
     });
     return this.noteInfoList;
   },
+  // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editStart(noteId) {
     await NoteRepository.editStart(
       noteId,
@@ -128,6 +133,7 @@ const PageStore = observable({
     });
     return this.currentPageData;
   },
+  // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editDone(updateDto) {
     await NoteRepository.editDone(updateDto).then(response => {
       if (response.status === 200) {
@@ -140,6 +146,7 @@ const PageStore = observable({
     });
     return this.currentPageData;
   },
+  // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async noneEdit(noteId) {
     await NoteRepository.nonEdit(
       noteId,

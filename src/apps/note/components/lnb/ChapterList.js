@@ -22,7 +22,7 @@ const ChapterList = ({ type }) => {
         const chapterId = ChapterStore.chapterList[0]?.id;
         const pageId = ChapterStore.chapterList[0]?.children?.[0]?.id;
         ChapterStore.setCurrentChapterId(chapterId)
-        PageStore.setCurrentPageId(pageId);
+        await PageStore.setCurrentPageId(pageId);
       }
     })()
   }, [])
@@ -33,10 +33,8 @@ const ChapterList = ({ type }) => {
     if (children.length) {
       targetPage = children[0]?.id;
     }
-    PageStore.setCurrentPageId(targetPage);
-    await PageStore.getNoteInfoList(targetPage);
-    await TagStore.getNoteTagList(targetPage); // tagList
     NoteStore.setShowPage(true);
+    await PageStore.setCurrentPageId(targetPage);
   };
 
   const handleChapterName = (e) => {
