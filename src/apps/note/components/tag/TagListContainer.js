@@ -73,6 +73,16 @@ const TagListContainer = () => {
           TagStore.setEditTagIndex(-1);
         } else TagStore.setEditTagIndex(-1);
       }
+    } else { // 아이디 없는 애를 고칠 경우
+      if (TagStore.currentTagValue === TagStore.editTagValue)
+        TagStore.setEditTagIndex(-1);
+      else if (TagStore.editTagValue === '') {
+        TagStore.setEditTagIndex(-1);
+      } else {
+        TagStore.setEditCreateTag();
+        TagStore.setEditTagIndex(-1);
+      }
+
     }
   };
   const createTag = () => {
