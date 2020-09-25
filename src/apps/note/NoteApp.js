@@ -6,10 +6,11 @@ import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 
-const NoteApp = () => {
+const NoteApp = ({ layoutState }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
   const { NoteStore } = useStore();
   NoteStore.setChannelId(targetChId);
+  NoteStore.setLayoutState(layoutState)
 
   return useObserver(() => (
     <>

@@ -10,6 +10,7 @@ const NoteStore = observable({
   noteFileList: [],
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   isMaximumSize: true,
+  layoutState: '',
   editorButtonList: [
     [
       'undo',
@@ -68,6 +69,9 @@ const NoteStore = observable({
   setIsMaximumSize(isMaximum) {
     this.isMaximumSize = isMaximum;
   },
+  setLayoutState(state) {
+    this.layoutState = state;
+  }
 });
 
 export default NoteStore;
