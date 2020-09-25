@@ -39,7 +39,7 @@ const HeaderButtons = () => {
         <>
             <HeaderButtonContainer>
                 <Button src={onChangeImg()} onClick={handleLayoutState} />
-                <Button style={style} src={cancel} />
+                <Button style={style} src={cancel} onClick={() => EventBus.dispatch('onLayoutClose')} />
             </HeaderButtonContainer>
         </>
     )
