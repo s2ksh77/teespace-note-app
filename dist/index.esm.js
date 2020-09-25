@@ -1366,6 +1366,10 @@ var NoteStore = observable({
 var EditorStore = observable({
   contents: '',
   jodit: null,
+  uploadFile: "",
+  fileName: "",
+  fileSize: "",
+  fileExtension: "",
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -1377,12 +1381,232 @@ var EditorStore = observable({
   },
   getEditor: function getEditor() {
     return this.jodit;
+  },
+  setBase64: function setBase64(data) {
+    new Promise(function (resolve, reject) {
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(data.getAll('files[0]')[0]);
+
+      fileReader.onload = function () {
+        this.imageUrl = fileReader.result;
+      };
+
+      fileReader.onerror = function (error) {
+        reject(error);
+      };
+    });
+    console.log(this.imageUrl);
   }
 });
+var tempStorageManager = {
+  uploadFile: function () {
+    var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, resp, successCallback, errorCallback, isImage) {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              console.log('receive file -->', file);
+
+              if (isImage) {
+                _context2.next = 6;
+                break;
+              }
+
+              _context2.next = 4;
+              return API.Post("http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=" + resp.file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + resp.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              }).then(function (data) {
+                var dto = data.data.dto;
+
+                if (dto.resultMsg === "Success") {
+                  if (typeof successCallback === "function") successCallback(dto);
+                } else {
+                  if (typeof errorCallback === "function") errorCallback(dto);
+                }
+              }).catch(function (error) {
+                console.log(error);
+              });
+
+            case 4:
+              _context2.next = 8;
+              break;
+
+            case 6:
+              _context2.next = 8;
+              return API.Post(NoteRepository$1.URL + "/noteFile", JSON.stringify(resp), {
+                headers: {
+                  'Content-Type': 'application/json;charset=UTF-8'
+                }
+              }).then( /*#__PURE__*/function () {
+                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(data) {
+                  return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          console.log(data); // await API.Post(`http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=` + data.file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + data.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
+                          //   const { data: { dto } } = data
+                          //   if (dto.resultMsg === "Success") {
+                          //     if (typeof successCallback === "function") successCallback(dto);
+                          //   } else {
+                          //     if (typeof errorCallback === "function") errorCallback(dto)
+                          //   }
+                          // }).catch(error => {
+                          //   console.log(error)
+                          // })
+
+                        case 1:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee);
+                }));
+
+                return function (_x6) {
+                  return _ref.apply(this, arguments);
+                };
+              }());
+
+            case 8:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    function uploadFile(_x, _x2, _x3, _x4, _x5) {
+      return _uploadFile.apply(this, arguments);
+    }
+
+    return uploadFile;
+  }()
+};
 var config = {
   buttons: ['undo', 'redo', '|', 'bold', 'strikethrough', 'underline', 'italic', 'eraser', '|', 'superscript', 'subscript', '|', 'ul', 'ol', 'hr', '|', 'align', 'outdent', 'indent', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'image', 'file', 'table', 'link', '|', 'selectall', 'cut', 'copy', 'paste', 'copyformat', '|', 'source', 'preview', 'find'],
   uploader: {
-    insertImageAsBase64URI: true
+    url: NoteRepository$1.URL + "/noteFile",
+    format: 'json',
+    contentType: function contentType() {
+      return 'application/json;charset=UTF-8';
+    },
+    buildData: function buildData(data) {
+      var fileName = data.getAll('files[0]')[0].name;
+      var fileExtension = 'file';
+      var dotIndex = fileName.lastIndexOf('.');
+
+      if (dotIndex !== -1) {
+        fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+        fileName = fileName.substring(0, dotIndex);
+      }
+
+      if (data.getAll('files[0]')[0].type.match('image/*')) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.readAsDataURL(data.getAll('files[0]')[0]);
+          console.log(reader);
+
+          reader.onload = function () {
+            return resolve({
+              image: reader.result
+            });
+          };
+
+          reader.onerror = function (error) {
+            reject(error);
+          };
+        });
+      } else {
+        var inputDto = {
+          "dto": {
+            "workspace_id": NoteRepository$1.WS_ID,
+            "channel_id": NoteRepository$1.chId,
+            "storageFileInfo": {
+              "user_id": NoteRepository$1.USER_ID,
+              "file_last_update_user_id": NoteRepository$1.USER_ID,
+              "file_id": "",
+              "file_name": fileName,
+              "file_extension": fileExtension,
+              "file_created_at": "",
+              "file_updated_at": "",
+              "file_size": data.getAll('files[0]')[0].size,
+              "user_context_1": PageStore.currentPageId,
+              "user_context_2": "",
+              "user_context_3": ""
+            }
+          }
+        };
+        EditorStore.uploadFile = data.getAll('files[0]')[0];
+        return JSON.stringify(inputDto);
+      }
+    },
+    isSuccess: function isSuccess(resp) {
+      if (resp.dto) {
+        var successCb = function successCb(msg) {
+          console.log(msg);
+        };
+
+        var errorCb = function errorCb(msg) {
+          console.log(msg);
+        };
+
+        var formData = new FormData();
+        formData.append('file', EditorStore.uploadFile);
+        tempStorageManager.uploadFile(formData, resp.dto, successCb, errorCb, false);
+      }
+    },
+    getMessage: function getMessage(resp) {
+      return resp;
+    },
+    // image promise 이후 base64 insertImage 이후 storage upload 필요
+    defaultHandlerSuccess: function defaultHandlerSuccess(data) {
+      var i,
+          field = 'files';
+      console.log(data);
+      console.log(EditorStore.fileName);
+
+      if (data[field] && data[field].length) {
+        for (i = 0; i < data[field].length; i += 1) {
+          // const inputDto = {
+          //   "dto": {
+          //     "workspace_id": NoteRepository.WS_ID,
+          //     "channel_id": NoteRepository.chId,
+          //     "storageFileInfo": {
+          //       "user_id": NoteRepository.USER_ID,
+          //       "file_last_update_user_id": NoteRepository.USER_ID,
+          //       "file_id": "",
+          //       "file_name": EditorStore.fileName,
+          //       "file_extension": EditorStore.fileExtension,
+          //       "file_created_at": "",
+          //       "file_updated_at": "",
+          //       "file_size": EditorStore.fileSize,
+          //       "user_context_1": PageStore.currentPageId,
+          //       "user_context_2": "",
+          //       "user_context_3": ""
+          //     }
+          //   }
+          // }
+          // const successCb = (msg) => {
+          //   console.log(msg)
+          // }
+          // const errorCb = (msg) => {
+          //   console.log(msg)
+          // }
+          // let formData = new FormData();
+          // formData.append('image', data[field][i]);
+          // tempStorageManager.uploadFile(formData, inputDto, successCb, errorCb, true)
+          this.s.insertImage(data.baseurl + data[field][i]);
+        }
+      }
+    },
+    defaultHandlerError: function defaultHandlerError(error) {
+      console.log(error);
+    },
+    error: function error(e) {
+      console.log(e);
+    }
   },
   placeholder: '',
   hotkeys: {
@@ -2948,7 +3172,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  #root{\n    display: flex;\n    width:100%;\n    height:100%;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -3038,7 +3262,10 @@ var HeaderButtons = function HeaderButtons() {
       onClick: handleLayoutState
     }), /*#__PURE__*/React.createElement(Button, {
       style: style,
-      src: img
+      src: img,
+      onClick: function onClick() {
+        return EventBus.dispatch('onLayoutClose');
+      }
     })));
   });
 };
