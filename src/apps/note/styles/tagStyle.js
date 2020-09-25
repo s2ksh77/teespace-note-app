@@ -159,7 +159,7 @@ export const TagChipText = styled.div`
 
 export const TagChipNum = styled.div`
   font-size: 0.75rem;
-  margin-left: 0.5rem;
+  margin-left: auto;
   font-weight: bold;
   align-self: center;
   color: #008CC8;

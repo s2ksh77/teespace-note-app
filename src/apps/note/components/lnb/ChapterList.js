@@ -11,7 +11,7 @@ import {
 } from "../../styles/chpaterStyle";
 
 const ChapterList = ({ type }) => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
 
   useEffect(() => {
     (async () => {
@@ -35,6 +35,7 @@ const ChapterList = ({ type }) => {
     }
     PageStore.setCurrentPageId(targetPage);
     await PageStore.getNoteInfoList(targetPage);
+    await TagStore.getNoteTagList(targetPage); // tagList
     NoteStore.setShowPage(true);
   };
 

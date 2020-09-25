@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo, useCallback} from "react";
 import { useObserver } from "mobx-react";
 import useStore from "../../store/useStore";
 import {
@@ -17,7 +17,7 @@ const EditorHeader = () => {
   const { PageStore, TagStore } = useStore();
   const editingImgStyle = {width:"1.13rem", marginRight:"0.5rem"};
 
-  const handleClickBtn = (e) => {
+  const handleClickBtn = useCallback((e) => {
     const {
       target: { innerText },
     } = e;
@@ -40,23 +40,29 @@ const EditorHeader = () => {
       if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
       if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     }
-  };
+  },[]);
 
-  const handleTitleInput = (e) => {
+  const handleTitleInput = useCallback((e) => {
     const {
       target: { value },
     } = e;
     PageStore.setTitle(value);
-  };
+  }, []);
+
+  const editImg = useMemo(() => {
+    return PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />
+  }, [PageStore.isEdit])
+
+  const editBtnText = useMemo(() => {
+    return (PageStore.isEdit === null || PageStore.isEdit === "") ? "수정" : "저장"
+  }, [PageStore.isEdit])
 
   return useObserver(() => (
     <>
       <EditorHeaderCover>
         <EditorHeaderContainer1>
           <EditBtn onClick={handleClickBtn}>
-            {PageStore.isEdit === null || PageStore.isEdit === ""
-              ? "수정"
-              : "저장"}
+            {editBtnText}
           </EditBtn>
           <EditorTitle
             id="editorTitle"
@@ -66,7 +72,7 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {PageStore.isEdit ? <img style={editingImgStyle} src={editingImg} /> : null}
+          {editImg}
           <ModifiedUser>
             {PageStore.currentPageData.user_name}
           </ModifiedUser>
