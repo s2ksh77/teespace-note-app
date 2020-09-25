@@ -78,6 +78,11 @@ const PageList = ({ children, chapterId }) => {
                   chapterId={chapterId}
                   pageId={item.id}
                   pageTitle={item.text}
+                  nextSelectablePageId={
+                    childrenList.length > 1 ? (
+                      childrenList[0]?.id === item.id ? childrenList[1]?.id : childrenList[0]?.id 
+                    ) : ("")
+                  }
                 />
               </PageTextCover>
             )}

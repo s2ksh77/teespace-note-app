@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
-const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
+const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
   const { ChapterStore, PageStore } = useStore();
 
   const renameComponent = () => {
@@ -33,9 +33,14 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
     // 챕터/페이지를 삭제한다.
     switch (type) {
       case "chapter":
+        if (ChapterStore.currentChapterId === chapterId) {
+          ChapterStore.setCurrentChapterId(nextSelectableChapterId);
+          PageStore.setCurrentPageId(nextSelectablePageId ? nextSelectablePageId : "");
+        }
         ChapterStore.deleteChapter(chapterId);
         break;
       case "page":
+        if (PageStore.currentPageId === pageId) PageStore.setCurrentPageId(nextSelectablePageId);
         PageStore.setDeletePageList({ note_id: pageId });
         PageStore.deletePage();
         break;
@@ -54,7 +59,7 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle }) => {
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       <Menu.Item key="0">이름 변경</Menu.Item>
-      <Menu.Item key="1">삭제</Menu.Item>
+      <Menu.Item key="1" disabled={type === "chapter" && nextSelectableChapterId === "" ? true : false}>삭제</Menu.Item>
     </Menu>
   );
 

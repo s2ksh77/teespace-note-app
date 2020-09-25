@@ -38,6 +38,14 @@ const ChapterText = ({ text, chapterId, color }) => {
           type={"chapter"}
           chapterId={chapterId}
           chapterTitle={text}
+          nextSelectableChapterId={
+            ChapterStore.chapterList.length > 1 ? (
+              ChapterStore.chapterList[0]?.id === chapterId ? ChapterStore.chapterList[1]?.id : ChapterStore.chapterList[0]?.id 
+            ) : ("")
+          }
+          nextSelectablePageId={
+            ChapterStore.chapterList[0]?.id === chapterId ? ChapterStore.chapterList[1]?.children[0]?.id : ChapterStore.chapterList[0]?.children[0]?.id
+          }
         />
       </ChapterTitle>
       <ChapterFolderBtn>
