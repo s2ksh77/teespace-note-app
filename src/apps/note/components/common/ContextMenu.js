@@ -36,6 +36,7 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
         if (ChapterStore.currentChapterId === chapterId) {
           ChapterStore.setCurrentChapterId(nextSelectableChapterId);
           PageStore.setCurrentPageId(nextSelectablePageId ? nextSelectablePageId : "");
+          if (!nextSelectableChapterId) ChapterStore.setAllDeleted(true);
         }
         ChapterStore.deleteChapter(chapterId);
         break;
@@ -59,7 +60,7 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       <Menu.Item key="0">이름 변경</Menu.Item>
-      <Menu.Item key="1" disabled={type === "chapter" && nextSelectableChapterId === "" ? true : false}>삭제</Menu.Item>
+      <Menu.Item key="1">삭제</Menu.Item>
     </Menu>
   );
 

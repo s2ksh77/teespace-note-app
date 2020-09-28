@@ -31,6 +31,7 @@ const ChapterStore = observable({
   searchResult:{}, // {chapter:[], page:[]} 형태
   renameChapterId: '',
   renameChapterText: '',
+  allDeleted: false,
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -45,6 +46,9 @@ const ChapterStore = observable({
   },
   setRenameChapterText(chapterText) {
     this.renameChapterText = chapterText;
+  },
+  setAllDeleted(allDeleted) {
+    this.allDeleted = allDeleted;
   },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
@@ -68,6 +72,7 @@ const ChapterStore = observable({
           this.setCurrentChapterId(notbookList.id);
           PageStore.setCurrentPageId(notbookList.children[0].id);
           this.setChapterTempUl(false);
+          this.setAllDeleted(false);
         }
       }
     );
@@ -77,6 +82,7 @@ const ChapterStore = observable({
       (response) => {
         if (response.status === 200) {
           ChapterStore.getChapterList();
+          if (this.allDeleted) NoteStore.setShowPage(false);
         }
       }
     );
