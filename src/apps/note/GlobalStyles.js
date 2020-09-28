@@ -34,6 +34,9 @@ export const GlobalStyle = createGlobalStyle`
       margin-left:auto !important;
     }
   }
+  .tox-editor-header{
+    display:none;
+  }
 `;
 
 export const LNB = styled.div`

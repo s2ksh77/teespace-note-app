@@ -17,7 +17,11 @@ export const EditorHeaderContainer1 = styled.div`
   align-items: center;
   width: 80%;
 `;
-
+export const EditPreBtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+`
 export const EditBtn = styled.button`
   width: 3.5rem;
   height: 1.69rem;

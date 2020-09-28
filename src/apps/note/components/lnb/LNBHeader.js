@@ -13,6 +13,8 @@ import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
 import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
+import HeaderButtons from "../common/buttons";
+import NoteStore from "../../store/noteStore";
 
 const LNBHeader = ({createNewChapter}) => {
   const { ChapterStore } = useStore();
@@ -76,6 +78,7 @@ const LNBHeader = ({createNewChapter}) => {
           <Button src={cancelImg} 
             style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
+        <HeaderButtons style={(NoteStore.layoutState === 'expand') ? { display: "none" } : { display: "flex" }} />
       </LnbTitleCover>
     </>
   ));

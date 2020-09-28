@@ -8,10 +8,14 @@ import {
   EditorTitle,
   EditorHeaderContainer2,
   ModifiedUser,
-  ModifiedTime,
+  ModifiedTime, EditPreBtn, EditPreBtnWrapper
 } from "../../styles/titleStyle";
 import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
+import NoteStore from "../../store/noteStore";
+import preImg from "../../assets/back.svg"
+import { Button } from "../../styles/commonStyle";
+import NoteUtil from "../common/NoteUtil";
 
 const EditorHeader = () => {
   const { PageStore, TagStore } = useStore();
@@ -60,6 +64,9 @@ const EditorHeader = () => {
   return useObserver(() => (
     <>
       <EditorHeaderCover>
+        <EditPreBtnWrapper style={(NoteStore.layoutState === "collapse") ? { display: "flex" } : { display: "none" }} >
+          <Button src={preImg} />
+        </EditPreBtnWrapper>
         <EditorHeaderContainer1>
           <EditBtn onClick={handleClickBtn}>
             {editBtnText}

@@ -15,10 +15,13 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@tinymce/tinymce-react": "^3.6.1",
     "antd": "^4.6.3",
     "autobind-decorator": "^2.4.0",
     "axios": "^0.20.0",
     "craco-less": "^1.17.0",
+    "jodit": "git+http://192.168.158.12:9000/teespace/jodit#jodit_develop",
+    "jodit-react": "git+https://github.com/s2ksh77/jodit-react.git#master",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
@@ -28,9 +31,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop",
-    "jodit": "git+http://192.168.158.12:9000/teespace/jodit#jodit_develop",
-    "jodit-react": "git+https://github.com/s2ksh77/jodit-react.git#master"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
   },
   "peerDependencies": {
     "react": "^16.13.1",
