@@ -44,6 +44,9 @@ export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
   outline: none;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
   box-sizing: border-box;
   padding: 0.1875rem 0.75rem;
   background-image: none;

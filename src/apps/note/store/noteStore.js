@@ -11,6 +11,7 @@ const NoteStore = observable({
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   isMaximumSize: true,
   layoutState: '',
+  targetLayout:null,
   editorButtonList: [
     [
       'undo',
@@ -71,6 +72,11 @@ const NoteStore = observable({
   },
   setLayoutState(state) {
     this.layoutState = state;
+    if (state !== "collapse") this.targetLayout = null;
+  },
+  // lnb, content 중 하나
+  setTargetLayout(target) {
+    this.targetLayout = target;
   }
 });
 

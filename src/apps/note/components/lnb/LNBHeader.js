@@ -78,7 +78,7 @@ const LNBHeader = ({createNewChapter}) => {
           <Button src={cancelImg} 
             style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
-        <HeaderButtons style={(NoteStore.layoutState === 'expand') ? { display: "none" } : { display: "flex" }} />
+        {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
     </>
   ));

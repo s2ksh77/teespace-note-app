@@ -30,6 +30,7 @@ export const TagList = styled.div`
   align-items: center !important;
   width: calc(100% - 2.4rem);
   box-sizing: border-box;
+  overflow:hidden;
 `;
 export const TagText = styled.span``;
 

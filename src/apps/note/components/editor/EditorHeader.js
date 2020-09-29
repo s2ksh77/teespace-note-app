@@ -18,8 +18,10 @@ import { Button } from "../../styles/commonStyle";
 import NoteUtil from "../common/NoteUtil";
 
 const EditorHeader = () => {
-  const { PageStore, TagStore } = useStore();
-  const editingImgStyle = {width:"1.13rem", marginRight:"0.5rem"};
+  const { NoteStore, PageStore, TagStore } = useStore();
+  const editingImgStyle = useMemo(() => {
+    return {width:"1.13rem", marginRight:"0.5rem"}
+  },[]);
 
   const handleClickBtn = useCallback((e) => {
     const {
@@ -61,6 +63,10 @@ const EditorHeader = () => {
     return (PageStore.isEdit === null || PageStore.isEdit === "") ? "수정" : "저장"
   }, [PageStore.isEdit])
 
+  const isDisabledInput = useMemo(() => {
+    return (PageStore.isEdit) ? false : true;
+  }, [PageStore.isEdit]);
+
   return useObserver(() => (
     <>
       <EditorHeaderCover>
@@ -76,6 +82,7 @@ const EditorHeader = () => {
             maxLength="200"
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
+            disabled={isDisabledInput}
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
