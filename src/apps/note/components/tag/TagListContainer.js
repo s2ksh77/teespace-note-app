@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
@@ -16,6 +16,7 @@ import {Tooltip} from 'antd';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useStore();
+  const [focusedTag, setFocusedTag] = useState(null);
 
   const handleCloseBtn = (targetId, targetText) => {
     if (targetId) {
@@ -121,6 +122,45 @@ const TagListContainer = () => {
     }
   }
 
+  const handleClickOutside = (e) => {
+    if (e.target.dataset.tag !== "noteTagItem") {
+      setFocusedTag(null);
+    }
+  }
+
+  const handleClickTag = (idx) => {
+    if (focusedTag === null) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    setFocusedTag(idx);
+  }
+
+  const handleKeyDownTag = (e) => {
+    switch (e.keyCode) {
+      // left
+      case 37:
+        if (focusedTag > 0) {
+          setFocusedTag((preIdx) => preIdx-1);
+
+        }
+        break;
+      // right
+      case 39:
+        if (focusedTag < TagStore.notetagList.length-1) {
+          setFocusedTag((preIdx) => preIdx+1);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  useEffect(() => {      
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    }
+  },[]);
+
   return useObserver(() => (
     <>
       <EditorTagCover>
@@ -154,13 +194,19 @@ const TagListContainer = () => {
             ) : (
                 <Tag
                   key={index}
+                  data-idx={index}
+                  data-tag="noteTagItem"
                   id={item.tag_id}
                   closable={
                     PageStore.isEdit === null || PageStore.isEdit === ''
                       ? false
                       : true
                   }
+                  tabIndex="0"
+                  style={focusedTag===index ? {backgroundColor:"#1EA8DF"} : {}}
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
+                  onClick={handleClickTag.bind(null, index)}
+                  onKeyDown={handleKeyDownTag.bind(null)}
                 >
                   <TagText
                     onDoubleClick={
