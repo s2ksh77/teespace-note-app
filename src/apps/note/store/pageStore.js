@@ -17,6 +17,7 @@ const PageStore = observable({
   isRename: false,
   renamePageId: '',
   renamePageText: '',
+  modifiedDate: '',
   getPageId(e) {
     const {
       target: { id },
@@ -66,6 +67,31 @@ const PageStore = observable({
   setRenamePageText(pageText) {
     this.renamePageText = pageText;
   },
+  
+  modifiedDateFormatting() {
+    const date = this.currentPageData.modified_date;
+    const mDate = date.split(' ')[0];
+    const mTime = date.split(' ')[1];
+    const mYear = parseInt(mDate.split('.')[0]);
+    const mMonth = parseInt(mDate.split('.')[1]);
+    const mDay = parseInt(mDate.split('.')[2]);
+    let mHour = parseInt(mTime.split(':')[0]);
+    const mMinute = parseInt(mTime.split(':')[1]);
+    const meridiem = mHour < 12 ? '오전' : '오후';
+    const curDate = new Date();
+    const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
+
+    if (mHour > 12) mHour = mHour - 12;
+    const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+
+    if (mYear === curDate.getFullYear()) { // 같은 해
+      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
+      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
+    }
+    else { // 다른 해
+      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + basicDate;
+    }
+  },
 
   async createPage() {
     await NoteRepository.createPage('제목 없음', this.createParent).then(
@@ -114,6 +140,7 @@ const PageStore = observable({
       this.currentPageData = noteList.noteList[0];
       this.isEdit = noteList.noteList[0].is_edit;
       this.noteTitle = noteList.noteList[0].note_title;
+      this.modifiedDate = this.modifiedDateFormatting();
       // this.currentPageId = noteList.noteList[0].note_id;
     });
     return this.noteInfoList;

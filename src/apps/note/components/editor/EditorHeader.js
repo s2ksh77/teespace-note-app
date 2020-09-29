@@ -84,7 +84,7 @@ const EditorHeader = () => {
             {PageStore.currentPageData.user_name}
           </ModifiedUser>
           <ModifiedTime>
-            {PageStore.currentPageData.modified_date}
+            {PageStore.modifiedDate}
           </ModifiedTime>
         </EditorHeaderContainer2>
         <HeaderButtons/>
