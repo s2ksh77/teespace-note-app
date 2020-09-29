@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
@@ -17,6 +17,7 @@ import {Tooltip} from 'antd';
 const TagListContainer = () => {
   const { TagStore, PageStore } = useStore();
   const [focusedTag, setFocusedTag] = useState(null);
+  const tagList = useRef(null);
 
   const handleCloseBtn = (targetId, targetText) => {
     if (targetId) {
@@ -128,11 +129,18 @@ const TagListContainer = () => {
     }
   }
 
-  const handleClickTag = (idx) => {
+  const handleClickTag = (idx,e) => {
     if (focusedTag === null) {
       document.addEventListener("click", handleClickOutside);
     }
     setFocusedTag(idx);
+    changeFocusedTag(idx);
+  }
+
+  const changeFocusedTag = (idx) => {
+    let target = tagList.current.children[idx]
+    target.focus();
+    target.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
   }
 
   const handleKeyDownTag = (e) => {
@@ -140,14 +148,19 @@ const TagListContainer = () => {
       // left
       case 37:
         if (focusedTag > 0) {
-          setFocusedTag((preIdx) => preIdx-1);
-
+          setFocusedTag((preIdx) => {
+            changeFocusedTag(preIdx-1);   
+            return preIdx-1
+          });                 
         }
         break;
       // right
       case 39:
         if (focusedTag < TagStore.notetagList.length-1) {
-          setFocusedTag((preIdx) => preIdx+1);
+          setFocusedTag((preIdx) => {
+            changeFocusedTag(preIdx+1);
+            return preIdx+1
+          });
         }
         break;
       default:
@@ -178,7 +191,7 @@ const TagListContainer = () => {
             autoFocus={true}
           />
         ) : null}
-        <TagList>
+        <TagList ref={tagList}>
           {TagStore.notetagList.map((item, index) =>
             TagStore.editTagIndex === index ? (
               <TagInput
