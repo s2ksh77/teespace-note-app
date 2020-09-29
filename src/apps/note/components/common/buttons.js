@@ -11,7 +11,7 @@ import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
     const { NoteStore } = useStore();
-    const style = useMemo(() => ({ marginLeft: "0.69rem" }), []);
+    const style = useMemo(() => ({ cursor: "pointer", marginLeft: "0.69rem" }), []);
     /** 
      * EventBus.dispatch('onLayoutExpand')
      * EventBus.dispatch('onLayoutCollapse')
@@ -38,7 +38,7 @@ const HeaderButtons = () => {
     return useObserver(() => (
         <>
             <HeaderButtonContainer>
-                <Button src={onChangeImg()} onClick={handleLayoutState} />
+                <Button style={style} src={onChangeImg()} onClick={handleLayoutState} />
                 <Button style={style} src={cancel} onClick={() => EventBus.dispatch('onLayoutClose')} />
             </HeaderButtonContainer>
         </>

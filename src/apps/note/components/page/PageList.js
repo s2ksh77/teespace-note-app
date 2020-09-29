@@ -25,9 +25,10 @@ const PageList = ({ children, chapterId }) => {
   const onClickLnbPage = async (id) => {
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapterId);
-    await PageStore.setCurrentPageId(id)
+    await PageStore.setCurrentPageId(id);
+    if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
   };
-  
+
   const handlePageName = (e) => {
     const {
       target: { value },
@@ -80,7 +81,7 @@ const PageList = ({ children, chapterId }) => {
                   pageTitle={item.text}
                   nextSelectablePageId={
                     childrenList.length > 1 ? (
-                      childrenList[0]?.id === item.id ? childrenList[1]?.id : childrenList[0]?.id 
+                      childrenList[0]?.id === item.id ? childrenList[1]?.id : childrenList[0]?.id
                     ) : ("")
                   }
                 />

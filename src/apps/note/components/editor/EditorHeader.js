@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback} from "react";
+import React, { useMemo, useCallback } from "react";
 import { useObserver } from "mobx-react";
 import useStore from "../../store/useStore";
 import {
@@ -20,8 +20,8 @@ import NoteUtil from "../common/NoteUtil";
 const EditorHeader = () => {
   const { NoteStore, PageStore, TagStore } = useStore();
   const editingImgStyle = useMemo(() => {
-    return {width:"1.13rem", marginRight:"0.5rem"}
-  },[]);
+    return { width: "1.13rem", marginRight: "0.5rem" }
+  }, []);
 
   const handleClickBtn = useCallback((e) => {
     const {
@@ -46,7 +46,9 @@ const EditorHeader = () => {
       if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
       if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     }
-  },[]);
+  }, []);
+
+  const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
 
   const handleTitleInput = useCallback((e) => {
     const {
@@ -54,6 +56,8 @@ const EditorHeader = () => {
     } = e;
     PageStore.setTitle(value);
   }, []);
+
+  const style = useMemo(() => ({ cursor: "pointer" }))
 
   const editImg = useMemo(() => {
     return PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />
@@ -71,7 +75,7 @@ const EditorHeader = () => {
     <>
       <EditorHeaderCover>
         <EditPreBtnWrapper style={(NoteStore.layoutState === "collapse") ? { display: "flex" } : { display: "none" }} >
-          <Button src={preImg} />
+          <Button style={style} src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <EditorHeaderContainer1>
           <EditBtn onClick={handleClickBtn}>
@@ -94,7 +98,7 @@ const EditorHeader = () => {
             {PageStore.modifiedDate}
           </ModifiedTime>
         </EditorHeaderContainer2>
-        <HeaderButtons/>
+        <HeaderButtons />
       </EditorHeaderCover>
     </>
   ));

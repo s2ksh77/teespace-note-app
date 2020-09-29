@@ -11,10 +11,10 @@ const NoteApp = ({ layoutState }) => {
   const { NoteStore } = useStore();
   NoteStore.setChannelId(targetChId);
   // 임시
-  if (!layoutState) layoutState= 'expand';
+  if (!layoutState) layoutState = 'expand';
 
   const renderCondition = useCallback((target) => {
-    return !((NoteStore.layoutState === "collapse") && ( NoteStore.targetLayout !== target ));
+    return !((NoteStore.layoutState === "collapse") && (NoteStore.targetLayout !== target));
   })
 
   useEffect(() => {
@@ -28,12 +28,12 @@ const NoteApp = ({ layoutState }) => {
           break;
         // 확대
         default:
-          NoteStore.setTargetLayout("CONTENT");
-          break;        
+          NoteStore.setTargetLayout("Content");
+          break;
       }
     }
     NoteStore.setLayoutState(layoutState);
-  }, [layoutState]);  
+  }, [layoutState]);
 
   return useObserver(() => (
     <>
