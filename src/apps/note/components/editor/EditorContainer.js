@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import EditorHeader from './EditorHeader';
@@ -6,9 +6,6 @@ import { ReadModeContainer, ReadModeText } from '../../styles/editorStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import TagListContainer from '../tag/TagListContainer';
-import { modules, formats, config, editorInit } from '../../store/editorStore';
-import { toJS } from 'mobx';
-import JoditEditor, { Jodit } from 'jodit-react';
 import { Editor } from '@tinymce/tinymce-react'
 
 const EditorContainer = () => {
@@ -27,9 +24,11 @@ const EditorContainer = () => {
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly')
       if (document.querySelector('.tox-editor-header')) document.querySelector('.tox-editor-header').style.display = 'none'
+      if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = "calc(100% - 8.8rem)"
     } else {
       EditorStore.tinymce?.setMode('design')
       if (document.querySelector('.tox-editor-header')) document.querySelector('.tox-editor-header').style.display = 'block'
+      if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = "calc(100% - 6rem)"
     }
   }, [PageStore.isReadMode()])
 
@@ -72,15 +71,16 @@ const EditorContainer = () => {
         id='noteEditor'
         value={PageStore.currentPageData.note_content}
         init={{
-          height: 450,
+          menubar: 'edit view insert format tools table',
+          height: "calc(100% - 8.8rem)",
           setup: function (editor) {
             setNoteEditor(editor)
           }
         }}
         onEditorChange={getEditorContent}
         apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
-        plugins='print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons'
-        toolbar='undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl'
+        plugins='print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars'
+        toolbar='undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap fullscreen preview print | insertfile image media link anchor codesample | ltr rtl'
       />
 
       <TagListContainer />

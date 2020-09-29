@@ -37,6 +37,15 @@ export const GlobalStyle = createGlobalStyle`
   .tox-editor-header{
     display:none;
   }
+  .mce-tinymce iframe{
+    flex: 1;
+  }
+  .tox-edit-area__iframe html{
+    height:100% !important;
+  }
+  .tox-statusbar__branding{
+    display: none !important;
+  }
 `;
 
 export const LNB = styled.div`
