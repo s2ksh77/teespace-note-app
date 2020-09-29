@@ -34,10 +34,18 @@ const TagListContainer = () => {
       TagStore.removeAddTagList(targetText);
     }
   };
+
   const toggleTagInput = () => {
     if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewFlag(true);
     else TagStore.setIsNewFlag(false);
   };
+  
+  const onClickNewTagBtn = () => {
+    toggleTagInput();
+    let target = tagList.current.children[0]
+    if (target) target.scrollIntoView(false);
+  }
+
   const handleTagInput = e => {
     const {
       target: { value },
@@ -140,7 +148,7 @@ const TagListContainer = () => {
   const changeFocusedTag = (idx) => {
     let target = tagList.current.children[idx]
     target.focus();
-    target.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+    target.scrollIntoView(false);
   }
 
   const handleKeyDownTag = (e) => {
@@ -179,7 +187,7 @@ const TagListContainer = () => {
       <EditorTagCover>
         <Tooltip title={PageStore.isEdit ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
           <TagNewBtn>
-            <TagNewBtnIcon src={tagImage} onClick={toggleTagInput} />
+            <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
         </Tooltip>
         {TagStore.isNewTag ? (
