@@ -24,3 +24,6 @@
   width: 13rem;
   margin-top: 2.19rem;
 }
+.flipBtn {
+  transform: rotate(180deg) !important;
+}

@@ -57,7 +57,7 @@ export const LNB = styled.div`
 export const Content = styled.div`
   flex: 2 2 46rem;
   height: 100%;
-  overflow:hidden;
+  position: relative;
 `;
 
 export const CenterContent = styled.div`

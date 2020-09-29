@@ -12,6 +12,7 @@ const NoteStore = observable({
   isMaximumSize: true,
   layoutState: '',
   targetLayout:null,
+  isExpanded: false,
   editorButtonList: [
     [
       'undo',
@@ -77,7 +78,10 @@ const NoteStore = observable({
   // lnb, content 중 하나
   setTargetLayout(target) {
     this.targetLayout = target;
-  }
+  },
+  setIsExpanded() {
+    this.isExpanded = !this.isExpanded;
+  },
 });
 
 export default NoteStore;

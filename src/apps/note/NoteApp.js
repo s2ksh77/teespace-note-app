@@ -5,6 +5,8 @@ import { GlobalStyle, LNB, Content } from './GlobalStyles';
 import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
+import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
+import foldImg from './assets/arrow_left.svg';
 
 const NoteApp = ({ layoutState }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
@@ -38,11 +40,17 @@ const NoteApp = ({ layoutState }) => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      {renderCondition("LNB") && <LNB>
+      {renderCondition("LNB") && <LNB style={NoteStore.isExpanded ? { display: 'none' } : { display: 'flex' }}>
         <LNBContainer />
       </LNB>
       }
       {renderCondition("Content") && <Content>
+        <FoldBtn 
+          className={NoteStore.isExpanded ? "flipBtn" : ""}
+          onClick={() => NoteStore.setIsExpanded()}
+        >
+          <FoldBtnImg src={foldImg} />
+        </FoldBtn>
         {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
       </Content>
       }
