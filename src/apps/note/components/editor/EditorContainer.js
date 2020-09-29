@@ -18,6 +18,8 @@ const EditorContainer = () => {
     EditorStore.setEditor(instance);
     // 첫 init 때 onChange가 불리지 않아서 setting...
     PageStore.setContent(PageStore.currentPageData.note_content);
+    // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
+    initialMode()
   };
 
   useLayoutEffect(() => {
@@ -31,6 +33,11 @@ const EditorContainer = () => {
       if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = "calc(100% - 6rem)"
     }
   }, [PageStore.isReadMode()])
+
+  const initialMode = () => {
+    if (PageStore.isReadMode()) EditorStore.tinymce?.setMode('readonly')
+    else EditorStore.tinymce?.setMode('design')
+  }
 
   return useObserver(() => (
     <>
