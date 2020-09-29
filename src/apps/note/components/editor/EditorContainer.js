@@ -60,20 +60,6 @@ const EditorContainer = () => {
           </ReadModeText>
           </ReadModeContainer>
         )}
-      {/* <JoditEditor
-        editorRef={jodit => setNoteEditor(jodit)}
-        onChange={getEditorContent}
-        config={{
-          buttons: config.buttons,
-          uploader: config.uploader,
-          placeholder: config.placeholder,
-          toolbar: PageStore.isReadMode() ? false : true,
-          height: PageStore.isReadMode()
-            ? 'calc(100% - 8.6rem)'
-            : 'calc(100% - 5.8rem)',
-        }}
-        value={PageStore.currentPageData.note_content}
-      /> */}
       <Editor
         id='noteEditor'
         value={PageStore.currentPageData.note_content}
