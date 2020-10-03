@@ -21,6 +21,31 @@ const EditorContainer = () => {
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
     initialMode()
   };
+  const handleImageChooser = (blobInfo, success, failure, progress) => {
+    let fileName = blobInfo.blob().name;
+    let dotIndex = fileName.lastIndexOf('.');
+    let fileExtension;
+
+    if (dotIndex !== -1) {
+      fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+      fileName = fileName.substring(0, dotIndex);
+    }
+    EditorStore.setUploadDTO(NoteStore.getChannelId(), PageStore.currentPageId, fileName, fileExtension, blobInfo.blob().size)
+
+    success = (data) => {
+      console.log(data)
+      if (data.resultMsg === 'Success') {
+
+      }
+    }
+    const _failure = (e) => {
+      console.warn('error ---> ', e)
+    }
+    const fd = new FormData();
+    fd.append('image', blobInfo.blob());
+
+    EditorStore.uploadFile(fd, success, _failure)
+  }
 
   useLayoutEffect(() => {
     if (PageStore.isReadMode()) {
@@ -68,7 +93,14 @@ const EditorContainer = () => {
           height: "calc(100% - 8.8rem)",
           setup: function (editor) {
             setNoteEditor(editor)
-          }
+          },
+          a11y_advanced_options: true,
+          image_description: false,
+          image_dimensions: false,
+          image_uploadtab: true,
+          file_picker_types: 'file image media',
+          automatic_uploads: true,
+          images_upload_handler: handleImageChooser
         }}
         onEditorChange={getEditorContent}
         apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
