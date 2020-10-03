@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react'
+import NoteRepository from '../../store/noteRepository';
 
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useStore();
@@ -33,9 +34,12 @@ const EditorContainer = () => {
     EditorStore.setUploadDTO(NoteStore.getChannelId(), PageStore.currentPageId, fileName, fileExtension, blobInfo.blob().size)
 
     success = (data) => {
-      console.log(data)
       if (data.resultMsg === 'Success') {
-
+        const returnFileId = data.storageFileInfoList[0].file_id;
+        const targetSrc = NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + returnFileId + "&workspaceID=" + NoteRepository.WS_ID + "&channelID=" + NoteStore.getChannelId() + "&userID=" + NoteRepository.USER_ID;
+        const currentImg = EditorStore.getImgElement();
+        currentImg.setAttribute('id', returnFileId);
+        currentImg.setAttribute('src', targetSrc)
       }
     }
     const _failure = (e) => {
@@ -93,6 +97,11 @@ const EditorContainer = () => {
           height: "calc(100% - 8.8rem)",
           setup: function (editor) {
             setNoteEditor(editor)
+            editor.on('NodeChange', function (e) {
+              if (e.element.children[0].tagName === "IMG") {
+                EditorStore.setImgElement(e.element.children[0])
+              }
+            });
           },
           a11y_advanced_options: true,
           image_description: false,

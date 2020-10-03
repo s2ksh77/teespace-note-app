@@ -5,6 +5,8 @@ const { default: axios } = require('axios');
 class NoteRepository {
   URL = 'http://222.122.67.176:8080/CMS/Note';
 
+  FILE_URL = 'http://222.122.67.176:8080/CMS/';
+
   WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
   CH_TYPE = 'CHN0003';

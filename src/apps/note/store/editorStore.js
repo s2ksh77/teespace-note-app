@@ -7,6 +7,7 @@ const EditorStore = observable({
   contents: '',
   tinymce: null,
   uploadFile: "",
+  imgElement: '',
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -41,6 +42,12 @@ const EditorStore = observable({
   },
   getEditor() {
     return this.tinymce;
+  },
+  setImgElement(element) {
+    this.imgElement = element;
+  },
+  getImgElement() {
+    return this.imgElement;
   },
   setUploadDTO(chId, pageId, fileName, fileExtenstion, fileSize) {
     this.uploadDTO.dto.channel_id = chId;
