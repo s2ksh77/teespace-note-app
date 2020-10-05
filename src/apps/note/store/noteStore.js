@@ -7,45 +7,33 @@ import TagStore from './tagStore';
 const NoteStore = observable({
   workspaceId: '',
   notechannel_id: '',
+  user_id: '',
   noteFileList: [],
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   isMaximumSize: true,
   layoutState: '',
-  targetLayout:null,
+  targetLayout: null,
   isExpanded: false,
-  editorButtonList: [
-    [
-      'undo',
-      'redo',
-      'font',
-      'fontSize',
-      'formatBlock',
-      'bold',
-      'underline',
-      'italic',
-      'strike',
-      'subscript',
-      'superscript',
-      'fontColor',
-      'hiliteColor',
-      'textStyle',
-      'removeFormat',
-      'outdent',
-      'indent',
-      'align',
-      'horizontalRule',
-      'list',
-      'lineHeight',
-      'table',
-      'link',
-    ],
-  ],
+  setWsId(wsId) {
+    NoteRepository.setWsId(wsId);
+    this.workspaceId = wsId;
+  },
+  getWsId() {
+    return this.workspaceId;
+  },
   setChannelId(chId) {
     NoteRepository.setChannelId(chId);
     this.notechannel_id = chId;
   },
   getChannelId() {
     return this.notechannel_id;
+  },
+  setUserId(userId) {
+    NoteRepository.setUserId(userId);
+    this.user_id = userId;
+  },
+  getUserId() {
+    return this.user_id;
   },
   getNoteFileList() {
     return this.noteFileList;
@@ -56,7 +44,7 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterId("");
       PageStore.setCurrentPageId("");
-    } 
+    }
     // [TODO] 혹시 몰라서 넣음, 뺄까?
     else {
       TagStore.setIsSearching(false);

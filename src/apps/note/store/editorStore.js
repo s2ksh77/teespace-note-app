@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, toJS } from 'mobx';
 import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
 import PageStore from './pageStore';
@@ -8,6 +8,8 @@ const EditorStore = observable({
   tinymce: null,
   uploadFile: "",
   imgElement: '',
+  isFile: false,
+  fileList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -76,6 +78,23 @@ const EditorStore = observable({
         })
       }
     })
+  },
+  setFileList(fileList) {
+    this.fileList = fileList;
+  },
+  getFileList() {
+    return this.fileList;
+  },
+  // not image 파일 첨부 영역을 위함
+  checkFile() {
+    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
+    let checkFile
+    if (this.fileList) {
+      checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension))
+    }
+    if (checkFile === undefined) return false;
+    else if (checkFile !== undefined && checkFile.length === 0) return false;
+    else return true;
   }
 });
 

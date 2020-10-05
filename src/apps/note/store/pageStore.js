@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
+import EditorStore from './editorStore';
 
 const PageStore = observable({
   notechannel_id: '',
@@ -141,6 +142,7 @@ const PageStore = observable({
       this.isEdit = noteList.noteList[0].is_edit;
       this.noteTitle = noteList.noteList[0].note_title;
       this.modifiedDate = this.modifiedDateFormatting();
+      EditorStore.setFileList(noteList.noteList[0].fileList[0].storageFileInfoList)
       // this.currentPageId = noteList.noteList[0].note_id;
     });
     return this.noteInfoList;

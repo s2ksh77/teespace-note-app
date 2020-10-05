@@ -7,6 +7,10 @@ class NoteRepository {
 
   FILE_URL = 'http://222.122.67.176:8080/CMS/';
 
+  // WS_ID = '';
+  // CH_TYPE = 'CHN0003';
+  // USER_ID = '';
+
   WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
   CH_TYPE = 'CHN0003';
@@ -17,8 +21,16 @@ class NoteRepository {
     this.URL = url || this.URL;
   }
 
+  setWsId(targetWsId) {
+    this.WS_ID = targetWsId;
+  }
+
   setChannelId(targetchId) {
     this.chId = targetchId;
+  }
+
+  setUserId(targetUserId) {
+    this.USER_ID = targetUserId;
   }
 
   getChannelId() {
