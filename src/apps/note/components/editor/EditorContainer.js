@@ -98,8 +98,10 @@ const EditorContainer = () => {
           setup: function (editor) {
             setNoteEditor(editor)
             editor.on('NodeChange', function (e) {
-              if (e.element.children[0].tagName === "IMG") {
-                EditorStore.setImgElement(e.element.children[0])
+              if (e.element.children[0] !== undefined) {
+                if (e.element.children[0].tagName === "IMG") {
+                  EditorStore.setImgElement(e.element.children[0])
+                }
               }
             });
           },

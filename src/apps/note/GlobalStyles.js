@@ -46,6 +46,9 @@ export const GlobalStyle = createGlobalStyle`
   .tox-statusbar__branding{
     display: none !important;
   }
+  .tox-statusbar__resize-handle{
+    display: none !important;
+  }
 `;
 
 export const LNB = styled.div`
