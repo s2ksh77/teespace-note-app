@@ -55,18 +55,19 @@ export const LNB = styled.div`
   height: 100%;
   border-right: 1px solid #e3e7eb;
   flex: 1 1 23.06rem;
-  min-width : 23.06rem;
+  min-width: 23.06rem;
 `;
 export const Content = styled.div`
   flex: 2 2 46rem;
   height: 100%;
+  overflow-x: hidden;
   position: relative;
 `;
 
 export const CenterContent = styled.div`
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:cener;
-  justify-content:center;
-`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: cener;
+  justify-content: center;
+`;

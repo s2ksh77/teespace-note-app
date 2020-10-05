@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import LNBContainer from './components/lnb/LNBContainer';
 import useStore from './store/useStore';
 import { GlobalStyle, LNB, Content } from './GlobalStyles';
@@ -15,22 +15,23 @@ const NoteApp = ({ layoutState }) => {
   // 임시
   if (!layoutState) layoutState = 'expand';
 
-  const renderCondition = useCallback((target) => {
-    return !((NoteStore.layoutState === "collapse") && (NoteStore.targetLayout !== target));
-  })
+  const renderCondition = target =>
+    !(
+      NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
+    );
 
   useEffect(() => {
     // collapse 아닐 때는 setTargetLayout(null) 넣어준다
-    if (layoutState === "collapse") {
+    if (layoutState === 'collapse') {
       switch (NoteStore.layoutState) {
-        case "":
-          NoteStore.setTargetLayout("LNB");
+        case '':
+          NoteStore.setTargetLayout('LNB');
           break;
-        case "collapse":
+        case 'collapse':
           break;
         // 확대
         default:
-          NoteStore.setTargetLayout("Content");
+          NoteStore.setTargetLayout('Content');
           break;
       }
     }
@@ -40,20 +41,26 @@ const NoteApp = ({ layoutState }) => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      {renderCondition("LNB") && <LNB style={NoteStore.isExpanded ? { display: 'none' } : { display: 'flex' }}>
-        <LNBContainer />
-      </LNB>
-      }
-      {renderCondition("Content") && <Content>
-        <FoldBtn 
-          className={NoteStore.isExpanded ? "flipBtn" : ""}
-          onClick={() => NoteStore.setIsExpanded()}
+      {renderCondition('LNB') && (
+        <LNB
+          style={
+            NoteStore.isExpanded ? { display: 'none' } : { display: 'flex' }
+          }
         >
-          <FoldBtnImg src={foldImg} />
-        </FoldBtn>
-        {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
-      </Content>
-      }
+          <LNBContainer />
+        </LNB>
+      )}
+      {renderCondition('Content') && (
+        <Content>
+          <FoldBtn
+            className={NoteStore.isExpanded ? 'flipBtn' : ''}
+            onClick={() => NoteStore.setIsExpanded()}
+          >
+            <FoldBtnImg src={foldImg} />
+          </FoldBtn>
+          {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
+        </Content>
+      )}
     </>
   ));
 };

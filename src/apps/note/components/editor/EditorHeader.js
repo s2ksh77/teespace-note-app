@@ -1,6 +1,6 @@
-import React, { useMemo, useCallback } from "react";
-import { useObserver } from "mobx-react";
-import useStore from "../../store/useStore";
+import React from 'react';
+import { useObserver } from 'mobx-react';
+import useStore from '../../store/useStore';
 import {
   EditorHeaderCover,
   EditorHeaderContainer1,
@@ -8,28 +8,31 @@ import {
   EditorTitle,
   EditorHeaderContainer2,
   ModifiedUser,
-  ModifiedTime, EditPreBtn, EditPreBtnWrapper
-} from "../../styles/titleStyle";
+  ModifiedTime,
+  EditPreBtn,
+  EditPreBtnWrapper,
+} from '../../styles/titleStyle';
 import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
-import NoteStore from "../../store/noteStore";
-import preImg from "../../assets/back.svg"
-import { Button } from "../../styles/commonStyle";
-import NoteUtil from "../common/NoteUtil";
+import NoteStore from '../../store/noteStore';
+import preImg from '../../assets/back.svg';
+import { Button } from '../../styles/commonStyle';
+import NoteUtil from '../common/NoteUtil';
+
+const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
+const style = { cursor: 'pointer' };
+const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
 
 const EditorHeader = () => {
   const { NoteStore, PageStore, TagStore } = useStore();
-  const editingImgStyle = useMemo(() => {
-    return { width: "1.13rem", marginRight: "0.5rem" }
-  }, []);
 
-  const handleClickBtn = useCallback((e) => {
+  const handleClickBtn = e => {
     const {
       target: { innerText },
     } = e;
-    if (innerText === "수정") {
+    if (innerText === '수정') {
       PageStore.editStart(PageStore.currentPageData.note_id);
-    } else if (innerText === "저장") {
+    } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
       const updateDTO = {
         dto: {
@@ -37,8 +40,8 @@ const EditorHeader = () => {
           note_title: PageStore.noteTitle,
           note_content: PageStore.noteContent,
           parent_notebook: PageStore.currentPageData.parent_notebook,
-          is_edit: "",
-          TYPE: "EDIT_DONE",
+          is_edit: '',
+          TYPE: 'EDIT_DONE',
         },
       };
       PageStore.editDone(updateDTO);
@@ -46,57 +49,44 @@ const EditorHeader = () => {
       if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
       if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     }
-  }, []);
+  };
 
-  const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
-
-  const handleTitleInput = useCallback((e) => {
+  const handleTitleInput = e => {
     const {
       target: { value },
     } = e;
     PageStore.setTitle(value);
-  }, []);
+  };
 
-  const style = useMemo(() => ({ cursor: "pointer" }))
-
-  const editImg = useMemo(() => {
-    return PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />
-  }, [PageStore.isEdit])
-
-  const editBtnText = useMemo(() => {
-    return (PageStore.isEdit === null || PageStore.isEdit === "") ? "수정" : "저장"
-  }, [PageStore.isEdit])
-
-  const isDisabledInput = useMemo(() => {
-    return (PageStore.isEdit) ? false : true;
-  }, [PageStore.isEdit]);
+  const editBtnText =
+    PageStore.isEdit === null || PageStore.isEdit === '' ? '수정' : '저장';
 
   return useObserver(() => (
     <>
       <EditorHeaderCover>
-        <EditPreBtnWrapper style={(NoteStore.layoutState === "collapse") ? { display: "flex" } : { display: "none" }} >
+        <EditPreBtnWrapper
+          style={
+            NoteStore.layoutState === 'collapse'
+              ? { display: 'flex' }
+              : { display: 'none' }
+          }
+        >
           <Button style={style} src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <EditorHeaderContainer1>
-          <EditBtn onClick={handleClickBtn}>
-            {editBtnText}
-          </EditBtn>
+          <EditBtn onClick={handleClickBtn}>{editBtnText}</EditBtn>
           <EditorTitle
             id="editorTitle"
             maxLength="200"
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
-            disabled={isDisabledInput}
+            disabled={PageStore.isEdit ? false : true}
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {editImg}
-          <ModifiedUser>
-            {PageStore.currentPageData.user_name}
-          </ModifiedUser>
-          <ModifiedTime>
-            {PageStore.modifiedDate}
-          </ModifiedTime>
+          {PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />}
+          <ModifiedUser>{PageStore.currentPageData.user_name}</ModifiedUser>
+          <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
         </EditorHeaderContainer2>
         <HeaderButtons />
       </EditorHeaderCover>
