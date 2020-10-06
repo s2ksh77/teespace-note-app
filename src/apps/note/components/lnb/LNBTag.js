@@ -13,6 +13,9 @@ const LNBTag = memo(() => {
 
   const onClickTagMenuBtn = () => {
     NoteStore.setShowPage(false);
+    if (NoteStore.layoutState === 'collapse') {
+      NoteStore.setTargetLayout('Content');
+    }
   };
 
   return useObserver(() => (
