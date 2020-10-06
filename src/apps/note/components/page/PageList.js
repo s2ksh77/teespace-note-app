@@ -42,6 +42,13 @@ const PageList = ({ children, chapterId }) => {
     PageStore.setIsRename(false);
   };
 
+  const onDropPage = () => {
+    if (PageStore.moveChapterId !== chapterId) {
+      PageStore.setMoveChapterId('');
+      PageStore.movePage(chapterId);
+    }
+  };
+
   const handleFocus = (e) => e.target.select();
 
   return useObserver(() => (
@@ -54,6 +61,14 @@ const PageList = ({ children, chapterId }) => {
             "page-li" + ((NoteStore.showPage && (item.id === PageStore.currentPageId)) ? " selected" : "")
           }
           onClick={onClickLnbPage.bind(null, item.id)}
+          draggable='true'
+          onDragStart={() => {
+            PageStore.setMovePageId(item.id);
+            PageStore.setMoveChapterId(chapterId);
+          }}
+          onDragEnter={(e) => console.log('enter', e.target.closest('.page-li'))}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={onDropPage}
         >
           <PageMargin style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }} />
           {PageStore.getRenamePageId() === item.id ? (
@@ -90,7 +105,11 @@ const PageList = ({ children, chapterId }) => {
         </Page>
       ))
       }
-      <NewPage className={"page-li"}>
+      <NewPage
+        className={"page-li"}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={onDropPage}
+      >
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>
         </NewPageBtn>

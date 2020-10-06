@@ -18,6 +18,8 @@ const PageStore = observable({
   isRename: false,
   renamePageId: '',
   renamePageText: '',
+  movePageId: '',
+  moveChapterId: '',
   modifiedDate: '',
   getPageId(e) {
     const {
@@ -68,7 +70,13 @@ const PageStore = observable({
   setRenamePageText(pageText) {
     this.renamePageText = pageText;
   },
-  
+  setMovePageId(pageId) {
+    this.movePageId = pageId;
+  },
+  setMoveChapterId(chapterId) {
+    this.moveChapterId = chapterId;
+  },
+
   modifiedDateFormatting() {
     const date = this.currentPageData.modified_date;
     const mDate = date.split(' ')[0];
@@ -130,6 +138,16 @@ const PageStore = observable({
         }
       }
     );
+  },
+
+  async movePage(chapterId) {
+    await NoteRepository.movePage(this.movePageId, chapterId).then(
+      (response) => {
+        if (response.status === 200) {
+          ChapterStore.getChapterList();
+        }
+      }
+    )
   },
 
   async getNoteInfoList(noteId) {

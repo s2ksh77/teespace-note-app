@@ -171,6 +171,20 @@ class NoteRepository {
     });
   }
 
+  movePage(pageId, chapterId) {
+    return API.Put(`${this.URL}/note?action=Update`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        note_id: pageId,
+        parent_notebook: chapterId,
+        user_name: '김수현B',
+        USER_ID: this.USER_ID,
+        TYPE: 'MOVE',
+      }
+    })
+  }
+
   editStart(noteId, chapterId) {
     return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
