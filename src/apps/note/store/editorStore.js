@@ -1,7 +1,6 @@
 import { observable, toJS } from 'mobx';
 import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
-import PageStore from './pageStore';
 
 const EditorStore = observable({
   contents: '',
@@ -10,6 +9,7 @@ const EditorStore = observable({
   imgElement: '',
   isFile: false,
   fileList: [],
+  fileLayoutList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -79,11 +79,30 @@ const EditorStore = observable({
       }
     })
   },
+  //storagemanager 없어서 임시
+  downloadFile(fileId) {
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+
+    a.style = "display: none";
+    a.href = NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
+      "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID;
+    a.download = "download";
+    a.click();
+    document.body.removeChild(a);
+  },
   setFileList(fileList) {
     this.fileList = fileList;
+    this.checkFile();
   },
   getFileList() {
     return this.fileList;
+  },
+  setFileArray(filelayoutlist) {
+    this.fileLayoutList = filelayoutlist;
+  },
+  setIsFile(flag) {
+    this.isFile = flag;
   },
   // not image 파일 첨부 영역을 위함
   checkFile() {
@@ -92,9 +111,12 @@ const EditorStore = observable({
     if (this.fileList) {
       checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension))
     }
-    if (checkFile === undefined) return false;
-    else if (checkFile !== undefined && checkFile.length === 0) return false;
-    else return true;
+    if (checkFile === undefined) return this.setIsFile(false);
+    else if (checkFile !== undefined && checkFile.length === 0) return this.setIsFile(false)
+    else {
+      this.setIsFile(true);
+      this.setFileArray(checkFile);
+    };
   }
 });
 

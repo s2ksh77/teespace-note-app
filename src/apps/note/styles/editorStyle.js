@@ -36,3 +36,143 @@ export const FoldBtn = styled.div`
 export const FoldBtnImg = styled.img`
   width: 100%;
 `;
+
+export const FileBodyLayout = styled.div`
+  width:100%;
+  display : flex;
+  align-items: center;
+  height: 4.9rem;
+  border-top: 1px solid #dadada;
+  border-bottom: 1px solid #dadada;
+`
+export const FileBody = styled.div`
+  display: flex;
+  background-color: white;
+  position: relative;
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  width: 13.75rem;
+  box-sizing: border-box; 
+  border : 1px solid #dadada;
+  height: 3.5rem;
+  margin-left: 0.5rem;
+  &:hover{
+    background-color: #DCDDFF;
+  }
+`
+export const FileContent = styled.div`
+  background-color: inherit;
+  min-width: calc(100% - 1.325rem);
+  padding: 5px;
+  display: flex;
+  margin-left: 0px;
+`
+export const FileDownloadIcon = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  margin-right: 0.38rem;
+  margin-right: 0.375rem;
+  margin-top: 0;
+  width: 1.875rem;
+  height: 1.875rem;
+  ${FileBody}:hover & {
+    display:flex;
+  }
+`
+
+export const FileExtensionIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  margin-right: 0.38rem;
+  margin-right: 0.375rem;
+  margin-top: 0;
+  width: 1.875rem;
+  height: 1.875rem;
+  ${FileBody}:hover & {
+    display:none;
+  }
+`
+
+export const FileDownloadBtn = styled.img`
+  width:1.875rem;
+  height:1.875rem;
+`
+export const FileExtensionBtn = styled.img`
+`
+
+export const FileData = styled.div`
+  height: auto;
+  line-height: 0.9375rem;
+  max-width: 10.55rem;
+  overflow: inherit;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 40px;
+  cursor : pointer;
+`
+
+export const FileDataName = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+export const FileName = styled.div`
+  font-size: 0.6875rem;
+  background-color: inherit;
+  margin-right: 0rem;
+  margin-top: 0;
+  color: #45474A;
+  line-height: 0.9375rem;
+  &:hover{
+    text-decoration: underline;
+  }
+`
+export const FileDataTime = styled.div`
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 0.9375rem;
+  height: auto;
+  overflow: inherit;
+  max-width: 10.55rem;
+`
+
+export const FileTime = styled.div`
+  background-color: inherit;
+  line-height: 0.9375rem;
+  display: inline-block;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const FileClose = styled.div`
+  display: flex;
+  height: 100%;
+  width: 1.25rem;
+  font-size: 0.625rem;
+  padding-left: 0.4625rem;
+  color: #75757F;
+  cursor: pointer;
+  border-radius: 0.5rem;
+`
+
+export const FileCloseBtn = styled.img`
+  width: 1rem;
+  height: 1rem;
+  background-color: inherit;
+  color: #c1c6ce;
+`

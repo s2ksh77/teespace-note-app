@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import EditorHeader from './EditorHeader';
@@ -8,6 +8,7 @@ import { faLock } from '@fortawesome/free-solid-svg-icons';
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react'
 import NoteRepository from '../../store/noteRepository';
+import FileLayout from './FileLayout';
 
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useStore();
@@ -51,17 +52,25 @@ const EditorContainer = () => {
     EditorStore.uploadFile(fd, success, _failure)
   }
 
-  useLayoutEffect(() => {
+  useLayoutEffect(() => { // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly')
       if (document.querySelector('.tox-editor-header')) document.querySelector('.tox-editor-header').style.display = 'none'
-      if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = "calc(100% - 8.8rem)"
     } else {
       EditorStore.tinymce?.setMode('design')
       if (document.querySelector('.tox-editor-header')) document.querySelector('.tox-editor-header').style.display = 'block'
-      if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = "calc(100% - 6rem)"
     }
   }, [PageStore.isReadMode()])
+
+  useEffect(() => { // Layout에 따른 height 변경의 목적
+    if (PageStore.isReadMode()) {
+      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = "calc(100% - 8.8rem)"
+      else if (document.querySelector('.tox-tinymce') && EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = "calc(100% - 13.8rem)"
+    } else {
+      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = "calc(100% - 6rem)"
+      else if (document.querySelector('.tox-tinymce') && EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = "calc(100% - 11rem)"
+    }
+  })
 
   const initialMode = () => {
     if (PageStore.isReadMode()) EditorStore.tinymce?.setMode('readonly')
@@ -118,7 +127,7 @@ const EditorContainer = () => {
         plugins='print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars'
         toolbar='undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap fullscreen preview print | insertfile image media link anchor codesample | ltr rtl'
       />
-
+      {EditorStore.isFile ? (<FileLayout />) : null}
       <TagListContainer />
 
     </>
