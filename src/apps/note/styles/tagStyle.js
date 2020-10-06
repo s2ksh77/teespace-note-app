@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import { Collapse, Tag } from 'antd';
 
 export const EditorTagCover = styled.div`
@@ -22,7 +22,7 @@ export const TagNewBtn = styled.div`
   margin-right: 0.88rem;
   align-self: center;
   background-color: transparent;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 export const TagList = styled.div`
@@ -30,7 +30,7 @@ export const TagList = styled.div`
   align-items: center !important;
   width: calc(100% - 2.4rem);
   box-sizing: border-box;
-  overflow:hidden;
+  overflow: hidden;
 `;
 export const TagText = styled.span``;
 
@@ -76,7 +76,7 @@ export const LnbTagContainer = styled.div`
   cursor: pointer;
   border-bottom: 0.0625rem solid #dadada;
   margin: 0 0.81rem;
-  color:${props => props.color || ""};
+  color: ${props => props.color || ''};
   &:hover .ellipsisBtn {
     background-color: rgba(30, 168, 223, 0.2);
   }
@@ -88,7 +88,9 @@ export const LnbTagContainer = styled.div`
 export const TagImg = styled.img`
   width: 1rem;
   margin: 0 0.36rem 0 0.48rem;
-  filter:${props => props.filter || "invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)"};
+  filter: ${props =>
+    props.filter ||
+    'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)'};
 `;
 
 export const TagTxt = styled.span`
@@ -99,9 +101,9 @@ export const TagMenuHeader = styled.div`
   height: 3rem;
   width: 100%;
   display: flex;
-  align-items:center;
-  justify-content: flex-end;
-  padding: 0 0.75rem; 
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 0.75rem;
   box-sizing: border-box;
   border-bottom: 0.0625rem solid #dadada;
 `;
@@ -109,42 +111,42 @@ export const TagMenuHeader = styled.div`
 export const TagContentCover = styled.div`
   width: 100%;
   height: calc(100% - 3rem);
-  overflow:auto;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding:1.25rem 0.75rem;
+  padding: 1.25rem 0.75rem;
 `;
 
 export const { Panel } = Collapse;
 
 export const StyledCollapse = styled(Collapse)`
-  width:100%;
+  width: 100%;
 `;
 
 export const TagKeyChildren = styled.div`
-  display:flex;
-  width:100%;
+  display: flex;
+  width: 100%;
 `;
 
 export const TagKeyContainer = styled.div`
-  width:100%;
-`
+  width: 100%;
+`;
 
 export const TagChip = styled(Tag)`
-  padding : 0 0.63rem;
-`
+  padding: 0 0.63rem;
+`;
 
 export const SearchTagChip = styled(Tag)`
-  position:absolute;
-  left:1.88rem;
+  position: absolute;
+  left: 1.88rem;
   max-width: calc(100% - 1.88rem) !important;
   width: fit-content;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  padding : 0 0.63rem;
-`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 0.63rem;
+`;
 
 export const TagChipText = styled.div`
   display: block;
@@ -153,9 +155,9 @@ export const TagChipText = styled.div`
   font-weight: normal;
   color: #000000;
   margin: 0rem;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const TagChipNum = styled.div`
@@ -163,5 +165,5 @@ export const TagChipNum = styled.div`
   margin-left: auto;
   font-weight: bold;
   align-self: center;
-  color: #008CC8;
+  color: #008cc8;
 `;
