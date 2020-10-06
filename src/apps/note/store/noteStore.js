@@ -14,6 +14,7 @@ const NoteStore = observable({
   layoutState: '',
   targetLayout: null,
   isExpanded: false,
+  editorWrapper: null,
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -42,8 +43,8 @@ const NoteStore = observable({
     // true or false
     this.showPage = showPage;
     if (showPage === false) {
-      ChapterStore.setCurrentChapterId("");
-      PageStore.setCurrentPageId("");
+      ChapterStore.setCurrentChapterId('');
+      PageStore.setCurrentPageId('');
     }
     // [TODO] 혹시 몰라서 넣음, 뺄까?
     else {
@@ -61,7 +62,7 @@ const NoteStore = observable({
   },
   setLayoutState(state) {
     this.layoutState = state;
-    if (state !== "collapse") this.targetLayout = null;
+    if (state !== 'collapse') this.targetLayout = null;
   },
   // lnb, content 중 하나
   setTargetLayout(target) {
@@ -69,6 +70,9 @@ const NoteStore = observable({
   },
   setIsExpanded() {
     this.isExpanded = !this.isExpanded;
+  },
+  setEditorWrapper(editorwrapper) {
+    this.editorWrapper = editorwrapper;
   },
 });
 

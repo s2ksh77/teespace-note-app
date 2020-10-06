@@ -11,8 +11,9 @@ import { useCoreStores } from 'teespace-core';
 
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
-  const { NoteStore } = useStore();
+  const { NoteStore, PageStore } = useStore();
   NoteStore.setChannelId(targetChId);
+
   // const { roomStore, authStore } = useCoreStores()
   // const { 'CHN0003': targetChId } = roomStore.getChannelIds(roomId);
   // NoteStore.setWsId(roomId);
@@ -42,6 +43,21 @@ const NoteApp = ({ layoutState, roomId }) => {
     }
     NoteStore.setLayoutState(layoutState);
   }, [layoutState]);
+
+  const handleClickModal = e => {
+    if (!PageStore.isEdit) return;
+    if (NoteStore.editorWrapper) {
+      if (NoteStore.editorWrapper.contains(e.target)) return;
+      else alert('페이지를 저장하고 나가시겠습니까?');
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickModal);
+    return () => {
+      document.removeEventListener('click', handleClickModal);
+    };
+  }, []);
 
   return useObserver(() => (
     <>
