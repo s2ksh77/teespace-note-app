@@ -47,7 +47,6 @@ export const FileBodyLayout = styled.div`
 `
 export const FileBody = styled.div`
   display: flex;
-  background-color: white;
   position: relative;
   padding: 0.375rem;
   border-radius: 0.5rem;
@@ -59,9 +58,11 @@ export const FileBody = styled.div`
   &:hover{
     background-color: #DCDDFF;
   }
+  &:focus {
+    outline: 0;
+  }
 `
 export const FileContent = styled.div`
-  background-color: inherit;
   min-width: calc(100% - 1.325rem);
   padding: 5px;
   display: flex;

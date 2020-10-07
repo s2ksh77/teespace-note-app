@@ -9,7 +9,6 @@ import pdf from '../../assets/drive_topoint.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
-import { toJS } from 'mobx';
 
 const FileLayout = () => {
     const { EditorStore, PageStore } = useStore();
@@ -30,11 +29,51 @@ const FileLayout = () => {
     const handleFileDown = (fileId) => {
         EditorStore.downloadFile(fileId)
     }
+    const handleSelectFile = (e) => {
+        const selectedFile = document.querySelectorAll('div.selected');
+        if (selectedFile.length !== 0) {
+            EditorStore.setFileIndex('');
+            document.removeEventListener("click", handleSelectFile);
+        }
+    }
+
+    const handleFileBodyClick = (index) => {
+        if (EditorStore.selectFileIdx === '') {
+            document.addEventListener("click", handleSelectFile);
+        }
+        if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);
+        else EditorStore.setFileIndex('');
+    }
+    const handleKeyDownFile = (e) => {
+        const { keyCode } = e;
+        switch (keyCode) {
+            case 37:
+                if (EditorStore.selectFileIdx > 0) EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
+                break;
+            case 39:
+                if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
+                break;
+            case 27:
+                EditorStore.setFileIndex('');
+        }
+    }
+    useEffect(() => {
+        return () => {
+            document.removeEventListener("click", handleSelectFile);
+        }
+    }, []);
+
     return useObserver(() => (
         <>
             <FileBodyLayout>
                 {EditorStore.fileLayoutList.map((item, index) => (
-                    <FileBody id={item.file_id} key={index}>
+                    <FileBody id={item.file_id}
+                        key={index}
+                        onClick={handleFileBodyClick.bind(this, index)}
+                        className={index === EditorStore.selectFileIdx ? 'selected' : ''}
+                        onKeyDown={handleKeyDownFile}
+                        tabIndex={index}
+                    >
                         <FileContent>
                             <FileDownloadIcon>
                                 <FileDownloadBtn src={downloadBtn} onClick={handleFileDown.bind(null, item.file_id)} />

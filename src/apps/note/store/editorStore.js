@@ -8,6 +8,7 @@ const EditorStore = observable({
   uploadFile: "",
   imgElement: '',
   isFile: false,
+  selectFileIdx: '',
   fileList: [],
   fileLayoutList: [],
   fileName: "",
@@ -117,6 +118,9 @@ const EditorStore = observable({
       this.setIsFile(true);
       this.setFileArray(checkFile);
     };
+  },
+  setFileIndex(idx) {
+    this.selectFileIdx = idx;
   }
 });
 
