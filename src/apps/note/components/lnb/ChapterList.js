@@ -86,6 +86,7 @@ const ChapterList = ({ type }) => {
               <ChapterTextInput
                 maxLength="200"
                 value={ChapterStore.renameChapterText}
+                onClick={(e) => e.stopPropagation()}
                 onChange={handleChapterName}
                 onBlur={handleChapterTextInput.bind(null, item.color)}
                 onKeyDown={(e) => {

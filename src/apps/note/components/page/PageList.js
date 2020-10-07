@@ -77,6 +77,7 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
               <PageTextInput
                 maxLength="200"
                 value={PageStore.renamePageText}
+                onClick={(e) => e.stopPropagation()}
                 onChange={handlePageName}
                 onBlur={handlePageTextInput}
                 onKeyDown={(e) => {
