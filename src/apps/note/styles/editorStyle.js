@@ -31,6 +31,9 @@ export const FoldBtn = styled.div`
   z-index: 18;
   top: 50%;
   transform: translate(-0.9rem, 0rem);
+  &:hover {
+    background-color: #008CC8;
+  }
 `;
 
 export const FoldBtnImg = styled.img`
