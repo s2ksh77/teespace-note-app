@@ -84,7 +84,7 @@ const NoteStore = observable({
   setModalInfo(modalType) {
     switch (modalType) {
       case 'editCancel':
-        this.modalInfo = NoteMeta.editCancelModalInfo();
+        this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
       case null:

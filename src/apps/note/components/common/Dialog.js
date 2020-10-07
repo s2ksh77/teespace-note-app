@@ -7,6 +7,7 @@ import alertIcon from '../../assets/ts_popup_info_alert@3x.png';
 import defaultIcon from '../../assets/ts_info@3x.png';
 import {
   ModalContent,
+  DialogSubTitle,
   DialogTitle,
   DialogBtn,
   IconImg,

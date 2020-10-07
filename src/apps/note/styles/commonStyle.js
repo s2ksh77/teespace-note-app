@@ -80,7 +80,7 @@ export const DialogTitle = styled.div`
 `;
 
 export const DialogSubTitle = styled.div`
-  width: 0.813rem;
+  height: 0.813rem;
   color: #777777;
 `;
 export const ButtonGroup = styled.div`
