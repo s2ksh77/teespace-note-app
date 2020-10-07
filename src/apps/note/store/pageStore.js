@@ -1,5 +1,6 @@
 import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
+import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
@@ -203,7 +204,9 @@ const PageStore = observable({
       this.isEdit = noteList.noteList[0].is_edit;
       this.noteTitle = noteList.noteList[0].note_title;
       this.modifiedDate = this.modifiedDateFormatting();
-      EditorStore.setFileList(noteList.noteList[0].fileList[0].storageFileInfoList)
+      EditorStore.setFileList(
+        noteList.noteList[0].fileList[0].storageFileInfoList,
+      );
       // this.currentPageId = noteList.noteList[0].note_id;
     });
     return this.noteInfoList;
@@ -247,9 +250,27 @@ const PageStore = observable({
           data: { dto: returnData },
         } = response;
         this.getNoteInfoList(returnData.note_id);
+        NoteStore.setShowModal(false);
       }
     });
     return this.currentPageData;
+  },
+  handleSave() {
+    const updateDTO = {
+      dto: {
+        note_id: this.currentPageData.note_id,
+        note_title: this.noteTitle,
+        note_content: this.noteContent,
+        parent_notebook: this.currentPageData.parent_notebook,
+        is_edit: '',
+        TYPE: 'EDIT_DONE',
+      },
+    };
+    this.editDone(updateDTO);
+    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
+    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
+    if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
+    NoteStore.setShowModal(false);
   },
 });
 

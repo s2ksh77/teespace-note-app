@@ -8,6 +8,7 @@ import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
 import { useCoreStores } from 'teespace-core';
+import Dialog from './components/common/Dialog';
 
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
@@ -48,7 +49,10 @@ const NoteApp = ({ layoutState, roomId }) => {
     if (!PageStore.isEdit) return;
     if (NoteStore.editorWrapper) {
       if (NoteStore.editorWrapper.contains(e.target)) return;
-      else alert('페이지를 저장하고 나가시겠습니까?');
+      else if (e.target.closest('.ant-modal-content')) return;
+      else {
+        NoteStore.setModalInfo('editCancel');
+      }
     }
   };
 
@@ -82,6 +86,7 @@ const NoteApp = ({ layoutState, roomId }) => {
           {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
         </Content>
       )}
+      {NoteStore.showModal && <Dialog />}
     </>
   ));
 };

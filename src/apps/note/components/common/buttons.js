@@ -37,7 +37,9 @@ const HeaderButtons = () => {
   };
 
   const handleCancelBtn = e => {
-    if (PageStore.isEdit) alert('페이지를 저장하고 나가시겠습니까?');
+    if (PageStore.isEdit) {
+      NoteStore.setModalInfo('editCancel');
+    }
     EventBus.dispatch('onLayoutClose');
   };
 

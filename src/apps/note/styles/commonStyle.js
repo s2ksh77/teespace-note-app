@@ -1,17 +1,18 @@
 import styled from 'styled-components';
-import { Dropdown } from 'antd';
+import { Dropdown, Modal } from 'antd';
 
 export const HeaderButtonContainer = styled.div`
-    display: flex;
-    align-items:center;
-    margin-left:0.75rem; 
+  display: flex;
+  align-items: center;
+  margin-left: 0.75rem;
 `;
 
 export const Button = styled.img`
-    width: 1rem;
-    height: 1rem;
-    curosr:pointer;
-    filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
+  width: 1rem;
+  height: 1rem;
+  curosr: pointer;
+  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)
+    brightness(90%) contrast(109%);
 `;
 
 // 돋보기모양 submit btn
@@ -24,29 +25,28 @@ export const SearchImgInput = styled.input`
 `;
 
 export const SearchResultNotFoundCover = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+`;
 
 export const SearchKeyword = styled.span`
-    font-size: 0.94rem;
-    color: #000000;
-    margin-bottom: 0.69rem;
-`
+  font-size: 0.94rem;
+  color: #000000;
+  margin-bottom: 0.69rem;
+`;
 
 export const NoSearchResultTitle = styled.span`
-    font-size: 0.75rem;
-    color: #777777;
-    margin-bottom: 1.25rem;
-`
+  font-size: 0.75rem;
+  color: #777777;
+  margin-bottom: 1.25rem;
+`;
 
-export const NoSearchResultImg = styled.img`
-`
+export const NoSearchResultImg = styled.img``;
 
 export const ContextMenuCover = styled(Dropdown)`
   display: flex;
@@ -65,5 +65,42 @@ export const ContextMenuCover = styled(Dropdown)`
   }
 `;
 
-export const ContextMenuIconCover = styled.span`
+export const ContextMenuIconCover = styled.span``;
+
+export const ModalContent = styled.div`
+  height: 11.88rem;
+  padding: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+export const DialogTitle = styled.div`
+  font-size: 1rem;
+`;
+
+export const DialogSubTitle = styled.div`
+  width: 0.813rem;
+  color: #777777;
+`;
+export const ButtonGroup = styled.div`
+  display: flex;
+  margin-top: auto;
+  margin-bottom: 0rem;
+`;
+export const DialogBtn = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 1.88rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+`;
+
+export const IconImg = styled.img`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 0.94rem;
 `;

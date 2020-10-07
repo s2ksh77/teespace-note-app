@@ -34,20 +34,7 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
-      const updateDTO = {
-        dto: {
-          note_id: PageStore.currentPageData.note_id,
-          note_title: PageStore.noteTitle,
-          note_content: PageStore.noteContent,
-          parent_notebook: PageStore.currentPageData.parent_notebook,
-          is_edit: '',
-          TYPE: 'EDIT_DONE',
-        },
-      };
-      PageStore.editDone(updateDTO);
-      if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
-      if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
-      if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
+      PageStore.handleSave();
     }
   };
 
@@ -81,6 +68,7 @@ const EditorHeader = () => {
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={PageStore.isEdit ? false : true}
+            autoComplete="off"
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>

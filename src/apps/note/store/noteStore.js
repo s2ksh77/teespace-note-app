@@ -3,6 +3,7 @@ import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
+import NoteMeta from './NoteMeta';
 
 const NoteStore = observable({
   workspaceId: '',
@@ -15,6 +16,8 @@ const NoteStore = observable({
   targetLayout: null,
   isExpanded: false,
   editorWrapper: null,
+  showModal: false,
+  modalInfo: {},
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -73,6 +76,23 @@ const NoteStore = observable({
   },
   setEditorWrapper(editorwrapper) {
     this.editorWrapper = editorwrapper;
+  },
+  setShowModal(showModal) {
+    this.showModal = showModal;
+  },
+  // { type, title, subTitle, buttons }
+  setModalInfo(modalType) {
+    switch (modalType) {
+      case 'editCancel':
+        this.modalInfo = NoteMeta.editCancelModalInfo();
+        this.setShowModal(true);
+        break;
+      case null:
+      default:
+        this.modalInfo = {};
+        this.setShowModal(false);
+        break;
+    }
   },
 });
 
