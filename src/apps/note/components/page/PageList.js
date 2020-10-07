@@ -13,7 +13,7 @@ import {
 import ContextMenu from "../common/ContextMenu";
 import useStore from "../../store/useStore";
 
-const PageList = ({ children, chapterId }) => {
+const PageList = ({ children, chapterId, chapterIdx }) => {
   const childrenList = JSON.parse(children);
   const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
 
@@ -42,18 +42,19 @@ const PageList = ({ children, chapterId }) => {
     PageStore.setIsRename(false);
   };
 
-  const onDropPage = () => {
-    if (PageStore.moveChapterId !== chapterId) {
-      PageStore.setMoveChapterId('');
-      PageStore.movePage(chapterId);
-    }
-  };
-
   const handleFocus = (e) => e.target.select();
+
+  const onDropPage = (targetPageIdx) => {
+    if (!PageStore.moveChapterId) return;
+
+    PageStore.setMoveTargetPageList(childrenList);
+    PageStore.setMoveTargetPageIdx(targetPageIdx);
+    PageStore.movePage(chapterId, chapterIdx);
+  };
 
   return useObserver(() => (
     <>
-      {childrenList.map((item) => (
+      {childrenList.map((item, index) => (
         <Page
           key={item.id}
           id={item.id}
@@ -64,11 +65,11 @@ const PageList = ({ children, chapterId }) => {
           draggable='true'
           onDragStart={() => {
             PageStore.setMovePageId(item.id);
+            PageStore.setMovePageIdx(index);
             PageStore.setMoveChapterId(chapterId);
           }}
-          onDragEnter={(e) => console.log('enter', e.target.closest('.page-li'))}
           onDragOver={(e) => e.preventDefault()}
-          onDrop={onDropPage}
+          onDrop={onDropPage.bind(null, index)}
         >
           <PageMargin style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }} />
           {PageStore.getRenamePageId() === item.id ? (
@@ -108,7 +109,7 @@ const PageList = ({ children, chapterId }) => {
       <NewPage
         className={"page-li"}
         onDragOver={(e) => e.preventDefault()}
-        onDrop={onDropPage}
+        onDrop={onDropPage.bind(null, childrenList.length)}
       >
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>

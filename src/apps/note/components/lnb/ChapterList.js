@@ -53,29 +53,50 @@ const ChapterList = ({ type }) => {
 
   const handleFocus = (e) => e.target.select();
 
+  const onDropPage = (chapterId, chapterIdx, childrenList) => {
+    PageStore.setMoveTargetPageList(childrenList);
+    PageStore.setMoveTargetPageIdx(0);
+    PageStore.movePage(chapterId, chapterIdx);
+  };
+
+  const onDropChapter = (chapterIdx) => {
+    ChapterStore.moveChapter(chapterIdx);
+  };
+
   return useObserver(() => (
     <>
-      {ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map((item) => (
-        <ChapterContainer id={item.id} key={item.id} itemType="chapter">
+      {ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map((item, index) => (
+        <ChapterContainer
+          id={item.id}
+          key={item.id}
+          itemType="chapter"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => {
+            if (PageStore.movePageId) onDropPage(item.id, index, item.children);
+            else if (ChapterStore.moveChapterIdx !== '') onDropChapter(index);
+          }}
+        >
           <Chapter
             onClick={onClickChapterBtn.bind(null, item.id, item.children)}
+            draggable='true'
+            onDragStart={() => ChapterStore.setMoveChapterIdx(index)}
           >
             <ChapterColor color={item.color} chapterId={item.id} />
             {ChapterStore.getRenameChapterId() === item.id ? (
-                <ChapterTextInput 
-                  maxLength="200"
-                  value={ChapterStore.renameChapterText}
-                  onChange={handleChapterName}
-                  onBlur={handleChapterTextInput.bind(null, item.color)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") { handleChapterTextInput(item.color); }
-                    else if (e.key === "Escape") { ChapterStore.setRenameChapterId(''); }
-                  }}
-                  onFocus={handleFocus}
-                  autoFocus={true}
-                />
-              ) : (
-                <ChapterText 
+              <ChapterTextInput
+                maxLength="200"
+                value={ChapterStore.renameChapterText}
+                onChange={handleChapterName}
+                onBlur={handleChapterTextInput.bind(null, item.color)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { handleChapterTextInput(item.color); }
+                  else if (e.key === "Escape") { ChapterStore.setRenameChapterId(''); }
+                }}
+                onFocus={handleFocus}
+                autoFocus={true}
+              />
+            ) : (
+                <ChapterText
                   text={item.text} chapterId={item.id} color={item.color} />
               )
             }
@@ -83,9 +104,11 @@ const ChapterList = ({ type }) => {
           <PageList
             children={JSON.stringify(item.children)}
             chapterId={item.id}
+            chapterIdx={index}
           />
         </ChapterContainer>
-      ))}
+      ))
+      }
     </>
   ));
 };

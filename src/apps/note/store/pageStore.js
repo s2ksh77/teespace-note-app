@@ -18,8 +18,11 @@ const PageStore = observable({
   isRename: false,
   renamePageId: '',
   renamePageText: '',
-  movePageId: '',
-  moveChapterId: '',
+  movePageId: '', // 이동을 원하는 page의 id
+  movePageIdx: '', // 이동을 원하는 page의 index
+  moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
+  moveTargetPageList: [], // 이동을 원하는 페이지가 target으로 하는 page의 list
+  moveTargetPageIdx: '', // 이동을 원하는 페이지가 target으로 하는 index
   modifiedDate: '',
   getPageId(e) {
     const {
@@ -32,7 +35,7 @@ const PageStore = observable({
     if (pageId) {
       await PageStore.getNoteInfoList(pageId);
       await TagStore.getNoteTagList(pageId); // tagList
-    }    
+    }
   },
   getPageName(e) {
     const {
@@ -73,8 +76,25 @@ const PageStore = observable({
   setMovePageId(pageId) {
     this.movePageId = pageId;
   },
+  setMovePageIdx(pageIdx) {
+    this.movePageIdx = pageIdx;
+  },
   setMoveChapterId(chapterId) {
     this.moveChapterId = chapterId;
+  },
+  setMoveTargetPageList(list) {
+    this.moveTargetPageList = list;
+  },
+  setMoveTargetPageIdx(pageIdx) {
+    this.moveTargetPageIdx = pageIdx;
+  },
+
+  clearMoveData() {
+    this.movePageId = '';
+    this.movePageIdx = '';
+    this.moveChapterId = '';
+    this.moveTargetPageList = [];
+    this.moveTargetPageIdx = '';
   },
 
   modifiedDateFormatting() {
@@ -140,14 +160,37 @@ const PageStore = observable({
     );
   },
 
-  async movePage(chapterId) {
-    await NoteRepository.movePage(this.movePageId, chapterId).then(
-      (response) => {
-        if (response.status === 200) {
-          ChapterStore.getChapterList();
-        }
+  async movePage(moveTargetChapterId, moveTargetChapterIdx) {
+    if (this.moveChapterId === moveTargetChapterId) { // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
+      if (this.movePageIdx !== this.moveTargetPageIdx
+        && this.movePageIdx + 1 !== this.moveTargetPageIdx) {
+        const newPageList = [];
+
+        this.moveTargetPageList.forEach((page, index) => {
+          if (index === this.movePageIdx) return false;
+
+          if (index === this.moveTargetPageIdx) newPageList.push(this.moveTargetPageList[this.movePageIdx]);
+          newPageList.push(page);
+        })
+
+        if (this.moveTargetPageIdx === this.moveTargetPageList.length)
+          newPageList.push(this.moveTargetPageList[this.movePageIdx]);
+
+        ChapterStore.changePageList(moveTargetChapterIdx, newPageList);
       }
-    )
+
+      this.clearMoveData();
+    }
+    else { // 페이지를 다른 챕터로 이동하고자 하는 경우
+      await NoteRepository.movePage(this.movePageId, moveTargetChapterId).then(
+        (response) => {
+          if (response.status === 200) {
+            this.clearMoveData();
+            ChapterStore.getChapterList();
+          }
+        }
+      )
+    }
   },
 
   async getNoteInfoList(noteId) {

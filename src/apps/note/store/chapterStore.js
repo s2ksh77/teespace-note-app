@@ -23,15 +23,16 @@ const ChapterStore = observable({
     10: "#E780FF",
     11: "#FF7BA8",
   },
-  isSearching:false,
-  isTagSearching:false,//tag chip 클릭해서 tag chip 띄울 때 씀
-  targetSearchTagName:'',
-  inputValue:"", // lnb title 영역 input창 value
-  searchStr:"",
-  searchResult:{}, // {chapter:[], page:[]} 형태
+  isSearching: false,
+  isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
+  targetSearchTagName: '',
+  inputValue: "", // lnb title 영역 input창 value
+  searchStr: "",
+  searchResult: {}, // {chapter:[], page:[]} 형태
   renameChapterId: '',
   renameChapterText: '',
   allDeleted: false,
+  moveChapterIdx: '',
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -50,6 +51,9 @@ const ChapterStore = observable({
   setAllDeleted(allDeleted) {
     this.allDeleted = allDeleted;
   },
+  setMoveChapterIdx(chapterIdx) {
+    this.moveChapterIdx = chapterIdx;
+  },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {
@@ -57,7 +61,7 @@ const ChapterStore = observable({
           data: { dto: notbookList },
         } = response;
         this.chapterList = notbookList.notbookList;
-      }      
+      }
     );
     return this.chapterList;
   },
@@ -96,9 +100,32 @@ const ChapterStore = observable({
       }
     );
   },
+
+  moveChapter(moveTargetChapterIdx) {
+    if (this.moveChapterIdx !== moveTargetChapterIdx
+      && this.moveChapterIdx + 1 !== moveTargetChapterIdx) {
+      const newChapterList = [];
+
+      this.chapterList.forEach((chapter, index) => {
+        if (index === this.moveChapterIdx) return false;
+
+        if (index === moveTargetChapterIdx) newChapterList.push(this.chapterList[this.moveChapterIdx]);
+        newChapterList.push(chapter);
+      })
+
+      this.chapterList = newChapterList;
+    }
+
+    this.moveChapterIdx = '';
+  },
+
+  changePageList(chapterIdx, pageList) {
+    this.chapterList[chapterIdx].children = pageList;
+  },
+
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
-    if (flag===false) this.chapterNewTitle = '';
+    if (flag === false) this.chapterNewTitle = '';
   },
   setChapterTitle(title) {
     this.chapterNewTitle = title;
@@ -109,7 +136,7 @@ const ChapterStore = observable({
     let chapterTitle, temp;
     let isNotAvailable = [];
     let fullLength = this.chapterList.length;
-    isNotAvailable.length = fullLength+1;  
+    isNotAvailable.length = fullLength + 1;
 
     this.chapterList.forEach((chapter) => {
       chapterTitle = chapter.text;
@@ -124,9 +151,9 @@ const ChapterStore = observable({
     })
 
     if (!isNotAvailable[0]) return "새 챕터";
-    for (let i=1;i<=fullLength;i++) {
-			if (!isNotAvailable[i]) return "새 챕터 " + i;
-		}
+    for (let i = 1; i <= fullLength; i++) {
+      if (!isNotAvailable[i]) return "새 챕터 " + i;
+    }
   },
   getChapterId(e) {
     const {
@@ -156,7 +183,7 @@ const ChapterStore = observable({
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
     if (!isSearching) {
-      this.searchResult={};
+      this.searchResult = {};
       this.searchStr = '';
       this.inputValue = '';
     }
@@ -169,27 +196,27 @@ const ChapterStore = observable({
   },
   getSearchStr() {
     return this.searchStr;
-  },  
+  },
   setSearchStr(str) {
     this.searchStr = str;
     // searchResult 만들기
-    let resultChapterArr=[], resultPageArr=[];
-    this.chapterList.map((chapter)=>{
+    let resultChapterArr = [], resultPageArr = [];
+    this.chapterList.map((chapter) => {
       // chapter 저장
       if (chapter.text.includes(this.searchStr)) {
         resultChapterArr.push({
-          id:chapter.id,
-          title:chapter.text,
-          color:chapter.color,
+          id: chapter.id,
+          title: chapter.text,
+          color: chapter.color,
           // 클릭하면 setCurrentPageId 해야해서 필요
-          firstPageId:(chapter.children.length>0 ? chapter.children[0].id : null)
+          firstPageId: (chapter.children.length > 0 ? chapter.children[0].id : null)
         })
       }
       // page 저장
       chapter.children.map((page) => {
-        if (page.text.includes(this.searchStr)){
+        if (page.text.includes(this.searchStr)) {
           resultPageArr.push({
-            chapterId : chapter.id,
+            chapterId: chapter.id,
             chapterTitle: chapter.text,
             id: page.id,
             title: page.text
@@ -236,7 +263,7 @@ const ChapterStore = observable({
     });
 
     if (isExist) return false;
-    else return true; 
+    else return true;
   },
 });
 
