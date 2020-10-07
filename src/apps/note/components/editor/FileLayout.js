@@ -29,6 +29,7 @@ const FileLayout = () => {
     const handleFileDown = (fileId) => {
         EditorStore.downloadFile(fileId)
     }
+
     const handleSelectFile = (e) => {
         const selectedFile = document.querySelectorAll('div.selected');
         if (selectedFile.length !== 0) {
@@ -41,9 +42,10 @@ const FileLayout = () => {
         if (EditorStore.selectFileIdx === '') {
             document.addEventListener("click", handleSelectFile);
         }
-        if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);
+        if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index)
         else EditorStore.setFileIndex('');
     }
+
     const handleKeyDownFile = (e) => {
         const { keyCode } = e;
         switch (keyCode) {
@@ -53,10 +55,11 @@ const FileLayout = () => {
             case 39:
                 if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
                 break;
-            case 27:
-                EditorStore.setFileIndex('');
+            default:
+                break;
         }
     }
+
     useEffect(() => {
         return () => {
             document.removeEventListener("click", handleSelectFile);
