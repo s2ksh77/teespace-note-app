@@ -146,6 +146,8 @@ const PageStore = observable({
       (response) => {
         if (response.status === 200) {
           ChapterStore.getChapterList();
+          this.deletePageList = [];
+          NoteStore.setShowModal(false);
         }
       }
     );

@@ -10,7 +10,7 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
 const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
-  const { ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.
@@ -38,12 +38,13 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
           PageStore.setCurrentPageId(nextSelectablePageId ? nextSelectablePageId : "");
           if (!nextSelectableChapterId) ChapterStore.setAllDeleted(true);
         }
-        ChapterStore.deleteChapter(chapterId);
+        ChapterStore.setDeleteChapterId(chapterId);
+        NoteStore.setModalInfo('chapter');
         break;
       case "page":
         if (PageStore.currentPageId === pageId) PageStore.setCurrentPageId(nextSelectablePageId);
         PageStore.setDeletePageList({ note_id: pageId });
-        PageStore.deletePage();
+        NoteStore.setModalInfo('page');
         break;
       default:
         break;

@@ -1,5 +1,6 @@
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
+import ChapterStore from './chapterStore';
 
 const NoteMeta = {
   openDialog(type) {
@@ -24,12 +25,12 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         // 삭제 함수 추가
-        eventList.push(function () { console.log("삭제") })
+        eventList.push(function () { ChapterStore.deleteChapter() })
         eventList.push(function () { NoteStore.setModalInfo(null) });
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function () { console.log("삭제") })
+        eventList.push(function () { PageStore.deletePage() })
         eventList.push(function () { NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':

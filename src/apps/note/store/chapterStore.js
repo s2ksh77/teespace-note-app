@@ -29,6 +29,7 @@ const ChapterStore = observable({
   inputValue: "", // lnb title 영역 input창 value
   searchStr: "",
   searchResult: {}, // {chapter:[], page:[]} 형태
+  deleteChapterId: '',
   renameChapterId: '',
   renameChapterText: '',
   allDeleted: false,
@@ -38,6 +39,9 @@ const ChapterStore = observable({
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  setDeleteChapterId(chapterId) {
+    this.deleteChapterId = chapterId;
   },
   setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
@@ -81,12 +85,14 @@ const ChapterStore = observable({
       }
     );
   },
-  async deleteChapter(chapterId) {
-    await NoteRepository.deleteChapter(chapterId).then(
+  async deleteChapter() {
+    await NoteRepository.deleteChapter(this.deleteChapterId).then(
       (response) => {
         if (response.status === 200) {
           ChapterStore.getChapterList();
           if (this.allDeleted) NoteStore.setShowPage(false);
+          this.deleteChapterId = '';
+          NoteStore.setShowModal(false);
         }
       }
     );
