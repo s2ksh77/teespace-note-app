@@ -31,29 +31,48 @@ const FileLayout = () => {
     }
 
     const handleSelectFile = (e) => {
-        const selectedFile = document.querySelectorAll('div.selected');
-        if (selectedFile.length !== 0) {
+        if (EditorStore.selectFileElement !== '') {
             EditorStore.setFileIndex('');
+            EditorStore.setFileElement('');
             document.removeEventListener("click", handleSelectFile);
         }
     }
 
-    const handleFileBodyClick = (index) => {
+    const handleFileBodyClick = index => {
         if (EditorStore.selectFileIdx === '') {
             document.addEventListener("click", handleSelectFile);
         }
-        if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index)
-        else EditorStore.setFileIndex('');
+        if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);
+        else {
+            EditorStore.setFileIndex('');
+            EditorStore.setFileElement('');
+        }
+    }
+    const changeSelectFile = (ele) => {
+        EditorStore.setFileElement(ele);
+        EditorStore.selectFileElement.focus();
+        EditorStore.selectFileElement.scrollIntoView(false);
     }
 
-    const handleKeyDownFile = (e) => {
-        const { keyCode } = e;
+    const handleKeyDownFile = e => {
+        const { keyCode, target } = e;
+        if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
         switch (keyCode) {
             case 37:
-                if (EditorStore.selectFileIdx > 0) EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
+                if (EditorStore.selectFileIdx > 0) {
+                    EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
+                    if (EditorStore.selectFileElement.previousElementSibling !== null) {
+                        changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
+                    }
+                }
                 break;
             case 39:
-                if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
+                if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
+                    EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
+                    if (EditorStore.selectFileElement.nextElementSibling !== null) {
+                        changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
+                    }
+                }
                 break;
             default:
                 break;
@@ -68,11 +87,11 @@ const FileLayout = () => {
 
     return useObserver(() => (
         <>
-            <FileBodyLayout>
+            <FileBodyLayout >
                 {EditorStore.fileLayoutList.map((item, index) => (
                     <FileBody id={item.file_id}
                         key={index}
-                        onClick={handleFileBodyClick.bind(this, index)}
+                        onClick={handleFileBodyClick.bind(null, index)}
                         className={index === EditorStore.selectFileIdx ? 'selected' : ''}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}

@@ -47,6 +47,9 @@ export const FileBodyLayout = styled.div`
   height: 4.9rem;
   border-top: 1px solid #dadada;
   border-bottom: 1px solid #dadada;
+  overflow: hidden;
+  box-sizing :border-box;
+  padding: 0rem 0.5rem;
 `
 export const FileBody = styled.div`
   display: flex;
@@ -58,6 +61,9 @@ export const FileBody = styled.div`
   border : 1px solid #dadada;
   height: 3.5rem;
   margin-left: 0.5rem;
+  &:first-child{
+    margin-left: 0rem;
+  }
   &:hover{
     background-color: #DCDDFF;
   }
