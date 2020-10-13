@@ -31,19 +31,16 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
 
   const deleteComponent = () => {
     // 챕터/페이지를 삭제한다.
+    ChapterStore.setNextSelectableChapterId(nextSelectableChapterId);
+    PageStore.setNextSelectablePageId(nextSelectablePageId);
+
     switch (type) {
       case "chapter":
-        if (ChapterStore.currentChapterId === chapterId) {
-          ChapterStore.setCurrentChapterId(nextSelectableChapterId);
-          PageStore.setCurrentPageId(nextSelectablePageId ? nextSelectablePageId : "");
-          if (!nextSelectableChapterId) ChapterStore.setAllDeleted(true);
-        }
         ChapterStore.setDeleteChapterId(chapterId);
         NoteStore.setModalInfo('chapter');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
-        if (PageStore.currentPageId === pageId) PageStore.setCurrentPageId(nextSelectablePageId);
         PageStore.setDeletePageList({ note_id: pageId });
         NoteStore.setModalInfo('page');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
@@ -68,7 +65,19 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
   );
 
   return useObserver(() => (
-    <ContextMenuCover className="ellipsisBtn" overlay={menu} trigger={['click']} placement="bottomRight" onClick={e => e.stopPropagation()}>
+    <ContextMenuCover
+      className="ellipsisBtn" 
+      overlay={menu} 
+      trigger={['click']} 
+      placement="bottomRight" 
+      onClick={(e) => {
+        e.stopPropagation();
+        NoteStore.LNBChapterCoverRef.addEventListener('wheel', NoteStore.disableScroll);
+      }}
+      onVisibleChange={(visible) => {
+        if (!visible) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+      }}
+    >
       <ContextMenuIconCover>
         <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />
       </ContextMenuIconCover>

@@ -16,6 +16,7 @@ const PageStore = observable({
   currentPageId: '',
   createParent: '',
   deletePageList: [],
+  nextSelectablePageId: '',
   isRename: false,
   renamePageId: '',
   renamePageText: '',
@@ -61,6 +62,9 @@ const PageStore = observable({
   },
   setDeletePageList(page) {
     this.deletePageList.push(page);
+  },
+  setNextSelectablePageId(pageId) {
+    this.nextSelectablePageId = pageId;
   },
   setIsRename(flag) {
     this.isRename = flag;
@@ -145,6 +149,10 @@ const PageStore = observable({
     await NoteRepository.deletePage(this.deletePageList).then(
       (response) => {
         if (response.status === 200) {
+          if (this.currentPageId === this.deletePageList[0].note_id) {
+            this.setCurrentPageId(this.nextSelectablePageId);
+          }
+            
           ChapterStore.getChapterList();
           this.deletePageList = [];
           NoteStore.setShowModal(false);

@@ -30,6 +30,7 @@ const ChapterStore = observable({
   searchStr: "",
   searchResult: {}, // {chapter:[], page:[]} 형태
   deleteChapterId: '',
+  nextSelectableChapterId: '',
   renameChapterId: '',
   renameChapterText: '',
   allDeleted: false,
@@ -42,6 +43,9 @@ const ChapterStore = observable({
   },
   setDeleteChapterId(chapterId) {
     this.deleteChapterId = chapterId;
+  },
+  setNextSelectableChapterId(chapterId) {
+    this.nextSelectableChapterId = chapterId;
   },
   setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
@@ -89,6 +93,12 @@ const ChapterStore = observable({
     await NoteRepository.deleteChapter(this.deleteChapterId).then(
       (response) => {
         if (response.status === 200) {
+          if (this.currentChapterId === this.deleteChapterId) {
+            this.setCurrentChapterId(this.nextSelectableChapterId);
+            PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
+            if (!this.nextSelectableChapterId) this.setAllDeleted(true);
+          }
+
           ChapterStore.getChapterList();
           if (this.allDeleted) NoteStore.setShowPage(false);
           this.deleteChapterId = '';
