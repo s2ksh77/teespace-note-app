@@ -44,11 +44,12 @@ const ChapterList = ({ type }) => {
     ChapterStore.setRenameChapterText(value);
   };
 
-  const handleChapterTextInput = (color) => {
-    if (ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
+  const handleChapterTextInput = (isEscape, color) => {
+    if (!isEscape && ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
       ChapterStore.renameChapter(color);
     }
     ChapterStore.setRenameChapterId('');
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleFocus = (e) => e.target.select();
@@ -88,10 +89,10 @@ const ChapterList = ({ type }) => {
                 value={ChapterStore.renameChapterText}
                 onClick={(e) => e.stopPropagation()}
                 onChange={handleChapterName}
-                onBlur={handleChapterTextInput.bind(null, item.color)}
+                onBlur={handleChapterTextInput.bind(null, false, item.color)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") { handleChapterTextInput(item.color); }
-                  else if (e.key === "Escape") { ChapterStore.setRenameChapterId(''); }
+                  if (e.key === "Enter") { handleChapterTextInput(false, item.color); }
+                  else if (e.key === "Escape") { handleChapterTextInput(true, item.color); }
                 }}
                 onFocus={handleFocus}
                 autoFocus={true}

@@ -18,8 +18,9 @@ import LNBSearchResult from './LNBSearchResult';
 import ChapterColor from "../chapter/ChapterColor"
 
 const LNBContainer = () => {
-  const { ChapterStore } = useStore();
+  const { NoteStore, ChapterStore } = useStore();
   const outsideClickRef = useRef(null);
+  const LNBRef = useRef(null);
 
   const handleTitleInput = (e) => {
     const {
@@ -67,6 +68,10 @@ const LNBContainer = () => {
     }    
   }, [ChapterStore.isNewChapter])
 
+  useEffect(() => {
+    if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
+  }, [])
+
   const handleKeyDown = (event) => {
     switch (event.key) {
       case "Enter":
@@ -84,7 +89,7 @@ const LNBContainer = () => {
     <>
       <LNBCover>
         <LNBHeader createNewChapter={createNewChapter} />
-        <LNBChapterCover>
+        <LNBChapterCover ref={LNBRef}>
             {ChapterStore.isNewChapter ? (
               <LNBNewChapter ref={outsideClickRef}>
                 <ChapterColor color={ChapterStore.isNewChapterColor} />

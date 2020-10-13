@@ -40,11 +40,13 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
         }
         ChapterStore.setDeleteChapterId(chapterId);
         NoteStore.setModalInfo('chapter');
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
         if (PageStore.currentPageId === pageId) PageStore.setCurrentPageId(nextSelectablePageId);
         PageStore.setDeletePageList({ note_id: pageId });
         NoteStore.setModalInfo('page');
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default:
         break;

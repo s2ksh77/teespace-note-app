@@ -18,6 +18,7 @@ const NoteStore = observable({
   editorWrapper: null,
   showModal: false,
   modalInfo: {},
+  LNBChapterCoverRef: '',
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -95,6 +96,13 @@ const NoteStore = observable({
         this.setShowModal(false);
         break;
     }
+  },
+  setLNBChapterCoverRef(ref) {
+    this.LNBChapterCoverRef = ref;
+  },
+
+  disableScroll(e) {
+    e.preventDefault();
   },
 });
 

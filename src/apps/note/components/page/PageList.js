@@ -36,10 +36,14 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
     PageStore.setRenamePageText(value);
   };
 
-  const handlePageTextInput = () => {
-    PageStore.renamePage(chapterId);
+  const handlePageTextInput = (isEscape) => {
+    if (!isEscape) {
+      PageStore.renamePage(chapterId);
+      PageStore.setIsRename(false);
+    }
+
     PageStore.setRenamePageId('');
-    PageStore.setIsRename(false);
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleFocus = (e) => e.target.select();
@@ -79,10 +83,10 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
                 value={PageStore.renamePageText}
                 onClick={(e) => e.stopPropagation()}
                 onChange={handlePageName}
-                onBlur={handlePageTextInput}
+                onBlur={handlePageTextInput.bind(null, false)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") { handlePageTextInput(); }
-                  else if (e.key === "Escape") { PageStore.setRenamePageId(''); }
+                  if (e.key === "Enter") { handlePageTextInput(false); }
+                  else if (e.key === "Escape") { handlePageTextInput(true); }
                 }}
                 onFocus={handleFocus}
                 autoFocus={true}
