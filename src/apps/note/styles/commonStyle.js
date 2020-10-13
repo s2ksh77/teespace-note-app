@@ -67,19 +67,46 @@ export const ContextMenuCover = styled(Dropdown)`
 
 export const ContextMenuIconCover = styled.span``;
 
-export const ModalContent = styled.div`
-  height: 11.88rem;
-  padding: 1.25rem 0;
+// Modal.js
+export const CustomOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.7);
+  z-index: 1000;
+`;
+
+export const CustomModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width:22.5rem;
+  height:11.88rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  transform: translate(-50%,-50%);
+  background-color: #FFF;
+  padding: 1.25rem;
+  box-sizing:border-box;
+  z-index: 1000;
 `;
-export const DialogTitle = styled.div`
+
+export const IconImg = styled.img`
+  display:flex;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.88rem auto 0.94rem auto;
+`;
+
+export const ModalTitle = styled.div`
   font-size: 1rem;
 `;
 
-export const DialogSubTitle = styled.div`
+export const ModalSubTitle = styled.div`
   height: 0.813rem;
   color: #777777;
 `;
@@ -88,7 +115,7 @@ export const ButtonGroup = styled.div`
   margin-top: auto;
   margin-bottom: 0rem;
 `;
-export const DialogBtn = styled.div`
+export const ModalNormalBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,10 +124,20 @@ export const DialogBtn = styled.div`
   border-radius: 1rem;
   font-size: 0.75rem;
   cursor: pointer;
+  background-color: #6C56E5;
+  color: white;
+  margin-right: 0.38rem;
 `;
 
-export const IconImg = styled.img`
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-bottom: 0.94rem;
+export const ModalCancelBtn = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 1.88rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid #C6CED6;
+  color: #3B3B3B;
 `;

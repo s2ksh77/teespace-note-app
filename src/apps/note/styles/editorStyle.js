@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+export const EditorContainerWrapper = styled.div`
+  width:100%;
+  height:100%;
+`;
+
 export const ReadModeContainer = styled.div`
   width: 100%;
   height: 2.81rem;

@@ -9,22 +9,28 @@ import {
   EditorHeaderContainer2,
   ModifiedUser,
   ModifiedTime,
-  EditPreBtn,
   EditPreBtnWrapper,
 } from '../../styles/titleStyle';
 import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
-import NoteStore from '../../store/noteStore';
 import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
-import NoteUtil from '../common/NoteUtil';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const style = { cursor: 'pointer' };
-const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
 
 const EditorHeader = () => {
-  const { NoteStore, PageStore, TagStore } = useStore();
+  const { NoteStore, PageStore } = useStore();
+  
+  const handleLayoutBtn = (e) => {
+    if (!PageStore.isEdit) {
+      NoteStore.setTargetLayout('LNB');
+    } else {
+      const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
+      if (undoBtn?.getAttribute('aria-disabled') === "true") {PageStore.handleNoneEdit();return;}    
+      NoteStore.setModalInfo('editCancel');
+    }    
+  }
 
   const handleClickBtn = e => {
     const {

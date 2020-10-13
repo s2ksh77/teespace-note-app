@@ -15,7 +15,6 @@ const NoteStore = observable({
   layoutState: '',
   targetLayout: null,
   isExpanded: false,
-  editorWrapper: null,
   showModal: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
@@ -74,9 +73,6 @@ const NoteStore = observable({
   },
   setIsExpanded() {
     this.isExpanded = !this.isExpanded;
-  },
-  setEditorWrapper(editorwrapper) {
-    this.editorWrapper = editorwrapper;
   },
   setShowModal(showModal) {
     this.showModal = showModal;

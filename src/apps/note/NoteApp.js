@@ -8,7 +8,8 @@ import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
 import { useCoreStores } from 'teespace-core';
-import Dialog from './components/common/Dialog';
+import Modal from './components/common/Modal';
+import GlobalVariable from './GlobalVariable';
 
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
@@ -27,6 +28,21 @@ const NoteApp = ({ layoutState, roomId }) => {
       NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
     );
 
+  const handleClickOutsideEditor = (e) => {
+    if (!PageStore.isEdit) return;
+    if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper.contains(e.target)) return;
+    const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
+    if (undoBtn?.getAttribute('aria-disabled') === "true") {PageStore.handleNoneEdit();return;}    
+    NoteStore.setModalInfo('editCancel');
+  }
+
+  useEffect(() => {
+    window.addEventListener('click', handleClickOutsideEditor);
+    return () => {
+      window.removeEventListener('click', handleClickOutsideEditor);
+    };
+  }, []);
+
   useEffect(() => {
     // collapse 아닐 때는 setTargetLayout(null) 넣어준다
     if (layoutState === 'collapse') {
@@ -44,24 +60,6 @@ const NoteApp = ({ layoutState, roomId }) => {
     }
     NoteStore.setLayoutState(layoutState);
   }, [layoutState]);
-
-  const handleClickModal = e => {
-    if (!PageStore.isEdit) return;
-    if (NoteStore.editorWrapper) {
-      if (NoteStore.editorWrapper.contains(e.target)) return;
-      else if (e.target.closest('.ant-modal-content')) return;
-      else {
-        NoteStore.setModalInfo('editCancel');
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickModal);
-    return () => {
-      document.removeEventListener('click', handleClickModal);
-    };
-  }, []);
 
   return useObserver(() => (
     <>
@@ -86,7 +84,7 @@ const NoteApp = ({ layoutState, roomId }) => {
           {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
         </Content>
       )}
-      {NoteStore.showModal && <Dialog />}
+      <Modal />
     </>
   ));
 };

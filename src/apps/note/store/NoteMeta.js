@@ -25,23 +25,23 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         // 삭제 함수 추가
-        eventList.push(function () { ChapterStore.deleteChapter() })
-        eventList.push(function () { NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation();ChapterStore.deleteChapter() })
+        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function () { PageStore.deletePage() })
-        eventList.push(function () { NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation();PageStore.deletePage() })
+        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':
-        eventList.push(function () { PageStore.handleSave() });
-        eventList.push(function () { PageStore.noneEdit(PageStore.currentPageId) });
-        eventList.push(function () { NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation();PageStore.handleSave() });
+        eventList.push(function (e) { e.stopPropagation();PageStore.noneEdit(PageStore.currentPageId) });
+        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
-        eventList.push(function () { NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
         break;
-    }
+    }    
     return eventList;
   },
   setButtonConfig(type) {
@@ -58,6 +58,7 @@ const NoteMeta = {
     const userName = '';
     const fileName = '';
     const dialogType = {
+      type:'alert',
       title: '',
       subtitle: '',
       buttonConfig: []
@@ -74,6 +75,7 @@ const NoteMeta = {
         dialogType.buttonConfig = this.setButtonConfig('delete');
         break;
       case 'confirm':
+        dialogType.type = 'normal';
         dialogType.title = '삭제할 수 없습니다.';
         dialogType.subtitle = `${userName} 님이 수정 중 입니다.`;
         dialogType.buttonConfig = this.setButtonConfig(type);

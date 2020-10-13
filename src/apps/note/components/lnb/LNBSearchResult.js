@@ -21,6 +21,7 @@ const LNBSearchResult = () => {
 	}
 
 	const onClickPageBtn = async (chapterId, pageId, e) => {
+    if (PageStore.isEdit) return;
 		ChapterStore.setCurrentChapterId(chapterId);
 		PageStore.setCurrentPageId(pageId);
 		// ChapterStore.setIsTagSearching(false);

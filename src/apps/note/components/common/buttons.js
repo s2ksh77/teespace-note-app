@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { EventBus } from 'teespace-core';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';

@@ -2,19 +2,23 @@ import React, { useLayoutEffect, useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import EditorHeader from './EditorHeader';
-import { ReadModeContainer, ReadModeText } from '../../styles/editorStyle';
+import {
+  EditorContainerWrapper,
+  ReadModeContainer,
+  ReadModeText,
+} from '../../styles/editorStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import NoteRepository from '../../store/noteRepository';
 import FileLayout from './FileLayout';
-
-const editorContainerStyle = { width: '100%', height: '100%' };
+import GlobalVariable from '../../GlobalVariable';
 
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useStore();
-  let editorWrapperRef = useRef(null);
+  const editorWrapperRef = useRef(null);
+
   const getEditorContent = content => {
     PageStore.setContent(content);
   };
@@ -116,19 +120,16 @@ const EditorContainer = () => {
 
   useEffect(() => {
     if (editorWrapperRef.current) {
-      NoteStore.setEditorWrapper(editorWrapperRef.current);
-    } else {
-      NoteStore.setEditorWrapper(null);
+      GlobalVariable.setEditorWrapper(editorWrapperRef.current);
+    }    
+    return () => {
+      GlobalVariable.setEditorWrapper(null);
     }
-  }, [editorWrapperRef.current]);
+  },[editorWrapperRef.current]);
 
   return useObserver(() => (
     <>
-      <div
-        className="editorContainer"
-        style={editorContainerStyle}
-        ref={editorWrapperRef}
-      >
+      <EditorContainerWrapper ref={editorWrapperRef}>
         <EditorHeader />
         {PageStore.isReadMode() ? (
           <ReadModeContainer style={{ display: 'flex' }}>
@@ -183,8 +184,9 @@ const EditorContainer = () => {
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
-      </div>
+      </EditorContainerWrapper>
     </>
   ));
 };
+
 export default EditorContainer;

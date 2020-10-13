@@ -26,6 +26,7 @@ const PageStore = observable({
   moveTargetPageList: [], // 이동을 원하는 페이지가 target으로 하는 page의 list
   moveTargetPageIdx: '', // 이동을 원하는 페이지가 target으로 하는 index
   modifiedDate: '',
+  isNewPage:false,
   getPageId(e) {
     const {
       target: { id },
@@ -35,9 +36,9 @@ const PageStore = observable({
   async setCurrentPageId(pageId) {
     this.currentPageId = pageId;
     if (pageId) {
-      await PageStore.getNoteInfoList(pageId);
+      await this.getNoteInfoList(pageId);
       await TagStore.getNoteTagList(pageId); // tagList
-    }
+    } else this.isEdit = '';
   },
   getPageName(e) {
     const {
@@ -139,7 +140,9 @@ const PageStore = observable({
           ChapterStore.getChapterList();
           this.isEdit = dto.is_edit;
           this.noteTitle = dto.note_title;
+          ChapterStore.setCurrentChapterId(dto.parent_notebook);
           this.currentPageId = dto.note_id;
+          this.isNewPage = true;
           TagStore.setNoteTagList(dto.tagList);
         }
       },
@@ -265,7 +268,16 @@ const PageStore = observable({
     });
     return this.currentPageData;
   },
-  handleSave() {
+
+  async handleNoneEdit() {
+    if (this.isNewPage) {
+      this.setDeletePageList({ note_id: this.currentPageId });
+      await this.deletePage();
+      this.isNewPage = false;      
+    } else this.noneEdit(this.currentPageId);
+  },
+
+  handleSave() {    
     const updateDTO = {
       dto: {
         note_id: this.currentPageData.note_id,
@@ -281,7 +293,11 @@ const PageStore = observable({
     if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
+    this.isNewPage = false;
   },
+  setIsNewPage(isNew) {
+    this.isNewPage = isNew;
+  }
 });
 
 export default PageStore;

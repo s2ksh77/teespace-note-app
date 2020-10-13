@@ -28,6 +28,7 @@ const ChapterList = ({ type }) => {
   }, [])
 
   const onClickChapterBtn = async (id, children) => {
+    if (PageStore.isEdit) return;
     ChapterStore.setCurrentChapterId(id);
     let targetPage = "";
     if (children.length) {
