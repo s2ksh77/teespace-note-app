@@ -18,10 +18,12 @@ export const EditorHeaderContainer1 = styled.div`
   width: 80%;
 `;
 export const EditPreBtnWrapper = styled.div`
-  display: flex;
+  display: ${props=> (props.show ? "flex" : "none")};
   align-items: center;
   margin-right: 0.5rem;
+  cursor:pointer;
 `;
+
 export const EditBtn = styled.button`
   width: 3.5rem;
   height: 1.69rem;

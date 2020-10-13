@@ -17,11 +17,10 @@ import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
-const style = { cursor: 'pointer' };
-
 const EditorHeader = () => {
   const { NoteStore, PageStore } = useStore();
   
+  // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
     if (!PageStore.isEdit) {
       NoteStore.setTargetLayout('LNB');
@@ -58,13 +57,9 @@ const EditorHeader = () => {
     <>
       <EditorHeaderCover>
         <EditPreBtnWrapper
-          style={
-            NoteStore.layoutState === 'collapse'
-              ? { display: 'flex' }
-              : { display: 'none' }
-          }
+          show={NoteStore.layoutState === 'collapse'}
         >
-          <Button style={style} src={preImg} onClick={handleLayoutBtn} />
+          <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <EditorHeaderContainer1>
           <EditBtn onClick={handleClickBtn}>{editBtnText}</EditBtn>

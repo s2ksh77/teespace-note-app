@@ -6,7 +6,7 @@ import {
   LnbTitleSearchInput,
   EditPreBtnWrapper,
 } from '../../styles/titleStyle';
-import NoteStore from '../../store/noteStore';
+import useStore from '../../store/useStore';
 import TagStore from '../../store/tagStore';
 import { useObserver } from 'mobx-react';
 import searchImg from '../../assets/ts_m_search@3x.png';
@@ -15,13 +15,17 @@ import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
 import preImg from '../../assets/back.svg';
 
-const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
-const style = { cursor: 'pointer' };
 const formStyle = { marginLeft: 'auto' };
 
 const TagHeader = () => {
+  const {NoteStore, ChapterStore} = useStore();
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
+
+  const handleLayoutBtn = () => {
+    ChapterStore.setIsTagSearching(false);
+    NoteStore.setTargetLayout('LNB');
+  }
 
   const onSubmitForm = e => {
     e.preventDefault();
@@ -43,13 +47,9 @@ const TagHeader = () => {
     <>
       <TagMenuHeader>
         <EditPreBtnWrapper
-          style={
-            NoteStore.layoutState === 'collapse'
-              ? { display: 'flex' }
-              : { display: 'none' }
-          }
+          show={NoteStore.layoutState === 'collapse'}
         >
-          <Button style={style} src={preImg} onClick={handleLayoutBtn} />
+          <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <form style={formStyle} onSubmit={onSubmitForm}>
           <TagTitleSearchContainer>

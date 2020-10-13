@@ -27,7 +27,8 @@ const LNBSearchResult = () => {
 		// ChapterStore.setIsTagSearching(false);
 		// ChapterStore.setIsSearching(false);
 		// ChapterStore.setInputValue("");
-		NoteStore.setShowPage(true);
+    NoteStore.setShowPage(true);
+    if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
 	}
 	
 	return useObserver(()=>(

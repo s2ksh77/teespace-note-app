@@ -6,13 +6,16 @@ import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 const style = { display: 'flex', width: '100%' };
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
-  const { ChapterStore, TagStore } = useStore();
+  const { NoteStore, ChapterStore, TagStore } = useStore();
 
   const onClickTagBtn = async (tagId, tagName, e) => {
     // 임시 (태그칩 모양으로 넣어야함)
     await TagStore.getTagNoteList(tagId);
     ChapterStore.setTargetSearchTagName(tagName);
-    ChapterStore.setIsTagSearching(true);
+    ChapterStore.setIsTagSearching(true);    
+    if (NoteStore.layoutState === 'collapse') {
+      NoteStore.setTargetLayout('LNB');
+    } 
   };
 
   return useObserver(() => (

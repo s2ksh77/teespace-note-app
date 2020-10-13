@@ -6,7 +6,8 @@ import {
   LnbTitleSearchContainer,
   LnbTitleSearchIcon,
   LnbTitleSearchInput,
-} from "../../styles/titleStyle";
+  EditPreBtnWrapper,
+} from '../../styles/titleStyle';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useObserver } from "mobx-react";
@@ -15,10 +16,17 @@ import { Button } from '../../styles/commonStyle';
 import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
+import preImg from '../../assets/back.svg';
 
 const LNBHeader = ({createNewChapter}) => {
   const { ChapterStore } = useStore();
   const inputRef = useRef(null);
+
+  // 뒤로 가기 버튼
+  const handleLayoutBtn = (e) => {    
+    NoteStore.setTargetLayout('Content');
+    NoteStore.setShowPage(false);
+  }
 
   const handleNewChapterClick = async () => { 
     if (!ChapterStore.isNewChapter) {
@@ -57,6 +65,11 @@ const LNBHeader = ({createNewChapter}) => {
   return useObserver(() => (
     <>
       <LnbTitleCover>
+        <EditPreBtnWrapper
+          show={(NoteStore.layoutState === 'collapse') && ChapterStore.isTagSearching}          
+        >
+          <Button src={preImg} onClick={handleLayoutBtn} />
+        </EditPreBtnWrapper>
         <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
           새 챕터
         </LnbTitleNewButton>
