@@ -77,6 +77,7 @@ const NoteApp = ({ layoutState, roomId }) => {
         <Content>
           <FoldBtn
             className={NoteStore.isExpanded ? 'flipBtn' : ''}
+            show={(NoteStore.showPage && (NoteStore.layoutState !== "collapse"))}
             onClick={() => NoteStore.setIsExpanded()}
           >
             <FoldBtnImg src={foldImg} />

@@ -25,7 +25,7 @@ export const ReadModeText = styled.span`
 export const FoldBtn = styled.div`
   width: 0.94rem;
   height: 2.06rem;
-  display: flex;
+  display: ${(props) => props.show ? "flex" : "none"};
   align-items: center;
   background-color: #1ea8df;
   border: 0px solid #9ca7ad;
