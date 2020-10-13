@@ -1,6 +1,7 @@
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 import ChapterStore from './chapterStore';
+import EditorStore from './editorStore';
 
 const NoteMeta = {
   openDialog(type) {
@@ -25,23 +26,23 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation();ChapterStore.deleteChapter() })
-        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteChapter() })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation();PageStore.deletePage() })
-        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deletePage(); EditorStore.deleteAllFile(); } else PageStore.deletePage(); })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':
-        eventList.push(function (e) { e.stopPropagation();PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation();PageStore.noneEdit(PageStore.currentPageId) });
-        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
+        eventList.push(function (e) { e.stopPropagation(); PageStore.noneEdit(PageStore.currentPageId) });
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
-        eventList.push(function (e) { e.stopPropagation();NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
-    }    
+    }
     return eventList;
   },
   setButtonConfig(type) {
@@ -58,7 +59,7 @@ const NoteMeta = {
     const userName = '';
     const fileName = '';
     const dialogType = {
-      type:'alert',
+      type: 'alert',
       title: '',
       subtitle: '',
       buttonConfig: []

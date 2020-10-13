@@ -252,6 +252,22 @@ class NoteRepository {
       },
     });
   }
+  deleteAllFile(fileList) {
+    let deleteFileList = [];
+    if (fileList) {
+      fileList.map(file => deleteFileList.push(file.file_id));
+      return API.put(`${this.FILE_URL}Storage/StorageFile?action=MultiDelete`, {
+        dto: {
+          workspace_id: this.WS_ID,
+          channel_id: this.chId,
+          file_id: deleteFileList,
+          user_id: this.USER_ID
+        }
+      })
+    } else {
+      return Promise.resolve();
+    }
+  }
 }
 
 export default new NoteRepository();

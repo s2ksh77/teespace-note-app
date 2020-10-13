@@ -1,6 +1,7 @@
 import { observable, toJS } from 'mobx';
 import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
+import ChapterStore from './chapterStore';
 
 const EditorStore = observable({
   contents: '',
@@ -92,6 +93,14 @@ const EditorStore = observable({
     a.download = "download";
     a.click();
     document.body.removeChild(a);
+  },
+  async deleteAllFile() {
+    await NoteRepository.deleteAllFile(this.fileList).then(response => {
+      const { data: { dto } } = response;
+      if (dto.resultMsg === 'Success') {
+        ChapterStore.getChapterList();
+      }
+    })
   },
   setFileList(fileList) {
     this.fileList = fileList;
