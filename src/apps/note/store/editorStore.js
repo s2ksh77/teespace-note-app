@@ -122,7 +122,10 @@ const EditorStore = observable({
   },
   uploadFileIsImage(ext) {
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
-    return ImageExt.includes(ext)
+    return ImageExt.includes(ext.toLowerCase());
+  },
+  readerIsImage(type) {
+    return type.includes('image/');
   },
   setFileIndex(idx) {
     this.selectFileIdx = idx;

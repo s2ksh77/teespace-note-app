@@ -30,11 +30,11 @@ const EditorContainer = () => {
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
     initialMode();
   };
-  const handleImageChooser = (blobInfo, success, failure, progress) => {
+  const handleFileHandler = (blobInfo, success, failure, progress) => {
     let fileName = blobInfo.blob().name;
     let dotIndex = fileName.lastIndexOf('.');
     let fileExtension;
-
+    let isImage;
     if (dotIndex !== -1) {
       fileExtension = fileName.substring(dotIndex + 1, fileName.length);
       fileName = fileName.substring(0, dotIndex);
@@ -46,34 +46,65 @@ const EditorContainer = () => {
       fileExtension,
       blobInfo.blob().size,
     );
+    isImage = EditorStore.uploadFileIsImage(fileExtension);
 
     success = data => {
       if (data.resultMsg === 'Success') {
         const returnFileId = data.storageFileInfoList[0].file_id;
-        const targetSrc =
-          NoteRepository.FILE_URL +
-          'Storage/StorageFile?action=Download' +
-          '&fileID=' +
-          returnFileId +
-          '&workspaceID=' +
-          NoteRepository.WS_ID +
-          '&channelID=' +
-          NoteStore.getChannelId() +
-          '&userID=' +
-          NoteRepository.USER_ID;
-        const currentImg = EditorStore.getImgElement();
-        currentImg.setAttribute('id', returnFileId);
-        currentImg.setAttribute('src', targetSrc);
+        if (isImage) {
+          const targetSrc =
+            NoteRepository.FILE_URL +
+            'Storage/StorageFile?action=Download' +
+            '&fileID=' +
+            returnFileId +
+            '&workspaceID=' +
+            NoteRepository.WS_ID +
+            '&channelID=' +
+            NoteStore.getChannelId() +
+            '&userID=' +
+            NoteRepository.USER_ID;
+          const currentImg = EditorStore.getImgElement();
+          currentImg.setAttribute('id', returnFileId);
+          currentImg.setAttribute('src', targetSrc);
+        } else {
+          PageStore.getNoteInfoList(PageStore.currentPageId);
+        }
+
       }
     };
     const _failure = e => {
       console.warn('error ---> ', e);
     };
     const fd = new FormData();
-    fd.append('image', blobInfo.blob());
-
+    if (isImage) fd.append('image', blobInfo.blob());
+    else fd.append('file', blobInfo.blob())
     EditorStore.uploadFile(fd, success, _failure);
   };
+
+  const handleFileBlob = (cb, value, meta) => {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.onchange = function () {
+      var file = this.files[0];
+      var reader = new FileReader();
+      var isImage = EditorStore.readerIsImage(file.type);
+      reader.onload = function () {
+        var id = 'blobid' + (new Date()).getTime();
+        var blobCache = EditorStore.tinymce.editorUpload.blobCache;
+        var base64 = reader.result.split(',')[1];
+        var blobInfo = blobCache.create(id, file, base64);
+        if (isImage) {
+          var img = new Image();
+          img.setAttribute('src', reader.result);
+          img.setAttribute('data-name', file.name);
+          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src="' + img.src + '"/>');
+        }
+        handleFileHandler(blobInfo, { title: file.name });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
 
   useLayoutEffect(() => {
     // 모드 변경의 목적
@@ -121,11 +152,11 @@ const EditorContainer = () => {
   useEffect(() => {
     if (editorWrapperRef.current) {
       GlobalVariable.setEditorWrapper(editorWrapperRef.current);
-    }    
+    }
     return () => {
       GlobalVariable.setEditorWrapper(null);
     }
-  },[editorWrapperRef.current]);
+  }, [editorWrapperRef.current]);
 
   return useObserver(() => (
     <>
@@ -142,17 +173,17 @@ const EditorContainer = () => {
             <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
           </ReadModeContainer>
         ) : (
-          // null 로 했더니 에디터 밑에 생겨버림
-          <ReadModeContainer style={{ display: 'none' }}>
-            <FontAwesomeIcon
-              icon={faLock}
-              className="readModeIcon"
-              size={'1x'}
-            />
-            <ReadModeText>읽기 모드</ReadModeText>
-            <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
-          </ReadModeContainer>
-        )}
+            // null 로 했더니 에디터 밑에 생겨버림
+            <ReadModeContainer style={{ display: 'none' }}>
+              <FontAwesomeIcon
+                icon={faLock}
+                className="readModeIcon"
+                size={'1x'}
+              />
+              <ReadModeText>읽기 모드</ReadModeText>
+              <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
+            </ReadModeContainer>
+          )}
         <Editor
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
@@ -168,6 +199,29 @@ const EditorContainer = () => {
                   }
                 }
               });
+              editor.ui.registry.addMenuButton('insertfile', {
+                icon: 'browse',
+                tooltip: 'Insert File',
+                fetch: function (callback) {
+                  var items = [
+                    {
+                      type: 'menuitem',
+                      text: '내 로컬에서 첨부',
+                      onAction: function () {
+                        editor.editorUpload.uploadImages(handleFileBlob)
+                      }
+                    },
+                    {
+                      type: 'menuitem',
+                      text: 'Drive에서 첨부',
+                      onAction: function () {
+                        alert('기능 구현 중입니다.')
+                      }
+                    }
+                  ];
+                  callback(items);
+                }
+              })
             },
             a11y_advanced_options: true,
             image_description: false,
@@ -175,7 +229,8 @@ const EditorContainer = () => {
             image_uploadtab: true,
             file_picker_types: 'file image media',
             automatic_uploads: true,
-            images_upload_handler: handleImageChooser,
+            images_upload_handler: handleFileHandler,
+            file_picker_callback: handleFileBlob
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
