@@ -7,9 +7,10 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, WWMS } from 'teespace-core';
 import Modal from './components/common/Modal';
 import GlobalVariable from './GlobalVariable';
+import { handleWebsocket } from './components/common/Websocket';
 
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
@@ -22,7 +23,6 @@ const NoteApp = ({ layoutState, roomId }) => {
   // NoteStore.setUserId(authStore.myInfo.id);
   // 임시
   if (!layoutState) layoutState = 'expand';
-
   const renderCondition = target =>
     !(
       NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
@@ -32,11 +32,12 @@ const NoteApp = ({ layoutState, roomId }) => {
     if (!PageStore.isEdit) return;
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper.contains(e.target)) return;
     const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
-    if (undoBtn?.getAttribute('aria-disabled') === "true") {PageStore.handleNoneEdit();return;}    
+    if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
 
   useEffect(() => {
+    WWMS.addHandler('CHN0003', handleWebsocket);
     window.addEventListener('click', handleClickOutsideEditor);
     return () => {
       window.removeEventListener('click', handleClickOutsideEditor);
@@ -72,6 +73,7 @@ const NoteApp = ({ layoutState, roomId }) => {
         >
           <LNBContainer />
         </LNB>
+
       )}
       {renderCondition('Content') && (
         <Content>
