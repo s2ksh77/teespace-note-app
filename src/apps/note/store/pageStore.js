@@ -61,6 +61,7 @@ const PageStore = observable({
     return this.createParent;
   },
   setDeletePageList(page) {
+    this.deletePageList = [];
     this.deletePageList.push(page);
   },
   setNextSelectablePageId(pageId) {
@@ -154,7 +155,6 @@ const PageStore = observable({
           }
             
           ChapterStore.getChapterList();
-          this.deletePageList = [];
           NoteStore.setShowModal(false);
         }
       }
