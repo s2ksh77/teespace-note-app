@@ -11,7 +11,7 @@ import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 
 const FileLayout = () => {
-    const { EditorStore, PageStore } = useStore();
+    const { EditorStore, PageStore, NoteStore } = useStore();
 
     const fileExtension = (extension) => {
         switch (extension) {
@@ -78,6 +78,10 @@ const FileLayout = () => {
                 break;
         }
     }
+    const handleFileRemove = (fileId, filename) => {
+        EditorStore.setDeleteFileConfig(fileId, filename);
+        NoteStore.setModalInfo('fileDelete');
+    }
 
     useEffect(() => {
         return () => {
@@ -112,7 +116,7 @@ const FileLayout = () => {
                                 </FileDataTime>
                             </FileData>
                             <FileClose style={PageStore.isReadMode() ? { display: 'none' } : { display: 'flex' }}>
-                                <FileCloseBtn src={cancelBtn} />
+                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id, item.file_name)} />
                             </FileClose>
                         </FileContent>
                     </FileBody>

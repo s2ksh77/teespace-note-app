@@ -2,6 +2,7 @@ import { observable, toJS } from 'mobx';
 import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
+import PageStore from './pageStore';
 
 const EditorStore = observable({
   contents: '',
@@ -11,6 +12,8 @@ const EditorStore = observable({
   isFile: false,
   selectFileIdx: '',
   selectFileElement: '',
+  deleteFileId: '',
+  deleteFileName: '',
   fileList: [],
   fileLayoutList: [],
   fileName: "",
@@ -94,6 +97,14 @@ const EditorStore = observable({
     a.click();
     document.body.removeChild(a);
   },
+  async deleteFile() {
+    await NoteRepository.deleteFile(this.deleteFileId).then(response => {
+      const { data: { dto } } = response;
+      if (dto.resultMsg === 'Success') {
+        PageStore.getNoteInfoList(PageStore.currentPageId);
+      }
+    })
+  },
   async deleteAllFile() {
     await NoteRepository.deleteAllFile(this.fileList).then(response => {
       const { data: { dto } } = response;
@@ -141,7 +152,12 @@ const EditorStore = observable({
   },
   setFileElement(element) {
     this.selectFileElement = element
+  },
+  setDeleteFileConfig(id, name) {
+    this.deleteFileId = id;
+    this.deleteFileName = name;
   }
+
 });
 
 export default EditorStore;

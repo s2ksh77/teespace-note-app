@@ -42,11 +42,16 @@ const NoteMeta = {
       case 'confirm':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'fileDelete':
+        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteFile(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
+        break;
     }
     return eventList;
   },
   setButtonConfig(type) {
     switch (type) {
+      case 'fileDelete':
       case 'delete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'confirm':
@@ -57,7 +62,7 @@ const NoteMeta = {
   },
   setModalConfig(type) {
     const userName = '';
-    const fileName = '';
+    const fileName = EditorStore.deleteFileName;
     const dialogType = {
       type: 'alert',
       title: '',

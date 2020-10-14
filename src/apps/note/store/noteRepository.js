@@ -252,6 +252,28 @@ class NoteRepository {
       },
     });
   }
+
+  deleteFile(deleteFileId) {
+    return API.put(`${this.FILE_URL}Storage/StorageFile?action=Delete`, {
+      dto: {
+        workspace_id: this.WS_ID,
+        channel_id: this.chId,
+        storageFileInfo: {
+          user_id: '',
+          file_last_update_user_id: '',
+          file_id: deleteFileId,
+          file_name: '',
+          file_extension: '',
+          file_created_at: '',
+          file_updated_at: '',
+          user_context_1: '',
+          user_context_2: '',
+          user_context_3: ''
+        }
+      }
+    })
+  }
+
   deleteAllFile(fileList) {
     let deleteFileList = [];
     if (fileList) {
