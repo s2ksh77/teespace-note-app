@@ -81,9 +81,13 @@ const EditorContainer = () => {
     EditorStore.uploadFile(fd, success, _failure);
   };
 
-  const handleFileBlob = (cb, value, meta) => {
+  const handleFileBlob = (type) => {
     var input = document.createElement('input');
-    input.setAttribute('type', 'file');
+    if (type === 'image') {
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+    }
+    else input.setAttribute('type', 'file');
     input.onchange = function () {
       var file = this.files[0];
       var reader = new FileReader();
@@ -97,7 +101,7 @@ const EditorContainer = () => {
           var img = new Image();
           img.setAttribute('src', reader.result);
           img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src="' + img.src + '"/>');
+          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src=""/>', '');
         }
         handleFileHandler(blobInfo, { title: file.name });
       };
@@ -188,7 +192,8 @@ const EditorContainer = () => {
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
           init={{
-            menubar: 'edit view insert format tools table',
+            menubar: false,
+            toolbar_mode: 'sliding',
             height: 'calc(100% - 8.8rem)',
             setup: function (editor) {
               setNoteEditor(editor);
@@ -199,6 +204,13 @@ const EditorContainer = () => {
                   }
                 }
               });
+              editor.ui.registry.addButton('insertImage', {
+                icon: 'image',
+                tooltip: 'Insert Image / media',
+                onAction: function () {
+                  editor.editorUpload.uploadImages(handleFileBlob('image'))
+                }
+              })
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'browse',
                 tooltip: 'Insert File',
@@ -208,7 +220,7 @@ const EditorContainer = () => {
                       type: 'menuitem',
                       text: '내 로컬에서 첨부',
                       onAction: function () {
-                        editor.editorUpload.uploadImages(handleFileBlob)
+                        editor.editorUpload.uploadImages(handleFileBlob('file'))
                       }
                     },
                     {
@@ -230,12 +242,16 @@ const EditorContainer = () => {
             file_picker_types: 'file image media',
             automatic_uploads: true,
             images_upload_handler: handleFileHandler,
-            file_picker_callback: handleFileBlob
+            file_picker_callback: handleFileBlob,
+            default_link_target: '_blank',
+            link_assume_external_targets: 'http',
+            link_context_toolbar: true,
+            extended_valid_elements: 'a[href|target=_blank]'
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
-          plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap fullscreen preview print | insertfile image media link anchor codesample | ltr rtl"
+          plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap checklist hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | link | hr table insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
