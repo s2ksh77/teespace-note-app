@@ -48,8 +48,21 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
 
   const handleFocus = (e) => e.target.select();
 
+  const onDragStartPage = (pageId, pageIdx) => {
+    PageStore.setMovePageId(pageId);
+    PageStore.setMovePageIdx(pageIdx);
+    PageStore.setMoveChapterId(chapterId);
+  };
+
+  const onDragEnterPage = (enterPageIdx) => {
+    if (!PageStore.movePageId) return; // 챕터를 드래그하고 있는 경우
+
+    PageStore.setDragEnterPageIdx(enterPageIdx);
+    PageStore.setDragEnterChapterIdx(chapterIdx);
+  };
+
   const onDropPage = (targetPageIdx) => {
-    if (!PageStore.moveChapterId) return;
+    if (!PageStore.movePageId) return;
 
     PageStore.setMoveTargetPageList(childrenList);
     PageStore.setMoveTargetPageIdx(targetPageIdx);
@@ -67,12 +80,9 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
           }
           onClick={onClickLnbPage.bind(null, item.id)}
           draggable='true'
-          onDragStart={() => {
-            PageStore.setMovePageId(item.id);
-            PageStore.setMovePageIdx(index);
-            PageStore.setMoveChapterId(chapterId);
-          }}
+          onDragStart={onDragStartPage.bind(null, item.id, index)}
           onDragOver={(e) => e.preventDefault()}
+          onDragEnter={onDragEnterPage.bind(null, index)}
           onDrop={onDropPage.bind(null, index)}
         >
           <PageMargin style={(item.id === PageStore.getRenamePageId()) && PageStore.isRename ? { background: "#ffffff" } : { background: "unset" }} />
@@ -93,7 +103,13 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
               />
             </PageTextCover>
           ) : (
-              <PageTextCover>
+              <PageTextCover className={
+                PageStore.dragEnterChapterIdx !== chapterIdx ? '' : (
+                  PageStore.dragEnterPageIdx === index ? 'borderTopLine' : (
+                    childrenList.length - 1 === index && PageStore.dragEnterPageIdx === childrenList.length ? 'borderBottomLine' : ''
+                  )
+                )}
+              >
                 <PageText>{item.text}</PageText>
                 <ContextMenu
                   type={"page"}
@@ -114,6 +130,7 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
       <NewPage
         className={"page-li"}
         onDragOver={(e) => e.preventDefault()}
+        onDragEnter={onDragEnterPage.bind(null, childrenList.length)}
         onDrop={onDropPage.bind(null, childrenList.length)}
       >
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>

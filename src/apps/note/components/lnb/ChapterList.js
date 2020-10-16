@@ -9,6 +9,7 @@ import {
   Chapter,
   ChapterTextInput,
 } from "../../styles/chpaterStyle";
+import PageStore from "../../store/pageStore";
 
 const ChapterList = ({ type }) => {
   const { NoteStore, ChapterStore, PageStore, TagStore } = useStore();
@@ -55,33 +56,59 @@ const ChapterList = ({ type }) => {
 
   const handleFocus = (e) => e.target.select();
 
+  const onDragEnterChapterContainer = (enterChapterIdx) => {
+    if (ChapterStore.moveChapterIdx === '') return;
+    
+    ChapterStore.setDragEnterChapterIdx(enterChapterIdx);
+  };
+
+  const onDragEnterChapter = (enterChapterIdx) => {
+    if (!PageStore.movePageId) return;
+
+    PageStore.setDragEnterPageIdx(0);
+    PageStore.setDragEnterChapterIdx(enterChapterIdx);
+  };
+
   const onDropPage = (chapterId, chapterIdx, childrenList) => {
+    if (!PageStore.movePageId) return; // 챕터를 드래그하고 있는 경우
+    
     PageStore.setMoveTargetPageList(childrenList);
     PageStore.setMoveTargetPageIdx(0);
     PageStore.movePage(chapterId, chapterIdx);
   };
 
   const onDropChapter = (chapterIdx) => {
+    if (ChapterStore.moveChapterIdx === '') return;
+
     ChapterStore.moveChapter(chapterIdx);
+  };
+
+  const removeDropLine = () => {
+    PageStore.setDragEnterPageIdx('');
+    PageStore.setDragEnterChapterIdx('');
+    ChapterStore.setDragEnterChapterIdx('');
   };
 
   return useObserver(() => (
     <>
       {ChapterStore.chapterList.length > 0 && ChapterStore.chapterList.map((item, index) => (
         <ChapterContainer
+          className={ChapterStore.dragEnterChapterIdx === index ? 'borderTopLine' : ''}
           id={item.id}
           key={item.id}
           itemType="chapter"
           onDragOver={(e) => e.preventDefault()}
-          onDrop={() => {
-            if (PageStore.movePageId) onDropPage(item.id, index, item.children);
-            else if (ChapterStore.moveChapterIdx !== '') onDropChapter(index);
-          }}
+          onDragEnter={onDragEnterChapterContainer.bind(null, index)}
+          onDrop={onDropChapter.bind(null, index)}
+          onDragEnd={removeDropLine}
         >
           <Chapter
             onClick={onClickChapterBtn.bind(null, item.id, item.children)}
             draggable='true'
             onDragStart={() => ChapterStore.setMoveChapterIdx(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDragEnter={onDragEnterChapter.bind(null, index)}
+            onDrop={onDropPage.bind(null, item.id, index, item.children)}
           >
             <ChapterColor color={item.color} chapterId={item.id} />
             {ChapterStore.getRenameChapterId() === item.id ? (

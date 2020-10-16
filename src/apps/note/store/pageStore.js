@@ -25,6 +25,8 @@ const PageStore = observable({
   moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
   moveTargetPageList: [], // 이동을 원하는 페이지가 target으로 하는 page의 list
   moveTargetPageIdx: '', // 이동을 원하는 페이지가 target으로 하는 index
+  dragEnterPageIdx: '',
+  dragEnterChapterIdx: '',
   modifiedDate: '',
   isNewPage:false,
   getPageId(e) {
@@ -94,6 +96,12 @@ const PageStore = observable({
   },
   setMoveTargetPageIdx(pageIdx) {
     this.moveTargetPageIdx = pageIdx;
+  },
+  setDragEnterPageIdx(pageIdx) {
+    this.dragEnterPageIdx = pageIdx;
+  },
+  setDragEnterChapterIdx(chapterIdx) {
+    this.dragEnterChapterIdx = chapterIdx;
   },
 
   clearMoveData() {

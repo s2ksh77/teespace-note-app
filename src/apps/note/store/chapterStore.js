@@ -35,6 +35,7 @@ const ChapterStore = observable({
   renameChapterText: '',
   allDeleted: false,
   moveChapterIdx: '',
+  dragEnterChapterIdx: '',
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -61,6 +62,9 @@ const ChapterStore = observable({
   },
   setMoveChapterIdx(chapterIdx) {
     this.moveChapterIdx = chapterIdx;
+  },
+  setDragEnterChapterIdx(chapterIdx) {
+    this.dragEnterChapterIdx = chapterIdx;
   },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
@@ -128,6 +132,8 @@ const ChapterStore = observable({
         if (index === moveTargetChapterIdx) newChapterList.push(this.chapterList[this.moveChapterIdx]);
         newChapterList.push(chapter);
       })
+
+      if (newChapterList.length !== this.chapterList.length) newChapterList.push(this.chapterList[this.moveChapterIdx]);
 
       this.chapterList = newChapterList;
     }

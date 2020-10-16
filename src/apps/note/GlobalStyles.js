@@ -49,6 +49,45 @@ export const GlobalStyle = createGlobalStyle`
   .tox-statusbar__resize-handle{
     display: none !important;
   }
+  .borderTopLine{
+    border-top: 0.13rem solid #FB3A3A;
+    &::before {
+      content: '';
+      position: absolute;
+      width: 0; 
+      height: 0; 
+      border-top: 0.375rem solid transparent;
+      border-bottom: 0.375rem solid transparent;
+      border-left: 0.5rem solid #FB3A3A;
+      transform: translate(-0.43rem, -0.45rem);
+    }
+  }
+  .borderBottomLine{
+    border-bottom: 0.13rem solid #FB3A3A;
+    &::before {
+      content: '';
+      position: absolute;
+      width: 0; 
+      height: 0; 
+      border-top: 0.375rem solid transparent;
+      border-bottom: 0.375rem solid transparent;
+      border-left: 0.5rem solid #FB3A3A;
+      transform: translate(-0.43rem, 2.38rem);
+    }
+  }
+  .tagBorderTopLine{
+    border-top: 0.13rem solid #FB3A3A;
+    &::before {
+      content: '';
+      position: absolute;
+      width: 0; 
+      height: 0; 
+      border-top: 0.375rem solid transparent;
+      border-bottom: 0.375rem solid transparent;
+      border-left: 0.5rem solid #FB3A3A;
+      transform: translate(-1.2rem, -1.405rem);
+    }
+  }
 `;
 
 export const LNB = styled.div`
