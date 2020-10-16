@@ -9,6 +9,7 @@ import pdf from '../../assets/drive_topoint.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
+import { toJS } from 'mobx';
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useStore();
@@ -78,9 +79,16 @@ const FileLayout = () => {
                 break;
         }
     }
-    const handleFileRemove = (fileId, filename) => {
-        EditorStore.setDeleteFileConfig(fileId, filename);
-        NoteStore.setModalInfo('fileDelete');
+    const handleFileRemove = (fileId, filename, index) => {
+        // temp id
+        if (fileId.length === 8) {
+            EditorStore.fileLayoutList.splice(index, 1);
+            if (EditorStore.fileLayoutList.length === 0) EditorStore.setIsFile(false);
+        }
+        else {
+            EditorStore.setDeleteFileConfig(fileId, filename);
+            NoteStore.setModalInfo('fileDelete');
+        }
     }
 
     useEffect(() => {
@@ -93,7 +101,7 @@ const FileLayout = () => {
         <>
             <FileBodyLayout >
                 {EditorStore.fileLayoutList.map((item, index) => (
-                    <FileBody id={item.file_id}
+                    <FileBody id={item.file_id ? item.file_id : item.user_context_2}
                         key={index}
                         onClick={handleFileBodyClick.bind(null, index)}
                         className={index === EditorStore.selectFileIdx ? 'selected' : ''}
@@ -102,7 +110,7 @@ const FileLayout = () => {
                     >
                         <FileContent>
                             <FileDownloadIcon>
-                                <FileDownloadBtn src={downloadBtn} onClick={handleFileDown.bind(null, item.file_id)} />
+                                <FileDownloadBtn src={downloadBtn} onClick={handleFileDown.bind(null, item.file_id ? item.file_id : null)} />
                             </FileDownloadIcon>
                             <FileExtensionIcon>
                                 <FileExtensionBtn src={fileExtension(item.file_extension)} />
@@ -112,11 +120,11 @@ const FileLayout = () => {
                                     <FileName>{item.file_name + '.' + item.file_extension}</FileName>
                                 </FileDataName>
                                 <FileDataTime>
-                                    <FileTime>{item.file_updated_at}</FileTime>
+                                    <FileTime>{(item.file_updated_at ? item.file_updated_at : null) + ',' + (item.file_size ? item.file_size : null)}</FileTime>
                                 </FileDataTime>
                             </FileData>
                             <FileClose style={PageStore.isReadMode() ? { display: 'none' } : { display: 'flex' }}>
-                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id, item.file_name)} />
+                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, item.file_name, index)} />
                             </FileClose>
                         </FileContent>
                     </FileBody>

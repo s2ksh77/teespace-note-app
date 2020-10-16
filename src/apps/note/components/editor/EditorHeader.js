@@ -15,20 +15,21 @@ import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
 import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
+import EditorStore from '../../store/editorStore';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const EditorHeader = () => {
   const { NoteStore, PageStore } = useStore();
-  
+
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
     if (!PageStore.isEdit) {
       NoteStore.setTargetLayout('LNB');
     } else {
       const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
-      if (undoBtn?.getAttribute('aria-disabled') === "true") {PageStore.handleNoneEdit();return;}    
+      if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
       NoteStore.setModalInfo('editCancel');
-    }    
+    }
   }
 
   const handleClickBtn = e => {
@@ -39,6 +40,7 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
+      if (EditorStore.uploadFileList) EditorStore.handleFileSync();
       PageStore.handleSave();
     }
   };

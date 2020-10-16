@@ -25,6 +25,7 @@ const EditorContainer = () => {
 
   const setNoteEditor = instance => {
     EditorStore.setEditor(instance);
+    console.log(instance)
     // 첫 init 때 onChange가 불리지 않아서 setting...
     PageStore.setContent(PageStore.currentPageData.note_content);
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
@@ -34,6 +35,7 @@ const EditorContainer = () => {
     let fileName = blobInfo.blob().name;
     let dotIndex = fileName.lastIndexOf('.');
     let fileExtension;
+    let fileSize = blobInfo.blob().size;
     let isImage;
     if (dotIndex !== -1) {
       fileExtension = fileName.substring(dotIndex + 1, fileName.length);
@@ -44,7 +46,7 @@ const EditorContainer = () => {
       PageStore.currentPageId,
       fileName,
       fileExtension,
-      blobInfo.blob().size,
+      fileSize
     );
     isImage = EditorStore.uploadFileIsImage(fileExtension);
 
@@ -78,7 +80,19 @@ const EditorContainer = () => {
     const fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob())
-    EditorStore.uploadFile(fd, success, _failure);
+    if (isImage) {
+      const currentImg = EditorStore.getImgElement();
+      const tempArr = currentImg.getAttribute('src').split('/');
+      const tempId = tempArr[tempArr.length - 1];
+      EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd);
+      currentImg.setAttribute('temp-id', tempId)
+    } else {
+      const tempId = Math.random().toString(36).substr(2, 8);
+      EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd);
+      EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
+      document.getElementById(tempId).setAttribute('temp-id', tempId)
+    }
+    // EditorStore.uploadFile(fd, success, _failure);
   };
 
   const handleFileBlob = (type) => {
@@ -96,12 +110,14 @@ const EditorContainer = () => {
         var id = 'blobid' + (new Date()).getTime();
         var blobCache = EditorStore.tinymce.editorUpload.blobCache;
         var base64 = reader.result.split(',')[1];
+        var baseUri = reader.result;
         var blobInfo = blobCache.create(id, file, base64);
+        console.log(blobInfo)
         if (isImage) {
           var img = new Image();
           img.setAttribute('src', reader.result);
           img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src=""/>', '');
+          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src="' + img.src + '"/>');
         }
         handleFileHandler(blobInfo, { title: file.name });
       };
@@ -251,7 +267,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap checklist hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | link | hr table insertdatetime | insertImage insertfile"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | link | hr table insertdatetime | insertImage insertfile media"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />

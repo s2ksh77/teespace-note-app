@@ -14,6 +14,7 @@ const EditorStore = observable({
   selectFileElement: '',
   deleteFileId: '',
   deleteFileName: '',
+  uploadFileList: [],
   fileList: [],
   fileLayoutList: [],
   fileName: "",
@@ -133,9 +134,13 @@ const EditorStore = observable({
     if (this.fileList) {
       checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension))
     }
-    if (checkFile === undefined) return this.setIsFile(false);
-    else if (checkFile !== undefined && checkFile.length === 0) return this.setIsFile(false)
-    else {
+    if (checkFile === undefined) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else if (checkFile !== undefined && checkFile.length === 0) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else {
       this.setIsFile(true);
       this.setFileArray(checkFile);
     };
@@ -156,8 +161,81 @@ const EditorStore = observable({
   setDeleteFileConfig(id, name) {
     this.deleteFileId = id;
     this.deleteFileName = name;
+  },
+  setUploadFileMeta(type, tempId, config, file) {
+    const { fileName, fileExtension, fileSize } = config;
+    console.log(config);
+    const uploadMeta = {
+      "dto":
+      {
+        "workspace_id": NoteRepository.WS_ID,
+        "channel_id": NoteRepository.chId,
+        "storageFileInfo": {
+          "user_id": NoteRepository.USER_ID,
+          "file_last_update_user_id": NoteRepository.USER_ID,
+          "file_id": '',
+          "file_name": fileName,
+          "file_extension": fileExtension,
+          "file_created_at": '',
+          "file_updated_at": '',
+          "file_size": fileSize,
+          "user_context_1": PageStore.currentPageId,
+          "user_context_2": '',
+          "user_context_3": ''
+        }
+      }
+    }
+    const uploadArr = {
+      KEY: tempId,
+      TYPE: type,
+      uploadMeta,
+      file
+    }
+    this.setUploadFileList(uploadArr);
+  },
+  setUploadFileList(fileMeta) {
+    this.uploadFileList.push(fileMeta);
+    console.log(toJS(this.uploadFileList))
+  },
+  getUploadFileList() {
+    return this.uploadFileList;
+  },
+  getTempTimeFormat() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = (1 + date.getMonth());
+    month = month >= 10 ? month : '0' + month;
+    let day = date.getDate();
+    day = day >= 10 ? day : '0' + day;
+    let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    return year + '-' + month + '-' + day + ' ' + time;
+  },
+  setTempFileMeta(config) {
+    const { tempId, fileName, fileExtension, fileSize } = config;
+    const tempMeta = {
+      "user_id": NoteRepository.USER_ID,
+      "file_last_update_user_id": NoteRepository.USER_ID,
+      "file_id": '',
+      "file_name": fileName,
+      "file_extension": fileExtension,
+      "file_created_at": '',
+      "file_updated_at": this.getTempTimeFormat(),
+      "file_size": fileSize,
+      "user_context_1": '',
+      "user_context_2": tempId,
+      "user_context_3": ''
+    }
+    this.setTempFileList(tempMeta);
+  },
+  setTempFileList(target) {
+    this.fileLayoutList.push(target);
+    if (!this.isFile) this.setIsFile(true);
+  },
+  handleFileSync() {
+    const imgTarget = document.getElementById('tinymce').querySelectorAll('img[temp-id]')
+    const fileTarget = document.querySelectorAll('div[temp-id]');
+    console.log(imgTarget);
   }
-
 });
 
 export default EditorStore;
