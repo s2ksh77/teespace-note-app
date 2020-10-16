@@ -18,6 +18,7 @@ const LNBSearchResult = () => {
 		ChapterStore.setIsSearching(false);
 		ChapterStore.setInputValue("");
 		NoteStore.setShowPage(true);
+    document.getElementById(chapterId).scrollIntoView(true);
 	}
 
 	const onClickPageBtn = async (chapterId, pageId, e) => {
@@ -29,7 +30,7 @@ const LNBSearchResult = () => {
 		// ChapterStore.setInputValue("");
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
-	}
+  }
 	
 	return useObserver(()=>(
     <>
