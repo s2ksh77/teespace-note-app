@@ -16,7 +16,7 @@ import {Tooltip} from 'antd';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useStore();
-  const [focusedTag, setFocusedTag] = useState(null);
+  const focusedTag = useRef(null);
   const tagList = useRef(null);
 
   const handleCloseBtn = (targetId, targetText) => {
@@ -132,43 +132,44 @@ const TagListContainer = () => {
   }
 
   const handleClickOutside = (e) => {
-    if (e.target.dataset.tag !== "noteTagItem") {
-      setFocusedTag(null);
+    if (!e.target.closest(".ant-tag")) {
+      const prev = focusedTag.current;
+      changeFocusedTag(prev, null);
     }
   }
 
   const handleClickTag = (idx,e) => {
-    if (focusedTag === null) {
-      document.addEventListener("click", handleClickOutside);
-    }
-    setFocusedTag(idx);
-    changeFocusedTag(idx);
+    const prev = focusedTag.current;
+    changeFocusedTag(prev, idx);
   }
 
-  const changeFocusedTag = (idx) => {
-    let target = tagList.current.children[idx]
-    target.focus();
-    target.scrollIntoView(false);
+  // idx : null 가능
+  const changeFocusedTag = (prev,idx) => {
+    if (prev === null && idx === null) return;
+    tagList.current.children[prev]?.classList.remove('noteFocusedTag');
+    focusedTag.current = idx;
+    if (idx === null) return;
+    const target = tagList.current.children[idx];
+    if (target) {
+      target.classList.add('noteFocusedTag');
+      target.focus();
+      target.scrollIntoView(false);
+    }    
   }
 
   const handleKeyDownTag = (e) => {
+    const prev = focusedTag.current;
     switch (e.keyCode) {
       // left
       case 37:
-        if (focusedTag > 0) {
-          setFocusedTag((preIdx) => {
-            changeFocusedTag(preIdx-1);   
-            return preIdx-1
-          });                 
+        if (focusedTag.current > 0) {
+          changeFocusedTag(prev, prev-1);
         }
         break;
       // right
       case 39:
-        if (focusedTag < TagStore.notetagList.length-1) {
-          setFocusedTag((preIdx) => {
-            changeFocusedTag(preIdx+1);
-            return preIdx+1
-          });
+        if (focusedTag.current < TagStore.notetagList.length-1) {
+          changeFocusedTag(prev,prev+1);
         }
         break;
       default:
@@ -176,7 +177,8 @@ const TagListContainer = () => {
     }
   }
 
-  useEffect(() => {      
+  useEffect(() => {  
+    document.addEventListener("click", handleClickOutside);    
     return () => {
       document.removeEventListener("click", handleClickOutside);
     }
@@ -216,7 +218,6 @@ const TagListContainer = () => {
                 <Tag
                   key={index}
                   data-idx={index}
-                  data-tag="noteTagItem"
                   id={item.tag_id}
                   closable={
                     PageStore.isEdit === null || PageStore.isEdit === ''
@@ -224,7 +225,6 @@ const TagListContainer = () => {
                       : true
                   }
                   tabIndex="0"
-                  style={focusedTag===index ? {backgroundColor:"#1EA8DF"} : {}}
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
                   onClick={handleClickTag.bind(null, index)}
                   onKeyDown={handleKeyDownTag.bind(null)}

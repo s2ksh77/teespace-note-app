@@ -1,6 +1,9 @@
 import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
+  .noteFocusedTag {
+    background-color:#1EA8DF !important;
+  }
   .readModeIcon{
      margin-left: 1.19rem;
   }
