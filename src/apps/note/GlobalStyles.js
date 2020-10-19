@@ -96,6 +96,27 @@ export const GlobalStyle = createGlobalStyle`
       transform: translate(-0.43rem, 2.38rem);
     }
   }
+  .draggedChapter{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    width: auto;
+    height: auto;
+    border: 0.0625rem solid #dadada;
+    border-radius: 0.5rem;
+    padding: 1.1rem;
+    padding-left: 1.7rem;
+    font-size: 0.81rem;
+    background-color: rgba(255,255,255,0.50);
+  }
+  .draggedPage{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    padding-left: 1.25rem;
+    font-size: 0.81rem;
+    background-color: rgba(30,168,223,0.20);
+  }
   .tagBorderTopLine{
     border-top: 0.13rem solid #FB3A3A;
     &::before {

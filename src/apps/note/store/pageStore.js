@@ -20,6 +20,7 @@ const PageStore = observable({
   isRename: false,
   renamePageId: '',
   renamePageText: '',
+  isMovingPage: false,
   movePageId: '', // 이동을 원하는 page의 id
   movePageIdx: '', // 이동을 원하는 page의 index
   moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
@@ -81,6 +82,9 @@ const PageStore = observable({
   },
   setRenamePageText(pageText) {
     this.renamePageText = pageText;
+  },
+  setIsMovingPage(isMoving) {
+    this.isMovingPage = isMoving;
   },
   setMovePageId(pageId) {
     this.movePageId = pageId;

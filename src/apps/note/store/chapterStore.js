@@ -34,6 +34,7 @@ const ChapterStore = observable({
   renameChapterId: '',
   renameChapterText: '',
   allDeleted: false,
+  isMovingChapter: false,
   moveChapterIdx: '',
   dragEnterChapterIdx: '',
   getCurrentChapterId() {
@@ -59,6 +60,9 @@ const ChapterStore = observable({
   },
   setAllDeleted(allDeleted) {
     this.allDeleted = allDeleted;
+  },
+  setIsMovingChapter(isMoving) {
+    this.isMovingChapter = isMoving;
   },
   setMoveChapterIdx(chapterIdx) {
     this.moveChapterIdx = chapterIdx;

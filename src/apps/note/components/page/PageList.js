@@ -49,21 +49,22 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
   const handleFocus = (e) => e.target.select();
 
   const onDragStartPage = (pageId, pageIdx) => {
+    PageStore.setIsMovingPage(true);
     PageStore.setMovePageId(pageId);
     PageStore.setMovePageIdx(pageIdx);
     PageStore.setMoveChapterId(chapterId);
   };
 
   const onDragEnterPage = (enterPageIdx) => {
-    if (!PageStore.movePageId) return; // 챕터를 드래그하고 있는 경우
+    if (!PageStore.isMovingPage) return; // 챕터를 드래그하고 있는 경우
 
     PageStore.setDragEnterPageIdx(enterPageIdx);
     PageStore.setDragEnterChapterIdx(chapterIdx);
   };
 
   const onDropPage = (targetPageIdx) => {
-    if (!PageStore.movePageId) return;
-
+    if (!PageStore.isMovingPage) return;
+    
     PageStore.setMoveTargetPageList(childrenList);
     PageStore.setMoveTargetPageIdx(targetPageIdx);
     PageStore.movePage(chapterId, chapterIdx);
