@@ -62,11 +62,11 @@ export const EditorTitle = styled.input`
 `;
 
 export const EditorHeaderContainer2 = styled.div`
-  display: flex;
+  display: ${(props) => props.show ? "flex" : "none"};
   flex: auto;
   position: relative;
   align-items: center;
-  width: 20%;
+  width: 20%;  
 `;
 
 export const ModifiedUser = styled.span`

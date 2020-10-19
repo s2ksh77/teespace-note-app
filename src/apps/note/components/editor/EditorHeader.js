@@ -74,7 +74,7 @@ const EditorHeader = () => {
             autoComplete="off"
           />
         </EditorHeaderContainer1>
-        <EditorHeaderContainer2>
+        <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
           {PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />}
           <ModifiedUser>{PageStore.currentPageData.user_name}</ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
