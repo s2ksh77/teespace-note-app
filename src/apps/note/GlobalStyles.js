@@ -32,6 +32,7 @@ export const GlobalStyle = createGlobalStyle`
     float: left;
     cursor: pointer;
     user-select: none;
+    outline: none !important;
     background-color: rgba(30,168,223,0.20);
     > .ant-tag-close-icon {
       margin-left:auto !important;
