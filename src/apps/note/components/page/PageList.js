@@ -118,7 +118,7 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
                   pageTitle={item.text}
                   nextSelectablePageId={
                     childrenList.length > 1 ? (
-                      childrenList[0]?.id === item.id ? childrenList[1]?.id : childrenList[0]?.id
+                      childrenList[0].id === item.id ? childrenList[1].id : childrenList[0].id
                     ) : ("")
                   }
                 />
