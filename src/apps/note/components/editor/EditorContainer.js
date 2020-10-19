@@ -11,12 +11,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
-import NoteRepository from '../../store/noteRepository';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 
 const EditorContainer = () => {
-  const { NoteStore, PageStore, EditorStore } = useStore();
+  const { PageStore, EditorStore } = useStore();
   const editorWrapperRef = useRef(null);
 
   const getEditorContent = content => {
@@ -25,7 +24,6 @@ const EditorContainer = () => {
 
   const setNoteEditor = instance => {
     EditorStore.setEditor(instance);
-    console.log(instance)
     // 첫 init 때 onChange가 불리지 않아서 setting...
     PageStore.setContent(PageStore.currentPageData.note_content);
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
@@ -41,58 +39,27 @@ const EditorContainer = () => {
       fileExtension = fileName.substring(dotIndex + 1, fileName.length);
       fileName = fileName.substring(0, dotIndex);
     }
-    EditorStore.setUploadDTO(
-      NoteStore.getChannelId(),
-      PageStore.currentPageId,
-      fileName,
-      fileExtension,
-      fileSize
-    );
+
     isImage = EditorStore.uploadFileIsImage(fileExtension);
 
-    success = data => {
-      if (data.resultMsg === 'Success') {
-        const returnFileId = data.storageFileInfoList[0].file_id;
-        if (isImage) {
-          const targetSrc =
-            NoteRepository.FILE_URL +
-            'Storage/StorageFile?action=Download' +
-            '&fileID=' +
-            returnFileId +
-            '&workspaceID=' +
-            NoteRepository.WS_ID +
-            '&channelID=' +
-            NoteStore.getChannelId() +
-            '&userID=' +
-            NoteRepository.USER_ID;
-          const currentImg = EditorStore.getImgElement();
-          currentImg.setAttribute('id', returnFileId);
-          currentImg.setAttribute('src', targetSrc);
-        } else {
-          PageStore.getNoteInfoList(PageStore.currentPageId);
-        }
-
-      }
-    };
-    const _failure = e => {
-      console.warn('error ---> ', e);
-    };
     const fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob())
+
     if (isImage) {
       const currentImg = EditorStore.getImgElement();
       const tempArr = currentImg.getAttribute('src').split('/');
       const tempId = tempArr[tempArr.length - 1];
-      EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd);
+      EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
       currentImg.setAttribute('temp-id', tempId)
     } else {
       const tempId = Math.random().toString(36).substr(2, 8);
-      EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd);
       EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
-      document.getElementById(tempId).setAttribute('temp-id', tempId)
+      const currentFile = document.getElementById(tempId);
+      // 실제 업로드 data set
+      EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
+      currentFile.setAttribute('temp-id', tempId);
     }
-    // EditorStore.uploadFile(fd, success, _failure);
   };
 
   const handleFileBlob = (type) => {

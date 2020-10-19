@@ -15,31 +15,12 @@ const EditorStore = observable({
   deleteFileId: '',
   deleteFileName: '',
   uploadFileList: [],
+  fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
-  uploadDTO: {
-    "dto":
-    {
-      "workspace_id": NoteRepository.WS_ID,
-      "channel_id": '',
-      "storageFileInfo": {
-        "user_id": NoteRepository.USER_ID,
-        "file_last_update_user_id": NoteRepository.USER_ID,
-        "file_id": '',
-        "file_name": '',
-        "file_extension": '',
-        "file_created_at": '',
-        "file_updated_at": '',
-        "file_size": '',
-        "user_context_1": '',
-        "user_context_2": '',
-        "user_context_3": ''
-      }
-    }
-  },
   setContents(content) {
     this.contents = content;
   },
@@ -58,27 +39,17 @@ const EditorStore = observable({
   getImgElement() {
     return this.imgElement;
   },
-  setUploadDTO(chId, pageId, fileName, fileExtenstion, fileSize) {
-    this.uploadDTO.dto.channel_id = chId;
-    this.uploadDTO.dto.storageFileInfo.user_context_1 = pageId;
-    this.uploadDTO.dto.storageFileInfo.file_name = fileName;
-    this.uploadDTO.dto.storageFileInfo.file_extension = fileExtenstion;
-    this.uploadDTO.dto.storageFileInfo.file_size = fileSize;
-  },
-  getUploadDTO() {
-    return this.uploadDTO;
-  },
-  uploadFile: async function (file, successCallback, errorCallback) {
-    await API.Post(NoteRepository.URL + "/noteFile", JSON.stringify(this.uploadDTO), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
+  uploadFile: async function (dto, file, successCallback, errorCallback, index) {
+    await API.Post(NoteRepository.URL + "/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
       const { data: { dto } } = data;
 
       if (dto.file_id) {
         await API.Post(`http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=` + dto.file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
           const { data: { dto } } = data
           if (dto.resultMsg === "Success") {
-            if (typeof successCallback === "function") successCallback(dto);
+            if (typeof successCallback === "function") successCallback(dto, index);
           } else {
-            if (typeof errorCallback === "function") errorCallback(dto)
+            if (typeof errorCallback === "function") errorCallback(dto, index)
           }
         }).catch(error => {
           console.log(error)
@@ -162,9 +133,8 @@ const EditorStore = observable({
     this.deleteFileId = id;
     this.deleteFileName = name;
   },
-  setUploadFileMeta(type, tempId, config, file) {
+  setUploadFileMeta(type, tempId, config, file, element) {
     const { fileName, fileExtension, fileSize } = config;
-    console.log(config);
     const uploadMeta = {
       "dto":
       {
@@ -189,17 +159,19 @@ const EditorStore = observable({
       KEY: tempId,
       TYPE: type,
       uploadMeta,
-      file
+      file,
+      element
     }
-    this.setUploadFileList(uploadArr);
+    this.setFileMetaList(uploadArr);
   },
-  setUploadFileList(fileMeta) {
-    this.uploadFileList.push(fileMeta);
-    console.log(toJS(this.uploadFileList))
+  setFileMetaList(fileMeta) {
+    this.fileMetaList.push(fileMeta);
+    console.log(toJS(this.fileMetaList))
   },
-  getUploadFileList() {
-    return this.uploadFileList;
+  getFileMetaList() {
+    return this.fileMetaList;
   },
+  // 하위 File Layout 에 Temp로 그리기 위한 용도
   getTempTimeFormat() {
     let date = new Date();
     let year = date.getFullYear();
@@ -231,10 +203,36 @@ const EditorStore = observable({
     this.fileLayoutList.push(target);
     if (!this.isFile) this.setIsFile(true);
   },
-  handleFileSync() {
-    const imgTarget = document.getElementById('tinymce').querySelectorAll('img[temp-id]')
+  async handleFileSync() {
+    const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div[temp-id]');
-    console.log(imgTarget);
+    let uploadArr = [];
+    for (let i = 0; i < imgTarget.length; i++) this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0]);
+    for (let k = 0; k < fileTarget.length; k++) this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0]);
+
+    const _success = (data, index) => {
+      if (data.resultMsg === 'Success') {
+        this.uploadFileList[index].element.setAttribute('id', data.storageFileInfoList[0].file_id)
+        this.uploadFileList[index].element.removeAttribute('temp-id');
+      }
+    }
+    const _failure = e => {
+      console.warn('error ---> ', e);
+    };
+    uploadArr = toJS(this.uploadFileList).map((item, index) => {
+      return this.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
+    })
+    try {
+      await Promise.all(uploadArr).then(() => {
+        this.uploadFileList = [];
+        this.fileMetaList = [];
+      })
+    } catch (e) {
+
+    } finally {
+
+    }
+
   }
 });
 

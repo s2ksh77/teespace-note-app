@@ -32,7 +32,7 @@ const EditorHeader = () => {
     }
   }
 
-  const handleClickBtn = e => {
+  const handleClickBtn = async e => {
     const {
       target: { innerText },
     } = e;
@@ -40,7 +40,7 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
-      if (EditorStore.uploadFileList) EditorStore.handleFileSync();
+      if (EditorStore.uploadFileList) await EditorStore.handleFileSync();
       PageStore.handleSave();
     }
   };
