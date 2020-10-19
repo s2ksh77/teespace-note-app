@@ -77,6 +77,7 @@ export const ModifiedUser = styled.span`
   border-width: 0px;
   border-style: solid;
   padding: 0 0.38rem 0 0 !important;
+  margin-left:auto;
 `;
 
 export const ModifiedTime = styled.span`
