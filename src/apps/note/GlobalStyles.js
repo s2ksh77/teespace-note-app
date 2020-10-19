@@ -13,6 +13,23 @@ export const GlobalStyle = createGlobalStyle`
   .selectedMenu {
     color: #008CC8;
   } 
+  .ant-collapse {
+    border:0;
+  }
+  .ant-collapse-header {
+    height: 1.38rem;
+    display: flex;
+    padding: 0 0.75rem !important;
+    border-radius: 21px !important;
+    background-color: #EFEFF2;
+    border: 0 !important;
+  }
+  .ant-collapse-content {
+    border:0 !important;
+  }
+  .ant-collapse-item {
+    border:0 !important;
+  }
   .ant-tag{
     display: flex;
     align-items: center;
