@@ -203,6 +203,8 @@ const PageStore = observable({
           newPageList.push(this.moveTargetPageList[this.movePageIdx]);
 
         ChapterStore.changePageList(moveTargetChapterIdx, newPageList);
+        this.setCurrentPageId(this.movePageId);
+        ChapterStore.setCurrentChapterId(moveTargetChapterId);
       }
 
       this.clearMoveData();
@@ -211,8 +213,10 @@ const PageStore = observable({
       await NoteRepository.movePage(this.movePageId, moveTargetChapterId).then(
         (response) => {
           if (response.status === 200) {
-            this.clearMoveData();
             ChapterStore.getChapterList();
+            this.setCurrentPageId(this.movePageId);
+            ChapterStore.setCurrentChapterId(moveTargetChapterId);
+            this.clearMoveData();
           }
         }
       )

@@ -77,7 +77,14 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
           key={item.id}
           id={item.id}
           className={
-            "page-li" + ((NoteStore.showPage && (item.id === PageStore.currentPageId)) ? " selected" : "")
+            "page-li" 
+            + ((NoteStore.showPage && (
+                PageStore.isMovingPage
+                ? item.id === PageStore.movePageId
+                : item.id === PageStore.currentPageId
+              ))
+              ? " selected" 
+              : "")
           }
           onClick={onClickLnbPage.bind(null, item.id)}
           draggable='true'

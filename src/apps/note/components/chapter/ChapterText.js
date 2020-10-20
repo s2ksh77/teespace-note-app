@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChapterText = ({ text, chapterId, color }) => {
-  const { ChapterStore } = useStore();
+  const { ChapterStore, PageStore } = useStore();
 
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
@@ -32,7 +32,13 @@ const ChapterText = ({ text, chapterId, color }) => {
   };
   return useObserver(() => (
     <>
-      <ChapterTitle className={chapterId === ChapterStore.currentChapterId ? "selectedMenu" : ""}>
+      <ChapterTitle 
+        className={
+          !PageStore.isMovingPage && chapterId === ChapterStore.currentChapterId 
+          ? "selectedMenu" 
+          : ""
+        }
+      >
         <ChapterTextSpan>{text}</ChapterTextSpan>
         <ContextMenu
           type={"chapter"}
