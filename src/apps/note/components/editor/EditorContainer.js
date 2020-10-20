@@ -78,13 +78,13 @@ const EditorContainer = () => {
         var blobCache = EditorStore.tinymce.editorUpload.blobCache;
         var base64 = reader.result.split(',')[1];
         var baseUri = reader.result;
-        var blobInfo = blobCache.create(id, file, base64);
-        console.log(blobInfo)
+        var blobInfo = blobCache.create(id, file, base64, file.name);
+        blobCache.add(blobInfo);
         if (isImage) {
           var img = new Image();
           img.setAttribute('src', reader.result);
           img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img data-name="' + file.name + '" src="' + img.src + '"/>');
+          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '"/>');
         }
         handleFileHandler(blobInfo, { title: file.name });
       };
@@ -224,12 +224,12 @@ const EditorContainer = () => {
             image_uploadtab: true,
             file_picker_types: 'file image media',
             automatic_uploads: true,
-            images_upload_handler: handleFileHandler,
             file_picker_callback: handleFileBlob,
             default_link_target: '_blank',
             link_assume_external_targets: 'http',
             link_context_toolbar: true,
-            extended_valid_elements: 'a[href|target=_blank]'
+            extended_valid_elements: 'a[href|target=_blank]',
+            quickbars_insert_toolbar: 'insertImage table'
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
