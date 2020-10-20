@@ -65,6 +65,7 @@ export const EditorHeaderContainer2 = styled.div`
   display: ${(props) => props.show ? "flex" : "none"};
   flex: auto;
   position: relative;
+  justify-content:flex-end;
   align-items: center;
   width: 20%;  
 `;
@@ -77,7 +78,6 @@ export const ModifiedUser = styled.span`
   border-width: 0px;
   border-style: solid;
   padding: 0 0.38rem 0 0 !important;
-  margin-left:auto;
 `;
 
 export const ModifiedTime = styled.span`
