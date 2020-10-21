@@ -214,15 +214,18 @@ const EditorStore = observable({
   async handleFileUpload() {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div[temp-id]');
+    const imgArray = [...imgTarget];
+    const fileArray = [...fileTarget];
     let uploadArr = [];
-    for (let i = 0; i < imgTarget.length; i++) {
-      if (this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0] !== undefined)
-        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0]);
-    }
-    for (let k = 0; k < fileTarget.length; k++) {
-      if (this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0] !== undefined)
-        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0]);
-    }
+
+    imgArray.forEach(img => {
+      if (this.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0] !== undefined)
+        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0]);
+    })
+    fileArray.forEach(file => {
+      if (this.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0] !== undefined)
+        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0]);
+    })
 
     const _success = (data, index) => {
       if (data.resultMsg === 'Success') {
@@ -262,9 +265,13 @@ const EditorStore = observable({
   async handleFileDelete() {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div #fileLayout [id]');
+    const imgArray = [...imgTarget];
+    const fileArray = [...fileTarget];
+
     let deleteArr = [];
-    for (let i = 0; i < fileTarget.length; i++) this.tempFileList.push(fileTarget[i].getAttribute('id'));
-    for (let j = 0; j < imgTarget.length; j++) this.tempFileList.push(imgTarget[j].getAttribute('id'));
+
+    imgArray.forEach(img => this.tempFileList.push(img.getAttribute('id')));
+    fileArray.forEach(file => this.tempFileList.push(file.getAttribute('id')));
 
     if (this.fileList) this.deleteFileList = this.fileList.filter(file => !this.tempFileList.includes(file.file_id))
 
