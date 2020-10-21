@@ -14,7 +14,10 @@ const EditorStore = observable({
   selectFileElement: '',
   deleteFileId: '',
   deleteFileName: '',
+  deleteFileIndex: '',
   uploadFileList: [],
+  deleteFileList: [],
+  tempFileList: [],
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
@@ -69,12 +72,12 @@ const EditorStore = observable({
     a.click();
     document.body.removeChild(a);
   },
-  async deleteFile() {
-    await NoteRepository.deleteFile(this.deleteFileId).then(response => {
+  tempDeleteFile() {
+    this.fileLayoutList.splice(this.deleteFileIndex, 1);
+  },
+  async deleteFile(deleteId) {
+    await NoteRepository.deleteFile(deleteId).then(response => {
       const { data: { dto } } = response;
-      if (dto.resultMsg === 'Success') {
-        PageStore.getNoteInfoList(PageStore.currentPageId);
-      }
     })
   },
   async deleteAllFile() {
@@ -103,7 +106,7 @@ const EditorStore = observable({
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
     let checkFile
     if (this.fileList) {
-      checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension))
+      checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension.toLowerCase()))
     }
     if (checkFile === undefined) {
       this.setIsFile(false);
@@ -129,9 +132,10 @@ const EditorStore = observable({
   setFileElement(element) {
     this.selectFileElement = element
   },
-  setDeleteFileConfig(id, name) {
+  setDeleteFileConfig(id, name, index) {
     this.deleteFileId = id;
     this.deleteFileName = name;
+    this.deleteFileIndex = index;
   },
   setUploadFileMeta(type, tempId, config, file, element) {
     const { fileName, fileExtension, fileSize } = config;
@@ -204,35 +208,82 @@ const EditorStore = observable({
     if (!this.isFile) this.setIsFile(true);
   },
   async handleFileSync() {
+    await this.handleFileUpload();
+    await this.handleFileDelete();
+  },
+  async handleFileUpload() {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div[temp-id]');
     let uploadArr = [];
-    for (let i = 0; i < imgTarget.length; i++) this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0]);
-    for (let k = 0; k < fileTarget.length; k++) this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0]);
+    for (let i = 0; i < imgTarget.length; i++) {
+      if (this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0] !== undefined)
+        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === imgTarget[i].getAttribute('temp-id'))[0]);
+    }
+    for (let k = 0; k < fileTarget.length; k++) {
+      if (this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0] !== undefined)
+        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === fileTarget[k].getAttribute('temp-id'))[0]);
+    }
 
     const _success = (data, index) => {
       if (data.resultMsg === 'Success') {
-        this.uploadFileList[index].element.setAttribute('id', data.storageFileInfoList[0].file_id)
+        this.uploadFileList[index].element.setAttribute('id', data.storageFileInfoList[0].file_id);
         this.uploadFileList[index].element.removeAttribute('temp-id');
+        if (this.uploadFileList[index].element) {
+          if (this.uploadFileList[index].element.getAttribute('src')) {
+            const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+            this.uploadFileList[index].element.setAttribute('src', targetSRC);
+          }
+        }
       }
     }
     const _failure = e => {
       console.warn('error ---> ', e);
     };
-    uploadArr = toJS(this.uploadFileList).map((item, index) => {
-      return this.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
-    })
-    try {
-      await Promise.all(uploadArr).then(() => {
-        this.uploadFileList = [];
-        this.fileMetaList = [];
-      })
-    } catch (e) {
+    if (this.uploadFileList) {
+      if (this.uploadFileList[0] !== undefined) {
+        uploadArr = toJS(this.uploadFileList).map((item, index) => {
+          return this.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
+        })
 
-    } finally {
+        try {
+          await Promise.all(uploadArr).then(() => {
+            this.uploadFileList = [];
+            this.fileMetaList = [];
+            PageStore.setContent(EditorStore.tinymce.getContent());
+          })
+        } catch (e) {
 
+        } finally {
+
+        }
+      }
     }
+  },
+  async handleFileDelete() {
+    const imgTarget = await EditorStore.tinymce.dom.doc.images;
+    const fileTarget = document.querySelectorAll('div #fileLayout [id]');
+    let deleteArr = [];
+    for (let i = 0; i < fileTarget.length; i++) this.tempFileList.push(fileTarget[i].getAttribute('id'));
+    for (let j = 0; j < imgTarget.length; j++) this.tempFileList.push(imgTarget[j].getAttribute('id'));
 
+    if (this.fileList) this.deleteFileList = this.fileList.filter(file => !this.tempFileList.includes(file.file_id))
+
+    if (this.deleteFileList) {
+      deleteArr = toJS(this.deleteFileList).map(item => {
+        return this.deleteFile(item.file_id)
+      })
+      try {
+        await Promise.all(deleteArr).then(() => {
+          this.deleteFileList = [];
+          this.tempFileList = [];
+          PageStore.setContent(EditorStore.tinymce.getContent());
+        })
+      } catch (e) {
+
+      } finally {
+
+      }
+    }
   }
 });
 

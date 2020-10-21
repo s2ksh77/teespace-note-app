@@ -43,7 +43,7 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'fileDelete':
-        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteFile(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
     }

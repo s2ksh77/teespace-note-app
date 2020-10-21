@@ -51,7 +51,7 @@ const EditorContainer = () => {
       const tempArr = currentImg.getAttribute('src').split('/');
       const tempId = tempArr[tempArr.length - 1];
       EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
-      currentImg.setAttribute('temp-id', tempId)
+      currentImg.setAttribute('temp-id', tempId);
     } else {
       const tempId = Math.random().toString(36).substr(2, 8);
       EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })

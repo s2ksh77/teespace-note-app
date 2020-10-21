@@ -15,11 +15,10 @@ import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
 import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
-import EditorStore from '../../store/editorStore';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const EditorHeader = () => {
-  const { NoteStore, PageStore } = useStore();
+  const { NoteStore, PageStore, EditorStore } = useStore();
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
@@ -40,8 +39,8 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
-      if (EditorStore.uploadFileList) await EditorStore.handleFileSync();
-      PageStore.handleSave();
+      await EditorStore.handleFileSync()
+        .then(() => PageStore.handleSave());
     }
   };
 

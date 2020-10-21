@@ -86,7 +86,7 @@ const FileLayout = () => {
             if (EditorStore.fileLayoutList.length === 0) EditorStore.setIsFile(false);
         }
         else {
-            EditorStore.setDeleteFileConfig(fileId, filename);
+            EditorStore.setDeleteFileConfig(fileId, filename, index);
             NoteStore.setModalInfo('fileDelete');
         }
     }
@@ -99,7 +99,7 @@ const FileLayout = () => {
 
     return useObserver(() => (
         <>
-            <FileBodyLayout >
+            <FileBodyLayout id='fileLayout'>
                 {EditorStore.fileLayoutList.map((item, index) => (
                     <FileBody id={item.file_id ? item.file_id : item.user_context_2}
                         key={index}
