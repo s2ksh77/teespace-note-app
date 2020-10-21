@@ -189,14 +189,14 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
-                tooltip: 'Insert Image / media',
+                tooltip: '이미지 첨부',
                 onAction: function () {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
               })
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'browse',
-                tooltip: 'Insert File',
+                tooltip: '파일 첨부',
                 fetch: function (callback) {
                   var items = [
                     {
@@ -229,7 +229,8 @@ const EditorContainer = () => {
             link_assume_external_targets: 'http',
             link_context_toolbar: true,
             extended_valid_elements: 'a[href|target=_blank]',
-            quickbars_insert_toolbar: 'insertImage table'
+            quickbars_insert_toolbar: 'insertImage table',
+            language: 'ko_KR'
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
