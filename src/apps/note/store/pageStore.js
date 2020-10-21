@@ -29,7 +29,7 @@ const PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
-  isNewPage:false,
+  isNewPage: false,
   getPageId(e) {
     const {
       target: { id },
@@ -168,7 +168,7 @@ const PageStore = observable({
           if (this.currentPageId === this.deletePageList[0].note_id) {
             this.setCurrentPageId(this.nextSelectablePageId);
           }
-            
+
           ChapterStore.getChapterList();
           NoteStore.setShowModal(false);
         }
@@ -289,11 +289,14 @@ const PageStore = observable({
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
       await this.deletePage();
-      this.isNewPage = false;      
+      this.isNewPage = false;
     } else this.noneEdit(this.currentPageId);
   },
 
-  handleSave() {    
+  handleSave() {
+    if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
+      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
+    }
     const updateDTO = {
       dto: {
         note_id: this.currentPageData.note_id,
@@ -313,6 +316,52 @@ const PageStore = observable({
   },
   setIsNewPage(isNew) {
     this.isNewPage = isNew;
+  },
+  getTitle() {
+    const contentList = EditorStore.tinymce.getBody().children;
+    return this._getTitle(contentList);
+  },
+  _getTitle(contentList) {
+    if (contentList) {
+      // forEach 는 항상 return 값 undefined
+      for (let i = 0; i < contentList.length; i++) {
+        if (contentList[i].tagName === 'P') {
+          if (contentList[i].getElementsByTagName('img').length > 0) {
+            return contentList[i].getElementsByTagName('img')[0].dataset.name;
+          } else if (!!contentList[i].textContent) return contentList[i].textContent;
+        } else if (contentList[i].tagName === 'TABLE') {
+          const tdList = contentList[i].getElementsByTagName('td');
+          for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
+            var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
+            if (tableTitle !== undefined) return tableTitle;
+          }
+        } else if (contentList[i].tagName === 'IMG') {
+          if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
+        }
+      }
+    }
+  },
+  _getTableTitle(td) {
+    if (td) {
+      for (let j = 0; j < td.length; j++) {
+        if (td[j].nodeName === '#text') {
+          return td[j].textContent;
+        } else if (td[j].nodeName === 'STRONG' || td[j].nodeName === 'BLOCKQUOTE' || td[j].nodeName === 'EM' || td[j].nodeName === 'H2' || td[j].nodeName === 'H3') {
+          if (!!td[j].textContent) return td[j].textContent;
+        } else if (td[j].nodeName === 'OL' || td[j].nodeName === 'UL') {
+          if (!!td[j].children[0].textContent) return td[j].children[0].textContent;
+        } else if (td[j].nodeName === 'IMG') {
+          return td[j].dataset.name;
+        } else if (td[j].nodeName === 'TABLE') { // 두번 루프
+          const tdList = td[j].getElementsByTagName('td');
+          for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
+            var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
+            if (tableTitle !== undefined) return tableTitle;
+          }
+        }
+      }
+    }
+
   }
 });
 

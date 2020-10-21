@@ -84,7 +84,7 @@ const EditorContainer = () => {
           var img = new Image();
           img.setAttribute('src', reader.result);
           img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '"/>');
+          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
         }
         handleFileHandler(blobInfo, { title: file.name });
       };
