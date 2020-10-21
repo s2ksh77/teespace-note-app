@@ -337,6 +337,10 @@ const PageStore = observable({
           }
         } else if (contentList[i].tagName === 'IMG') {
           if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
+        } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
+          if (!!contentList[i].textContent) return contentList[i].textContent;
+        } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
+          if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
         }
       }
     }
