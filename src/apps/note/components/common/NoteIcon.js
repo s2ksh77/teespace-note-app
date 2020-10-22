@@ -58,11 +58,5 @@ const IconWrapper = styled.div`
   &:not(.icon--active) > img {
     width: ${props => props.width}px;
   }
-
-  &.icon--default:hover {
-    border-radius: 50%;
-    background: #dcddff;
-    cursor: pointer;
-  }
 `;
 export default NoteIcon;
