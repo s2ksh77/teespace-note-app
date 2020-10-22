@@ -187,6 +187,11 @@ const EditorContainer = () => {
                   }
                 }
               });
+               // Register some other event callbacks...
+              editor.on('click', function (e) {
+                const focusedTags = [...document.querySelectorAll('.noteFocusedTag')];
+                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'))
+              });
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
                 tooltip: '이미지 첨부',
@@ -226,6 +231,7 @@ const EditorContainer = () => {
             automatic_uploads: true,
             file_picker_callback: handleFileBlob,
             default_link_target: '_blank',
+            target_list:false,
             link_assume_external_targets: 'http',
             link_context_toolbar: true,
             extended_valid_elements: 'a[href|target=_blank]',

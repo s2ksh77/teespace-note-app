@@ -73,7 +73,7 @@ const TagListContainer = () => {
       else if (TagStore.editTagValue === '') {
         TagStore.setEditTagIndex(-1);
       } else {
-        if (!TagStore.validTag(TagStore.editTagValue)) {
+        if (!TagStore.isInvalidTag(TagStore.editTagValue)) {
           TagStore.notetagList[TagStore.editTagIndex].text =
             TagStore.editTagValue;
           TagStore.setUpdateTagList(
@@ -99,7 +99,7 @@ const TagListContainer = () => {
     if (TagStore.tagText === "") {
       TagStore.setIsNewFlag(false);
     } else {
-      if (!TagStore.validTag(TagStore.tagText)) {
+      if (!TagStore.isInvalidTag(TagStore.tagText)) {
         TagStore.setAddTagList(TagStore.tagText, PageStore.currentPageId);
         TagStore.setIsNewFlag(false);
         TagStore.notetagList.unshift({ text: TagStore.tagText });
