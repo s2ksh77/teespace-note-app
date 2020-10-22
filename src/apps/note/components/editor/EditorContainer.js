@@ -234,6 +234,9 @@ const EditorContainer = () => {
             target_list:false,
             link_assume_external_targets: 'http',
             link_context_toolbar: true,
+            link_title: false,
+            anchor_top:false, // link 입력중 dropdown으로 <top> 안뜨게 해
+            anchor_bottom:false,
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR'
