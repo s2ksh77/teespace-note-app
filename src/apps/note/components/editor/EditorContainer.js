@@ -227,7 +227,7 @@ const EditorContainer = () => {
             image_description: false,
             image_dimensions: false,
             image_uploadtab: true,
-            file_picker_types: 'file image media',
+            file_picker_types: 'image media',
             automatic_uploads: true,
             file_picker_callback: handleFileBlob,
             default_link_target: '_blank',
