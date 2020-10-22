@@ -56,7 +56,7 @@ const IconWrapper = styled.div`
   }
 
   &:not(.icon--active) > img {
-    width: ${props => props.width - 20}px;
+    width: ${props => props.width}px;
   }
 
   &.icon--default:hover {
