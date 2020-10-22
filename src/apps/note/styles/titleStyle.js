@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const EditorHeaderCover = styled.div`
   white-space: nowrap;
@@ -18,10 +18,12 @@ export const EditorHeaderContainer1 = styled.div`
   width: 80%;
 `;
 export const EditPreBtnWrapper = styled.div`
-  display: flex;
+  display: ${props=> (props.show ? "flex" : "none")};
   align-items: center;
   margin-right: 0.5rem;
-`
+  cursor:pointer;
+`;
+
 export const EditBtn = styled.button`
   width: 3.5rem;
   height: 1.69rem;
@@ -44,9 +46,9 @@ export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
   outline: none;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   box-sizing: border-box;
   padding: 0.1875rem 0.75rem;
   background-image: none;
@@ -60,11 +62,12 @@ export const EditorTitle = styled.input`
 `;
 
 export const EditorHeaderContainer2 = styled.div`
-  display: flex;
+  display: ${(props) => props.show ? "flex" : "none"};
   flex: auto;
   position: relative;
+  justify-content:flex-end;
   align-items: center;
-  width: 20%;
+  width: 20%;  
 `;
 
 export const ModifiedUser = styled.span`
@@ -118,7 +121,7 @@ export const LnbTitleNewButton = styled.button`
 `;
 
 export const LnbTitleSearchContainer = styled.form`
-  position:relative;
+  position: relative;
   display: inline-flex;
   align-items: center;
   padding: 0 0.63rem;
@@ -128,7 +131,7 @@ export const LnbTitleSearchContainer = styled.form`
   border: 0.0625rem solid #c6ced6;
   box-sizing: border-box;
   flex: 1;
-  margin:auto 0;
+  margin: auto 0;
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -157,11 +160,10 @@ export const LnbTitleSearchInput = styled.input`
 export const TagTitleSearchContainer = styled.div`
   display: inline-flex;
   align-items: center;
-  padding:0 0.63rem;
+  padding: 0 0.63rem;
   width: 10.5rem;
   height: 1.88rem;
   border-radius: 1.563rem 1.563rem;
   border: 0.0625rem solid #c6ced6;
   box-sizing: border-box;
-  margin-left:auto;
 `;

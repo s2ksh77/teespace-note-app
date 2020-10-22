@@ -29,14 +29,18 @@ export const LNBNewChapter = styled.div`
 
 // search 관련
 export const ChapterSearchResult = styled.div`
+  position:relative;
   width:calc(100% - 1.5rem);
   height:3.81rem;
   margin:0 0.75rem;
+  padding: 0.75rem 1.69rem;
   display:flex;
   flex-direction:row;
   align-items:center;
-  border-bottom: 1px solid #E3E7EB;
   cursor:pointer;
+  &:hover {
+    background-color: rgba(30,168,223,0.20);
+  }
 `
 export const ChapterSearchResultColor = styled.div`
   background-color:${props => props.backgroundColor};
@@ -51,15 +55,18 @@ export const ChapterSearchResultTitle = styled.div`
   font-weight: bold;
 `;
 export const PageSearchResult = styled.div`
+  position:relative;
   width:calc(100% - 1.5rem);
   height:3.81rem;
   margin:0 0.75rem;
+  padding: 0.75rem 1.69rem;
   display:flex;
   flex-direction:column;
   justify-content:space-around;
-  padding:0.75rem 0;
-  border-bottom: 1px solid #E3E7EB;
   cursor:pointer;
+  &:hover {
+    background-color: rgba(30,168,223,0.20);
+  }
 `
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.8125rem;
@@ -69,3 +76,11 @@ export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
   color: #888D96;
 `
+
+export const SearchResultBotttom = styled.div`
+  border-bottom: 1px solid #E3E7EB;
+  position: absolute;
+  left: 1.69rem;
+  right: 1.69rem;
+  bottom: 0;
+`;

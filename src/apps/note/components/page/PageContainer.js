@@ -17,14 +17,13 @@ const PageContainer = () => {
 
   return useObserver(() => (
     <>
-      {(() => {
-        if (ChapterStore.currentChapterId) {
-          if (PageStore.currentPageId) return <><EditorContainer /></>;
-          else return <><PageNotFound /></>;
-        } else {
-          return <LoadingImgContainer />;
-        }
-      })()}
+      {ChapterStore.currentChapterId && PageStore.currentPageId && (
+        <EditorContainer />
+      )}
+      {ChapterStore.currentChapterId && !PageStore.currentPageId && (
+        <PageNotFound />
+      )}
+      {!ChapterStore.currentChapterId && <LoadingImgContainer />}
     </>
   ));
 };

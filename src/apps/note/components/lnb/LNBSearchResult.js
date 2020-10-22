@@ -2,7 +2,7 @@ import React from 'react';
 import useStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {ChapterSearchResult, ChapterSearchResultColor, ChapterSearchResultTitle,
-	PageSearchResult, PageSearchResultPageTitle, PageSearchResultChapterTitle} from '../../styles/lnbStyle';
+	PageSearchResult, PageSearchResultPageTitle, PageSearchResultChapterTitle, SearchResultBotttom} from '../../styles/lnbStyle';
 import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 
@@ -18,16 +18,19 @@ const LNBSearchResult = () => {
 		ChapterStore.setIsSearching(false);
 		ChapterStore.setInputValue("");
 		NoteStore.setShowPage(true);
+    document.getElementById(chapterId).scrollIntoView(true);
 	}
 
 	const onClickPageBtn = async (chapterId, pageId, e) => {
+    if (PageStore.isEdit) return;
 		ChapterStore.setCurrentChapterId(chapterId);
 		PageStore.setCurrentPageId(pageId);
 		// ChapterStore.setIsTagSearching(false);
 		// ChapterStore.setIsSearching(false);
 		// ChapterStore.setInputValue("");
-		NoteStore.setShowPage(true);
-	}
+    NoteStore.setShowPage(true);
+    if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
+  }
 	
 	return useObserver(()=>(
     <>
@@ -40,6 +43,7 @@ const LNBSearchResult = () => {
             <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn.bind(null,chapter.id, chapter.firstPageId)}>
               <ChapterSearchResultColor backgroundColor={chapter.color} />
               <ChapterSearchResultTitle>{chapter.title}</ChapterSearchResultTitle>
+              <SearchResultBotttom/>
             </ChapterSearchResult>
           )
         })}
@@ -48,6 +52,7 @@ const LNBSearchResult = () => {
             <PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page.chapterId, page.id)}>
               <PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
               <PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
+              <SearchResultBotttom/>
             </PageSearchResult>
           )
         })}

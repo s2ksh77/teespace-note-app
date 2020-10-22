@@ -7,6 +7,10 @@ class NoteRepository {
 
   FILE_URL = 'http://222.122.67.176:8080/CMS/';
 
+  // WS_ID = '';
+  // CH_TYPE = 'CHN0003';
+  // USER_ID = '';
+
   WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
   CH_TYPE = 'CHN0003';
@@ -17,8 +21,16 @@ class NoteRepository {
     this.URL = url || this.URL;
   }
 
+  setWsId(targetWsId) {
+    this.WS_ID = targetWsId;
+  }
+
   setChannelId(targetchId) {
     this.chId = targetchId;
+  }
+
+  setUserId(targetUserId) {
+    this.USER_ID = targetUserId;
   }
 
   getChannelId() {
@@ -159,6 +171,20 @@ class NoteRepository {
     });
   }
 
+  movePage(pageId, chapterId) {
+    return API.Put(`${this.URL}/note?action=Update`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        note_id: pageId,
+        parent_notebook: chapterId,
+        user_name: '김수현B',
+        USER_ID: this.USER_ID,
+        TYPE: 'MOVE',
+      }
+    })
+  }
+
   editStart(noteId, chapterId) {
     return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
@@ -225,6 +251,44 @@ class NoteRepository {
         text: tagText,
       },
     });
+  }
+
+  deleteFile(deleteFileId) {
+    return API.put(`${this.FILE_URL}Storage/StorageFile?action=Delete`, {
+      dto: {
+        workspace_id: this.WS_ID,
+        channel_id: this.chId,
+        storageFileInfo: {
+          user_id: '',
+          file_last_update_user_id: '',
+          file_id: deleteFileId,
+          file_name: '',
+          file_extension: '',
+          file_created_at: '',
+          file_updated_at: '',
+          user_context_1: '',
+          user_context_2: '',
+          user_context_3: ''
+        }
+      }
+    })
+  }
+
+  deleteAllFile(fileList) {
+    let deleteFileList = [];
+    if (fileList) {
+      fileList.map(file => deleteFileList.push(file.file_id));
+      return API.put(`${this.FILE_URL}Storage/StorageFile?action=MultiDelete`, {
+        dto: {
+          workspace_id: this.WS_ID,
+          channel_id: this.chId,
+          file_id: deleteFileList,
+          user_id: this.USER_ID
+        }
+      })
+    } else {
+      return Promise.resolve();
+    }
   }
 }
 

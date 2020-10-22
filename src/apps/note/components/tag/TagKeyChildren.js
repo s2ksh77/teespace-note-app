@@ -3,16 +3,19 @@ import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
-const style = { display: 'flex', width: '100%' };
+const style = { display: 'flex', width: '100%', flexWrap:'wrap' };
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
-  const { ChapterStore, TagStore } = useStore();
+  const { NoteStore, ChapterStore, TagStore } = useStore();
 
   const onClickTagBtn = async (tagId, tagName, e) => {
     // 임시 (태그칩 모양으로 넣어야함)
     await TagStore.getTagNoteList(tagId);
     ChapterStore.setTargetSearchTagName(tagName);
-    ChapterStore.setIsTagSearching(true);
+    ChapterStore.setIsTagSearching(true);    
+    if (NoteStore.layoutState === 'collapse') {
+      NoteStore.setTargetLayout('LNB');
+    } 
   };
 
   return useObserver(() => (

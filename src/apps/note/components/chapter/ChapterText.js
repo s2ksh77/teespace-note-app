@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChapterText = ({ text, chapterId, color }) => {
-  const { ChapterStore } = useStore();
+  const { ChapterStore, PageStore } = useStore();
 
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
@@ -32,7 +32,13 @@ const ChapterText = ({ text, chapterId, color }) => {
   };
   return useObserver(() => (
     <>
-      <ChapterTitle className={chapterId === ChapterStore.currentChapterId ? "selectedMenu" : ""}>
+      <ChapterTitle 
+        className={
+          !PageStore.isMovingPage && chapterId === ChapterStore.currentChapterId 
+          ? "selectedMenu" 
+          : ""
+        }
+      >
         <ChapterTextSpan>{text}</ChapterTextSpan>
         <ContextMenu
           type={"chapter"}
@@ -40,11 +46,13 @@ const ChapterText = ({ text, chapterId, color }) => {
           chapterTitle={text}
           nextSelectableChapterId={
             ChapterStore.chapterList.length > 1 ? (
-              ChapterStore.chapterList[0]?.id === chapterId ? ChapterStore.chapterList[1]?.id : ChapterStore.chapterList[0]?.id 
+              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id 
             ) : ("")
           }
           nextSelectablePageId={
-            ChapterStore.chapterList[0]?.id === chapterId ? ChapterStore.chapterList[1]?.children[0]?.id : ChapterStore.chapterList[0]?.children[0]?.id
+            ChapterStore.chapterList.length > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? (
+              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
+            ) : ("")
           }
         />
       </ChapterTitle>

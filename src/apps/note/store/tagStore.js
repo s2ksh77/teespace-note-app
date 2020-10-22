@@ -277,7 +277,7 @@ const TagStore = observable({
   getTagSortList() {
     return this.tagSortList;
   },
-  validTag(text) {
+  isInvalidTag(text) {
     const targetTag = this.notetagList.find(function (tag) {
       return tag.text === text;
     });

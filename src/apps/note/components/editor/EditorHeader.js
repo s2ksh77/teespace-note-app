@@ -9,24 +9,29 @@ import {
   EditorHeaderContainer2,
   ModifiedUser,
   ModifiedTime,
-  EditPreBtn,
   EditPreBtnWrapper,
 } from '../../styles/titleStyle';
 import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
-import NoteStore from '../../store/noteStore';
 import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
-import NoteUtil from '../common/NoteUtil';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
-const style = { cursor: 'pointer' };
-const handleLayoutBtn = () => NoteStore.setTargetLayout('LNB');
-
 const EditorHeader = () => {
-  const { NoteStore, PageStore, TagStore } = useStore();
+  const { NoteStore, PageStore, EditorStore } = useStore();
 
-  const handleClickBtn = e => {
+  // 뒤로 가기 버튼
+  const handleLayoutBtn = (e) => {
+    if (!PageStore.isEdit) {
+      NoteStore.setTargetLayout('LNB');
+    } else {
+      const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
+      if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
+      NoteStore.setModalInfo('editCancel');
+    }
+  }
+
+  const handleClickBtn = async e => {
     const {
       target: { innerText },
     } = e;
@@ -34,20 +39,8 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
-      const updateDTO = {
-        dto: {
-          note_id: PageStore.currentPageData.note_id,
-          note_title: PageStore.noteTitle,
-          note_content: PageStore.noteContent,
-          parent_notebook: PageStore.currentPageData.parent_notebook,
-          is_edit: '',
-          TYPE: 'EDIT_DONE',
-        },
-      };
-      PageStore.editDone(updateDTO);
-      if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
-      if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
-      if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
+      await EditorStore.handleFileSync()
+        .then(() => PageStore.handleSave());
     }
   };
 
@@ -65,13 +58,9 @@ const EditorHeader = () => {
     <>
       <EditorHeaderCover>
         <EditPreBtnWrapper
-          style={
-            NoteStore.layoutState === 'collapse'
-              ? { display: 'flex' }
-              : { display: 'none' }
-          }
+          show={NoteStore.layoutState === 'collapse'}
         >
-          <Button style={style} src={preImg} onClick={handleLayoutBtn} />
+          <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <EditorHeaderContainer1>
           <EditBtn onClick={handleClickBtn}>{editBtnText}</EditBtn>
@@ -81,9 +70,10 @@ const EditorHeader = () => {
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={PageStore.isEdit ? false : true}
+            autoComplete="off"
           />
         </EditorHeaderContainer1>
-        <EditorHeaderContainer2>
+        <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
           {PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />}
           <ModifiedUser>{PageStore.currentPageData.user_name}</ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
