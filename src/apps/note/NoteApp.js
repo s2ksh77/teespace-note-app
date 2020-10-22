@@ -31,7 +31,7 @@ const NoteApp = ({ layoutState, roomId }) => {
   const handleClickOutsideEditor = (e) => {
     if (!PageStore.isEdit) return;
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper.contains(e.target)) return;
-    if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux').contains(e.target)) return;
+    if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux .tox-dialog').contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog').contains(e.target)) return;
     const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
     if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
