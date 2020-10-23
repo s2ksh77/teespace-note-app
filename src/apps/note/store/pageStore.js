@@ -186,21 +186,21 @@ const PageStore = observable({
     );
   },
 
-  async movePage(moveTargetChapterId, moveTargetChapterIdx) {
+  async movePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageList, moveTargetPageIdx) {
     if (this.moveChapterId === moveTargetChapterId) { // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
-      if (this.movePageIdx !== this.moveTargetPageIdx
-        && this.movePageIdx + 1 !== this.moveTargetPageIdx) {
+      if (this.movePageIdx !== moveTargetPageIdx
+        && this.movePageIdx + 1 !== moveTargetPageIdx) {
         const newPageList = [];
 
-        this.moveTargetPageList.forEach((page, index) => {
+        moveTargetPageList.forEach((page, index) => {
           if (index === this.movePageIdx) return false;
 
-          if (index === this.moveTargetPageIdx) newPageList.push(this.moveTargetPageList[this.movePageIdx]);
+          if (index === moveTargetPageIdx) newPageList.push(moveTargetPageList[this.movePageIdx]);
           newPageList.push(page);
         })
 
-        if (this.moveTargetPageIdx === this.moveTargetPageList.length)
-          newPageList.push(this.moveTargetPageList[this.movePageIdx]);
+        if (moveTargetPageIdx === moveTargetPageList.length)
+          newPageList.push(moveTargetPageList[this.movePageIdx]);
 
         ChapterStore.changePageList(moveTargetChapterIdx, newPageList);
         this.setCurrentPageId(this.movePageId);

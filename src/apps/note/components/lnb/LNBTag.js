@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import tagImg from '../../assets/ts_tag@3x.png';
 import useStore from '../../store/useStore';
+import { useDrop } from 'react-dnd';
+import tagImg from '../../assets/ts_tag@3x.png';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
 
 const filterColor =
@@ -10,6 +10,13 @@ const filterColor =
 
 const LNBTag = memo(() => {
   const { NoteStore, ChapterStore } = useStore();
+
+  const [, drop] = useDrop({
+    accept: 'chapter',
+    drop: () => {
+      ChapterStore.moveChapter(ChapterStore.chapterList.length);
+    },
+  });
 
   const onClickTagMenuBtn = () => {
     NoteStore.setShowPage(false);
@@ -27,14 +34,9 @@ const LNBTag = memo(() => {
   return useObserver(() => (
     <>
       <LnbTagContainer
-        className={
-          (!NoteStore.showPage ? 'selectedMenu' : '')
-          + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length ? 'tagBorderTopLine' : '')
-        }
+        ref={drop}
+        className={!NoteStore.showPage ? 'selectedMenu' : ''}
         onClick={onClickTagMenuBtn}
-        onDragOver={(e) => e.preventDefault()}
-        onDragEnter={onDragEnterTag.bind(null)}
-        onDrop={() => ChapterStore.moveChapter(ChapterStore.chapterList.length)}
       >
         <TagImg
           filter={!NoteStore.showPage ? filterColor : ''}

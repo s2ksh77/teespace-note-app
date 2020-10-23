@@ -18,7 +18,7 @@ export const ChapterContainer = styled.ul`
   }
 }
 `;
-export const Chapter = styled.div`
+export const ChapterCover = styled.div`
   height: 2.81rem;
   display: flex;
   font-weight: 500;

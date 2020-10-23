@@ -16,6 +16,8 @@ import LNBTag from "./LNBTag";
 import ChapterList from './ChapterList';
 import LNBSearchResult from './LNBSearchResult';
 import ChapterColor from "../chapter/ChapterColor"
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore } = useStore();
@@ -105,11 +107,11 @@ const LNBContainer = () => {
             ) : null}
             {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> :
-            <>
+            <DndProvider backend={HTML5Backend}>
               <ChapterList type={"chapter"} />
               <LNBTag />
               {/* <ChapterList type={"shared"}/> )}*/}
-            </>}            
+            </DndProvider>}            
           </LNBChapterCover>
       </LNBCover>
     </>

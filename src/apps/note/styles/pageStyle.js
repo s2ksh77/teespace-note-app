@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Page = styled.li`
+export const PageCover = styled.li`
   display: flex;
   width: 100%;
   height: 2.81rem;
