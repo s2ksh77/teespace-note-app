@@ -11,7 +11,7 @@ const PageNotFound = () => {
         <span className="note-no_page_text">
           시작하려면 "새 페이지 추가" 버튼을 클릭하세요.
         </span>
-        <img className="note-no_page_image" src={noPageImage} />
+        <img className="note-no_page_image" src={noPageImage} alt="page_not_found" />
       </div>
     </>
   );

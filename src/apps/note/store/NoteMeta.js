@@ -46,6 +46,8 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
+      default:
+        break;
     }
     return eventList;
   },
@@ -58,6 +60,8 @@ const NoteMeta = {
         return [{ type: 'confirom', text: '확인' }]
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
+      default:
+        break;
     }
   },
   setModalConfig(type) {
@@ -95,6 +99,8 @@ const NoteMeta = {
         dialogType.title = `선택한 ${fileName} 을 삭제하시겠습니까?`;
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('delete');
+        break;
+      default:
         break;
     }
     return dialogType;

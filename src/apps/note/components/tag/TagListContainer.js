@@ -117,6 +117,8 @@ const TagListContainer = () => {
       case "Escape":
         toggleTagInput();
         break;
+      default:
+        break;
     }
   }
 
@@ -127,6 +129,8 @@ const TagListContainer = () => {
         break;
       case "Escape":
         TagStore.setIsNewFlag(false);
+        break;
+      default:
         break;
     }
   }
@@ -182,7 +186,7 @@ const TagListContainer = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     }
-  },[]);
+  });
 
   return useObserver(() => (
     <>

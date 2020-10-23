@@ -23,6 +23,8 @@ const modifyDisplay = (method, target, saveBtn) => {
       target.map((child)=>child.classList.add('note-show-element'));
       saveBtn.setAttribute('disabled', true);
       break;
+    default:
+      break;
   }
 }
 

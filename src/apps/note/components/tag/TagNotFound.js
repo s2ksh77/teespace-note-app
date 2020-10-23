@@ -12,7 +12,7 @@ const TagNotFound = () => {
           페이지 하단에 태그를 입력하여 추가하거나
           </span>
         <span className="note-no_page_text">태그 목록을 검색하세요.</span>
-        <img className="note-no_page_image" src={noPageImage} />
+        <img className="note-no_page_image" src={noPageImage} alt="tag_not_found" />
       </div>
     </>
   );
