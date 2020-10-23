@@ -7,7 +7,7 @@ const LoadingImgContainer = () => {
   return (
     <>
       <CenterContent>
-        <img style={imgcontainer} src={LoadingImg} />
+        <img style={imgcontainer} src={LoadingImg} alt="LoadingImg" />
       </CenterContent>
     </>
   );

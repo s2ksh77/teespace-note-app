@@ -130,6 +130,33 @@ export const GlobalStyle = createGlobalStyle`
       transform: translate(-1.2rem, -1.405rem);
     }
   }
+  .note-show-element{
+    display:flex !important;
+  }
+  .note-link-error {
+    position: absolute !important;
+    display:none;
+    align-items: center !important;
+    float: right !important;
+    width: 1.63rem !important;
+    height: 1.63rem !important;
+    top:10% !important;
+    right: 3% !important;
+  }
+  .note-link-error-tooltip{
+    display:none;
+    width: 10.5rem !important;
+    height: 1.5rem !important;
+    background: #FF5151 !important;
+    border-radius:10px !important;
+    position:absolute !important;
+    top:-80% !important;
+    right: 3% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+  }
 `;
 
 export const LNB = styled.div`
