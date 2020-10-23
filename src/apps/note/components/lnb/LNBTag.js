@@ -16,6 +16,10 @@ const LNBTag = memo(() => {
     drop: () => {
       ChapterStore.moveChapter(ChapterStore.chapterList.length);
     },
+    hover() {
+      if (ChapterStore.dragEnterChapterIdx !== ChapterStore.chapterList.length)
+        ChapterStore.setDragEnterChapterIdx(ChapterStore.chapterList.length);
+    },
   });
 
   const onClickTagMenuBtn = () => {
@@ -25,17 +29,18 @@ const LNBTag = memo(() => {
     }
   };
 
-  const onDragEnterTag = () => {
-    if (ChapterStore.moveChapterIdx === '') return;
-
-    ChapterStore.setDragEnterChapterIdx(ChapterStore.chapterList.length);
-  };
-
   return useObserver(() => (
     <>
       <LnbTagContainer
         ref={drop}
-        className={!NoteStore.showPage ? 'selectedMenu' : ''}
+        className={
+          (!NoteStore.showPage 
+            ? 'selectedMenu' 
+            : '')
+          + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length
+            ? ' tagBorderTopLine'
+            : '')
+        }
         onClick={onClickTagMenuBtn}
       >
         <TagImg

@@ -25,12 +25,19 @@ const Chapter = ({ chapter, index }) => {
     drop: () => {
       ChapterStore.moveChapter(index);
     },
+    hover() {
+      if (ChapterStore.dragEnterChapterIdx !== index)
+        ChapterStore.setDragEnterChapterIdx(index);
+    },
   });
 
   const [, drag] = useDrag({
     item: { id: chapter.id, type: 'chapter' },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
+    },
+    end: () => {
+      ChapterStore.setDragEnterChapterIdx('');
     },
   });
 
@@ -107,36 +114,11 @@ const Chapter = ({ chapter, index }) => {
     e.preventDefault();
   };
 
-  const onDragEnterChapterContainer = (enterChapterIdx) => {
-    if (!ChapterStore.isMovingChapter) return;
-
-    ChapterStore.setDragEnterChapterIdx(enterChapterIdx);
-  };
-
-  const onDragStartChapter = (chapterIdx) => {
-    ChapterStore.setIsMovingChapter(true);
-    ChapterStore.setMoveChapterIdx(chapterIdx);
-  };
-
   const onDragEnterChapter = (enterChapterIdx) => {
     if (!PageStore.isMovingPage) return;
 
     PageStore.setDragEnterPageIdx(0);
     PageStore.setDragEnterChapterIdx(enterChapterIdx);
-  };
-
-  const onDropPage = (chapterId, chapterIdx, childrenList) => {
-    if (!PageStore.isMovingPage) return; // 챕터를 드래그하고 있는 경우
-
-    PageStore.setMoveTargetPageList(childrenList);
-    PageStore.setMoveTargetPageIdx(0);
-    PageStore.movePage(chapterId, chapterIdx);
-  };
-
-  const onDropChapter = (chapterIdx) => {
-    if (!ChapterStore.isMovingChapter) return;
-
-    ChapterStore.moveChapter(chapterIdx);
   };
 
   const removeDropLine = () => {
@@ -160,6 +142,11 @@ const Chapter = ({ chapter, index }) => {
   return useObserver(() => (
     <ChapterContainer
       ref={drop}
+      className={
+        ChapterStore.dragEnterChapterIdx === index
+          ? 'borderTopLine'
+          : ''
+      }
       id={chapter.id}
       key={chapter.id}
       itemType="chapter"

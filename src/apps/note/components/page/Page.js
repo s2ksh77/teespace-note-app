@@ -21,12 +21,22 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       PageStore.setMovePageIdx(index);
       PageStore.setMoveChapterId(chapterId);
     },
+    end: () => {
+      PageStore.setDragEnterPageIdx('');
+      PageStore.setDragEnterChapterIdx('');
+    },
   });
 
   const [, drop] = useDrop({
     accept: 'page',
     drop: () => {
       PageStore.movePage(chapterId, chapterIdx, children, index);
+    },
+    hover() {
+      if (PageStore.dragEnterChapterIdx !== chapterIdx)
+        PageStore.setDragEnterChapterIdx(chapterIdx);
+      if (PageStore.dragEnterPageIdx !== index)
+        PageStore.setDragEnterPageIdx(index);
     },
   });
 
@@ -59,26 +69,6 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
   };
 
   const handleFocus = (e) => e.target.select();
-
-  const onDragStartPage = (pageId, pageIdx) => {
-    PageStore.setIsMovingPage(true);
-    
-  };
-
-  const onDragEnterPage = (enterPageIdx) => {
-    if (!PageStore.isMovingPage) return; // 챕터를 드래그하고 있는 경우
-
-    PageStore.setDragEnterPageIdx(enterPageIdx);
-    PageStore.setDragEnterChapterIdx(chapterIdx);
-  };
-
-  const onDropPage = (targetPageIdx) => {
-    if (!PageStore.isMovingPage) return;
-
-    PageStore.setMoveTargetPageList(children);
-    PageStore.setMoveTargetPageIdx(targetPageIdx);
-    PageStore.movePage(chapterId, chapterIdx);
-  };
 
   return useObserver(() => (
     <PageCover
@@ -122,7 +112,18 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
           />
         </PageTextCover>
       ) : (
-        <PageTextCover>
+        <PageTextCover
+          className={
+            PageStore.dragEnterChapterIdx !== chapterIdx
+              ? ''
+              : PageStore.dragEnterPageIdx === index
+                ? 'borderTopLine'
+                : children.length - 1 === index &&
+                PageStore.dragEnterPageIdx === children.length
+                  ? 'borderBottomLine'
+                  : ''
+          }
+        >
           <PageText>{page.text}</PageText>
           <ContextMenu
             type={'page'}

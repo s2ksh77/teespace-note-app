@@ -13,27 +13,18 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
     drop: () => {
       PageStore.movePage(chapterId, chapterIdx, children, children.length);
     },
+    hover() {
+      if (PageStore.dragEnterChapterIdx !== chapterIdx)
+        PageStore.setDragEnterChapterIdx(chapterIdx);
+      if (PageStore.dragEnterPageIdx !== children.length)
+        PageStore.setDragEnterPageIdx(children.length);
+    },
   });
 
   const handleNewBtnClick = async targetId => {
     PageStore.setCreatePageParent(targetId);
     await PageStore.createPage();
     NoteStore.setShowPage(true);
-  };
-
-  const onDragEnterPage = (enterPageIdx) => {
-    if (!PageStore.isMovingPage) return; // 챕터를 드래그하고 있는 경우
-
-    PageStore.setDragEnterPageIdx(enterPageIdx);
-    PageStore.setDragEnterChapterIdx(chapterIdx);
-  };
-
-  const onDropPage = (targetPageIdx) => {
-    if (!PageStore.isMovingPage) return;
-
-    PageStore.setMoveTargetPageList(children);
-    PageStore.setMoveTargetPageIdx(targetPageIdx);
-    PageStore.movePage(chapterId, chapterIdx);
   };
 
   return useObserver(() => (
@@ -51,7 +42,6 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
       <NewPage
         ref={drop}
         className={'page-li'}
-        onDragOver={e => e.preventDefault()}
       >
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>
