@@ -39,6 +39,14 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
           chapterIdx={chapterIdx}
         />
       ))}
+      <div style={{ height : '0px', marginLeft : '1.875rem' }} 
+        className={
+          PageStore.dragEnterChapterIdx === chapterIdx &&
+          PageStore.dragEnterPageIdx === children.length
+            ? 'borderTopLine' 
+            : ''
+        }
+      />
       <NewPage
         ref={drop}
         className={'page-li'}

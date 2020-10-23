@@ -118,10 +118,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
               ? ''
               : PageStore.dragEnterPageIdx === index
                 ? 'borderTopLine'
-                : children.length - 1 === index &&
-                PageStore.dragEnterPageIdx === children.length
-                  ? 'borderBottomLine'
-                  : ''
+                : ''
           }
         >
           <PageText>{page.text}</PageText>
