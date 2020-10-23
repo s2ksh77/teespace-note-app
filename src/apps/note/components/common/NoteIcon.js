@@ -65,7 +65,6 @@ function NoteIcon({
 }
 
 const IconWrapper = styled.div`
-margin: 100px;
   display: flex;
   position: relative;
   align-items: center;
