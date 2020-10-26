@@ -20,6 +20,7 @@ fileMoveImg.src = takaImg;
 const Chapter = ({ chapter, index }) => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
 
+  // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
     accept: 'chapter',
     drop: () => {
@@ -31,6 +32,7 @@ const Chapter = ({ chapter, index }) => {
     },
   });
 
+  // 챕터를 drag했을 때 
   const [, drag] = useDrag({
     item: { id: chapter.id, type: 'chapter' },
     begin: () => {
@@ -38,6 +40,20 @@ const Chapter = ({ chapter, index }) => {
     },
     end: () => {
       ChapterStore.setDragEnterChapterIdx('');
+    },
+  });
+
+  // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
+  const [, dropChapter] = useDrop({
+    accept: 'page',
+    drop: () => {
+      PageStore.movePage(chapter.id, index, chapter.children, 0);
+    },
+    hover() {
+      if (PageStore.dragEnterPageIdx !== 0)
+        PageStore.setDragEnterPageIdx(0);
+      if (PageStore.dragEnterChapterIdx !== index)
+        PageStore.setDragEnterChapterIdx(index);
     },
   });
 
@@ -114,13 +130,6 @@ const Chapter = ({ chapter, index }) => {
     e.preventDefault();
   };
 
-  const onDragEnterChapter = (enterChapterIdx) => {
-    if (!PageStore.isMovingPage) return;
-
-    PageStore.setDragEnterPageIdx(0);
-    PageStore.setDragEnterChapterIdx(enterChapterIdx);
-  };
-
   const removeDropLine = () => {
     if (ChapterStore.isMovingChapter) {
       ChapterStore.setDragEnterChapterIdx('');
@@ -152,7 +161,7 @@ const Chapter = ({ chapter, index }) => {
       itemType="chapter"
     >
       <ChapterCover
-        ref={drag}
+        ref={(node) => drag(dropChapter(node))}
         onClick={onClickChapterBtn.bind(null, chapter.id, chapter.children)}
       >
         <ChapterColor color={chapter.color} chapterId={chapter.id} />
