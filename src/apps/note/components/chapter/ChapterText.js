@@ -34,7 +34,7 @@ const ChapterText = ({ text, chapterId, color }) => {
     <>
       <ChapterTitle 
         className={
-          !PageStore.isMovingPage && chapterId === ChapterStore.currentChapterId 
+          !PageStore.movePageId && chapterId === ChapterStore.currentChapterId 
           ? "selectedMenu" 
           : ""
         }

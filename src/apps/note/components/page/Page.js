@@ -76,7 +76,10 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       id={page.id}
       className={
         'page-li' +
-        NoteStore.showPage && page.id === PageStore.currentPageId
+        NoteStore.showPage && (
+          PageStore.movePageId
+            ? page.id === PageStore.movePageId
+            : page.id === PageStore.currentPageId)
           ? ' selected'
           : ''
       }
