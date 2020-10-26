@@ -21,7 +21,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore } = useStore();
-  const outsideClickRef = useRef(null);
+  const titleRef=  useRef(null);
   const LNBRef = useRef(null);
 
   const handleTitleInput = (e) => {
@@ -33,6 +33,9 @@ const LNBContainer = () => {
   };
 
   const createNewChapter = async () => {
+    // dialog 클릭시 blur이벤트 동작
+    if (NoteStore.showModal) return;
+    if (!ChapterStore.isNewChapter) return;
     // 분기는 더 여러개 있어야하지만 우선 만드는걸로
     if (!ChapterStore.chapterNewTitle) {
       let autoName = ChapterStore.getNewChapterTitle();
@@ -47,39 +50,40 @@ const LNBContainer = () => {
         ChapterStore.isNewChapterColor
       );
     } else {
-      alert('중복된 이름이 있습니다')
-    }
-    
+      NoteStore.setModalInfo('titleDuplicate');
+    }    
   };
 
-  // 바깥 영역 클릭시
-  useEffect(() => {
-    if (outsideClickRef.current) {
-      const handleClickOutside = async (e) => {
-        // 새 챕터 버튼 누른 것은 무시
-        if (e.target.dataset.btn === "noteNewChapterBtn") return true;
-        if (outsideClickRef.current && !outsideClickRef.current.contains(e.target)) {
-          await createNewChapter();
-        }
-      }
-      document.addEventListener("click", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("click", handleClickOutside);
-      };
-    }    
-  }, [ChapterStore.isNewChapter])
+  const handleBlur = async (e) => {
+    if (e.relatedTarget && e.relatedTarget.getAttribute('data-btn') === "editorEditBtn") {
+      ChapterStore.setChapterTempUl(false); return;
+    }
+    await createNewChapter();
+  }
 
   useEffect(() => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
-  }, [])
+  }, []);
+
+
+  // useEffect랑 useObserver 중 하나만 있으면 focus가 동작하지 않는다ㅠㅠ
+  // 임시로 둘 다 넣음
+  useEffect(()=>{
+    if (titleRef.current) titleRef.current.focus();
+  },[NoteStore.showModal, ChapterStore.isNewChapter])
+
+  useObserver(()=>{
+    if (!NoteStore.showModal && titleRef.current) titleRef.current.focus();
+  })
 
   const handleKeyDown = (event) => {
     switch (event.key) {
       case "Enter":
         createNewChapter();
         break;
+      // esc키 누르면 blur이벤트 먼저 타서 create된다
       case "Escape":
+        // event.stopPropagation(); // blur무조건 탄다
         ChapterStore.setChapterTempUl(false);
         break;
       default:
@@ -92,19 +96,20 @@ const LNBContainer = () => {
       <LNBCover>
         <LNBHeader createNewChapter={createNewChapter} />
         <LNBChapterCover ref={LNBRef}>
-            {ChapterStore.isNewChapter ? (
-              <LNBNewChapter ref={outsideClickRef}>
-                <ChapterColor color={ChapterStore.isNewChapterColor} />
-                <ChapterTitle>
-                  <ChapterInput
-                    placeholder="새 챕터"
-                    maxLength="200"
-                    onChange={handleTitleInput}
-                    onKeyDown={handleKeyDown}
-                  />
-                </ChapterTitle>
-              </LNBNewChapter>
-            ) : null}
+            <LNBNewChapter show={ChapterStore.isNewChapter}>
+              <ChapterColor color={ChapterStore.isNewChapterColor} />
+              <ChapterTitle>
+                <ChapterInput
+                  ref={titleRef}
+                  placeholder="새 챕터"
+                  maxLength="200"
+                  value={ChapterStore.chapterNewTitle}
+                  onChange={handleTitleInput}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                />
+              </ChapterTitle>
+            </LNBNewChapter>
             {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> :
             <DndProvider backend={HTML5Backend}>

@@ -157,6 +157,12 @@ export const GlobalStyle = createGlobalStyle`
     color: #ffffff !important;
     font-size: 11px !important;
   }
+  input{
+    border:none;
+  }
+  input:focus{
+    outline:none;
+  }
 `;
 
 export const LNB = styled.div`

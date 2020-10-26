@@ -216,15 +216,15 @@ const PageStore = observable({
   async getNoteInfoList(noteId) {
     await NoteRepository.getNoteInfoList(noteId).then(response => {
       const {
-        data: { dto: noteList },
+        data: { dto: {noteList} },
       } = response;
-      this.noteInfoList = noteList.noteList[0];
-      this.currentPageData = noteList.noteList[0];
-      this.isEdit = noteList.noteList[0].is_edit;
-      this.noteTitle = noteList.noteList[0].note_title;
+      this.noteInfoList = noteList[0];
+      this.currentPageData = noteList[0];
+      this.isEdit = noteList[0].is_edit;
+      this.noteTitle = noteList[0].note_title;
       this.modifiedDate = this.modifiedDateFormatting();
       EditorStore.setFileList(
-        noteList.noteList[0].fileList[0].storageFileInfoList,
+        noteList[0].fileList[0].storageFileInfoList,
       );
       // this.currentPageId = noteList.noteList[0].note_id;
     });

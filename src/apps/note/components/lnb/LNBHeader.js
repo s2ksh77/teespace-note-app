@@ -19,7 +19,7 @@ import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
 
 const LNBHeader = ({createNewChapter}) => {
-  const { ChapterStore } = useStore();
+  const { ChapterStore, PageStore } = useStore();
   const inputRef = useRef(null);
 
   // 뒤로 가기 버튼
@@ -29,6 +29,7 @@ const LNBHeader = ({createNewChapter}) => {
   }
 
   const handleNewChapterClick = async () => { 
+    if (PageStore.isEdit) return;
     if (!ChapterStore.isNewChapter) {
       ChapterStore.setChapterTempUl(true); // isNewChapter = true;
       ChapterStore.getChapterRandomColor();

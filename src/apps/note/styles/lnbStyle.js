@@ -17,12 +17,11 @@ export const LNBNewChapter = styled.div`
   user-select: none;
   margin: 0rem 0.81rem;
   padding: 0rem;
-  display: flex;
+  display: ${props=>props.show ? "flex" : "none"};
   line-height: 100% !important;
   font-size: 0.8125rem;
   width: auto;
   height: 2.81rem;
-  display: flex;
   font-weight: 500;
   border-bottom: 0.0625rem solid #dadada;
 `;

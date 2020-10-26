@@ -40,6 +40,7 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
+      case 'titleDuplicate':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'fileDelete':
@@ -57,9 +58,11 @@ const NoteMeta = {
       case 'delete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'confirm':
-        return [{ type: 'confirom', text: '확인' }]
+        return [{ type: 'confirom', text: '확인' }];
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
+      case 'titleDuplicate':
+        return [{ type: 'confirom', text: '확인' }];
       default:
         break;
     }
@@ -100,6 +103,10 @@ const NoteMeta = {
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('delete');
         break;
+      case 'titleDuplicate':
+        dialogType.title = '중복된 이름이 있습니다.';
+        dialogType.subtitle= '다른 이름을 입력해주세요.';
+        dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
       default:
         break;
     }

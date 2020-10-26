@@ -63,7 +63,7 @@ const EditorHeader = () => {
           <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <EditorHeaderContainer1>
-          <EditBtn onClick={handleClickBtn}>{editBtnText}</EditBtn>
+          <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>{editBtnText}</EditBtn>
           <EditorTitle
             id="editorTitle"
             maxLength="200"

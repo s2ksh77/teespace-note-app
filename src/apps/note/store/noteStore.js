@@ -84,6 +84,7 @@ const NoteStore = observable({
       case 'chapter':
       case 'page':
       case 'editCancel':
+      case 'titleDuplicate':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
