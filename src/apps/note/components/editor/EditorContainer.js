@@ -94,6 +94,8 @@ const EditorContainer = () => {
     input.click();
   }
 
+  // useLayoutEffect : it gets executed right after a React component render lifecycle, 
+  // and before useEffect gets triggered.
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
@@ -145,6 +147,11 @@ const EditorContainer = () => {
       GlobalVariable.setEditorWrapper(null);
     }
   }, [editorWrapperRef.current]);
+
+  // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
+  window.addEventListener('beforeunload', function(e){
+    if (!PageStore.isReadMode()) PageStore.handleSave();
+  })
 
   return useObserver(() => (
     <>
