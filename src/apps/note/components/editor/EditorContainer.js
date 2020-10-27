@@ -255,7 +255,23 @@ const EditorContainer = () => {
             anchor_bottom:false,
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
-            language: 'ko_KR'
+            language: 'ko_KR',
+            content_style: `              
+              table[style*="border-width: 0px"],
+              .mce-item-table:not([border]),
+              .mce-item-table[border="0"],
+              table[style*="border-width: 0px"] td,
+              .mce-item-table:not([border]) td,
+              .mce-item-table[border="0"] td,
+              table[style*="border-width: 0px"] th,
+              .mce-item-table:not([border]) th,
+              .mce-item-table[border="0"] th,
+              table[style*="border-width: 0px"] caption,
+              .mce-item-table:not([border]) caption,
+              .mce-item-table[border="0"] caption {
+                border: 1px solid #ccc;
+              }
+            `
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
