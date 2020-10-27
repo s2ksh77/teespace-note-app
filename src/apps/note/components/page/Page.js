@@ -76,12 +76,12 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       id={page.id}
       className={
         'page-li' +
-        NoteStore.showPage && (
+        (NoteStore.showPage && (
           PageStore.movePageId
             ? page.id === PageStore.movePageId
             : page.id === PageStore.currentPageId)
           ? ' selected'
-          : ''
+          : '')
       }
       onClick={onClickLnbPage.bind(null, page.id)}
     >
