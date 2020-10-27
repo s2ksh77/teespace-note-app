@@ -256,6 +256,7 @@ const EditorContainer = () => {
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
+            paste_data_images: true,
             table_sizing_mode:'fixed', // only impacts the width of tables and cells
             content_style: `              
               table[style*="border-width: 0px"],
