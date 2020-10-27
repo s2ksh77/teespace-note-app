@@ -256,6 +256,7 @@ const EditorContainer = () => {
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
+            table_sizing_mode:'fixed', // only impacts the width of tables and cells
             content_style: `              
               table[style*="border-width: 0px"],
               .mce-item-table:not([border]),
@@ -276,7 +277,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap checklist hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | customLink | hr table insertdatetime | insertImage insertfile media"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | customLink | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol' | insertImage insertfile media"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
