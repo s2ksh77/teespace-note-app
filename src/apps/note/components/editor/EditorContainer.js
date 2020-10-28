@@ -149,7 +149,7 @@ const EditorContainer = () => {
   }, [editorWrapperRef.current]);
 
   // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
-  window.addEventListener('beforeunload', function(e){
+  window.addEventListener('beforeunload', function (e) {
     if (!PageStore.isReadMode()) PageStore.handleSave();
   })
 
@@ -195,7 +195,7 @@ const EditorContainer = () => {
                   }
                 }
               });
-               // Register some other event callbacks...
+              // Register some other event callbacks...
               editor.on('click', function (e) {
                 const focusedTags = [...document.querySelectorAll('.noteFocusedTag')];
                 focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'))
@@ -208,8 +208,8 @@ const EditorContainer = () => {
                 }
               })
               editor.ui.registry.addButton('customLink', {
-                icon:'link',
-                tooltip:'link',
+                icon: 'link',
+                tooltip: 'link',
                 onAction: function () {
                   EditorStore.tinymce.execCommand('mceLink');
                   attachUrlValidator();
@@ -247,17 +247,17 @@ const EditorContainer = () => {
             automatic_uploads: true,
             file_picker_callback: handleFileBlob,
             default_link_target: '_blank',
-            target_list:false,
+            target_list: false,
             link_assume_external_targets: 'http',
             link_context_toolbar: true,
             link_title: false,
-            anchor_top:false, // link 입력중 dropdown으로 <top> 안뜨게 해
-            anchor_bottom:false,
+            anchor_top: false, // link 입력중 dropdown으로 <top> 안뜨게 해
+            anchor_bottom: false,
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
             paste_data_images: true,
-            table_sizing_mode:'fixed', // only impacts the width of tables and cells
+            table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: `              
               table[style*="border-width: 0px"],
               .mce-item-table:not([border]),
@@ -277,8 +277,8 @@ const EditorContainer = () => {
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
-          plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap checklist hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist checklist| outdent indent | customLink | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol' | insertImage insertfile media"
+          plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist | outdent indent | customLink | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol' | insertImage insertfile media"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />

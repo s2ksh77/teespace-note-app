@@ -241,6 +241,7 @@ const PageStore = observable({
           data: { dto: returnData },
         } = response;
         this.getNoteInfoList(returnData.note_id);
+        EditorStore.tinymce.focus();
       }
     });
     return this.currentPageData;
