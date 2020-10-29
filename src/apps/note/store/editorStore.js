@@ -12,6 +12,7 @@ const EditorStore = observable({
   isFile: false,
   selectFileIdx: '',
   selectFileElement: '',
+  downloadFileId: '',
   deleteFileId: '',
   deleteFileName: '',
   deleteFileIndex: '',
@@ -61,6 +62,9 @@ const EditorStore = observable({
     })
   },
   //storagemanager 없어서 임시
+  setDownLoadFileId(fileId) {
+    this.downloadFileId = fileId
+  },
   downloadFile(fileId) {
     let a = document.createElement("a");
     document.body.appendChild(a);

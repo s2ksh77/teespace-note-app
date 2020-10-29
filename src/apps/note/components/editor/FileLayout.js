@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn } from '../../styles/editorStyle';
 import useStore from '../../store/useStore';
@@ -9,10 +9,12 @@ import pdf from '../../assets/drive_topoint.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
-import { toJS } from 'mobx';
+import { Dropdown, Menu } from 'antd';
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useStore();
+    const [hover, setHover] = useState(false);
+    const [hoverFileId, setHoverFileId] = useState(null);
 
     const fileExtension = (extension) => {
         switch (extension) {
@@ -27,8 +29,21 @@ const FileLayout = () => {
             default: return file;
         }
     }
-    const handleFileDown = (fileId) => {
-        EditorStore.downloadFile(fileId)
+    const handleFileDown = (key) => {
+        if (key === '0') alert('준비 중입니다.');
+        if (key === '1') EditorStore.downloadFile(EditorStore.downloadFileId);
+    }
+    const onClickContextMenu = ({ key }) => {
+        handleFileDown(key);
+    }
+
+    const handleMouseHover = (fileId) => {
+        setHoverFileId(fileId);
+        setHover(true);
+    }
+    const handleMouseLeave = () => {
+        setHoverFileId(null);
+        setHover(false);
     }
 
     const handleSelectFile = (e) => {
@@ -91,6 +106,13 @@ const FileLayout = () => {
         }
     }
 
+    const menu = (
+        <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+            <Menu.Item key="0">Drive에 저장</Menu.Item>
+            <Menu.Item key="1">내 PC에 저장</Menu.Item>
+        </Menu>
+    );
+
     useEffect(() => {
         return () => {
             document.removeEventListener("click", handleSelectFile);
@@ -107,14 +129,15 @@ const FileLayout = () => {
                         className={index === EditorStore.selectFileIdx ? 'selected' : ''}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
-                    >
+                        onMouseEnter={handleMouseHover.bind(null, item.file_id)}
+                        onMouseLeave={handleMouseLeave}>
                         <FileContent>
-                            <FileDownloadIcon>
-                                <FileDownloadBtn src={downloadBtn} onClick={handleFileDown.bind(null, item.file_id ? item.file_id : null)} />
-                            </FileDownloadIcon>
-                            <FileExtensionIcon>
-                                <FileExtensionBtn src={fileExtension(item.file_extension)} />
-                            </FileExtensionIcon>
+                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={(e) => { e.stopPropagation(); EditorStore.setDownLoadFileId(item.file_id) }} >
+                                <FileDownloadIcon>
+                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                </FileDownloadIcon>
+                            </Dropdown>
+
                             <FileData>
                                 <FileDataName>
                                     <FileName>{item.file_name + '.' + item.file_extension}</FileName>

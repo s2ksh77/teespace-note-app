@@ -83,7 +83,7 @@ export const FileContent = styled.div`
   margin-left: 0px;
 `
 export const FileDownloadIcon = styled.div`
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -93,9 +93,6 @@ export const FileDownloadIcon = styled.div`
   margin-top: 0;
   width: 1.875rem;
   height: 1.875rem;
-  ${FileBody}:hover & {
-    display:flex;
-  }
 `
 
 export const FileExtensionIcon = styled.div`

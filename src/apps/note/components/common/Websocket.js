@@ -1,5 +1,6 @@
 
 export const handleWebsocket = (message) => {
+    console.log(message);
     const EVENT_TYPE = {
         CREATE: "CREATE",
         DELETE: "DELETE",
