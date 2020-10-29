@@ -50,7 +50,7 @@ export const FileBodyLayout = styled.div`
   display : flex;
   align-items: center;
   height: 4.9rem;
-  border-top: 1px solid #dadada;
+  border-top: 0px solid #dadada;
   border-bottom: 1px solid #dadada;
   overflow: hidden;
   box-sizing :border-box;

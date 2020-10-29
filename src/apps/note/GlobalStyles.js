@@ -163,6 +163,7 @@ export const GlobalStyle = createGlobalStyle`
   input:focus{
     outline:none;
   }
+  .tox-statusbar{ display :none !important; }
 `;
 
 export const LNB = styled.div`
