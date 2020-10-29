@@ -292,7 +292,7 @@ const PageStore = observable({
       dto: {
         note_id: this.currentPageData.note_id,
         note_title: this.noteTitle,
-        note_content: this.noteContent,
+        note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: '',
         TYPE: 'EDIT_DONE',
