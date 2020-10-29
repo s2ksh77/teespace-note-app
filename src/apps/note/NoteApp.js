@@ -33,7 +33,9 @@ const NoteApp = ({ layoutState, roomId }) => {
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper?.contains(e.target)) return;
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
-    const undoBtn = document.querySelector('.tox-tbtn[aria-label="Undo"]');
+    // undo,redo 버튼 두 개있는데 무조건 처음인 undo 버튼 select하도록
+    // undo 버튼이 첫 번째로 select되는게 아니라면 수정해야!
+    const undoBtn = document.querySelector('.tox-tbtn.tox-tbtn--disabled');
     if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
