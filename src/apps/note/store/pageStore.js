@@ -146,6 +146,9 @@ const PageStore = observable({
           this.currentPageId = dto.note_id;
           this.isNewPage = true;
           TagStore.setNoteTagList(dto.tagList);
+          EditorStore.setFileList(
+            dto.fileList,
+          );
         }
       },
     );

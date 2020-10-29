@@ -25,9 +25,8 @@ const EditorHeader = () => {
     if (!PageStore.isEdit) {
       NoteStore.setTargetLayout('LNB');
     } else {
-      // undo, redo 버튼 같은 클래스지만 처음 select되는건 undo btn
-      const undoBtn = document.querySelector('.tox-tbtn.tox-tbtn--disabled');
-      if (undoBtn?.getAttribute('aria-disabled') === "true") { PageStore.handleNoneEdit(); return; }
+      const isUndoActive = EditorStore.tinymce.undoManager.hasUndo();
+      if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
       NoteStore.setModalInfo('editCancel');
     }
   }
