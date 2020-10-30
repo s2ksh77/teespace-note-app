@@ -13,7 +13,7 @@ import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
-import attachUrlValidator from './UrlValidation';
+import attachUrlValidator, {checkValidation} from './UrlValidation';
 
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useStore();
@@ -194,6 +194,14 @@ const EditorContainer = () => {
                     EditorStore.setImgElement(e.element.children[0]);
                   }
                 }
+                // url invalid면 red highlighting
+                if (isAnchorElement(e.element)) {
+                  if (!checkValidation(e.element.href)) {
+                    e.element.classList.add('note-invalidUrl')
+                  } else {
+                    e.element.classList.remove('note-invalidUrl')
+                  }
+                }
               });
               // Register some other event callbacks...
               editor.on('click', function (e) {
@@ -237,7 +245,73 @@ const EditorContainer = () => {
                   ];
                   callback(items);
                 }
-              });         
+              });
+              var isAnchorElement = function (node) {
+                return node.nodeName.toLowerCase() === 'a' && node.href;
+              };
+          
+              var getAnchorElement = function () {
+                var node = editor.selection.getNode();
+                return isAnchorElement(node) ? node : null;
+              };
+          
+              editor.ui.registry.addContextForm('link-form', {
+                launch: {
+                  type: 'contextformtogglebutton',
+                  icon: 'link'
+                },
+                label: 'Link',
+                // predicate : controls when the context toolbar will appear
+                predicate: isAnchorElement,
+                initValue: function () {
+                  var elm = getAnchorElement();
+                  return !!elm ? elm.href : '';
+                },
+                commands: [
+                  {
+                    type: 'contextformtogglebutton',
+                    icon: 'link',
+                    tooltip: 'Link',
+                    primary: false,
+                    onSetup: function (buttonApi) {
+                      buttonApi.setActive(!!getAnchorElement());
+                      var nodeChangeHandler = function () {
+                        buttonApi.setActive(!editor.readonly && !!getAnchorElement());
+                      };
+                      editor.on('nodechange', nodeChangeHandler);
+                      return function () {
+                        editor.off('nodechange', nodeChangeHandler);
+                      }
+                    },
+                    onAction: function (formApi) {
+                      // var value = formApi.getValue();
+                      editor.execCommand('mceLink');
+                      attachUrlValidator();
+                      formApi.hide();
+                    }
+                  },
+                  {
+                    type: 'contextformtogglebutton',
+                    icon: 'unlink',
+                    tooltip: 'Remove link',
+                    active: false,
+                    onAction: function (formApi) {
+                      editor.execCommand("Unlink");
+                      formApi.hide();
+                    }
+                  },
+                  {
+                    type: 'contextformtogglebutton',
+                    icon: 'new-tab',
+                    tooltip: 'open link',
+                    active: false,
+                    onAction: function (formApi) {
+                      window.open(formApi.getValue())
+                      formApi.hide();
+                    }
+                  }
+                ]  
+              });
             },            
             a11y_advanced_options: true,
             image_description: false,
@@ -249,7 +323,7 @@ const EditorContainer = () => {
             default_link_target: '_blank',
             target_list: false,
             link_assume_external_targets: 'http',
-            link_context_toolbar: false,
+            link_context_toolbar: true,
             link_title: false,
             anchor_top: false, // link 입력중 dropdown으로 <top> 안뜨게 해
             anchor_bottom: false,
@@ -257,9 +331,12 @@ const EditorContainer = () => {
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
             paste_data_images: true,
-            contextmenu: 'link image imagetools table spellchecker lists',
+            contextmenu: 'image imagetools table spellchecker lists',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
-            content_style: `              
+            content_style: ` 
+              .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
+                background-color: #f8cac6;
+              }
               table[style*="border-width: 0px"],
               .mce-item-table:not([border]),
               .mce-item-table[border="0"],

@@ -133,6 +133,9 @@ export const GlobalStyle = createGlobalStyle`
   .note-show-element{
     display:flex !important;
   }
+  .note-link-input {
+    border: 1px solid #FF5151 !important;
+  }
   .note-link-error {
     position: absolute !important;
     display:none;

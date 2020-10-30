@@ -1,7 +1,7 @@
 import errorImg from '../../assets/note_error.svg';
 
 // tinyMCE dialog에 끼워넣는거라 react로 안 짬
-const renderValidation = target => {
+const renderErrorMark = target => {
   const img = document.createElement('img');
   img.src=errorImg;
   img.classList.add('note-link-error');
@@ -13,14 +13,16 @@ const renderValidation = target => {
   return [img, tooltip];
 }
 
-const modifyDisplay = (method, target, saveBtn) => {
+const modifyDisplay = (method, target, targetInput, saveBtn) => {
   switch (method) {
     case "remove":
       target.map((child)=>child.classList.remove('note-show-element'));
+      targetInput.classList.remove('note-link-input');
       saveBtn.removeAttribute('disabled');
       break;
     case "add" :
       target.map((child)=>child.classList.add('note-show-element'));
+      targetInput.classList.add('note-link-input');
       saveBtn.setAttribute('disabled', true);
       break;
     default:
@@ -31,25 +33,25 @@ const modifyDisplay = (method, target, saveBtn) => {
 // const validationSchema = Yup.object({
 //   url: Yup.string().url('해당 URL은 유효하지 않습니다.').required('Required')
 // })
-const checkValidation = (inputValue, target, saveBtn) => {
-  // if (!/^(https?:\/\/)/i.test(url)) url='http://'+url;
-  // validationSchema.isValid({url:url})
-  //                 .then((valid)=>console.log(valid))
-  if(inputValue === "") {
-    modifyDisplay("remove", target, saveBtn);
-  }
-  else if(/(http(s)?:\/\/|www.)([a-z0-9\w]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/.test(inputValue)){
-    modifyDisplay("remove", target, saveBtn);
-  } else modifyDisplay("add", target, saveBtn);
+
+export const checkValidation = (inputValue) => {
+  if (inputValue === "") return true;
+  else if (/(http(s)?:\/\/|www.)([a-z0-9\w]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/.test(inputValue)) {
+    return true;
+  } else return false;
+}
+
+const validateAndModify = (inputValue, target, targetInput, saveBtn) => {
+  modifyDisplay(checkValidation(inputValue) ? "remove" : "add", target, targetInput, saveBtn);
 }
 
 const attach_setTimeout = (count)=>{
   const targetInput = document.querySelector('.tox-dialog__body .tox-form__controls-h-stack input[type=url]'); 
   const saveBtn = document.querySelector('.tox-dialog .tox-dialog__footer-end')?.childNodes[1]
   if (targetInput && saveBtn) {
-    const nodes =  renderValidation( targetInput.parentElement);
+    const nodes =  renderErrorMark( targetInput.parentElement);
     targetInput.oninput = (e) => {
-      checkValidation(e.target.value, nodes, saveBtn)
+      validateAndModify(e.target.value, nodes, targetInput, saveBtn)
     }
   } else if (count >= 10000) return;
   else {
@@ -63,7 +65,6 @@ const attachUrlValidator = () => {
 }
 
 export default attachUrlValidator;
-
 // const UrlValidation = ({show, targetSelector}) => {
 //   if (!show) return null;
 //   return ReactDOM.render(
