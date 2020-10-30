@@ -41,6 +41,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
   });
 
   const onClickLnbPage = async (id) => {
+    if (PageStore.isEdit) return;
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapterId);
     await PageStore.setCurrentPageId(id);
