@@ -37,6 +37,8 @@ const ChapterStore = observable({
   isMovingChapter: false,
   moveChapterIdx: '',
   dragEnterChapterIdx: '',
+  chapterMap: new Map(),
+  pageMap: new Map(),
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -70,13 +72,108 @@ const ChapterStore = observable({
   setDragEnterChapterIdx(chapterIdx) {
     this.dragEnterChapterIdx = chapterIdx;
   },
+
+  createMap(notebookList) {
+    this.chapterMap.clear();
+    this.pageMap.clear();
+
+    notebookList.forEach((chapter, i) => {
+      this.chapterMap.set(chapter.id, i);
+      chapter.children.forEach((page, j) => {
+        this.pageMap.set(page.id, {parent: chapter.id, idx: j});
+      });
+    });
+  },
+
+  setLocalStorageItem(targetChannelId) {
+    const item = [];
+    this.chapterList.forEach((chapter) => {
+      const children = [];
+      chapter.children.forEach((page) => children.push(page.id));
+      item.push({id: chapter.id, children: children});
+    });
+
+    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
+  },
+
+  applyDifference(targetChannelId, notebookList) { 
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+
+    // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다.
+    const createdChapterIds = [];
+    var chapterIds = item.map((chapter) => chapter.id);
+    notebookList.forEach((chapter) => {
+      if (!chapterIds.includes(chapter.id)) {
+        createdChapterIds.push({id: chapter.id, children: chapter.children.map((page) => page.id)});
+      }
+      else {
+        const createdPageIds = [];
+        const chapterIdx = chapterIds.indexOf(chapter.id);
+        chapter.children.forEach((page) => {
+          if (!item[chapterIdx].children.includes(page.id)) {
+            createdPageIds.push(page.id);
+          }
+        })
+        
+        item[chapterIdx].children = createdPageIds.concat(item[chapterIdx].children);
+      }
+    });
+    item = createdChapterIds.concat(item);
+    
+    chapterIds = item.map((chapter) => chapter.id);
+    item.slice().forEach((chapter) => {
+      if (this.chapterMap.get(chapter.id) === undefined) {
+        item.splice(chapterIds.indexOf(chapter.id), 1);
+      }
+      else {
+        const pageIds = chapter.children.map((page) => page.id);
+        chapter.children.slice().forEach((pageId) => {
+          if (this.pageMap.get(pageId) === undefined 
+          || this.pageMap.get(pageId).parent !== chapter.id) {
+            chapter.children.splice(pageIds.indexOf(pageId), 1);
+          }
+        });
+      }
+    });
+
+    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
+  },
+
+  getLocalStorageItem(targetChannelId, notebookList) {
+    const item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+
+    const localChapterList = [];
+    item.forEach((chapter, idx) => {
+      const chapterIdx = this.chapterMap.get(chapter.id);
+      localChapterList.push(notebookList[chapterIdx]);
+      const localPageList = [];
+      chapter.children.forEach((pageId) => {
+        const pageIdx = this.pageMap.get(pageId).idx;
+        localPageList.push(notebookList[chapterIdx].children[pageIdx]);
+      })
+      localChapterList[idx].children = localPageList;
+    });
+
+    return localChapterList;
+  },
+
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {
         const {
           data: { dto: notbookList },
         } = response;
-        this.chapterList = notbookList.notbookList;
+
+        this.createMap(notbookList.notbookList);
+          
+        if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+          this.chapterList = notbookList.notbookList;
+          this.setLocalStorageItem(NoteStore.getChannelId());
+        }
+        else {
+          this.applyDifference(NoteStore.getChannelId(), notbookList.notbookList);
+          this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList.notbookList);
+        }
       }
     );
     return this.chapterList;
@@ -88,6 +185,12 @@ const ChapterStore = observable({
           const {
             data: { dto: notbookList },
           } = response;
+
+          // Update localStorage
+          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+          item.splice(0, 0, {id: notbookList.id, children: [notbookList.children[0].id]});
+          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+
           ChapterStore.getChapterList();
           this.setCurrentChapterId(notbookList.id);
           PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -106,6 +209,13 @@ const ChapterStore = observable({
             PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
             if (!this.nextSelectableChapterId) this.setAllDeleted(true);
           }
+
+          // Update localStorage
+          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+          localStorage.setItem(
+            'NoteSortData_' + NoteStore.getChannelId(), 
+            JSON.stringify(item.filter((chapter) => chapter.id !== this.deleteChapterId))
+          );
 
           ChapterStore.getChapterList();
           if (this.allDeleted) NoteStore.setShowPage(false);
@@ -128,18 +238,29 @@ const ChapterStore = observable({
   moveChapter(moveTargetChapterIdx) {
     if (this.moveChapterIdx !== moveTargetChapterIdx
       && this.moveChapterIdx + 1 !== moveTargetChapterIdx) {
-      const newChapterList = [];
+      const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+      const curChapterList = [];
+      const curItem = [];
+      
+      // Update chapterList & localStorage
+      this.chapterList.forEach((chapter, idx) => {
+        if (idx === this.moveChapterIdx) return false;
 
-      this.chapterList.forEach((chapter, index) => {
-        if (index === this.moveChapterIdx) return false;
-
-        if (index === moveTargetChapterIdx) newChapterList.push(this.chapterList[this.moveChapterIdx]);
-        newChapterList.push(chapter);
+        if (idx === moveTargetChapterIdx) { 
+          curChapterList.push(this.chapterList[this.moveChapterIdx]);
+          curItem.push(item[this.moveChapterIdx]);
+        }
+        curChapterList.push(chapter);
+        curItem.push(item[idx]);
       })
 
-      if (newChapterList.length !== this.chapterList.length) newChapterList.push(this.chapterList[this.moveChapterIdx]);
+      if (curChapterList.length !== this.chapterList.length) { 
+        curChapterList.push(this.chapterList[this.moveChapterIdx]);
+        curItem.push(item[this.moveChapterIdx]);
+      }
 
-      this.chapterList = newChapterList;
+      this.chapterList = curChapterList;
+      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(curItem));
     }
 
     this.moveChapterIdx = '';

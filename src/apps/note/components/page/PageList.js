@@ -23,6 +23,7 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
 
   const handleNewBtnClick = async targetId => {
     PageStore.setCreatePageParent(targetId);
+    PageStore.setCreatePageParentIdx(chapterIdx);
     await PageStore.createPage();
     NoteStore.setShowPage(true);
   };

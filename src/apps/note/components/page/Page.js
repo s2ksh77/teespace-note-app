@@ -20,6 +20,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
       PageStore.setMoveChapterId(chapterId);
+      PageStore.setMoveChapterIdx(chapterIdx);
     },
     end: () => {
       PageStore.setDragEnterPageIdx('');
@@ -129,6 +130,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
           <ContextMenu
             type={'page'}
             chapterId={chapterId}
+            chapterIdx={chapterIdx}
             pageId={page.id}
             pageTitle={page.text}
             nextSelectablePageId={

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
-const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
+const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
 
   const renameComponent = () => {
@@ -42,6 +42,7 @@ const ContextMenu = ({ type, chapterId, pageId, chapterTitle, pageTitle, nextSel
         break;
       case "page":
         PageStore.setDeletePageList({ note_id: pageId });
+        PageStore.setDeleteParentIdx(chapterIdx);
         NoteStore.setModalInfo('page');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;

@@ -15,7 +15,9 @@ const PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
+  createParentIdx: '',
   deletePageList: [],
+  deleteParentIdx: '',
   nextSelectablePageId: '',
   isRename: false,
   renamePageId: '',
@@ -24,6 +26,7 @@ const PageStore = observable({
   movePageId: '', // 이동을 원하는 page의 id
   movePageIdx: '', // 이동을 원하는 page의 index
   moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
+  moveChapterIdx: '',
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
@@ -59,12 +62,18 @@ const PageStore = observable({
   setCreatePageParent(chapterId) {
     this.createParent = chapterId;
   },
+  setCreatePageParentIdx(chapterIdx) {
+    this.createParentIdx = chapterIdx;
+  },
   getCreatePageParent() {
     return this.createParent;
   },
   setDeletePageList(page) {
     this.deletePageList = [];
     this.deletePageList.push(page);
+  },
+  setDeleteParentIdx(chapterIdx) {
+    this.deleteParentIdx = chapterIdx;
   },
   setNextSelectablePageId(pageId) {
     this.nextSelectablePageId = pageId;
@@ -92,6 +101,9 @@ const PageStore = observable({
   },
   setMoveChapterId(chapterId) {
     this.moveChapterId = chapterId;
+  },
+  setMoveChapterIdx(chapterIdx) {
+    this.moveChapterIdx = chapterIdx;
   },
   setDragEnterPageIdx(pageIdx) {
     this.dragEnterPageIdx = pageIdx;
@@ -138,6 +150,12 @@ const PageStore = observable({
           const {
             data: { dto },
           } = response;
+
+          // Update localStorage
+          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+          item[this.createParentIdx].children.splice(0, 0, dto.note_id);
+          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+
           this.currentPageData = dto;
           ChapterStore.getChapterList();
           this.isEdit = dto.is_edit;
@@ -162,6 +180,12 @@ const PageStore = observable({
             this.setCurrentPageId(this.nextSelectablePageId);
           }
 
+          // Update localStorage
+          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+          const children = item[this.deleteParentIdx].children.filter((pageId) => this.deletePageList[0].note_id !== pageId);
+          item[this.deleteParentIdx].children = children;
+          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+
           ChapterStore.getChapterList();
           NoteStore.setShowModal(false);
         }
@@ -183,19 +207,31 @@ const PageStore = observable({
     if (this.moveChapterId === moveTargetChapterId) { // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
       if (this.movePageIdx !== moveTargetPageIdx
         && this.movePageIdx + 1 !== moveTargetPageIdx) {
-        const newPageList = [];
+        const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+        const pageList = [];
+        const children = [];
 
-        moveTargetPageList.forEach((page, index) => {
-          if (index === this.movePageIdx) return false;
+        // Update pageList & localStorage
+        moveTargetPageList.forEach((page, idx) => {
+          if (idx === this.movePageIdx) return false;
 
-          if (index === moveTargetPageIdx) newPageList.push(moveTargetPageList[this.movePageIdx]);
-          newPageList.push(page);
+          if (idx === moveTargetPageIdx) {
+            pageList.push(moveTargetPageList[this.movePageIdx]);
+            children.push(item[moveTargetChapterIdx].children[this.movePageIdx]);
+          }
+          pageList.push(page);
+          children.push(page.id);
         })
 
-        if (moveTargetPageIdx === moveTargetPageList.length)
-          newPageList.push(moveTargetPageList[this.movePageIdx]);
+        if (moveTargetPageIdx === moveTargetPageList.length) {
+          pageList.push(moveTargetPageList[this.movePageIdx]);
+          children.push(item[moveTargetChapterIdx].children[this.movePageIdx]);
+        }
+        
+        ChapterStore.changePageList(moveTargetChapterIdx, pageList);
+        item[moveTargetChapterIdx].children = children;
+        localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
-        ChapterStore.changePageList(moveTargetChapterIdx, newPageList);
         this.setCurrentPageId(this.movePageId);
         ChapterStore.setCurrentChapterId(moveTargetChapterId);
       }
@@ -206,6 +242,25 @@ const PageStore = observable({
       await NoteRepository.movePage(this.movePageId, moveTargetChapterId).then(
         (response) => {
           if (response.status === 200) {
+            // 기존꺼 지우고
+            const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+            const children = item[this.moveChapterIdx].children.filter((pageId) => this.movePageId !== pageId);
+            item[this.moveChapterIdx].children = children;
+            
+            // 원하는 위치에 새로 추가
+            const newChildren = [];
+            moveTargetPageList.forEach((page, index) => {
+              if (index === moveTargetPageIdx) newChildren.push(this.movePageId);
+              newChildren.push(page.id);
+            })
+    
+            if (moveTargetPageIdx === moveTargetPageList.length)
+              newChildren.push(this.movePageId);
+
+            item[moveTargetChapterIdx].children = newChildren;
+            
+            localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+
             ChapterStore.getChapterList();
             this.setCurrentPageId(this.movePageId);
             ChapterStore.setCurrentChapterId(moveTargetChapterId);
