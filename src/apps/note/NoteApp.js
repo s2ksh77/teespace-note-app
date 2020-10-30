@@ -34,7 +34,7 @@ const NoteApp = ({ layoutState, roomId }) => {
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
 
-    const isUndoActive = EditorStore.tinymce.undoManager.hasUndo();
+    const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
     if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }

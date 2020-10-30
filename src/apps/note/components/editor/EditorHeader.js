@@ -25,7 +25,7 @@ const EditorHeader = () => {
     if (!PageStore.isEdit) {
       NoteStore.setTargetLayout('LNB');
     } else {
-      const isUndoActive = EditorStore.tinymce.undoManager.hasUndo();
+      const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
       if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
       NoteStore.setModalInfo('editCancel');
     }
