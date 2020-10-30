@@ -143,10 +143,10 @@ const FileLayout = () => {
                                     <FileName>{item.file_name + '.' + item.file_extension}</FileName>
                                 </FileDataName>
                                 <FileDataTime>
-                                    <FileTime>{(item.file_updated_at ? item.file_updated_at : null) + ',' + (item.file_size ? item.file_size : null)}</FileTime>
+                                    <FileTime>{item.file_size ? EditorStore.convertFileSize(item.file_size) : null}</FileTime>
                                 </FileDataTime>
                             </FileData>
-                            <FileClose style={PageStore.isReadMode() ? { display: 'none' } : { display: 'flex' }}>
+                            <FileClose style={!PageStore.isReadMode() && item.file_id === hoverFileId ? { display: 'flex' } : { display: 'none' }}>
                                 <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, item.file_name, index)} />
                             </FileClose>
                         </FileContent>
