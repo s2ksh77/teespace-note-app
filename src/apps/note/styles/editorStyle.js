@@ -174,17 +174,20 @@ export const FileTime = styled.div`
 export const FileClose = styled.div`
   display: flex;
   height: 100%;
-  width: 1.25rem;
+  width: 1.625rem;
   font-size: 0.625rem;
   padding-left: 0.4625rem;
   color: #75757F;
   cursor: pointer;
   border-radius: 0.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
 `
 
 export const FileCloseBtn = styled.img`
   width: 1rem;
   height: 1rem;
-  background-color: inherit;
-  color: #c1c6ce;
+  margin-top: 0.38rem;
+  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
 `
