@@ -15,12 +15,11 @@ import { handleWebsocket } from './components/common/Websocket';
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
   const { NoteStore, PageStore, EditorStore } = useStore();
+  const { roomStore, userStore } = useCoreStores()
+  // const { 'CHN0003': targetChId } = roomStore.getChannelIds({ roomId: roomId });
   NoteStore.setChannelId(targetChId);
-
-  // const { roomStore, authStore } = useCoreStores()
-  // const { 'CHN0003': targetChId } = roomStore.getChannelIds(roomId);
   // NoteStore.setWsId(roomId);
-  // NoteStore.setUserId(authStore.myInfo.id);
+  // NoteStore.setUserId(userStore.myProfile.id);
   // 임시
   if (!layoutState) layoutState = 'expand';
   const renderCondition = target =>
