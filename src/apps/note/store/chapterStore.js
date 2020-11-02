@@ -39,6 +39,7 @@ const ChapterStore = observable({
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
   pageMap: new Map(),
+  chapterChildren: [],
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -156,7 +157,10 @@ const ChapterStore = observable({
 
     return localChapterList;
   },
-
+  getChapterChildren(chapterId) {
+    this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
+    return this.chapterChildren;
+  },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {

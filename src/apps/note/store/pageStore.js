@@ -337,8 +337,12 @@ const PageStore = observable({
   async handleNoneEdit() {
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
+      this.deleteParentIdx = this.createParentIdx;
       await this.deletePage();
       this.isNewPage = false;
+      const childList = ChapterStore.getChapterChildren(this.createParent);
+      ChapterStore.setCurrentChapterId(this.createParent);
+      if (childList.length > 1) this.setCurrentPageId(childList[1].id);
     } else this.noneEdit(this.currentPageId);
   },
 

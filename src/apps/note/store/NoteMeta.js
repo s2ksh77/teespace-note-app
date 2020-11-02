@@ -36,7 +36,7 @@ const NoteMeta = {
         break;
       case 'editCancel':
         eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation(); PageStore.noneEdit(PageStore.currentPageId) });
+        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else PageStore.noneEdit(PageStore.currentPageId) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
@@ -105,7 +105,7 @@ const NoteMeta = {
         break;
       case 'titleDuplicate':
         dialogType.title = '중복된 이름이 있습니다.';
-        dialogType.subtitle= '다른 이름을 입력해주세요.';
+        dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
       default:
         break;
