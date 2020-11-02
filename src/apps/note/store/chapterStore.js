@@ -402,7 +402,7 @@ const ChapterStore = observable({
     if (isExist) return false;
     else return true;
   },
-  createShareChapter(shareTargetRoomId, shareTargetList) {
+  async createShareChapter(shareTargetRoomId, shareTargetList) {
     const targetList = [];
     const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
     const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);

@@ -406,7 +406,7 @@ const PageStore = observable({
       }
     }
   },
-  createSharePage(shareTargetRoomId, shareTargetList) {
+  async createSharePage(shareTargetRoomId, shareTargetList) {
     const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
     const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
 
