@@ -121,14 +121,14 @@ const ChapterStore = observable({
     });
     item = createdChapterIds.concat(item);
     
-    chapterIds = item.map((chapter) => chapter.id);
     item.slice().forEach((chapter) => {
+      chapterIds = item.map((chapter) => chapter.id);
       if (this.chapterMap.get(chapter.id) === undefined) {
         item.splice(chapterIds.indexOf(chapter.id), 1);
       }
       else {
-        const pageIds = chapter.children.map((page) => page.id);
         chapter.children.slice().forEach((pageId) => {
+          const pageIds = chapter.children;
           if (this.pageMap.get(pageId) === undefined 
           || this.pageMap.get(pageId).parent !== chapter.id) {
             chapter.children.splice(pageIds.indexOf(pageId), 1);
@@ -189,12 +189,6 @@ const ChapterStore = observable({
           const {
             data: { dto: notbookList },
           } = response;
-
-          // Update localStorage
-          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-          item.splice(0, 0, {id: notbookList.id, children: [notbookList.children[0].id]});
-          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-
           ChapterStore.getChapterList();
           this.setCurrentChapterId(notbookList.id);
           PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -213,14 +207,6 @@ const ChapterStore = observable({
             PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
             if (!this.nextSelectableChapterId) this.setAllDeleted(true);
           }
-
-          // Update localStorage
-          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-          localStorage.setItem(
-            'NoteSortData_' + NoteStore.getChannelId(), 
-            JSON.stringify(item.filter((chapter) => chapter.id !== this.deleteChapterId))
-          );
-
           ChapterStore.getChapterList();
           if (this.allDeleted) NoteStore.setShowPage(false);
           this.deleteChapterId = '';

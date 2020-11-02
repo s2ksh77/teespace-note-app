@@ -150,12 +150,6 @@ const PageStore = observable({
           const {
             data: { dto },
           } = response;
-
-          // Update localStorage
-          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-          item[this.createParentIdx].children.splice(0, 0, dto.note_id);
-          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-
           this.currentPageData = dto;
           ChapterStore.getChapterList();
           this.isEdit = dto.is_edit;
@@ -179,13 +173,6 @@ const PageStore = observable({
           if (this.currentPageId === this.deletePageList[0].note_id) {
             this.setCurrentPageId(this.nextSelectablePageId);
           }
-
-          // Update localStorage
-          const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-          const children = item[this.deleteParentIdx].children.filter((pageId) => this.deletePageList[0].note_id !== pageId);
-          item[this.deleteParentIdx].children = children;
-          localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-
           ChapterStore.getChapterList();
           NoteStore.setShowModal(false);
         }
