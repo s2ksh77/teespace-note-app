@@ -405,8 +405,38 @@ const PageStore = observable({
         }
       }
     }
+  },
+  createSharePage(shareTargetRoomId, shareTargetList) {
+    const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
+    const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
 
+    if (shareTargetList) {
+      let targetList = [];
+      shareTargetList.map(page => {
+        targetList.push(
+          {
+            WS_ID: NoteRepository.WS_ID,
+            note_id: (page.note_id || page.id),
+            note_channel_id: NoteRepository.chId,
+            USER_ID: NoteRepository.USER_ID,
+            shared_user_id: NoteRepository.USER_ID,
+            shared_room_name: shareTargetRoomName,
+            target_workspace_id: shareTargetRoomId,
+            target_channel_id: shareTargetChId
+          }
+        )
+      })
+    }
+    await NoteRepository.createSharePage(targetList).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto: noteList },
+          } = response;
+        }
+      }
+    );
   }
-});
+})
 
 export default PageStore;

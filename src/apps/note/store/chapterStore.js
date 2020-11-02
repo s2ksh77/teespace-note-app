@@ -402,6 +402,38 @@ const ChapterStore = observable({
     if (isExist) return false;
     else return true;
   },
+  createShareChapter(shareTargetRoomId, shareTargetList) {
+    const targetList = [];
+    const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
+    const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
+
+    if (shareTargetList) {
+      shareTargetList.map(chapter => {
+        targetList.push(
+          {
+            id: chapter.id,
+            ws_id: NoteRepository.WS_ID,
+            note_channel_id: NoteRepository.chId,
+            text: chapter.text,
+            USER_ID: NoteRepository.USER_ID,
+            shared_user_id: NoteRepository.USER_ID,
+            shared_room_name: shareTargetRoomName,
+            target_workspace_id: shareTargetRoomId,
+            target_channel_id: shareTargetChId
+          }
+        )
+      })
+    }
+    await NoteRepository.createShareChapter(targetList).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto: notbookList },
+          } = response;
+        }
+      }
+    );
+  }
 });
 
 export default ChapterStore;

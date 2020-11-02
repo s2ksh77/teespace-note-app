@@ -290,6 +290,21 @@ class NoteRepository {
       return Promise.resolve();
     }
   }
+
+  createShareChapter(chapterList) {
+    return API.post(`${this.URL}/chaptershare`, {
+      dto: {
+        notbookList: chapterList
+      }
+    });
+  }
+  createSharePage(pageList) {
+    return API.post(`${this.URL}/noteshare`, {
+      dto: {
+        noteList: pageList
+      }
+    });
+  }
 }
 
 export default new NoteRepository();
