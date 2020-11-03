@@ -11,7 +11,7 @@ import SearchResultNotFound from '../common/SearchResultNotFound';
 const LNBSearchResult = () => {
 	const { ChapterStore, PageStore } = useStore();
 	// 챕터 검색때만 초기화
-	const onClickChapterBtn = async (chapterId, pageId, e) => {
+	const onClickChapterBtn = (chapterId, pageId) => async () =>{
 		ChapterStore.setCurrentChapterId(chapterId);
 		await PageStore.setCurrentPageId(pageId);
 		ChapterStore.setIsTagSearching(false);
@@ -21,7 +21,7 @@ const LNBSearchResult = () => {
     document.getElementById(chapterId).scrollIntoView(true);
 	}
 
-	const onClickPageBtn = async (chapterId, pageId, e) => {
+	const onClickPageBtn = (chapterId, pageId) => async () => {
     if (PageStore.isEdit) return;
 		ChapterStore.setCurrentChapterId(chapterId);
 		PageStore.setCurrentPageId(pageId);
@@ -40,7 +40,7 @@ const LNBSearchResult = () => {
         <>
         {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
           return (
-            <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn.bind(null,chapter.id, chapter.firstPageId)}>
+            <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id, chapter.firstPageId)}>
               <ChapterSearchResultColor backgroundColor={chapter.color} />
               <ChapterSearchResultTitle>{chapter.title}</ChapterSearchResultTitle>
               <SearchResultBotttom/>
@@ -49,7 +49,7 @@ const LNBSearchResult = () => {
         })}
         {ChapterStore.searchResult?.["page"]?.map((page) => {
           return (
-            <PageSearchResult key={page.id}onClick={onClickPageBtn.bind(null,page.chapterId, page.id)}>
+            <PageSearchResult key={page.id}onClick={onClickPageBtn(page.chapterId, page.id)}>
               <PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
               <PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
               <SearchResultBotttom/>
