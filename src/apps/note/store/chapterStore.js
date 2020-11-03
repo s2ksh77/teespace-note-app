@@ -2,7 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
-import { roomStore } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -404,6 +404,7 @@ const ChapterStore = observable({
     else return true;
   },
   async createShareChapter(shareTargetRoomId, shareTargetList) {
+    const { roomStore } = useCoreStores();
     const targetList = [];
     const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
     const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
