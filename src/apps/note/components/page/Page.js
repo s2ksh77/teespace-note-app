@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
+import { getEmptyImage } from "react-dnd-html5-backend";
+import DragPreview from '../common/DragPreview';
 import ContextMenu from '../common/ContextMenu';
 import {
   PageCover,
@@ -14,7 +16,7 @@ import {
 const Page = ({ page, index, children, chapterId, chapterIdx }) => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
 
-  const [, drag] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag({
     item: { id: page.id, type: 'page' },
     begin: () => {
       PageStore.setMovePageId(page.id);
@@ -26,6 +28,9 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
     },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   const [, drop] = useDrop({
@@ -40,6 +45,10 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
         PageStore.setDragEnterPageIdx(index);
     },
   });
+
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, []);
 
   const onClickLnbPage = async (id) => {
     if (PageStore.isEdit) return;
@@ -87,6 +96,9 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
       }
       onClick={onClickLnbPage.bind(null, page.id)}
     >
+      {isDragging
+        ? <DragPreview type={'page'} title={page.text} />
+        : null}
       <PageMargin
         style={
           page.id === PageStore.getRenamePageId() && PageStore.isRename

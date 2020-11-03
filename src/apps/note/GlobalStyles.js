@@ -97,23 +97,24 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
   .draggedChapter{
-    display: flex;
+    display: none;
     align-items: center;
     position: absolute;
     width: auto;
     height: auto;
     border: 0.0625rem solid #dadada;
     border-radius: 0.5rem;
+    margin-left: 4rem;
     padding: 1.1rem;
     padding-left: 1.7rem;
     font-size: 0.81rem;
     background-color: rgba(255,255,255,0.50);
   }
   .draggedPage{
-    display: flex;
+    display: none;
     align-items: center;
     position: absolute;
-    padding-left: 1.25rem;
+    padding-left: 3.125rem;
     font-size: 0.81rem;
     background-color: rgba(30,168,223,0.20);
   }

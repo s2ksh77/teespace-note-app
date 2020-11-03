@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
+import { getEmptyImage } from "react-dnd-html5-backend";
+import DragPreview from '../common/DragPreview';
 import ChapterColor from '../chapter/ChapterColor';
 import ChapterText from '../chapter/ChapterText';
 import PageList from '../page/PageList';
@@ -10,12 +12,6 @@ import {
   ChapterCover,
   ChapterTextInput,
 } from '../../styles/chpaterStyle';
-import takaImg from '../../assets/file_move_taka.png';
-
-var draggedChapterImg;
-var draggedPageImg;
-var fileMoveImg = new Image();
-fileMoveImg.src = takaImg;
 
 const Chapter = ({ chapter, index }) => {
   const { NoteStore, ChapterStore, PageStore } = useStore();
@@ -33,7 +29,7 @@ const Chapter = ({ chapter, index }) => {
   });
 
   // 챕터를 drag했을 때 
-  const [, drag] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag({
     item: { id: chapter.id, type: 'chapter' },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
@@ -41,6 +37,9 @@ const Chapter = ({ chapter, index }) => {
     end: () => {
       ChapterStore.setDragEnterChapterIdx('');
     },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
@@ -56,6 +55,10 @@ const Chapter = ({ chapter, index }) => {
         PageStore.setDragEnterChapterIdx(index);
     },
   });
+
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, []);
 
   const onClickChapterBtn = async (id, children) => {
     if (PageStore.isEdit) return;
@@ -87,67 +90,6 @@ const Chapter = ({ chapter, index }) => {
 
   const handleFocus = (e) => e.target.select();
 
-  const onDragStartChapterContainer = (chapterText, e) => {
-    if (ChapterStore.isMovingChapter) {
-      e.dataTransfer.setDragImage(fileMoveImg, 0, 0);
-
-      draggedChapterImg = document.createElement('div');
-      draggedChapterImg.setAttribute('id', 'dragged-chapter-image');
-      draggedChapterImg.setAttribute('class', 'draggedChapter');
-      draggedChapterImg.innerText = chapterText;
-      document.body.appendChild(draggedChapterImg);
-    }
-    else if (PageStore.isMovingPage) {
-      const emptyImg = document.createElement('div');
-      e.dataTransfer.setDragImage(emptyImg, 0, 0);
-
-      draggedPageImg = document.createElement('div');
-      draggedPageImg.setAttribute('id', 'dragged-page-image');
-      draggedPageImg.setAttribute('class', 'draggedPage');
-      draggedPageImg.style.width =
-        document.getElementById(PageStore.movePageId).offsetWidth - 30 + 'px';
-      draggedPageImg.style.height =
-        document.getElementById(PageStore.movePageId).offsetHeight + 'px';
-      draggedPageImg.innerText = document.getElementById(
-        PageStore.movePageId,
-      ).innerText;
-      document.body.appendChild(draggedPageImg);
-    }
-
-    document.body.style.overflowY = 'hidden';
-  };
-
-  const onDragOverChapterContainer = (e) => {
-    if (ChapterStore.isMovingChapter) {
-      draggedChapterImg.style.top = e.clientY + 30 + 'px';
-      draggedChapterImg.style.left = e.clientX + 60 + 'px';
-    }
-    else if (PageStore.isMovingPage) {
-      draggedPageImg.style.top = e.clientY + 10 + 'px';
-      draggedPageImg.style.left = e.clientX + 10 + 'px';
-    }
-
-    e.preventDefault();
-  };
-
-  const removeDropLine = () => {
-    if (ChapterStore.isMovingChapter) {
-      ChapterStore.setDragEnterChapterIdx('');
-      document.body.removeChild(draggedChapterImg);
-      ChapterStore.setIsMovingChapter(false);
-    }
-    else if (PageStore.isMovingPage) {
-      PageStore.setDragEnterPageIdx('');
-      PageStore.setDragEnterChapterIdx('');
-      // const img = document.getElementById('dragged-page-image')
-      // if (img) img.remove();
-      document.body.removeChild(draggedPageImg);
-      PageStore.setIsMovingPage(false);
-    }
-
-    document.body.style.overflowY = '';
-  };
-
   return useObserver(() => (
     <ChapterContainer
       ref={drop}
@@ -160,6 +102,9 @@ const Chapter = ({ chapter, index }) => {
       key={chapter.id}
       itemType="chapter"
     >
+      {isDragging 
+        ? <DragPreview type={'chapter'} title={chapter.text} /> 
+        : null}
       <ChapterCover
         ref={(node) => drag(dropChapter(node))}
         onClick={onClickChapterBtn.bind(null, chapter.id, chapter.children)}
