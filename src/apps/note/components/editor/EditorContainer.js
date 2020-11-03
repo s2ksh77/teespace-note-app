@@ -15,6 +15,15 @@ import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 import attachUrlValidator, {checkValidation} from './UrlValidation';
 
+const formStr = ['링크','텍스트'];
+const changeLinkDialog = () => {
+  const form = document.querySelector('.tox-dialog__body .tox-form');
+  Array.from(form.childNodes).map((child,idx) => {
+    child.firstElementChild.textContent = formStr[idx];
+  })
+  form.classList.add('link-dialog-reverse');
+}
+
 const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
 const changeButtonStyle = (idx, count) => {
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
@@ -210,6 +219,7 @@ const EditorContainer = () => {
                   // link dialog 열렸을 때
                   if (Object.keys(e.dialog.getData()).includes('url')) {
                     attachUrlValidator();
+                    changeLinkDialog();
                   }
                 } catch(err){console.log(err)}                
               })
@@ -236,11 +246,16 @@ const EditorContainer = () => {
 
               editor.on('keydown', (e) => {
                 const target = getAnchorElement();
-                if (target && e.code ==="Space") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  target.insertAdjacentHTML('afterend', '&nbsp;')
-                  editor.selection.setCursorLocation(target.nextSibling, 1);
+                if (target && e.code ==="Space") {  
+                  const curCaretPosition = editor.selection.getRng().endOffset;
+                  const _length = target.textContent.length;
+                  // anchor tag앞에 caret 놓으면 getAnchorElement() === null
+                  if (curCaretPosition === _length-1) {                
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.insertAdjacentHTML('afterend', '&nbsp;')
+                    editor.selection.setCursorLocation(target.nextSibling, 1);
+                  }                  
                 }
               })
 

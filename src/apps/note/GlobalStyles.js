@@ -131,6 +131,9 @@ export const GlobalStyle = createGlobalStyle`
       transform: translate(-1.2rem, -1.405rem);
     }
   }  
+  .link-dialog-reverse {
+    flex-direction:column-reverse !important;
+  }
   .link-toolbar {
     flex-direction:column !important;
     width: 118px !important;
