@@ -129,6 +129,14 @@ export const GlobalStyle = createGlobalStyle`
       border-left: 0.5rem solid #FB3A3A;
       transform: translate(-1.2rem, -1.405rem);
     }
+  }  
+  .link-toolbar {
+    flex-direction:column !important;
+    width: 118px !important;
+  }
+  .link-toolbar button {
+    width:100% !important;
+    justify-content : flex-start !important;
   }
   .note-show-element{
     display:flex !important;

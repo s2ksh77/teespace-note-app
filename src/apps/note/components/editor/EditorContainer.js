@@ -15,6 +15,21 @@ import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 import attachUrlValidator, {checkValidation} from './UrlValidation';
 
+const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
+const changeButtonStyle = (idx, count) => {
+  const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
+  toolbar.classList.add('link-toolbar');
+  const target = toolbar.childNodes?.[idx];
+  if (toolbar && target) {
+    const strNode = document.createElement('div');
+    strNode.textContent = linkToolbarStr[idx];
+    target.appendChild(strNode);
+  } else if (count >= 50) return;
+  else {
+    setTimeout(changeButtonStyle, 50, idx, count+1);
+  }
+}
+
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useStore();
   const editorWrapperRef = useRef(null);
@@ -259,10 +274,42 @@ const EditorContainer = () => {
                 return isAnchorElement(node) ? node : null;
               };
               
+              editor.ui.registry.addToggleButton('customToggleLink', {
+                icon: 'link',
+                onAction: function (_) {
+                  editor.execCommand('mceLink');
+                  attachUrlValidator();
+                },
+                onSetup: function (api) {
+                  changeButtonStyle(0,0);
+                }
+              });
+              editor.ui.registry.addToggleButton('customToggleUnLink', {
+                icon: 'unlink',
+                onAction: function (_) {
+                  editor.execCommand('Unlink');
+                },
+                onSetup: function (api) {
+                  changeButtonStyle(1,0);
+                }
+              });
+              editor.ui.registry.addToggleButton('customToggleOpenLink', {
+                icon: 'new-tab',
+                tooltip:'open link',
+                onAction: function (_) {
+                  const targetUrl = getAnchorElement() ? getAnchorElement().href : null;
+                  if (targetUrl) window.open(targetUrl);
+                },
+                onSetup: function (api) {
+                  const targetUrl = getAnchorElement() ? checkValidation(getAnchorElement().href) : null;
+                  if (!targetUrl) api.setDisabled(true)
+                  changeButtonStyle(2,0);
+                }
+              });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
                 predicate : isAnchorElement,
-                items:'link unlink openlink',
+                items:'customToggleLink customToggleUnLink customToggleOpenLink',
                 position:'node',
                 scope:'node'
               })
