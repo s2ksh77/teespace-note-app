@@ -21,8 +21,8 @@ const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 const TagContentContainer = () => {
   const customExpandIcon = props => {
     if (props.isActive) {
-      return <img style={arrowStyle} src={arrowUp} />;
-    } else return <img style={arrowStyle} src={arrowDown} />;
+      return <img style={arrowStyle} src={arrowUp} alt="arrow-up" />;
+    } else return <img style={arrowStyle} src={arrowDown} alt="arrow-down" />;
   };
 
   return useObserver(() => (

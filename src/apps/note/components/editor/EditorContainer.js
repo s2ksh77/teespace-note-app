@@ -149,6 +149,7 @@ const EditorContainer = () => {
   }, [editorWrapperRef.current]);
 
   // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
+  // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
   window.addEventListener('beforeunload', function (e) {
     if (!PageStore.isReadMode()) PageStore.handleSave();
   })
@@ -188,6 +189,15 @@ const EditorContainer = () => {
             height: 'calc(100% - 8.8rem)',
             setup: function (editor) {
               setNoteEditor(editor);
+              // fired when a dialog has been opend
+              editor.on('OpenWindow',(e) => {
+                try {
+                  // link dialog 열렸을 때
+                  if (Object.keys(e.dialog.getData()).includes('url')) {
+                    attachUrlValidator();
+                  }
+                } catch(err){console.log(err)}                
+              })
               editor.on('NodeChange', function (e) {
                 if (e.element.children[0] !== undefined) {
                   if (e.element.children[0].tagName === 'IMG') {
@@ -200,29 +210,23 @@ const EditorContainer = () => {
                     e.element.classList.add('note-invalidUrl')
                   } else {
                     e.element.classList.remove('note-invalidUrl')
-                  }
+                  }  
                 }
               });
               // Register some other event callbacks...
               editor.on('click', function (e) {
                 const focusedTags = [...document.querySelectorAll('.noteFocusedTag')];
-                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'))
+                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'));   
               });
+
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
                 tooltip: '이미지 첨부',
                 onAction: function () {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
-              })
-              editor.ui.registry.addButton('customLink', {
-                icon: 'link',
-                tooltip: 'link',
-                onAction: function () {
-                  editor.execCommand('mceLink');
-                  attachUrlValidator();
-                }
               });
+
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'browse',
                 tooltip: '파일 첨부',
@@ -254,64 +258,14 @@ const EditorContainer = () => {
                 var node = editor.selection.getNode();
                 return isAnchorElement(node) ? node : null;
               };
-          
-              editor.ui.registry.addContextForm('link-form', {
-                launch: {
-                  type: 'contextformtogglebutton',
-                  icon: 'link'
-                },
-                label: 'Link',
-                // predicate : controls when the context toolbar will appear
-                predicate: isAnchorElement,
-                initValue: function () {
-                  var elm = getAnchorElement();
-                  return !!elm ? elm.href : '';
-                },
-                commands: [
-                  {
-                    type: 'contextformtogglebutton',
-                    icon: 'link',
-                    tooltip: 'Link',
-                    primary: false,
-                    onSetup: function (buttonApi) {
-                      buttonApi.setActive(!!getAnchorElement());
-                      var nodeChangeHandler = function () {
-                        buttonApi.setActive(!editor.readonly && !!getAnchorElement());
-                      };
-                      editor.on('nodechange', nodeChangeHandler);
-                      return function () {
-                        editor.off('nodechange', nodeChangeHandler);
-                      }
-                    },
-                    onAction: function (formApi) {
-                      // var value = formApi.getValue();
-                      editor.execCommand('mceLink');
-                      attachUrlValidator();
-                      formApi.hide();
-                    }
-                  },
-                  {
-                    type: 'contextformtogglebutton',
-                    icon: 'unlink',
-                    tooltip: 'Remove link',
-                    active: false,
-                    onAction: function (formApi) {
-                      editor.execCommand("Unlink");
-                      formApi.hide();
-                    }
-                  },
-                  {
-                    type: 'contextformtogglebutton',
-                    icon: 'new-tab',
-                    tooltip: 'open link',
-                    active: false,
-                    onAction: function (formApi) {
-                      window.open(formApi.getValue())
-                      formApi.hide();
-                    }
-                  }
-                ]  
-              });
+              
+              // l-click하면 나오는 메뉴
+              editor.ui.registry.addContextToolbar('link-toolbar', {
+                predicate : isAnchorElement,
+                items:'link unlink openlink',
+                position:'node',
+                scope:'node'
+              })
             },            
             a11y_advanced_options: true,
             image_description: false,
@@ -323,13 +277,14 @@ const EditorContainer = () => {
             default_link_target: '_blank',
             target_list: false,
             link_assume_external_targets: 'http',
-            link_context_toolbar: true,
+            link_context_toolbar: false,
             link_title: false,
             anchor_top: false, // link 입력중 dropdown으로 <top> 안뜨게 해
             anchor_bottom: false,
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
+            toolbar_drawer:false,
             paste_data_images: true,
             contextmenu: 'image imagetools table spellchecker lists',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
@@ -356,7 +311,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist | outdent indent | customLink | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol' | insertImage insertfile media"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist | outdent indent | link | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | insertImage insertfile media"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />

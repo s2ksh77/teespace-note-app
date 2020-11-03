@@ -15,6 +15,11 @@ const renderErrorMark = target => {
 
 const modifyDisplay = (method, target, targetInput, saveBtn) => {
   switch (method) {
+    case "blank":
+      target.map((child)=>child.classList.remove('note-show-element'));
+      targetInput.classList.remove('note-link-input');
+      saveBtn.setAttribute('disabled', true);
+      break;
     case "remove":
       target.map((child)=>child.classList.remove('note-show-element'));
       targetInput.classList.remove('note-link-input');
@@ -42,7 +47,12 @@ export const checkValidation = (inputValue) => {
 }
 
 const validateAndModify = (inputValue, target, targetInput, saveBtn) => {
-  modifyDisplay(checkValidation(inputValue) ? "remove" : "add", target, targetInput, saveBtn);
+  let type = '';
+  if (inputValue.trim() === '') type = 'blank';
+  else {
+    type = checkValidation(inputValue) ? "remove" : "add";
+  }
+  modifyDisplay(type, target, targetInput, saveBtn);
 }
 
 const attach_setTimeout = (count)=>{
@@ -50,6 +60,7 @@ const attach_setTimeout = (count)=>{
   const saveBtn = document.querySelector('.tox-dialog .tox-dialog__footer-end')?.childNodes[1]
   if (targetInput && saveBtn) {
     const nodes =  renderErrorMark( targetInput.parentElement);
+    validateAndModify(targetInput.value, nodes, targetInput, saveBtn);
     targetInput.oninput = (e) => {
       validateAndModify(e.target.value, nodes, targetInput, saveBtn)
     }

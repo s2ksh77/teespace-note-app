@@ -64,7 +64,7 @@ const NoteMeta = {
       case 'titleDuplicate':
         return [{ type: 'confirom', text: '확인' }];
       default:
-        break;
+        return;
     }
   },
   setModalConfig(type) {
@@ -107,6 +107,7 @@ const NoteMeta = {
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
+        break;
       default:
         break;
     }
