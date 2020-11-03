@@ -15,7 +15,7 @@ import { handleWebsocket } from './components/common/Websocket';
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
   const { NoteStore, PageStore, EditorStore } = useStore();
-  const { roomStore, userStore } = useCoreStores()
+  // const { roomStore, userStore } = useCoreStores()
   // const { 'CHN0003': targetChId } = roomStore.getChannelIds({ roomId: roomId });
   NoteStore.setChannelId(targetChId);
   // NoteStore.setWsId(roomId);
