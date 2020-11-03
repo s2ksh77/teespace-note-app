@@ -2,6 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
+import { roomStore } from 'teespace-core';
 
 const ChapterStore = observable({
   chapterColor: "",
