@@ -234,6 +234,16 @@ const EditorContainer = () => {
                 focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'));   
               });
 
+              editor.on('keydown', (e) => {
+                const target = getAnchorElement();
+                if (target && e.code ==="Space") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  target.insertAdjacentHTML('afterend', '&nbsp;')
+                  editor.selection.setCursorLocation(target.nextSibling, 1);
+                }
+              })
+
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
                 tooltip: '이미지 첨부',
@@ -273,7 +283,6 @@ const EditorContainer = () => {
                 var node = editor.selection.getNode();
                 return isAnchorElement(node) ? node : null;
               };
-              
               editor.ui.registry.addToggleButton('customToggleLink', {
                 icon: 'link',
                 onAction: function (_) {
@@ -333,7 +342,7 @@ const EditorContainer = () => {
             language: 'ko_KR',
             toolbar_drawer:false,
             paste_data_images: true,
-            contextmenu: 'image imagetools table spellchecker lists',
+            contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: ` 
               .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
