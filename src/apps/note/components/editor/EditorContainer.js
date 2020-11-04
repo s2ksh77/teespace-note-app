@@ -13,7 +13,16 @@ import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
-import attachUrlValidator, {checkValidation} from './UrlValidation';
+import attachUrlValidator, { checkValidation } from './UrlValidation';
+
+const formStr = ['링크', '텍스트'];
+const changeLinkDialog = () => {
+  const form = document.querySelector('.tox-dialog__body .tox-form');
+  Array.from(form.childNodes).map((child, idx) => {
+    child.firstElementChild.textContent = formStr[idx];
+  })
+  form.classList.add('link-dialog-reverse');
+}
 
 const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
 const changeButtonStyle = (idx, count) => {
@@ -26,7 +35,7 @@ const changeButtonStyle = (idx, count) => {
     target.appendChild(strNode);
   } else if (count >= 50) return;
   else {
-    setTimeout(changeButtonStyle, 50, idx, count+1);
+    setTimeout(changeButtonStyle, 50, idx, count + 1);
   }
 }
 
@@ -183,18 +192,7 @@ const EditorContainer = () => {
             <ReadModeText>읽기 모드</ReadModeText>
             <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
           </ReadModeContainer>
-        ) : (
-            // null 로 했더니 에디터 밑에 생겨버림
-            <ReadModeContainer style={{ display: 'none' }}>
-              <FontAwesomeIcon
-                icon={faLock}
-                className="readModeIcon"
-                size={'1x'}
-              />
-              <ReadModeText>읽기 모드</ReadModeText>
-              <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
-            </ReadModeContainer>
-          )}
+        ) : null}
         <Editor
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
@@ -205,13 +203,14 @@ const EditorContainer = () => {
             setup: function (editor) {
               setNoteEditor(editor);
               // fired when a dialog has been opend
-              editor.on('OpenWindow',(e) => {
+              editor.on('OpenWindow', (e) => {
                 try {
                   // link dialog 열렸을 때
                   if (Object.keys(e.dialog.getData()).includes('url')) {
                     attachUrlValidator();
+                    changeLinkDialog();
                   }
-                } catch(err){console.log(err)}                
+                } catch (err) { console.log(err) }
               })
               editor.on('NodeChange', function (e) {
                 if (e.element.children[0] !== undefined) {
@@ -225,22 +224,27 @@ const EditorContainer = () => {
                     e.element.classList.add('note-invalidUrl')
                   } else {
                     e.element.classList.remove('note-invalidUrl')
-                  }  
+                  }
                 }
               });
               // Register some other event callbacks...
               editor.on('click', function (e) {
                 const focusedTags = [...document.querySelectorAll('.noteFocusedTag')];
-                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'));   
+                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'));
               });
 
               editor.on('keydown', (e) => {
                 const target = getAnchorElement();
-                if (target && e.code ==="Space") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  target.insertAdjacentHTML('afterend', '&nbsp;')
-                  editor.selection.setCursorLocation(target.nextSibling, 1);
+                if (target && e.code === "Space") {
+                  const curCaretPosition = editor.selection.getRng().endOffset;
+                  const _length = target.textContent.length;
+                  // anchor tag앞에 caret 놓으면 getAnchorElement() === null
+                  if (curCaretPosition === _length - 1) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.insertAdjacentHTML('afterend', '&nbsp;')
+                    editor.selection.setCursorLocation(target.nextSibling, 1);
+                  }
                 }
               })
 
@@ -278,7 +282,7 @@ const EditorContainer = () => {
               var isAnchorElement = function (node) {
                 return node.nodeName.toLowerCase() === 'a' && node.href;
               };
-          
+
               var getAnchorElement = function () {
                 var node = editor.selection.getNode();
                 return isAnchorElement(node) ? node : null;
@@ -290,7 +294,7 @@ const EditorContainer = () => {
                   attachUrlValidator();
                 },
                 onSetup: function (api) {
-                  changeButtonStyle(0,0);
+                  changeButtonStyle(0, 0);
                 }
               });
               editor.ui.registry.addToggleButton('customToggleUnLink', {
@@ -299,12 +303,12 @@ const EditorContainer = () => {
                   editor.execCommand('Unlink');
                 },
                 onSetup: function (api) {
-                  changeButtonStyle(1,0);
+                  changeButtonStyle(1, 0);
                 }
               });
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
-                tooltip:'open link',
+                tooltip: 'open link',
                 onAction: function (_) {
                   const targetUrl = getAnchorElement() ? getAnchorElement().href : null;
                   if (targetUrl) window.open(targetUrl);
@@ -312,17 +316,17 @@ const EditorContainer = () => {
                 onSetup: function (api) {
                   const targetUrl = getAnchorElement() ? checkValidation(getAnchorElement().href) : null;
                   if (!targetUrl) api.setDisabled(true)
-                  changeButtonStyle(2,0);
+                  changeButtonStyle(2, 0);
                 }
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
-                predicate : isAnchorElement,
-                items:'customToggleLink customToggleUnLink customToggleOpenLink',
-                position:'node',
-                scope:'node'
+                predicate: isAnchorElement,
+                items: 'customToggleLink customToggleUnLink customToggleOpenLink',
+                position: 'node',
+                scope: 'node'
               })
-            },            
+            },
             a11y_advanced_options: true,
             image_description: false,
             image_dimensions: false,
@@ -340,7 +344,7 @@ const EditorContainer = () => {
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             language: 'ko_KR',
-            toolbar_drawer:false,
+            toolbar_drawer: false,
             paste_data_images: true,
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells

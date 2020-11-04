@@ -64,7 +64,7 @@ const Chapter = ({ chapter, index }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const onClickChapterBtn = async (id, children) => {
+  const onClickChapterBtn = (id, children) => async() => {
     if (PageStore.isEdit) return;
     ChapterStore.setCurrentChapterId(id);
     let targetPage = '';
@@ -108,7 +108,7 @@ const Chapter = ({ chapter, index }) => {
     >
       <ChapterCover
         ref={(node) => drag(dropChapter(node))}
-        onClick={onClickChapterBtn.bind(null, chapter.id, chapter.children)}
+        onClick={onClickChapterBtn(chapter.id, chapter.children)}
       >
         <ChapterColor color={chapter.color} chapterId={chapter.id} />
         {ChapterStore.getRenameChapterId() === chapter.id ? (
