@@ -18,6 +18,9 @@ const NoteStore = observable({
   showModal: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
+  isDragging: false,
+  draggedType: '',
+  draggedTitle: '',
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -97,6 +100,15 @@ const NoteStore = observable({
   },
   setLNBChapterCoverRef(ref) {
     this.LNBChapterCoverRef = ref;
+  },
+  setIsDragging(isDragging) {
+    this.isDragging = isDragging;
+  },
+  setDraggedType(type) {
+    this.draggedType = type;
+  },
+  setDraggedTitle(title) {
+    this.draggedTitle = title;
   },
 
   disableScroll(e) {

@@ -3,7 +3,6 @@ import { useObserver } from 'mobx-react';
 import useStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
-import DragPreview from '../common/DragPreview';
 import ChapterColor from '../chapter/ChapterColor';
 import ChapterText from '../chapter/ChapterText';
 import PageList from '../page/PageList';
@@ -29,17 +28,22 @@ const Chapter = ({ chapter, index }) => {
   });
 
   // 챕터를 drag했을 때 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: 'chapter' },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
+
+      NoteStore.setIsDragging(true);
+      NoteStore.setDraggedType('chapter');
+      NoteStore.setDraggedTitle(chapter.text);
     },
     end: () => {
       ChapterStore.setDragEnterChapterIdx('');
+
+      NoteStore.setIsDragging(false);
+      NoteStore.setDraggedType('');
+      NoteStore.setDraggedTitle('');
     },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
 
   // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
@@ -102,9 +106,6 @@ const Chapter = ({ chapter, index }) => {
       key={chapter.id}
       itemType="chapter"
     >
-      {isDragging 
-        ? <DragPreview type={'chapter'} title={chapter.text} /> 
-        : null}
       <ChapterCover
         ref={(node) => drag(dropChapter(node))}
         onClick={onClickChapterBtn.bind(null, chapter.id, chapter.children)}

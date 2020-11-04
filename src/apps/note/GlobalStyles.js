@@ -109,6 +109,7 @@ export const GlobalStyle = createGlobalStyle`
     padding-left: 1.7rem;
     font-size: 0.81rem;
     background-color: rgba(255,255,255,0.50);
+    z-index:20;
   }
   .draggedPage{
     display: none;
@@ -117,6 +118,7 @@ export const GlobalStyle = createGlobalStyle`
     padding-left: 3.125rem;
     font-size: 0.81rem;
     background-color: rgba(30,168,223,0.20);
+    z-index:20;
   }
   .tagBorderTopLine{
     border-top: 0.13rem solid #FB3A3A;

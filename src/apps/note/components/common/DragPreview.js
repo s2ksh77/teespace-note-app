@@ -10,12 +10,11 @@ let dragPreviewRef = null;
 const onOffsetChange = (monitor) => () => {
   if (!dragPreviewRef) return;
 
-  const clientOffset = monitor.getClientOffset();
-  const diffOffset = monitor.getDifferenceFromInitialOffset();
+  const offset = monitor.getClientOffset();
 
-  if (!clientOffset || !diffOffset) return;
+  if (!offset) return;
 
-  const transform = `translate(${clientOffset.x}px, ${diffOffset.y + 40}px)`;
+  const transform = `translate(${offset.x + 10}px, ${offset.y - 20}px)`;
 
   dragPreviewRef.style['display'] = 'flex';
   dragPreviewRef.style['transform'] = transform;

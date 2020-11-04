@@ -16,6 +16,7 @@ import LNBTag from "./LNBTag";
 import ChapterList from './ChapterList';
 import LNBSearchResult from './LNBSearchResult';
 import ChapterColor from "../chapter/ChapterColor"
+import DragPreview from "../common/DragPreview";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -113,6 +114,11 @@ const LNBContainer = () => {
             {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> :
             <DndProvider backend={HTML5Backend}>
+              {NoteStore.isDragging
+                ? NoteStore.draggedType && NoteStore.draggedTitle
+                  ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
+                  : null
+                : null}
               <ChapterList type={"chapter"} />
               <LNBTag />
               {/* <ChapterList type={"shared"}/> )}*/}
