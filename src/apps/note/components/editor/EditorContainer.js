@@ -269,7 +269,8 @@ const EditorContainer = () => {
                   editor.execCommand('mceLink');
                 },
                 onSetup: function (api) {
-                  changeButtonStyle(0, 0);
+                  // 텍스트 블록 선택했을 때 링크 말고 다른 menu도 떠서 블록선택 안했을 때만 보이게 하기
+                  if (editor.selection.isCollapsed()) changeButtonStyle(0, 0);
                 }
               });
               editor.ui.registry.addToggleButton('customToggleUnLink', {
@@ -278,7 +279,7 @@ const EditorContainer = () => {
                   editor.execCommand('Unlink');
                 },
                 onSetup: function (api) {
-                  changeButtonStyle(1, 0);
+                  if (editor.selection.isCollapsed()) changeButtonStyle(1, 0);
                 }
               });
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
@@ -288,17 +289,17 @@ const EditorContainer = () => {
                   const targetUrl = getAnchorElement() ? getAnchorElement().href : null;
                   if (targetUrl) window.open(targetUrl);
                 },
-                onSetup: function (api) {
+                onSetup: function (api) {                  
                   const targetUrl = getAnchorElement() ? checkUrlValidation(getAnchorElement().href) : null;
                   if (!targetUrl) api.setDisabled(true)
-                  changeButtonStyle(2, 0);
+                  if (editor.selection.isCollapsed()) changeButtonStyle(2, 0);
                 }
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
                 predicate: isAnchorElement,
                 items: 'customToggleLink customToggleUnLink customToggleOpenLink',
-                position: 'node',
+                position: 'selection',
                 scope: 'node'
               })
             },
