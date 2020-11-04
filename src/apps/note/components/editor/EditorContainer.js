@@ -13,31 +13,8 @@ import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
-import attachUrlValidator, { checkValidation } from './UrlValidation';
-
-const formStr = ['링크', '텍스트'];
-const changeLinkDialog = () => {
-  const form = document.querySelector('.tox-dialog__body .tox-form');
-  Array.from(form.childNodes).map((child, idx) => {
-    child.firstElementChild.textContent = formStr[idx];
-  })
-  form.classList.add('link-dialog-reverse');
-}
-
-const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
-const changeButtonStyle = (idx, count) => {
-  const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
-  toolbar.classList.add('link-toolbar');
-  const target = toolbar.childNodes?.[idx];
-  if (toolbar && target) {
-    const strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
-    target.appendChild(strNode);
-  } else if (count >= 50) return;
-  else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
-  }
-}
+import { checkUrlValidation } from '../common/validators.js'
+import {changeLinkDialog, changeButtonStyle } from './customLink.js'
 
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useStore();
@@ -207,7 +184,6 @@ const EditorContainer = () => {
                 try {
                   // link dialog 열렸을 때
                   if (Object.keys(e.dialog.getData()).includes('url')) {
-                    attachUrlValidator();
                     changeLinkDialog();
                   }
                 } catch (err) { console.log(err) }
@@ -220,7 +196,7 @@ const EditorContainer = () => {
                 }
                 // url invalid면 red highlighting
                 if (isAnchorElement(e.element)) {
-                  if (!checkValidation(e.element.href)) {
+                  if (!checkUrlValidation(e.element.href)) {
                     e.element.classList.add('note-invalidUrl')
                   } else {
                     e.element.classList.remove('note-invalidUrl')
@@ -291,7 +267,6 @@ const EditorContainer = () => {
                 icon: 'link',
                 onAction: function (_) {
                   editor.execCommand('mceLink');
-                  attachUrlValidator();
                 },
                 onSetup: function (api) {
                   changeButtonStyle(0, 0);
@@ -314,7 +289,7 @@ const EditorContainer = () => {
                   if (targetUrl) window.open(targetUrl);
                 },
                 onSetup: function (api) {
-                  const targetUrl = getAnchorElement() ? checkValidation(getAnchorElement().href) : null;
+                  const targetUrl = getAnchorElement() ? checkUrlValidation(getAnchorElement().href) : null;
                   if (!targetUrl) api.setDisabled(true)
                   changeButtonStyle(2, 0);
                 }
@@ -349,6 +324,9 @@ const EditorContainer = () => {
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: ` 
+              a {
+                cursor:pointer;
+              }
               .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
                 background-color: #f8cac6;
               }

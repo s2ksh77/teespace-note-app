@@ -136,6 +136,10 @@ export const GlobalStyle = createGlobalStyle`
   .link-dialog-reverse {
     flex-direction:column-reverse !important;
   }
+  .note-link-footer{
+    flex-direction:row-reverse !important;
+    margin: auto !important;
+  }
   .link-toolbar {
     flex-direction:column !important;
     width: 118px !important;
