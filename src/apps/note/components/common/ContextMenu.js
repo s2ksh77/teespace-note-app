@@ -56,9 +56,11 @@ const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTi
       case 'chapter':
         ChapterStore.setExportId(chapterId);
         ChapterStore.setExportTitle(chapterTitle);
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
         PageStore.setExportId(pageId);
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
     }
