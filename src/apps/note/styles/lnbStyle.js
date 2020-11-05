@@ -17,7 +17,7 @@ export const LNBNewChapter = styled.div`
   user-select: none;
   margin: 0rem 0.81rem;
   padding: 0rem;
-  display: ${props=>props.show ? "flex" : "none"};
+  display: flex;
   line-height: 100% !important;
   font-size: 0.8125rem;
   width: auto;
