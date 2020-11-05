@@ -4,7 +4,7 @@ import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
-
+import html2pdf from 'html2pdf.js';
 const PageStore = observable({
   notechannel_id: '',
   noteInfoList: [],
@@ -31,6 +31,8 @@ const PageStore = observable({
   dragEnterChapterIdx: '',
   modifiedDate: '',
   isNewPage: false,
+  exportPageId: '',
+  exportPageTitle: '',
   getPageId(e) {
     const {
       target: { id },
@@ -214,7 +216,7 @@ const PageStore = observable({
           pageList.push(moveTargetPageList[this.movePageIdx]);
           children.push(item[moveTargetChapterIdx].children[this.movePageIdx]);
         }
-        
+
         ChapterStore.changePageList(moveTargetChapterIdx, pageList);
         item[moveTargetChapterIdx].children = children;
         localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
@@ -233,19 +235,19 @@ const PageStore = observable({
             const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
             const children = item[this.moveChapterIdx].children.filter((pageId) => this.movePageId !== pageId);
             item[this.moveChapterIdx].children = children;
-            
+
             // 원하는 위치에 새로 추가
             const newChildren = [];
             moveTargetPageList.forEach((page, index) => {
               if (index === moveTargetPageIdx) newChildren.push(this.movePageId);
               newChildren.push(page.id);
             })
-    
+
             if (moveTargetPageIdx === moveTargetPageList.length)
               newChildren.push(this.movePageId);
 
             item[moveTargetChapterIdx].children = newChildren;
-            
+
             localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
             ChapterStore.getChapterList();
@@ -436,7 +438,51 @@ const PageStore = observable({
     //     }
     //   }
     // );
-  }
+  },
+  setExportId(pageId) {
+    this.exportPageId = pageId;
+    this.exportPageData();
+  },
+  async exportPageData() {
+    let returnData = '';
+    await NoteRepository.getNoteInfoList(this.exportPageId).then(response => {
+      const {
+        data: { dto },
+      } = response;
+      this.exportPageTitle = dto.note_title
+      returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
+    })
+    this.makeExportElement(returnData, 'page');
+  },
+  makeExportElement(data, type) {
+    const fragment = document.createElement('div');
+    fragment.style.visibility = 'visible';
+    fragment.style.opacity = 0;
+    fragment.style.width = 'fit-content';
+    fragment.setAttribute('id', 'exportTarget');
+
+    const targetDIV = document.createElement('div');
+    targetDIV.setAttribute('id', 'exportTargetDiv');
+    targetDIV.setAttribute('class', 'export');
+    targetDIV.innerHTML = data;
+    fragment.appendChild(targetDIV);
+    document.body.appendChild(fragment);
+    this.exportDownloadPDF(type);
+  },
+  exportDownloadPDF(type) {
+    const element = document.getElementById('exportTargetDiv');
+    const opt = {
+      margin: 2,
+      filename: type === 'page' ? `${this.exportPageTitle}.pdf` : `${ChapterStore.exportChapterTitle}.pdf`,
+      pagebreak: { after: '.afterClass', avoid: 'span' },
+      image: { type: 'jpeg', quality: 0.98 },
+      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf(element, opt).then(() => {
+      document.getElementById('exportTarget').remove();
+    });
+  },
+
 })
 
 export default PageStore;

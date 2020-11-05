@@ -51,26 +51,41 @@ const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTi
     }
   };
 
+  const exportComponent = () => {
+    switch (type) {
+      case 'chapter':
+        ChapterStore.setExportId(chapterId);
+        ChapterStore.setExportTitle(chapterTitle);
+        break;
+      case 'page':
+        PageStore.setExportId(pageId);
+        break;
+      default: break;
+    }
+  }
+
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
-    
+
     if (key === "0") renameComponent();
     else if (key === "1") deleteComponent();
+    else exportComponent();
   };
 
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       <Menu.Item key="0">이름 변경</Menu.Item>
       <Menu.Item key="1">삭제</Menu.Item>
+      <Menu.Item key="2">내보내기(.pdf)</Menu.Item>
     </Menu>
   );
 
   return useObserver(() => (
     <ContextMenuCover
-      className="ellipsisBtn" 
-      overlay={menu} 
-      trigger={['click']} 
-      placement="bottomRight" 
+      className="ellipsisBtn"
+      overlay={menu}
+      trigger={['click']}
+      placement="bottomRight"
       onClick={(e) => {
         e.stopPropagation();
         NoteStore.LNBChapterCoverRef.addEventListener('wheel', NoteStore.disableScroll);

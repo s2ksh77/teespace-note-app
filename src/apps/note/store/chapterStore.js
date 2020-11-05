@@ -40,6 +40,8 @@ const ChapterStore = observable({
   chapterMap: new Map(),
   pageMap: new Map(),
   chapterChildren: [],
+  exportChapterId: '',
+  exportChapterTitle: '',
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -81,7 +83,7 @@ const ChapterStore = observable({
     notebookList.forEach((chapter, i) => {
       this.chapterMap.set(chapter.id, i);
       chapter.children.forEach((page, j) => {
-        this.pageMap.set(page.id, {parent: chapter.id, idx: j});
+        this.pageMap.set(page.id, { parent: chapter.id, idx: j });
       });
     });
   },
@@ -91,13 +93,13 @@ const ChapterStore = observable({
     this.chapterList.forEach((chapter) => {
       const children = [];
       chapter.children.forEach((page) => children.push(page.id));
-      item.push({id: chapter.id, children: children});
+      item.push({ id: chapter.id, children: children });
     });
 
     localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
   },
 
-  applyDifference(targetChannelId, notebookList) { 
+  applyDifference(targetChannelId, notebookList) {
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
 
     // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다.
@@ -105,7 +107,7 @@ const ChapterStore = observable({
     var chapterIds = item.map((chapter) => chapter.id);
     notebookList.forEach((chapter) => {
       if (!chapterIds.includes(chapter.id)) {
-        createdChapterIds.push({id: chapter.id, children: chapter.children.map((page) => page.id)});
+        createdChapterIds.push({ id: chapter.id, children: chapter.children.map((page) => page.id) });
       }
       else {
         const createdPageIds = [];
@@ -115,12 +117,12 @@ const ChapterStore = observable({
             createdPageIds.push(page.id);
           }
         })
-        
+
         item[chapterIdx].children = createdPageIds.concat(item[chapterIdx].children);
       }
     });
     item = createdChapterIds.concat(item);
-    
+
     item.slice().forEach((chapter) => {
       chapterIds = item.map((chapter) => chapter.id);
       if (this.chapterMap.get(chapter.id) === undefined) {
@@ -129,8 +131,8 @@ const ChapterStore = observable({
       else {
         chapter.children.slice().forEach((pageId) => {
           const pageIds = chapter.children;
-          if (this.pageMap.get(pageId) === undefined 
-          || this.pageMap.get(pageId).parent !== chapter.id) {
+          if (this.pageMap.get(pageId) === undefined
+            || this.pageMap.get(pageId).parent !== chapter.id) {
             chapter.children.splice(pageIds.indexOf(pageId), 1);
           }
         });
@@ -169,7 +171,7 @@ const ChapterStore = observable({
         } = response;
 
         this.createMap(notbookList.notbookList);
-          
+
         if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
           this.chapterList = notbookList.notbookList;
           this.setLocalStorageItem(NoteStore.getChannelId());
@@ -231,12 +233,12 @@ const ChapterStore = observable({
       const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
       const curChapterList = [];
       const curItem = [];
-      
+
       // Update chapterList & localStorage
       this.chapterList.forEach((chapter, idx) => {
         if (idx === this.moveChapterIdx) return false;
 
-        if (idx === moveTargetChapterIdx) { 
+        if (idx === moveTargetChapterIdx) {
           curChapterList.push(this.chapterList[this.moveChapterIdx]);
           curItem.push(item[this.moveChapterIdx]);
         }
@@ -244,7 +246,7 @@ const ChapterStore = observable({
         curItem.push(item[idx]);
       })
 
-      if (curChapterList.length !== this.chapterList.length) { 
+      if (curChapterList.length !== this.chapterList.length) {
         curChapterList.push(this.chapterList[this.moveChapterIdx]);
         curItem.push(item[this.moveChapterIdx]);
       }
@@ -303,11 +305,9 @@ const ChapterStore = observable({
     this.isNewChapterColor =
       COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
   },
-  getChapterColor() {
-    this.chapterList.forEach((chapter) => {
-      this.chapterColor = chapter.color;
-      return this.chapterColor;
-    });
+  getChapterColor(chapterId) {
+    const { value } = NoteRepository.getChapterColor(chapterId);
+    return value;
   },
   getChapterName(chapterId) {
     const { value } = NoteRepository.getChapterText(chapterId);
@@ -433,6 +433,27 @@ const ChapterStore = observable({
     //     }
     //   }
     // );
+  },
+  setExportId(chapterId) {
+    this.exportChapterId = chapterId;
+    this.exportChapterData();
+  },
+  setExportTitle(chapterTitle) {
+    this.exportChapterTitle = chapterTitle;
+  },
+  async exportChapterData() {
+    let returnData = '';
+    await NoteRepository.getChapterChildren(this.exportChapterId).then((response) => {
+      const {
+        data: { dto: { noteList } },
+      } = response;
+      if (noteList.length > 0) {
+        noteList.forEach((page, idx) => {
+          returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
+        })
+      } else return alert('하위에 속한 페이지가 없습니다.');
+      PageStore.makeExportElement(returnData, 'chapter');
+    })
   }
 });
 

@@ -51,8 +51,7 @@ class NoteRepository {
 
   getNoteTagList(noteId) {
     return API.Get(
-      `${
-        this.URL
+      `${this.URL
       }/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
     );
   }
@@ -65,8 +64,7 @@ class NoteRepository {
   // }
   getAllSortedTagList() {
     return API.Get(
-      `${this.URL}/tagSort?action=List&note_channel_id=${
-        this.chId
+      `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
       }&t=${new Date().getTime().toString()}`,
     );
   }
@@ -78,16 +76,28 @@ class NoteRepository {
     );
   }
 
+  getChapterChildren(chapterId) {
+    return API.Get(
+      `${this.URL}/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
+    );
+  }
+
+  getChapterInfoList(chapterId) {
+    return API.Get(
+      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
+    );
+  }
+
   getChapterColor(chapterId) {
     const { data } = API.Get(
-      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`,
+      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
     );
     return data.color;
   }
 
   getChapterText(chapterId) {
     const { data } = API.Get(
-      `${this.URL}/notebook?action=List&note_channel_id=${this.chId}&id=${chapterId}`,
+      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
     );
     return data.text;
   }

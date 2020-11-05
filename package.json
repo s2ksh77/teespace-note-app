@@ -20,6 +20,7 @@
     "autobind-decorator": "^2.4.0",
     "axios": "^0.20.0",
     "craco-less": "^1.17.0",
+    "html2pdf.js": "^0.9.2",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
