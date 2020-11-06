@@ -138,7 +138,6 @@ const EditorContainer = () => {
   const initialMode = () => {
     if (PageStore.isReadMode()) EditorStore.tinymce?.setMode('readonly');
     else EditorStore.tinymce?.setMode('design');
-    EditorStore.handleLinkListener();
   };
 
   useEffect(() => {
@@ -181,6 +180,9 @@ const EditorContainer = () => {
             setup: function (editor) {
               setNoteEditor(editor);
               // fired when a dialog has been opend
+              editor.on('init', () => {
+                EditorStore.handleLinkListener();
+              })
               editor.on('OpenWindow', (e) => {
                 try {
                   // link dialog 열렸을 때
