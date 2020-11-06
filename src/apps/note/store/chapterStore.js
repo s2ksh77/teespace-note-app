@@ -163,6 +163,18 @@ const ChapterStore = observable({
     this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
     return this.chapterChildren;
   },
+  async fetchChapterList() {
+    await this.getChapterList();
+    if (this.chapterList.length === 0) {
+      NoteStore.setShowPage(false);
+    } else {
+      NoteStore.setShowPage(true);
+      const chapterId = this.chapterList[0].id;
+      const pageId = ChapterStore.chapterList[0].children?.[0]?.id;
+      this.setCurrentChapterId(chapterId);
+      await PageStore.setCurrentPageId(pageId);
+    }
+  },
   async getChapterList() {
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {
