@@ -138,6 +138,7 @@ const EditorContainer = () => {
   const initialMode = () => {
     if (PageStore.isReadMode()) EditorStore.tinymce?.setMode('readonly');
     else EditorStore.tinymce?.setMode('design');
+    EditorStore.handleLinkListener();
   };
 
   useEffect(() => {

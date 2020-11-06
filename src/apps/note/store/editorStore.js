@@ -3,6 +3,7 @@ import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import { openLink } from '../components/editor/customLink'
 
 const EditorStore = observable({
   contents: '',
@@ -302,6 +303,18 @@ const EditorStore = observable({
       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
       i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  },
+  handleLinkListener() {
+    const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
+    if (targetList && targetList.length > 0) {
+      Array.from(targetList).map((el) => {
+        el.addEventListener('click', () => {
+          const href = el.getAttribute('href');
+          const target = el.getAttribute('target');
+          openLink(href, target);
+        });
+      });
+    }
   }
 });
 
