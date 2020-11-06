@@ -38,6 +38,8 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
         break;
     }
   }
+
+  // observer가 NoteStore.showModal을 관찰하도록 두 번째 배열 인자에 넘어줌!
   useEffect(() => {
     const focusCondition = ChapterStore.isNewChapter || !NoteStore.showModal;
     if (titleRef.current && focusCondition) titleRef.current.focus();

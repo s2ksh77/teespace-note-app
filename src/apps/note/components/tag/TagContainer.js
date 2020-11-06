@@ -5,18 +5,25 @@ import TagContentContainer from './TagContentContainer';
 import { TagContentCover } from '../../styles/tagStyle';
 import TagHeader from './TagHeader';
 import TagNotFound from './TagNotFound'
+import LoadingImgContainer from '../common/LoadingImgContainer';
 
 const TagContainer = () => {
 
   useEffect(() => {
-    TagStore.getAllSortedTagList();
+    TagStore.fetchTagData();
   }, [])
+
+  const renderContent = () => {
+    if (TagStore.tagPanelLoading) return <LoadingImgContainer/>
+    else if (TagStore.hasTag) return <TagContentContainer />;
+    else return <TagNotFound />;
+  }
 
   return useObserver(() => (
     <>
       <TagHeader />
       <TagContentCover>
-        {(TagStore.hasTag) ? <TagContentContainer /> : <TagNotFound />}
+        {renderContent()}
       </TagContentCover>
     </>
   ));

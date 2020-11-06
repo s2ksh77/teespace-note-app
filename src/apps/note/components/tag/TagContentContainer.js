@@ -9,8 +9,6 @@ import SearchResultNotFound from '../common/SearchResultNotFound';
 import arrowUp from '../../assets/ts_arrow_up_line@3x.png';
 import arrowDown from '../../assets/ts_arrow_down_line@3x.png';
 
-const arrowStyle = { width: '0.62rem' };
-const arrowPosition = 'right';
 const categoryInfo = {
   KOR: 'ㄱ ~ ㅎ',
   ENG: 'A ~ Z',
@@ -18,20 +16,21 @@ const categoryInfo = {
   ETC: '기타',
 };
 const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
-const TagContentContainer = () => {
-  const customExpandIcon = props => {
-    if (props.isActive) {
-      return <img style={arrowStyle} src={arrowUp} alt="arrow-up" />;
-    } else return <img style={arrowStyle} src={arrowDown} alt="arrow-down" />;
-  };
 
+const customExpandIcon = props => {
+  if (props.isActive) {
+    return <img style={{ width: '0.62rem' }} src={arrowUp} alt="arrow-up" />;
+  } else return <img style={{ width: '0.62rem' }} src={arrowDown} alt="arrow-down" />;
+};
+const TagContentContainer = () => {  
+  
   return useObserver(() => (
     <>
       {Object.keys(TagStore.targetTagList).length > 0 ? (
         <StyledCollapse
           defaultActiveKey={defaultActiveArr}
           expandIcon={panelProps => customExpandIcon(panelProps)}
-          expandIconPosition={arrowPosition}
+          expandIconPosition={'right'}
         >
           {Object.keys(TagStore.targetTagList).map((category, idx) => {
             return (

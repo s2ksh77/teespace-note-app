@@ -3,7 +3,7 @@ import useNoteStore from '../../store/useStore';
 import { observer } from 'mobx-react';
 import EditorContainer from '../editor/EditorContainer';
 import '../../styles/note.css';
-import LoadingImgContainer from '../common/loadingImg';
+import LoadingImgContainer from '../common/LoadingImgContainer';
 import PageNotFound from './PageNotFound';
 
 const { ChapterStore, PageStore } = useNoteStore();

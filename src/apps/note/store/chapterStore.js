@@ -167,18 +167,18 @@ const ChapterStore = observable({
     await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
       (response) => {
         const {
-          data: { dto: notbookList },
+          data: { dto: {notbookList} },
         } = response;
 
-        this.createMap(notbookList.notbookList);
+        this.createMap(notbookList);
 
         if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-          this.chapterList = notbookList.notbookList;
+          this.chapterList = notbookList;
           this.setLocalStorageItem(NoteStore.getChannelId());
         }
         else {
-          this.applyDifference(NoteStore.getChannelId(), notbookList.notbookList);
-          this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList.notbookList);
+          this.applyDifference(NoteStore.getChannelId(), notbookList);
+          this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
         }
       }
     );

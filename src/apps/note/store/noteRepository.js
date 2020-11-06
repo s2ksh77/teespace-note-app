@@ -62,11 +62,16 @@ class NoteRepository {
   //     `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
-  getAllSortedTagList() {
-    return API.Get(
-      `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
-      }&t=${new Date().getTime().toString()}`,
-    );
+  async getAllSortedTagList() {
+    try {
+      const res = await API.Get(
+        `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
+        }&t=${new Date().getTime().toString()}`,
+      );
+      return res.data.dto.tag_index_list_dto;
+    } catch(err) {
+      throw Error(err.message);
+    }    
   }
 
   getTagNoteList(tagId) {

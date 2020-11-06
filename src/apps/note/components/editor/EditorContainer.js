@@ -287,7 +287,6 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
-                tooltip: 'open link',
                 onAction: function (_) {
                   const targetUrl = getAnchorElement() ? getAnchorElement().href : null;
                   if (targetUrl) window.open(targetUrl);

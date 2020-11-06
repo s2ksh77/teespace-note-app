@@ -64,16 +64,26 @@ const TagStore = observable({
   //   const target = tagList.filter((item) => item.text.includes('번'));
   //   return this.allTagList;
   // },  
-  async getAllSortedTagList() {  
-    this.tagPanelLoading = true;
-    const res = await NoteRepository.getAllSortedTagList();
-    const {data:{dto:{tag_index_list_dto}}} = res;    
-    this.allSortedTagList = tag_index_list_dto;
-    if (this.allSortedTagList.length === 0) {
-      this.hasTag = false;
-      return; 
-    } else this.hasTag = true;
+  setPanelLoading(isLoading) {
+    this.tagPanelLoading = isLoading;
+  },
+  setHasTag(hasTag) {
+    this.hasTag = hasTag;
+  },
+  // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
+  // 일련의 flow
+  async fetchTagData() { 
+    this.setPanelLoading(true);
+    await this.getAllSortedTagList();
+    // 태그별 정리
+    this.getFilteredTagObj(); 
+    // kor, eng, num, etc별 sort한 키
+    this.setSortedTagList();
+    this.setTargetTagList();
+    this.setPanelLoading(false);  
+  },
 
+  getFilteredTagObj() {
     /*
        this.filteredTagObj 만들기
        item : KEY별로
@@ -82,7 +92,7 @@ const TagStore = observable({
                 tagName2:{tagId:'', note_id:[]}}        
         }
     */
-
+    let results = {};
     this.allSortedTagList.forEach((item) => { 
       let resultObj = {};
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
@@ -97,16 +107,25 @@ const TagStore = observable({
           }
         }
       })
-      this.filteredTagObj[item.KEY] = resultObj;
-    })
-
-    // key 정렬
+      results[item.KEY] = resultObj;
+    });
+    this.filteredTagObj = {...results};
+    return this.filteredTagObj;
+  },
+  // tag key 정렬
+  // sortTagKey 예시 : ["*", "1", "8", "T", "a", "t", "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅌ", "ㅍ", "ㅎ"]
+  sortTagKey() {
     let tagKey = [];
     this.allSortedTagList.forEach((category) => {
       tagKey.push(category["KEY"])
     })
     tagKey.sort();
-    
+    return tagKey;
+  },
+
+  // kor, eng, num, etc별 sort한 키
+  setSortedTagList() {
+    let tagKey = this.sortTagKey();
     // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
     let korObj = {}, engObj = {}, numObj = {}, etcObj = {};
     tagKey.forEach((key) => {
@@ -128,8 +147,18 @@ const TagStore = observable({
     if ( Object.keys(engObj).length > 0 ) this.sortedTagList["ENG"] = engObj;
     if ( Object.keys(numObj).length > 0 ) this.sortedTagList["NUM"] = numObj;
     if ( Object.keys(etcObj).length > 0 ) this.sortedTagList["ETC"] = etcObj;
-    
-    this.tagPanelLoading=false;    
+    return this.sortedTagList;
+  },
+  setAllSortedTagList(tagList) {
+    this.allSortedTagList = tagList;
+    if (this.allSortedTagList.length === 0) {
+      this.setHasTag(false);
+    }
+    else this.setHasTag(true);
+  },
+  async getAllSortedTagList() { 
+    const tag_index_list_dto = await NoteRepository.getAllSortedTagList();
+    this.setAllSortedTagList(tag_index_list_dto);
     return this.allSortedTagList;
   },
   async getTagNoteList(tagId) {
@@ -156,24 +185,19 @@ const TagStore = observable({
   getTargetTagList() {
     return this.targetTagList;
   },
-  // 안써서 일단 주석처리 : setIsSearching에서 set해준다
-  // setTargetTagList() {
-  //   if (this.isSearching) {
-  //     this.targetTagList = TagStore.searchResult;
-  //   } else {
-  //     this.targetTagList = TagStore.sortedTagList;
-  //   }
-  // },
+  setTargetTagList() {
+    if (this.isSearching) {
+      this.targetTagList = TagStore.searchResult;
+    } else {
+      this.targetTagList = TagStore.sortedTagList;
+    }
+  },
   getIsSearching() {
     return this.isSearching;
   },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
-    if (this.isSearching) {
-      this.targetTagList = this.searchResult;
-    } else {
-      this.targetTagList = this.sortedTagList;
-    }
+    this.setTargetTagList();
     // 초기화
     if (!isSearching) {
       this.searchString = '';
