@@ -11,14 +11,14 @@ import {
   ModalCancelBtn
 } from '../../styles/commonStyle';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import normalIcon from '../../assets/ts_info_normal@3x.png';
 import alertIcon from '../../assets/ts_popup_info_alert@3x.png';
 import defaultIcon from '../../assets/ts_info@3x.png';
 
 const icon = { normal: normalIcon, alert: alertIcon, default: defaultIcon };
 const Modal = () => {
-  const { NoteStore } = useStore();
+  const { NoteStore } = useNoteStore();
   const { type, title, subTitle, buttons } = NoteStore.modalInfo;
 
   let el = ReactDom.createPortal(

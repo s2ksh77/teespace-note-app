@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import EditorHeader from './EditorHeader';
 import {
   EditorContainerWrapper,
@@ -14,10 +14,10 @@ import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 import { checkUrlValidation } from '../common/validators.js'
-import {changeLinkDialog, changeButtonStyle } from './customLink.js'
+import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 
 const EditorContainer = () => {
-  const { PageStore, EditorStore } = useStore();
+  const { PageStore, EditorStore } = useNoteStore();
   const editorWrapperRef = useRef(null);
 
   const getEditorContent = content => {

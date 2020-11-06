@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn } from '../../styles/editorStyle';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
 import downloadBtn from '../../assets/drive_download.svg';
 import txt from '../../assets/drive_txt.svg';
@@ -12,7 +12,7 @@ import docs from '../../assets/drive_toword.svg';
 import { Dropdown, Menu } from 'antd';
 
 const FileLayout = () => {
-    const { EditorStore, PageStore, NoteStore } = useStore();
+    const { EditorStore, PageStore, NoteStore } = useNoteStore();
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import LNBContainer from './components/lnb/LNBContainer';
-import useStore from './store/useStore';
+import useNoteStore from './store/useStore';
 import { GlobalStyle, LNB, Content } from './GlobalStyles';
 import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
@@ -14,7 +14,7 @@ import { handleWebsocket } from './components/common/Websocket';
 
 const NoteApp = ({ layoutState, roomId }) => {
   const targetChId = 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4';
-  const { NoteStore, PageStore, EditorStore } = useStore();
+  const { NoteStore, PageStore, EditorStore } = useNoteStore();
   // const { roomStore, userStore } = useCoreStores()
   // const { 'CHN0003': targetChId } = roomStore.getChannelIds({ roomId: roomId });
   NoteStore.setChannelId(targetChId);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
 import takaImg from '../../assets/file_move_taka.png';
 
@@ -22,7 +22,7 @@ const onOffsetChange = (monitor) => () => {
 };
 
 const DragPreview = ({ type, title }) => {
-  const { PageStore } = useStore();
+  const { PageStore } = useNoteStore();
   const previewRef = useRef(null);
 
   useEffect(() => {
@@ -37,23 +37,23 @@ const DragPreview = ({ type, title }) => {
       default:
         break;
     }
-    
+
   }, [previewRef]);
 
   return useObserver(() => (
     <div
       ref={previewRef}
       className={
-        type === 'chapter' 
-          ? 'draggedChapter' 
+        type === 'chapter'
+          ? 'draggedChapter'
           : 'draggedPage'
       }
     >
       {type === 'chapter'
-        ? <img 
-            src={takaImg} 
-            style={{ position: 'absolute', top: '-2rem', left: '-4rem' }}
-          /> 
+        ? <img
+          src={takaImg}
+          style={{ position: 'absolute', top: '-2rem', left: '-4rem' }}
+        />
         : null}
       {title}
     </div>

@@ -6,7 +6,7 @@ import {
   LnbTitleSearchInput,
   EditPreBtnWrapper,
 } from '../../styles/titleStyle';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import TagStore from '../../store/tagStore';
 import { useObserver } from 'mobx-react';
 import searchImg from '../../assets/ts_m_search@3x.png';
@@ -18,7 +18,7 @@ import preImg from '../../assets/back.svg';
 const formStyle = { marginLeft: 'auto' };
 
 const TagHeader = () => {
-  const {NoteStore, ChapterStore} = useStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
 

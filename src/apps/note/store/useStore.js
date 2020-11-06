@@ -3,8 +3,8 @@ import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import PageStore from './pageStore';
 import EditorStore from './editorStore';
-const useStore = () => {
+const useNoteStore = () => {
   return { NoteStore, ChapterStore, TagStore, PageStore, EditorStore };
 };
 
-export default useStore;
+export default useNoteStore;

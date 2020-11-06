@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import useStore from "../../store/useStore";
+import useNoteStore from "../../store/useStore";
 import {
   LnbTitleCover,
   LnbTitleNewButton,
@@ -18,17 +18,17 @@ import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
 
-const LNBHeader = ({createNewChapter}) => {
-  const { ChapterStore, PageStore } = useStore();
+const LNBHeader = ({ createNewChapter }) => {
+  const { ChapterStore, PageStore } = useNoteStore();
   const inputRef = useRef(null);
 
   // 뒤로 가기 버튼
-  const handleLayoutBtn = (e) => {    
+  const handleLayoutBtn = (e) => {
     NoteStore.setTargetLayout('Content');
     NoteStore.setShowPage(false);
   }
 
-  const handleNewChapterClick = async () => { 
+  const handleNewChapterClick = async () => {
     if (PageStore.isEdit) return;
     if (!ChapterStore.isNewChapter) {
       ChapterStore.setChapterTempUl(true); // isNewChapter = true;
@@ -67,7 +67,7 @@ const LNBHeader = ({createNewChapter}) => {
     <>
       <LnbTitleCover>
         <EditPreBtnWrapper
-          show={(NoteStore.layoutState === 'collapse') && ChapterStore.isTagSearching}          
+          show={(NoteStore.layoutState === 'collapse') && ChapterStore.isTagSearching}
         >
           <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
@@ -79,17 +79,17 @@ const LNBHeader = ({createNewChapter}) => {
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
           <LnbTitleSearchInput
-            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput} 
-            placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"} 
+            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput}
+            placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
             disabled={ChapterStore.isTagSearching ? true : false} />
-          {ChapterStore.isTagSearching ? 
-          <>
-            <SearchTagChip>
-              <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
-              <Button onClick={onClickCancelSearchTagBtn} style={{marginLeft:"0.69rem"}} src={cancelImg} />
-            </SearchTagChip>
-          </> : null}
-          <Button src={cancelImg} 
+          {ChapterStore.isTagSearching ?
+            <>
+              <SearchTagChip>
+                <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
+                <Button onClick={onClickCancelSearchTagBtn} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
+              </SearchTagChip>
+            </> : null}
+          <Button src={cancelImg}
             style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}

@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react';
-import useStore from "../../store/useStore";
-import {LNBNewChapter} from "../../styles/lnbStyle";
+import React, { useEffect, useRef } from 'react';
+import useNoteStore from "../../store/useStore";
+import { LNBNewChapter } from "../../styles/lnbStyle";
 import { observer } from 'mobx-react';
 import ChapterColor from "../chapter/ChapterColor";
 import {
@@ -8,10 +8,10 @@ import {
   ChapterTitle,
 } from "../../styles/chpaterStyle";
 
-const { NoteStore, ChapterStore } = useStore();
-const LNBNewChapterForm = observer(({show, createNewChapter}) => {
+const { NoteStore, ChapterStore } = useNoteStore();
+const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
   // return 전에 hook이 위치해야함
-  const titleRef = useRef(null); 
+  const titleRef = useRef(null);
 
   const handleBlur = async (e) => {
     if (e.relatedTarget && e.relatedTarget.getAttribute('data-btn') === "editorEditBtn") {
@@ -20,7 +20,7 @@ const LNBNewChapterForm = observer(({show, createNewChapter}) => {
     await createNewChapter();
   }
 
-  const handleTitleInput = ({target:{value}}) => {
+  const handleTitleInput = ({ target: { value } }) => {
     ChapterStore.setChapterTitle(value);
   };
 
@@ -41,7 +41,7 @@ const LNBNewChapterForm = observer(({show, createNewChapter}) => {
   useEffect(() => {
     const focusCondition = ChapterStore.isNewChapter || !NoteStore.showModal;
     if (titleRef.current && focusCondition) titleRef.current.focus();
-  },[ChapterStore.isNewChapter, NoteStore.showModal])
+  }, [ChapterStore.isNewChapter, NoteStore.showModal])
 
   if (!show) return null;
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
 import ChapterColor from '../chapter/ChapterColor';
@@ -13,7 +13,7 @@ import {
 } from '../../styles/chpaterStyle';
 
 const Chapter = ({ chapter, index }) => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
@@ -64,7 +64,7 @@ const Chapter = ({ chapter, index }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const onClickChapterBtn = (id, children) => async() => {
+  const onClickChapterBtn = (id, children) => async () => {
     if (PageStore.isEdit) return;
     ChapterStore.setCurrentChapterId(id);
     let targetPage = '';
@@ -126,12 +126,12 @@ const Chapter = ({ chapter, index }) => {
             autoFocus={true}
           />
         ) : (
-          <ChapterText
-            text={chapter.text}
-            chapterId={chapter.id}
-            color={chapter.color}
-          />
-        )}
+            <ChapterText
+              text={chapter.text}
+              chapterId={chapter.id}
+              color={chapter.color}
+            />
+          )}
       </ChapterCover>
       <PageList
         children={chapter.children}

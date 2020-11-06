@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import {
   TagNewBtn,
   TagNewBtnIcon,
@@ -12,10 +12,10 @@ import {
 } from '../../styles/tagStyle';
 import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/tag_add.svg';
-import {Tooltip} from 'antd';
+import { Tooltip } from 'antd';
 
 const TagListContainer = () => {
-  const { TagStore, PageStore } = useStore();
+  const { TagStore, PageStore } = useNoteStore();
   const focusedTag = useRef(null);
   const tagList = useRef(null);
 
@@ -39,7 +39,7 @@ const TagListContainer = () => {
     if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewFlag(true);
     else TagStore.setIsNewFlag(false);
   };
-  
+
   const onClickNewTagBtn = () => {
     toggleTagInput();
     let target = tagList.current.children[0]
@@ -142,13 +142,13 @@ const TagListContainer = () => {
     }
   }
 
-  const handleClickTag = (idx,e) => {
+  const handleClickTag = (idx, e) => {
     const prev = focusedTag.current;
     changeFocusedTag(prev, idx);
   }
 
   // idx : null 가능
-  const changeFocusedTag = (prev,idx) => {
+  const changeFocusedTag = (prev, idx) => {
     if (prev === null && idx === null) return;
     tagList.current.children[prev]?.classList.remove('noteFocusedTag');
     focusedTag.current = idx;
@@ -158,7 +158,7 @@ const TagListContainer = () => {
       target.classList.add('noteFocusedTag');
       target.focus();
       target.scrollIntoView(false);
-    }    
+    }
   }
 
   const handleKeyDownTag = (e) => {
@@ -167,13 +167,13 @@ const TagListContainer = () => {
       // left
       case 37:
         if (focusedTag.current > 0) {
-          changeFocusedTag(prev, prev-1);
+          changeFocusedTag(prev, prev - 1);
         }
         break;
       // right
       case 39:
-        if (focusedTag.current < TagStore.notetagList.length-1) {
-          changeFocusedTag(prev,prev+1);
+        if (focusedTag.current < TagStore.notetagList.length - 1) {
+          changeFocusedTag(prev, prev + 1);
         }
         break;
       default:
@@ -181,8 +181,8 @@ const TagListContainer = () => {
     }
   }
 
-  useEffect(() => {  
-    document.addEventListener("click", handleClickOutside);    
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     }

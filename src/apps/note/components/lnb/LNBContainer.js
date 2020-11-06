@@ -1,5 +1,5 @@
-import React, {useRef, useEffect} from "react";
-import useStore from "../../store/useStore";
+import React, { useRef, useEffect } from "react";
+import useNoteStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
   LNBCover,
@@ -15,7 +15,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 const LNBContainer = () => {
-  const { NoteStore, ChapterStore } = useStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
   const LNBRef = useRef(null);
 
   const createNewChapter = async () => {
@@ -37,7 +37,7 @@ const LNBContainer = () => {
       );
     } else {
       NoteStore.setModalInfo('titleDuplicate');
-    }    
+    }
   };
 
   useEffect(() => {
@@ -49,8 +49,8 @@ const LNBContainer = () => {
       <LNBCover>
         <LNBHeader createNewChapter={createNewChapter} />
         <LNBChapterCover ref={LNBRef}>
-            <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter}/>
-            {(ChapterStore.isSearching || ChapterStore.isTagSearching)
+          <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
+          {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> :
             <DndProvider backend={HTML5Backend}>
               {NoteStore.isDragging
@@ -61,8 +61,8 @@ const LNBContainer = () => {
               <ChapterList type={"chapter"} />
               <LNBTag />
               {/* <ChapterList type={"shared"}/> )}*/}
-            </DndProvider>}            
-          </LNBChapterCover>
+            </DndProvider>}
+        </LNBChapterCover>
       </LNBCover>
     </>
   ));

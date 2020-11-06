@@ -1,12 +1,12 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
 
 const PageList = ({ children, chapterId, chapterIdx }) => {
-  const { NoteStore, PageStore } = useStore();
+  const { NoteStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
     accept: 'page',
@@ -40,11 +40,11 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
           chapterIdx={chapterIdx}
         />
       ))}
-      <div style={{ height : '0px', marginLeft : '1.875rem' }} 
+      <div style={{ height: '0px', marginLeft: '1.875rem' }}
         className={
           PageStore.dragEnterChapterIdx === chapterIdx &&
-          PageStore.dragEnterPageIdx === children.length
-            ? 'borderTopLine' 
+            PageStore.dragEnterPageIdx === children.length
+            ? 'borderTopLine'
             : ''
         }
       />

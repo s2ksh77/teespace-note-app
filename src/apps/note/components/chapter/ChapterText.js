@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useStore from "../../store/useStore";
+import useNoteStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
   ChapterTitle,
@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChapterText = ({ text, chapterId, color }) => {
-  const { ChapterStore, PageStore } = useStore();
+  const { ChapterStore, PageStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
@@ -32,11 +32,11 @@ const ChapterText = ({ text, chapterId, color }) => {
   };
   return useObserver(() => (
     <>
-      <ChapterTitle 
+      <ChapterTitle
         className={
-          !PageStore.movePageId && chapterId === ChapterStore.currentChapterId 
-          ? "selectedMenu" 
-          : ""
+          !PageStore.movePageId && chapterId === ChapterStore.currentChapterId
+            ? "selectedMenu"
+            : ""
         }
       >
         <ChapterTextSpan>{text}</ChapterTextSpan>
@@ -46,7 +46,7 @@ const ChapterText = ({ text, chapterId, color }) => {
           chapterTitle={text}
           nextSelectableChapterId={
             ChapterStore.chapterList.length > 1 ? (
-              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id 
+              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id
             ) : ("")
           }
           nextSelectablePageId={

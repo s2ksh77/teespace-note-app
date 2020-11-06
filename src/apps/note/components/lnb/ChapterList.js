@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import Chapter from '../chapter/Chapter';
 
 const ChapterList = ({ type }) => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   useEffect(() => {
     (async () => {

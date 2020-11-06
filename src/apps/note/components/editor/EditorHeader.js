@@ -1,6 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import {
   EditorHeaderCover,
   EditorHeaderContainer1,
@@ -18,7 +18,7 @@ import { Button } from '../../styles/commonStyle';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const EditorHeader = () => {
-  const { NoteStore, PageStore, EditorStore } = useStore();
+  const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {

@@ -1,4 +1,4 @@
-import useStore from "../../store/useStore";
+import useNoteStore from "../../store/useStore";
 
 const NoteUtil = {
 

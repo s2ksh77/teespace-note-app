@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import tagImg from '../../assets/ts_tag@3x.png';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
@@ -9,7 +9,7 @@ const filterColor =
   'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)';
 
 const LNBTag = memo(() => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
     accept: 'chapter',
@@ -35,8 +35,8 @@ const LNBTag = memo(() => {
       <LnbTagContainer
         ref={drop}
         className={
-          (!NoteStore.showPage 
-            ? 'selectedMenu' 
+          (!NoteStore.showPage
+            ? 'selectedMenu'
             : '')
           + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length
             ? ' tagBorderTopLine'

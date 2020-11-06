@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
 import ContextMenu from '../common/ContextMenu';
@@ -11,9 +11,10 @@ import {
   PageText,
   PageTextInput,
 } from '../../styles/pageStyle';
+import EditorStore from '../../store/editorStore';
 
 const Page = ({ page, index, children, chapterId, chapterIdx }) => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
     item: { id: page.id, type: 'page' },
@@ -59,6 +60,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapterId);
     await PageStore.setCurrentPageId(id);
+    EditorStore.handleLinkListener();
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
   };
@@ -130,32 +132,32 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
           />
         </PageTextCover>
       ) : (
-        <PageTextCover
-          className={
-            PageStore.dragEnterChapterIdx !== chapterIdx
-              ? ''
-              : PageStore.dragEnterPageIdx === index
-                ? 'borderTopLine'
-                : ''
-          }
-        >
-          <PageText>{page.text}</PageText>
-          <ContextMenu
-            type={'page'}
-            chapterId={chapterId}
-            chapterIdx={chapterIdx}
-            pageId={page.id}
-            pageTitle={page.text}
-            nextSelectablePageId={
-              children.length > 1
-                ? children[0].id === page.id
-                  ? children[1].id
-                  : children[0].id
-                : ''
+          <PageTextCover
+            className={
+              PageStore.dragEnterChapterIdx !== chapterIdx
+                ? ''
+                : PageStore.dragEnterPageIdx === index
+                  ? 'borderTopLine'
+                  : ''
             }
-          />
-        </PageTextCover>
-      )}
+          >
+            <PageText>{page.text}</PageText>
+            <ContextMenu
+              type={'page'}
+              chapterId={chapterId}
+              chapterIdx={chapterIdx}
+              pageId={page.id}
+              pageTitle={page.text}
+              nextSelectablePageId={
+                children.length > 1
+                  ? children[0].id === page.id
+                    ? children[1].id
+                    : children[0].id
+                  : ''
+              }
+            />
+          </PageTextCover>
+        )}
     </PageCover>
   ));
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import useStore from "../../store/useStore";
+import useNoteStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
   ContextMenuCover,
@@ -10,7 +10,7 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 
 const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
-  const { NoteStore, ChapterStore, PageStore } = useStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.

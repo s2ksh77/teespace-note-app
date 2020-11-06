@@ -1,7 +1,7 @@
 import React from 'react';
 import { EventBus } from 'teespace-core';
 import { useObserver } from 'mobx-react';
-import useStore from '../../store/useStore';
+import useNoteStore from '../../store/useStore';
 import ExpandImg from '../../assets/ts_maximize@3x.png';
 import CollapseImg from '../../assets/ts_minimize@3x.png';
 import cancel from '../../assets/ts_cancel@3x.png';
@@ -11,7 +11,7 @@ import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
 const style = { cursor: 'pointer', marginLeft: '0.69rem' };
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
-  const { NoteStore, PageStore } = useStore();
+  const { NoteStore, PageStore } = useNoteStore();
   /**
    * EventBus.dispatch('onLayoutExpand')
    * EventBus.dispatch('onLayoutCollapse')
