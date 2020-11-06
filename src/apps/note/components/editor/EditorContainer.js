@@ -305,6 +305,13 @@ const EditorContainer = () => {
                 position: 'selection',
                 scope: 'node'
               })
+              editor.ui.registry.addButton('changeImage', {
+                icon: 'gallery',
+                tooltip: '이미지 교체',
+                onAction: function (_) {
+                  handleFileBlob();
+                }
+              })
             },
             a11y_advanced_options: true,
             image_description: false,
@@ -322,6 +329,8 @@ const EditorContainer = () => {
             anchor_bottom: false,
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
+            quickbars_image_toolbar: false,
+            imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage',
             language: 'ko_KR',
             toolbar_drawer: false,
             paste_data_images: true,
