@@ -164,6 +164,7 @@ const ChapterStore = observable({
     return this.chapterChildren;
   },
   async fetchChapterList() {
+    if (this.chapterList.length !== 0) return;
     await this.getChapterList();
     if (this.chapterList.length === 0) {
       NoteStore.setShowPage(false);
