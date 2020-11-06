@@ -171,13 +171,14 @@ const TagStore = observable({
       const targetChapter = ChapterStore.chapterList.find((chapter)=>{
         return chapter.id === chapterId;
       });
-
-      resultPageArr.push({
-        chapterId : chapterId,
-        chapterTitle: targetChapter.text,
-        id: page.note_id,
-        title: page.note_title
-      })
+      if (targetChapter) {
+        resultPageArr.push({
+          chapterId : chapterId,
+          chapterTitle: targetChapter.text,
+          id: page.note_id,
+          title: page.note_title
+        })
+      }      
     })
 
     ChapterStore.setSearchResult({chapter:[],page:resultPageArr});
