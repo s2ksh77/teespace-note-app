@@ -317,6 +317,7 @@ const PageStore = observable({
           data: { dto: returnData },
         } = response;
         this.getNoteInfoList(returnData.note_id);
+        EditorStore.tinymce?.setContent(this.currentPageData.note_content);
         NoteStore.setShowModal(false);
       }
     });
