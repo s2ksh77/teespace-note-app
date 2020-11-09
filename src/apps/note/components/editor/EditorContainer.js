@@ -319,7 +319,7 @@ const EditorContainer = () => {
                 icon: 'gallery',
                 tooltip: '이미지 교체',
                 onAction: function (_) {
-                  handleFileBlob();
+                  handleFileBlob('image');
                 }
               });
 
