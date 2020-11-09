@@ -36,7 +36,7 @@ const NoteMeta = {
         break;
       case 'editCancel':
         eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else PageStore.noneEdit(PageStore.currentPageId) });
+        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':

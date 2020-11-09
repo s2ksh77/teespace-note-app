@@ -63,6 +63,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
     EditorStore.handleLinkListener();
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
+    EditorStore.tinymce?.undoManager.clear();
   };
 
   const handlePageName = (e) => {

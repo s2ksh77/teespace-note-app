@@ -354,6 +354,7 @@ const PageStore = observable({
     if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
+    EditorStore.tinymce?.undoManager.clear();
     this.isNewPage = false;
   },
   setIsNewPage(isNew) {
