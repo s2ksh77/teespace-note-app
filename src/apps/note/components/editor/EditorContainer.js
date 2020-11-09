@@ -15,6 +15,13 @@ import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
+import PageStore from '../../store/pageStore';
+
+// useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
+// tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
+window.addEventListener('beforeunload', function (e) {
+  if (!PageStore.isReadMode()) PageStore.handleSave();
+})
 
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useNoteStore();
@@ -148,12 +155,6 @@ const EditorContainer = () => {
       GlobalVariable.setEditorWrapper(null);
     }
   }, [editorWrapperRef.current]);
-
-  // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
-  // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
-  window.addEventListener('beforeunload', function (e) {
-    if (!PageStore.isReadMode()) PageStore.handleSave();
-  })
 
   return useObserver(() => (
     <>
