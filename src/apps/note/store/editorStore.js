@@ -67,13 +67,17 @@ const EditorStore = observable({
     this.downloadFileId = fileId
   },
   downloadFile(fileId) {
+    if (fileId) {
+      window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
+      "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
+      return;
+    }
+
     let a = document.createElement("a");
     document.body.appendChild(a);
-
     a.style = "display: none";
-    a.href = NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
-      "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID;
-    a.download = "download";
+    a.href = this.tinymce.selection.getNode().src;
+    a.download = this.tinymce.selection.getNode().getAttribute('data-name');
     a.click();
     document.body.removeChild(a);
   },
@@ -317,7 +321,7 @@ const EditorStore = observable({
         });
       }
     }
-  }
+  },
 });
 
 export default EditorStore;

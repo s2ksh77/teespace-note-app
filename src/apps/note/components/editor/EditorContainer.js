@@ -314,14 +314,49 @@ const EditorContainer = () => {
                 items: 'customToggleLink customToggleUnLink customToggleOpenLink',
                 position: 'selection',
                 scope: 'node'
-              })
+              });
               editor.ui.registry.addButton('changeImage', {
                 icon: 'gallery',
                 tooltip: '이미지 교체',
                 onAction: function (_) {
                   handleFileBlob();
                 }
-              })
+              });
+
+              // 이미지 다운로드/삭제
+              editor.ui.registry.addMenuButton('downloadImage', {
+                icon: 'save',
+                tooltip: '다운로드',
+                fetch: function (callback) {
+                  var items = [
+                    {
+                      type: 'menuitem',
+                      text: 'Drive에 저장',
+                      onAction: function () {
+                        alert('기능 구현 중입니다.');
+                      }
+                    },
+                    {
+                      type: 'menuitem',
+                      text: '내 PC에 저장',
+                      onAction: function () {
+                        const id = editor.selection.getNode().id;
+                        if (id) EditorStore.downloadFile(id);
+                        else EditorStore.downloadFile();
+                      }
+                    }
+                  ];
+                  callback(items);
+                }
+              });
+              editor.ui.registry.addButton('deleteImage', {
+                icon: 'remove',
+                tooltip: '삭제',
+                onAction: function () {
+                  alert('삭제');
+                  console.log(EditorStore.fileList);
+                },
+              });
             },
             a11y_advanced_options: true,
             image_description: false,
@@ -340,7 +375,7 @@ const EditorContainer = () => {
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: 'insertImage table',
             quickbars_image_toolbar: false,
-            imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage',
+            imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: 'ko_KR',
             toolbar_drawer: false,
             paste_data_images: true,
