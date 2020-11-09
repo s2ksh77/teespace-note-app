@@ -31,7 +31,19 @@ export const ChapterCover = styled.div`
   }
 `;
 
+export const ChapterShareIcon = styled.img`
+  position: absolute;
+  width:0.8rem;
+  height:0.9rem;
+  margin: auto 0.5rem auto 0.35rem;
+  top: 0.95rem;
+  filter: ${props=>props.select 
+    ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)'
+    : 'invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%)'};
+`
+
 export const ColorCover = styled.span`
+  position:absolute;
   display: flex;
   width: fit-content;
   align-items: center;
@@ -60,7 +72,7 @@ export const ChapterTextInput = styled.input`
 export const ChapterTitle = styled.span`
   display: flex;
   flex: auto;
-  margin-left: 1.19rem;
+  margin-left: 1.69rem;
   margin-right: 0.2rem;
   height: 100%;
   font-weight: 500;

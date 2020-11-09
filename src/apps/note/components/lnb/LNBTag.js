@@ -5,9 +5,6 @@ import { useDrop } from 'react-dnd';
 import tagImg from '../../assets/ts_tag@3x.png';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
 
-const filterColor =
-  'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)';
-
 const LNBTag = memo(() => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
@@ -45,7 +42,7 @@ const LNBTag = memo(() => {
         onClick={onClickTagMenuBtn}
       >
         <TagImg
-          filter={!NoteStore.showPage ? filterColor : ''}
+          showTag={!NoteStore.showPage}
           src={tagImg}
           alt="tagImg"
         />

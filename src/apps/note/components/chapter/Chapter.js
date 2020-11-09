@@ -10,7 +10,9 @@ import {
   ChapterContainer,
   ChapterCover,
   ChapterTextInput,
+  ChapterShareIcon
 } from '../../styles/chpaterStyle';
+import shareImg from '../../assets/ts_share@3x.png';
 
 const Chapter = ({ chapter, index }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -94,6 +96,13 @@ const Chapter = ({ chapter, index }) => {
 
   const handleFocus = (e) => e.target.select();
 
+  const renderChapterIcon = () => {
+    if (!["shared", "shared_page"].includes(chapter.type)) {
+      return <ChapterColor color={chapter.color} chapterId={chapter.id} />;
+    } else {
+      return <ChapterShareIcon select={ChapterStore.getCurrentChapterId() === chapter.id} src={shareImg} />
+    }
+  }
   return useObserver(() => (
     <ChapterContainer
       ref={drop}
@@ -110,7 +119,7 @@ const Chapter = ({ chapter, index }) => {
         ref={(node) => drag(dropChapter(node))}
         onClick={onClickChapterBtn(chapter.id, chapter.children)}
       >
-        <ChapterColor color={chapter.color} chapterId={chapter.id} />
+        {renderChapterIcon()}
         {ChapterStore.getRenameChapterId() === chapter.id ? (
           <ChapterTextInput
             maxLength="200"

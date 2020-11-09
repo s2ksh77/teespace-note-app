@@ -71,7 +71,7 @@ export const LnbTagContainer = styled.div`
   position: relative;
   width: calc(100% - 1.62rem);
   height: 2.81rem;
-  padding: 0rem 0.81rem 0rem 0.81rem;
+  padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
   border-bottom: 0.0625rem solid #dadada;
@@ -86,15 +86,17 @@ export const LnbTagContainer = styled.div`
 `;
 
 export const TagImg = styled.img`
-  width: 1rem;
-  margin: 0 0.36rem 0 0.48rem;
+  position:absolute;
+  width: 0.8rem;
+  margin-left:0.33rem;
   filter: ${props =>
-    props.filter ||
+    props.showTag ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)' :
     'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)'};
 `;
 
-export const TagTxt = styled.span`
+export const TagTxt = styled.div`
   font-weight: 400;
+  margin-left:1.69rem;
 `;
 // contents가 tag일 때
 export const TagMenuHeader = styled.div`
