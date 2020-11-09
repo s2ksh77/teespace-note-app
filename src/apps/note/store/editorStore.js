@@ -305,15 +305,17 @@ const EditorStore = observable({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   },
   handleLinkListener() {
-    const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
-    if (targetList && targetList.length > 0) {
-      Array.from(targetList).map((el) => {
-        el.addEventListener('click', () => {
-          const href = el.getAttribute('href');
-          const target = el.getAttribute('target');
-          openLink(href, target);
+    if (EditorStore.tinymce) {
+      const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
+      if (targetList && targetList.length > 0) {
+        Array.from(targetList).map((el) => {
+          el.addEventListener('click', () => {
+            const href = el.getAttribute('href');
+            const target = el.getAttribute('target');
+            openLink(href, target);
+          });
         });
-      });
+      }
     }
   }
 });
