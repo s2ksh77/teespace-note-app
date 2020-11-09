@@ -1,22 +1,31 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useNoteStore from '../../store/useStore';
-import { useObserver } from 'mobx-react';
+import { observer } from 'mobx-react';
 import Chapter from '../chapter/Chapter';
 
-const ChapterList = ({ type }) => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+const ChapterList = observer(({ type }) => {
+  const { ChapterStore } = useNoteStore();
 
-  useEffect(() => {
-    ChapterStore.fetchChapterList();
-  });
+  let targetList;
+  switch (type) {
+    case "shared_page":
+      targetList = ChapterStore.chapterList.filter((chapter) => chapter.type === "shared_page");
+      break;
+    case "shared":
+      targetList = ChapterStore.chapterList.filter((chapter) => chapter.type === "shared");
+      break;
+    default:
+      targetList = ChapterStore.chapterList.filter((chapter) => !['shared','shared_page'].includes(chapter.type));
+      break;
+  }
 
-  return useObserver(() => (
+  return (
     <>
-      {ChapterStore.chapterList.length > 0 &&
-        ChapterStore.chapterList.map((item, index) => (
+      {targetList.length > 0 &&
+        targetList.map((item, index) => (
           <Chapter key={item.id} chapter={item} index={index} />
         ))}
     </>
-  ));
-};
+  );
+});
 export default ChapterList;

@@ -63,7 +63,7 @@ export const PageTextInput = styled.input`
 `;
 
 export const NewPage = styled.span`
-  display: flex;
+  display: ${props => props.show ? "flex" : "none"};
   height: 2.81rem;
   align-items: center;
   color: #0090ca;

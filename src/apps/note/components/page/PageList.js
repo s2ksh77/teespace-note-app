@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
 
-const PageList = ({ children, chapterId, chapterIdx }) => {
+const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
   const { NoteStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
@@ -48,9 +48,11 @@ const PageList = ({ children, chapterId, chapterIdx }) => {
             : ''
         }
       />
+      
       <NewPage
         ref={drop}
         className={'page-li'}
+        show={showNewPage}
       >
         <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>

@@ -42,6 +42,7 @@ const LNBContainer = () => {
 
   useEffect(() => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
+    ChapterStore.fetchChapterList();
   }, []);
 
   return useObserver(() => (
@@ -58,9 +59,10 @@ const LNBContainer = () => {
                   ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
                   : null
                 : null}
-              <ChapterList type={"chapter"} />
+              <ChapterList type={""} />
               <LNBTag />
-              {/* <ChapterList type={"shared"}/> )}*/}
+              {/* <ChapterList type={"shared_page"} />
+              <ChapterList type={"shared"} /> */}
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>
