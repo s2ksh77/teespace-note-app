@@ -402,6 +402,10 @@ const EditorContainer = () => {
               .mce-item-table[border="0"] caption {
                 border: 1px solid #ccc;
               }
+              .mce-content-body{
+                background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
+                background-size: 0.625rem 0.625rem !important;
+              }
             `
           }}
           onEditorChange={getEditorContent}
