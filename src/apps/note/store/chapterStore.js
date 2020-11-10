@@ -98,7 +98,6 @@ const ChapterStore = observable({
       if (chapter.type === 'shared_page') sharedList.splice(0, 0, notebookList[idx]);
       else if (chapter.type === 'shared') sharedList.push(notebookList[idx]);
     });
-    console.log(sharedList);
 
     return sharedList;
   },

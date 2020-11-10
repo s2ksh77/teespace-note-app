@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : chapter.type },
+    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
 
