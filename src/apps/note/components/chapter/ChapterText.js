@@ -45,12 +45,12 @@ const ChapterText = ({ text, chapterId, color }) => {
           chapterId={chapterId}
           chapterTitle={text}
           nextSelectableChapterId={
-            ChapterStore.chapterList.length > 1 ? (
+            ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 ? (
               ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id
             ) : ("")
           }
           nextSelectablePageId={
-            ChapterStore.chapterList.length > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? (
+            ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? (
               ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
             ) : ("")
           }

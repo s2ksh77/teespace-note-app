@@ -11,11 +11,11 @@ const LNBTag = memo(() => {
   const [, drop] = useDrop({
     accept: 'chapter',
     drop: () => {
-      ChapterStore.moveChapter(ChapterStore.chapterList.length);
+      ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },
     hover() {
-      if (ChapterStore.dragEnterChapterIdx !== ChapterStore.chapterList.length)
-        ChapterStore.setDragEnterChapterIdx(ChapterStore.chapterList.length);
+      if (ChapterStore.dragEnterChapterIdx !== ChapterStore.chapterList.length - ChapterStore.sharedCnt)
+        ChapterStore.setDragEnterChapterIdx(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },
   });
 
@@ -35,7 +35,7 @@ const LNBTag = memo(() => {
           (!NoteStore.showPage
             ? 'selectedMenu'
             : '')
-          + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length
+          + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length - ChapterStore.sharedCnt
             ? ' tagBorderTopLine'
             : '')
         }

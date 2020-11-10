@@ -61,8 +61,8 @@ const LNBContainer = () => {
                 : null}
               <ChapterList type={""} />
               <LNBTag />
-              {/* <ChapterList type={"shared_page"} />
-              <ChapterList type={"shared"} /> */}
+              <ChapterList type={"shared_page"} />
+              <ChapterList type={"shared"} />
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>
