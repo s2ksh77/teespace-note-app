@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChapterText = ({ text, chapterId, color }) => {
-  const { ChapterStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
   const handleFoldClick = (e) => {
@@ -34,7 +34,7 @@ const ChapterText = ({ text, chapterId, color }) => {
     <>
       <ChapterTitle
         className={
-          !PageStore.movePageId && chapterId === ChapterStore.currentChapterId
+          !NoteStore.isDragging && chapterId === ChapterStore.currentChapterId
             ? "selectedMenu"
             : ""
         }

@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: 'chapter' },
+    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
 
@@ -116,7 +116,7 @@ const Chapter = ({ chapter, index }) => {
       itemType="chapter"
     >
       <ChapterCover
-        ref={(node) => drag(dropChapter(node))}
+        ref={chapter.type === 'notebook' ? (node) => drag(dropChapter(node)) : drag}
         onClick={onClickChapterBtn(chapter.id, chapter.children)}
       >
         {renderChapterIcon()}
@@ -147,6 +147,7 @@ const Chapter = ({ chapter, index }) => {
         children={chapter.children}
         chapterId={chapter.id}
         chapterIdx={index}
+        type={chapter.type}
       />
     </ChapterContainer>
   ));

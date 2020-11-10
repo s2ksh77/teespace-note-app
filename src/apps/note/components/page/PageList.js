@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
 
-const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
+const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
   const { NoteStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
@@ -38,6 +38,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
           children={children}
           chapterId={chapterId}
           chapterIdx={chapterIdx}
+          type={type}
         />
       ))}
       <div style={{ height: '0px', marginLeft: '1.875rem' }}

@@ -13,11 +13,11 @@ import {
 } from '../../styles/pageStyle';
 import EditorStore from '../../store/editorStore';
 
-const Page = ({ page, index, children, chapterId, chapterIdx }) => {
+const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: 'page' },
+    item: { id: page.id, type: type === 'notebook' ? 'page' : 'shared' },
     begin: () => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
@@ -90,12 +90,12 @@ const Page = ({ page, index, children, chapterId, chapterIdx }) => {
 
   return useObserver(() => (
     <PageCover
-      ref={(node) => drag(drop(node))}
+      ref={type === 'notebook' ? (node) => drag(drop(node)) : drag}
       id={page.id}
       className={
         'page-li' +
         (NoteStore.showPage && (
-          PageStore.movePageId
+          NoteStore.isDragging
             ? page.id === PageStore.movePageId
             : page.id === PageStore.currentPageId)
           ? ' selected'
