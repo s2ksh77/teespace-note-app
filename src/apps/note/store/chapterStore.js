@@ -91,6 +91,18 @@ const ChapterStore = observable({
     });
   },
 
+  getSharedList(notebookList) {
+    const sharedList = [];
+    notebookList.forEach((chapter, idx) => {
+      if (chapter.type === 'notebook') return;
+      if (chapter.type === 'shared_page') sharedList.splice(0, 0, notebookList[idx]);
+      else if (chapter.type === 'shared') sharedList.push(notebookList[idx]);
+    });
+    console.log(sharedList);
+
+    return sharedList;
+  },
+
   setLocalStorageItem(targetChannelId) {
     const item = [];
     this.chapterList.forEach((chapter) => {
@@ -191,14 +203,8 @@ const ChapterStore = observable({
         } = response;
 
         this.createMap(notbookList);
-
-        let sharedPageIdx, sharedIdx;
-        notbookList.forEach((chapter, idx) => {
-          if (chapter.type === 'notebook') return;
-          if (chapter.type === 'shared_page') sharedPageIdx = idx;
-          else if (chapter.type === 'shared') sharedIdx = idx;
-        });
-        this.sharedCnt = (sharedPageIdx >= 0 ? 1 : 0) + (sharedIdx >= 0 ? 1 : 0);
+        const sharedList = this.getSharedList(notbookList);
+        this.sharedCnt = sharedList.length;
 
         if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
           this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
@@ -208,9 +214,7 @@ const ChapterStore = observable({
           this.applyDifference(NoteStore.getChannelId(), notbookList);
           this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
         }
-
-        if (sharedPageIdx >= 0) this.chapterList.push(notbookList[sharedPageIdx]);
-        if (sharedIdx >= 0) this.chapterList.push(notbookList[sharedIdx]);
+        this.chapterList = this.chapterList.concat(sharedList);
       }
     );
     return this.chapterList;

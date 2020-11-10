@@ -17,7 +17,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: type === 'notebook' ? 'page' : 'shared' },
+    item: { id: page.id, type: type === 'notebook' ? 'page' : type },
     begin: () => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);

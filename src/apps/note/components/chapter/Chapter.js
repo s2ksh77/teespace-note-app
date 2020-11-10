@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
+    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : chapter.type },
     begin: () => {
       ChapterStore.setMoveChapterIdx(index);
 
@@ -105,7 +105,7 @@ const Chapter = ({ chapter, index }) => {
   }
   return useObserver(() => (
     <ChapterContainer
-      ref={drop}
+      ref={chapter.type === 'notebook' ? drop : null}
       className={
         ChapterStore.dragEnterChapterIdx === index
           ? 'borderTopLine'
