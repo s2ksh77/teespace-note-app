@@ -353,8 +353,10 @@ const EditorContainer = () => {
                 icon: 'remove',
                 tooltip: '삭제',
                 onAction: function () {
-                  alert('삭제');
-                  console.log(EditorStore.fileList);
+                  const parent = editor.selection.getNode().parentNode;
+                  editor.selection.setContent('');
+                  if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
+                  editor.focus();
                 },
               });
             },
