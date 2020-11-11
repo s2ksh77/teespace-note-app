@@ -90,7 +90,7 @@ export const changeLinkDialog = () => {
   Link context Toolbar 관련
   custimizing contextToolbar
 */
-const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
+const linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동']
 export const changeButtonStyle = (idx, count) => {
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
