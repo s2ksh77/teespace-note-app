@@ -69,7 +69,7 @@ const EditorStore = observable({
   downloadFile(fileId) {
     if (fileId) {
       window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
-      "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
+        "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
       return;
     }
 
@@ -83,6 +83,7 @@ const EditorStore = observable({
   },
   tempDeleteFile() {
     this.fileLayoutList.splice(this.deleteFileIndex, 1);
+    if (this.fileLayoutList.length === 0) this.setIsFile(false);
   },
   async deleteFile(deleteId) {
     await NoteRepository.deleteFile(deleteId).then(response => {

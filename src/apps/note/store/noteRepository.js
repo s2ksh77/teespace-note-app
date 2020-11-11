@@ -69,9 +69,9 @@ class NoteRepository {
         }&t=${new Date().getTime().toString()}`,
       );
       return res.data.dto.tag_index_list_dto;
-    } catch(err) {
+    } catch (err) {
       throw Error(err.message);
-    }    
+    }
   }
 
   getTagNoteList(tagId) {
@@ -269,7 +269,7 @@ class NoteRepository {
   }
 
   deleteFile(deleteFileId) {
-    return API.put(`${this.FILE_URL}Storage/StorageFile?action=Delete`, {
+    return API.put(`${this.URL}/noteFile?action=Delete`, {
       dto: {
         workspace_id: this.WS_ID,
         channel_id: this.chId,
