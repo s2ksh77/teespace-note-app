@@ -3,22 +3,35 @@ import { API } from 'teespace-core';
 const { default: axios } = require('axios');
 
 class NoteRepository {
-  URL = 'http://222.122.67.176:8080/CMS/Note';
+  // URL = 'http://222.122.67.176:8080/CMS/Note';
 
-  FILE_URL = 'http://222.122.67.176:8080/CMS/';
-
-  // WS_ID = '';
-  // CH_TYPE = 'CHN0003';
-  // USER_ID = '';
-
-  WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
-
+  // FILE_URL = 'http://222.122.67.176:8080/CMS/';
+  URL = '';
+  WS_ID = '';
   CH_TYPE = 'CHN0003';
+  USER_ID = '';
+  chId = '';
+  USER_NAME = '';
 
-  USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
+  // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
+
+  // CH_TYPE = 'CHN0003';
+
+  // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
     this.URL = url || this.URL;
+  }
+
+  init(workspaceId, channelId, userId, userName) {
+    this.WS_ID = workspaceId;
+    this.chId = channelId;
+    this.USER_ID = userId;
+    this.USER_NAME = userName;
+  }
+
+  setUrl(targetURL) {
+    this.URL = targetURL;
   }
 
   setWsId(targetWsId) {
@@ -139,6 +152,104 @@ class NoteRepository {
         text: chapterTitle,
         user_name: '김수현B',
       }
+    });
+  }
+  // posco
+  _getChapterList() {
+    return API.get(
+      `/noteChapter?action=List&note_channel_id=${this.chId}`,
+    );
+  }
+  _getNoteInfoList(noteId) {
+    return API.get(
+      `/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+    );
+  }
+  _createPage(pageName, chapterId) {
+    return API.post(`/note`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        USER_ID: this.USER_ID,
+        note_channel_id: this.chId,
+        user_name: this.USER_NAME,
+        note_title: pageName,
+        is_edit: this.USER_ID,
+        parent_notebook: chapterId,
+      },
+    });
+  }
+  _deletePage(pageList) {
+    pageList.forEach((page) => {
+      page.USER_ID = this.USER_ID;
+      page.WS_ID = this.WS_ID;
+      page.note_channel_id = this.chId;
+      page.user_name = this.USER_NAME;
+    });
+    return API.post(`/note?action=Delete`, {
+      dto: {
+        noteList: pageList,
+      }
+    });
+  }
+  _renamePage(pageId, pageName, chapterId) {
+    return API.put(`/note?action=Update`, {
+      dto: {
+        CH_TYPE: 'CHN0003',
+        TYPE: 'RENAME',
+        USER_ID: this.USER_ID,
+        WS_ID: this.WS_ID,
+        note_channel_id: this.chId,
+        note_id: pageId,
+        note_title: pageName,
+        parent_notebook: chapterId,
+      }
+    });
+  }
+  _editStart(noteId, chapterId) {
+    return API.post(`/note?action=Update`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        USER_ID: this.USER_ID,
+        note_channel_id: this.chId,
+        user_name: this.USER_NAME,
+        note_id: noteId,
+        is_edit: this.USER_ID,
+        parent_notebook: chapterId,
+        TYPE: 'EDIT_START',
+      },
+    });
+  }
+  _editDone(updateDto) {
+    return API.post(`/note?action=Update`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        USER_ID: this.USER_ID,
+        note_channel_id: this.chId,
+        user_name: this.USER_NAME,
+        note_id: updateDto.note_id,
+        note_title: updateDto.note_title,
+        note_content: updateDto.note_content,
+        parent_notebook: updateDto.parent_notebook,
+        is_edit: '',
+        TYPE: 'EDIT_DONE',
+      },
+    });
+  }
+  _nonEdit(noteId, chapterId) {
+    return API.post(`/note?action=Update`, {
+      dto: {
+        WS_ID: this.WS_ID,
+        CH_TYPE: 'CHN0003',
+        USER_ID: this.USER_ID,
+        note_channel_id: this.chId,
+        note_id: noteId,
+        is_edit: '',
+        parent_notebook: chapterId,
+        TYPE: 'NONEDIT',
+      },
     });
   }
 
