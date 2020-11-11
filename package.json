@@ -21,7 +21,7 @@
     "axios": "^0.20.0",
     "craco-less": "^1.17.0",
     "html2pdf.js": "^0.9.2",
-    "mobx": "^5.15.6",
+    "mobx": "^4.15.6",
     "mobx-react": "^6.3.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
@@ -33,7 +33,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#mobx4"
   },
   "peerDependencies": {
     "react": "^16.13.1",
