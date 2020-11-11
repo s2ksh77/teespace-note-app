@@ -195,9 +195,16 @@ const ChapterStore = observable({
     }
   },
   // (posco)
-  async _getChapterList() {
+  async _getChapterListCall() {
     const res = await NoteRepository._getChapterList(NoteStore.getChannelId());
     return res.data.dto.notbookList;
+  },
+  // (posco)
+  async _getChapterList() {
+    try {
+      const res = await this._getChapterListCall();
+      this.chapterList = res;
+    } catch(err) {console.log(err)}  
   },
 
   async getChapterList() {

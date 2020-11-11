@@ -165,7 +165,7 @@ class NoteRepository {
       `/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
     );
   }
-  _createPage(pageName, chapterId) {
+  _createPage(pageName, pageContents, chapterId) {
     return API.post(`/note`, {
       dto: {
         WS_ID: this.WS_ID,
@@ -174,6 +174,7 @@ class NoteRepository {
         note_channel_id: this.chId,
         user_name: this.USER_NAME,
         note_title: pageName,
+        note_content : pageContents,
         is_edit: this.USER_ID,
         parent_notebook: chapterId,
       },

@@ -6,7 +6,6 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import html2pdf from 'html2pdf.js';
 const PageStore = observable({
-  notechannel_id: '',
   noteInfoList: [],
   currentPageData: [],
   returnData: [],
@@ -145,10 +144,24 @@ const PageStore = observable({
     }
   },
 
+  // (posco)
+  async _createPage(pageName, pageContents) {
+    // 새로고침, setcurrentchapterId, 태그/파일 관련 뺌
+    try {
+      //pageName, pageContents, chapterId
+      const {data:dto} = await NoteRepository._createPage(pageName, pageContents, ChapterStore.chapterList[0].id);
+      this.currentPageData = dto;
+      this.isEdit = dto.is_edit;
+      this.noteTitle = dto.note_title;
+      this.currentPageId = dto.note_id;
+      return dto;
+    } catch(err){console.log(err)}
+  },
   async createPage() {
     await NoteRepository.createPage('제목 없음', this.createParent).then(
       response => {
         if (response.status === 200) {
+          console.log(ChapterStore.chapterList[0])
           const {
             data: { dto },
           } = response;
@@ -167,7 +180,11 @@ const PageStore = observable({
       },
     );
   },
-
+  // (posco)
+  async _deletePage(deletePageList) {
+    const res = await NoteRepository._deletePage(deletePageList);
+    return res;
+  },
   async deletePage() {
     await NoteRepository.deletePage(this.deletePageList).then(
       (response) => {
@@ -180,6 +197,13 @@ const PageStore = observable({
         }
       }
     );
+  },
+  // (posco)
+  async _renamePage(renamePageId,renamePageText) {
+    try {
+      const res = await NoteRepository._renamePage(renamePageId, renamePageText, ChapterStore.chapterList[0].id);
+      return res.data;
+    } catch(err){console.log(err)}
   },
 
   async renamePage(chapterId) {
@@ -259,7 +283,22 @@ const PageStore = observable({
       )
     }
   },
-
+  // (posco)
+  async _getNoteInfoListCall(noteId) {
+    const res = await NoteRepository._getNoteInfoList(noteId);
+    return res.data.dto;
+  },
+  // (posco)
+  async _getNoteInfoList(noteId) {
+    try {
+      const dto = await this._getNoteInfoList(noteId);
+      this.noteInfoList = dto;
+      this.currentPageData = dto;
+      this.isEdit = dto.is_edit;
+      this.noteTitle = dto.note_title;
+      this.modifiedDate = this.modifiedDateFormatting();
+    } catch(err) {console.log(err.message)}    
+  },
   async getNoteInfoList(noteId) {
     await NoteRepository.getNoteInfoList(noteId).then(response => {
       const {
@@ -277,6 +316,17 @@ const PageStore = observable({
     });
     return this.noteInfoList;
   },
+  // (posco)
+  async _editStart(noteId) {
+    try {
+      const res = await NoteRepository._editStart(
+        noteId,
+        ChapterStore.chapterList[0].id,
+      );
+      this._getNoteInfoList(res.data.dto.note_id);
+    } catch(err){console.log(err)}
+  },
+
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editStart(noteId) {
     await NoteRepository.editStart(
@@ -293,6 +343,13 @@ const PageStore = observable({
     });
     return this.currentPageData;
   },
+  // (posco)
+  async _editDone(updateDto) {
+    try {
+      const res = await NoteRepository._editDone(updateDto);
+      this._getNoteInfoList(res.data.dto.note_id);
+    } catch(err) {console.log(err)};    
+  },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editDone(updateDto) {
     await NoteRepository.editDone(updateDto).then(response => {
@@ -306,6 +363,17 @@ const PageStore = observable({
     });
     return this.currentPageData;
   },
+  // (posco)
+  async _noneEdit(noteId) {
+    try {
+      const res = await NoteRepository._nonEdit(
+        noteId,
+        ChapterStore.chapterList[0].id
+      );
+      this._getNoteInfoList(res.data.dto.note_id);
+    } catch(err) {console.log(err)}
+  },
+
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async noneEdit(noteId) {
     await NoteRepository.nonEdit(
