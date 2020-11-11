@@ -189,33 +189,32 @@ const ChapterStore = observable({
     } else {
       NoteStore.setShowPage(true);
       const chapterId = this.chapterList[0].id;
-      const pageId = ChapterStore.chapterList[0].children?.[0]?.id;
+      const pageId = this.chapterList[0].children?.[0]?.id;
       this.setCurrentChapterId(chapterId);
       await PageStore.setCurrentPageId(pageId);
     }
   },
+  // (posco)
+  async _getChapterList() {
+    const res = await NoteRepository.getChapterList(NoteStore.getChannelId());
+    return res.data.dto.notbookList;
+  },
+
   async getChapterList() {
-    await NoteRepository.getChapterList(NoteStore.getChannelId()).then(
-      (response) => {
-        const {
-          data: { dto: {notbookList} },
-        } = response;
+    const notbookList = await this._getChapterList();
+    this.createMap(notbookList);
+    const sharedList = this.getSharedList(notbookList);
+    this.sharedCnt = sharedList.length;
 
-        this.createMap(notbookList);
-        const sharedList = this.getSharedList(notbookList);
-        this.sharedCnt = sharedList.length;
-
-        if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-          this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
-          this.setLocalStorageItem(NoteStore.getChannelId());
-        }
-        else {
-          this.applyDifference(NoteStore.getChannelId(), notbookList);
-          this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
-        }
-        this.chapterList = this.chapterList.concat(sharedList);
-      }
-    );
+    if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+      this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
+      this.setLocalStorageItem(NoteStore.getChannelId());
+    }
+    else {
+      this.applyDifference(NoteStore.getChannelId(), notbookList);
+      this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+    }
+    this.chapterList = this.chapterList.concat(sharedList);
     return this.chapterList;
   },
   async createChapter(chapterTitle, chapterColor) {
@@ -225,7 +224,7 @@ const ChapterStore = observable({
           const {
             data: { dto: notbookList },
           } = response;
-          ChapterStore.getChapterList();
+          this.getChapterList();
           this.setCurrentChapterId(notbookList.id);
           PageStore.setCurrentPageId(notbookList.children[0].id);
           this.setChapterTempUl(false);
@@ -243,7 +242,7 @@ const ChapterStore = observable({
             PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
             if (!this.nextSelectableChapterId) this.setAllDeleted(true);
           }
-          ChapterStore.getChapterList();
+          this.getChapterList();
           if (this.allDeleted) NoteStore.setShowPage(false);
           this.deleteChapterId = '';
           NoteStore.setShowModal(false);
@@ -255,7 +254,7 @@ const ChapterStore = observable({
     await NoteRepository.renameChapter(this.renameChapterId, this.renameChapterText, color).then(
       (response) => {
         if (response.status === 200) {
-          ChapterStore.getChapterList();
+          this.getChapterList();
         }
       }
     );
