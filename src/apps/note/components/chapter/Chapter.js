@@ -123,6 +123,7 @@ const Chapter = ({ chapter, index }) => {
         {ChapterStore.getRenameChapterId() === chapter.id ? (
           <ChapterTextInput
             maxLength="200"
+            placeholder='새 챕터'
             value={ChapterStore.renameChapterText}
             onClick={e => e.stopPropagation()}
             onChange={handleChapterName}

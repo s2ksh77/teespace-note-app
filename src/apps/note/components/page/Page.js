@@ -120,6 +120,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
         >
           <PageTextInput
             maxLength="200"
+            placeholder='새 페이지'
             value={PageStore.renamePageText}
             onClick={e => e.stopPropagation()}
             onChange={handlePageName}

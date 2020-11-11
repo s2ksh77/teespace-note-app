@@ -155,7 +155,7 @@ const PageStore = observable({
           this.currentPageData = dto;
           ChapterStore.getChapterList();
           this.isEdit = dto.is_edit;
-          this.noteTitle = dto.note_title;
+          this.noteTitle = '';
           ChapterStore.setCurrentChapterId(dto.parent_notebook);
           this.currentPageId = dto.note_id;
           this.isNewPage = true;
