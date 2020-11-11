@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useObserver } from 'mobx-react';
+import React from 'react';
+import { observer } from 'mobx-react';
 import { StyledCollapse } from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
 import LoadingImg from '../../assets/Tee_loading.gif';
@@ -22,21 +22,21 @@ const customExpandIcon = props => {
     return <img style={{ width: '0.62rem' }} src={arrowUp} alt="arrow-up" />;
   } else return <img style={{ width: '0.62rem' }} src={arrowDown} alt="arrow-down" />;
 };
-const TagContentContainer = () => {  
-  
-  return useObserver(() => (
+
+const TagContentContainer = observer(() => {  
+  return (
     <>
-      {Object.keys(TagStore.targetTagList).length > 0 ? (
+      {Object.keys(TagStore.sortedTagList).length > 0 ? (
         <StyledCollapse
           defaultActiveKey={defaultActiveArr}
           expandIcon={panelProps => customExpandIcon(panelProps)}
           expandIconPosition={'right'}
         >
-          {Object.keys(TagStore.targetTagList).map((category, idx) => {
+          {Object.keys(TagStore.sortedTagList).map((category, idx) => {
             return (
               // "ㄱ~ㅎ"
               <Panel header={categoryInfo[category]} key={category}>
-                {Object.keys(TagStore.targetTagList[category])?.map(tagKey => {
+                {Object.keys(TagStore.sortedTagList[category])?.map(tagKey => {
                   // "ㄱ", "ㄴ" ...
                   return (
                     <TagKeyContainer key={tagKey}>
@@ -53,7 +53,7 @@ const TagContentContainer = () => {
         <SearchResultNotFound searchStr={TagStore.searchString} />
       )}
     </>
-  ));
-};
+  );
+});
 
 export default TagContentContainer;

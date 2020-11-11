@@ -6,6 +6,7 @@ import { TagContentCover } from '../../styles/tagStyle';
 import TagHeader from './TagHeader';
 import TagNotFound from './TagNotFound'
 import LoadingImgContainer from '../common/LoadingImgContainer';
+import SearchingImg from '../common/SearchingImg';
 
 const TagContainer = () => {
 
@@ -14,7 +15,8 @@ const TagContainer = () => {
   }, [])
 
   const renderContent = () => {
-    if (TagStore.tagPanelLoading) return <LoadingImgContainer/>
+    if (TagStore.isSearching) return <SearchingImg />;
+    else if (TagStore.tagPanelLoading) return <LoadingImgContainer />;
     else if (TagStore.hasTag) return <TagContentContainer />;
     else return <TagNotFound />;
   }

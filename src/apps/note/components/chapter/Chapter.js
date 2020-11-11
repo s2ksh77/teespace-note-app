@@ -100,7 +100,7 @@ const Chapter = ({ chapter, index }) => {
     if (!["shared", "shared_page"].includes(chapter.type)) {
       return <ChapterColor color={chapter.color} chapterId={chapter.id} />;
     } else {
-      return <ChapterShareIcon select={ChapterStore.getCurrentChapterId() === chapter.id} src={shareImg} />
+      return <ChapterShareIcon selected={ChapterStore.getCurrentChapterId() === chapter.id} src={shareImg} />
     }
   }
   return useObserver(() => (

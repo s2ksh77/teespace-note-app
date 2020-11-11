@@ -18,11 +18,12 @@ const TagStore = observable({
   editTagValue: "",
   // allTagList: [],
   hasTag:false,
-  // 처음 받아오는 데이터
+  // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList:[],
   // key당 tagList
-  filteredTagObj:{},
-  // a,b,c 같은 키들만 담는다
+  keyTagPairObj:{},
+  searchResult:{}, // search용 keyTagPairObj
+  // a,b,c 같은 키들만 담는다(render용)
   sortedTagList: {},
   // sortedTagList:{
   //   KOR:[],
@@ -30,13 +31,10 @@ const TagStore = observable({
   //   NUM:[],
   //   ETC:[]
   // },
-  // 그릴 targetTagList(searching이냐 아니냐 따라서)
-  targetTagList:[],
-  // 태그 검색
+  tagKeyArr:[], // sort해서 그림
+  // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearching:false,
   searchString:"",
-  searchResult:{},
-  //filteredTagObj에 담을 때마다 render되는 것 같아서 loading 넣어줌
   tagPanelLoading:true,
   getChannelTagList() {
     return this.tagList;
@@ -76,24 +74,63 @@ const TagStore = observable({
     this.setPanelLoading(true);
     await this.getAllSortedTagList();
     // 태그별 정리
-    this.getFilteredTagObj(); 
+    this.getKeyTagPairObj(); 
     // kor, eng, num, etc별 sort한 키
     this.setSortedTagList();
-    this.setTargetTagList();
     this.setPanelLoading(false);  
   },
 
-  getFilteredTagObj() {
-    /*
-       this.filteredTagObj 만들기
-       item : KEY별로
-       this.filteredTagObj = 
-       {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
-                tagName2:{tagId:'', note_id:[]}}        
+  async searchTag(str) {
+    this.setIsSearching(true);
+    this.setSearchString(str);
+    await this.getAllSortedTagList();
+    this.getSearchResult(str);
+    // kor, eng, num, etc별 sort한 키
+    this.setSortedTagList();
+    this.setIsSearching(false);
+  },
+  // search result용 KeyTagObj
+  getSearchResult(str) {
+    let results = {};
+    let tagKeyArr$ = [];
+    this.allSortedTagList.forEach((item) => {
+      let KEY = item.KEY;
+      let resultKeyTags = {};
+      item.tag_indexdto.tagList.forEach((tag) => {
+        let tagName = tag.text;
+        if (!tagName.toLowerCase().includes(str)) return;
+        if (resultKeyTags[tagName]) {
+          resultKeyTags[tagName]["note_id"].push(tag.note_id);
+        } else {
+          resultKeyTags[tagName] = {
+            id : tag.tag_id,
+            note_id : [tag.note_id]
+          }
         }
+      })
+      if (Object.keys(resultKeyTags).length > 0) {        
+        results[KEY] = resultKeyTags;
+        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY);
+      }
+    })
+    this.keyTagPairObj = {...results};
+    this.tagKeyArr = [...tagKeyArr$.sort()]
+    return this.keyTagPairObj;
+  },
+  getKeyTagPairObj() {
+    /*
+      this.keyTagPairObj 만들기
+      item : KEY별로
+      this.keyTagPairObj = 
+      {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
+               tagName2:{tagId:'', note_id:[]}}        
+      }
+      정렬 순서는 대소문자 구분하지 않음!
     */
     let results = {};
+    let tagKeyArr$ = [];
     this.allSortedTagList.forEach((item) => { 
+      let KEY = item.KEY;
       let resultObj = {};
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
       let tagList = item.tag_indexdto.tagList;
@@ -107,39 +144,51 @@ const TagStore = observable({
           }
         }
       })
-      results[item.KEY] = resultObj;
+      results[KEY] = resultObj;   
+      if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
     });
-    this.filteredTagObj = {...results};
-    return this.filteredTagObj;
+    this.keyTagPairObj = {...results};
+    this.tagKeyArr = [...tagKeyArr$.sort()]
+    return this.keyTagPairObj;
   },
-  // tag key 정렬
-  // sortTagKey 예시 : ["*", "1", "8", "T", "a", "t", "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅌ", "ㅍ", "ㅎ"]
-  sortTagKey() {
-    let tagKey = [];
-    this.allSortedTagList.forEach((category) => {
-      tagKey.push(category["KEY"])
+  getEngTagSortList(key) {
+    const  lower = this.keyTagPairObj[key.toLowerCase()] || {};
+    const upper = this.keyTagPairObj[key.toUpperCase()] || {};
+    const composed = Object.assign(lower,upper);
+    let sortedEngTags = {};
+    let sortedTagName = Object.keys(composed).sort((a,b) =>{
+      if (a.toLowerCase() > b.toLowerCase()) {
+        return 1; // 순서 바꾼다
+      }
+      if (a.toLowerCase() < b.toLowerCase()) {
+          return -1;
+      }
+      return 0
+    });
+    // 영문 시작 태그 keyTagPairObj 다시 만들어주기
+    sortedTagName.forEach((tagName) => {
+      sortedEngTags[tagName] = composed[tagName]
     })
-    tagKey.sort();
-    return tagKey;
+    return sortedEngTags;
   },
-
   // kor, eng, num, etc별 sort한 키
   setSortedTagList() {
-    let tagKey = this.sortTagKey();
+    this.sortedTagList = {};
     // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
     let korObj = {}, engObj = {}, numObj = {}, etcObj = {};
-    tagKey.forEach((key) => {
+    this.tagKeyArr.forEach((key) => {
       if( key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203 ){
-        korObj[key] = this.filteredTagObj[key];
+        korObj[key] = this.keyTagPairObj[key];
       }
       else if(key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123){
-        engObj[key] = this.filteredTagObj[key];
+        // engObj[key] = this.keyTagPairObj[key];
+        engObj[key] = this.getEngTagSortList(key);
       }
       else if(key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57){
-        numObj[key] = this.filteredTagObj[key];
+        numObj[key] = this.keyTagPairObj[key];
       }
       else {
-        etcObj[key] = this.filteredTagObj[key];
+        etcObj[key] = this.keyTagPairObj[key];
       }
     })
 
@@ -156,7 +205,7 @@ const TagStore = observable({
     }
     else this.setHasTag(true);
   },
-  async getAllSortedTagList() { 
+  async getAllSortedTagList() {  
     const tag_index_list_dto = await NoteRepository.getAllSortedTagList();
     this.setAllSortedTagList(tag_index_list_dto);
     return this.allSortedTagList;
@@ -183,57 +232,11 @@ const TagStore = observable({
 
     ChapterStore.setSearchResult({chapter:[],page:resultPageArr});
   },
-  getTargetTagList() {
-    return this.targetTagList;
-  },
-  setTargetTagList() {
-    if (this.isSearching) {
-      this.targetTagList = TagStore.searchResult;
-    } else {
-      this.targetTagList = TagStore.sortedTagList;
-    }
-  },
-  getIsSearching() {
-    return this.isSearching;
-  },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
-    this.setTargetTagList();
-    // 초기화
-    if (!isSearching) {
-      this.searchString = '';
-      this.searchResult = {};
-    }
-  },
-  getSearchString() {
-    return this.searchString;
   },
   setSearchString(str) {
     this.searchString = str;
-    // search
-    // {"KOR" : {"ㄱ" :["가나다", "고교구"]}}
-    let searchResultObj = {};
-    Object.keys(this.sortedTagList).filter((category) => {
-      let keyObj = {};
-      let _keyList = Object.keys(this.sortedTagList[category]).filter((key) => {
-        let tagObj = {};
-        let _tagList = Object.keys(this.filteredTagObj[key]).filter((tag) => {
-          let result = tag.includes(this.searchString);
-          if (result) tagObj[tag] = this.filteredTagObj[key][tag];
-          return result;
-        })        
-        if (_tagList.length > 0) {
-          keyObj[key] = tagObj;
-        }
-        return _tagList.length > 0
-      })
-      if (_keyList.length>0) {
-        searchResultObj[category] = keyObj
-      }
-      return _keyList.length > 0; 
-    });
-    
-    this.searchResult = searchResultObj;
   },
   setTagText(text) {
     this.tagText = text;

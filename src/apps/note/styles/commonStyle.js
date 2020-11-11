@@ -141,3 +141,23 @@ export const ModalCancelBtn = styled.div`
   border: 1px solid #C6CED6;
   color: #3B3B3B;
 `;
+
+export const SearchLoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+`;
+export const SearchLoadingTxt = styled.div`
+  font-size: 0.75rem;
+  color: #777777;
+  text-align: center;
+  margin-bottom: 1.25rem;
+`;
+
+export const SearchLoadingImg = styled.img`
+  width: 8.44rem;
+  height: 8.44rem;
+`;

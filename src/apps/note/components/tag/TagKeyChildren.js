@@ -8,7 +8,7 @@ const style = { display: 'flex', width: '100%', flexWrap: 'wrap' };
 const TagKeyChildren = ({ category, tagKey }) => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
 
-  const onClickTagBtn = async (tagId, tagName, e) => {
+  const onClickTagBtn = (tagId, tagName) => async () => {
     // 임시 (태그칩 모양으로 넣어야함)
     await TagStore.getTagNoteList(tagId);
     ChapterStore.setTargetSearchTagName(tagName);
@@ -21,11 +21,11 @@ const TagKeyChildren = ({ category, tagKey }) => {
   return useObserver(() => (
     <>
       <div style={style}>
-        {Object.keys(TagStore.targetTagList[category][tagKey]).map(tagName => {
-          const tagInfo = TagStore.targetTagList[category][tagKey][tagName];
-          return (
+        {Object.keys(TagStore.sortedTagList[category][tagKey]).map(tagName => {
+          const tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
+          return (            
             <TagChip
-              onClick={onClickTagBtn.bind(null, tagInfo.id, tagName)}
+              onClick={onClickTagBtn(tagInfo.id, tagName)}
               key={tagInfo.id}
             >
               <TagChipText>{tagName}</TagChipText>

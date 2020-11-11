@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import HeaderButtons from '../common/buttons';
 import { TagMenuHeader } from '../../styles/tagStyle';
 import {
+  TagSearchForm,
   TagTitleSearchContainer,
   LnbTitleSearchInput,
   EditPreBtnWrapper,
@@ -15,8 +16,6 @@ import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
 import preImg from '../../assets/back.svg';
 
-const formStyle = { marginLeft: 'auto' };
-
 const TagHeader = () => {
   const { NoteStore, ChapterStore } = useNoteStore();
   const [value, setValue] = useState('');
@@ -29,8 +28,7 @@ const TagHeader = () => {
 
   const onSubmitForm = e => {
     e.preventDefault();
-    TagStore.setSearchString(value);
-    TagStore.setIsSearching(true);
+    TagStore.searchTag(value);    
     inputRef.current.focus();
   };
 
@@ -41,6 +39,7 @@ const TagHeader = () => {
   const onClickCancelBtn = e => {
     setValue('');
     TagStore.setIsSearching(false);
+    TagStore.fetchTagData();
   };
 
   return useObserver(() => (
@@ -51,7 +50,7 @@ const TagHeader = () => {
         >
           <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
-        <form style={formStyle} onSubmit={onSubmitForm}>
+        <TagSearchForm onSubmit={onSubmitForm}>
           <TagTitleSearchContainer>
             <SearchImgInput type="image" border="0" alt=" " src={searchImg} />
             <LnbTitleSearchInput
@@ -67,7 +66,7 @@ const TagHeader = () => {
               onClick={onClickCancelBtn}
             />
           </TagTitleSearchContainer>
-        </form>
+        </TagSearchForm>
         <HeaderButtons />
       </TagMenuHeader>
     </>

@@ -157,6 +157,10 @@ export const LnbTitleSearchInput = styled.input`
   outline: none;
 `;
 
+export const TagSearchForm = styled.form`
+  margin-left:auto;
+`;
+
 export const TagTitleSearchContainer = styled.div`
   display: inline-flex;
   align-items: center;

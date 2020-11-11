@@ -70,7 +70,7 @@ class NoteRepository {
       );
       return res.data.dto.tag_index_list_dto;
     } catch (err) {
-      throw Error(err.message);
+      console.log(err);
     }
   }
 

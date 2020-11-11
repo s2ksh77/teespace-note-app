@@ -37,7 +37,7 @@ export const ChapterShareIcon = styled.img`
   height:0.9rem;
   margin: auto 0.5rem auto 0.35rem;
   top: 0.95rem;
-  filter: ${props=>props.select 
+  filter: ${props=>props.selected 
     ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)'
     : 'invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%)'};
 `
