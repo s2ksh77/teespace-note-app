@@ -130,7 +130,7 @@ export const GlobalStyle = createGlobalStyle`
       border-top: 0.375rem solid transparent;
       border-bottom: 0.375rem solid transparent;
       border-left: 0.5rem solid #FB3A3A;
-      transform: translate(-1.2rem, -1.405rem);
+      transform: translate(-0.43rem, -1.405rem);
     }
   }  
   .link-dialog-reverse {

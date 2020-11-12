@@ -408,6 +408,9 @@ const EditorContainer = () => {
                 background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
                 background-size: 0.625rem 0.625rem !important;
               }
+              img {
+                max-width: 100%;
+              }
             `
           }}
           onEditorChange={getEditorContent}
