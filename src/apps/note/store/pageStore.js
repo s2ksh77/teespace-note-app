@@ -6,7 +6,6 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import html2pdf from 'html2pdf.js';
 const PageStore = observable({
-  notechannel_id: '',
   noteInfoList: [],
   currentPageData: [],
   returnData: [],

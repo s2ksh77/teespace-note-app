@@ -152,11 +152,9 @@ const TagStore = observable({
     return this.keyTagPairObj;
   },
   getEngTagSortList(key) {
-    const  lower = this.keyTagPairObj[key.toLowerCase()] || {};
-    const upper = this.keyTagPairObj[key.toUpperCase()] || {};
-    const composed = Object.assign(lower,upper);
     let sortedEngTags = {};
-    let sortedTagName = Object.keys(composed).sort((a,b) =>{
+    const targetKeyObj = this.keyTagPairObj[key];    
+    let sortedTagName = Object.keys(targetKeyObj).sort((a,b) =>{
       if (a.toLowerCase() > b.toLowerCase()) {
         return 1; // 순서 바꾼다
       }
@@ -167,7 +165,7 @@ const TagStore = observable({
     });
     // 영문 시작 태그 keyTagPairObj 다시 만들어주기
     sortedTagName.forEach((tagName) => {
-      sortedEngTags[tagName] = composed[tagName]
+      sortedEngTags[tagName] = targetKeyObj[tagName]
     })
     return sortedEngTags;
   },

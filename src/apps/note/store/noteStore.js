@@ -11,7 +11,6 @@ const NoteStore = observable({
   user_id: '',
   noteFileList: [],
   showPage: true, // editor 보고 있는지 태그 보고 있는지
-  isMaximumSize: true,
   layoutState: '',
   targetLayout: null,
   isExpanded: false,
@@ -52,19 +51,6 @@ const NoteStore = observable({
       ChapterStore.setCurrentChapterId('');
       PageStore.setCurrentPageId('');
     }
-    // [TODO] 혹시 몰라서 넣음, 뺄까?
-    else {
-      TagStore.setIsSearching(false);
-    }
-  },
-  getShowPage() {
-    return this.showPage;
-  },
-  getIsMaximumSize() {
-    return this.isMaximumSize;
-  },
-  setIsMaximumSize(isMaximum) {
-    this.isMaximumSize = isMaximum;
   },
   setLayoutState(state) {
     this.layoutState = state;
