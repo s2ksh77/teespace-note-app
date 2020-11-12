@@ -1,4 +1,5 @@
 import errorImg from '../../assets/note_error.svg';
+import PageStore from '../../store/pageStore';
 import { isFilled, validUrl, checkUrlValidation } from '../common/validators.js';
 /*
   Link Dialog 관련
@@ -106,6 +107,8 @@ export const changeButtonStyle = (idx, count) => {
 }
 
 export const openLink = (url, target) => {
+  if (PageStore.isEdit) return;
+
   if (target !== '_blank') {
     document.location.href = url;
     return;

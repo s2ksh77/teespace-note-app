@@ -309,16 +309,21 @@ const EditorStore = observable({
       i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   },
+
+  handleClickLink(el) {
+    const href = el.getAttribute('href');
+    const target = el.getAttribute('target');
+    openLink(href, target);
+  },
+
   handleLinkListener() {
     if (EditorStore.tinymce) {
       const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
       if (targetList && targetList.length > 0) {
-        Array.from(targetList).map((el) => {
-          el.addEventListener('click', () => {
-            const href = el.getAttribute('href');
-            const target = el.getAttribute('target');
-            openLink(href, target);
-          });
+        Array.from(targetList).forEach((el) => {
+          if (el.getAttribute('hasListener')) return;
+          el.addEventListener('click', this.handleClickLink.bind(null, el));
+          el.setAttribute('hasListener', true);
         });
       }
     }
