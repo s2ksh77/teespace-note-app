@@ -288,6 +288,7 @@ const PageStore = observable({
         } = response;
         this.getNoteInfoList(returnData.note_id);
         EditorStore.tinymce.focus();
+        EditorStore.tinymce.selection.setCursorLocation();
       }
     });
     return this.currentPageData;
