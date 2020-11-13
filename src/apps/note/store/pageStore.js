@@ -149,13 +149,13 @@ const PageStore = observable({
     // 새로고침, setcurrentchapterId, 태그/파일 관련 뺌
     try {
       //pageName, pageContents, chapterId
-      const {data:dto} = await NoteRepository._createPage(pageName, pageContents, ChapterStore.chapterList[0].id);
+      const { data: dto } = await NoteRepository._createPage(pageName, pageContents, ChapterStore.chapterList[0].id);
       this.currentPageData = dto;
       this.isEdit = dto.is_edit;
       this.noteTitle = dto.note_title;
       this.currentPageId = dto.note_id;
       return dto;
-    } catch(err){console.log(err)}
+    } catch (err) { console.log(err) }
   },
   async createPage() {
     await NoteRepository.createPage('제목 없음', this.createParent).then(
@@ -199,11 +199,11 @@ const PageStore = observable({
     );
   },
   // (posco)
-  async _renamePage(renamePageId,renamePageText) {
+  async _renamePage(renamePageId, renamePageText) {
     try {
       const res = await NoteRepository._renamePage(renamePageId, renamePageText, ChapterStore.chapterList[0].id);
-      return res.data;
-    } catch(err){console.log(err)}
+      return res;
+    } catch (err) { console.log(err) }
   },
 
   async renamePage(chapterId) {
@@ -297,7 +297,8 @@ const PageStore = observable({
       this.isEdit = dto.is_edit;
       this.noteTitle = dto.note_title;
       this.modifiedDate = this.modifiedDateFormatting();
-    } catch(err) {console.log(err.message)}    
+      return dto;
+    } catch (err) { console.log(err.message) }
   },
   async getNoteInfoList(noteId) {
     await NoteRepository.getNoteInfoList(noteId).then(response => {
@@ -324,7 +325,8 @@ const PageStore = observable({
         ChapterStore.chapterList[0].id,
       );
       this._getNoteInfoList(res.data.dto.note_id);
-    } catch(err){console.log(err)}
+      return res;
+    } catch (err) { console.log(err) }
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -348,7 +350,8 @@ const PageStore = observable({
     try {
       const res = await NoteRepository._editDone(updateDto);
       this._getNoteInfoList(res.data.dto.note_id);
-    } catch(err) {console.log(err)};    
+      return res;
+    } catch (err) { console.log(err) };
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editDone(updateDto) {
@@ -371,7 +374,8 @@ const PageStore = observable({
         ChapterStore.chapterList[0].id
       );
       this._getNoteInfoList(res.data.dto.note_id);
-    } catch(err) {console.log(err)}
+      return res;
+    } catch (err) { console.log(err) }
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정

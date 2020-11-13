@@ -204,7 +204,8 @@ const ChapterStore = observable({
     try {
       const res = await this._getChapterListCall();
       this.chapterList = res;
-    } catch(err) {console.log(err)}  
+      return res;
+    } catch (err) { console.log(err) }
   },
 
   async getChapterList() {

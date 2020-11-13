@@ -2178,7 +2178,7 @@ var PageStore = mobx.observable({
 
             case 3:
               res = _context6.sent;
-              return _context6.abrupt("return", res.data);
+              return _context6.abrupt("return", res);
 
             case 7:
               _context6.prev = 7;
@@ -2350,20 +2350,19 @@ var PageStore = mobx.observable({
               _this7.isEdit = dto.is_edit;
               _this7.noteTitle = dto.note_title;
               _this7.modifiedDate = _this7.modifiedDateFormatting();
-              _context10.next = 14;
-              break;
+              return _context10.abrupt("return", dto);
 
-            case 11:
-              _context10.prev = 11;
+            case 12:
+              _context10.prev = 12;
               _context10.t0 = _context10["catch"](0);
               console.log(_context10.t0.message);
 
-            case 14:
+            case 15:
             case "end":
               return _context10.stop();
           }
         }
-      }, _callee10, null, [[0, 11]]);
+      }, _callee10, null, [[0, 12]]);
     }))();
   },
   getNoteInfoList: function getNoteInfoList(noteId) {
@@ -2415,20 +2414,19 @@ var PageStore = mobx.observable({
 
               _this9._getNoteInfoList(res.data.dto.note_id);
 
-              _context12.next = 10;
-              break;
+              return _context12.abrupt("return", res);
 
-            case 7:
-              _context12.prev = 7;
+            case 8:
+              _context12.prev = 8;
               _context12.t0 = _context12["catch"](0);
               console.log(_context12.t0);
 
-            case 10:
+            case 11:
             case "end":
               return _context12.stop();
           }
         }
-      }, _callee12, null, [[0, 7]]);
+      }, _callee12, null, [[0, 8]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -2481,22 +2479,21 @@ var PageStore = mobx.observable({
 
               _this11._getNoteInfoList(res.data.dto.note_id);
 
-              _context14.next = 10;
-              break;
+              return _context14.abrupt("return", res);
 
-            case 7:
-              _context14.prev = 7;
+            case 8:
+              _context14.prev = 8;
               _context14.t0 = _context14["catch"](0);
               console.log(_context14.t0);
 
-            case 10:
-
             case 11:
+
+            case 12:
             case "end":
               return _context14.stop();
           }
         }
-      }, _callee14, null, [[0, 7]]);
+      }, _callee14, null, [[0, 8]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -2549,20 +2546,19 @@ var PageStore = mobx.observable({
 
               _this13._getNoteInfoList(res.data.dto.note_id);
 
-              _context16.next = 10;
-              break;
+              return _context16.abrupt("return", res);
 
-            case 7:
-              _context16.prev = 7;
+            case 8:
+              _context16.prev = 8;
               _context16.t0 = _context16["catch"](0);
               console.log(_context16.t0);
 
-            case 10:
+            case 11:
             case "end":
               return _context16.stop();
           }
         }
-      }, _callee16, null, [[0, 7]]);
+      }, _callee16, null, [[0, 8]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -3115,20 +3111,19 @@ var ChapterStore = mobx.observable({
             case 3:
               res = _context3.sent;
               _this5.chapterList = res;
-              _context3.next = 10;
-              break;
+              return _context3.abrupt("return", res);
 
-            case 7:
-              _context3.prev = 7;
+            case 8:
+              _context3.prev = 8;
               _context3.t0 = _context3["catch"](0);
               console.log(_context3.t0);
 
-            case 10:
+            case 11:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[0, 7]]);
+      }, _callee3, null, [[0, 8]]);
     }))();
   },
   getChapterList: function getChapterList() {
