@@ -3,6 +3,7 @@ import NoteRepository from './noteRepository'
 import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import NoteStore from './noteStore';
 import { openLink } from '../components/editor/customLink'
 
 const EditorStore = observable({
@@ -327,6 +328,14 @@ const EditorStore = observable({
         });
       }
     }
+  },
+
+  deleteImage() {
+    const parent = this.tinymce.selection.getNode().parentNode;
+    this.tinymce.selection.setContent('');
+    if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
+    this.tinymce.focus();
+    NoteStore.setModalInfo(null);
   },
 });
 

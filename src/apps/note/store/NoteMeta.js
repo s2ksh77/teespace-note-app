@@ -47,6 +47,10 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
+      case 'imageDelete':
+        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage();})
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        break;
       default:
         break;
     }
@@ -54,8 +58,9 @@ const NoteMeta = {
   },
   setButtonConfig(type) {
     switch (type) {
-      case 'fileDelete':
       case 'delete':
+      case 'fileDelete':
+      case 'imageDelete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'confirm':
         return [{ type: 'confirom', text: '확인' }];
@@ -108,6 +113,10 @@ const NoteMeta = {
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
         break;
+      case 'imageDelete':
+        dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
+        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
+        dialogType.buttonConfig = this.setButtonConfig('imageDelete');
       default:
         break;
     }

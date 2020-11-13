@@ -16,6 +16,7 @@ import GlobalVariable from '../../GlobalVariable';
 import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
+import NoteStore from '../../store/noteStore';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -353,10 +354,7 @@ const EditorContainer = () => {
                 icon: 'remove',
                 tooltip: '삭제',
                 onAction: function () {
-                  const parent = editor.selection.getNode().parentNode;
-                  editor.selection.setContent('');
-                  if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
-                  editor.focus();
+                  NoteStore.setModalInfo('imageDelete');
                 },
               });
             },
