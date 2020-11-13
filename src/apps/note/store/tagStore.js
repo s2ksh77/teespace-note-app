@@ -99,7 +99,7 @@ const TagStore = observable({
       item.tag_indexdto.tagList.forEach((tag) => {
         let tagName = tag.text;
         if (!tagName.toLowerCase().includes(str)) return;
-        if (resultKeyTags[tagName]) {
+        if (resultKeyTags.hasOwnProperty(tagName)) {
           resultKeyTags[tagName]["note_id"].push(tag.note_id);
         } else {
           resultKeyTags[tagName] = {
@@ -135,8 +135,7 @@ const TagStore = observable({
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
       let tagList = item.tag_indexdto.tagList;
       tagList.forEach((tag) => {
-        let target = resultObj[tag.text];
-        if (target) target["note_id"].push(tag.note_id);
+        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"].push(tag.note_id);
         else {
           resultObj[tag.text] = {
             id: tag.tag_id,
