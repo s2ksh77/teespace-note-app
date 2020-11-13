@@ -201,11 +201,12 @@ const ChapterStore = observable({
   },
   // (posco)
   async _getChapterList() {
+    let res;
     try {
-      const res = await this._getChapterListCall();
+      res = await this._getChapterListCall();
       this.chapterList = res;
-      return res;
     } catch (err) { console.log(err) }
+    return res;
   },
 
   async getChapterList() {

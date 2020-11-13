@@ -3111,19 +3111,23 @@ var ChapterStore = mobx.observable({
             case 3:
               res = _context3.sent;
               _this5.chapterList = res;
-              return _context3.abrupt("return", res);
+              _context3.next = 10;
+              break;
 
-            case 8:
-              _context3.prev = 8;
+            case 7:
+              _context3.prev = 7;
               _context3.t0 = _context3["catch"](0);
               console.log(_context3.t0);
+
+            case 10:
+              return _context3.abrupt("return", res);
 
             case 11:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[0, 8]]);
+      }, _callee3, null, [[0, 7]]);
     }))();
   },
   getChapterList: function getChapterList() {
