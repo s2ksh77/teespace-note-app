@@ -444,17 +444,17 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "_getChapterList",
     value: function _getChapterList() {
-      return API.get("/noteChapter?action=List&note_channel_id=".concat(this.chId));
+      return API.get("Note/noteChapter?action=List&note_channel_id=".concat(this.chId));
     }
   }, {
     key: "_getNoteInfoList",
     value: function _getNoteInfoList(noteId) {
-      return API.get("/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
+      return API.get("Note/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
     }
   }, {
     key: "_createPage",
     value: function _createPage(pageName, pageContents, chapterId) {
-      return API.post("/note", {
+      return API.post("Note/note", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -479,7 +479,7 @@ var NoteRepository = /*#__PURE__*/function () {
         page.note_channel_id = _this.chId;
         page.user_name = _this.USER_NAME;
       });
-      return API.post("/note?action=Delete", {
+      return API.post("Note/note?action=Delete", {
         dto: {
           noteList: pageList
         }
@@ -488,7 +488,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "_renamePage",
     value: function _renamePage(pageId, pageName, chapterId) {
-      return API.put("/note?action=Update", {
+      return API.put("Note/note?action=Update", {
         dto: {
           CH_TYPE: 'CHN0003',
           TYPE: 'RENAME',
@@ -504,7 +504,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "_editStart",
     value: function _editStart(noteId, chapterId) {
-      return API.post("/note?action=Update", {
+      return API.post("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -521,7 +521,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "_editDone",
     value: function _editDone(updateDto) {
-      return API.post("/note?action=Update", {
+      return API.post("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -540,7 +540,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "_nonEdit",
     value: function _nonEdit(noteId, chapterId) {
-      return API.post("/note?action=Update", {
+      return API.post("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',

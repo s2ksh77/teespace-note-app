@@ -157,16 +157,16 @@ class NoteRepository {
   // posco
   _getChapterList() {
     return API.get(
-      `/noteChapter?action=List&note_channel_id=${this.chId}`,
+      `Note/noteChapter?action=List&note_channel_id=${this.chId}`,
     );
   }
   _getNoteInfoList(noteId) {
     return API.get(
-      `/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+      `Note/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
     );
   }
   _createPage(pageName, pageContents, chapterId) {
-    return API.post(`/note`, {
+    return API.post(`Note/note`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -174,7 +174,7 @@ class NoteRepository {
         note_channel_id: this.chId,
         user_name: this.USER_NAME,
         note_title: pageName,
-        note_content : pageContents,
+        note_content: pageContents,
         is_edit: this.USER_ID,
         parent_notebook: chapterId,
       },
@@ -187,14 +187,14 @@ class NoteRepository {
       page.note_channel_id = this.chId;
       page.user_name = this.USER_NAME;
     });
-    return API.post(`/note?action=Delete`, {
+    return API.post(`Note/note?action=Delete`, {
       dto: {
         noteList: pageList,
       }
     });
   }
   _renamePage(pageId, pageName, chapterId) {
-    return API.put(`/note?action=Update`, {
+    return API.put(`Note/note?action=Update`, {
       dto: {
         CH_TYPE: 'CHN0003',
         TYPE: 'RENAME',
@@ -208,7 +208,7 @@ class NoteRepository {
     });
   }
   _editStart(noteId, chapterId) {
-    return API.post(`/note?action=Update`, {
+    return API.post(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -223,7 +223,7 @@ class NoteRepository {
     });
   }
   _editDone(updateDto) {
-    return API.post(`/note?action=Update`, {
+    return API.post(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -240,7 +240,7 @@ class NoteRepository {
     });
   }
   _nonEdit(noteId, chapterId) {
-    return API.post(`/note?action=Update`, {
+    return API.post(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
