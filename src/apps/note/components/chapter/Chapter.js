@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
@@ -14,7 +14,7 @@ import {
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/ts_share@3x.png';
 
-const Chapter = ({ chapter, index }) => {
+const Chapter = ({ chapter, index, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   // 챕터를 다른 챕터 영역에 drop했을 때
@@ -66,15 +66,6 @@ const Chapter = ({ chapter, index }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const onClickChapterBtn = (id, children) => async () => {
-    if (PageStore.isEdit) return;
-    ChapterStore.setCurrentChapterId(id);
-    let targetPage = '';
-    if (children.length) targetPage = children[0]?.id;
-    NoteStore.setShowPage(true);
-    await PageStore.setCurrentPageId(targetPage);
-  };
-
   const handleChapterName = (e) => {
     const {
       target: { value },
@@ -93,6 +84,10 @@ const Chapter = ({ chapter, index }) => {
       NoteStore.disableScroll,
     );
   };
+
+  const handleChapterBtn = useCallback(() => {
+    onClick(chapter.id, chapter.children);
+  }, []);
 
   const handleFocus = (e) => e.target.select();
 
@@ -117,7 +112,7 @@ const Chapter = ({ chapter, index }) => {
     >
       <ChapterCover
         ref={chapter.type === 'notebook' ? (node) => drag(dropChapter(node)) : drag}
-        onClick={onClickChapterBtn(chapter.id, chapter.children)}
+        onClick={handleChapterBtn}
       >
         {renderChapterIcon()}
         {ChapterStore.getRenameChapterId() === chapter.id ? (
@@ -144,7 +139,7 @@ const Chapter = ({ chapter, index }) => {
           )}
       </ChapterCover>
       <PageList
-        showNewPage={!['shared','shared_page'].includes(chapter.type)}
+        showNewPage={!['shared', 'shared_page'].includes(chapter.type)}
         children={chapter.children}
         chapterId={chapter.id}
         chapterIdx={index}

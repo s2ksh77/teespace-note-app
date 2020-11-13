@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useObserver } from 'mobx-react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { Observer, useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -11,10 +11,9 @@ import {
   PageText,
   PageTextInput,
 } from '../../styles/pageStyle';
-import EditorStore from '../../store/editorStore';
 
-const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) => {
+  const { NoteStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
     item: { id: page.id, type: type === 'notebook' ? 'page' : 'shared_page' },
@@ -55,16 +54,9 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const onClickLnbPage = async (id) => {
-    if (PageStore.isEdit) return;
-    NoteStore.setShowPage(true);
-    ChapterStore.setCurrentChapterId(chapterId);
-    await PageStore.setCurrentPageId(id);
-    EditorStore.handleLinkListener();
-    if (NoteStore.layoutState === 'collapse')
-      NoteStore.setTargetLayout('Content');
-    EditorStore.tinymce?.undoManager.clear();
-  };
+  const handleSelectPage = useCallback(() => {
+    onClick(page.id);
+  }, []);
 
   const handlePageName = (e) => {
     const {
@@ -101,7 +93,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type }) => {
           ? ' selected'
           : '')
       }
-      onClick={onClickLnbPage.bind(null, page.id)}
+      onClick={handleSelectPage}
     >
       <PageMargin
         style={
