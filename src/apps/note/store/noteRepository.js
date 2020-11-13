@@ -7,15 +7,16 @@ class NoteRepository {
 
   FILE_URL = 'http://222.122.67.176:8080/CMS/';
 
-  // WS_ID = '';
-  // CH_TYPE = 'CHN0003';
-  // USER_ID = '';
-
-  WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
-
+  WS_ID = '';
   CH_TYPE = 'CHN0003';
+  USER_ID = '';
+  chId = '';
 
-  USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
+  // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
+
+  // CH_TYPE = 'CHN0003';
+
+  // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
     this.URL = url || this.URL;

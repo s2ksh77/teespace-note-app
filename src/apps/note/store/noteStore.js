@@ -30,6 +30,7 @@ const NoteStore = observable({
   setChannelId(chId) {
     NoteRepository.setChannelId(chId);
     this.notechannel_id = chId;
+    ChapterStore.getChapterList();
   },
   getChannelId() {
     return this.notechannel_id;
