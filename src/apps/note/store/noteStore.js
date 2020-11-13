@@ -39,6 +39,9 @@ const NoteStore = observable({
     NoteRepository.setUserId(userId);
     this.user_id = userId;
   },
+  setUserName(userName) {
+    this.userName = userName;
+  },
   getUserId() {
     return this.user_id;
   },

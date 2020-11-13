@@ -11,6 +11,7 @@ class NoteRepository {
   CH_TYPE = 'CHN0003';
   USER_ID = '';
   chId = '';
+  USER_NAME = '';
 
   // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
@@ -32,6 +33,10 @@ class NoteRepository {
 
   setUserId(targetUserId) {
     this.USER_ID = targetUserId;
+  }
+
+  setUserName(targetUserName) {
+    this.USER_NAME = targetUserName;
   }
 
   getChannelId() {
@@ -117,7 +122,7 @@ class NoteRepository {
         children: [],
         type: 'notebook',
         USER_ID: this.USER_ID,
-        user_name: '김수현B',
+        user_name: this.USER_NAME,
         color: chapterColor,
       },
     });
@@ -138,7 +143,7 @@ class NoteRepository {
         note_channel_id: this.chId,
         parent_notebook: '',
         text: chapterTitle,
-        user_name: '김수현B',
+        user_name: this.USER_NAME,
       }
     });
   }
@@ -146,13 +151,13 @@ class NoteRepository {
   createPage(pageName, chapterId) {
     return API.Post(`${this.URL}/note`, {
       dto: {
-        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
-        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
+        USER_ID: this.USER_ID,
         note_channel_id: this.chId,
-        user_name: '김수현B',
+        user_name: this.USER_NAME,
         note_title: pageName,
-        is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
+        is_edit: this.USER_ID,
         parent_notebook: chapterId,
       },
     });
@@ -163,7 +168,7 @@ class NoteRepository {
       page.USER_ID = this.USER_ID;
       page.WS_ID = this.WS_ID;
       page.note_channel_id = this.chId;
-      page.user_name = '김수현B';
+      page.user_name = this.USER_NAME;
     });
     return API.Post(`${this.URL}/note?action=Delete`, {
       dto: {
@@ -194,7 +199,7 @@ class NoteRepository {
         CH_TYPE: 'CHN0003',
         note_id: pageId,
         parent_notebook: chapterId,
-        user_name: '김수현B',
+        user_name: this.USER_NAME,
         USER_ID: this.USER_ID,
         TYPE: 'MOVE',
       }
@@ -204,13 +209,13 @@ class NoteRepository {
   editStart(noteId, chapterId) {
     return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
-        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
-        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
+        USER_ID: this.USER_ID,
         note_channel_id: this.chId,
-        user_name: '김수현b',
+        user_name: this.USER_NAME,
         note_id: noteId,
-        is_edit: '431ef2dd-08fd-495d-b192-db6ecd899496',
+        is_edit: this.USER_ID,
         parent_notebook: chapterId,
         TYPE: 'EDIT_START',
       },
@@ -222,7 +227,7 @@ class NoteRepository {
     updateDto.dto.note_channel_id = this.chId;
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
-    updateDto.dto.user_name = '김수현B';
+    updateDto.dto.user_name = this.USER_NAME;
     console.log(updateDto);
     return API.Post(`${this.URL}/note?action=Update`, updateDto);
   }
@@ -230,9 +235,9 @@ class NoteRepository {
   nonEdit(noteId, chapterId) {
     return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
-        WS_ID: '8050f1ba-0b42-4fe1-a3e4-c0647a47d019',
+        WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
-        USER_ID: '431ef2dd-08fd-495d-b192-db6ecd899496',
+        USER_ID: this.USER_ID,
         note_channel_id: this.chId,
         note_id: noteId,
         is_edit: '',

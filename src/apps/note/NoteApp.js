@@ -17,6 +17,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { userStore } = useCoreStores();
   NoteStore.setChannelId(channelId);
   NoteStore.setWsId(roomId);
+  NoteStore.setUserName(userStore.myProfile.name);
   NoteStore.setUserId(userStore.myProfile.id);
   // 임시
   if (!layoutState) layoutState = 'expand';
