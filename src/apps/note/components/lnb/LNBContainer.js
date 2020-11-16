@@ -44,16 +44,14 @@ const LNBContainer = () => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
     ChapterStore.fetchChapterList();
   }, []);
-
-  const isSearchingChapterList = (ChapterStore.isSearching || ChapterStore.isTagSearching);
-
+  
   return useObserver(() => (
     <>
       <LNBCover>
         <LNBHeader createNewChapter={createNewChapter} />
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
-          {isSearchingChapterList
+          {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? <LNBSearchResult /> 
             : <DndProvider backend={HTML5Backend}>
               {NoteStore.isDragging
