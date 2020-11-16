@@ -69,8 +69,7 @@ const TagHeader = () => {
             </TagTitleSearchContainer>
           </TagSearchForm>
           <HeaderButtons />
-        </RightAligned>
-        
+        </RightAligned>        
       </TagMenuHeader>
     </>
   ));
