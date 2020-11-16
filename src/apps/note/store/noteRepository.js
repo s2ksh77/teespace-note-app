@@ -232,7 +232,7 @@ class NoteRepository {
     return API.Post(`${this.URL}/note?action=Update`, updateDto);
   }
 
-  nonEdit(noteId, chapterId) {
+  nonEdit(noteId, chapterId, userName) {
     return API.Post(`${this.URL}/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
@@ -243,6 +243,7 @@ class NoteRepository {
         is_edit: '',
         parent_notebook: chapterId,
         TYPE: 'NONEDIT',
+        user_name: userName,
       },
     });
   }

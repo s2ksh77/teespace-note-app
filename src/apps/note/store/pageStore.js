@@ -29,6 +29,7 @@ const PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
+  prevModifiedUserName: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -278,6 +279,7 @@ const PageStore = observable({
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   async editStart(noteId) {
+    this.prevModifiedUserName = this.currentPageData.user_name;
     await NoteRepository.editStart(
       noteId,
       this.currentPageData.parent_notebook,
@@ -311,6 +313,7 @@ const PageStore = observable({
     await NoteRepository.nonEdit(
       noteId,
       this.currentPageData.parent_notebook,
+      this.prevModifiedUserName,
     ).then(response => {
       if (response.status === 200) {
         const {
