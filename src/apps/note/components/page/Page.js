@@ -56,8 +56,8 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const handleSelectPage = useCallback(() => {
-    onClick(page.id);
+  const handleSelectPage = useCallback((e) => {
+    onClick(page.id,e);
   }, []);
 
   const handlePageName = (e) => {

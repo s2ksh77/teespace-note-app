@@ -6,6 +6,7 @@ import {
   EditorContainerWrapper,
   ReadModeContainer,
   ReadModeText,
+  editorContentCSS
 } from '../../styles/editorStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -229,6 +230,13 @@ const EditorContainer = () => {
                 }
               })
 
+              // 정렬 그룹 버튼
+              editor.ui.registry.addGroupToolbarButton('alignment', {
+                icon:'align-center',
+                tooltip:'정렬',
+                items:'alignleft aligncenter alignright alignjustify'
+              });
+
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
                 tooltip: '이미지 첨부',
@@ -236,6 +244,7 @@ const EditorContainer = () => {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
               });
+
               editor.ui.registry.addIcon('fileIcon', `
                 <?xml version="1.0" encoding="UTF-8"?>
                 <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -381,40 +390,12 @@ const EditorContainer = () => {
             paste_data_images: true,
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
-            content_style: ` 
-              a {
-                cursor:pointer;
-              }
-              .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
-                background-color: #f8cac6;
-              }
-              table[style*="border-width: 0px"],
-              .mce-item-table:not([border]),
-              .mce-item-table[border="0"],
-              table[style*="border-width: 0px"] td,
-              .mce-item-table:not([border]) td,
-              .mce-item-table[border="0"] td,
-              table[style*="border-width: 0px"] th,
-              .mce-item-table:not([border]) th,
-              .mce-item-table[border="0"] th,
-              table[style*="border-width: 0px"] caption,
-              .mce-item-table:not([border]) caption,
-              .mce-item-table[border="0"] caption {
-                border: 1px solid #ccc;
-              }
-              .mce-content-body{
-                background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
-                background-size: 0.625rem 0.625rem !important;
-              }
-              img {
-                max-width: 100%;
-              }
-            `
+            content_style: editorContentCSS
           }}
           onEditorChange={getEditorContent}
           apiKey="d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81"
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | numlist bullist | outdent indent | link | hr insertdatetime | table tabledelete | tableprops tablerowprops tablecellprops | insertImage insertfile media"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile media"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
