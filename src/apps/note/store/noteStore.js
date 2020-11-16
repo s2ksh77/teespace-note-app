@@ -20,6 +20,7 @@ const NoteStore = observable({
   isDragging: false,
   draggedType: '',
   draggedTitle: '',
+  draggedOffset: {},
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -101,6 +102,9 @@ const NoteStore = observable({
   },
   setDraggedTitle(title) {
     this.draggedTitle = title;
+  },
+  setDraggedOffset(offset) {
+    this.draggedOffset = offset;
   },
 
   disableScroll(e) {

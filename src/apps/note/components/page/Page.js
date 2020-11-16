@@ -17,7 +17,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
 
   const [, drag, preview] = useDrag({
     item: { id: page.id, type: type === 'notebook' ? 'page' : 'shared_page' },
-    begin: () => {
+    begin: (monitor) => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
       PageStore.setMoveChapterId(chapterId);
@@ -26,6 +26,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('page');
       NoteStore.setDraggedTitle(page.text);
+      NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
     },
     end: () => {
       PageStore.setDragEnterPageIdx('');
@@ -34,6 +35,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
       NoteStore.setIsDragging(false);
       NoteStore.setDraggedType('');
       NoteStore.setDraggedTitle('');
+      NoteStore.setDraggedOffset({});
     },
   });
 

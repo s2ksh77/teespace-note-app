@@ -32,12 +32,13 @@ const Chapter = ({ chapter, index, onClick }) => {
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
-    begin: () => {
+    begin: (monitor) => {
       ChapterStore.setMoveChapterIdx(index);
 
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('chapter');
       NoteStore.setDraggedTitle(chapter.text);
+      NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
     },
     end: () => {
       ChapterStore.setDragEnterChapterIdx('');
@@ -45,6 +46,7 @@ const Chapter = ({ chapter, index, onClick }) => {
       NoteStore.setIsDragging(false);
       NoteStore.setDraggedType('');
       NoteStore.setDraggedTitle('');
+      NoteStore.setDraggedOffset({});
     },
   });
 

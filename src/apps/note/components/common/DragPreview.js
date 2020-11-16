@@ -3,6 +3,7 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
 import takaImg from '../../assets/file_move_taka.png';
+import NoteStore from '../../store/noteStore';
 
 let subscribedToOffsetChange = false;
 let dragPreviewRef = null;
@@ -10,11 +11,11 @@ let dragPreviewRef = null;
 const onOffsetChange = (monitor) => () => {
   if (!dragPreviewRef) return;
 
-  const offset = monitor.getClientOffset();
+  const offset = monitor.getDifferenceFromInitialOffset();
 
   if (!offset) return;
 
-  const transform = `translate(${offset.x + 10}px, ${offset.y - 20}px)`;
+  const transform = `translate(${offset.x}px, ${offset.y}px)`;
 
   dragPreviewRef.style['display'] = 'flex';
   dragPreviewRef.style['transform'] = transform;
@@ -27,6 +28,16 @@ const DragPreview = ({ type, title }) => {
 
   useEffect(() => {
     dragPreviewRef = previewRef.current;
+    const offset = JSON.parse(JSON.stringify(NoteStore.draggedOffset));
+
+    if (NoteStore.layoutState === 'collapse') {
+      dragPreviewRef.style['top'] = (offset.y + 30) + 'px';
+      dragPreviewRef.style['left'] = (offset.x + 20) + 'px';
+    }
+    else {
+      dragPreviewRef.style['top'] = (offset.y - 41) + 'px';
+      dragPreviewRef.style['left'] = (offset.x - 346) + 'px';
+    }
 
     switch (type) {
       case 'page':
@@ -52,7 +63,7 @@ const DragPreview = ({ type, title }) => {
       {type === 'chapter'
         ? <img
           src={takaImg}
-          style={{ position: 'absolute', top: '-2rem', left: '-4rem' }}
+          style={{ position: 'absolute', top: '-1.5rem', left: '-2.5rem' }}
         />
         : null}
       {title}

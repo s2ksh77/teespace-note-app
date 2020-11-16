@@ -104,9 +104,10 @@ export const GlobalStyle = createGlobalStyle`
     height: auto;
     border: 0.0625rem solid #dadada;
     border-radius: 0.5rem;
-    margin-left: 4rem;
-    padding: 1.1rem;
-    padding-left: 1.7rem;
+    margin-top: 1rem;
+    margin-left: 2.5rem;
+    padding: 0.5rem;
+    padding-left: 1.5rem;
     font-size: 0.81rem;
     background-color: rgba(255,255,255,0.50);
     z-index:20;
