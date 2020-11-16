@@ -40,6 +40,7 @@ const NoteStore = observable({
     this.user_id = userId;
   },
   setUserName(userName) {
+    NoteRepository.setUserName(userName);
     this.userName = userName;
   },
   getUserId() {
