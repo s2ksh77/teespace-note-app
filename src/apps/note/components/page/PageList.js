@@ -21,10 +21,11 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
     },
   });
 
-  const handleNewBtnClick = async targetId => {
+  const handleNewBtnClick = targetId => async() => {
     PageStore.setCreatePageParent(targetId);
     PageStore.setCreatePageParentIdx(chapterIdx);
     await PageStore.createPage();
+    NoteStore.setTargetLayout('Content');
     NoteStore.setShowPage(true);
   };
 
@@ -74,7 +75,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
         className={'page-li'}
         show={showNewPage}
       >
-        <NewPageBtn onClick={handleNewBtnClick.bind(null, chapterId)}>
+        <NewPageBtn onClick={handleNewBtnClick(chapterId)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>
         </NewPageBtn>
       </NewPage>

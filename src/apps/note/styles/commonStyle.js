@@ -10,7 +10,7 @@ export const HeaderButtonContainer = styled.div`
 export const Button = styled.img`
   width: 1rem;
   height: 1rem;
-  curosr: pointer;
+  cursor: pointer;
   filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)
     brightness(90%) contrast(109%);
 `;
@@ -19,9 +19,9 @@ export const Button = styled.img`
 export const SearchImgInput = styled.input`
     width: 1rem;
     height: 1rem;
-    curosr:pointer;
+    cursor:pointer;
     margin-right:0.43rem;
-    invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);
+    filter : invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);
 `;
 
 export const SearchResultNotFoundCover = styled.div`

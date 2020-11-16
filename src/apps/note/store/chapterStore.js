@@ -297,7 +297,7 @@ const ChapterStore = observable({
 
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
-    if (flag === false) this.chapterNewTitle = '';
+    if (flag === false) this.setChapterTitle('');
   },
   setChapterTitle(title) {
     this.chapterNewTitle = title;

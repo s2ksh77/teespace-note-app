@@ -21,13 +21,15 @@ const EditorHeader = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   // 뒤로 가기 버튼
-  const handleLayoutBtn = (e) => {
+  const handleLayoutBtn = async (e) => {
     if (!PageStore.isEdit) {
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-      if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
-      NoteStore.setModalInfo('editCancel');
+      if (!isUndoActive) { 
+        await PageStore.handleNoneEdit(); 
+        NoteStore.setTargetLayout('LNB');
+      } else NoteStore.setModalInfo('editCancel');
     }
   }
 
