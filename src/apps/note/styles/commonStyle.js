@@ -161,3 +161,8 @@ export const SearchLoadingImg = styled.img`
   width: 8.44rem;
   height: 8.44rem;
 `;
+
+export const RightAligned = styled.div`
+  display:flex;
+  margin-left:auto;
+`;

@@ -84,13 +84,12 @@ const LNBHeader = ({ createNewChapter }) => {
             disabled={ChapterStore.isTagSearching ? true : false} 
             onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
           />
-          {ChapterStore.isTagSearching ?
-            <>
-              <SearchTagChip>
-                <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
-                <Button onClick={onClickCancelSearchTagBtn} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
-              </SearchTagChip>
-            </> : null}
+          {ChapterStore.isTagSearching ? (
+            <SearchTagChip>
+              <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
+              <Button onClick={onClickCancelSearchTagBtn} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
+            </SearchTagChip> 
+          ) :null}
           <Button src={cancelImg}
             style={(ChapterStore.isSearching || ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
