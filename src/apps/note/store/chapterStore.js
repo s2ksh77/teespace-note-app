@@ -467,8 +467,7 @@ const ChapterStore = observable({
   },
   async getSearchResult() {
     this.setSearchResult({});
-    const { data: { dto: { notbookList: chapterList } } } = await this.getChapterList();
-    // searchResult 만들기
+    const { data: { dto: { notbookList: chapterList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());    // searchResult 만들기
     let resultChapterArr = [], resultPageArr = [];
     chapterList.map((chapter) => {
       // chapter 저장
