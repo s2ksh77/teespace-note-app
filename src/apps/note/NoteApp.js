@@ -7,18 +7,16 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
-import { useCoreStores, WWMS } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import Modal from './components/common/Modal';
 import GlobalVariable from './GlobalVariable';
-import { handleWebsocket } from './components/common/Websocket';
 
 const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
-  const { userStore } = useCoreStores();
-  NoteStore.setChannelId(channelId);
-  NoteStore.setWsId(roomId);
-  NoteStore.setUserName(userStore.myProfile.name);
-  NoteStore.setUserId(userStore.myProfile.id);
+  const { userStore, authStore } = useCoreStores();
+
+  NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name);
+
   // 임시
   if (!layoutState) layoutState = 'expand';
   const renderCondition = target =>
@@ -37,9 +35,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
-
   useEffect(() => {
-    WWMS.addHandler('CHN0003', handleWebsocket);
     window.addEventListener('click', handleClickOutsideEditor);
     return () => {
       window.removeEventListener('click', handleClickOutsideEditor);

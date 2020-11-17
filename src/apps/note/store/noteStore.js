@@ -4,6 +4,8 @@ import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
 import NoteMeta from './NoteMeta';
+import { WWMS } from 'teespace-core';
+import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
   workspaceId: '',
@@ -46,6 +48,14 @@ const NoteStore = observable({
   },
   getUserId() {
     return this.user_id;
+  },
+  init(roomId, channelId, userId, userName) {
+    NoteStore.setWsId(roomId);
+    NoteStore.setChannelId(channelId);
+    NoteStore.setUserName(userName);
+    NoteStore.setUserId(userId);
+
+    WWMS.addHandler('CHN0003', handleWebsocket);
   },
   getNoteFileList() {
     return this.noteFileList;

@@ -5,7 +5,7 @@ const { default: axios } = require('axios');
 class NoteRepository {
   URL = 'http://222.122.67.176:8080/CMS/Note';
 
-  FILE_URL = 'http://222.122.67.176:8080/CMS/';
+  FILE_URL = process.env.REACT_APP_SERVICE_URL;
 
   WS_ID = '';
   CH_TYPE = 'CHN0003';
