@@ -136,7 +136,6 @@ const Chapter = ({ chapter, index, onClick }) => {
             <ChapterText
               text={chapter.text}
               chapterId={chapter.id}
-              color={chapter.color}
             />
           )}
       </ChapterCover>

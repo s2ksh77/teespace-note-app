@@ -13,7 +13,7 @@ import {
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChapterText = ({ text, chapterId, color }) => {
+const ChapterText = ({ text, chapterId }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
