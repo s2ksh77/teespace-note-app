@@ -133,7 +133,33 @@ export const exportDownloadPDF = (type) => {
         document.getElementById('exportTarget').remove();
     });
 }
-
+export const exportChapterData = async () => {
+    const { ChapterStore } = useNoteStore();
+    let returnData = '';
+    await NoteRepository.getChapterChildren(ChapterStore.exportChapterId).then((response) => {
+        const {
+            data: { dto: { noteList } },
+        } = response;
+        if (noteList.length > 0) {
+            noteList.forEach((page, idx) => {
+                returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
+            })
+        } else return alert('하위에 속한 페이지가 없습니다.');
+        makeExportElement(returnData, 'chapter');
+    })
+}
+export const exportPageData = async () => {
+    const { PageStore } = useNoteStore();
+    let returnData = '';
+    await NoteRepository.getNoteInfoList(PageStore.exportPageId).then(response => {
+        const {
+            data: { dto },
+        } = response;
+        PageStore.exportPageTitle = dto.note_title
+        returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
+    })
+    makeExportElement(returnData, 'page');
+}
 
 const handleClickLink = (el) => {
     const href = el.getAttribute('href');

@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
+import { exportChapterData, exportPageData } from "./NoteFile";
 
 const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -56,10 +57,12 @@ const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTi
       case 'chapter':
         ChapterStore.setExportId(chapterId);
         ChapterStore.setExportTitle(chapterTitle);
+        exportChapterData();
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
         PageStore.setExportId(pageId);
+        exportPageData();
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;

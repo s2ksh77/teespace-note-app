@@ -4,7 +4,7 @@ import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
-import { makeExportElement } from '../components/common/NoteFile';
+
 const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
@@ -447,19 +447,7 @@ const PageStore = observable({
   },
   setExportId(pageId) {
     this.exportPageId = pageId;
-    this.exportPageData();
-  },
-  async exportPageData() {
-    let returnData = '';
-    await NoteRepository.getNoteInfoList(this.exportPageId).then(response => {
-      const {
-        data: { dto },
-      } = response;
-      this.exportPageTitle = dto.note_title
-      returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
-    })
-    makeExportElement(returnData, 'page');
-  },
+  }
 })
 
 export default PageStore;

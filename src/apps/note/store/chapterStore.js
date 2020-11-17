@@ -2,7 +2,6 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
-import { makeExportElement } from '../components/common/NoteFile'
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -197,7 +196,7 @@ const ChapterStore = observable({
 
   async getChapterList() {
     this.setChapterList([]);
-    const {data:{dto:{notbookList}}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
+    const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
     this.createMap(notbookList);
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
@@ -213,7 +212,7 @@ const ChapterStore = observable({
     this.chapterList = this.chapterList.concat(sharedList);
     return this.chapterList;
   },
-  setChapterList(chapterList){
+  setChapterList(chapterList) {
     this.chapterList = chapterList;
   },
   async createChapter(chapterTitle, chapterColor) {
@@ -346,7 +345,7 @@ const ChapterStore = observable({
     return value;
   },
   // search 관련  
-  async initSearchVar() {    
+  async initSearchVar() {
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
@@ -359,7 +358,7 @@ const ChapterStore = observable({
     태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
     isSearching이 검색 시작 ~ 검색 결과 출력전까지임
   */
-  async fetchSearchResult(searchStr) {    
+  async fetchSearchResult(searchStr) {
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
     this.setSearchStr(searchStr); // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
     await this.getSearchResult();
@@ -378,7 +377,7 @@ const ChapterStore = observable({
   },
   async getSearchResult() {
     this.setSearchResult({});
-    const {data:{dto:{notbookList:chapterList}}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
+    const { data: { dto: { notbookList: chapterList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
     // searchResult 만들기
     let resultChapterArr = [], resultPageArr = [];
     chapterList.map((chapter) => {
@@ -404,7 +403,7 @@ const ChapterStore = observable({
         }
       })
     })
-    
+
     this.setSearchResult({
       chapter: resultChapterArr,
       page: resultPageArr
@@ -471,25 +470,10 @@ const ChapterStore = observable({
   },
   setExportId(chapterId) {
     this.exportChapterId = chapterId;
-    this.exportChapterData();
   },
   setExportTitle(chapterTitle) {
     this.exportChapterTitle = chapterTitle;
   },
-  async exportChapterData() {
-    let returnData = '';
-    await NoteRepository.getChapterChildren(this.exportChapterId).then((response) => {
-      const {
-        data: { dto: { noteList } },
-      } = response;
-      if (noteList.length > 0) {
-        noteList.forEach((page, idx) => {
-          returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
-        })
-      } else return alert('하위에 속한 페이지가 없습니다.');
-      makeExportElement(returnData, 'chapter');
-    })
-  }
 });
 
 export default ChapterStore;
