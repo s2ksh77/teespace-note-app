@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { observable, toJS } from 'mobx';
-import { API, EventBus, UserStore, useCoreStores, WWMS } from 'teespace-core';
+import { API, EventBus, useCoreStores, WWMS } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import html2pdf from 'html2pdf.js';
 import { useObserver, observer, Observer } from 'mobx-react';
@@ -7140,35 +7140,6 @@ var handleWebsocket = function handleWebsocket(message) {
   console.log(message);
   var EVENT_CASE = message.NOTI_ETC.split(',')[0];
 };
-var wwmsConfig = {
-  config: {
-    isDebug: false,
-    useInterval: true,
-    intervalTime: 18000,
-    useReconnect: true,
-    reconnectInterval: 2000,
-    intervalFunction: function intervalFunction() {
-      API.post('/EventServer/SendWebSocketPing?action=Message', {
-        dto: {
-          USER_ID: UserStore.myProfile.id
-        }
-      });
-    },
-    onopen: null,
-    onerror: null,
-    onmessage: null,
-    onclose: null,
-    url: ""
-  },
-  setConfig: function setConfig(updateConfig) {
-    this.config = _objectSpread2(_objectSpread2({}, this.config), {}, {
-      updateConfig: updateConfig
-    });
-  },
-  setWebSocketUrl: function setWebSocketUrl(url) {
-    this.config.url = url;
-  }
-};
 
 var NoteApp = function NoteApp(_ref) {
   var layoutState = _ref.layoutState,
@@ -7182,9 +7153,7 @@ var NoteApp = function NoteApp(_ref) {
 
   var _useCoreStores = useCoreStores(),
       userStore = _useCoreStores.userStore,
-      authStore = _useCoreStores.authStore,
-      notiStore = _useCoreStores.notiStore,
-      channelStore = _useCoreStores.channelStore;
+      authStore = _useCoreStores.authStore;
 
   NoteStore.setChannelId(channelId);
   NoteStore.setWsId(roomId);
@@ -7215,38 +7184,9 @@ var NoteApp = function NoteApp(_ref) {
     NoteStore.setModalInfo('editCancel');
   };
 
-  var connetWWMS = function connetWWMS() {
-    wwmsConfig.setWebSocketUrl("".concat(process.env.REACT_APP_WEBSOCKET_URL, "?USER_ID=").concat(authStore.user.id, "&action=&CONNECTION_ID=undefined")); // FIXME: setConfig을 이용하는 방향으로 수정 필요
-
-    wwmsConfig.config.onmessage = /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(msg) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return handleWebsocket(msg);
-
-              case 2:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      return function (_x) {
-        return _ref2.apply(this, arguments);
-      };
-    }();
-
-    WWMS.addHandler('CHN0003', handleWebsocket);
-    WWMS.setConfig(wwmsConfig.config);
-    WWMS.connect();
-  };
-
   useEffect(function () {
-    connetWWMS();
+    // connetWWMS();
+    WWMS.addHandler('CHN0003', handleWebsocket);
     window.addEventListener('click', handleClickOutsideEditor);
     return function () {
       window.removeEventListener('click', handleClickOutsideEditor);
