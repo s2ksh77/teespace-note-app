@@ -15,6 +15,7 @@ import HeaderButtons from '../common/buttons';
 import editingImg from '../../assets/TeeSpace_working.gif';
 import preImg from '../../assets/back.svg';
 import { Button } from '../../styles/commonStyle';
+import { handleFileSync } from '../common/NoteFile';
 
 const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const EditorHeader = () => {
@@ -26,8 +27,8 @@ const EditorHeader = () => {
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-      if (!isUndoActive) { 
-        await PageStore.handleNoneEdit(); 
+      if (!isUndoActive) {
+        await PageStore.handleNoneEdit();
         NoteStore.setTargetLayout('LNB');
       } else NoteStore.setModalInfo('editCancel');
     }
@@ -41,7 +42,7 @@ const EditorHeader = () => {
       PageStore.editStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
       // PageStore.noneEdit(PageStore.currentPageData.note_id);
-      await EditorStore.handleFileSync()
+      await handleFileSync()
         .then(() => PageStore.handleSave());
     }
   };
@@ -79,9 +80,9 @@ const EditorHeader = () => {
         <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
           {PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />}
           <ModifiedUser>
-            {PageStore.isEdit 
-            ? PageStore.prevModifiedUserName 
-            : PageStore.currentPageData.user_name}
+            {PageStore.isEdit
+              ? PageStore.prevModifiedUserName
+              : PageStore.currentPageData.user_name}
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
         </EditorHeaderContainer2>

@@ -4,8 +4,6 @@ import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import NoteStore from './noteStore';
-import { openLink } from '../components/editor/customLink';
-import { handleFileUpload, handleFileDelete } from '../components/common/NoteFile';
 
 const EditorStore = observable({
   contents: '',
@@ -204,10 +202,6 @@ const EditorStore = observable({
     this.fileLayoutList.push(target);
     if (!this.isFile) this.setIsFile(true);
   },
-  async handleFileSync() {
-    await handleFileUpload();
-    await handleFileDelete();
-  },
 
   convertFileSize(bytes) {
     if (bytes == 0) return '0 Bytes';
@@ -216,26 +210,6 @@ const EditorStore = observable({
       i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   },
-
-  handleClickLink(el) {
-    const href = el.getAttribute('href');
-    const target = el.getAttribute('target');
-    openLink(href, target);
-  },
-
-  handleLinkListener() {
-    if (EditorStore.tinymce) {
-      const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
-      if (targetList && targetList.length > 0) {
-        Array.from(targetList).forEach((el) => {
-          if (el.getAttribute('hasListener')) return;
-          el.addEventListener('click', this.handleClickLink.bind(null, el));
-          el.setAttribute('hasListener', true);
-        });
-      }
-    }
-  },
-
   deleteImage() {
     const parent = this.tinymce.selection.getNode().parentNode;
     this.tinymce.selection.setContent('');

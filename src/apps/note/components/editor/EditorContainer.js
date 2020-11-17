@@ -18,7 +18,7 @@ import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile } from '../common/NoteFile';
+import { downloadFile, handleLinkListener } from '../common/NoteFile';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -185,7 +185,7 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // fired when a dialog has been opend
               editor.on('init', () => {
-                EditorStore.handleLinkListener();
+                handleLinkListener();
               })
               editor.on('OpenWindow', (e) => {
                 try {

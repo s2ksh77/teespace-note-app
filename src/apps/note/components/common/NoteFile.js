@@ -1,6 +1,7 @@
 import useNoteStore from '../../store/useStore';
 import html2pdf from 'html2pdf.js';
 import { toJS } from 'mobx';
+import { openLink } from '../editor/customLink';
 
 export const handleFileUpload = async () => {
     const { EditorStore } = useNoteStore();
@@ -133,3 +134,28 @@ export const exportDownloadPDF = (type) => {
     });
 }
 
+
+const handleClickLink = (el) => {
+    const href = el.getAttribute('href');
+    const target = el.getAttribute('target');
+    openLink(href, target);
+},
+
+export const handleLinkListener = () => {
+    if (EditorStore.tinymce) {
+        const { EditorStore } = useNoteStore();
+        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
+        if (targetList && targetList.length > 0) {
+            Array.from(targetList).forEach((el) => {
+                if (el.getAttribute('hasListener')) return;
+                el.addEventListener('click', handleClickLink.bind(null, el));
+                el.setAttribute('hasListener', true);
+            });
+        }
+    }
+}
+
+export const handleFileSync = async () => {
+    await handleFileUpload();
+    await handleFileDelete();
+}

@@ -4,6 +4,7 @@ import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
+import { handleLinkListener } from '../common/NoteFile';
 
 const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
@@ -21,7 +22,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
     },
   });
 
-  const handleNewBtnClick = targetId => async() => {
+  const handleNewBtnClick = targetId => async () => {
     PageStore.setCreatePageParent(targetId);
     PageStore.setCreatePageParentIdx(chapterIdx);
     await PageStore.createPage();
@@ -29,7 +30,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
     NoteStore.setShowPage(true);
   };
 
-  const handleSelectPage = useCallback(async(id,e) =>{
+  const handleSelectPage = useCallback(async (id, e) => {
     if (PageStore.isEdit) {
       // NoteApp에 있는 handleClickOutsideEditor 함수 안타게 하기
       if (PageStore.currentPageId === id) e.stopPropagation();
@@ -38,7 +39,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapterId);
     await PageStore.setCurrentPageId(id);
-    EditorStore.handleLinkListener();
+    handleLinkListener();
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
     EditorStore.tinymce?.undoManager.clear();
