@@ -16,9 +16,7 @@ const LNBSearchResult = () => {
   const onClickChapterBtn = (chapterId, pageId) => async () => {
     ChapterStore.setCurrentChapterId(chapterId);
     await PageStore.setCurrentPageId(pageId);
-    ChapterStore.setIsTagSearching(false);
-    ChapterStore.setIsSearching(false);
-    ChapterStore.setInputValue("");
+    ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
     document.getElementById(chapterId).scrollIntoView(true);
   }
@@ -27,9 +25,7 @@ const LNBSearchResult = () => {
     if (PageStore.isEdit) return;
     ChapterStore.setCurrentChapterId(chapterId);
     PageStore.setCurrentPageId(pageId);
-    // ChapterStore.setIsTagSearching(false);
-    // ChapterStore.setIsSearching(false);
-    // ChapterStore.setInputValue("");
+    // ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
   }

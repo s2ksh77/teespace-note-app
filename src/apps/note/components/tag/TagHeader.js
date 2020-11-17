@@ -21,9 +21,10 @@ const TagHeader = () => {
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
 
+  // 뒤로가기 버튼 : lnb 영역(검색X인, 초기화된 챕터 리스트 나오도록 구현함)
   const handleLayoutBtn = () => {
-    ChapterStore.setIsTagSearching(false);
     NoteStore.setTargetLayout('LNB');
+    ChapterStore.initSearchVar();
   }
 
   const onSubmitForm = e => {

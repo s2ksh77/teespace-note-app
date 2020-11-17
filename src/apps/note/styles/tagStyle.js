@@ -56,7 +56,7 @@ export const TagInput = styled.input`
   padding-right: 0.63rem;
   padding-top: 0rem;
   padding-bottom: 0rem;
-  display: flex;
+  display: ${props=>props.show ? "flex" : "none"};
   border: 0.0625rem solid #1ea8df;
   background-color: #ffffff;
   font-size: 0.75rem;

@@ -26,9 +26,8 @@ const ChapterStore = observable({
   },
   isSearching: false,
   isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
-  targetSearchTagName: '',
-  inputValue: "", // lnb title 영역 input창 value
-  searchStr: "",
+  searchingTagName: '',
+  searchStr: "", // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
   deleteChapterId: '',
   nextSelectableChapterId: '',
@@ -195,14 +194,10 @@ const ChapterStore = observable({
       await PageStore.setCurrentPageId(pageId);
     }
   },
-  // (posco)
-  async _getChapterList() {
-    const res = await NoteRepository.getChapterList(NoteStore.getChannelId());
-    return res.data.dto.notbookList;
-  },
 
   async getChapterList() {
-    const notbookList = await this._getChapterList();
+    this.setChapterList([]);
+    const {data:{dto:{notbookList}}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
     this.createMap(notbookList);
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
@@ -217,6 +212,9 @@ const ChapterStore = observable({
     }
     this.chapterList = this.chapterList.concat(sharedList);
     return this.chapterList;
+  },
+  setChapterList(chapterList){
+    this.chapterList = chapterList;
   },
   async createChapter(chapterTitle, chapterColor) {
     await NoteRepository.createChapter(chapterTitle, chapterColor).then(
@@ -347,32 +345,43 @@ const ChapterStore = observable({
     const { value } = NoteRepository.getChapterText(chapterId);
     return value;
   },
-  // search 관련
+  // search 관련  
+  async initSearchVar() {    
+    this.setIsSearching(false);
+    this.setIsTagSearching(false);
+    this.setSearchResult({});
+    this.setSearchStr("");
+    await this.getChapterList();
+  },
+  /*
+    태그와 챕터리스트 isSearching이 다름
+    chapterStore에서 isSearching은 검색 시작 ~ 검색 결과나온 후 더는 안 보려고 결과 초기화하는 동작까지임
+    태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
+    isSearching이 검색 시작 ~ 검색 결과 출력전까지임
+  */
+  async fetchSearchResult(searchStr) {    
+    this.setIsSearching(true); // 검색 결과 출력 종료까지임
+    this.setSearchStr(searchStr); // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
+    await this.getSearchResult();
+  },
   getIsSearching() {
     return this.isSearching;
   },
   setIsSearching(isSearching) {
     this.isSearching = isSearching;
-    if (!isSearching) {
-      this.searchResult = {};
-      this.searchStr = '';
-      this.inputValue = '';
-    }
-  },
-  getInputValue() {
-    return this.inputValue;
-  },
-  setInputValue(value) {
-    this.inputValue = value;
   },
   getSearchStr() {
     return this.searchStr;
   },
   setSearchStr(str) {
     this.searchStr = str;
+  },
+  async getSearchResult() {
+    this.setSearchResult({});
+    const {data:{dto:{notbookList:chapterList}}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
     // searchResult 만들기
     let resultChapterArr = [], resultPageArr = [];
-    this.chapterList.map((chapter) => {
+    chapterList.map((chapter) => {
       // chapter 저장
       if (chapter.text.includes(this.searchStr)) {
         resultChapterArr.push({
@@ -395,14 +404,11 @@ const ChapterStore = observable({
         }
       })
     })
-
-    this.searchResult = {
+    
+    this.setSearchResult({
       chapter: resultChapterArr,
       page: resultPageArr
-    }
-  },
-  getSearchResult() {
-    return this.searchResult;
+    });
   },
   // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
   // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
@@ -410,22 +416,17 @@ const ChapterStore = observable({
     this.searchResult = result;
   },
   // 태그칩 클릭해서 lnblist 띄우기
-  getTargetSearchTagName() {
-    return this.targetSearchTagName;
+  getSearchingTagName() {
+    return this.searchingTagName;
   },
-  setTargetSearchTagName(str) {
-    this.targetSearchTagName = str;
+  setSearchingTagName(str) {
+    this.searchingTagName = str;
   },
   getIsTagSearching() {
     return this.isTagSearching;
   },
   setIsTagSearching(isSearching) {
     this.isTagSearching = isSearching;
-    if (!isSearching) {
-      this.targetSearchTagName = '';
-      this.searchResult = {};
-      // this.inputValue ='';//필요 없을 것 같다
-    }
   },
 
   isValidChapterText(targetText) {

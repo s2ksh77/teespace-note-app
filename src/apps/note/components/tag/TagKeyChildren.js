@@ -11,7 +11,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
   const onClickTagBtn = (tagId, tagName) => async () => {
     // 임시 (태그칩 모양으로 넣어야함)
     await TagStore.getTagNoteList(tagId);
-    ChapterStore.setTargetSearchTagName(tagName);
+    ChapterStore.setSearchingTagName(tagName);
     ChapterStore.setIsTagSearching(true);
     if (NoteStore.layoutState === 'collapse') {
       NoteStore.setTargetLayout('LNB');

@@ -196,15 +196,14 @@ const TagListContainer = () => {
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
         </Tooltip>
-        {TagStore.isNewTag ? (
-          <TagInput
-            maxLength="50"
-            onChange={handleTagInput}
-            onBlur={createTag}
-            onKeyDown={handleKeyDown}
-            autoFocus={true}
-          />
-        ) : null}
+        <TagInput
+          show={TagStore.isNewTag}
+          maxLength="50"
+          onChange={handleTagInput}
+          onBlur={createTag}
+          onKeyDown={handleKeyDown}
+          autoFocus={true}
+        />
         <TagList ref={tagList}>
           {TagStore.notetagList.map((item, index) =>
             TagStore.editTagIndex === index ? (
