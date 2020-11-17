@@ -227,7 +227,11 @@ const PageStore = observable({
     await NoteRepository.renamePage(pageId, pageTitle, chapterId).then(
       (response) => {
         if (response.status === 200) {
-          if (typeof callback === 'function') callback();
+          const {
+            data: { dto: returnData },
+          } = response;
+          
+          if (typeof callback === 'function') callback(returnData);
           return response;
         }
       }
@@ -308,7 +312,8 @@ const PageStore = observable({
   },
 
   renameNotePage(chapterId) {
-    this.renamePage(this.renamePageId, this.renamePageText, chapterId, () => {
+    this.renamePage(this.renamePageId, this.renamePageText, chapterId, (dto) => {
+      this.fetchNoteInfoList(dto.note_id);
       ChapterStore.getChapterList();
     });
   },
