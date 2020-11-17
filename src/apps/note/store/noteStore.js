@@ -33,7 +33,7 @@ const NoteStore = observable({
   setChannelId(chId) {
     NoteRepository.setChannelId(chId);
     this.notechannel_id = chId;
-    ChapterStore.getChapterList();
+    ChapterStore.getNoteChapterList();
   },
   getChannelId() {
     return this.notechannel_id;
@@ -49,13 +49,15 @@ const NoteStore = observable({
   getUserId() {
     return this.user_id;
   },
-  init(roomId, channelId, userId, userName) {
+  init(roomId, channelId, userId, userName, callback) {
     NoteStore.setWsId(roomId);
     NoteStore.setChannelId(channelId);
     NoteStore.setUserName(userName);
     NoteStore.setUserId(userId);
-
-    WWMS.addHandler('CHN0003', handleWebsocket);
+    if (typeof callback === 'function') callback();
+  },
+  addWWMSHandler() {
+    WWMS.addHandler('CHN0003', handleWebsocket)
   },
   getNoteFileList() {
     return this.noteFileList;
@@ -66,7 +68,7 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterId('');
       PageStore.setCurrentPageId('');
-      PageStore.isEdit('');
+      PageStore.setIsEdit('');
     }
   },
   setLayoutState(state) {

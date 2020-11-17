@@ -26,7 +26,7 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteChapter() })
+        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteNoteChapter() })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'page':
@@ -48,7 +48,7 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
       case 'imageDelete':
-        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage();})
+        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage(); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       default:

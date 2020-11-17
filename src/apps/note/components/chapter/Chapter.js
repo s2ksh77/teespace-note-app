@@ -77,7 +77,7 @@ const Chapter = ({ chapter, index, onClick }) => {
 
   const handleChapterTextInput = (isEscape, color) => {
     if (!isEscape && ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
-      ChapterStore.renameChapter(color);
+      ChapterStore.renameNoteChapter(color);
     }
 
     ChapterStore.setRenameChapterId('');

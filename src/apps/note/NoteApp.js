@@ -15,7 +15,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
 
-  NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name);
+  NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
 
   // 임시
   if (!layoutState) layoutState = 'expand';
