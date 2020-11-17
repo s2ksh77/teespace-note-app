@@ -253,7 +253,7 @@ const EditorStore = observable({
     const _failure = e => {
       console.warn('error ---> ', e);
     };
-    if (this.uploadFileList) {
+    if (this.uploadFileList.length > 0) {
       if (this.uploadFileList[0] !== undefined) {
         uploadArr = toJS(this.uploadFileList).map((item, index) => {
           return this.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
