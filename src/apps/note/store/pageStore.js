@@ -429,7 +429,7 @@ const PageStore = observable({
   async fetchCurrentPageData(pageId) {
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
-      await TagStore.getNoteTagList(pageId); // tagList
+      await TagStore.fetchNoteTagList(pageId); // tagList
     } else this.setIsEdit('');
   },
 
