@@ -50,7 +50,7 @@ const TagContentContainer = observer(() => {
           })}
         </StyledCollapse>
       ) : (
-        <SearchResultNotFound searchStr={TagStore.searchString} />
+        <SearchResultNotFound searchStr={TagStore.searchStr} />
       )}
     </>
   );

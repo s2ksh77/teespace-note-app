@@ -15,7 +15,7 @@ const TagContainer = () => {
   }, [])
 
   const renderContent = () => {
-    if (TagStore.isSearching) return <SearchingImg />;
+    if (TagStore.isSearchLoading) return <SearchingImg />;
     else if (TagStore.tagPanelLoading) return <LoadingImgContainer />;
     else if (TagStore.hasTag) return <TagContentContainer />;
     else return <TagNotFound />;

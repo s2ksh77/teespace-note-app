@@ -69,15 +69,10 @@ class NoteRepository {
   //   )
   // }
   async getAllSortedTagList() {
-    try {
-      const res = await API.Get(
-        `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
-        }&t=${new Date().getTime().toString()}`,
-      );
-      return res.data.dto.tag_index_list_dto;
-    } catch (err) {
-      console.log(err);
-    }
+    return await API.Get(
+      `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
+      }&t=${new Date().getTime().toString()}`,
+    );
   }
 
   getTagNoteList(tagId) {

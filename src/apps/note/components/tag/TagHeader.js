@@ -40,6 +40,7 @@ const TagHeader = () => {
   const onClickCancelBtn = e => {
     setValue('');
     TagStore.setIsSearching(false);
+    TagStore.setSearchStr('');
     TagStore.fetchTagData();
   };
 
