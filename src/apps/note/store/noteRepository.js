@@ -20,7 +20,7 @@ class NoteRepository {
   // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
-    this.URL = url || this.URL;
+    this.URL = url || process.env.REACT_APP_SERVICE_URL + '/Note';
   }
 
   setWsId(targetWsId) {
