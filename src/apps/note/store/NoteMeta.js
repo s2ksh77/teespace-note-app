@@ -31,12 +31,12 @@ const NoteMeta = {
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deletePage(); EditorStore.deleteAllFile(); } else PageStore.deletePage(); })
+        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deleteNotePage(); EditorStore.deleteAllFile(); } else PageStore.deleteNotePage(); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':
         eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
+        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noteNoneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':

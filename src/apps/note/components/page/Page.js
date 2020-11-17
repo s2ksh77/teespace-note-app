@@ -69,7 +69,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
 
   const handlePageTextInput = (isEscape) => {
     if (!isEscape) {
-      PageStore.renamePage(chapterId);
+      PageStore.renameNotePage(chapterId);
       PageStore.setIsRename(false);
     }
 

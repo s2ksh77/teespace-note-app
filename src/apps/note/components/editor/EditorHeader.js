@@ -39,9 +39,9 @@ const EditorHeader = () => {
       target: { innerText },
     } = e;
     if (innerText === '수정') {
-      PageStore.editStart(PageStore.currentPageData.note_id);
+      PageStore.noteEditStart(PageStore.currentPageData.note_id);
     } else if (innerText === '저장') {
-      // PageStore.noneEdit(PageStore.currentPageData.note_id);
+      // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync()
         .then(() => PageStore.handleSave());
     }

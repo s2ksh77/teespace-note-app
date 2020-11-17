@@ -25,7 +25,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
   const handleNewBtnClick = targetId => async () => {
     PageStore.setCreatePageParent(targetId);
     PageStore.setCreatePageParentIdx(chapterIdx);
-    await PageStore.createPage();
+    await PageStore.createNotePage();
     NoteStore.setTargetLayout('Content');
     NoteStore.setShowPage(true);
   };
