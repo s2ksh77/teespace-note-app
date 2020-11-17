@@ -10,6 +10,7 @@ import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 import { Dropdown, Menu } from 'antd';
+import { downloadFile } from '../common/NoteFile';
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
@@ -31,7 +32,7 @@ const FileLayout = () => {
     }
     const handleFileDown = (key) => {
         if (key === '0') alert('준비 중입니다.');
-        if (key === '1') EditorStore.downloadFile(EditorStore.downloadFileId);
+        if (key === '1') downloadFile(EditorStore.downloadFileId);
     }
     const onClickContextMenu = ({ key }) => {
         handleFileDown(key);

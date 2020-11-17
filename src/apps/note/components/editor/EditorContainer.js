@@ -18,6 +18,7 @@ import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
+import { downloadFile } from '../common/NoteFile';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -232,9 +233,9 @@ const EditorContainer = () => {
 
               // 정렬 그룹 버튼
               editor.ui.registry.addGroupToolbarButton('alignment', {
-                icon:'align-center',
-                tooltip:'정렬',
-                items:'alignleft aligncenter alignright alignjustify'
+                icon: 'align-center',
+                tooltip: '정렬',
+                items: 'alignleft aligncenter alignright alignjustify'
               });
 
               editor.ui.registry.addButton('insertImage', {
@@ -351,8 +352,8 @@ const EditorContainer = () => {
                       text: '내 PC에 저장',
                       onAction: function () {
                         const id = editor.selection.getNode().id;
-                        if (id) EditorStore.downloadFile(id);
-                        else EditorStore.downloadFile();
+                        if (id) downloadFile(id);
+                        else downloadFile();
                       }
                     }
                   ];

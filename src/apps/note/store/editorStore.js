@@ -4,7 +4,8 @@ import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import NoteStore from './noteStore';
-import { openLink } from '../components/editor/customLink'
+import { openLink } from '../components/editor/customLink';
+import { handleFileUpload, handleFileDelete } from '../components/common/NoteFile';
 
 const EditorStore = observable({
   contents: '',
@@ -66,21 +67,6 @@ const EditorStore = observable({
   //storagemanager 없어서 임시
   setDownLoadFileId(fileId) {
     this.downloadFileId = fileId
-  },
-  downloadFile(fileId) {
-    if (fileId) {
-      window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
-        "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
-      return;
-    }
-
-    let a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = this.tinymce.selection.getNode().src;
-    a.download = this.tinymce.selection.getNode().getAttribute('data-name');
-    a.click();
-    document.body.removeChild(a);
   },
   tempDeleteFile() {
     this.fileLayoutList.splice(this.deleteFileIndex, 1);
@@ -219,90 +205,10 @@ const EditorStore = observable({
     if (!this.isFile) this.setIsFile(true);
   },
   async handleFileSync() {
-    await this.handleFileUpload();
-    await this.handleFileDelete();
+    await handleFileUpload();
+    await handleFileDelete();
   },
-  async handleFileUpload() {
-    const imgTarget = await EditorStore.tinymce.dom.doc.images;
-    const fileTarget = document.querySelectorAll('div[temp-id]');
-    const imgArray = [...imgTarget];
-    const fileArray = [...fileTarget];
-    let uploadArr = [];
 
-    imgArray.forEach(img => {
-      if (this.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0] !== undefined)
-        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0]);
-    })
-    fileArray.forEach(file => {
-      if (this.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0] !== undefined)
-        this.uploadFileList.push(this.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0]);
-    })
-
-    const _success = (data, index) => {
-      if (data.resultMsg === 'Success') {
-        this.uploadFileList[index].element.setAttribute('id', data.storageFileInfoList[0].file_id);
-        this.uploadFileList[index].element.removeAttribute('temp-id');
-        if (this.uploadFileList[index].element) {
-          if (this.uploadFileList[index].element.getAttribute('src')) {
-            const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-            this.uploadFileList[index].element.setAttribute('src', targetSRC);
-          }
-        }
-      }
-    }
-    const _failure = e => {
-      console.warn('error ---> ', e);
-    };
-    if (this.uploadFileList.length > 0) {
-      if (this.uploadFileList[0] !== undefined) {
-        uploadArr = toJS(this.uploadFileList).map((item, index) => {
-          return this.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
-        })
-
-        try {
-          await Promise.all(uploadArr).then(() => {
-            this.uploadFileList = [];
-            this.fileMetaList = [];
-            PageStore.setContent(EditorStore.tinymce.getContent());
-          })
-        } catch (e) {
-
-        } finally {
-
-        }
-      }
-    }
-  },
-  async handleFileDelete() {
-    const imgTarget = await EditorStore.tinymce.dom.doc.images;
-    const fileTarget = document.querySelectorAll('div #fileLayout [id]');
-    const imgArray = [...imgTarget];
-    const fileArray = [...fileTarget];
-
-    let deleteArr = [];
-
-    imgArray.forEach(img => this.tempFileList.push(img.getAttribute('id')));
-    fileArray.forEach(file => this.tempFileList.push(file.getAttribute('id')));
-
-    if (this.fileList) this.deleteFileList = this.fileList.filter(file => !this.tempFileList.includes(file.file_id))
-
-    if (this.deleteFileList) {
-      deleteArr = toJS(this.deleteFileList).map(item => {
-        return this.deleteFile(item.file_id)
-      })
-      try {
-        await Promise.all(deleteArr).then(() => {
-          this.deleteFileList = [];
-          this.tempFileList = [];
-          PageStore.setContent(EditorStore.tinymce.getContent());
-        })
-      } catch (e) {
-
-      } finally {
-
-      }
-    }
-  },
   convertFileSize(bytes) {
     if (bytes == 0) return '0 Bytes';
     let k = 1000, dm = 2,

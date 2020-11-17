@@ -2,6 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
+import { makeExportElement } from '../components/common/NoteFile'
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -485,7 +486,7 @@ const ChapterStore = observable({
           returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
         })
       } else return alert('하위에 속한 페이지가 없습니다.');
-      PageStore.makeExportElement(returnData, 'chapter');
+      makeExportElement(returnData, 'chapter');
     })
   }
 });

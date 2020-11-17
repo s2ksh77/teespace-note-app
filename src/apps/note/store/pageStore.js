@@ -4,7 +4,7 @@ import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
-import html2pdf from 'html2pdf.js';
+import { makeExportElement } from '../components/common/NoteFile';
 const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
@@ -458,37 +458,8 @@ const PageStore = observable({
       this.exportPageTitle = dto.note_title
       returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
     })
-    this.makeExportElement(returnData, 'page');
+    makeExportElement(returnData, 'page');
   },
-  makeExportElement(data, type) {
-    const fragment = document.createElement('div');
-    fragment.style.visibility = 'visible';
-    fragment.style.opacity = 0;
-    fragment.style.width = 'fit-content';
-    fragment.setAttribute('id', 'exportTarget');
-
-    const targetDIV = document.createElement('div');
-    targetDIV.setAttribute('id', 'exportTargetDiv');
-    targetDIV.setAttribute('class', 'export');
-    targetDIV.innerHTML = data;
-    fragment.appendChild(targetDIV);
-    document.body.appendChild(fragment);
-    this.exportDownloadPDF(type);
-  },
-  exportDownloadPDF(type) {
-    const element = document.getElementById('exportTargetDiv');
-    const opt = {
-      margin: 2,
-      filename: type === 'page' ? `${this.exportPageTitle}.pdf` : `${ChapterStore.exportChapterTitle}.pdf`,
-      pagebreak: { after: '.afterClass', avoid: 'span' },
-      image: { type: 'jpeg', quality: 0.98 },
-      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf(element, opt).then(() => {
-      document.getElementById('exportTarget').remove();
-    });
-  },
-
 })
 
 export default PageStore;
