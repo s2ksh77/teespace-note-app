@@ -66,6 +66,7 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterId('');
       PageStore.setCurrentPageId('');
+      PageStore.isEdit('');
     }
   },
   setLayoutState(state) {

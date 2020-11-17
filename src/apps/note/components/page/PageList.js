@@ -38,7 +38,8 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
     }
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapterId);
-    await PageStore.setCurrentPageId(id);
+    PageStore.setCurrentPageId(id);    
+    PageStore.fetchCurrentPageData(id);
     handleLinkListener();
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');

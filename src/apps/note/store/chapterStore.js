@@ -2,6 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
+import {checkNotDuplicate} from '../components/common/validators';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -190,7 +191,8 @@ const ChapterStore = observable({
       const chapterId = this.chapterList[0].id;
       const pageId = this.chapterList[0].children?.[0]?.id;
       this.setCurrentChapterId(chapterId);
-      await PageStore.setCurrentPageId(pageId);
+      PageStore.setCurrentPageId(pageId);
+      PageStore.fetchCurrentPageData(pageId);
     }
   },
 
@@ -238,6 +240,7 @@ const ChapterStore = observable({
           if (this.currentChapterId === this.deleteChapterId) {
             this.setCurrentChapterId(this.nextSelectableChapterId);
             PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
+            PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
             if (!this.nextSelectableChapterId) this.setAllDeleted(true);
           }
           this.getChapterList();
@@ -429,12 +432,7 @@ const ChapterStore = observable({
   },
 
   isValidChapterText(targetText) {
-    const isExist = this.chapterList.find((chapter) => {
-      return chapter.text === targetText;
-    });
-
-    if (isExist) return false;
-    else return true;
+    return checkNotDuplicate(this.chapterList, 'text', targetText);
   },
   async createShareChapter(shareTargetRoomId, shareTargetList) {
     const targetList = [];

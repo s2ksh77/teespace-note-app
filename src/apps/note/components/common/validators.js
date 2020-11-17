@@ -24,3 +24,11 @@ export const checkUrlValidation = (inputValue) => {
   const validator =  composeValidators(isFilled, validUrl);
   return validator(inputValue);
 }
+
+// true : valid, false : invalid
+export const checkWhitespace = (value) => value.trim().length > 0;
+
+// true : valid(중복X), false : invalid(중복)
+export const checkNotDuplicate = (targetArr, key, value) =>{
+  return targetArr.find((item) => item[key] === value) ? false : true;
+}

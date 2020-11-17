@@ -2,6 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import ChapterStore from "./chapterStore";
 import PageStore from "./pageStore";
+import {checkNotDuplicate} from '../components/common/validators';
 
 const TagStore = observable({
   notetagList: [],
@@ -45,7 +46,7 @@ const TagStore = observable({
         const {
           data: { dto: tagList },
         } = response;
-        this.notetagList = tagList.tagList;
+        this.setNoteTagList(tagList.tagList);
       }
     });
     return this.notetagList;
@@ -302,13 +303,8 @@ const TagStore = observable({
   getTagSortList() {
     return this.tagSortList;
   },
-  isInvalidTag(text) {
-    const targetTag = this.notetagList.find(function (tag) {
-      return tag.text === text;
-    });
-    const _idx = this.notetagList.indexOf(targetTag);
-    if (_idx !== -1) return true;
-    else return false;
+  isValidTag(text) {
+    return checkNotDuplicate(this.notetagList, 'text', text);
   },
 });
 

@@ -22,10 +22,11 @@ const ChapterList = observer(({ type }) => {
   const onClickChapterBtn = useCallback(async (id, children) => {
     if (PageStore.isEdit) return;
     ChapterStore.setCurrentChapterId(id);
-    let targetPage = '';
-    if (children.length) targetPage = children[0]?.id;
+    let pageId = '';
+    if (children.length) pageId = children[0]?.id;
     NoteStore.setShowPage(true);
-    await PageStore.setCurrentPageId(targetPage);
+    PageStore.setCurrentPageId(pageId);
+    PageStore.fetchCurrentPageData(pageId);
   }, []);
 
   return (
