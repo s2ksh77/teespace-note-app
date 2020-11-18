@@ -280,7 +280,7 @@ const TagStore = observable({
         }
       })
       if (Object.keys(resultKeyTags).length > 0) {        
-        results[KEY] = resultKeyTags;
+        results[KEY.toUpperCase()] = resultKeyTags;
         if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY);
       }
     })
@@ -304,8 +304,7 @@ const TagStore = observable({
       let KEY = item.KEY;
       let resultObj = {};
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
-      let tagList = item.tag_indexdto.tagList;
-      tagList.forEach((tag) => {
+      item.tag_indexdto.tagList.forEach((tag) => {
         if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"].push(tag.note_id);
         else {
           resultObj[tag.text] = {
@@ -314,7 +313,7 @@ const TagStore = observable({
           }
         }
       })
-      results[KEY] = resultObj;   
+      results[KEY.toUpperCase()] = resultObj;   
       if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
     });
     this.setKeyTagPairObj({...results});
