@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
@@ -13,6 +13,8 @@ import {
 import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/tag_add.svg';
 import { Tooltip } from 'antd';
+import AddTagForm from './AddTagForm'
+import {checkWhitespace} from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
@@ -24,20 +26,20 @@ const TagListContainer = () => {
       const curTag = TagStore.notetagList.filter(
         tag => tag.tag_id !== targetId,
       );
-      TagStore.setTagNoteList(curTag);
-      TagStore.setDeleteTagList(targetId);
+      TagStore.setNoteTagList(curTag);
+      TagStore.appendRemoveTagList(targetId);
     } else {
       const exceptTag = TagStore.notetagList.filter(
         tag => tag.text !== targetText,
       );
-      TagStore.setTagNoteList(exceptTag);
+      TagStore.setNoteTagList(exceptTag);
       TagStore.removeAddTagList(targetText);
     }
   };
 
   const toggleTagInput = () => {
-    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewFlag(true);
-    else TagStore.setIsNewFlag(false);
+    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewTag(true);
+    else TagStore.setIsNewTag(false);
   };
 
   const onClickNewTagBtn = () => {
@@ -46,37 +48,33 @@ const TagListContainer = () => {
     if (target) target.scrollIntoView(false);
   }
 
-  const handleTagInput = e => {
-    const {
-      target: { value },
-    } = e;
-    TagStore.setTagText(value);
-  };
   const handleFocus = (e) => e.target.select();
 
-  const handleChangeTag = (text, index, id) => {
+  const handleChangeTag = (text, index, id) => () => {
     TagStore.setCurrentTagData(id, text);
-    TagStore.setEditTagText(text);
+    TagStore.setEditTagValue(text);
     TagStore.setEditTagIndex(index);
   };
   const handleChangeName = e => {
     const {
       target: { value },
     } = e;
-    TagStore.setEditTagText(value);
+    TagStore.setEditTagValue(value);
   };
   const handleModifyInput = () => {
+    console.log('currentTagId', TagStore.currentTagId)
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
       if (TagStore.currentTagValue === TagStore.editTagValue)
         TagStore.setEditTagIndex(-1);
-      else if (TagStore.editTagValue === '') {
+      else if (checkWhitespace(TagStore.editTagValue)) {
         TagStore.setEditTagIndex(-1);
       } else {
-        if (!TagStore.isInvalidTag(TagStore.editTagValue)) {
+        console.log('isvalid', TagStore.isValidTag(TagStore.editTagValue))
+        if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.notetagList[TagStore.editTagIndex].text =
             TagStore.editTagValue;
-          TagStore.setUpdateTagList(
+          TagStore.setUpdateNoteTagList(
             TagStore.currentTagId,
             TagStore.editTagValue
           );
@@ -95,32 +93,6 @@ const TagListContainer = () => {
 
     }
   };
-  const createTag = () => {
-    if (TagStore.tagText === "") {
-      TagStore.setIsNewFlag(false);
-    } else {
-      if (!TagStore.isInvalidTag(TagStore.tagText)) {
-        TagStore.setAddTagList(TagStore.tagText, PageStore.currentPageId);
-        TagStore.setIsNewFlag(false);
-        TagStore.notetagList.unshift({ text: TagStore.tagText });
-      } else {
-        TagStore.setIsNewFlag(false);
-      }
-    }
-  };
-
-  const handleKeyDown = (event) => {
-    switch (event.key) {
-      case "Enter":
-        createTag();
-        break;
-      case "Escape":
-        toggleTagInput();
-        break;
-      default:
-        break;
-    }
-  }
 
   const handleModifyingKeyDown = (event) => {
     switch (event.key) {
@@ -128,7 +100,7 @@ const TagListContainer = () => {
         handleModifyInput();
         break;
       case "Escape":
-        TagStore.setIsNewFlag(false);
+        TagStore.setIsNewTag(false);
         break;
       default:
         break;
@@ -143,6 +115,7 @@ const TagListContainer = () => {
   }
 
   const handleClickTag = (idx, e) => {
+    console.log('handleClickTag',idx)
     const prev = focusedTag.current;
     changeFocusedTag(prev, idx);
   }
@@ -196,17 +169,13 @@ const TagListContainer = () => {
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
         </Tooltip>
-        <TagInput
+        <AddTagForm 
           show={TagStore.isNewTag}
-          maxLength="50"
-          onChange={handleTagInput}
-          onBlur={createTag}
-          onKeyDown={handleKeyDown}
-          autoFocus={true}
+          toggleTagInput={toggleTagInput}
         />
         <TagList ref={tagList}>
           {TagStore.notetagList.map((item, index) =>
-            TagStore.editTagIndex === index ? (
+            (TagStore.editTagIndex === index) ? (
               <TagInput
                 key={item}
                 maxLength="50"
@@ -236,7 +205,7 @@ const TagListContainer = () => {
                     onDoubleClick={
                       PageStore.isEdit === null || PageStore.isEdit === ''
                         ? null
-                        : handleChangeTag.bind(null, item.text, index, item.tag_id)
+                        : handleChangeTag(item.text, index, item.tag_id)
                     }
                   >
                     {item.text.length > 5

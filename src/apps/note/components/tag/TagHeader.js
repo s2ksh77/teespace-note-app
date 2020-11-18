@@ -8,7 +8,6 @@ import {
   EditPreBtnWrapper,
 } from '../../styles/titleStyle';
 import useNoteStore from '../../store/useStore';
-import TagStore from '../../store/tagStore';
 import { useObserver } from 'mobx-react';
 import searchImg from '../../assets/ts_m_search@3x.png';
 import { SearchImgInput, RightAligned } from '../../styles/commonStyle';
@@ -44,6 +43,8 @@ const TagHeader = () => {
     TagStore.fetchTagData();
   };
 
+  const cancelBtnVisibility = (TagStore.isSearching || value !== "") ? { display: '' } : { display: 'none' };
+
   return useObserver(() => (
     <>
       <TagMenuHeader>
@@ -53,7 +54,7 @@ const TagHeader = () => {
           <Button src={preImg} onClick={handleLayoutBtn} />
         </EditPreBtnWrapper>
         <RightAligned>
-          <TagSearchForm onSubmit={onSubmitForm} show={TagStore.hasTag} >
+          <TagSearchForm onSubmit={onSubmitForm} show={TagStore.allSortedTagList.length > 0} >
             <TagTitleSearchContainer>
               <SearchImgInput type="image" border="0" alt=" " src={searchImg} />
               <LnbTitleSearchInput
@@ -65,7 +66,7 @@ const TagHeader = () => {
               />
               <Button
                 src={cancelImg}
-                style={value !== '' ? { display: '' } : { display: 'none' }}
+                style={cancelBtnVisibility}
                 onClick={onClickCancelBtn}
               />
             </TagTitleSearchContainer>

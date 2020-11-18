@@ -16,8 +16,6 @@ const TagStore = observable({
   currentTagValue: "",
   editTagIndex: "",
   editTagValue: "",
-  // allTagList: [],
-  hasTag:false,
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList:[],
   // key당 tagList
@@ -122,18 +120,11 @@ const TagStore = observable({
   setEditTagValue(text) {
     this.editTagValue = text;
   },
-  getHasTag() {
-    return this.hasTag;
-  },
-  setHasTag(hasTag) {
-    this.hasTag = hasTag;
-  },
   async getAllSortedTagList() {  
     const res = await NoteRepository.getAllSortedTagList();
     return res.status === 200 ? res.data.dto : null;
   },
   setAllSortedTagList(tagList) {
-    console.log(tagList)
     this.allSortedTagList = tagList;
   },
   getKeyTagPairObj(){
@@ -146,7 +137,6 @@ const TagStore = observable({
     return this.sortedTagList;
   },
   setSortedTagList(tagList) {
-    console.log('taglist',tagList)
     this.sortedTagList = tagList;
   },
   getTagKeyArr(){
@@ -232,10 +222,6 @@ const TagStore = observable({
   async getAllSortedNoteTagList() {  
     const {data:{dto:{tag_index_list_dto}}} = await NoteRepository.getAllSortedTagList();
     this.setAllSortedTagList(tag_index_list_dto);
-    if (this.allSortedTagList.length === 0) {
-      this.setHasTag(false);
-    }
-    else this.setHasTag(true);
     return this.allSortedTagList;
   },
   // 없어도 될 것 같음
@@ -260,7 +246,8 @@ const TagStore = observable({
   },
 
   async searchTag(str) {
-    this.setIsSearchLoading(true);
+    this.setIsSearching(true);
+    this.setIsSearchLoading(true);    
     this.setSearchStr(str);
     await this.getAllSortedNoteTagList();
     this.getSearchResult(str);
