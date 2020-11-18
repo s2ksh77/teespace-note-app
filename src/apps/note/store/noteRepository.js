@@ -108,39 +108,53 @@ class NoteRepository {
     return data.text;
   }
 
-  createChapter(chapterTitle, chapterColor) {
-    return API.Post(`Note/notebooks`, {
-      dto: {
-        id: '',
-        note_channel_id: this.chId,
-        text: chapterTitle,
-        children: [],
-        type: 'notebook',
-        USER_ID: this.USER_ID,
-        user_name: this.USER_NAME,
-        color: chapterColor,
-      },
-    });
+  async createChapter(chapterTitle, chapterColor) {
+    try {
+      const { data } = await API.post(`Note/notebooks`, {
+        dto: {
+          id: '',
+          note_channel_id: this.chId,
+          text: chapterTitle,
+          children: [],
+          type: 'notebook',
+          USER_ID: this.USER_ID,
+          user_name: this.USER_NAME,
+          color: chapterColor,
+        },
+      })
+      return data;
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  deleteChapter(chapterId) {
-    return API.Delete(
-      `Note/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`,
-    );
+  async deleteChapter(chapterId) {
+    try {
+      const { data } = await API.delete(`Note/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`);
+      return data;
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+
   }
 
-  renameChapter(chapterId, chapterTitle, color) {
-    return API.Put(`Note/notebooks?action=Update`, {
-      dto: {
-        USER_ID: this.USER_ID,
-        color: color,
-        id: chapterId,
-        note_channel_id: this.chId,
-        parent_notebook: '',
-        text: chapterTitle,
-        user_name: this.USER_NAME,
-      }
-    });
+  async renameChapter(chapterId, chapterTitle, color) {
+    try {
+      const { data } = await API.put(`Note/notebooks?action=Update`, {
+        dto: {
+          USER_ID: this.USER_ID,
+          color: color,
+          id: chapterId,
+          note_channel_id: this.chId,
+          parent_notebook: '',
+          text: chapterTitle,
+          user_name: this.USER_NAME,
+        }
+      })
+      return data;
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   createPage(pageName, chapterId) {

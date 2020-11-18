@@ -203,7 +203,11 @@ const ChapterStore = observable({
    *  ChapterStore Method : getChapterList, createChapter, deleteChapter, renameChapter
    */
   async getChapterList() {
-    const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
+    const {
+      data: { dto:
+        { notbookList }
+      }
+    } = await NoteRepository.getChapterList(NoteStore.getChannelId());
 
     this.setChapterList(notbookList);
     return notbookList;
@@ -212,44 +216,17 @@ const ChapterStore = observable({
     this.chapterList = chapterList;
   },
 
-  async createChapter(chapterTitle, chapterColor, callback) {
-    await NoteRepository.createChapter(chapterTitle, chapterColor).then(
-      (response) => {
-        if (response.status === 200) {
-          const {
-            data: { dto },
-          } = response;
-          if (typeof callback === 'function') callback(dto);
-          return dto;
-        }
-      }
-    );
+  async createChapter(chapterTitle, chapterColor) {
+    const { dto } = await NoteRepository.createChapter(chapterTitle, chapterColor);
+    return dto;
   },
-  async deleteChapter(deleteChapterId, callback) {
-    await NoteRepository.deleteChapter(deleteChapterId).then(
-      (response) => {
-        if (response.status === 200) {
-          const {
-            data: { dto: notbookList },
-          } = response;
-          if (typeof callback === 'function') callback(notbookList);
-          return notbookList;
-        }
-      }
-    );
+  async deleteChapter(deleteChapterId) {
+    const { dto } = await NoteRepository.deleteChapter(deleteChapterId);
+    return dto;
   },
-  async renameChapter(renameId, renameText, color, callback) {
-    await NoteRepository.renameChapter(renameId, renameText, color).then(
-      (response) => {
-        if (response.status === 200) {
-          const {
-            data: { dto },
-          } = response;
-          if (typeof callback === 'function') callback(dto);
-          return dto;
-        }
-      }
-    );
+  async renameChapter(renameId, renameText, color) {
+    const { dto } = await NoteRepository.renameChapter(renameId, renameText, color)
+    return dto;
   },
 
   /**
@@ -390,16 +367,19 @@ const ChapterStore = observable({
   },
 
   createNoteChapter(chapterTitle, chapterColor) {
-    this.createChapter(chapterTitle, chapterColor, (notbookList) => {
-      this.getNoteChapterList();
-      this.setCurrentChapterId(notbookList.id);
-      PageStore.setCurrentPageId(notbookList.children[0].id);
-      this.setChapterTempUl(false);
-      this.setAllDeleted(false);
-    });
+    this.createChapter(chapterTitle, chapterColor).then(
+      (notbookList) => {
+        this.getNoteChapterList();
+        this.setCurrentChapterId(notbookList.id);
+        PageStore.setCurrentPageId(notbookList.children[0].id);
+        this.setChapterTempUl(false);
+        this.setAllDeleted(false);
+      }
+    );
+
   },
   deleteNoteChapter() {
-    this.deleteChapter(this.deleteChapterId, () => {
+    this.deleteChapter(this.deleteChapterId).then(() => {
       if (this.currentChapterId === this.deleteChapterId) {
         this.setCurrentChapterId(this.nextSelectableChapterId);
         PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
@@ -413,7 +393,7 @@ const ChapterStore = observable({
     });
   },
   renameNoteChapter(color) {
-    this.renameChapter(this.renameChapterId, this.renameChapterText, color, () => this.getNoteChapterList());
+    this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(() => this.getNoteChapterList());
   },
 
   moveChapter(moveTargetChapterIdx) {
