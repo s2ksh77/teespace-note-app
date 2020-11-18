@@ -48,6 +48,9 @@ const TagStore = observable({
   setNoteTagList(tagArr) {
     this.notetagList = tagArr;
   },
+  prependNoteTagList(tagText) {
+    this.notetagList.unshift({ text: tagText });
+  },
   //isNewTag
   getIsNewTag() {
     return this.isNewTag;
@@ -170,15 +173,15 @@ const TagStore = observable({
     this.tagPanelLoading = isLoading;
   },
   
-  createTag(createTagList) {
+  createTag(createTagList, noteId) {
     createTagList.forEach((tag) =>
-      NoteRepository.createTag(tag, PageStore.currentPageId)
+      NoteRepository.createTag(tag, noteId)
     );
     this.setAddTagList([]);
   },
-  deleteTag(deleteTagList) {
+  deleteTag(deleteTagList, noteId) {
     deleteTagList.forEach((tag) =>
-      NoteRepository.deleteTag(tag, PageStore.currentPageId)
+      NoteRepository.deleteTag(tag, noteId)
     );
     this.setRemoveTagList([]);
   },

@@ -32,7 +32,13 @@ export const TagList = styled.div`
   box-sizing: border-box;
   overflow: hidden;
 `;
-export const TagText = styled.span``;
+export const TagText = styled.span`
+  width: 100%;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
 
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;
@@ -48,19 +54,16 @@ export const TagInputDIV = styled.div`
   box-sizing: border-box;
 `;
 export const TagInput = styled.input`
-  width: 5rem;
+  display: flex;
+  width: 8.75rem;
   height: 1.88rem;
   margin-right: 0.38rem;
   border-radius: 1.563rem;
-  padding-left: 0.63rem;
-  padding-right: 0.63rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-  display: flex;
+  padding:0 0.75rem;
   border: 0.0625rem solid #1ea8df;
   background-color: #ffffff;
-  font-size: 0.75rem;
-  color: #3b3b3b;
+  font-size: 0.813rem;
+  color: #000000;
   outline: none;
 `;
 

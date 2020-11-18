@@ -513,8 +513,8 @@ const PageStore = observable({
       },
     };
     this.noteEditDone(updateDTO);
-    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
-    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
+    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
+    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
     EditorStore.tinymce?.undoManager.clear();

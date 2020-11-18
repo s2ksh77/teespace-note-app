@@ -1,34 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { TagInput } from '../../styles/tagStyle';
 import {checkWhitespace} from '../common/validators';
 import { useObserver } from 'mobx-react';
-import useNoteStore from '../../store/useStore';
+import TagStore from '../../store/tagStore';
 
 const AddTagForm = ({show, toggleTagInput}) => {
   if (!show) return null;  
-  const {PageStore, TagStore} = useNoteStore();
+  const [value, setValue] = useState('');
   const handleTagInput = e => {
-    TagStore.setTagText(e.target.value);
+    setValue(e.target.value);
   };
   
-  const createTag = () => {
-    if (!checkWhitespace(TagStore.tagText)) {
+  const handleBlurTagInput = () => {
+    if (!checkWhitespace(value)) {
       TagStore.setIsNewTag(false);
     } else {
-      if (TagStore.isValidTag(TagStore.tagText)) {
-        TagStore.appendAddTagList(TagStore.tagText);
+      if (TagStore.isValidTag(value)) {
+        TagStore.appendAddTagList(value);
         TagStore.setIsNewTag(false);
-        TagStore.notetagList.unshift({ text: TagStore.tagText });
+        TagStore.prependNoteTagList(value);
       } else {
         TagStore.setIsNewTag(false);
       }
     }
+    // input창 초기화
+    setValue("");
   };  
 
   const handleKeyDown = (event) => {
     switch (event.key) {
       case "Enter":
-        createTag();
+        handleBlurTagInput();
         break;
       case "Escape":
         toggleTagInput();
@@ -40,8 +42,9 @@ const AddTagForm = ({show, toggleTagInput}) => {
   return useObserver(()=>(
     <TagInput
       maxLength="50"
+      value={value}
       onChange={handleTagInput}
-      onBlur={createTag}
+      onBlur={handleBlurTagInput}
       onKeyDown={handleKeyDown}
       autoFocus={true}
     />
