@@ -63,6 +63,7 @@ const TagHeader = () => {
                 value={value}
                 onChange={onChangeInput}
                 placeholder="태그 검색"
+                onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
               />
               <Button
                 src={cancelImg}

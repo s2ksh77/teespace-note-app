@@ -1,6 +1,9 @@
 import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
+  #root{
+    height:100%;
+  }
   .noteFocusedTag {
     background-color:#1EA8DF !important;
   }
@@ -35,6 +38,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding:0 0.63rem !important;
     margin-bottom: 0.4375rem;
     margin-top: 0.4375rem;
     margin-right: 0.38rem;
