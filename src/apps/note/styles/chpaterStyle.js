@@ -54,6 +54,7 @@ export const Color = styled.span`
   height: 2.19rem;
   align-self: center;
   border-radius: 0.13rem / 0.13rem;
+  margin: 0.31rem 0;
   color: ${(props) => props.color};
   background: ${(props) => props.background};
 `;

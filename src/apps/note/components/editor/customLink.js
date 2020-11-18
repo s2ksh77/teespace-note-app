@@ -1,4 +1,5 @@
 import errorImg from '../../assets/note_error.svg';
+import PageStore from '../../store/pageStore';
 import { isFilled, validUrl, checkUrlValidation } from '../common/validators.js';
 /*
   Link Dialog 관련
@@ -90,7 +91,7 @@ export const changeLinkDialog = () => {
   Link context Toolbar 관련
   custimizing contextToolbar
 */
-const linkToolbarStr = ['링크 삽입/편집', '링크 제거', '링크 열기']
+const linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동']
 export const changeButtonStyle = (idx, count) => {
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
@@ -106,6 +107,8 @@ export const changeButtonStyle = (idx, count) => {
 }
 
 export const openLink = (url, target) => {
+  if (PageStore.isEdit) return;
+
   if (target !== '_blank') {
     document.location.href = url;
     return;

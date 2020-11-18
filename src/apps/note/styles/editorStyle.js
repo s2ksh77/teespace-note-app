@@ -191,3 +191,33 @@ export const FileCloseBtn = styled.img`
   margin-top: 0.38rem;
   filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
 `
+
+export const editorContentCSS = ` 
+  a {
+    cursor:pointer;
+  }
+  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
+    background-color: #f8cac6;
+  }
+  table[style*="border-width: 0px"],
+  .mce-item-table:not([border]),
+  .mce-item-table[border="0"],
+  table[style*="border-width: 0px"] td,
+  .mce-item-table:not([border]) td,
+  .mce-item-table[border="0"] td,
+  table[style*="border-width: 0px"] th,
+  .mce-item-table:not([border]) th,
+  .mce-item-table[border="0"] th,
+  table[style*="border-width: 0px"] caption,
+  .mce-item-table:not([border]) caption,
+  .mce-item-table[border="0"] caption {
+    border: 1px solid #ccc;
+  }
+  .mce-content-body{
+    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
+    background-size: 0.625rem 0.625rem !important;
+  }
+  img {
+    max-width: 100%;
+  }
+`

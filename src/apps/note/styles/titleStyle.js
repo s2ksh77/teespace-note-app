@@ -102,6 +102,7 @@ export const LnbTitleCover = styled.div`
 export const LnbTitleNewButton = styled.button`
   align-items: center;
   display: flex;
+  flex-shrink:0;
   width: 6.31rem;
   height: 1.88rem;
   margin-right: 0.63rem;
@@ -158,6 +159,7 @@ export const LnbTitleSearchInput = styled.input`
 `;
 
 export const TagSearchForm = styled.form`
+  display:${props=>props.show ? "block" : "none"};
   margin-left:auto;
 `;
 

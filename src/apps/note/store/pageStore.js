@@ -4,11 +4,10 @@ import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
-import html2pdf from 'html2pdf.js';
+
 const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
-  returnData: [],
   isEdit: '',
   noteContent: '',
   noteTitle: '',
@@ -29,88 +28,306 @@ const PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
+  prevModifiedUserName: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
-  getPageId(e) {
-    const {
-      target: { id },
-    } = e;
-    return id;
+
+  setNoteInfoList(infoList) {
+    this.noteInfoList = infoList;
   },
-  async setCurrentPageId(pageId) {
-    this.currentPageId = pageId;
-    if (pageId) {
-      await this.getNoteInfoList(pageId);
-      await TagStore.getNoteTagList(pageId); // tagList
-    } else this.isEdit = '';
+  getCurrentPageData() {
+    return this.currentPageData;
   },
-  getPageName(e) {
-    const {
-      target: { name },
-    } = e;
-    return name;
+  setCurrentPageData(pageData) {
+    this.currentPageData = pageData;
+  },
+  getIsEdit() {
+    return this.isEdit;
+  },
+  setIsEdit(id){
+    this.isEdit = id;
   },
   isReadMode() {
     return this.isEdit === null || this.isEdit === '';
   },
+  getContent() {
+    return this.noteContent;
+  },
   setContent(content) {
     this.noteContent = content;
+  },
+  getTitle() {
+    return this.noteTitle;
   },
   setTitle(title) {
     this.noteTitle = title;
   },
+
+  getCurrentPageId() {
+    return this.currentPageId;
+  },
+  setCurrentPageId(pageId) {
+    this.currentPageId = pageId;
+  },
+  
+  getCreatePageParent() {
+    return this.createParent;
+  },
   setCreatePageParent(chapterId) {
     this.createParent = chapterId;
+  },
+  getCreatePageParentIdx() {
+    return this.createParentIdx;
   },
   setCreatePageParentIdx(chapterIdx) {
     this.createParentIdx = chapterIdx;
   },
-  getCreatePageParent() {
-    return this.createParent;
+
+  getDeletePageList() {
+    return this.deletePageList;
   },
   setDeletePageList(page) {
     this.deletePageList = [];
     this.deletePageList.push(page);
   },
+  getDeleteParentIdx() {
+    return this.deleteParentIdx;
+  },
   setDeleteParentIdx(chapterIdx) {
     this.deleteParentIdx = chapterIdx;
+  },
+  getNextSelectablePageId() {
+    return this.nextSelectablePageId;
   },
   setNextSelectablePageId(pageId) {
     this.nextSelectablePageId = pageId;
   },
+
+  getIsRename() {
+    return this.isRename;
+  },
   setIsRename(flag) {
     this.isRename = flag;
-  },
-  setRenamePageId(pageId) {
-    this.renamePageId = pageId;
   },
   getRenamePageId() {
     return this.renamePageId;
   },
+  setRenamePageId(pageId) {
+    this.renamePageId = pageId;
+  },
+  getRenamePageText() {
+    return this.renamePageText;
+  },
   setRenamePageText(pageText) {
     this.renamePageText = pageText;
+  },
+
+  getIsMovingPage() {
+    return this.isMovingPage;
   },
   setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
   },
+  getMovePageId() {
+    return this.movePageId;
+  },
   setMovePageId(pageId) {
     this.movePageId = pageId;
+  },
+  getMovePageIdx() {
+    return this.movePageIdx;
   },
   setMovePageIdx(pageIdx) {
     this.movePageIdx = pageIdx;
   },
+  getMoveChapterId() {
+    return this.moveChapterId;
+  },
   setMoveChapterId(chapterId) {
     this.moveChapterId = chapterId;
+  },
+  getMoveChapterIdx() {
+    return this.moveChapterIdx;
   },
   setMoveChapterIdx(chapterIdx) {
     this.moveChapterIdx = chapterIdx;
   },
+  getDragEnterPageIdx() {
+    return this.dragEnterPageIdx;
+  },
   setDragEnterPageIdx(pageIdx) {
     this.dragEnterPageIdx = pageIdx;
   },
+  getDragEnterChapterIdx() {
+    return this.dragEnterChapterIdx;
+  },
   setDragEnterChapterIdx(chapterIdx) {
     this.dragEnterChapterIdx = chapterIdx;
+  },
+
+  getModifiedDate() {
+    return this.modifiedDate;
+  },
+  setModifiedDate(date) {
+    this.modifiedDate = date;
+  },
+  getPrevModifiedUserName() {
+    return this.prevModifiedUserName;
+  },
+  setPrevModifiedUserName(userName) {
+    this.prevModifiedUserName = userName;
+  },
+  getIsNewPage() {
+    return this.isNewPage;
+  },
+  setIsNewPage(isNew) {
+    this.isNewPage = isNew;
+  },
+
+  getExportTitle() {
+    return this.exportPageTitle;
+  },
+  setExportTitle(pageTitle) {
+    this.exportPageTitle = pageTitle;
+  },
+  getExportId() {
+    return this.exportPageId;
+  },
+  setExportId(pageId) {
+    this.exportPageId = pageId;
+  },
+
+  async getNoteInfoList(noteId, callback) {
+    await NoteRepository.getNoteInfoList(noteId).then(response => {
+      const {
+        data: { dto },
+      } = response;
+      
+      if (typeof callback === 'function') callback(dto);
+      return dto;
+    })
+  },
+
+  async createPage(title, parent, callback) {
+    await NoteRepository.createPage(title, parent).then(
+      response => {
+        if (response.status === 200) {
+          const {
+            data: { dto },
+          } = response;
+          
+          if (typeof callback === 'function') callback(dto);
+          return dto;
+        }
+      },
+    );
+  },
+
+  async deletePage(pageList, callback) {
+    await NoteRepository.deletePage(pageList).then(
+      (response) => {
+        if (response.status === 200) {
+          if (typeof callback === 'function') callback();
+          return response;
+        }
+      }
+    );
+  },
+
+  async renamePage(pageId, pageTitle, chapterId, callback) {
+    await NoteRepository.renamePage(pageId, pageTitle, chapterId).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto: returnData },
+          } = response;
+          
+          if (typeof callback === 'function') callback(returnData);
+          return response;
+        }
+      }
+    );
+  },
+
+  async editStart(noteId, parentNotebook, callback) {
+    await NoteRepository.editStart(
+      noteId,
+      parentNotebook,
+    ).then(response => {
+      if (response.status === 200) {
+        const {
+          data: { dto: returnData },
+        } = response;
+
+        if (typeof callback === 'function') callback(returnData);
+      }
+    });
+    return this.currentPageData;
+  },
+
+  async editDone(updateDto, callback) {
+    await NoteRepository.editDone(updateDto).then(response => {
+      if (response.status === 200) {
+        const {
+          data: { dto: returnData },
+        } = response;
+
+        if (typeof callback === 'function') callback(returnData);
+      }
+    });
+    return this.currentPageData;
+  },
+
+  async noneEdit(noteId, parentNotebook, prevModifiedUserName, callback) {
+    await NoteRepository.nonEdit(
+      noteId,
+      parentNotebook,
+      prevModifiedUserName,
+    ).then(response => {
+      if (response.status === 200) {
+        const {
+          data: { dto: returnData },
+        } = response;
+        
+        if (typeof callback === 'function') callback(returnData);
+      }
+    });
+    return this.currentPageData;
+  },
+
+  createNotePage() {
+    this.createPage('제목 없음', this.createParent, (dto) => {
+      this.currentPageData = dto;
+      ChapterStore.getChapterList();
+      this.setIsEdit(dto.is_edit);
+      this.noteTitle = '';
+      ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      this.currentPageId = dto.note_id;
+      this.isNewPage = true;
+      TagStore.setNoteTagList(dto.tagList);
+      EditorStore.setFileList(
+        dto.fileList,
+      );
+    });
+  },
+
+  deleteNotePage() {
+    this.deletePage(this.deletePageList, () => {
+      if (this.currentPageId === this.deletePageList[0].note_id) {
+        this.setCurrentPageId(this.nextSelectablePageId);
+        this.fetchCurrentPageData(this.nextSelectablePageId)
+      }
+      ChapterStore.getChapterList();
+      NoteStore.setShowModal(false);
+    });
+  },
+
+  renameNotePage(chapterId) {
+    this.renamePage(this.renamePageId, this.renamePageText, chapterId, (dto) => {
+      this.fetchNoteInfoList(dto.note_id);
+      ChapterStore.getChapterList();
+    });
   },
 
   clearMoveData() {
@@ -118,104 +335,6 @@ const PageStore = observable({
     this.movePageIdx = '';
     this.moveChapterId = '';
   },
-
-  modifiedDateFormatting() {
-    const date = this.currentPageData.modified_date;
-    const mDate = date.split(' ')[0];
-    const mTime = date.split(' ')[1];
-    const mYear = parseInt(mDate.split('.')[0]);
-    const mMonth = parseInt(mDate.split('.')[1]);
-    const mDay = parseInt(mDate.split('.')[2]);
-    let mHour = parseInt(mTime.split(':')[0]);
-    const mMinute = parseInt(mTime.split(':')[1]);
-    const meridiem = mHour < 12 ? '오전' : '오후';
-    const curDate = new Date();
-    const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
-
-    if (mHour > 12) mHour = mHour - 12;
-    const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
-
-    if (mYear === curDate.getFullYear()) { // 같은 해
-      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
-      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
-    }
-    else { // 다른 해
-      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + basicDate;
-    }
-  },
-
-  // (posco)
-  async _createPage(pageName, pageContents) {
-    // 새로고침, setcurrentchapterId, 태그/파일 관련 뺌
-    try {
-      //pageName, pageContents, chapterId
-      const { data: dto } = await NoteRepository._createPage(pageName, pageContents, ChapterStore.chapterList[0].id);
-      this.currentPageData = dto;
-      this.isEdit = dto.is_edit;
-      this.noteTitle = dto.note_title;
-      this.currentPageId = dto.note_id;
-      return dto;
-    } catch (err) { console.log(err) }
-  },
-  async createPage() {
-    await NoteRepository.createPage('제목 없음', this.createParent).then(
-      response => {
-        if (response.status === 200) {
-          console.log(ChapterStore.chapterList[0])
-          const {
-            data: { dto },
-          } = response;
-          this.currentPageData = dto;
-          ChapterStore.getChapterList();
-          this.isEdit = dto.is_edit;
-          this.noteTitle = dto.note_title;
-          ChapterStore.setCurrentChapterId(dto.parent_notebook);
-          this.currentPageId = dto.note_id;
-          this.isNewPage = true;
-          TagStore.setNoteTagList(dto.tagList);
-          EditorStore.setFileList(
-            dto.fileList,
-          );
-        }
-      },
-    );
-  },
-  // (posco)
-  async _deletePage(deletePageList) {
-    const res = await NoteRepository._deletePage(deletePageList);
-    return res;
-  },
-  async deletePage() {
-    await NoteRepository.deletePage(this.deletePageList).then(
-      (response) => {
-        if (response.status === 200) {
-          if (this.currentPageId === this.deletePageList[0].note_id) {
-            this.setCurrentPageId(this.nextSelectablePageId);
-          }
-          ChapterStore.getChapterList();
-          NoteStore.setShowModal(false);
-        }
-      }
-    );
-  },
-  // (posco)
-  async _renamePage(renamePageId, renamePageText) {
-    try {
-      const res = await NoteRepository._renamePage(renamePageId, renamePageText, ChapterStore.chapterList[0].id);
-      return res;
-    } catch (err) { console.log(err) }
-  },
-
-  async renamePage(chapterId) {
-    await NoteRepository.renamePage(this.renamePageId, this.renamePageText, chapterId).then(
-      (response) => {
-        if (response.status === 200) {
-          ChapterStore.getChapterList();
-        }
-      }
-    );
-  },
-
   async movePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageList, moveTargetPageIdx) {
     if (this.moveChapterId === moveTargetChapterId) { // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
       if (this.movePageIdx !== moveTargetPageIdx
@@ -246,6 +365,7 @@ const PageStore = observable({
         localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
         this.setCurrentPageId(this.movePageId);
+        this.fetchCurrentPageData(this.movePageId); 
         ChapterStore.setCurrentChapterId(moveTargetChapterId);
       }
 
@@ -275,7 +395,8 @@ const PageStore = observable({
             localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
             ChapterStore.getChapterList();
-            this.setCurrentPageId(this.movePageId);
+            this.setCurrentPageId(this.movePageId);            
+            this.fetchCurrentPageData(this.movePageId); 
             ChapterStore.setCurrentChapterId(moveTargetChapterId);
             this.clearMoveData();
           }
@@ -283,28 +404,34 @@ const PageStore = observable({
       )
     }
   },
-  // (posco)
-  async _getNoteInfoListCall(noteId) {
-    const res = await NoteRepository._getNoteInfoList(noteId);
-    return res.data.dto;
+
+  modifiedDateFormatting() {
+    const date = this.currentPageData.modified_date;
+    const mDate = date.split(' ')[0];
+    const mTime = date.split(' ')[1];
+    const mYear = parseInt(mDate.split('.')[0]);
+    const mMonth = parseInt(mDate.split('.')[1]);
+    const mDay = parseInt(mDate.split('.')[2]);
+    let mHour = parseInt(mTime.split(':')[0]);
+    const mMinute = parseInt(mTime.split(':')[1]);
+    const meridiem = mHour < 12 ? '오전' : '오후';
+    const curDate = new Date();
+    const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
+
+    if (mHour > 12) mHour = mHour - 12;
+    const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+
+    if (mYear === curDate.getFullYear()) { // 같은 해
+      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
+      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
+    }
+    else { // 다른 해
+      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + basicDate;
+    }
   },
-  // (posco)
-  async _getNoteInfoList(noteId) {
-    try {
-      const dto = await this._getNoteInfoList(noteId);
-      this.noteInfoList = dto;
-      this.currentPageData = dto;
-      this.isEdit = dto.is_edit;
-      this.noteTitle = dto.note_title;
-      this.modifiedDate = this.modifiedDateFormatting();
-      return dto;
-    } catch (err) { console.log(err.message) }
-  },
-  async getNoteInfoList(noteId) {
-    await NoteRepository.getNoteInfoList(noteId).then(response => {
-      const {
-        data: { dto },
-      } = response;
+
+  fetchNoteInfoList(noteId) {
+    this.getNoteInfoList(noteId, (dto) => {
       this.noteInfoList = dto;
       this.currentPageData = dto;
       this.isEdit = dto.is_edit;
@@ -313,99 +440,62 @@ const PageStore = observable({
       EditorStore.setFileList(
         dto.fileList,
       );
-      // this.currentPageId = noteList.noteList[0].note_id;
     });
-    return this.noteInfoList;
   },
-  // (posco)
-  async _editStart(noteId) {
-    try {
-      const res = await NoteRepository._editStart(
-        noteId,
-        ChapterStore.chapterList[0].id,
-      );
-      this._getNoteInfoList(res.data.dto.note_id);
-      return res;
-    } catch (err) { console.log(err) }
+
+  async fetchCurrentPageData(pageId) {
+    if (pageId) {
+      await this.fetchNoteInfoList(pageId);
+      await TagStore.fetchNoteTagList(pageId); // tagList
+    } else this.setIsEdit('');
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
-  async editStart(noteId) {
-    await NoteRepository.editStart(
-      noteId,
-      this.currentPageData.parent_notebook,
-    ).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
-        this.getNoteInfoList(returnData.note_id);
-        EditorStore.tinymce.focus();
-      }
+  noteEditStart(noteId) {
+    this.prevModifiedUserName = this.currentPageData.user_name;
+    this.editStart(noteId, this.currentPageData.parent_notebook, (dto) => {
+      this.fetchNoteInfoList(dto.note_id);
+      EditorStore.tinymce.focus();
+      EditorStore.tinymce.selection.setCursorLocation();
     });
-    return this.currentPageData;
-  },
-  // (posco)
-  async _editDone(updateDto) {
-    try {
-      const res = await NoteRepository._editDone(updateDto);
-      this._getNoteInfoList(res.data.dto.note_id);
-      return res;
-    } catch (err) { console.log(err) };
-  },
-  // 이미 전에 currentPageID가 set되어 있을거라고 가정
-  async editDone(updateDto) {
-    await NoteRepository.editDone(updateDto).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
-        this.getNoteInfoList(returnData.note_id);
-        ChapterStore.getChapterList();
-      }
-    });
-    return this.currentPageData;
-  },
-  // (posco)
-  async _noneEdit(noteId) {
-    try {
-      const res = await NoteRepository._nonEdit(
-        noteId,
-        ChapterStore.chapterList[0].id
-      );
-      this._getNoteInfoList(res.data.dto.note_id);
-      return res;
-    } catch (err) { console.log(err) }
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
-  async noneEdit(noteId) {
-    await NoteRepository.nonEdit(
-      noteId,
+  noteEditDone(updateDto) {
+    this.editDone(updateDto, (dto) => {
+      this.fetchNoteInfoList(dto.note_id);
+      ChapterStore.getChapterList();
+    });
+  },
+
+  // 이미 전에 currentPageID가 set되어 있을거라고 가정
+  noteNoneEdit(noteId) {
+    this.noneEdit(
+      noteId, 
       this.currentPageData.parent_notebook,
-    ).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
-        this.getNoteInfoList(returnData.note_id);
+      this.prevModifiedUserName,
+      (dto) => {
+        this.fetchNoteInfoList(dto.note_id);
         EditorStore.tinymce?.setContent(this.currentPageData.note_content);
         NoteStore.setShowModal(false);
       }
-    });
-    return this.currentPageData;
+    );
   },
 
   async handleNoneEdit() {
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
       this.deleteParentIdx = this.createParentIdx;
-      await this.deletePage();
+      await this.deleteNotePage();
       this.isNewPage = false;
       const childList = ChapterStore.getChapterChildren(this.createParent);
       ChapterStore.setCurrentChapterId(this.createParent);
-      if (childList.length > 1) this.setCurrentPageId(childList[1].id);
-    } else this.noneEdit(this.currentPageId);
+      if (childList.length > 1) {
+        const pageId = childList[1].id;
+        this.setCurrentPageId(pageId);        
+        this.fetchCurrentPageData(pageId); 
+      }
+    } else this.noteNoneEdit(this.currentPageId);
   },
 
   handleSave() {
@@ -422,7 +512,7 @@ const PageStore = observable({
         TYPE: 'EDIT_DONE',
       },
     };
-    this.editDone(updateDTO);
+    this.noteEditDone(updateDTO);
     if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
     if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
@@ -451,6 +541,7 @@ const PageStore = observable({
             var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
             if (tableTitle !== undefined) return tableTitle;
           }
+          if (i === contentList.length - 1) return '표';
         } else if (contentList[i].tagName === 'IMG') {
           if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
         } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
@@ -513,50 +604,6 @@ const PageStore = observable({
     //   }
     // );
   },
-  setExportId(pageId) {
-    this.exportPageId = pageId;
-    this.exportPageData();
-  },
-  async exportPageData() {
-    let returnData = '';
-    await NoteRepository.getNoteInfoList(this.exportPageId).then(response => {
-      const {
-        data: { dto },
-      } = response;
-      this.exportPageTitle = dto.note_title
-      returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
-    })
-    this.makeExportElement(returnData, 'page');
-  },
-  makeExportElement(data, type) {
-    const fragment = document.createElement('div');
-    fragment.style.visibility = 'visible';
-    fragment.style.opacity = 0;
-    fragment.style.width = 'fit-content';
-    fragment.setAttribute('id', 'exportTarget');
-
-    const targetDIV = document.createElement('div');
-    targetDIV.setAttribute('id', 'exportTargetDiv');
-    targetDIV.setAttribute('class', 'export');
-    targetDIV.innerHTML = data;
-    fragment.appendChild(targetDIV);
-    document.body.appendChild(fragment);
-    this.exportDownloadPDF(type);
-  },
-  exportDownloadPDF(type) {
-    const element = document.getElementById('exportTargetDiv');
-    const opt = {
-      margin: 2,
-      filename: type === 'page' ? `${this.exportPageTitle}.pdf` : `${ChapterStore.exportChapterTitle}.pdf`,
-      pagebreak: { after: '.afterClass', avoid: 'span' },
-      image: { type: 'jpeg', quality: 0.98 },
-      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf(element, opt).then(() => {
-      document.getElementById('exportTarget').remove();
-    });
-  },
-
 })
 
 export default PageStore;

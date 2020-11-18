@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
@@ -14,7 +14,7 @@ import {
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/ts_share@3x.png';
 
-const Chapter = ({ chapter, index }) => {
+const Chapter = ({ chapter, index, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   // 챕터를 다른 챕터 영역에 drop했을 때
@@ -32,12 +32,13 @@ const Chapter = ({ chapter, index }) => {
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
-    begin: () => {
+    begin: (monitor) => {
       ChapterStore.setMoveChapterIdx(index);
 
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('chapter');
       NoteStore.setDraggedTitle(chapter.text);
+      NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
     },
     end: () => {
       ChapterStore.setDragEnterChapterIdx('');
@@ -45,6 +46,7 @@ const Chapter = ({ chapter, index }) => {
       NoteStore.setIsDragging(false);
       NoteStore.setDraggedType('');
       NoteStore.setDraggedTitle('');
+      NoteStore.setDraggedOffset({});
     },
   });
 
@@ -66,15 +68,6 @@ const Chapter = ({ chapter, index }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const onClickChapterBtn = (id, children) => async () => {
-    if (PageStore.isEdit) return;
-    ChapterStore.setCurrentChapterId(id);
-    let targetPage = '';
-    if (children.length) targetPage = children[0]?.id;
-    NoteStore.setShowPage(true);
-    await PageStore.setCurrentPageId(targetPage);
-  };
-
   const handleChapterName = (e) => {
     const {
       target: { value },
@@ -84,7 +77,7 @@ const Chapter = ({ chapter, index }) => {
 
   const handleChapterTextInput = (isEscape, color) => {
     if (!isEscape && ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
-      ChapterStore.renameChapter(color);
+      ChapterStore.renameNoteChapter(color);
     }
 
     ChapterStore.setRenameChapterId('');
@@ -93,6 +86,10 @@ const Chapter = ({ chapter, index }) => {
       NoteStore.disableScroll,
     );
   };
+
+  const handleChapterBtn = useCallback(() => {
+    onClick(chapter.id, chapter.children);
+  }, []);
 
   const handleFocus = (e) => e.target.select();
 
@@ -117,12 +114,13 @@ const Chapter = ({ chapter, index }) => {
     >
       <ChapterCover
         ref={chapter.type === 'notebook' ? (node) => drag(dropChapter(node)) : drag}
-        onClick={onClickChapterBtn(chapter.id, chapter.children)}
+        onClick={handleChapterBtn}
       >
         {renderChapterIcon()}
         {ChapterStore.getRenameChapterId() === chapter.id ? (
           <ChapterTextInput
             maxLength="200"
+            placeholder='새 챕터'
             value={ChapterStore.renameChapterText}
             onClick={e => e.stopPropagation()}
             onChange={handleChapterName}
@@ -138,12 +136,11 @@ const Chapter = ({ chapter, index }) => {
             <ChapterText
               text={chapter.text}
               chapterId={chapter.id}
-              color={chapter.color}
             />
           )}
       </ChapterCover>
       <PageList
-        showNewPage={!['shared','shared_page'].includes(chapter.type)}
+        showNewPage={!['shared', 'shared_page'].includes(chapter.type)}
         children={chapter.children}
         chapterId={chapter.id}
         chapterIdx={index}

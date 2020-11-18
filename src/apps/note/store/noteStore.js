@@ -4,6 +4,8 @@ import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
 import NoteMeta from './NoteMeta';
+import { WWMS } from 'teespace-core';
+import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
   workspaceId: '',
@@ -11,7 +13,6 @@ const NoteStore = observable({
   user_id: '',
   noteFileList: [],
   showPage: true, // editor 보고 있는지 태그 보고 있는지
-  isMaximumSize: true,
   layoutState: '',
   targetLayout: null,
   isExpanded: false,
@@ -21,6 +22,7 @@ const NoteStore = observable({
   isDragging: false,
   draggedType: '',
   draggedTitle: '',
+  draggedOffset: {},
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -31,6 +33,7 @@ const NoteStore = observable({
   setChannelId(chId) {
     NoteRepository.setChannelId(chId);
     this.notechannel_id = chId;
+    ChapterStore.getNoteChapterList();
   },
   getChannelId() {
     return this.notechannel_id;
@@ -39,8 +42,22 @@ const NoteStore = observable({
     NoteRepository.setUserId(userId);
     this.user_id = userId;
   },
+  setUserName(userName) {
+    NoteRepository.setUserName(userName);
+    this.userName = userName;
+  },
   getUserId() {
     return this.user_id;
+  },
+  init(roomId, channelId, userId, userName, callback) {
+    NoteStore.setWsId(roomId);
+    NoteStore.setChannelId(channelId);
+    NoteStore.setUserName(userName);
+    NoteStore.setUserId(userId);
+    if (typeof callback === 'function') callback();
+  },
+  addWWMSHandler() {
+    WWMS.addHandler('CHN0003', handleWebsocket)
   },
   getNoteFileList() {
     return this.noteFileList;
@@ -51,20 +68,8 @@ const NoteStore = observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterId('');
       PageStore.setCurrentPageId('');
+      PageStore.setIsEdit('');
     }
-    // [TODO] 혹시 몰라서 넣음, 뺄까?
-    else {
-      TagStore.setIsSearching(false);
-    }
-  },
-  getShowPage() {
-    return this.showPage;
-  },
-  getIsMaximumSize() {
-    return this.isMaximumSize;
-  },
-  setIsMaximumSize(isMaximum) {
-    this.isMaximumSize = isMaximum;
   },
   setLayoutState(state) {
     this.layoutState = state;
@@ -88,6 +93,7 @@ const NoteStore = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
+      case 'imageDelete':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -109,6 +115,9 @@ const NoteStore = observable({
   },
   setDraggedTitle(title) {
     this.draggedTitle = title;
+  },
+  setDraggedOffset(offset) {
+    this.draggedOffset = offset;
   },
 
   disableScroll(e) {

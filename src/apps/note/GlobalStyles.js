@@ -19,6 +19,7 @@ export const GlobalStyle = createGlobalStyle`
   .ant-collapse-header {
     height: 1.38rem;
     display: flex;
+    align-items:center;
     padding: 0 0.75rem !important;
     border-radius: 21px !important;
     background-color: #EFEFF2;
@@ -104,9 +105,10 @@ export const GlobalStyle = createGlobalStyle`
     height: auto;
     border: 0.0625rem solid #dadada;
     border-radius: 0.5rem;
-    margin-left: 4rem;
-    padding: 1.1rem;
-    padding-left: 1.7rem;
+    margin-top: 1rem;
+    margin-left: 2.5rem;
+    padding: 0.5rem;
+    padding-left: 1.5rem;
     font-size: 0.81rem;
     background-color: rgba(255,255,255,0.50);
     z-index:20;
@@ -130,7 +132,7 @@ export const GlobalStyle = createGlobalStyle`
       border-top: 0.375rem solid transparent;
       border-bottom: 0.375rem solid transparent;
       border-left: 0.5rem solid #FB3A3A;
-      transform: translate(-1.2rem, -1.405rem);
+      transform: translate(-0.43rem, -1.405rem);
     }
   }  
   .link-dialog-reverse {

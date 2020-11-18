@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useNoteStore from "../../store/useStore";
 import {
   LnbTitleCover,
@@ -17,10 +17,12 @@ import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
+import {isFilled} from '../common/validators';
 
 const LNBHeader = ({ createNewChapter }) => {
   const { ChapterStore, PageStore } = useNoteStore();
   const inputRef = useRef(null);
+  const [searchStr, setSearchStr] = useState("");
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
@@ -41,25 +43,25 @@ const LNBHeader = ({ createNewChapter }) => {
     // else ChapterStore.setChapterTempUl(false);
   };
 
-  const onSubmitSearchBtn = (e) => {
+  const onSubmitSearchBtn = async (e) => {
     e.preventDefault();
-    if (ChapterStore.isTagSearching || ChapterStore.inputValue === "") return;
-    ChapterStore.setSearchStr(ChapterStore.inputValue);
-    ChapterStore.setIsSearching(true);
+    if (ChapterStore.isTagSearching || !isFilled(searchStr)) return;
+    await ChapterStore.fetchSearchResult(searchStr);
     inputRef.current.focus();
   }
 
   const onChangeInput = (e) => {
-    ChapterStore.setInputValue(e.target.value);
+    setSearchStr(e.target.value);
   }
 
   const onClickCancelBtn = (e) => {
-    ChapterStore.setIsSearching(false);
+    setSearchStr('');
+    ChapterStore.initSearchVar();
   }
 
   // 태그칩에 있는 취소 버튼
-  const onClickCancelSearchTagBtn = (e) => {
-    ChapterStore.setIsTagSearching(false);
+  const cancelSearchingTagNote = (e) => {
+    ChapterStore.initSearchVar();
   }
 
   // e.target에서 filtering하려고 data-btn 속성 추가
@@ -79,18 +81,19 @@ const LNBHeader = ({ createNewChapter }) => {
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
           <LnbTitleSearchInput
-            ref={inputRef} value={ChapterStore.inputValue} onChange={onChangeInput}
+            ref={inputRef} value={searchStr} onChange={onChangeInput}
             placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
-            disabled={ChapterStore.isTagSearching ? true : false} />
-          {ChapterStore.isTagSearching ?
-            <>
-              <SearchTagChip>
-                <TagChipText>{ChapterStore.targetSearchTagName}</TagChipText>
-                <Button onClick={onClickCancelSearchTagBtn} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
-              </SearchTagChip>
-            </> : null}
+            disabled={ChapterStore.isTagSearching ? true : false} 
+            onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
+          />
+          {ChapterStore.isTagSearching ? (
+            <SearchTagChip>
+              <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
+              <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
+            </SearchTagChip> 
+          ) :null}
           <Button src={cancelImg}
-            style={(ChapterStore.inputValue !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
+            style={(ChapterStore.isSearching || searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>

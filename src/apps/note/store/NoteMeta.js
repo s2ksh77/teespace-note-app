@@ -26,17 +26,17 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteChapter() })
+        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteNoteChapter() })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deletePage(); EditorStore.deleteAllFile(); } else PageStore.deletePage(); })
+        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deleteNotePage(); EditorStore.deleteAllFile(); } else PageStore.deleteNotePage(); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':
         eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
+        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noteNoneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
@@ -47,6 +47,10 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
+      case 'imageDelete':
+        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage(); })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        break;
       default:
         break;
     }
@@ -54,8 +58,9 @@ const NoteMeta = {
   },
   setButtonConfig(type) {
     switch (type) {
-      case 'fileDelete':
       case 'delete':
+      case 'fileDelete':
+      case 'imageDelete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'confirm':
         return [{ type: 'confirom', text: '확인' }];
@@ -108,6 +113,10 @@ const NoteMeta = {
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
         break;
+      case 'imageDelete':
+        dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
+        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
+        dialogType.buttonConfig = this.setButtonConfig('imageDelete');
       default:
         break;
     }

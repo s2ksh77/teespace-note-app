@@ -2,6 +2,8 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
+import { checkNotDuplicate } from '../components/common/validators';
+import { type } from "ramda";
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -25,9 +27,8 @@ const ChapterStore = observable({
   },
   isSearching: false,
   isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
-  targetSearchTagName: '',
-  inputValue: "", // lnb title 영역 input창 value
-  searchStr: "",
+  searchingTagName: '',
+  searchStr: "", // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
   deleteChapterId: '',
   nextSelectableChapterId: '',
@@ -49,34 +50,211 @@ const ChapterStore = observable({
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
   },
+  getDeleteChapterId() {
+    return this.deleteChapterId;
+  },
   setDeleteChapterId(chapterId) {
     this.deleteChapterId = chapterId;
+  },
+  getNextSelectableChapterId() {
+    return this.nextSelectableChapterId;
   },
   setNextSelectableChapterId(chapterId) {
     this.nextSelectableChapterId = chapterId;
   },
+  getRenameChapterId() {
+    return this.renameChapterId;
+  },
   setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
   },
-  getRenameChapterId() {
-    return this.renameChapterId;
+  getRenameChapterText() {
+    return this.renameChapterText;
   },
   setRenameChapterText(chapterText) {
     this.renameChapterText = chapterText;
   },
+  getAllDeleted() {
+    return this.allDeleted;
+  },
   setAllDeleted(allDeleted) {
     this.allDeleted = allDeleted;
+  },
+  getIsMovingChapter() {
+    return this.isMovingChapter;
   },
   setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
+  getMoveChapterIdx() {
+    return this.moveChapterIdx;
+  },
   setMoveChapterIdx(chapterIdx) {
     this.moveChapterIdx = chapterIdx;
+  },
+  getDragEnterChapterIdx() {
+    return this.dragEnterChapterIdx;
   },
   setDragEnterChapterIdx(chapterIdx) {
     this.dragEnterChapterIdx = chapterIdx;
   },
+  setChapterListChildren(chapterId) {
+    this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
+  },
+  getChapterChildren() {
+    return this.chapterChildren;
+  },
+  setChapterTempUl(flag) {
+    this.isNewChapter = flag;
+    if (flag === false) this.setChapterTitle('');
+  },
+  setChapterTitle(title) {
+    this.chapterNewTitle = title;
+  },
+  // 사용자 input이 없을 때
+  getNewChapterTitle() {
+    const re = /^새 챕터 (\d+)$/gm;
+    let chapterTitle, temp;
+    let isNotAvailable = [];
+    let fullLength = this.chapterList.length;
+    isNotAvailable.length = fullLength + 1;
 
+    this.chapterList.forEach((chapter) => {
+      chapterTitle = chapter.text;
+      if (chapterTitle === '새 챕터') {
+        isNotAvailable[0] = 1;
+      } else if (re.test(chapterTitle)) {
+        temp = parseInt(chapterTitle.replace(re, "$1"));
+        if (temp <= fullLength) {
+          isNotAvailable[temp] = 1;
+        }
+      }
+    })
+
+    if (!isNotAvailable[0]) return "새 챕터";
+    for (let i = 1; i <= fullLength; i++) {
+      if (!isNotAvailable[i]) return "새 챕터 " + i;
+    }
+  },
+  getChapterId(e) {
+    const {
+      target: { id },
+    } = e;
+    return id;
+  },
+  getChapterRandomColor() {
+    const COLOR_ARRAY = Object.values(this.colorArray);
+    this.isNewChapterColor =
+      COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
+  },
+  getChapterColor(chapterId) {
+    const { value } = NoteRepository.getChapterColor(chapterId);
+    return value;
+  },
+  getChapterName(chapterId) {
+    const { value } = NoteRepository.getChapterText(chapterId);
+    return value;
+  },
+  getIsSearching() {
+    return this.isSearching;
+  },
+  setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+  },
+  getSearchStr() {
+    return this.searchStr;
+  },
+  setSearchStr(str) {
+    this.searchStr = str;
+  },
+  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
+  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
+  setSearchResult(result) {
+    this.searchResult = result;
+  },
+  // 태그칩 클릭해서 lnblist 띄우기
+  getSearchingTagName() {
+    return this.searchingTagName;
+  },
+  setSearchingTagName(str) {
+    this.searchingTagName = str;
+  },
+  getIsTagSearching() {
+    return this.isTagSearching;
+  },
+  setIsTagSearching(isSearching) {
+    this.isTagSearching = isSearching;
+  },
+
+  isValidChapterText(targetText) {
+    return checkNotDuplicate(this.chapterList, 'text', targetText);
+  },
+  setExportId(chapterId) {
+    this.exportChapterId = chapterId;
+  },
+  setExportTitle(chapterTitle) {
+    this.exportChapterTitle = chapterTitle;
+  },
+  changePageList(chapterIdx, pageList) {
+    this.chapterList[chapterIdx].children = pageList;
+  },
+
+  /**
+   *  ChapterStore Method : getChapterList, createChapter, deleteChapter, renameChapter
+   */
+  async getChapterList() {
+    const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
+
+    this.setChapterList(notbookList);
+    return notbookList;
+  },
+  setChapterList(chapterList) {
+    this.chapterList = chapterList;
+  },
+
+  async createChapter(chapterTitle, chapterColor, callback) {
+    await NoteRepository.createChapter(chapterTitle, chapterColor).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto },
+          } = response;
+          if (typeof callback === 'function') callback(dto);
+          return dto;
+        }
+      }
+    );
+  },
+  async deleteChapter(deleteChapterId, callback) {
+    await NoteRepository.deleteChapter(deleteChapterId).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto: notbookList },
+          } = response;
+          if (typeof callback === 'function') callback(notbookList);
+          return notbookList;
+        }
+      }
+    );
+  },
+  async renameChapter(renameId, renameText, color, callback) {
+    await NoteRepository.renameChapter(renameId, renameText, color).then(
+      (response) => {
+        if (response.status === 200) {
+          const {
+            data: { dto },
+          } = response;
+          if (typeof callback === 'function') callback(dto);
+          return dto;
+        }
+      }
+    );
+  },
+
+  /**
+   * ChapterStore Business Logic in NoteApp
+   */
   createMap(notebookList) {
     this.chapterMap.clear();
     this.pageMap.clear();
@@ -177,13 +355,10 @@ const ChapterStore = observable({
 
     return localChapterList;
   },
-  getChapterChildren(chapterId) {
-    this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
-    return this.chapterChildren;
-  },
+
   async fetchChapterList() {
     if (this.chapterList.length !== 0) return;
-    await this.getChapterList();
+    await this.getNoteChapterList();
     if (this.chapterList.length === 0) {
       NoteStore.setShowPage(false);
     } else {
@@ -191,26 +366,13 @@ const ChapterStore = observable({
       const chapterId = this.chapterList[0].id;
       const pageId = this.chapterList[0].children?.[0]?.id;
       this.setCurrentChapterId(chapterId);
-      await PageStore.setCurrentPageId(pageId);
+      PageStore.setCurrentPageId(pageId);
+      PageStore.fetchCurrentPageData(pageId);
     }
   },
-  // (posco)
-  async _getChapterListCall() {
-    const res = await NoteRepository._getChapterList(NoteStore.getChannelId());
-    return res.data.dto.notbookList;
-  },
-  // (posco)
-  async _getChapterList() {
-    let res;
-    try {
-      res = await this._getChapterListCall();
-      this.chapterList = res;
-    } catch (err) { console.log(err) }
-    return res;
-  },
 
-  async getChapterList() {
-    const notbookList = await this._getChapterList();
+  async getNoteChapterList() {
+    const notbookList = await this.getChapterList();
     this.createMap(notbookList);
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
@@ -226,47 +388,32 @@ const ChapterStore = observable({
     this.chapterList = this.chapterList.concat(sharedList);
     return this.chapterList;
   },
-  async createChapter(chapterTitle, chapterColor) {
-    await NoteRepository.createChapter(chapterTitle, chapterColor).then(
-      (response) => {
-        if (response.status === 200) {
-          const {
-            data: { dto: notbookList },
-          } = response;
-          this.getChapterList();
-          this.setCurrentChapterId(notbookList.id);
-          PageStore.setCurrentPageId(notbookList.children[0].id);
-          this.setChapterTempUl(false);
-          this.setAllDeleted(false);
-        }
-      }
-    );
+
+  createNoteChapter(chapterTitle, chapterColor) {
+    this.createChapter(chapterTitle, chapterColor, (notbookList) => {
+      this.getNoteChapterList();
+      this.setCurrentChapterId(notbookList.id);
+      PageStore.setCurrentPageId(notbookList.children[0].id);
+      this.setChapterTempUl(false);
+      this.setAllDeleted(false);
+    });
   },
-  async deleteChapter() {
-    await NoteRepository.deleteChapter(this.deleteChapterId).then(
-      (response) => {
-        if (response.status === 200) {
-          if (this.currentChapterId === this.deleteChapterId) {
-            this.setCurrentChapterId(this.nextSelectableChapterId);
-            PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
-            if (!this.nextSelectableChapterId) this.setAllDeleted(true);
-          }
-          this.getChapterList();
-          if (this.allDeleted) NoteStore.setShowPage(false);
-          this.deleteChapterId = '';
-          NoteStore.setShowModal(false);
-        }
+  deleteNoteChapter() {
+    this.deleteChapter(this.deleteChapterId, () => {
+      if (this.currentChapterId === this.deleteChapterId) {
+        this.setCurrentChapterId(this.nextSelectableChapterId);
+        PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
+        PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
+        if (!this.nextSelectableChapterId) this.setAllDeleted(true);
       }
-    );
+      this.getNoteChapterList();
+      if (this.allDeleted) NoteStore.setShowPage(false);
+      this.deleteChapterId = '';
+      NoteStore.setShowModal(false);
+    });
   },
-  async renameChapter(color) {
-    await NoteRepository.renameChapter(this.renameChapterId, this.renameChapterText, color).then(
-      (response) => {
-        if (response.status === 200) {
-          this.getChapterList();
-        }
-      }
-    );
+  renameNoteChapter(color) {
+    this.renameChapter(this.renameChapterId, this.renameChapterText, color, () => this.getNoteChapterList());
   },
 
   moveChapter(moveTargetChapterIdx) {
@@ -299,88 +446,30 @@ const ChapterStore = observable({
 
     this.moveChapterIdx = '';
   },
-
-  changePageList(chapterIdx, pageList) {
-    this.chapterList[chapterIdx].children = pageList;
+  // search 관련  
+  async initSearchVar() {
+    this.setIsSearching(false);
+    this.setIsTagSearching(false);
+    this.setSearchResult({});
+    this.setSearchStr("");
+    await this.getNoteChapterList();
   },
-
-  setChapterTempUl(flag) {
-    this.isNewChapter = flag;
-    if (flag === false) this.chapterNewTitle = '';
+  /*
+    태그와 챕터리스트 isSearching이 다름
+    chapterStore에서 isSearching은 검색 시작 ~ 검색 결과나온 후 더는 안 보려고 결과 초기화하는 동작까지임
+    태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
+    isSearching이 검색 시작 ~ 검색 결과 출력전까지임
+  */
+  async fetchSearchResult(searchStr) {
+    this.setIsSearching(true); // 검색 결과 출력 종료까지임
+    this.setSearchStr(searchStr); // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
+    await this.getSearchResult();
   },
-  setChapterTitle(title) {
-    this.chapterNewTitle = title;
-  },
-  // 사용자 input이 없을 때
-  getNewChapterTitle() {
-    const re = /^새 챕터 (\d+)$/gm;
-    let chapterTitle, temp;
-    let isNotAvailable = [];
-    let fullLength = this.chapterList.length;
-    isNotAvailable.length = fullLength + 1;
-
-    this.chapterList.forEach((chapter) => {
-      chapterTitle = chapter.text;
-      if (chapterTitle === '새 챕터') {
-        isNotAvailable[0] = 1;
-      } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, "$1"));
-        if (temp <= fullLength) {
-          isNotAvailable[temp] = 1;
-        }
-      }
-    })
-
-    if (!isNotAvailable[0]) return "새 챕터";
-    for (let i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return "새 챕터 " + i;
-    }
-  },
-  getChapterId(e) {
-    const {
-      target: { id },
-    } = e;
-    return id;
-  },
-  getChapterRandomColor() {
-    const COLOR_ARRAY = Object.values(this.colorArray);
-    this.isNewChapterColor =
-      COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
-  },
-  getChapterColor(chapterId) {
-    const { value } = NoteRepository.getChapterColor(chapterId);
-    return value;
-  },
-  getChapterName(chapterId) {
-    const { value } = NoteRepository.getChapterText(chapterId);
-    return value;
-  },
-  // search 관련
-  getIsSearching() {
-    return this.isSearching;
-  },
-  setIsSearching(isSearching) {
-    this.isSearching = isSearching;
-    if (!isSearching) {
-      this.searchResult = {};
-      this.searchStr = '';
-      this.inputValue = '';
-    }
-  },
-  getInputValue() {
-    return this.inputValue;
-  },
-  setInputValue(value) {
-    this.inputValue = value;
-  },
-  getSearchStr() {
-    return this.searchStr;
-  },
-  setSearchStr(str) {
-    this.searchStr = str;
-    // searchResult 만들기
+  async getSearchResult() {
+    this.setSearchResult({});
+    const { data: { dto: { notbookList: chapterList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());    // searchResult 만들기
     let resultChapterArr = [], resultPageArr = [];
-    this.chapterList.map((chapter) => {
+    chapterList.map((chapter) => {
       // chapter 저장
       if (chapter.text.includes(this.searchStr)) {
         resultChapterArr.push({
@@ -404,45 +493,10 @@ const ChapterStore = observable({
       })
     })
 
-    this.searchResult = {
+    this.setSearchResult({
       chapter: resultChapterArr,
       page: resultPageArr
-    }
-  },
-  getSearchResult() {
-    return this.searchResult;
-  },
-  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
-  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
-  setSearchResult(result) {
-    this.searchResult = result;
-  },
-  // 태그칩 클릭해서 lnblist 띄우기
-  getTargetSearchTagName() {
-    return this.targetSearchTagName;
-  },
-  setTargetSearchTagName(str) {
-    this.targetSearchTagName = str;
-  },
-  getIsTagSearching() {
-    return this.isTagSearching;
-  },
-  setIsTagSearching(isSearching) {
-    this.isTagSearching = isSearching;
-    if (!isSearching) {
-      this.targetSearchTagName = '';
-      this.searchResult = {};
-      // this.inputValue ='';//필요 없을 것 같다
-    }
-  },
-
-  isValidChapterText(targetText) {
-    const isExist = this.chapterList.find((chapter) => {
-      return chapter.text === targetText;
     });
-
-    if (isExist) return false;
-    else return true;
   },
   async createShareChapter(shareTargetRoomId, shareTargetList) {
     const targetList = [];
@@ -476,27 +530,6 @@ const ChapterStore = observable({
     //   }
     // );
   },
-  setExportId(chapterId) {
-    this.exportChapterId = chapterId;
-    this.exportChapterData();
-  },
-  setExportTitle(chapterTitle) {
-    this.exportChapterTitle = chapterTitle;
-  },
-  async exportChapterData() {
-    let returnData = '';
-    await NoteRepository.getChapterChildren(this.exportChapterId).then((response) => {
-      const {
-        data: { dto: { noteList } },
-      } = response;
-      if (noteList.length > 0) {
-        noteList.forEach((page, idx) => {
-          returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
-        })
-      } else return alert('하위에 속한 페이지가 없습니다.');
-      PageStore.makeExportElement(returnData, 'chapter');
-    })
-  }
 });
 
 export default ChapterStore;

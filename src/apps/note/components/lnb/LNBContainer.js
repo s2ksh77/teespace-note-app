@@ -26,12 +26,12 @@ const LNBContainer = () => {
     if (!ChapterStore.chapterNewTitle) {
       let autoName = ChapterStore.getNewChapterTitle();
       ChapterStore.setChapterTitle(autoName);
-      await ChapterStore.createChapter(
+      await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
         ChapterStore.isNewChapterColor
       );
     } else if (ChapterStore.isValidChapterText(ChapterStore.chapterNewTitle)) {
-      await ChapterStore.createChapter(
+      await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
         ChapterStore.isNewChapterColor
       );
@@ -52,8 +52,8 @@ const LNBContainer = () => {
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching)
-            ? <LNBSearchResult /> :
-            <DndProvider backend={HTML5Backend}>
+            ? <LNBSearchResult />
+            : <DndProvider backend={HTML5Backend}>
               {NoteStore.isDragging
                 ? NoteStore.draggedType && NoteStore.draggedTitle
                   ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
