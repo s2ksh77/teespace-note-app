@@ -49,10 +49,14 @@ class NoteRepository {
     );
   }
 
-  getNoteInfoList(noteId) {
-    return API.Get(
-      `Note/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
-    );
+  async getNoteInfoList(noteId) {
+    try {
+      return await API.Get(
+        `Note/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   getNoteTagList(noteId) {

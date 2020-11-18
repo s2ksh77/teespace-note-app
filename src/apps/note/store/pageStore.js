@@ -45,7 +45,7 @@ const PageStore = observable({
   getIsEdit() {
     return this.isEdit;
   },
-  setIsEdit(id){
+  setIsEdit(id) {
     this.isEdit = id;
   },
   isReadMode() {
@@ -70,7 +70,7 @@ const PageStore = observable({
   setCurrentPageId(pageId) {
     this.currentPageId = pageId;
   },
-  
+
   getCreatePageParent() {
     return this.createParent;
   },
@@ -198,15 +198,11 @@ const PageStore = observable({
     this.exportPageId = pageId;
   },
 
-  async getNoteInfoList(noteId, callback) {
-    await NoteRepository.getNoteInfoList(noteId).then(response => {
-      const {
-        data: { dto },
-      } = response;
-      
-      if (typeof callback === 'function') callback(dto);
-      return dto;
-    })
+  async getNoteInfoList(noteId) {
+    const {
+      data: { dto: { noteList } },
+    } = await NoteRepository.getNoteInfoList(noteId);
+    return noteList;
   },
 
   async createPage(title, parent, callback) {
@@ -216,7 +212,7 @@ const PageStore = observable({
           const {
             data: { dto },
           } = response;
-          
+
           if (typeof callback === 'function') callback(dto);
           return dto;
         }
@@ -242,7 +238,7 @@ const PageStore = observable({
           const {
             data: { dto: returnData },
           } = response;
-          
+
           if (typeof callback === 'function') callback(returnData);
           return response;
         }
@@ -289,7 +285,7 @@ const PageStore = observable({
         const {
           data: { dto: returnData },
         } = response;
-        
+
         if (typeof callback === 'function') callback(returnData);
       }
     });
@@ -297,7 +293,7 @@ const PageStore = observable({
   },
 
   createNotePage() {
-    this.createPage('제목 없음', this.createParent, (dto) => {
+    this.createPage('제목 없음', this.createParent).then(dto => {
       this.currentPageData = dto;
       ChapterStore.getChapterList();
       this.setIsEdit(dto.is_edit);
@@ -365,7 +361,7 @@ const PageStore = observable({
         localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
         this.setCurrentPageId(this.movePageId);
-        this.fetchCurrentPageData(this.movePageId); 
+        this.fetchCurrentPageData(this.movePageId);
         ChapterStore.setCurrentChapterId(moveTargetChapterId);
       }
 
@@ -395,8 +391,8 @@ const PageStore = observable({
             localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
             ChapterStore.getChapterList();
-            this.setCurrentPageId(this.movePageId);            
-            this.fetchCurrentPageData(this.movePageId); 
+            this.setCurrentPageId(this.movePageId);
+            this.fetchCurrentPageData(this.movePageId);
             ChapterStore.setCurrentChapterId(moveTargetChapterId);
             this.clearMoveData();
           }
@@ -431,7 +427,8 @@ const PageStore = observable({
   },
 
   fetchNoteInfoList(noteId) {
-    this.getNoteInfoList(noteId, (dto) => {
+    this.getNoteInfoList(noteId).then(dto => {
+      console.log(dto);
       this.noteInfoList = dto;
       this.currentPageData = dto;
       this.isEdit = dto.is_edit;
@@ -471,7 +468,7 @@ const PageStore = observable({
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteNoneEdit(noteId) {
     this.noneEdit(
-      noteId, 
+      noteId,
       this.currentPageData.parent_notebook,
       this.prevModifiedUserName,
       (dto) => {
@@ -492,8 +489,8 @@ const PageStore = observable({
       ChapterStore.setCurrentChapterId(this.createParent);
       if (childList.length > 1) {
         const pageId = childList[1].id;
-        this.setCurrentPageId(pageId);        
-        this.fetchCurrentPageData(pageId); 
+        this.setCurrentPageId(pageId);
+        this.fetchCurrentPageData(pageId);
       }
     } else this.noteNoneEdit(this.currentPageId);
   },
