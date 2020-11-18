@@ -321,12 +321,12 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "getChapterList",
     value: function getChapterList(chId) {
-      return teespaceCore.API.Get("".concat(this.URL, "/noteChapter?action=List&note_channel_id=").concat(chId));
+      return teespaceCore.API.Get("Note/noteChapter?action=List&note_channel_id=".concat(chId));
     }
   }, {
     key: "getNoteInfoList",
     value: function getNoteInfoList(noteId) {
-      return teespaceCore.API.Get("".concat(this.URL, "/noteinfo?action=List&note_id=").concat(noteId, "&note_channel_id=").concat(this.chId));
+      return teespaceCore.API.Get("Note/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
     }
   }, {
     key: "getNoteTagList",
@@ -335,7 +335,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
     } // 태그 컨텐츠 관련
     // getAllTagList() {
     //   return API.Get(
-    //     `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
+    //     `Note/alltag?action=List&note_channel_id=${this.chId}`
     //   )
     // }
 
@@ -348,7 +348,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return teespaceCore.API.Get("".concat(this.URL, "/tagSort?action=List&note_channel_id=").concat(this.chId, "&t=").concat(new Date().getTime().toString()));
+                return teespaceCore.API.Get("Note/tagSort?action=List&note_channel_id=".concat(this.chId, "&t=").concat(new Date().getTime().toString()));
 
               case 2:
                 return _context.abrupt("return", _context.sent);
@@ -370,22 +370,22 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "getTagNoteList",
     value: function getTagNoteList(tagId) {
-      return teespaceCore.API.Get("".concat(this.URL, "/tagnote?action=List&tag_id=").concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
+      return teespaceCore.API.Get("Note/tagnote?action=List&tag_id=".concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
     }
   }, {
     key: "getChapterChildren",
     value: function getChapterChildren(chapterId) {
-      return teespaceCore.API.Get("".concat(this.URL, "/note?action=List&note_channel_id=").concat(this.chId, "&parent_notebook=").concat(chapterId));
+      return teespaceCore.API.Get("Note/note?action=List&note_channel_id=".concat(this.chId, "&parent_notebook=").concat(chapterId));
     }
   }, {
     key: "getChapterInfoList",
     value: function getChapterInfoList(chapterId) {
-      return teespaceCore.API.Get("".concat(this.URL, "/chaptershare?action=List&id=").concat(chapterId));
+      return teespaceCore.API.Get("Note/chaptershare?action=List&id=".concat(chapterId));
     }
   }, {
     key: "getChapterColor",
     value: function getChapterColor(chapterId) {
-      var _API$Get = teespaceCore.API.Get("".concat(this.URL, "/chaptershare?action=List&id=").concat(chapterId)),
+      var _API$Get = teespaceCore.API.Get("Note/chaptershare?action=List&id=".concat(chapterId)),
           data = _API$Get.data;
 
       return data.color;
@@ -393,7 +393,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "getChapterText",
     value: function getChapterText(chapterId) {
-      var _API$Get2 = teespaceCore.API.Get("".concat(this.URL, "/chaptershare?action=List&id=").concat(chapterId)),
+      var _API$Get2 = teespaceCore.API.Get("Note/chaptershare?action=List&id=".concat(chapterId)),
           data = _API$Get2.data;
 
       return data.text;
@@ -401,7 +401,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "createChapter",
     value: function createChapter(chapterTitle, chapterColor) {
-      return teespaceCore.API.Post("".concat(this.URL, "/notebooks"), {
+      return teespaceCore.API.Post("Note/notebooks", {
         dto: {
           id: '',
           note_channel_id: this.chId,
@@ -417,12 +417,12 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "deleteChapter",
     value: function deleteChapter(chapterId) {
-      return teespaceCore.API.Delete("".concat(this.URL, "/notebook?action=Delete&id=").concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
+      return teespaceCore.API.Delete("Note/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
     }
   }, {
     key: "renameChapter",
     value: function renameChapter(chapterId, chapterTitle, color) {
-      return teespaceCore.API.Put("".concat(this.URL, "/notebooks?action=Update"), {
+      return teespaceCore.API.Put("Note/notebooks?action=Update", {
         dto: {
           USER_ID: this.USER_ID,
           color: color,
@@ -437,7 +437,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "createPage",
     value: function createPage(pageName, chapterId) {
-      return teespaceCore.API.Post("".concat(this.URL, "/note"), {
+      return teespaceCore.API.Post("Note/note", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -461,7 +461,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
         page.note_channel_id = _this.chId;
         page.user_name = _this.USER_NAME;
       });
-      return teespaceCore.API.Post("".concat(this.URL, "/note?action=Delete"), {
+      return teespaceCore.API.Post("Note/note?action=Delete", {
         dto: {
           noteList: pageList
         }
@@ -470,7 +470,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "renamePage",
     value: function renamePage(pageId, pageTitle, chapterId) {
-      return teespaceCore.API.Put("".concat(this.URL, "/note?action=Update"), {
+      return teespaceCore.API.Put("Note/note?action=Update", {
         dto: {
           CH_TYPE: 'CHN0003',
           TYPE: 'RENAME',
@@ -486,7 +486,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "movePage",
     value: function movePage(pageId, chapterId) {
-      return teespaceCore.API.Put("".concat(this.URL, "/note?action=Update"), {
+      return teespaceCore.API.Put("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -501,7 +501,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "editStart",
     value: function editStart(noteId, chapterId) {
-      return teespaceCore.API.Post("".concat(this.URL, "/note?action=Update"), {
+      return teespaceCore.API.Post("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -524,12 +524,12 @@ var NoteRepository$1 = /*#__PURE__*/function () {
       updateDto.dto.CH_TYPE = this.CH_TYPE;
       updateDto.dto.user_name = this.USER_NAME;
       console.log(updateDto);
-      return teespaceCore.API.Post("".concat(this.URL, "/note?action=Update"), updateDto);
+      return teespaceCore.API.Post("Note/note?action=Update", updateDto);
     }
   }, {
     key: "nonEdit",
     value: function nonEdit(noteId, chapterId, userName) {
-      return teespaceCore.API.Post("".concat(this.URL, "/note?action=Update"), {
+      return teespaceCore.API.Post("Note/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -546,7 +546,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "createTag",
     value: function createTag(tagText, noteId) {
-      return teespaceCore.API.Post("".concat(this.URL, "/tag"), {
+      return teespaceCore.API.Post("Note/tag", {
         dto: {
           text: tagText,
           note_id: noteId
@@ -556,7 +556,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "deleteTag",
     value: function deleteTag(tagId, noteId) {
-      return teespaceCore.API.Post("".concat(this.URL, "/tag?action=Delete"), {
+      return teespaceCore.API.Post("Note/tag?action=Delete", {
         dto: {
           tag_id: tagId,
           note_id: noteId
@@ -566,7 +566,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "updateTag",
     value: function updateTag(tagId, tagText) {
-      return teespaceCore.API.Post("".concat(this.URL, "/tag?action=Update"), {
+      return teespaceCore.API.Post("Note/tag?action=Update", {
         dto: {
           tag_id: tagId,
           text: tagText
@@ -576,7 +576,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "deleteFile",
     value: function deleteFile(deleteFileId) {
-      return teespaceCore.API.put("".concat(this.URL, "/noteFile?action=Delete"), {
+      return teespaceCore.API.put("Note/noteFile?action=Delete", {
         dto: {
           workspace_id: this.WS_ID,
           channel_id: this.chId,
@@ -619,7 +619,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "createShareChapter",
     value: function createShareChapter(chapterList) {
-      return teespaceCore.API.post("".concat(this.URL, "/chaptershare"), {
+      return teespaceCore.API.post("Note/chaptershare", {
         dto: {
           notbookList: chapterList
         }
@@ -628,7 +628,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   }, {
     key: "createSharePage",
     value: function createSharePage(pageList) {
-      return teespaceCore.API.post("".concat(this.URL, "/noteshare"), {
+      return teespaceCore.API.post("Note/noteshare", {
         dto: {
           noteList: pageList
         }
@@ -682,6 +682,10 @@ var checkUrlValidation = function checkUrlValidation(inputValue) {
   return validator(inputValue);
 }; // true : valid, false : invalid
 
+var checkWhitespace = function checkWhitespace(value) {
+  return value.trim().length > 0;
+}; // true : valid(중복X), false : invalid(중복)
+
 var checkNotDuplicate = function checkNotDuplicate(targetArr, key, value) {
   return targetArr.find(function (item) {
     return item[key] === value;
@@ -700,8 +704,6 @@ var TagStore = mobx.observable({
   currentTagValue: "",
   editTagIndex: "",
   editTagValue: "",
-  // allTagList: [],
-  hasTag: false,
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // key당 tagList
@@ -770,6 +772,11 @@ var TagStore = mobx.observable({
   },
   setNoteTagList: function setNoteTagList(tagArr) {
     this.notetagList = tagArr;
+  },
+  prependNoteTagList: function prependNoteTagList(tagText) {
+    this.notetagList.unshift({
+      text: tagText
+    });
   },
   //isNewTag
   getIsNewTag: function getIsNewTag() {
@@ -848,12 +855,6 @@ var TagStore = mobx.observable({
   setEditTagValue: function setEditTagValue(text) {
     this.editTagValue = text;
   },
-  getHasTag: function getHasTag() {
-    return this.hasTag;
-  },
-  setHasTag: function setHasTag(hasTag) {
-    this.hasTag = hasTag;
-  },
   getAllSortedTagList: function getAllSortedTagList() {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var res;
@@ -877,7 +878,6 @@ var TagStore = mobx.observable({
     }))();
   },
   setAllSortedTagList: function setAllSortedTagList(tagList) {
-    console.log(tagList);
     this.allSortedTagList = tagList;
   },
   getKeyTagPairObj: function getKeyTagPairObj() {
@@ -890,7 +890,6 @@ var TagStore = mobx.observable({
     return this.sortedTagList;
   },
   setSortedTagList: function setSortedTagList(tagList) {
-    console.log('taglist', tagList);
     this.sortedTagList = tagList;
   },
   getTagKeyArr: function getTagKeyArr() {
@@ -923,15 +922,15 @@ var TagStore = mobx.observable({
   setTagPanelLoading: function setTagPanelLoading(isLoading) {
     this.tagPanelLoading = isLoading;
   },
-  createTag: function createTag(createTagList) {
+  createTag: function createTag(createTagList, noteId) {
     createTagList.forEach(function (tag) {
-      return NoteRepository$2.createTag(tag, PageStore$1.currentPageId);
+      return NoteRepository$2.createTag(tag, noteId);
     });
     this.setAddTagList([]);
   },
-  deleteTag: function deleteTag(deleteTagList) {
+  deleteTag: function deleteTag(deleteTagList, noteId) {
     deleteTagList.forEach(function (tag) {
-      return NoteRepository$2.deleteTag(tag, PageStore$1.currentPageId);
+      return NoteRepository$2.deleteTag(tag, noteId);
     });
     this.setRemoveTagList([]);
   },
@@ -1025,13 +1024,9 @@ var TagStore = mobx.observable({
 
               _this3.setAllSortedTagList(tag_index_list_dto);
 
-              if (_this3.allSortedTagList.length === 0) {
-                _this3.setHasTag(false);
-              } else _this3.setHasTag(true);
-
               return _context6.abrupt("return", _this3.allSortedTagList);
 
-            case 7:
+            case 6:
             case "end":
               return _context6.stop();
           }
@@ -1088,14 +1083,16 @@ var TagStore = mobx.observable({
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
+              _this5.setIsSearching(true);
+
               _this5.setIsSearchLoading(true);
 
               _this5.setSearchStr(str);
 
-              _context8.next = 4;
+              _context8.next = 5;
               return _this5.getAllSortedNoteTagList();
 
-            case 4:
+            case 5:
               _this5.getSearchResult(str); // kor, eng, num, etc별 sort한 키
 
 
@@ -1103,7 +1100,7 @@ var TagStore = mobx.observable({
 
               _this5.setIsSearchLoading(false);
 
-            case 7:
+            case 8:
             case "end":
               return _context8.stop();
           }
@@ -1320,48 +1317,6 @@ var EditorStore = mobx.observable((_observable = {
   },
   getImgElement: function getImgElement() {
     return this.imgElement;
-  },
-  setFileList: function setFileList(fileList) {
-    this.fileList = fileList;
-    this.checkFile();
-  },
-  getFileList: function getFileList() {
-    return this.fileList;
-  },
-  setFileArray: function setFileArray(filelayoutlist) {
-    this.fileLayoutList = filelayoutlist;
-  },
-  setIsFile: function setIsFile(flag) {
-    this.isFile = flag;
-  },
-  setDownLoadFileId: function setDownLoadFileId(fileId) {
-    this.downloadFileId = fileId;
-  },
-  tempDeleteFile: function tempDeleteFile() {
-    this.fileLayoutList.splice(this.deleteFileIndex, 1);
-    if (this.fileLayoutList.length === 0) this.setIsFile(false);
-  },
-  setFileIndex: function setFileIndex(idx) {
-    this.selectFileIdx = idx;
-  },
-  setFileElement: function setFileElement(element) {
-    this.selectFileElement = element;
-  },
-  setDeleteFileConfig: function setDeleteFileConfig(id, name, index) {
-    this.deleteFileId = id;
-    this.deleteFileName = name;
-    this.deleteFileIndex = index;
-  },
-  setFileMetaList: function setFileMetaList(fileMeta) {
-    this.fileMetaList.push(fileMeta);
-    console.log(mobx.toJS(this.fileMetaList));
-  },
-  getFileMetaList: function getFileMetaList() {
-    return this.fileMetaList;
-  },
-  setTempFileList: function setTempFileList(target) {
-    this.fileLayoutList.push(target);
-    if (!this.isFile) this.setIsFile(true);
   }
 }, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
@@ -1431,7 +1386,12 @@ var EditorStore = mobx.observable((_observable = {
   }
 
   return uploadFile;
-}()), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
+}()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
+  this.downloadFileId = fileId;
+}), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
+  this.fileLayoutList.splice(this.deleteFileIndex, 1);
+  if (this.fileLayoutList.length === 0) this.setIsFile(false);
+}), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
@@ -1473,6 +1433,15 @@ var EditorStore = mobx.observable((_observable = {
       }
     }, _callee4);
   }))();
+}), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
+  this.fileList = fileList;
+  this.checkFile();
+}), _defineProperty(_observable, "getFileList", function getFileList() {
+  return this.fileList;
+}), _defineProperty(_observable, "setFileArray", function setFileArray(filelayoutlist) {
+  this.fileLayoutList = filelayoutlist;
+}), _defineProperty(_observable, "setIsFile", function setIsFile(flag) {
+  this.isFile = flag;
 }), _defineProperty(_observable, "checkFile", function checkFile() {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   var checkFile;
@@ -1498,6 +1467,14 @@ var EditorStore = mobx.observable((_observable = {
   return ImageExt.includes(ext.toLowerCase());
 }), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
+}), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
+  this.selectFileIdx = idx;
+}), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
+  this.selectFileElement = element;
+}), _defineProperty(_observable, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
+  this.deleteFileId = id;
+  this.deleteFileName = name;
+  this.deleteFileIndex = index;
 }), _defineProperty(_observable, "setUploadFileMeta", function setUploadFileMeta(type, tempId, config, file, element) {
   var fileName = config.fileName,
       fileExtension = config.fileExtension,
@@ -1529,6 +1506,11 @@ var EditorStore = mobx.observable((_observable = {
     element: element
   };
   this.setFileMetaList(uploadArr);
+}), _defineProperty(_observable, "setFileMetaList", function setFileMetaList(fileMeta) {
+  this.fileMetaList.push(fileMeta);
+  console.log(mobx.toJS(this.fileMetaList));
+}), _defineProperty(_observable, "getFileMetaList", function getFileMetaList() {
+  return this.fileMetaList;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
@@ -1557,6 +1539,9 @@ var EditorStore = mobx.observable((_observable = {
     "user_context_3": ''
   };
   this.setTempFileList(tempMeta);
+}), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
+  this.fileLayoutList.push(target);
+  if (!this.isFile) this.setIsFile(true);
 }), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
   if (bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -1603,6 +1588,9 @@ var PageStore$1 = mobx.observable((_observable$1 = {
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
+  setNoteInfoList: function setNoteInfoList(infoList) {
+    this.noteInfoList = infoList;
+  },
   getCurrentPageData: function getCurrentPageData() {
     return this.currentPageData;
   },
@@ -1730,11 +1718,20 @@ var PageStore$1 = mobx.observable((_observable$1 = {
   getModifiedDate: function getModifiedDate() {
     return this.modifiedDate;
   },
+  setModifiedDate: function setModifiedDate(date) {
+    this.modifiedDate = date;
+  },
   getPrevModifiedUserName: function getPrevModifiedUserName() {
     return this.prevModifiedUserName;
   },
+  setPrevModifiedUserName: function setPrevModifiedUserName(userName) {
+    this.prevModifiedUserName = userName;
+  },
   getIsNewPage: function getIsNewPage() {
-    return this.isNewPage();
+    return this.isNewPage;
+  },
+  setIsNewPage: function setIsNewPage(isNew) {
+    this.isNewPage = isNew;
   },
   getExportTitle: function getExportTitle() {
     return this.exportPageTitle;
@@ -2234,17 +2231,16 @@ var PageStore$1 = mobx.observable((_observable$1 = {
       }
     };
     this.noteEditDone(updateDTO);
-    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList);
-    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList);
+    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList, PageStore$1.currentPageId);
+    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList, PageStore$1.currentPageId);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
     this.isNewPage = false;
-  },
-  setIsNewPage: function setIsNewPage(isNew) {
-    this.isNewPage = isNew;
   }
-}, _defineProperty(_observable$1, "getTitle", function getTitle() {
+}, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
+  this.isNewPage = isNew;
+}), _defineProperty(_observable$1, "getTitle", function getTitle() {
   var contentList = EditorStore.tinymce.getBody().children;
   return this._getTitle(contentList);
 }), _defineProperty(_observable$1, "_getTitle", function _getTitle(contentList) {
@@ -4055,7 +4051,7 @@ function _templateObject8$3() {
 }
 
 function _templateObject7$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 5rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding-left: 0.63rem;\n  padding-right: 0.63rem;\n  padding-top: 0rem;\n  padding-bottom: 0rem;\n  display: ", ";\n  border: 0.0625rem solid #1ea8df;\n  background-color: #ffffff;\n  font-size: 0.75rem;\n  color: #3b3b3b;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 8.75rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding:0 0.75rem;\n  border: 0.0625rem solid #1ea8df;\n  background-color: #ffffff;\n  font-size: 0.813rem;\n  color: #000000;\n  outline: none;\n"]);
 
   _templateObject7$3 = function _templateObject7() {
     return data;
@@ -4085,7 +4081,7 @@ function _templateObject5$3() {
 }
 
 function _templateObject4$3() {
-  var data = _taggedTemplateLiteral([""]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n"]);
 
   _templateObject4$3 = function _templateObject4() {
     return data;
@@ -4129,9 +4125,7 @@ var TagList = styled__default['default'].div(_templateObject3$3());
 var TagText = styled__default['default'].span(_templateObject4$3());
 var TagNewBtnIcon = styled__default['default'].img(_templateObject5$3());
 var TagInputDIV = styled__default['default'].div(_templateObject6$3());
-var TagInput = styled__default['default'].input(_templateObject7$3(), function (props) {
-  return props.show ? "flex" : "none";
-}); // lnbTag
+var TagInput = styled__default['default'].input(_templateObject7$3()); // lnbTag
 
 var LnbTagContainer = styled__default['default'].div(_templateObject8$3(), function (props) {
   return props.color || '';
@@ -6143,7 +6137,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .tox-editor-header{\n    display:none;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .tox-editor-header{\n    display:none;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -6507,6 +6501,61 @@ var editorContentCSS = " \n  a {\n    cursor:pointer;\n  }\n  .mce-content-body 
 
 const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/tag_add%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/tag_add' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M16%2c12 C16.5522848%2c12 17%2c12.4477153 17%2c13 L16.9996194%2c15 L19%2c15 C19.5522848%2c15 20%2c15.4477153 20%2c16 C20%2c16.5522848 19.5522848%2c17 19%2c17 L16.9996194%2c17 L17%2c19 C17%2c19.5522848 16.5522848%2c20 16%2c20 C15.4477153%2c20 15%2c19.5522848 15%2c19 L14.9996194%2c17 L13%2c17 C12.4477153%2c17 12%2c16.5522848 12%2c16 C12%2c15.4477153 12.4477153%2c15 13%2c15 L14.9996194%2c15 L15%2c13 C15%2c12.4477153 15.4477153%2c12 16%2c12 Z M8.34023349%2c1.00074646 L14.3094032%2c1.23974807 C15.0221643%2c1.26919481 15.6289873%2c1.87289763 15.6577193%2c2.58806415 L15.8973704%2c8.5532031 C15.9079389%2c8.89539977 15.7927278%2c9.20762807 15.5687793%2c9.43947123 L13.6616194%2c11.346 L9.53741848%2c15.4710789 C9.08530775%2c15.9231896 8.3387291%2c15.9245472 7.81438626%2c15.4959105 L7.70561696%2c15.3974858 L3.80461938%2c11.496 L3.02365047%2c12.2861419 L9.12199782%2c18.3939493 L10.9866194%2c16.474 L12.0926194%2c17.534 L10.0106081%2c19.6093089 C9.5775224%2c20.0686785 8.874178%2c20.0836069 8.38701228%2c19.6654142 L8.28610575%2c19.5691763 L1.91528974%2c13.1731645 C1.4614885%2c12.6931552 1.41548103%2c11.9467627 1.78862933%2c11.4492151 L1.87500948%2c11.3465943 L2.72861938%2c10.421 L1.49998163%2c9.19185043 C0.975025961%2c8.66689476 0.941984154%2c7.84445326 1.42638851%2c7.36004891 L7.44361108%2c1.34282634 C7.67684281%2c1.10959461 7.99493852%2c0.989308278 8.34023349%2c1.00074646 Z M8.4872346%2c2.49877551 L2.66190168%2c8.32410843 L8.57335896%2c14.2355657 L14.3986919%2c8.41023278 L14.1711831%2c2.72712965 L8.4872346%2c2.49877551 Z M11.4271541%2c4.00000003 C11.9794389%2c4.00000003 12.4271541%2c4.44771528 12.4271541%2c5.00000003 C12.4271541%2c5.55228478 11.9794389%2c6.00000003 11.4271541%2c6.00000003 C10.8748694%2c6.00000003 10.4271541%2c5.55228478 10.4271541%2c5.00000003 C10.4271541%2c4.44771528 10.8748694%2c4.00000003 11.4271541%2c4.00000003 Z' id='Combined-Shape' fill='rgb(117%2c 117%2c 127)'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
+var AddTagForm = function AddTagForm(_ref) {
+  var show = _ref.show,
+      toggleTagInput = _ref.toggleTagInput;
+  if (!show) return null;
+
+  var _useState = React.useState(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      value = _useState2[0],
+      setValue = _useState2[1];
+
+  var handleTagInput = function handleTagInput(e) {
+    setValue(e.target.value);
+  };
+
+  var handleBlurTagInput = function handleBlurTagInput() {
+    if (!checkWhitespace(value)) {
+      TagStore.setIsNewTag(false);
+    } else {
+      if (TagStore.isValidTag(value)) {
+        TagStore.appendAddTagList(value);
+        TagStore.setIsNewTag(false);
+        TagStore.prependNoteTagList(value);
+      } else {
+        TagStore.setIsNewTag(false);
+      }
+    } // input창 초기화
+
+
+    setValue("");
+  };
+
+  var handleKeyDown = function handleKeyDown(event) {
+    switch (event.key) {
+      case "Enter":
+        handleBlurTagInput();
+        break;
+
+      case "Escape":
+        toggleTagInput();
+        break;
+    }
+  };
+
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(TagInput, {
+      maxLength: "50",
+      value: value,
+      onChange: handleTagInput,
+      onBlur: handleBlurTagInput,
+      onKeyDown: handleKeyDown,
+      autoFocus: true
+    });
+  });
+};
+
 var TagListContainer = function TagListContainer() {
   var _useNoteStore = useNoteStore(),
       TagStore = _useNoteStore.TagStore,
@@ -6520,19 +6569,19 @@ var TagListContainer = function TagListContainer() {
       var curTag = TagStore.notetagList.filter(function (tag) {
         return tag.tag_id !== targetId;
       });
-      TagStore.setTagNoteList(curTag);
-      TagStore.setDeleteTagList(targetId);
+      TagStore.setNoteTagList(curTag);
+      TagStore.appendRemoveTagList(targetId);
     } else {
       var exceptTag = TagStore.notetagList.filter(function (tag) {
         return tag.text !== targetText;
       });
-      TagStore.setTagNoteList(exceptTag);
+      TagStore.setNoteTagList(exceptTag);
       TagStore.removeAddTagList(targetText);
     }
   };
 
   var toggleTagInput = function toggleTagInput() {
-    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewFlag(true);else TagStore.setIsNewFlag(false);
+    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
   };
 
   var onClickNewTagBtn = function onClickNewTagBtn() {
@@ -6541,35 +6590,36 @@ var TagListContainer = function TagListContainer() {
     if (target) target.scrollIntoView(false);
   };
 
-  var handleTagInput = function handleTagInput(e) {
-    var value = e.target.value;
-    TagStore.setTagText(value);
-  };
-
   var handleFocus = function handleFocus(e) {
     return e.target.select();
   };
 
   var handleChangeTag = function handleChangeTag(text, index, id) {
-    TagStore.setCurrentTagData(id, text);
-    TagStore.setEditTagText(text);
-    TagStore.setEditTagIndex(index);
+    return function () {
+      TagStore.setCurrentTagData(id, text);
+      TagStore.setEditTagValue(text);
+      TagStore.setEditTagIndex(index);
+    };
   };
 
   var handleChangeName = function handleChangeName(e) {
     var value = e.target.value;
-    TagStore.setEditTagText(value);
+    TagStore.setEditTagValue(value);
   };
 
   var handleModifyInput = function handleModifyInput() {
+    console.log('currentTagId', TagStore.currentTagId);
+
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
-      if (TagStore.currentTagValue === TagStore.editTagValue) TagStore.setEditTagIndex(-1);else if (TagStore.editTagValue === '') {
+      if (TagStore.currentTagValue === TagStore.editTagValue) TagStore.setEditTagIndex(-1);else if (checkWhitespace(TagStore.editTagValue)) {
         TagStore.setEditTagIndex(-1);
       } else {
-        if (!TagStore.isInvalidTag(TagStore.editTagValue)) {
+        console.log('isvalid', TagStore.isValidTag(TagStore.editTagValue));
+
+        if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;
-          TagStore.setUpdateTagList(TagStore.currentTagId, TagStore.editTagValue);
+          TagStore.setUpdateNoteTagList(TagStore.currentTagId, TagStore.editTagValue);
           TagStore.setEditTagIndex(-1);
         } else TagStore.setEditTagIndex(-1);
       }
@@ -6584,34 +6634,6 @@ var TagListContainer = function TagListContainer() {
     }
   };
 
-  var createTag = function createTag() {
-    if (TagStore.tagText === "") {
-      TagStore.setIsNewFlag(false);
-    } else {
-      if (!TagStore.isInvalidTag(TagStore.tagText)) {
-        TagStore.setAddTagList(TagStore.tagText, PageStore.currentPageId);
-        TagStore.setIsNewFlag(false);
-        TagStore.notetagList.unshift({
-          text: TagStore.tagText
-        });
-      } else {
-        TagStore.setIsNewFlag(false);
-      }
-    }
-  };
-
-  var handleKeyDown = function handleKeyDown(event) {
-    switch (event.key) {
-      case "Enter":
-        createTag();
-        break;
-
-      case "Escape":
-        toggleTagInput();
-        break;
-    }
-  };
-
   var handleModifyingKeyDown = function handleModifyingKeyDown(event) {
     switch (event.key) {
       case "Enter":
@@ -6619,7 +6641,7 @@ var TagListContainer = function TagListContainer() {
         break;
 
       case "Escape":
-        TagStore.setIsNewFlag(false);
+        TagStore.setIsNewTag(false);
         break;
     }
   };
@@ -6632,6 +6654,7 @@ var TagListContainer = function TagListContainer() {
   };
 
   var handleClickTag = function handleClickTag(idx, e) {
+    console.log('handleClickTag', idx);
     var prev = focusedTag.current;
     changeFocusedTag(prev, idx);
   }; // idx : null 가능
@@ -6687,13 +6710,9 @@ var TagListContainer = function TagListContainer() {
     }, /*#__PURE__*/React__default['default'].createElement(TagNewBtn, null, /*#__PURE__*/React__default['default'].createElement(TagNewBtnIcon, {
       src: img$a,
       onClick: onClickNewTagBtn
-    }))), /*#__PURE__*/React__default['default'].createElement(TagInput, {
+    }))), /*#__PURE__*/React__default['default'].createElement(AddTagForm, {
       show: TagStore.isNewTag,
-      maxLength: "50",
-      onChange: handleTagInput,
-      onBlur: createTag,
-      onKeyDown: handleKeyDown,
-      autoFocus: true
+      toggleTagInput: toggleTagInput
     }), /*#__PURE__*/React__default['default'].createElement(TagList, {
       ref: tagList
     }, TagStore.notetagList.map(function (item, index) {
@@ -6716,7 +6735,7 @@ var TagListContainer = function TagListContainer() {
         onClick: handleClickTag.bind(null, index),
         onKeyDown: handleKeyDownTag.bind(null)
       }, /*#__PURE__*/React__default['default'].createElement(TagText, {
-        onDoubleClick: PageStore.isEdit === null || PageStore.isEdit === '' ? null : handleChangeTag.bind(null, item.text, index, item.tag_id)
+        onDoubleClick: PageStore.isEdit === null || PageStore.isEdit === '' ? null : handleChangeTag(item.text, index, item.tag_id)
       }, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text));
     }))));
   });
@@ -7423,7 +7442,7 @@ var customExpandIcon = function customExpandIcon(props) {
 };
 
 var TagContentContainer = mobxReact.observer(function () {
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, Object.keys(TagStore.sortedTagList).length > 0 ? /*#__PURE__*/React__default['default'].createElement(StyledCollapse, {
+  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(StyledCollapse, {
     defaultActiveKey: defaultActiveArr,
     expandIcon: function expandIcon(panelProps) {
       return customExpandIcon(panelProps);
@@ -7448,9 +7467,7 @@ var TagContentContainer = mobxReact.observer(function () {
         }));
       }))
     );
-  })) : /*#__PURE__*/React__default['default'].createElement(SearchResultNotFound, {
-    searchStr: TagStore.searchStr
-  }));
+  })));
 });
 
 const img$l = "data:image/png;base64,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";
@@ -7490,6 +7507,11 @@ var TagHeader = function TagHeader() {
     TagStore.fetchTagData();
   };
 
+  var cancelBtnVisibility = TagStore.isSearching || value !== "" ? {
+    display: ''
+  } : {
+    display: 'none'
+  };
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(TagMenuHeader, null, /*#__PURE__*/React__default['default'].createElement(EditPreBtnWrapper, {
       show: NoteStore.layoutState === 'collapse'
@@ -7498,7 +7520,7 @@ var TagHeader = function TagHeader() {
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(RightAligned, null, /*#__PURE__*/React__default['default'].createElement(TagSearchForm, {
       onSubmit: onSubmitForm,
-      show: TagStore.hasTag
+      show: TagStore.allSortedTagList.length > 0
     }, /*#__PURE__*/React__default['default'].createElement(TagTitleSearchContainer, null, /*#__PURE__*/React__default['default'].createElement(SearchImgInput, {
       type: "image",
       border: "0",
@@ -7509,14 +7531,13 @@ var TagHeader = function TagHeader() {
       ref: inputRef,
       value: value,
       onChange: onChangeInput,
-      placeholder: "\uD0DC\uADF8 \uAC80\uC0C9"
+      placeholder: "\uD0DC\uADF8 \uAC80\uC0C9",
+      onKeyDown: function onKeyDown(e) {
+        return e.key === 'Escape' ? onClickCancelBtn() : null;
+      }
     }), /*#__PURE__*/React__default['default'].createElement(Button, {
       src: img,
-      style: value !== '' ? {
-        display: ''
-      } : {
-        display: 'none'
-      },
+      style: cancelBtnVisibility,
       onClick: onClickCancelBtn
     }))), /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null))));
   });
@@ -7552,7 +7573,16 @@ var TagContainer = function TagContainer() {
   }, []);
 
   var renderContent = function renderContent() {
-    if (TagStore.isSearchLoading) return /*#__PURE__*/React__default['default'].createElement(SearchingImg, null);else if (TagStore.tagPanelLoading) return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null);else if (TagStore.hasTag) return /*#__PURE__*/React__default['default'].createElement(TagContentContainer, null);else return /*#__PURE__*/React__default['default'].createElement(TagNotFound, null);
+    if (TagStore.isSearchLoading) return /*#__PURE__*/React__default['default'].createElement(SearchingImg, null);
+    if (TagStore.tagPanelLoading) return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null); // display할 태그가 있을 때
+
+    if (Object.keys(TagStore.sortedTagList).length > 0) return /*#__PURE__*/React__default['default'].createElement(TagContentContainer, null); // 태그가 없는데 search중 아닐 때
+
+    if (!TagStore.isSearching) return /*#__PURE__*/React__default['default'].createElement(TagNotFound, null); // 태그 선택 결과 없는 경우
+
+    return /*#__PURE__*/React__default['default'].createElement(SearchResultNotFound, {
+      searchStr: TagStore.searchStr
+    });
   };
 
   return mobxReact.useObserver(function () {

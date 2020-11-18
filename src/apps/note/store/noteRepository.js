@@ -45,13 +45,13 @@ class NoteRepository {
 
   getChapterList(chId) {
     return API.Get(
-      `${this.URL}/noteChapter?action=List&note_channel_id=${chId}`,
+      `Note/noteChapter?action=List&note_channel_id=${chId}`,
     );
   }
 
   getNoteInfoList(noteId) {
     return API.Get(
-      `${this.URL}/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+      `Note/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
     );
   }
 
@@ -65,51 +65,51 @@ class NoteRepository {
   // 태그 컨텐츠 관련
   // getAllTagList() {
   //   return API.Get(
-  //     `${this.URL}/alltag?action=List&note_channel_id=${this.chId}`
+  //     `Note/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
   async getAllSortedTagList() {
     return await API.Get(
-      `${this.URL}/tagSort?action=List&note_channel_id=${this.chId
+      `Note/tagSort?action=List&note_channel_id=${this.chId
       }&t=${new Date().getTime().toString()}`,
     );
   }
 
   getTagNoteList(tagId) {
     return API.Get(
-      `${this.URL}/tagnote?action=List&tag_id=${tagId}&USER_ID=${this.USER_ID}
+      `Note/tagnote?action=List&tag_id=${tagId}&USER_ID=${this.USER_ID}
       &note_channel_id=${this.chId}`,
     );
   }
 
   getChapterChildren(chapterId) {
     return API.Get(
-      `${this.URL}/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
+      `Note/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
     );
   }
 
   getChapterInfoList(chapterId) {
     return API.Get(
-      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
+      `Note/chaptershare?action=List&id=${chapterId}`,
     );
   }
 
   getChapterColor(chapterId) {
     const { data } = API.Get(
-      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
+      `Note/chaptershare?action=List&id=${chapterId}`,
     );
     return data.color;
   }
 
   getChapterText(chapterId) {
     const { data } = API.Get(
-      `${this.URL}/chaptershare?action=List&id=${chapterId}`,
+      `Note/chaptershare?action=List&id=${chapterId}`,
     );
     return data.text;
   }
 
   createChapter(chapterTitle, chapterColor) {
-    return API.Post(`${this.URL}/notebooks`, {
+    return API.Post(`Note/notebooks`, {
       dto: {
         id: '',
         note_channel_id: this.chId,
@@ -125,12 +125,12 @@ class NoteRepository {
 
   deleteChapter(chapterId) {
     return API.Delete(
-      `${this.URL}/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`,
+      `Note/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`,
     );
   }
 
   renameChapter(chapterId, chapterTitle, color) {
-    return API.Put(`${this.URL}/notebooks?action=Update`, {
+    return API.Put(`Note/notebooks?action=Update`, {
       dto: {
         USER_ID: this.USER_ID,
         color: color,
@@ -144,7 +144,7 @@ class NoteRepository {
   }
 
   createPage(pageName, chapterId) {
-    return API.Post(`${this.URL}/note`, {
+    return API.Post(`Note/note`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -165,7 +165,7 @@ class NoteRepository {
       page.note_channel_id = this.chId;
       page.user_name = this.USER_NAME;
     });
-    return API.Post(`${this.URL}/note?action=Delete`, {
+    return API.Post(`Note/note?action=Delete`, {
       dto: {
         noteList: pageList,
       }
@@ -173,7 +173,7 @@ class NoteRepository {
   }
 
   renamePage(pageId, pageTitle, chapterId) {
-    return API.Put(`${this.URL}/note?action=Update`, {
+    return API.Put(`Note/note?action=Update`, {
       dto: {
         CH_TYPE: 'CHN0003',
         TYPE: 'RENAME',
@@ -188,7 +188,7 @@ class NoteRepository {
   }
 
   movePage(pageId, chapterId) {
-    return API.Put(`${this.URL}/note?action=Update`, {
+    return API.Put(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -202,7 +202,7 @@ class NoteRepository {
   }
 
   editStart(noteId, chapterId) {
-    return API.Post(`${this.URL}/note?action=Update`, {
+    return API.Post(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -224,11 +224,11 @@ class NoteRepository {
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
     console.log(updateDto);
-    return API.Post(`${this.URL}/note?action=Update`, updateDto);
+    return API.Post(`Note/note?action=Update`, updateDto);
   }
 
   nonEdit(noteId, chapterId, userName) {
-    return API.Post(`${this.URL}/note?action=Update`, {
+    return API.Post(`Note/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -244,7 +244,7 @@ class NoteRepository {
   }
 
   createTag(tagText, noteId) {
-    return API.Post(`${this.URL}/tag`, {
+    return API.Post(`Note/tag`, {
       dto: {
         text: tagText,
         note_id: noteId,
@@ -253,7 +253,7 @@ class NoteRepository {
   }
 
   deleteTag(tagId, noteId) {
-    return API.Post(`${this.URL}/tag?action=Delete`, {
+    return API.Post(`Note/tag?action=Delete`, {
       dto: {
         tag_id: tagId,
         note_id: noteId,
@@ -262,7 +262,7 @@ class NoteRepository {
   }
 
   updateTag(tagId, tagText) {
-    return API.Post(`${this.URL}/tag?action=Update`, {
+    return API.Post(`Note/tag?action=Update`, {
       dto: {
         tag_id: tagId,
         text: tagText,
@@ -271,7 +271,7 @@ class NoteRepository {
   }
 
   deleteFile(deleteFileId) {
-    return API.put(`${this.URL}/noteFile?action=Delete`, {
+    return API.put(`Note/noteFile?action=Delete`, {
       dto: {
         workspace_id: this.WS_ID,
         channel_id: this.chId,
@@ -309,14 +309,14 @@ class NoteRepository {
   }
 
   createShareChapter(chapterList) {
-    return API.post(`${this.URL}/chaptershare`, {
+    return API.post(`Note/chaptershare`, {
       dto: {
         notbookList: chapterList
       }
     });
   }
   createSharePage(pageList) {
-    return API.post(`${this.URL}/noteshare`, {
+    return API.post(`Note/noteshare`, {
       dto: {
         noteList: pageList
       }
