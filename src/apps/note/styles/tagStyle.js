@@ -138,6 +138,12 @@ export const TagKeyContainer = styled.div`
   width: 100%;
 `;
 
+export const TagChipGroup = styled.div`
+  display:flex;
+  width:100%;
+  flex-wrap:wrap;
+`;
+
 export const TagChip = styled(Tag)`
   padding: 0 0.63rem;
 `;

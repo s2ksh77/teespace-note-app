@@ -242,10 +242,10 @@ const TagStore = observable({
   async fetchTagData() { 
     this.setTagPanelLoading(true);
     await this.fetchAllSortedTagList();
-    // 태그별 정리
-    this.getNoteKeyTagPairObj(); 
+    // 키-태그 pair obj
+    this.createKeyTagPairObj(); 
     // kor, eng, num, etc별 sort한 키
-    this.setNoteSortedTagList();
+    this.categorizeTagObj();
     this.setTagPanelLoading(false);  
   },
 
@@ -254,13 +254,14 @@ const TagStore = observable({
     this.setIsSearchLoading(true);    
     this.setSearchStr(str);
     await this.fetchAllSortedTagList();
-    this.setSearchResult(str);
+    // 키-태그 pair obj
+    this.createSearchResultObj(str);
     // kor, eng, num, etc별 sort한 키
-    this.setNoteSortedTagList();
+    this.categorizeTagObj();
     this.setIsSearchLoading(false);
   },
   // search result용 KeyTagObj
-  setSearchResult(str) {
+  createSearchResultObj(str) {
     let results = {};
     let tagKeyArr$ = [];
     this.allSortedTagList.forEach((item) => {
@@ -287,7 +288,7 @@ const TagStore = observable({
     this.setTagKeyArr([...tagKeyArr$.sort()]);
     return this.keyTagPairObj;
   },
-  getNoteKeyTagPairObj() {
+  createKeyTagPairObj() {
     /*
       this.keyTagPairObj 만들기
       item : KEY별로
@@ -320,7 +321,7 @@ const TagStore = observable({
     this.setTagKeyArr([...tagKeyArr$.sort()]);
     return this.keyTagPairObj;
   },
-  getEngTagSortList(key) {
+  getEngTagObj(key) {
     let sortedEngTags = {};
     const targetKeyObj = this.keyTagPairObj[key];    
     let sortedTagName = Object.keys(targetKeyObj).sort((a,b) =>{
@@ -339,7 +340,7 @@ const TagStore = observable({
     return sortedEngTags;
   },
   // kor, eng, num, etc별 sort한 키
-  setNoteSortedTagList() {
+  categorizeTagObj() {
     this.setSortedTagList({});
     let _sortedTagList = {};
     // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
@@ -350,7 +351,7 @@ const TagStore = observable({
       }
       else if(key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123){
         // engObj[key] = this.keyTagPairObj[key];
-        engObj[key] = this.getEngTagSortList(key);
+        engObj[key] = this.getEngTagObj(key);
       }
       else if(key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57){
         numObj[key] = this.keyTagPairObj[key];

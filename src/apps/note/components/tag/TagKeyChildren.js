@@ -1,9 +1,8 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
-import { TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
+import { TagChipGroup, TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
 
-const style = { display: 'flex', width: '100%', flexWrap: 'wrap' };
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
@@ -20,7 +19,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
 
   return useObserver(() => (
     <>
-      <div style={style}>
+      <TagChipGroup>
         {Object.keys(TagStore.sortedTagList[category][tagKey]).map(tagName => {
           const tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
           return (            
@@ -33,7 +32,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
             </TagChip>
           );
         })}
-      </div>
+      </TagChipGroup>
     </>
   ));
 };
