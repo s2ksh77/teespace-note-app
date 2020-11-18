@@ -179,10 +179,10 @@ const PageStore = observable({
     this.prevModifiedUserName = userName;
   },
   getIsNewPage() {
-    return this.isNewPage();
+    return this.isNewPage;
   },
   setIsNewPage(isNew) {
-    this.isNewPage() = isNew;
+    this.isNewPage = isNew;
   },
 
   getExportTitle() {

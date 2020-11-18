@@ -19,6 +19,7 @@ export const GlobalStyle = createGlobalStyle`
   .ant-collapse-header {
     height: 1.38rem;
     display: flex;
+    align-items:center;
     padding: 0 0.75rem !important;
     border-radius: 21px !important;
     background-color: #EFEFF2;
