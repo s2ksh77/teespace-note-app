@@ -222,7 +222,8 @@ const TagStore = observable({
     this.setCurrentTagId(id);
     this.setCurrentTagValue(text);
   },  
-  async getAllSortedNoteTagList() {  
+  // 서버에서 받아와서 store 변수에 set하기
+  async fetchAllSortedTagList() {  
     const {data:{dto:{tag_index_list_dto}}} = await NoteRepository.getAllSortedTagList();
     this.setAllSortedTagList(tag_index_list_dto);
     return this.allSortedTagList;
@@ -240,7 +241,7 @@ const TagStore = observable({
   // 일련의 flow
   async fetchTagData() { 
     this.setTagPanelLoading(true);
-    await this.getAllSortedNoteTagList();
+    await this.fetchAllSortedTagList();
     // 태그별 정리
     this.getNoteKeyTagPairObj(); 
     // kor, eng, num, etc별 sort한 키
@@ -252,14 +253,14 @@ const TagStore = observable({
     this.setIsSearching(true);
     this.setIsSearchLoading(true);    
     this.setSearchStr(str);
-    await this.getAllSortedNoteTagList();
-    this.getSearchResult(str);
+    await this.fetchAllSortedTagList();
+    this.setSearchResult(str);
     // kor, eng, num, etc별 sort한 키
     this.setNoteSortedTagList();
     this.setIsSearchLoading(false);
   },
   // search result용 KeyTagObj
-  getSearchResult(str) {
+  setSearchResult(str) {
     let results = {};
     let tagKeyArr$ = [];
     this.allSortedTagList.forEach((item) => {
@@ -365,26 +366,18 @@ const TagStore = observable({
     if ( Object.keys(etcObj).length > 0 ) _sortedTagList["ETC"] = etcObj;
     this.setSortedTagList(_sortedTagList);
   },
-  async getTagPagesList(tagId) {
-    const res = await NoteRepository.getTagNoteList(tagId);
-    const {data:{dto:{noteList}}} = res; 
+  async setTagNoteSearchResult(tagId) {
+    const {data:{dto:{noteList}}} = await NoteRepository.getTagNoteList(tagId);
     
-    let resultPageArr = [];
-    noteList.map((page) => {
-      const chapterId = page.parent_notebook;
-      const targetChapter = ChapterStore.chapterList.find((chapter)=>{
-        return chapter.id === chapterId;
-      });
-      if (targetChapter) {
-        resultPageArr.push({
-          chapterId : chapterId,
-          chapterTitle: targetChapter.text,
-          id: page.note_id,
-          title: page.note_title
-        })
-      }      
+    const resultPageArr = noteList.map((page) => {
+      const targetChapter = ChapterStore.chapterList.find((chapter) => chapter.id === page.parent_notebook);
+      return {
+        chapterId : page.parent_notebook,
+        chapterTitle: targetChapter? targetChapter.text : "",
+        id: page.note_id,
+        title: page.note_title
+      }
     })
-
     ChapterStore.setSearchResult({chapter:[],page:resultPageArr});
   },
   setEditCreateTag() {
