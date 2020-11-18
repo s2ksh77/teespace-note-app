@@ -1,9 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
-  #root{
-    height:100%;
-  }
   .noteFocusedTag {
     background-color:#1EA8DF !important;
   }
