@@ -12,11 +12,11 @@ import Modal from './components/common/Modal';
 import GlobalVariable from './GlobalVariable';
 
 const NoteApp = ({ layoutState, roomId, channelId }) => {
-  const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore, ChapterStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
 
   NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
-
+  ChapterStore.getNoteChapterList();
   // 임시
   if (!layoutState) layoutState = 'expand';
   const renderCondition = target =>
