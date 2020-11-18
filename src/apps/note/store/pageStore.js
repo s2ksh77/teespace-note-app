@@ -33,6 +33,9 @@ const PageStore = observable({
   exportPageId: '',
   exportPageTitle: '',
 
+  setNoteInfoList(infoList) {
+    this.noteInfoList = infoList;
+  },
   getCurrentPageData() {
     return this.currentPageData;
   },
@@ -166,11 +169,20 @@ const PageStore = observable({
   getModifiedDate() {
     return this.modifiedDate;
   },
+  setModifiedDate(date) {
+    this.modifiedDate = date;
+  },
   getPrevModifiedUserName() {
     return this.prevModifiedUserName;
   },
+  setPrevModifiedUserName(userName) {
+    this.prevModifiedUserName = userName;
+  },
   getIsNewPage() {
     return this.isNewPage();
+  },
+  setIsNewPage(isNew) {
+    this.isNewPage() = isNew;
   },
 
   getExportTitle() {
