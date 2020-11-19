@@ -2,10 +2,12 @@ import useNoteStore from '../../store/useStore';
 import html2pdf from 'html2pdf.js';
 import { toJS } from 'mobx';
 import { openLink } from '../editor/customLink';
+import EditorStore from '../../store/editorStore';
+import NoteRepository from '../../store/noteRepository';
+import PageStore from '../../store/pageStore';
+import ChapterStore from '../../store/chapterStore';
 
 export const handleFileUpload = async () => {
-    const { EditorStore } = useNoteStore();
-
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div[temp-id]');
     const imgArray = [...imgTarget];
@@ -57,7 +59,6 @@ export const handleFileUpload = async () => {
     }
 }
 export const handleFileDelete = async () => {
-    const { EditorStore } = useNoteStore();
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const fileTarget = document.querySelectorAll('div #fileLayout [id]');
     const imgArray = [...imgTarget];
@@ -88,7 +89,6 @@ export const handleFileDelete = async () => {
     }
 }
 export const downloadFile = (fileId) => {
-    const { EditorStore } = useNoteStore();
     if (fileId) {
         window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
             "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
@@ -120,7 +120,6 @@ export const makeExportElement = (data, type) => {
     exportDownloadPDF(type);
 }
 export const exportDownloadPDF = (type) => {
-    const { PageStore, ChapterStore } = useNoteStore();
     const element = document.getElementById('exportTargetDiv');
     const opt = {
         margin: 2,
@@ -134,7 +133,6 @@ export const exportDownloadPDF = (type) => {
     });
 }
 export const exportChapterData = async () => {
-    const { ChapterStore } = useNoteStore();
     let returnData = '';
     await NoteRepository.getChapterChildren(ChapterStore.exportChapterId).then((response) => {
         const {
@@ -149,7 +147,6 @@ export const exportChapterData = async () => {
     })
 }
 export const exportPageData = async () => {
-    const { PageStore } = useNoteStore();
     let returnData = '';
     await NoteRepository.getNoteInfoList(PageStore.exportPageId).then(response => {
         const {
@@ -168,7 +165,6 @@ const handleClickLink = (el) => {
 };
 
 export const handleLinkListener = () => {
-  const { EditorStore } = useNoteStore();
   if (EditorStore.tinymce) {
     const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
     if (targetList && targetList.length > 0) {
