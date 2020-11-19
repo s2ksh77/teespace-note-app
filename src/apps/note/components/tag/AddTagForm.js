@@ -4,9 +4,9 @@ import {checkWhitespace} from '../common/validators';
 import { useObserver } from 'mobx-react';
 import TagStore from '../../store/tagStore';
 
-const AddTagForm = ({show, toggleTagInput}) => {
-  if (!show) return null;  
+const AddTagForm = ({show, toggleTagInput}) => {  
   const [value, setValue] = useState('');
+  if (!show) return null;  
   const handleTagInput = e => {
     setValue(e.target.value);
   };
@@ -39,7 +39,8 @@ const AddTagForm = ({show, toggleTagInput}) => {
         break;
     }
   }
-  return useObserver(()=>(
+  // return useObserver(()=>(
+  return (
     <TagInput
       maxLength="50"
       value={value}
@@ -48,7 +49,7 @@ const AddTagForm = ({show, toggleTagInput}) => {
       onKeyDown={handleKeyDown}
       autoFocus={true}
     />
-  ));
+  );
 };
 
 export default AddTagForm;
