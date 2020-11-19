@@ -265,7 +265,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
 var _require = require('axios'),
     axios = _require.default;
 
-var NoteRepository$1 = /*#__PURE__*/function () {
+var NoteRepository = /*#__PURE__*/function () {
   // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
   // CH_TYPE = 'CHN0003';
   // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
@@ -553,20 +553,46 @@ var NoteRepository$1 = /*#__PURE__*/function () {
     }()
   }, {
     key: "createPage",
-    value: function createPage(pageName, chapterId) {
-      return API.Post("Note/note", {
-        dto: {
-          WS_ID: this.WS_ID,
-          CH_TYPE: 'CHN0003',
-          USER_ID: this.USER_ID,
-          note_channel_id: this.chId,
-          user_name: this.USER_NAME,
-          note_title: pageName,
-          is_edit: this.USER_ID,
-          parent_notebook: chapterId
-        }
-      });
-    }
+    value: function () {
+      var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(pageName, pageContent, chapterId) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.prev = 0;
+                return _context6.abrupt("return", API.Post("Note/note", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_title: pageName,
+                    note_content: pageContent ? pageContent : '',
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId
+                  }
+                }));
+
+              case 4:
+                _context6.prev = 4;
+                _context6.t0 = _context6["catch"](0);
+                throw Error(JSON.stringify(_context6.t0));
+
+              case 7:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+
+      function createPage(_x8, _x9, _x10) {
+        return _createPage.apply(this, arguments);
+      }
+
+      return createPage;
+    }()
   }, {
     key: "deletePage",
     value: function deletePage(pageList) {
@@ -756,7 +782,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
   return NoteRepository;
 }();
 
-var NoteRepository$2 = new NoteRepository$1();
+var NoteRepository$1 = new NoteRepository();
 
 var urlRegex = new RegExp(/(http(s)?:\/\/|www.)([a-z0-9\w]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/); // 유효하면 true
 
@@ -850,7 +876,7 @@ var TagStore = observable({
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return NoteRepository$2.getTagNoteList(tagId);
+              return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
               res = _context.sent;
@@ -873,7 +899,7 @@ var TagStore = observable({
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return NoteRepository$2.getNoteTagList(noteId);
+              return NoteRepository$1.getNoteTagList(noteId);
 
             case 2:
               res = _context2.sent;
@@ -980,7 +1006,7 @@ var TagStore = observable({
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$2.getAllSortedTagList();
+              return NoteRepository$1.getAllSortedTagList();
 
             case 2:
               res = _context3.sent;
@@ -1041,19 +1067,19 @@ var TagStore = observable({
   },
   createTag: function createTag(createTagList, noteId) {
     createTagList.forEach(function (tag) {
-      return NoteRepository$2.createTag(tag, noteId);
+      return NoteRepository$1.createTag(tag, noteId);
     });
     this.setAddTagList([]);
   },
   deleteTag: function deleteTag(deleteTagList, noteId) {
     deleteTagList.forEach(function (tag) {
-      return NoteRepository$2.deleteTag(tag, noteId);
+      return NoteRepository$1.deleteTag(tag, noteId);
     });
     this.setRemoveTagList([]);
   },
   updateTag: function updateTag(updateTagList) {
     updateTagList.forEach(function (tag) {
-      NoteRepository$2.updateTag(tag.tag_id, tag.text);
+      NoteRepository$1.updateTag(tag.tag_id, tag.text);
     });
   },
 
@@ -1069,7 +1095,7 @@ var TagStore = observable({
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return NoteRepository$2.getNoteTagList(noteId).then(function (response) {
+              return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
                 if (response.status === 200) {
                   var tagList = response.data.dto;
 
@@ -1134,7 +1160,7 @@ var TagStore = observable({
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
-              return NoteRepository$2.getAllSortedTagList();
+              return NoteRepository$1.getAllSortedTagList();
 
             case 2:
               _yield$NoteRepository = _context6.sent;
@@ -1346,7 +1372,7 @@ var TagStore = observable({
           switch (_context9.prev = _context9.next) {
             case 0:
               _context9.next = 2;
-              return NoteRepository$2.getTagNoteList(tagId);
+              return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
               _yield$NoteRepository2 = _context9.sent;
@@ -1439,7 +1465,7 @@ var EditorStore = observable((_observable = {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return API.Post(NoteRepository$2.URL + "/noteFile", JSON.stringify(dto), {
+            return API.Post(NoteRepository$1.URL + "/noteFile", JSON.stringify(dto), {
               headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
               }
@@ -1458,7 +1484,7 @@ var EditorStore = observable((_observable = {
                         }
 
                         _context.next = 4;
-                        return API.Post("http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=" + dto.file_id + '&workspaceID=' + NoteRepository$2.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$2.USER_ID, file, {
+                        return API.Post("http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=" + dto.file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
                           headers: {
                             'Content-Type': 'multipart/form-data'
                           }
@@ -1512,7 +1538,7 @@ var EditorStore = observable((_observable = {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return NoteRepository$2.deleteFile(deleteId).then(function (response) {
+            return NoteRepository$1.deleteFile(deleteId).then(function (response) {
               var dto = response.data.dto;
             });
 
@@ -1532,7 +1558,7 @@ var EditorStore = observable((_observable = {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return NoteRepository$2.deleteAllFile(_this.fileList).then(function (response) {
+            return NoteRepository$1.deleteAllFile(_this.fileList).then(function (response) {
               var dto = response.data.dto;
 
               if (dto.resultMsg === 'Success') {
@@ -1595,18 +1621,18 @@ var EditorStore = observable((_observable = {
       fileSize = config.fileSize;
   var uploadMeta = {
     "dto": {
-      "workspace_id": NoteRepository$2.WS_ID,
-      "channel_id": NoteRepository$2.chId,
+      "workspace_id": NoteRepository$1.WS_ID,
+      "channel_id": NoteRepository$1.chId,
       "storageFileInfo": {
-        "user_id": NoteRepository$2.USER_ID,
-        "file_last_update_user_id": NoteRepository$2.USER_ID,
+        "user_id": NoteRepository$1.USER_ID,
+        "file_last_update_user_id": NoteRepository$1.USER_ID,
         "file_id": '',
         "file_name": fileName,
         "file_extension": fileExtension,
         "file_created_at": '',
         "file_updated_at": '',
         "file_size": fileSize,
-        "user_context_1": PageStore$1.currentPageId,
+        "user_context_1": PageStore.currentPageId,
         "user_context_2": '',
         "user_context_3": ''
       }
@@ -1640,8 +1666,8 @@ var EditorStore = observable((_observable = {
       fileExtension = config.fileExtension,
       fileSize = config.fileSize;
   var tempMeta = {
-    "user_id": NoteRepository$2.USER_ID,
-    "file_last_update_user_id": NoteRepository$2.USER_ID,
+    "user_id": NoteRepository$1.USER_ID,
+    "file_last_update_user_id": NoteRepository$1.USER_ID,
     "file_id": '',
     "file_name": fileName,
     "file_extension": fileExtension,
@@ -1672,7 +1698,7 @@ var EditorStore = observable((_observable = {
 }), _observable));
 
 var _observable$1;
-var PageStore$1 = observable((_observable$1 = {
+var PageStore = observable((_observable$1 = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
@@ -1861,19 +1887,19 @@ var PageStore$1 = observable((_observable$1 = {
   },
   getNoteInfoList: function getNoteInfoList(noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var _yield$NoteRepository, noteList;
+      var _yield$NoteRepository, dto;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return NoteRepository$2.getNoteInfoList(noteId);
+              return NoteRepository$1.getNoteInfoList(noteId);
 
             case 2:
               _yield$NoteRepository = _context.sent;
-              noteList = _yield$NoteRepository.data.dto.noteList;
-              return _context.abrupt("return", noteList);
+              dto = _yield$NoteRepository.data.dto;
+              return _context.abrupt("return", dto);
 
             case 5:
             case "end":
@@ -1883,22 +1909,23 @@ var PageStore$1 = observable((_observable$1 = {
       }, _callee);
     }))();
   },
-  createPage: function createPage(title, parent, callback) {
+  createPage: function createPage(title, content, parent) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _yield$NoteRepository2, dto;
+
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return NoteRepository$2.createPage(title, parent).then(function (response) {
-                if (response.status === 200) {
-                  var dto = response.data.dto;
-                  if (typeof callback === 'function') callback(dto);
-                  return dto;
-                }
-              });
+              return NoteRepository$1.createPage(title, content, parent);
 
             case 2:
+              _yield$NoteRepository2 = _context2.sent;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", dto);
+
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -1913,7 +1940,7 @@ var PageStore$1 = observable((_observable$1 = {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$2.deletePage(pageList).then(function (response) {
+              return NoteRepository$1.deletePage(pageList).then(function (response) {
                 if (response.status === 200) {
                   if (typeof callback === 'function') callback();
                   return response;
@@ -1935,7 +1962,7 @@ var PageStore$1 = observable((_observable$1 = {
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return NoteRepository$2.renamePage(pageId, pageTitle, chapterId).then(function (response) {
+              return NoteRepository$1.renamePage(pageId, pageTitle, chapterId).then(function (response) {
                 if (response.status === 200) {
                   var returnData = response.data.dto;
                   if (typeof callback === 'function') callback(returnData);
@@ -1960,7 +1987,7 @@ var PageStore$1 = observable((_observable$1 = {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return NoteRepository$2.editStart(noteId, parentNotebook).then(function (response) {
+              return NoteRepository$1.editStart(noteId, parentNotebook).then(function (response) {
                 if (response.status === 200) {
                   var returnData = response.data.dto;
                   if (typeof callback === 'function') callback(returnData);
@@ -1987,7 +2014,7 @@ var PageStore$1 = observable((_observable$1 = {
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
-              return NoteRepository$2.editDone(updateDto).then(function (response) {
+              return NoteRepository$1.editDone(updateDto).then(function (response) {
                 if (response.status === 200) {
                   var returnData = response.data.dto;
                   if (typeof callback === 'function') callback(returnData);
@@ -2014,7 +2041,7 @@ var PageStore$1 = observable((_observable$1 = {
           switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return NoteRepository$2.nonEdit(noteId, parentNotebook, prevModifiedUserName).then(function (response) {
+              return NoteRepository$1.nonEdit(noteId, parentNotebook, prevModifiedUserName).then(function (response) {
                 if (response.status === 200) {
                   var returnData = response.data.dto;
                   if (typeof callback === 'function') callback(returnData);
@@ -2035,9 +2062,9 @@ var PageStore$1 = observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this4 = this;
 
-    this.createPage('제목 없음', this.createParent).then(function (dto) {
+    this.createPage('제목 없음', null, this.createParent).then(function (dto) {
       _this4.currentPageData = dto;
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
 
       _this4.setIsEdit(dto.is_edit);
 
@@ -2132,7 +2159,7 @@ var PageStore$1 = observable((_observable$1 = {
 
             case 5:
               _context8.next = 7;
-              return NoteRepository$2.movePage(_this7.movePageId, moveTargetChapterId).then(function (response) {
+              return NoteRepository$1.movePage(_this7.movePageId, moveTargetChapterId).then(function (response) {
                 if (response.status === 200) {
                   // 기존꺼 지우고
                   var _item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
@@ -2335,7 +2362,7 @@ var PageStore$1 = observable((_observable$1 = {
     var _EditorStore$tinymce2;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
-      if (this.getTitle() !== undefined) PageStore$1.setTitle(this.getTitle());
+      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
     }
 
     var updateDTO = {
@@ -2349,8 +2376,8 @@ var PageStore$1 = observable((_observable$1 = {
       }
     };
     this.noteEditDone(updateDTO);
-    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList, PageStore$1.currentPageId);
-    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList, PageStore$1.currentPageId);
+    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
+    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
@@ -2599,13 +2626,13 @@ var ChapterStore = observable({
     this.isNewChapterColor = COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
   },
   getChapterColor: function getChapterColor(chapterId) {
-    var _NoteRepository$getCh = NoteRepository$2.getChapterColor(chapterId),
+    var _NoteRepository$getCh = NoteRepository$1.getChapterColor(chapterId),
         value = _NoteRepository$getCh.value;
 
     return value;
   },
   getChapterName: function getChapterName(chapterId) {
-    var _NoteRepository$getCh2 = NoteRepository$2.getChapterText(chapterId),
+    var _NoteRepository$getCh2 = NoteRepository$1.getChapterText(chapterId),
         value = _NoteRepository$getCh2.value;
 
     return value;
@@ -2667,7 +2694,7 @@ var ChapterStore = observable({
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return NoteRepository$2.getChapterList(NoteStore.getChannelId());
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
 
             case 2:
               _yield$NoteRepository = _context.sent;
@@ -2697,7 +2724,7 @@ var ChapterStore = observable({
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return NoteRepository$2.createChapter(chapterTitle, chapterColor);
+              return NoteRepository$1.createChapter(chapterTitle, chapterColor);
 
             case 2:
               _yield$NoteRepository2 = _context2.sent;
@@ -2721,7 +2748,7 @@ var ChapterStore = observable({
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$2.deleteChapter(deleteChapterId);
+              return NoteRepository$1.deleteChapter(deleteChapterId);
 
             case 2:
               _yield$NoteRepository3 = _context3.sent;
@@ -2745,7 +2772,7 @@ var ChapterStore = observable({
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return NoteRepository$2.renameChapter(renameId, renameText, color);
+              return NoteRepository$1.renameChapter(renameId, renameText, color);
 
             case 2:
               _yield$NoteRepository4 = _context4.sent;
@@ -2905,8 +2932,8 @@ var ChapterStore = observable({
 
                 _this5.setCurrentChapterId(chapterId);
 
-                PageStore$1.setCurrentPageId(pageId);
-                PageStore$1.fetchCurrentPageData(pageId);
+                PageStore.setCurrentPageId(pageId);
+                PageStore.fetchCurrentPageData(pageId);
               }
 
             case 5:
@@ -2968,7 +2995,7 @@ var ChapterStore = observable({
 
       _this7.setCurrentChapterId(notbookList.id);
 
-      PageStore$1.setCurrentPageId(notbookList.children[0].id);
+      PageStore.setCurrentPageId(notbookList.children[0].id);
 
       _this7.setChapterTempUl(false);
 
@@ -2982,8 +3009,8 @@ var ChapterStore = observable({
       if (_this8.currentChapterId === _this8.deleteChapterId) {
         _this8.setCurrentChapterId(_this8.nextSelectableChapterId);
 
-        PageStore$1.setCurrentPageId(PageStore$1.nextSelectablePageId ? PageStore$1.nextSelectablePageId : '');
-        PageStore$1.fetchCurrentPageData(PageStore$1.nextSelectablePageId ? PageStore$1.nextSelectablePageId : '');
+        PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
+        PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
         if (!_this8.nextSelectableChapterId) _this8.setAllDeleted(true);
       }
 
@@ -3105,7 +3132,7 @@ var ChapterStore = observable({
               _this13.setSearchResult({});
 
               _context9.next = 3;
-              return NoteRepository$2.getChapterList(NoteStore.getChannelId());
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
 
             case 3:
               _yield$NoteRepository5 = _context9.sent;
@@ -3233,9 +3260,9 @@ var NoteMeta = {
           e.stopPropagation();
 
           if (EditorStore.fileList) {
-            PageStore$1.deleteNotePage();
+            PageStore.deleteNotePage();
             EditorStore.deleteAllFile();
-          } else PageStore$1.deleteNotePage();
+          } else PageStore.deleteNotePage();
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -3246,14 +3273,14 @@ var NoteMeta = {
       case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore$1.handleSave();
+          PageStore.handleSave();
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          if (PageStore$1.isNewPage) PageStore$1.handleNoneEdit();else {
+          if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
             var _EditorStore$tinymce;
 
-            PageStore$1.noteNoneEdit(PageStore$1.currentPageId);
+            PageStore.noteNoneEdit(PageStore.currentPageId);
             (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
           }
         });
@@ -3420,25 +3447,25 @@ var NoteStore = observable({
   draggedTitle: '',
   draggedOffset: {},
   setWsId: function setWsId(wsId) {
-    NoteRepository$2.setWsId(wsId);
+    NoteRepository$1.setWsId(wsId);
     this.workspaceId = wsId;
   },
   getWsId: function getWsId() {
     return this.workspaceId;
   },
   setChannelId: function setChannelId(chId) {
-    NoteRepository$2.setChannelId(chId);
+    NoteRepository$1.setChannelId(chId);
     this.notechannel_id = chId;
   },
   getChannelId: function getChannelId() {
     return this.notechannel_id;
   },
   setUserId: function setUserId(userId) {
-    NoteRepository$2.setUserId(userId);
+    NoteRepository$1.setUserId(userId);
     this.user_id = userId;
   },
   setUserName: function setUserName(userName) {
-    NoteRepository$2.setUserName(userName);
+    NoteRepository$1.setUserName(userName);
     this.userName = userName;
   },
   getUserId: function getUserId() {
@@ -3463,8 +3490,8 @@ var NoteStore = observable({
 
     if (showPage === false) {
       ChapterStore.setCurrentChapterId('');
-      PageStore$1.setCurrentPageId('');
-      PageStore$1.setIsEdit('');
+      PageStore.setCurrentPageId('');
+      PageStore.setIsEdit('');
     }
   },
   setLayoutState: function setLayoutState(state) {
@@ -3526,7 +3553,7 @@ var useNoteStore = function useNoteStore() {
     NoteStore: NoteStore,
     ChapterStore: ChapterStore,
     TagStore: TagStore,
-    PageStore: PageStore$1,
+    PageStore: PageStore,
     EditorStore: EditorStore
   };
 };
@@ -4896,7 +4923,7 @@ var changeButtonStyle = function changeButtonStyle(idx, count) {
   }
 };
 var openLink = function openLink(url, target) {
-  if (PageStore$1.isEdit) return;
+  if (PageStore.isEdit) return;
 
   if (target !== '_blank') {
     document.location.href = url;
@@ -4914,17 +4941,16 @@ var openLink = function openLink(url, target) {
 
 var handleFileUpload = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var _useNoteStore, EditorStore, imgTarget, fileTarget, imgArray, fileArray, uploadArr, _success, _failure;
+    var imgTarget, fileTarget, imgArray, fileArray, uploadArr, _success, _failure;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _useNoteStore = useNoteStore(), EditorStore = _useNoteStore.EditorStore;
-            _context.next = 3;
+            _context.next = 2;
             return EditorStore.tinymce.dom.doc.images;
 
-          case 3:
+          case 2:
             imgTarget = _context.sent;
             fileTarget = document.querySelectorAll('div[temp-id]');
             imgArray = _toConsumableArray(imgTarget);
@@ -4952,7 +4978,7 @@ var handleFileUpload = /*#__PURE__*/function () {
 
                 if (EditorStore.uploadFileList[index].element) {
                   if (EditorStore.uploadFileList[index].element.getAttribute('src')) {
-                    var targetSRC = "".concat(NoteRepository.FILE_URL, "Storage/StorageFile?action=Download&fileID=").concat(data.storageFileInfoList[0].file_id, "&workspaceID=").concat(NoteRepository.WS_ID, "&channelID=").concat(NoteRepository.chId, "&userID=").concat(NoteRepository.USER_ID);
+                    var targetSRC = "".concat(NoteRepository$1.FILE_URL, "Storage/StorageFile?action=Download&fileID=").concat(data.storageFileInfoList[0].file_id, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
                     EditorStore.uploadFileList[index].element.setAttribute('src', targetSRC);
                   }
                 }
@@ -4964,44 +4990,44 @@ var handleFileUpload = /*#__PURE__*/function () {
             };
 
             if (!(EditorStore.uploadFileList.length > 0)) {
-              _context.next = 24;
+              _context.next = 23;
               break;
             }
 
             if (!(EditorStore.uploadFileList[0] !== undefined)) {
-              _context.next = 24;
+              _context.next = 23;
               break;
             }
 
             uploadArr = toJS(EditorStore.uploadFileList).map(function (item, index) {
               return EditorStore.uploadFile(item.uploadMeta, item.file, _success, _failure, index);
             });
-            _context.prev = 15;
-            _context.next = 18;
+            _context.prev = 14;
+            _context.next = 17;
             return Promise.all(uploadArr).then(function () {
               EditorStore.uploadFileList = [];
               EditorStore.fileMetaList = [];
               PageStore.setContent(EditorStore.tinymce.getContent());
             });
 
-          case 18:
-            _context.next = 22;
+          case 17:
+            _context.next = 21;
             break;
 
-          case 20:
-            _context.prev = 20;
-            _context.t0 = _context["catch"](15);
+          case 19:
+            _context.prev = 19;
+            _context.t0 = _context["catch"](14);
 
-          case 22:
-            _context.prev = 22;
-            return _context.finish(22);
+          case 21:
+            _context.prev = 21;
+            return _context.finish(21);
 
-          case 24:
+          case 23:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[15, 20, 22, 24]]);
+    }, _callee, null, [[14, 19, 21, 23]]);
   }));
 
   return function handleFileUpload() {
@@ -5010,17 +5036,15 @@ var handleFileUpload = /*#__PURE__*/function () {
 }();
 var handleFileDelete = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var _useNoteStore2, EditorStore, imgTarget, fileTarget, imgArray, fileArray, deleteArr;
-
+    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _useNoteStore2 = useNoteStore(), EditorStore = _useNoteStore2.EditorStore;
-            _context2.next = 3;
+            _context2.next = 2;
             return EditorStore.tinymce.dom.doc.images;
 
-          case 3:
+          case 2:
             imgTarget = _context2.sent;
             fileTarget = document.querySelectorAll('div #fileLayout [id]');
             imgArray = _toConsumableArray(imgTarget);
@@ -5037,39 +5061,39 @@ var handleFileDelete = /*#__PURE__*/function () {
             });
 
             if (!EditorStore.deleteFileList) {
-              _context2.next = 22;
+              _context2.next = 21;
               break;
             }
 
             deleteArr = toJS(EditorStore.deleteFileList).map(function (item) {
               return EditorStore.deleteFile(item.file_id);
             });
-            _context2.prev = 13;
-            _context2.next = 16;
+            _context2.prev = 12;
+            _context2.next = 15;
             return Promise.all(deleteArr).then(function () {
               EditorStore.deleteFileList = [];
               EditorStore.tempFileList = [];
               PageStore.setContent(EditorStore.tinymce.getContent());
             });
 
-          case 16:
-            _context2.next = 20;
+          case 15:
+            _context2.next = 19;
             break;
 
-          case 18:
-            _context2.prev = 18;
-            _context2.t0 = _context2["catch"](13);
+          case 17:
+            _context2.prev = 17;
+            _context2.t0 = _context2["catch"](12);
 
-          case 20:
-            _context2.prev = 20;
-            return _context2.finish(20);
+          case 19:
+            _context2.prev = 19;
+            return _context2.finish(19);
 
-          case 22:
+          case 21:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[13, 18, 20, 22]]);
+    }, _callee2, null, [[12, 17, 19, 21]]);
   }));
 
   return function handleFileDelete() {
@@ -5077,11 +5101,8 @@ var handleFileDelete = /*#__PURE__*/function () {
   };
 }();
 var downloadFile = function downloadFile(fileId) {
-  var _useNoteStore3 = useNoteStore(),
-      EditorStore = _useNoteStore3.EditorStore;
-
   if (fileId) {
-    window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID + "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
+    window.open(NoteRepository$1.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
     return;
   }
 
@@ -5108,10 +5129,6 @@ var makeExportElement = function makeExportElement(data, type) {
   exportDownloadPDF(type);
 };
 var exportDownloadPDF = function exportDownloadPDF(type) {
-  var _useNoteStore4 = useNoteStore(),
-      PageStore = _useNoteStore4.PageStore,
-      ChapterStore = _useNoteStore4.ChapterStore;
-
   var element = document.getElementById('exportTargetDiv');
   var opt = {
     margin: 2,
@@ -5136,16 +5153,14 @@ var exportDownloadPDF = function exportDownloadPDF(type) {
 };
 var exportChapterData = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var _useNoteStore5, ChapterStore, returnData;
-
+    var returnData;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _useNoteStore5 = useNoteStore(), ChapterStore = _useNoteStore5.ChapterStore;
             returnData = '';
-            _context3.next = 4;
-            return NoteRepository.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
+            _context3.next = 3;
+            return NoteRepository$1.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
               var noteList = response.data.dto.noteList;
 
               if (noteList.length > 0) {
@@ -5157,7 +5172,7 @@ var exportChapterData = /*#__PURE__*/function () {
               makeExportElement(returnData, 'chapter');
             });
 
-          case 4:
+          case 3:
           case "end":
             return _context3.stop();
         }
@@ -5171,25 +5186,23 @@ var exportChapterData = /*#__PURE__*/function () {
 }();
 var exportPageData = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var _useNoteStore6, PageStore, returnData;
-
+    var returnData;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _useNoteStore6 = useNoteStore(), PageStore = _useNoteStore6.PageStore;
             returnData = '';
-            _context4.next = 4;
-            return NoteRepository.getNoteInfoList(PageStore.exportPageId).then(function (response) {
+            _context4.next = 3;
+            return NoteRepository$1.getNoteInfoList(PageStore.exportPageId).then(function (response) {
               var dto = response.data.dto;
               PageStore.exportPageTitle = dto.note_title;
               returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
             });
 
-          case 4:
+          case 3:
             makeExportElement(returnData, 'page');
 
-          case 5:
+          case 4:
           case "end":
             return _context4.stop();
         }
@@ -5209,9 +5222,6 @@ var handleClickLink = function handleClickLink(el) {
 };
 
 var handleLinkListener = function handleLinkListener() {
-  var _useNoteStore7 = useNoteStore(),
-      EditorStore = _useNoteStore7.EditorStore;
-
   if (EditorStore.tinymce) {
     var _EditorStore$tinymce$;
 
@@ -6268,7 +6278,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .tox-editor-header{\n    display:none;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  #root{\n    width:100%;\n    height:100%;\n  }\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .tox-editor-header{\n    display:none;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -6635,12 +6645,13 @@ const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 var AddTagForm = function AddTagForm(_ref) {
   var show = _ref.show,
       toggleTagInput = _ref.toggleTagInput;
-  if (!show) return null;
 
   var _useState = useState(''),
       _useState2 = _slicedToArray(_useState, 2),
       value = _useState2[0],
       setValue = _useState2[1];
+
+  if (!show) return null;
 
   var handleTagInput = function handleTagInput(e) {
     setValue(e.target.value);
@@ -6673,17 +6684,16 @@ var AddTagForm = function AddTagForm(_ref) {
         toggleTagInput();
         break;
     }
-  };
+  }; // return useObserver(()=>(
 
-  return useObserver(function () {
-    return /*#__PURE__*/React.createElement(TagInput, {
-      maxLength: "50",
-      value: value,
-      onChange: handleTagInput,
-      onBlur: handleBlurTagInput,
-      onKeyDown: handleKeyDown,
-      autoFocus: true
-    });
+
+  return /*#__PURE__*/React.createElement(TagInput, {
+    maxLength: "50",
+    value: value,
+    onChange: handleTagInput,
+    onBlur: handleBlurTagInput,
+    onKeyDown: handleKeyDown,
+    autoFocus: true
   });
 };
 
@@ -7069,7 +7079,7 @@ var GlobalVariable = {
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
 
 window.addEventListener('beforeunload', function (e) {
-  if (!PageStore$1.isReadMode()) PageStore$1.handleSave();
+  if (!PageStore.isReadMode()) PageStore.handleSave();
 });
 
 var EditorContainer = function EditorContainer() {
@@ -7477,12 +7487,12 @@ var PageNotFound = function PageNotFound() {
 
 var _useNoteStore$1 = useNoteStore(),
     ChapterStore$2 = _useNoteStore$1.ChapterStore,
-    PageStore$2 = _useNoteStore$1.PageStore; // 페이지 보여줄 때
+    PageStore$1 = _useNoteStore$1.PageStore; // 페이지 보여줄 때
 
 
 var PageContainer = observer(function () {
   var target = function target() {
-    if (ChapterStore$2.currentChapterId && PageStore$2.currentPageId) return /*#__PURE__*/React.createElement(EditorContainer, null);else if (ChapterStore$2.currentChapterId && !PageStore$2.currentPageId) return /*#__PURE__*/React.createElement(PageNotFound, null);else return /*#__PURE__*/React.createElement(LoadingImgContainer, null);
+    if (ChapterStore$2.currentChapterId && PageStore$1.currentPageId) return /*#__PURE__*/React.createElement(EditorContainer, null);else if (ChapterStore$2.currentChapterId && !PageStore$1.currentPageId) return /*#__PURE__*/React.createElement(PageNotFound, null);else return /*#__PURE__*/React.createElement(LoadingImgContainer, null);
   };
 
   return target();
@@ -7773,7 +7783,7 @@ var NoteApp = function NoteApp(_ref) {
       userStore = _useCoreStores.userStore,
       authStore = _useCoreStores.authStore;
 
-  NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
+  NoteStore.init('e4920305-cc0b-45ea-85ba-79e0b8514491', 'c80a1e40-a699-40cb-b13c-e9ac702cc6d4', 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7', '김수현B', NoteStore.addWWMSHandler());
   ChapterStore.getNoteChapterList(); // 임시
 
   if (!layoutState) layoutState = 'expand';

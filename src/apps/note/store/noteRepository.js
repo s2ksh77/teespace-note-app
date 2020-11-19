@@ -161,19 +161,24 @@ class NoteRepository {
     }
   }
 
-  createPage(pageName, chapterId) {
-    return API.Post(`Note/note`, {
-      dto: {
-        WS_ID: this.WS_ID,
-        CH_TYPE: 'CHN0003',
-        USER_ID: this.USER_ID,
-        note_channel_id: this.chId,
-        user_name: this.USER_NAME,
-        note_title: pageName,
-        is_edit: this.USER_ID,
-        parent_notebook: chapterId,
-      },
-    });
+  async createPage(pageName, pageContent, chapterId) {
+    try {
+      return API.Post(`Note/note`, {
+        dto: {
+          WS_ID: this.WS_ID,
+          CH_TYPE: 'CHN0003',
+          USER_ID: this.USER_ID,
+          note_channel_id: this.chId,
+          user_name: this.USER_NAME,
+          note_title: pageName,
+          note_content: pageContent ? pageContent : '',
+          is_edit: this.USER_ID,
+          parent_notebook: chapterId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   deletePage(pageList) {

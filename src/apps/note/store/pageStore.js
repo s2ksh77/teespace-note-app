@@ -200,24 +200,16 @@ const PageStore = observable({
 
   async getNoteInfoList(noteId) {
     const {
-      data: { dto: { noteList } },
+      data: { dto },
     } = await NoteRepository.getNoteInfoList(noteId);
-    return noteList;
+    return dto;
   },
 
-  async createPage(title, parent, callback) {
-    await NoteRepository.createPage(title, parent).then(
-      response => {
-        if (response.status === 200) {
-          const {
-            data: { dto },
-          } = response;
-
-          if (typeof callback === 'function') callback(dto);
-          return dto;
-        }
-      },
-    );
+  async createPage(title, content, parent) {
+    const {
+      data: { dto },
+    } = await NoteRepository.createPage(title, content, parent);
+    return dto;
   },
 
   async deletePage(pageList, callback) {
@@ -293,9 +285,9 @@ const PageStore = observable({
   },
 
   createNotePage() {
-    this.createPage('제목 없음', this.createParent).then(dto => {
+    this.createPage('제목 없음', null, this.createParent).then(dto => {
       this.currentPageData = dto;
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
       this.setIsEdit(dto.is_edit);
       this.noteTitle = '';
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
