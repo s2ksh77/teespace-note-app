@@ -1583,6 +1583,7 @@ var EditorStore = mobx.observable((_observable = {
   tinymce: null,
   uploadFile: "",
   imgElement: '',
+  videoElement: '',
   isFile: false,
   selectFileIdx: '',
   selectFileElement: '',
@@ -1616,6 +1617,12 @@ var EditorStore = mobx.observable((_observable = {
   },
   getImgElement: function getImgElement() {
     return this.imgElement;
+  },
+  getVideoElement: function getVideoElement() {
+    return this.videoElement;
+  },
+  setVideoElement: function setVideoElement(element) {
+    this.videoElement = element;
   }
 }, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
@@ -1764,8 +1771,13 @@ var EditorStore = mobx.observable((_observable = {
 }), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
+}), _defineProperty(_observable, "uploadFileIsVideo", function uploadFileIsVideo(ext) {
+  var videoExts = ['mp4', 'm4v', 'ogv', 'webm', 'mov'];
+  return videoExts.includes(ext.toLowerCase());
 }), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
+}), _defineProperty(_observable, "readerIsVideo", function readerIsVideo(type) {
+  return type.includes('video/');
 }), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
   this.selectFileIdx = idx;
 }), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
