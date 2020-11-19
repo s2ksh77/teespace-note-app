@@ -10,6 +10,7 @@ const EditorStore = observable({
   tinymce: null,
   uploadFile: "",
   imgElement: '',
+  videoElement: '',
   isFile: false,
   selectFileIdx: '',
   selectFileElement: '',
@@ -43,6 +44,12 @@ const EditorStore = observable({
   },
   getImgElement() {
     return this.imgElement;
+  },
+  getVideoElement() {
+    return this.videoElement;
+  },
+  setVideoElement(element) {
+    this.videoElement = element;
   },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
     await API.Post(NoteRepository.URL + "/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
@@ -118,8 +125,15 @@ const EditorStore = observable({
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
     return ImageExt.includes(ext.toLowerCase());
   },
+  uploadFileIsVideo(ext) {
+    let videoExts = ['mp4', 'm4v', 'ogv', 'webm', 'mov'];
+    return videoExts.includes(ext.toLowerCase());
+  },
   readerIsImage(type) {
     return type.includes('image/');
+  },
+  readerIsVideo(type) {
+    return type.includes('video/');
   },
   setFileIndex(idx) {
     this.selectFileIdx = idx;

@@ -9,14 +9,20 @@ import ChapterStore from '../../store/chapterStore';
 
 export const handleFileUpload = async () => {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
+    const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
     const fileTarget = document.querySelectorAll('div[temp-id]');
     const imgArray = [...imgTarget];
+    const videoArray = [...videoTarget];
     const fileArray = [...fileTarget];
     let uploadArr = [];
 
     imgArray.forEach(img => {
         if (EditorStore.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0] !== undefined)
             EditorStore.uploadFileList.push(EditorStore.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0]);
+    })
+    videoArray.forEach(video => {
+        if (EditorStore.fileMetaList.filter(item => item.KEY === video.getAttribute('temp-id'))[0] !== undefined)
+            EditorStore.uploadFileList.push(EditorStore.fileMetaList.filter(item => item.KEY === video.getAttribute('temp-id'))[0]);
     })
     fileArray.forEach(file => {
         if (EditorStore.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0] !== undefined)
@@ -31,6 +37,12 @@ export const handleFileUpload = async () => {
                 if (EditorStore.uploadFileList[index].element.getAttribute('src')) {
                     const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
                     EditorStore.uploadFileList[index].element.setAttribute('src', targetSRC);
+                }
+                if (EditorStore.uploadFileList[index].element.children[0]
+                    && EditorStore.uploadFileList[index].element.children[0].children[0]
+                    && EditorStore.uploadFileList[index].element.children[0].children[0].getAttribute('src')) {
+                        const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+                        EditorStore.uploadFileList[index].element.children[0].children[0].setAttribute('src', targetSRC);
                 }
             }
         }
@@ -60,13 +72,16 @@ export const handleFileUpload = async () => {
 }
 export const handleFileDelete = async () => {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
+    const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
     const fileTarget = document.querySelectorAll('div #fileLayout [id]');
     const imgArray = [...imgTarget];
+    const videoArray = [...videoTarget];
     const fileArray = [...fileTarget];
 
     let deleteArr = [];
 
     imgArray.forEach(img => EditorStore.tempFileList.push(img.getAttribute('id')));
+    videoArray.forEach(video => EditorStore.tempFileList.push(video.getAttribute('id')));
     fileArray.forEach(file => EditorStore.tempFileList.push(file.getAttribute('id')));
 
     if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(file => !EditorStore.tempFileList.includes(file.file_id))
