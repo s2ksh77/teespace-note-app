@@ -378,7 +378,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getNoteTagList",
     value: function getNoteTagList(noteId) {
-      return API.Get("".concat(this.URL, "/tag?action=List&note_id=").concat(noteId, "&t=").concat(new Date().getTime().toString()));
+      return API.Get("Note/tag?action=List&note_id=".concat(noteId, "&t=").concat(new Date().getTime().toString()));
     } // 태그 컨텐츠 관련
     // getAllTagList() {
     //   return API.Get(

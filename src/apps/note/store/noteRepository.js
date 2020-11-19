@@ -65,8 +65,7 @@ class NoteRepository {
 
   getNoteTagList(noteId) {
     return API.Get(
-      `${this.URL
-      }/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
+      `Note/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
     );
   }
 
