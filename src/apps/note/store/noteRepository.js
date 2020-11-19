@@ -289,31 +289,43 @@ class NoteRepository {
     }
   }
 
-  createTag(tagText, noteId) {
-    return API.Post(`Note/tag`, {
-      dto: {
-        text: tagText,
-        note_id: noteId,
-      },
-    });
+  async createTag(tagText, noteId) {
+    try {
+      return await API.post(`Note/tag`, {
+        dto: {
+          text: tagText,
+          note_id: noteId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  deleteTag(tagId, noteId) {
-    return API.Post(`Note/tag?action=Delete`, {
-      dto: {
-        tag_id: tagId,
-        note_id: noteId,
-      },
-    });
+  async deleteTag(tagId, noteId) {
+    try {
+      return await API.post(`Note/tag?action=Delete`, {
+        dto: {
+          tag_id: tagId,
+          note_id: noteId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  updateTag(tagId, tagText) {
-    return API.Post(`Note/tag?action=Update`, {
-      dto: {
-        tag_id: tagId,
-        text: tagText,
-      },
-    });
+  async updateTag(tagId, tagText) {
+    try {
+      return await API.post(`Note/tag?action=Update`, {
+        dto: {
+          tag_id: tagId,
+          text: tagText,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   deleteFile(deleteFileId) {
