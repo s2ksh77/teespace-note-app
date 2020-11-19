@@ -43,10 +43,14 @@ class NoteRepository {
     return this.chId;
   }
 
-  getChapterList(chId) {
-    return API.Get(
-      `Note/noteChapter?action=List&note_channel_id=${chId}`,
-    );
+  async getChapterList(chId) {
+    try {
+      return await API.get(
+        `Note/noteChapter?action=List&note_channel_id=${chId}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   async getNoteInfoList(noteId) {
@@ -181,33 +185,41 @@ class NoteRepository {
     }
   }
 
-  deletePage(pageList) {
+  async deletePage(pageList) {
     pageList.forEach((page) => {
       page.USER_ID = this.USER_ID;
       page.WS_ID = this.WS_ID;
       page.note_channel_id = this.chId;
       page.user_name = this.USER_NAME;
     });
-    return API.Post(`Note/note?action=Delete`, {
-      dto: {
-        noteList: pageList,
-      }
-    });
+    try {
+      return await API.Post(`Note/note?action=Delete`, {
+        dto: {
+          noteList: pageList,
+        }
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  renamePage(pageId, pageTitle, chapterId) {
-    return API.Put(`Note/note?action=Update`, {
-      dto: {
-        CH_TYPE: 'CHN0003',
-        TYPE: 'RENAME',
-        USER_ID: this.USER_ID,
-        WS_ID: this.WS_ID,
-        note_channel_id: this.chId,
-        note_id: pageId,
-        note_title: pageTitle,
-        parent_notebook: chapterId,
-      }
-    });
+  async renamePage(pageId, pageTitle, chapterId) {
+    try {
+      return await API.Put(`Note/note?action=Update`, {
+        dto: {
+          CH_TYPE: 'CHN0003',
+          TYPE: 'RENAME',
+          USER_ID: this.USER_ID,
+          WS_ID: this.WS_ID,
+          note_channel_id: this.chId,
+          note_id: pageId,
+          note_title: pageTitle,
+          parent_notebook: chapterId,
+        }
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   movePage(pageId, chapterId) {
@@ -224,46 +236,57 @@ class NoteRepository {
     })
   }
 
-  editStart(noteId, chapterId) {
-    return API.Post(`Note/note?action=Update`, {
-      dto: {
-        WS_ID: this.WS_ID,
-        CH_TYPE: 'CHN0003',
-        USER_ID: this.USER_ID,
-        note_channel_id: this.chId,
-        user_name: this.USER_NAME,
-        note_id: noteId,
-        is_edit: this.USER_ID,
-        parent_notebook: chapterId,
-        TYPE: 'EDIT_START',
-      },
-    });
+  async editStart(noteId, chapterId) {
+    try {
+      return await API.post(`Note/note?action=Update`, {
+        dto: {
+          WS_ID: this.WS_ID,
+          CH_TYPE: 'CHN0003',
+          USER_ID: this.USER_ID,
+          note_channel_id: this.chId,
+          user_name: this.USER_NAME,
+          note_id: noteId,
+          is_edit: this.USER_ID,
+          parent_notebook: chapterId,
+          TYPE: 'EDIT_START',
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  editDone(updateDto) {
+  async editDone(updateDto) {
     updateDto.dto.WS_ID = this.WS_ID;
     updateDto.dto.note_channel_id = this.chId;
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
-    console.log(updateDto);
-    return API.Post(`Note/note?action=Update`, updateDto);
+    try {
+      return await API.post(`Note/note?action=Update`, updateDto);
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
-  nonEdit(noteId, chapterId, userName) {
-    return API.Post(`Note/note?action=Update`, {
-      dto: {
-        WS_ID: this.WS_ID,
-        CH_TYPE: 'CHN0003',
-        USER_ID: this.USER_ID,
-        note_channel_id: this.chId,
-        note_id: noteId,
-        is_edit: '',
-        parent_notebook: chapterId,
-        TYPE: 'NONEDIT',
-        user_name: userName,
-      },
-    });
+  async nonEdit(noteId, chapterId, userName) {
+    try {
+      return await API.post(`Note/note?action=Update`, {
+        dto: {
+          WS_ID: this.WS_ID,
+          CH_TYPE: 'CHN0003',
+          USER_ID: this.USER_ID,
+          note_channel_id: this.chId,
+          note_id: noteId,
+          is_edit: '',
+          parent_notebook: chapterId,
+          TYPE: 'NONEDIT',
+          user_name: userName,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   createTag(tagText, noteId) {

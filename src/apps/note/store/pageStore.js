@@ -212,76 +212,40 @@ const PageStore = observable({
     return dto;
   },
 
-  async deletePage(pageList, callback) {
-    await NoteRepository.deletePage(pageList).then(
-      (response) => {
-        if (response.status === 200) {
-          if (typeof callback === 'function') callback();
-          return response;
-        }
-      }
-    );
+  async deletePage(pageList) {
+    const {
+      data: { dto },
+    } = await NoteRepository.deletePage(pageList);
+    return dto;
   },
 
   async renamePage(pageId, pageTitle, chapterId, callback) {
-    await NoteRepository.renamePage(pageId, pageTitle, chapterId).then(
-      (response) => {
-        if (response.status === 200) {
-          const {
-            data: { dto: returnData },
-          } = response;
-
-          if (typeof callback === 'function') callback(returnData);
-          return response;
-        }
-      }
-    );
+    const {
+      data: { dto: returnData },
+    } = await NoteRepository.renamePage(pageId, pageTitle, chapterId);
+    return returnData;
   },
 
-  async editStart(noteId, parentNotebook, callback) {
-    await NoteRepository.editStart(
-      noteId,
-      parentNotebook,
-    ).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
-
-        if (typeof callback === 'function') callback(returnData);
-      }
-    });
-    return this.currentPageData;
+  async editStart(noteId, parentNotebook) {
+    const {
+      data: { dto: returnData },
+    } = await NoteRepository.editStart(noteId, parentNotebook)
+    return returnData;
   },
 
-  async editDone(updateDto, callback) {
-    await NoteRepository.editDone(updateDto).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
-
-        if (typeof callback === 'function') callback(returnData);
-      }
-    });
-    return this.currentPageData;
+  async editDone(updateDTO) {
+    const {
+      data: { dto: returnData },
+    } = await NoteRepository.editDone(updateDTO);
+    return returnData;
   },
 
   async noneEdit(noteId, parentNotebook, prevModifiedUserName, callback) {
-    await NoteRepository.nonEdit(
-      noteId,
-      parentNotebook,
-      prevModifiedUserName,
-    ).then(response => {
-      if (response.status === 200) {
-        const {
-          data: { dto: returnData },
-        } = response;
+    const {
+      data: { dto: returnData },
+    } = await NoteRepository.nonEdit(noteId, parentNotebook, prevModifiedUserName)
 
-        if (typeof callback === 'function') callback(returnData);
-      }
-    });
-    return this.currentPageData;
+    return returnData;
   },
 
   createNotePage() {
@@ -301,7 +265,7 @@ const PageStore = observable({
   },
 
   deleteNotePage() {
-    this.deletePage(this.deletePageList, () => {
+    this.deletePage(this.deletePageList).then(() => {
       if (this.currentPageId === this.deletePageList[0].note_id) {
         this.setCurrentPageId(this.nextSelectablePageId);
         this.fetchCurrentPageData(this.nextSelectablePageId)
@@ -312,7 +276,7 @@ const PageStore = observable({
   },
 
   renameNotePage(chapterId) {
-    this.renamePage(this.renamePageId, this.renamePageText, chapterId, (dto) => {
+    this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       ChapterStore.getChapterList();
     });
@@ -420,7 +384,6 @@ const PageStore = observable({
 
   fetchNoteInfoList(noteId) {
     this.getNoteInfoList(noteId).then(dto => {
-      console.log(dto);
       this.noteInfoList = dto;
       this.currentPageData = dto;
       this.isEdit = dto.is_edit;
@@ -442,7 +405,7 @@ const PageStore = observable({
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart(noteId) {
     this.prevModifiedUserName = this.currentPageData.user_name;
-    this.editStart(noteId, this.currentPageData.parent_notebook, (dto) => {
+    this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       EditorStore.tinymce.focus();
       EditorStore.tinymce.selection.setCursorLocation();
@@ -451,7 +414,7 @@ const PageStore = observable({
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone(updateDto) {
-    this.editDone(updateDto, (dto) => {
+    this.editDone(updateDto).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       ChapterStore.getChapterList();
     });
@@ -462,13 +425,13 @@ const PageStore = observable({
     this.noneEdit(
       noteId,
       this.currentPageData.parent_notebook,
-      this.prevModifiedUserName,
-      (dto) => {
-        this.fetchNoteInfoList(dto.note_id);
-        EditorStore.tinymce?.setContent(this.currentPageData.note_content);
-        NoteStore.setShowModal(false);
-      }
-    );
+      this.prevModifiedUserName).then(
+        (dto) => {
+          this.fetchNoteInfoList(dto.note_id);
+          EditorStore.tinymce?.setContent(this.currentPageData.note_content);
+          NoteStore.setShowModal(false);
+        }
+      );
   },
 
   async handleNoneEdit() {
