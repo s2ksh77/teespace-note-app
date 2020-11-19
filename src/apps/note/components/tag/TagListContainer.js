@@ -14,7 +14,7 @@ import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/tag_add.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
-import {checkWhitespace} from '../common/validators';
+import {isFilled, checkWhitespace} from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
@@ -62,15 +62,13 @@ const TagListContainer = () => {
     TagStore.setEditTagValue(value);
   };
   const handleModifyInput = () => {
-    console.log('currentTagId', TagStore.currentTagId)
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
       if (TagStore.currentTagValue === TagStore.editTagValue)
         TagStore.setEditTagIndex(-1);
-      else if (checkWhitespace(TagStore.editTagValue)) {
+      else if (!checkWhitespace(TagStore.editTagValue)) {
         TagStore.setEditTagIndex(-1);
       } else {
-        console.log('isvalid', TagStore.isValidTag(TagStore.editTagValue))
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.notetagList[TagStore.editTagIndex].text =
             TagStore.editTagValue;
@@ -84,7 +82,7 @@ const TagListContainer = () => {
     } else { // 아이디 없는 애를 고칠 경우
       if (TagStore.currentTagValue === TagStore.editTagValue)
         TagStore.setEditTagIndex(-1);
-      else if (TagStore.editTagValue === '') {
+      else if (!checkWhitespace(TagStore.editTagValue)) {
         TagStore.setEditTagIndex(-1);
       } else {
         TagStore.setEditCreateTag();
@@ -191,22 +189,14 @@ const TagListContainer = () => {
                   key={index}
                   data-idx={index}
                   id={item.tag_id}
-                  closable={
-                    PageStore.isEdit === null || PageStore.isEdit === ''
-                      ? false
-                      : true
-                  }
+                  closable={isFilled(PageStore.isEdit) ? true :false}
                   tabIndex="0"
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
                   onClick={handleClickTag.bind(null, index)}
                   onKeyDown={handleKeyDownTag.bind(null)}
                 >
                   <TagText
-                    onDoubleClick={
-                      PageStore.isEdit === null || PageStore.isEdit === ''
-                        ? null
-                        : handleChangeTag(item.text, index, item.tag_id)
-                    }
+                    onDoubleClick={handleChangeTag(item.text,index, item.tag_id)}
                   >
                     {item.text.length > 5
                       ? `${item.text.slice(0, 5)}...`
