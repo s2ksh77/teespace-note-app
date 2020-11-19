@@ -382,9 +382,13 @@ const TagStore = observable({
   },
   setEditCreateTag() {
     // add Tag List 갱신
-    this.addTagList.forEach((tag, index) => { if (tag === TagStore.currentTagValue) this.addTagList[index] = TagStore.editTagValue; });
+    this.addTagList.forEach((tag, index) => { 
+      if (tag === TagStore.currentTagValue) this.addTagList[index] = TagStore.editTagValue; 
+    });
     // 현재 보여지는 List 갱신
-    this.notetagList.forEach(tag => { if (tag.text === TagStore.currentTagValue) tag.text = TagStore.editTagValue })
+    this.notetagList.forEach(tag => { 
+      if (tag.text === TagStore.currentTagValue) tag.text = TagStore.editTagValue; 
+    })
   },
   isValidTag(text) {
     return checkNotDuplicate(this.notetagList, 'text', text);
