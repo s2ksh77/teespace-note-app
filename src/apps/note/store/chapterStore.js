@@ -354,22 +354,24 @@ const ChapterStore = observable({
     }
   },
 
-  async getNoteChapterList() {
-    const notbookList = await this.getChapterList();
-    this.createMap(notbookList);
-    const sharedList = this.getSharedList(notbookList);
-    this.sharedCnt = sharedList.length;
+  getNoteChapterList() {
+    this.getChapterList().then(notbookList => {
+      this.createMap(notbookList);
+      const sharedList = this.getSharedList(notbookList);
+      this.sharedCnt = sharedList.length;
 
-    if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-      this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
-      this.setLocalStorageItem(NoteStore.getChannelId());
-    }
-    else {
-      this.applyDifference(NoteStore.getChannelId(), notbookList);
-      this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
-    }
-    this.chapterList = this.chapterList.concat(sharedList);
-    return this.chapterList;
+      if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+        this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
+        this.setLocalStorageItem(NoteStore.getChannelId());
+      }
+      else {
+        this.applyDifference(NoteStore.getChannelId(), notbookList);
+        this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+      }
+      this.chapterList = this.chapterList.concat(sharedList);
+      return this.chapterList;
+    });
+
   },
 
   createNoteChapter(chapterTitle, chapterColor) {
