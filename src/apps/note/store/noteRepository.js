@@ -89,10 +89,15 @@ class NoteRepository {
     );
   }
 
-  getChapterChildren(chapterId) {
-    return API.Get(
-      `Note/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
-    );
+  async getChapterChildren(chapterId) {
+    try {
+      return await API.Get(
+        `Note/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+
   }
 
   getChapterInfoList(chapterId) {
