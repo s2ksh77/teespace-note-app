@@ -33,7 +33,6 @@ const NoteStore = observable({
   setChannelId(chId) {
     NoteRepository.setChannelId(chId);
     this.notechannel_id = chId;
-    ChapterStore.getNoteChapterList();
   },
   getChannelId() {
     return this.notechannel_id;
@@ -57,7 +56,7 @@ const NoteStore = observable({
     if (typeof callback === 'function') callback();
   },
   addWWMSHandler() {
-    WWMS.addHandler('CHN0003', handleWebsocket)
+    WWMS.addHandler('CHN0003', handleWebsocket);
   },
   getNoteFileList() {
     return this.noteFileList;
