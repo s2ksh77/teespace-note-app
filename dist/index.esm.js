@@ -317,7 +317,7 @@ var NoteRepository$1 = /*#__PURE__*/function () {
               case 0:
                 _context.prev = 0;
                 _context.next = 3;
-                return API.get("Note/noteChapter?action=List&note_channel_id=".concat(chId));
+                return API.get("note-api/noteChapter?action=List&note_channel_id=".concat(chId));
 
               case 3:
                 return _context.abrupt("return", _context.sent);

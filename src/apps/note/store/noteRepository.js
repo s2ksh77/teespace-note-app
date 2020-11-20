@@ -46,7 +46,7 @@ class NoteRepository {
   async getChapterList(chId) {
     try {
       return await API.get(
-        `Note/noteChapter?action=List&note_channel_id=${chId}`,
+        `note-api/noteChapter?action=List&note_channel_id=${chId}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
