@@ -239,11 +239,13 @@ const ChapterStore = observable({
    * ChapterStore Business Logic in NoteApp
    */
   createMap(notebookList) {
+    // chapterMap: {key: chapterId, value: chapterIndex on server}
+    // pageMap: {key: pageId, value: {parent: chapterIndex on server, idx: pageIndex on server}}
     this.chapterMap.clear();
     this.pageMap.clear();
 
     notebookList.forEach((chapter, i) => {
-      if (chapter.type !== 'notebook') return;
+      if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
 
       this.chapterMap.set(chapter.id, i);
       chapter.children.forEach((page, j) => {
@@ -255,7 +257,6 @@ const ChapterStore = observable({
   getSharedList(notebookList) {
     const sharedList = [];
     notebookList.forEach((chapter, idx) => {
-      if (chapter.type === 'notebook') return;
       if (chapter.type === 'shared_page') sharedList.splice(0, 0, notebookList[idx]);
       else if (chapter.type === 'shared') sharedList.push(notebookList[idx]);
     });
@@ -263,11 +264,10 @@ const ChapterStore = observable({
     return sharedList;
   },
 
-  setLocalStorageItem(targetChannelId) {
+  setLocalStorageItem(targetChannelId, tempChapterList) {
+    // tempChapterList: includes only [chapterType: notebook, default]
     const item = [];
-    this.chapterList.forEach((chapter) => {
-      if (chapter.type !== 'notebook') return;
-
+    tempChapterList.forEach((chapter) => {
       const children = [];
       chapter.children.forEach((page) => children.push(page.id));
       item.push({ id: chapter.id, children: children });
@@ -279,11 +279,11 @@ const ChapterStore = observable({
   applyDifference(targetChannelId, notebookList) {
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
 
-    // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다.
+    // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
     const createdChapterIds = [];
     let chapterIds = item.map((chapter) => chapter.id);
     notebookList.forEach((chapter) => {
-      if (chapter.type !== 'notebook') return;
+      if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
 
       if (!chapterIds.includes(chapter.id)) {
         createdChapterIds.push({ id: chapter.id, children: chapter.children.map((page) => page.id) });
@@ -302,6 +302,7 @@ const ChapterStore = observable({
     });
     item = createdChapterIds.concat(item);
 
+    // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
     item.slice().forEach((chapter) => {
       chapterIds = item.map((chapter) => chapter.id);
       if (this.chapterMap.get(chapter.id) === undefined) {
@@ -360,18 +361,18 @@ const ChapterStore = observable({
       const sharedList = this.getSharedList(notbookList);
       this.sharedCnt = sharedList.length;
 
+      let tempChapterList = [];
       if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-        this.chapterList = notbookList.filter((chapter) => chapter.type === 'notebook');
-        this.setLocalStorageItem(NoteStore.getChannelId());
+        tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
+        this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
       }
       else {
         this.applyDifference(NoteStore.getChannelId(), notbookList);
-        this.chapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+        tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
       }
-      this.chapterList = this.chapterList.concat(sharedList);
+      this.chapterList = tempChapterList.concat(sharedList);
       return this.chapterList;
     });
-
   },
 
   createNoteChapter(chapterTitle, chapterColor) {
