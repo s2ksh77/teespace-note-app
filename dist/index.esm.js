@@ -3003,10 +3003,12 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "createMap", function createMap(notebookList) {
   var _this2 = this;
 
+  // chapterMap: {key: chapterId, value: chapterIndex on server}
+  // pageMap: {key: pageId, value: {parent: chapterIndex on server, idx: pageIndex on server}}
   this.chapterMap.clear();
   this.pageMap.clear();
   notebookList.forEach(function (chapter, i) {
-    if (chapter.type !== 'notebook') return;
+    if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
 
     _this2.chapterMap.set(chapter.id, i);
 
@@ -3020,14 +3022,13 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "getSharedList", function getSharedList(notebookList) {
   var sharedList = [];
   notebookList.forEach(function (chapter, idx) {
-    if (chapter.type === 'notebook') return;
     if (chapter.type === 'shared_page') sharedList.splice(0, 0, notebookList[idx]);else if (chapter.type === 'shared') sharedList.push(notebookList[idx]);
   });
   return sharedList;
-}), _defineProperty(_observable$2, "setLocalStorageItem", function setLocalStorageItem(targetChannelId) {
+}), _defineProperty(_observable$2, "setLocalStorageItem", function setLocalStorageItem(targetChannelId, tempChapterList) {
+  // tempChapterList: includes only [chapterType: notebook, default]
   var item = [];
-  this.chapterList.forEach(function (chapter) {
-    if (chapter.type !== 'notebook') return;
+  tempChapterList.forEach(function (chapter) {
     var children = [];
     chapter.children.forEach(function (page) {
       return children.push(page.id);
@@ -3041,14 +3042,14 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "applyDifference", function applyDifference(targetChannelId, notebookList) {
   var _this3 = this;
 
-  var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId)); // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다.
+  var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId)); // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
 
   var createdChapterIds = [];
   var chapterIds = item.map(function (chapter) {
     return chapter.id;
   });
   notebookList.forEach(function (chapter) {
-    if (chapter.type !== 'notebook') return;
+    if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
 
     if (!chapterIds.includes(chapter.id)) {
       createdChapterIds.push({
@@ -3068,7 +3069,8 @@ var ChapterStore = observable((_observable$2 = {
       item[chapterIdx].children = createdPageIds.concat(item[chapterIdx].children);
     }
   });
-  item = createdChapterIds.concat(item);
+  item = createdChapterIds.concat(item); // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
+
   item.slice().forEach(function (chapter) {
     chapterIds = item.map(function (chapter) {
       return chapter.id;
@@ -3156,20 +3158,21 @@ var ChapterStore = observable((_observable$2 = {
     var sharedList = _this6.getSharedList(notbookList);
 
     _this6.sharedCnt = sharedList.length;
+    var tempChapterList = [];
 
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-      _this6.chapterList = notbookList.filter(function (chapter) {
-        return chapter.type === 'notebook';
+      tempChapterList = notbookList.filter(function (chapter) {
+        return chapter.type === 'notebook' || chapter.type === 'default';
       });
 
-      _this6.setLocalStorageItem(NoteStore.getChannelId());
+      _this6.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
     } else {
       _this6.applyDifference(NoteStore.getChannelId(), notbookList);
 
-      _this6.chapterList = _this6.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+      tempChapterList = _this6.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
     }
 
-    _this6.chapterList = _this6.chapterList.concat(sharedList);
+    _this6.chapterList = tempChapterList.concat(sharedList);
     return _this6.chapterList;
   });
 }), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
