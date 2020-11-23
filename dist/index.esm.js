@@ -197,7 +197,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context.prev = 0;
                 _context.next = 3;
-                return API.get("Note/noteChapter?action=List&note_channel_id=".concat(chId));
+                return API.get("note-api/noteChapter?action=List&note_channel_id=".concat(chId));
 
               case 3:
                 return _context.abrupt("return", _context.sent);
@@ -231,7 +231,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context2.prev = 0;
                 _context2.next = 3;
-                return API.Get("Note/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
+                return API.Get("note-api/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
 
               case 3:
                 return _context2.abrupt("return", _context2.sent);
@@ -258,11 +258,11 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getNoteTagList",
     value: function getNoteTagList(noteId) {
-      return API.Get("Note/tag?action=List&note_id=".concat(noteId, "&t=").concat(new Date().getTime().toString()));
+      return API.Get("note-api/tag?action=List&note_id=".concat(noteId, "&t=").concat(new Date().getTime().toString()));
     } // 태그 컨텐츠 관련
     // getAllTagList() {
     //   return API.Get(
-    //     `Note/alltag?action=List&note_channel_id=${this.chId}`
+    //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
     //   )
     // }
 
@@ -275,7 +275,7 @@ var NoteRepository = /*#__PURE__*/function () {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return API.Get("Note/tagSort?action=List&note_channel_id=".concat(this.chId, "&t=").concat(new Date().getTime().toString()));
+                return API.Get("note-api/tagSort?action=List&note_channel_id=".concat(this.chId, "&t=").concat(new Date().getTime().toString()));
 
               case 2:
                 return _context3.abrupt("return", _context3.sent);
@@ -297,7 +297,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getTagNoteList",
     value: function getTagNoteList(tagId) {
-      return API.Get("Note/tagnote?action=List&tag_id=".concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
+      return API.Get("note-api/tagnote?action=List&tag_id=".concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
     }
   }, {
     key: "getChapterChildren",
@@ -309,7 +309,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context4.prev = 0;
                 _context4.next = 3;
-                return API.Get("Note/note?action=List&note_channel_id=".concat(this.chId, "&parent_notebook=").concat(chapterId));
+                return API.Get("note-api/note?action=List&note_channel_id=".concat(this.chId, "&parent_notebook=").concat(chapterId));
 
               case 3:
                 return _context4.abrupt("return", _context4.sent);
@@ -336,12 +336,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getChapterInfoList",
     value: function getChapterInfoList(chapterId) {
-      return API.Get("Note/chaptershare?action=List&id=".concat(chapterId));
+      return API.Get("note-api/chaptershare?action=List&id=".concat(chapterId));
     }
   }, {
     key: "getChapterColor",
     value: function getChapterColor(chapterId) {
-      var _API$Get = API.Get("Note/chaptershare?action=List&id=".concat(chapterId)),
+      var _API$Get = API.Get("note-api/chaptershare?action=List&id=".concat(chapterId)),
           data = _API$Get.data;
 
       return data.color;
@@ -349,7 +349,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getChapterText",
     value: function getChapterText(chapterId) {
-      var _API$Get2 = API.Get("Note/chaptershare?action=List&id=".concat(chapterId)),
+      var _API$Get2 = API.Get("note-api/chaptershare?action=List&id=".concat(chapterId)),
           data = _API$Get2.data;
 
       return data.text;
@@ -366,7 +366,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context5.prev = 0;
                 _context5.next = 3;
-                return API.post("Note/notebooks", {
+                return API.post("note-api/notebooks", {
                   dto: {
                     id: '',
                     note_channel_id: this.chId,
@@ -415,7 +415,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context6.prev = 0;
                 _context6.next = 3;
-                return API.delete("Note/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
+                return API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
 
               case 3:
                 _yield$API$delete = _context6.sent;
@@ -453,7 +453,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context7.prev = 0;
                 _context7.next = 3;
-                return API.put("Note/notebooks?action=Update", {
+                return API.put("note-api/notebooks?action=Update", {
                   dto: {
                     USER_ID: this.USER_ID,
                     color: color,
@@ -498,7 +498,7 @@ var NoteRepository = /*#__PURE__*/function () {
             switch (_context8.prev = _context8.next) {
               case 0:
                 _context8.prev = 0;
-                return _context8.abrupt("return", API.Post("Note/note", {
+                return _context8.abrupt("return", API.Post("note-api/note", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
@@ -549,7 +549,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
                 _context9.prev = 1;
                 _context9.next = 4;
-                return API.Post("Note/note?action=Delete", {
+                return API.Post("note-api/note?action=Delete", {
                   dto: {
                     noteList: pageList
                   }
@@ -587,7 +587,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context10.prev = 0;
                 _context10.next = 3;
-                return API.Put("Note/note?action=Update", {
+                return API.Put("note-api/note?action=Update", {
                   dto: {
                     CH_TYPE: 'CHN0003',
                     TYPE: 'RENAME',
@@ -625,7 +625,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "movePage",
     value: function movePage(pageId, chapterId) {
-      return API.Put("Note/note?action=Update", {
+      return API.Put("note-api/note?action=Update", {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -647,7 +647,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context11.prev = 0;
                 _context11.next = 3;
-                return API.post("Note/note?action=Update", {
+                return API.post("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
@@ -698,7 +698,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 updateDto.dto.user_name = this.USER_NAME;
                 _context12.prev = 5;
                 _context12.next = 8;
-                return API.post("Note/note?action=Update", updateDto);
+                return API.post("note-api/note?action=Update", updateDto);
 
               case 8:
                 return _context12.abrupt("return", _context12.sent);
@@ -732,7 +732,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context13.prev = 0;
                 _context13.next = 3;
-                return API.post("Note/note?action=Update", {
+                return API.post("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
@@ -778,7 +778,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context14.prev = 0;
                 _context14.next = 3;
-                return API.post("Note/tag", {
+                return API.post("note-api/tag", {
                   dto: {
                     text: tagText,
                     note_id: noteId
@@ -817,7 +817,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context15.prev = 0;
                 _context15.next = 3;
-                return API.post("Note/tag?action=Delete", {
+                return API.post("note-api/tag?action=Delete", {
                   dto: {
                     tag_id: tagId,
                     note_id: noteId
@@ -856,7 +856,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context16.prev = 0;
                 _context16.next = 3;
-                return API.post("Note/tag?action=Update", {
+                return API.post("note-api/tag?action=Update", {
                   dto: {
                     tag_id: tagId,
                     text: tagText
@@ -888,7 +888,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteFile",
     value: function deleteFile(deleteFileId) {
-      return API.put("Note/noteFile?action=Delete", {
+      return API.put("note-api/noteFile?action=Delete", {
         dto: {
           workspace_id: this.WS_ID,
           channel_id: this.chId,
@@ -931,7 +931,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createShareChapter",
     value: function createShareChapter(chapterList) {
-      return API.post("Note/chaptershare", {
+      return API.post("note-api/chaptershare", {
         dto: {
           notbookList: chapterList
         }
@@ -940,7 +940,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createSharePage",
     value: function createSharePage(pageList) {
-      return API.post("Note/noteshare", {
+      return API.post("note-api/noteshare", {
         dto: {
           noteList: pageList
         }
