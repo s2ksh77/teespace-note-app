@@ -46,7 +46,7 @@ class NoteRepository {
   async getChapterList(chId) {
     try {
       return await API.get(
-        `Note/noteChapter?action=List&note_channel_id=${chId}`,
+        `note-api/noteChapter?action=List&note_channel_id=${chId}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -56,7 +56,7 @@ class NoteRepository {
   async getNoteInfoList(noteId) {
     try {
       return await API.Get(
-        `Note/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+        `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -65,26 +65,26 @@ class NoteRepository {
 
   getNoteTagList(noteId) {
     return API.Get(
-      `Note/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
+      `note-api/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
     );
   }
 
   // 태그 컨텐츠 관련
   // getAllTagList() {
   //   return API.Get(
-  //     `Note/alltag?action=List&note_channel_id=${this.chId}`
+  //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
   async getAllSortedTagList() {
     return await API.Get(
-      `Note/tagSort?action=List&note_channel_id=${this.chId
+      `note-api/tagSort?action=List&note_channel_id=${this.chId
       }&t=${new Date().getTime().toString()}`,
     );
   }
 
   getTagNoteList(tagId) {
     return API.Get(
-      `Note/tagnote?action=List&tag_id=${tagId}&USER_ID=${this.USER_ID}
+      `note-api/tagnote?action=List&tag_id=${tagId}&USER_ID=${this.USER_ID}
       &note_channel_id=${this.chId}`,
     );
   }
@@ -92,7 +92,7 @@ class NoteRepository {
   async getChapterChildren(chapterId) {
     try {
       return await API.Get(
-        `Note/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
+        `note-api/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -102,27 +102,27 @@ class NoteRepository {
 
   getChapterInfoList(chapterId) {
     return API.Get(
-      `Note/chaptershare?action=List&id=${chapterId}`,
+      `note-api/chaptershare?action=List&id=${chapterId}`,
     );
   }
 
   getChapterColor(chapterId) {
     const { data } = API.Get(
-      `Note/chaptershare?action=List&id=${chapterId}`,
+      `note-api/chaptershare?action=List&id=${chapterId}`,
     );
     return data.color;
   }
 
   getChapterText(chapterId) {
     const { data } = API.Get(
-      `Note/chaptershare?action=List&id=${chapterId}`,
+      `note-api/chaptershare?action=List&id=${chapterId}`,
     );
     return data.text;
   }
 
   async createChapter(chapterTitle, chapterColor) {
     try {
-      const { data } = await API.post(`Note/notebooks`, {
+      const { data } = await API.post(`note-api/notebooks`, {
         dto: {
           id: '',
           note_channel_id: this.chId,
@@ -142,7 +142,7 @@ class NoteRepository {
 
   async deleteChapter(chapterId) {
     try {
-      const { data } = await API.delete(`Note/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`);
+      const { data } = await API.delete(`note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`);
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -152,7 +152,7 @@ class NoteRepository {
 
   async renameChapter(chapterId, chapterTitle, color) {
     try {
-      const { data } = await API.put(`Note/notebooks?action=Update`, {
+      const { data } = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
           USER_ID: this.USER_ID,
           color: color,
@@ -171,7 +171,7 @@ class NoteRepository {
 
   async createPage(pageName, pageContent, chapterId) {
     try {
-      return API.Post(`Note/note`, {
+      return API.Post(`note-api/note`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -197,7 +197,7 @@ class NoteRepository {
       page.user_name = this.USER_NAME;
     });
     try {
-      return await API.Post(`Note/note?action=Delete`, {
+      return await API.Post(`note-api/note?action=Delete`, {
         dto: {
           noteList: pageList,
         }
@@ -209,7 +209,7 @@ class NoteRepository {
 
   async renamePage(pageId, pageTitle, chapterId) {
     try {
-      return await API.Put(`Note/note?action=Update`, {
+      return await API.Put(`note-api/note?action=Update`, {
         dto: {
           CH_TYPE: 'CHN0003',
           TYPE: 'RENAME',
@@ -227,7 +227,7 @@ class NoteRepository {
   }
 
   movePage(pageId, chapterId) {
-    return API.Put(`Note/note?action=Update`, {
+    return API.Put(`note-api/note?action=Update`, {
       dto: {
         WS_ID: this.WS_ID,
         CH_TYPE: 'CHN0003',
@@ -242,7 +242,7 @@ class NoteRepository {
 
   async editStart(noteId, chapterId) {
     try {
-      return await API.post(`Note/note?action=Update`, {
+      return await API.post(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -267,7 +267,7 @@ class NoteRepository {
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
     try {
-      return await API.post(`Note/note?action=Update`, updateDto);
+      return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -275,7 +275,7 @@ class NoteRepository {
 
   async nonEdit(noteId, chapterId, userName) {
     try {
-      return await API.post(`Note/note?action=Update`, {
+      return await API.post(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -295,7 +295,7 @@ class NoteRepository {
 
   async createTag(tagText, noteId) {
     try {
-      return await API.post(`Note/tag`, {
+      return await API.post(`note-api/tag`, {
         dto: {
           text: tagText,
           note_id: noteId,
@@ -308,7 +308,7 @@ class NoteRepository {
 
   async deleteTag(tagId, noteId) {
     try {
-      return await API.post(`Note/tag?action=Delete`, {
+      return await API.post(`note-api/tag?action=Delete`, {
         dto: {
           tag_id: tagId,
           note_id: noteId,
@@ -321,7 +321,7 @@ class NoteRepository {
 
   async updateTag(tagId, tagText) {
     try {
-      return await API.post(`Note/tag?action=Update`, {
+      return await API.post(`note-api/tag?action=Update`, {
         dto: {
           tag_id: tagId,
           text: tagText,
@@ -333,7 +333,7 @@ class NoteRepository {
   }
 
   deleteFile(deleteFileId) {
-    return API.put(`Note/noteFile?action=Delete`, {
+    return API.put(`note-api/noteFile?action=Delete`, {
       dto: {
         workspace_id: this.WS_ID,
         channel_id: this.chId,
@@ -371,14 +371,14 @@ class NoteRepository {
   }
 
   createShareChapter(chapterList) {
-    return API.post(`Note/chaptershare`, {
+    return API.post(`note-api/chaptershare`, {
       dto: {
         notbookList: chapterList
       }
     });
   }
   createSharePage(pageList) {
-    return API.post(`Note/noteshare`, {
+    return API.post(`note-api/noteshare`, {
       dto: {
         noteList: pageList
       }
