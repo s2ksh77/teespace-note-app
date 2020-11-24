@@ -16,7 +16,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
   const { NoteStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: type === 'notebook' ? 'page' : 'shared_page' },
+    item: { id: page.id, type: type === 'notebook' || type === 'default' ? 'page' : 'shared_page' },
     begin: (monitor) => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
@@ -84,7 +84,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
 
   return useObserver(() => (
     <PageCover
-      ref={type === 'notebook' ? (node) => drag(drop(node)) : drag}
+      ref={type === 'notebook' || type === 'default' ? (node) => drag(drop(node)) : drag}
       id={page.id}
       className={
         'page-li' +
