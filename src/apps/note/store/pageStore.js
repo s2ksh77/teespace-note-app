@@ -271,7 +271,7 @@ const PageStore = observable({
         this.fetchCurrentPageData(this.nextSelectablePageId)
       }
       if (this.isNewPage) {
-        ChapterStore.getNoteChapterList().then(chapterList => {
+        ChapterStore.getChapterList().then(chapterList => {
           const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
           ChapterStore.setCurrentChapterId(this.createParent);
           if (currentChapter.children.length > 1) {
