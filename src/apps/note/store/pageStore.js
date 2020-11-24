@@ -271,7 +271,7 @@ const PageStore = observable({
         this.fetchCurrentPageData(this.nextSelectablePageId)
       }
       if (this.isNewPage) {
-        ChapterStore.getChapterList().then(chapterList => {
+        ChapterStore.getNoteChapterList().then(chapterList => {
           const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
           ChapterStore.setCurrentChapterId(this.createParent);
           if (currentChapter.children.length > 1) {
@@ -281,7 +281,7 @@ const PageStore = observable({
             this.fetchCurrentPageData(pageId);
           }
         })
-      } else ChapterStore.getChapterList();
+      } else ChapterStore.getNoteChapterList();
       NoteStore.setShowModal(false);
     });
   },
@@ -289,7 +289,7 @@ const PageStore = observable({
   renameNotePage(chapterId) {
     this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
     });
   },
 
@@ -357,7 +357,7 @@ const PageStore = observable({
 
             localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
-            ChapterStore.getChapterList();
+            ChapterStore.getNoteChapterList();
             this.setCurrentPageId(this.movePageId);
             this.fetchCurrentPageData(this.movePageId);
             ChapterStore.setCurrentChapterId(moveTargetChapterId);
@@ -427,7 +427,7 @@ const PageStore = observable({
   noteEditDone(updateDto) {
     this.editDone(updateDto).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
     });
   },
 
