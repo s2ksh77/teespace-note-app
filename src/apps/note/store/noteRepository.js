@@ -305,6 +305,17 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+  async createTagList(targetList) {
+    try {
+      return await API.post(`note-api/tag`, {
+        dto: {
+          tagList: targetList
+        }
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 
   async deleteTag(tagId, noteId) {
     try {

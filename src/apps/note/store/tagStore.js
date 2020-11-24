@@ -179,6 +179,16 @@ const TagStore = observable({
     );
     this.setAddTagList([]);
   },
+  async createTagList(createTagList, noteId) {
+    const createTagArray = [];
+    createTagList.forEach(tag => {
+      createTagArray.push({
+        text: tag,
+        note_id: noteId,
+      })
+    })
+    await NoteRepository.createTagList(createTagArray);
+  },
   async deleteTag(deleteTagList, noteId) {
     deleteTagList.forEach(async tag =>
       await NoteRepository.deleteTag(tag, noteId)
