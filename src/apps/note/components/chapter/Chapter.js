@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index, onClick }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: chapter.type === 'notebook' ? 'chapter' : 'shared' },
+    item: { id: chapter.id, type: chapter.type === 'notebook' || chapter.type === 'default' ? 'chapter' : 'shared' },
     begin: (monitor) => {
       ChapterStore.setMoveChapterIdx(index);
 
@@ -102,7 +102,11 @@ const Chapter = ({ chapter, index, onClick }) => {
   }
   return useObserver(() => (
     <ChapterContainer
-      ref={chapter.type === 'notebook' ? drop : null}
+      ref={
+        chapter.type === 'notebook' || chapter.type === 'default'
+        ? drop 
+        : null
+      }
       className={
         ChapterStore.dragEnterChapterIdx === index
           ? 'borderTopLine'
@@ -113,7 +117,11 @@ const Chapter = ({ chapter, index, onClick }) => {
       itemType="chapter"
     >
       <ChapterCover
-        ref={chapter.type === 'notebook' ? (node) => drag(dropChapter(node)) : drag}
+        ref={
+          chapter.type === 'notebook' || chapter.type === 'default' 
+          ? (node) => drag(dropChapter(node)) 
+          : drag
+        }
         onClick={handleChapterBtn}
       >
         {renderChapterIcon()}
