@@ -270,7 +270,18 @@ const PageStore = observable({
         this.setCurrentPageId(this.nextSelectablePageId);
         this.fetchCurrentPageData(this.nextSelectablePageId)
       }
-      ChapterStore.getChapterList();
+      if (this.isNewPage) {
+        ChapterStore.getChapterList().then(chapterList => {
+          const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
+          ChapterStore.setCurrentChapterId(this.createParent);
+          if (currentChapter.children.length > 1) {
+            const pageId = currentChapter.children[0].id
+            this.isNewPage = false;
+            this.setCurrentPageId(pageId);
+            this.fetchCurrentPageData(pageId);
+          }
+        })
+      } else ChapterStore.getChapterList();
       NoteStore.setShowModal(false);
     });
   },
@@ -438,15 +449,7 @@ const PageStore = observable({
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
       this.deleteParentIdx = this.createParentIdx;
-      await this.deleteNotePage();
-      this.isNewPage = false;
-      const childList = ChapterStore.getChapterChildren(this.createParent);
-      ChapterStore.setCurrentChapterId(this.createParent);
-      if (childList.length > 1) {
-        const pageId = childList[1].id;
-        this.setCurrentPageId(pageId);
-        this.fetchCurrentPageData(pageId);
-      }
+      this.deleteNotePage();
     } else this.noteNoneEdit(this.currentPageId);
   },
 
