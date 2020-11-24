@@ -409,28 +409,25 @@ const ChapterStore = observable({
     if (this.moveChapterIdx !== moveTargetChapterIdx
       && this.moveChapterIdx + 1 !== moveTargetChapterIdx) {
       const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-      const curChapterList = [];
-      const curItem = [];
-
-      // Update chapterList & localStorage
-      this.chapterList.forEach((chapter, idx) => {
-        if (idx === this.moveChapterIdx) return false;
-
-        if (idx === moveTargetChapterIdx) {
-          curChapterList.push(this.chapterList[this.moveChapterIdx]);
-          curItem.push(item[this.moveChapterIdx]);
-        }
-        curChapterList.push(chapter);
-        if (chapter.type === 'notebook') curItem.push(item[idx]);
-      })
-
-      if (curChapterList.length !== this.chapterList.length) {
-        curChapterList.push(this.chapterList[this.moveChapterIdx]);
-        curItem.push(item[this.moveChapterIdx]);
+      const copyOfChapterList = this.chapterList.slice();
+      const target = this.chapterList[this.moveChapterIdx];
+      const targetInLocalStorage = item[this.moveChapterIdx];
+      
+      if (this.moveChapterIdx < moveTargetChapterIdx) {
+        copyOfChapterList.splice(moveTargetChapterIdx, 0, target);
+        copyOfChapterList.splice(this.moveChapterIdx, 1);
+        item.splice(moveTargetChapterIdx, 0, targetInLocalStorage);
+        item.splice(this.moveChapterIdx, 1);
+      }
+      else {
+        copyOfChapterList.splice(this.moveChapterIdx, 1);
+        copyOfChapterList.splice(moveTargetChapterIdx, 0, target);
+        item.splice(this.moveChapterIdx, 1);
+        item.splice(moveTargetChapterIdx, 0, targetInLocalStorage);
       }
 
-      this.chapterList = curChapterList;
-      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(curItem));
+      this.chapterList = copyOfChapterList;
+      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
     }
 
     this.moveChapterIdx = '';
