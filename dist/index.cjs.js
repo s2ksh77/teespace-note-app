@@ -2281,7 +2281,7 @@ var PageStore = mobx.observable((_observable$1 = {
       }
 
       if (_this2.isNewPage) {
-        ChapterStore.getChapterList().then(function (chapterList) {
+        ChapterStore.getNoteChapterList().then(function (chapterList) {
           var currentChapter = chapterList.filter(function (chapter) {
             return chapter.id === _this2.createParent;
           })[0];
@@ -2296,7 +2296,7 @@ var PageStore = mobx.observable((_observable$1 = {
             _this2.fetchCurrentPageData(pageId);
           }
         });
-      } else ChapterStore.getChapterList();
+      } else ChapterStore.getNoteChapterList();
 
       NoteStore.setShowModal(false);
     });
@@ -2307,7 +2307,7 @@ var PageStore = mobx.observable((_observable$1 = {
     this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(function (dto) {
       _this3.fetchNoteInfoList(dto.note_id);
 
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
     });
   },
   clearMoveData: function clearMoveData() {
@@ -2389,7 +2389,7 @@ var PageStore = mobx.observable((_observable$1 = {
                   if (moveTargetPageIdx === moveTargetPageList.length) newChildren.push(_this4.movePageId);
                   _item[moveTargetChapterIdx].children = newChildren;
                   localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(_item));
-                  ChapterStore.getChapterList();
+                  ChapterStore.getNoteChapterList();
 
                   _this4.setCurrentPageId(_this4.movePageId);
 
@@ -2503,7 +2503,7 @@ var PageStore = mobx.observable((_observable$1 = {
     this.editDone(updateDto).then(function (dto) {
       _this8.fetchNoteInfoList(dto.note_id);
 
-      ChapterStore.getChapterList();
+      ChapterStore.getNoteChapterList();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -3649,7 +3649,7 @@ var NoteStore = mobx.observable({
     if (typeof callback === 'function') callback();
   },
   addWWMSHandler: function addWWMSHandler() {
-    teespaceCore.WWMS.addHandler('CHN0003', handleWebsocket);
+    if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', handleWebsocket);
   },
   getNoteFileList: function getNoteFileList() {
     return this.noteFileList;
