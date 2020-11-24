@@ -56,7 +56,7 @@ const NoteStore = observable({
     if (typeof callback === 'function') callback();
   },
   addWWMSHandler() {
-    WWMS.addHandler('CHN0003', handleWebsocket);
+    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', handleWebsocket);
   },
   getNoteFileList() {
     return this.noteFileList;
