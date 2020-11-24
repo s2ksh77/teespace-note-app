@@ -303,28 +303,25 @@ const PageStore = observable({
       if (this.movePageIdx !== moveTargetPageIdx
         && this.movePageIdx + 1 !== moveTargetPageIdx) {
         const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-        const pageList = [];
-        const children = [];
+        const copyOfPageList = moveTargetPageList.slice();
+        const target = moveTargetPageList[this.movePageIdx];
+        const targetInLocalStorage = item[moveTargetChapterIdx].children[this.movePageIdx];
 
         // Update pageList & localStorage
-        moveTargetPageList.forEach((page, idx) => {
-          if (idx === this.movePageIdx) return false;
-
-          if (idx === moveTargetPageIdx) {
-            pageList.push(moveTargetPageList[this.movePageIdx]);
-            children.push(item[moveTargetChapterIdx].children[this.movePageIdx]);
-          }
-          pageList.push(page);
-          children.push(page.id);
-        })
-
-        if (moveTargetPageIdx === moveTargetPageList.length) {
-          pageList.push(moveTargetPageList[this.movePageIdx]);
-          children.push(item[moveTargetChapterIdx].children[this.movePageIdx]);
+        if (this.movePageIdx < moveTargetPageIdx) {
+          copyOfPageList.splice(moveTargetPageIdx, 0, target);
+          copyOfPageList.splice(this.movePageIdx, 1);
+          item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
+          item[moveTargetChapterIdx].children.splice(this.movePageIdx, 1);
+        }
+        else {
+          copyOfPageList.splice(this.movePageIdx, 1);
+          copyOfPageList.splice(moveTargetPageIdx, 0, target);
+          item[moveTargetChapterIdx].children.splice(this.movePageIdx, 1);
+          item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
         }
 
-        ChapterStore.changePageList(moveTargetChapterIdx, pageList);
-        item[moveTargetChapterIdx].children = children;
+        ChapterStore.changePageList(moveTargetChapterIdx, copyOfPageList);
         localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
         this.setCurrentPageId(this.movePageId);
@@ -344,16 +341,7 @@ const PageStore = observable({
             item[this.moveChapterIdx].children = children;
 
             // 원하는 위치에 새로 추가
-            const newChildren = [];
-            moveTargetPageList.forEach((page, index) => {
-              if (index === moveTargetPageIdx) newChildren.push(this.movePageId);
-              newChildren.push(page.id);
-            })
-
-            if (moveTargetPageIdx === moveTargetPageList.length)
-              newChildren.push(this.movePageId);
-
-            item[moveTargetChapterIdx].children = newChildren;
+            item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, this.movePageId);
 
             localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
 
