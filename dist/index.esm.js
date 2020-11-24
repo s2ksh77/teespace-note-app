@@ -2276,7 +2276,24 @@ var PageStore = observable((_observable$1 = {
         _this2.fetchCurrentPageData(_this2.nextSelectablePageId);
       }
 
-      ChapterStore.getChapterList();
+      if (_this2.isNewPage) {
+        ChapterStore.getChapterList().then(function (chapterList) {
+          var currentChapter = chapterList.filter(function (chapter) {
+            return chapter.id === _this2.createParent;
+          })[0];
+          ChapterStore.setCurrentChapterId(_this2.createParent);
+
+          if (currentChapter.children.length > 1) {
+            var pageId = currentChapter.children[0].id;
+            _this2.isNewPage = false;
+
+            _this2.setCurrentPageId(pageId);
+
+            _this2.fetchCurrentPageData(pageId);
+          }
+        });
+      } else ChapterStore.getChapterList();
+
       NoteStore.setShowModal(false);
     });
   },
@@ -2502,44 +2519,21 @@ var PageStore = observable((_observable$1 = {
     var _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      var childList, pageId;
       return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              if (!_this10.isNewPage) {
-                _context10.next = 11;
-                break;
-              }
+              if (_this10.isNewPage) {
+                _this10.setDeletePageList({
+                  note_id: _this10.currentPageId
+                });
 
-              _this10.setDeletePageList({
-                note_id: _this10.currentPageId
-              });
+                _this10.deleteParentIdx = _this10.createParentIdx;
 
-              _this10.deleteParentIdx = _this10.createParentIdx;
-              _context10.next = 5;
-              return _this10.deleteNotePage();
+                _this10.deleteNotePage();
+              } else _this10.noteNoneEdit(_this10.currentPageId);
 
-            case 5:
-              _this10.isNewPage = false;
-              childList = ChapterStore.getChapterChildren(_this10.createParent);
-              ChapterStore.setCurrentChapterId(_this10.createParent);
-
-              if (childList.length > 1) {
-                pageId = childList[1].id;
-
-                _this10.setCurrentPageId(pageId);
-
-                _this10.fetchCurrentPageData(pageId);
-              }
-
-              _context10.next = 12;
-              break;
-
-            case 11:
-              _this10.noteNoneEdit(_this10.currentPageId);
-
-            case 12:
+            case 1:
             case "end":
               return _context10.stop();
           }
