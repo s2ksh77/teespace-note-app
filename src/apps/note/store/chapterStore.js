@@ -44,6 +44,7 @@ const ChapterStore = observable({
   exportChapterId: '',
   exportChapterTitle: '',
   sharedCnt: 0,
+  scrollIntoViewId: '',
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -197,6 +198,10 @@ const ChapterStore = observable({
   },
   changePageList(chapterIdx, pageList) {
     this.chapterList[chapterIdx].children = pageList;
+  },
+
+  setScrollIntoViewId(chapterId) {
+    this.scrollIntoViewId = chapterId;
   },
 
   /**

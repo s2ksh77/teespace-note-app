@@ -19,7 +19,7 @@ const LNBSearchResult = () => {
     PageStore.fetchCurrentPageData(pageId);
     ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
-    document.getElementById(chapterId).scrollIntoView(true);
+    ChapterStore.setScrollIntoViewId(chapterId);
   }
 
   const onClickPageBtn = (chapterId, pageId) => async () => {

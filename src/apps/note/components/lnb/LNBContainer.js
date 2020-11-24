@@ -45,6 +45,13 @@ const LNBContainer = () => {
     ChapterStore.fetchChapterList();
   }, []);
 
+  useEffect(() => {
+    if (ChapterStore.scrollIntoViewId) {
+      document.getElementById(ChapterStore.scrollIntoViewId).scrollIntoView(true);
+      ChapterStore.setScrollIntoViewId('');
+    }
+  }, [ChapterStore.scrollIntoViewId]);
+
   return useObserver(() => (
     <>
       <LNBCover>
