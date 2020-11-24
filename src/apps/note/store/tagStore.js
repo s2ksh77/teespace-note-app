@@ -173,19 +173,19 @@ const TagStore = observable({
     this.tagPanelLoading = isLoading;
   },
 
-  createTag(createTagList, noteId) {
+  async createTag(createTagList, noteId) {
     createTagList.forEach(async tag =>
       await NoteRepository.createTag(tag, noteId)
     );
     this.setAddTagList([]);
   },
-  deleteTag(deleteTagList, noteId) {
+  async deleteTag(deleteTagList, noteId) {
     deleteTagList.forEach(async tag =>
       await NoteRepository.deleteTag(tag, noteId)
     );
     this.setRemoveTagList([]);
   },
-  updateTag(updateTagList) {
+  async updateTag(updateTagList) {
     updateTagList.forEach(async tag => {
       await NoteRepository.updateTag(tag.tag_id, tag.text);
     });

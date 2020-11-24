@@ -1355,107 +1355,84 @@ var TagStore = observable({
     this.tagPanelLoading = isLoading;
   },
   createTag: function createTag(createTagList, noteId) {
-    createTagList.forEach( /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(tag) {
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return NoteRepository$1.createTag(tag, noteId);
+    var _this = this;
 
-              case 2:
-                return _context4.abrupt("return", _context4.sent);
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              createTagList.forEach( /*#__PURE__*/function () {
+                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(tag) {
+                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          _context4.next = 2;
+                          return NoteRepository$1.createTag(tag, noteId);
 
-              case 3:
-              case "end":
-                return _context4.stop();
-            }
+                        case 2:
+                          return _context4.abrupt("return", _context4.sent);
+
+                        case 3:
+                        case "end":
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4);
+                }));
+
+                return function (_x) {
+                  return _ref.apply(this, arguments);
+                };
+              }());
+
+              _this.setAddTagList([]);
+
+            case 2:
+            case "end":
+              return _context5.stop();
           }
-        }, _callee4);
-      }));
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }());
-    this.setAddTagList([]);
+        }
+      }, _callee5);
+    }))();
   },
   deleteTag: function deleteTag(deleteTagList, noteId) {
-    deleteTagList.forEach( /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(tag) {
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _context5.next = 2;
-                return NoteRepository$1.deleteTag(tag, noteId);
-
-              case 2:
-                return _context5.abrupt("return", _context5.sent);
-
-              case 3:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5);
-      }));
-
-      return function (_x2) {
-        return _ref2.apply(this, arguments);
-      };
-    }());
-    this.setRemoveTagList([]);
-  },
-  updateTag: function updateTag(updateTagList) {
-    updateTagList.forEach( /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(tag) {
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                _context6.next = 2;
-                return NoteRepository$1.updateTag(tag.tag_id, tag.text);
-
-              case 2:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6);
-      }));
-
-      return function (_x3) {
-        return _ref3.apply(this, arguments);
-      };
-    }());
-  },
-
-  /*
-    비즈니스 로직
-  */
-  fetchNoteTagList: function fetchNoteTagList(noteId) {
-    var _this = this;
+    var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              _context7.next = 2;
-              return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
-                if (response.status === 200) {
-                  var tagList = response.data.dto;
+              deleteTagList.forEach( /*#__PURE__*/function () {
+                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(tag) {
+                  return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                    while (1) {
+                      switch (_context6.prev = _context6.next) {
+                        case 0:
+                          _context6.next = 2;
+                          return NoteRepository$1.deleteTag(tag, noteId);
 
-                  _this.setNoteTagList(tagList.tagList);
-                }
-              });
+                        case 2:
+                          return _context6.abrupt("return", _context6.sent);
+
+                        case 3:
+                        case "end":
+                          return _context6.stop();
+                      }
+                    }
+                  }, _callee6);
+                }));
+
+                return function (_x2) {
+                  return _ref2.apply(this, arguments);
+                };
+              }());
+
+              _this2.setRemoveTagList([]);
 
             case 2:
-              return _context7.abrupt("return", _this.notetagList);
-
-            case 3:
             case "end":
               return _context7.stop();
           }
@@ -1463,23 +1440,91 @@ var TagStore = observable({
       }, _callee7);
     }))();
   },
-  setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
-    var _this2 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+  updateTag: function updateTag(updateTagList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
-              if (_this2.updateTagList.length === 0) {
-                _this2.appendUpdateTagList(tagId, tagText);
+              updateTagList.forEach( /*#__PURE__*/function () {
+                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(tag) {
+                  return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                    while (1) {
+                      switch (_context8.prev = _context8.next) {
+                        case 0:
+                          _context8.next = 2;
+                          return NoteRepository$1.updateTag(tag.tag_id, tag.text);
+
+                        case 2:
+                        case "end":
+                          return _context8.stop();
+                      }
+                    }
+                  }, _callee8);
+                }));
+
+                return function (_x3) {
+                  return _ref3.apply(this, arguments);
+                };
+              }());
+
+            case 1:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }))();
+  },
+
+  /*
+    비즈니스 로직
+  */
+  fetchNoteTagList: function fetchNoteTagList(noteId) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _context10.next = 2;
+              return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
+                if (response.status === 200) {
+                  var tagList = response.data.dto;
+
+                  _this3.setNoteTagList(tagList.tagList);
+                }
+              });
+
+            case 2:
+              return _context10.abrupt("return", _this3.notetagList);
+
+            case 3:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, _callee10);
+    }))();
+  },
+  setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        while (1) {
+          switch (_context11.prev = _context11.next) {
+            case 0:
+              if (_this4.updateTagList.length === 0) {
+                _this4.appendUpdateTagList(tagId, tagText);
               } else {
-                if (_this2.updateTagList.map(function (item) {
+                if (_this4.updateTagList.map(function (item) {
                   return item.tag_id;
                 }).indexOf(tagId) === -1) {
-                  _this2.appendUpdateTagList(tagId, tagText);
+                  _this4.appendUpdateTagList(tagId, tagText);
                 } else {
-                  _this2.updateTagList.forEach(function (item) {
+                  _this4.updateTagList.forEach(function (item) {
                     if (item.tag_id === tagId) item.text = tagText;
                   });
                 }
@@ -1487,10 +1532,10 @@ var TagStore = observable({
 
             case 1:
             case "end":
-              return _context8.stop();
+              return _context11.stop();
           }
         }
-      }, _callee8);
+      }, _callee11);
     }))();
   },
   setCurrentTagData: function setCurrentTagData(id, text) {
@@ -1499,32 +1544,32 @@ var TagStore = observable({
   },
   // 서버에서 받아와서 store 변수에 set하기
   fetchAllSortedTagList: function fetchAllSortedTagList() {
-    var _this3 = this;
+    var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       var _yield$NoteRepository, tag_index_list_dto;
 
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
-              _context9.next = 2;
+              _context12.next = 2;
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository = _context9.sent;
+              _yield$NoteRepository = _context12.sent;
               tag_index_list_dto = _yield$NoteRepository.data.dto.tag_index_list_dto;
 
-              _this3.setAllSortedTagList(tag_index_list_dto);
+              _this5.setAllSortedTagList(tag_index_list_dto);
 
-              return _context9.abrupt("return", _this3.allSortedTagList);
+              return _context12.abrupt("return", _this5.allSortedTagList);
 
             case 6:
             case "end":
-              return _context9.stop();
+              return _context12.stop();
           }
         }
-      }, _callee9);
+      }, _callee12);
     }))();
   },
   // 없어도 될 것 같음
@@ -1539,67 +1584,67 @@ var TagStore = observable({
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
   // 일련의 flow
   fetchTagData: function fetchTagData() {
-    var _this4 = this;
+    var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
-              _this4.setTagPanelLoading(true);
+              _this6.setTagPanelLoading(true);
 
-              _context10.next = 3;
-              return _this4.fetchAllSortedTagList();
+              _context13.next = 3;
+              return _this6.fetchAllSortedTagList();
 
             case 3:
               // 키-태그 pair obj
-              _this4.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
+              _this6.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
 
 
-              _this4.categorizeTagObj();
+              _this6.categorizeTagObj();
 
-              _this4.setTagPanelLoading(false);
+              _this6.setTagPanelLoading(false);
 
             case 6:
             case "end":
-              return _context10.stop();
+              return _context13.stop();
           }
         }
-      }, _callee10);
+      }, _callee13);
     }))();
   },
   searchTag: function searchTag(str) {
-    var _this5 = this;
+    var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
-              _this5.setIsSearching(true);
+              _this7.setIsSearching(true);
 
-              _this5.setIsSearchLoading(true);
+              _this7.setIsSearchLoading(true);
 
-              _this5.setSearchStr(str);
+              _this7.setSearchStr(str);
 
-              _context11.next = 5;
-              return _this5.fetchAllSortedTagList();
+              _context14.next = 5;
+              return _this7.fetchAllSortedTagList();
 
             case 5:
               // 키-태그 pair obj
-              _this5.createSearchResultObj(str); // kor, eng, num, etc별 sort한 키
+              _this7.createSearchResultObj(str); // kor, eng, num, etc별 sort한 키
 
 
-              _this5.categorizeTagObj();
+              _this7.categorizeTagObj();
 
-              _this5.setIsSearchLoading(false);
+              _this7.setIsSearchLoading(false);
 
             case 8:
             case "end":
-              return _context11.stop();
+              return _context14.stop();
           }
         }
-      }, _callee11);
+      }, _callee14);
     }))();
   },
   // search result용 KeyTagObj
@@ -1685,7 +1730,7 @@ var TagStore = observable({
   },
   // kor, eng, num, etc별 sort한 키
   categorizeTagObj: function categorizeTagObj() {
-    var _this6 = this;
+    var _this8 = this;
 
     this.setSortedTagList({});
     var _sortedTagList = {}; // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
@@ -1696,14 +1741,14 @@ var TagStore = observable({
         etcObj = {};
     this.tagKeyArr.forEach(function (key) {
       if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
-        korObj[key] = _this6.keyTagPairObj[key];
+        korObj[key] = _this8.keyTagPairObj[key];
       } else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
         // engObj[key] = this.keyTagPairObj[key];
-        engObj[key] = _this6.getEngTagObj(key);
+        engObj[key] = _this8.getEngTagObj(key);
       } else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-        numObj[key] = _this6.keyTagPairObj[key];
+        numObj[key] = _this8.keyTagPairObj[key];
       } else {
-        etcObj[key] = _this6.keyTagPairObj[key];
+        etcObj[key] = _this8.keyTagPairObj[key];
       }
     });
     if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
@@ -1713,18 +1758,18 @@ var TagStore = observable({
     this.setSortedTagList(_sortedTagList);
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var _yield$NoteRepository2, noteList, resultPageArr;
 
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context15.prev = _context15.next) {
             case 0:
-              _context12.next = 2;
+              _context15.next = 2;
               return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
-              _yield$NoteRepository2 = _context12.sent;
+              _yield$NoteRepository2 = _context15.sent;
               noteList = _yield$NoteRepository2.data.dto.noteList;
               resultPageArr = noteList.map(function (page) {
                 var targetChapter = ChapterStore.chapterList.find(function (chapter) {
@@ -1744,18 +1789,18 @@ var TagStore = observable({
 
             case 6:
             case "end":
-              return _context12.stop();
+              return _context15.stop();
           }
         }
-      }, _callee12);
+      }, _callee15);
     }))();
   },
   setEditCreateTag: function setEditCreateTag() {
-    var _this7 = this;
+    var _this9 = this;
 
     // add Tag List 갱신
     this.addTagList.forEach(function (tag, index) {
-      if (tag === TagStore.currentTagValue) _this7.addTagList[index] = TagStore.editTagValue;
+      if (tag === TagStore.currentTagValue) _this9.addTagList[index] = TagStore.editTagValue;
     }); // 현재 보여지는 List 갱신
 
     this.notetagList.forEach(function (tag) {
@@ -2861,6 +2906,7 @@ var ChapterStore = observable((_observable$2 = {
   exportChapterId: '',
   exportChapterTitle: '',
   sharedCnt: 0,
+  scrollIntoViewId: '',
   getCurrentChapterId: function getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -3017,6 +3063,9 @@ var ChapterStore = observable((_observable$2 = {
   },
   changePageList: function changePageList(chapterIdx, pageList) {
     this.chapterList[chapterIdx].children = pageList;
+  },
+  setScrollIntoViewId: function setScrollIntoViewId(chapterId) {
+    this.scrollIntoViewId = chapterId;
   },
 
   /**
@@ -6355,7 +6404,7 @@ var LNBSearchResult = function LNBSearchResult() {
               PageStore.fetchCurrentPageData(pageId);
               ChapterStore.initSearchVar();
               NoteStore.setShowPage(true);
-              document.getElementById(chapterId).scrollIntoView(true);
+              ChapterStore.setScrollIntoViewId(chapterId);
 
             case 6:
             case "end":
@@ -6567,6 +6616,12 @@ var LNBContainer = function LNBContainer() {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
     ChapterStore.fetchChapterList();
   }, []);
+  useEffect(function () {
+    if (ChapterStore.scrollIntoViewId) {
+      document.getElementById(ChapterStore.scrollIntoViewId).scrollIntoView(true);
+      ChapterStore.setScrollIntoViewId('');
+    }
+  }, [ChapterStore.scrollIntoViewId]);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNBCover, null, /*#__PURE__*/React.createElement(LNBHeader, {
       createNewChapter: createNewChapter
