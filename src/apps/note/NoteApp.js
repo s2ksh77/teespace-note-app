@@ -17,8 +17,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
 
   NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
   ChapterStore.getNoteChapterList();
-  // 임시
-  if (!layoutState) layoutState = 'expand';
+  
   const renderCondition = target =>
     !(
       NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
