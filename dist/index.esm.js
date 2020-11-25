@@ -891,7 +891,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createTag",
     value: function () {
-      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(tagText, noteId) {
+      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(targetList) {
         return regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
@@ -900,8 +900,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 _context14.next = 3;
                 return API.post("note-api/tag", {
                   dto: {
-                    text: tagText,
-                    note_id: noteId
+                    tagList: targetList
                   }
                 });
 
@@ -921,7 +920,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee14, null, [[0, 6]]);
       }));
 
-      function createTag(_x23, _x24) {
+      function createTag(_x23) {
         return _createTag.apply(this, arguments);
       }
 
@@ -930,7 +929,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteTag",
     value: function () {
-      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(tagId, noteId) {
+      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(targetList) {
         return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
             switch (_context15.prev = _context15.next) {
@@ -939,8 +938,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 _context15.next = 3;
                 return API.post("note-api/tag?action=Delete", {
                   dto: {
-                    tag_id: tagId,
-                    note_id: noteId
+                    tagList: targetList
                   }
                 });
 
@@ -960,7 +958,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee15, null, [[0, 6]]);
       }));
 
-      function deleteTag(_x25, _x26) {
+      function deleteTag(_x24) {
         return _deleteTag.apply(this, arguments);
       }
 
@@ -969,7 +967,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "updateTag",
     value: function () {
-      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(tagId, tagText) {
+      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
         return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
@@ -978,8 +976,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 _context16.next = 3;
                 return API.post("note-api/tag?action=Update", {
                   dto: {
-                    tag_id: tagId,
-                    text: tagText
+                    tagList: targetList
                   }
                 });
 
@@ -999,7 +996,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee16, null, [[0, 6]]);
       }));
 
-      function updateTag(_x27, _x28) {
+      function updateTag(_x25) {
         return _updateTag.apply(this, arguments);
       }
 
@@ -1357,39 +1354,68 @@ var TagStore = observable({
   createTag: function createTag(createTagList, noteId) {
     var _this = this;
 
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var createTagArray, _yield$NoteRepository, dto;
+
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              createTagArray = [];
+              createTagList.forEach(function (tag) {
+                createTagArray.push({
+                  text: tag,
+                  note_id: noteId
+                });
+              });
+              _context4.next = 4;
+              return NoteRepository$1.createTag(createTagArray);
+
+            case 4:
+              _yield$NoteRepository = _context4.sent;
+              dto = _yield$NoteRepository.data.dto;
+
+              _this.setAddTagList([]);
+
+              return _context4.abrupt("return", dto);
+
+            case 8:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  deleteTag: function deleteTag(deleteTagList, noteId) {
+    var _this2 = this;
+
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      var deleteTagArray, _yield$NoteRepository2, dto;
+
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
-              createTagList.forEach( /*#__PURE__*/function () {
-                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(tag) {
-                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
-                    while (1) {
-                      switch (_context4.prev = _context4.next) {
-                        case 0:
-                          _context4.next = 2;
-                          return NoteRepository$1.createTag(tag, noteId);
+              deleteTagArray = [];
+              deleteTagList.forEach(function (tag) {
+                deleteTagArray.push({
+                  tag_id: tag,
+                  note_id: noteId
+                });
+              });
+              _context5.next = 4;
+              return NoteRepository$1.deleteTag(deleteTagArray);
 
-                        case 2:
-                          return _context4.abrupt("return", _context4.sent);
+            case 4:
+              _yield$NoteRepository2 = _context5.sent;
+              dto = _yield$NoteRepository2.data.dto;
 
-                        case 3:
-                        case "end":
-                          return _context4.stop();
-                      }
-                    }
-                  }, _callee4);
-                }));
+              _this2.setRemoveTagList([]);
 
-                return function (_x) {
-                  return _ref.apply(this, arguments);
-                };
-              }());
+              return _context5.abrupt("return", dto);
 
-              _this.setAddTagList([]);
-
-            case 2:
+            case 8:
             case "end":
               return _context5.stop();
           }
@@ -1397,27 +1423,27 @@ var TagStore = observable({
       }, _callee5);
     }))();
   },
-  deleteTag: function deleteTag(deleteTagList, noteId) {
-    var _this2 = this;
-
+  updateTag: function updateTag(updateTagList) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var updateTagArray, _yield$NoteRepository3, dto;
+
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              deleteTagList.forEach( /*#__PURE__*/function () {
-                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(tag) {
+              updateTagArray = [];
+              updateTagList.forEach( /*#__PURE__*/function () {
+                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(tag) {
                   return regeneratorRuntime.wrap(function _callee6$(_context6) {
                     while (1) {
                       switch (_context6.prev = _context6.next) {
                         case 0:
-                          _context6.next = 2;
-                          return NoteRepository$1.deleteTag(tag, noteId);
+                          updateTagArray.push({
+                            tag_id: tag.tag_id,
+                            text: tag.text
+                          });
 
-                        case 2:
-                          return _context6.abrupt("return", _context6.sent);
-
-                        case 3:
+                        case 1:
                         case "end":
                           return _context6.stop();
                       }
@@ -1425,55 +1451,24 @@ var TagStore = observable({
                   }, _callee6);
                 }));
 
-                return function (_x2) {
-                  return _ref2.apply(this, arguments);
+                return function (_x) {
+                  return _ref.apply(this, arguments);
                 };
               }());
+              _context7.next = 4;
+              return NoteRepository$1.updateTag(updateTagArray);
 
-              _this2.setRemoveTagList([]);
+            case 4:
+              _yield$NoteRepository3 = _context7.sent;
+              dto = _yield$NoteRepository3.data.dto;
+              return _context7.abrupt("return", dto);
 
-            case 2:
+            case 7:
             case "end":
               return _context7.stop();
           }
         }
       }, _callee7);
-    }))();
-  },
-  updateTag: function updateTag(updateTagList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
-        while (1) {
-          switch (_context9.prev = _context9.next) {
-            case 0:
-              updateTagList.forEach( /*#__PURE__*/function () {
-                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(tag) {
-                  return regeneratorRuntime.wrap(function _callee8$(_context8) {
-                    while (1) {
-                      switch (_context8.prev = _context8.next) {
-                        case 0:
-                          _context8.next = 2;
-                          return NoteRepository$1.updateTag(tag.tag_id, tag.text);
-
-                        case 2:
-                        case "end":
-                          return _context8.stop();
-                      }
-                    }
-                  }, _callee8);
-                }));
-
-                return function (_x3) {
-                  return _ref3.apply(this, arguments);
-                };
-              }());
-
-            case 1:
-            case "end":
-              return _context9.stop();
-          }
-        }
-      }, _callee9);
     }))();
   },
 
@@ -1483,12 +1478,12 @@ var TagStore = observable({
   fetchNoteTagList: function fetchNoteTagList(noteId) {
     var _this3 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context8.prev = _context8.next) {
             case 0:
-              _context10.next = 2;
+              _context8.next = 2;
               return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
                 if (response.status === 200) {
                   var tagList = response.data.dto;
@@ -1498,23 +1493,23 @@ var TagStore = observable({
               });
 
             case 2:
-              return _context10.abrupt("return", _this3.notetagList);
+              return _context8.abrupt("return", _this3.notetagList);
 
             case 3:
             case "end":
-              return _context10.stop();
+              return _context8.stop();
           }
         }
-      }, _callee10);
+      }, _callee8);
     }))();
   },
   setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
     var _this4 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
               if (_this4.updateTagList.length === 0) {
                 _this4.appendUpdateTagList(tagId, tagText);
@@ -1532,10 +1527,10 @@ var TagStore = observable({
 
             case 1:
             case "end":
-              return _context11.stop();
+              return _context9.stop();
           }
         }
-      }, _callee11);
+      }, _callee9);
     }))();
   },
   setCurrentTagData: function setCurrentTagData(id, text) {
@@ -1546,30 +1541,30 @@ var TagStore = observable({
   fetchAllSortedTagList: function fetchAllSortedTagList() {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$NoteRepository, tag_index_list_dto;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      var _yield$NoteRepository4, tag_index_list_dto;
 
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              _context12.next = 2;
+              _context10.next = 2;
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository = _context12.sent;
-              tag_index_list_dto = _yield$NoteRepository.data.dto.tag_index_list_dto;
+              _yield$NoteRepository4 = _context10.sent;
+              tag_index_list_dto = _yield$NoteRepository4.data.dto.tag_index_list_dto;
 
               _this5.setAllSortedTagList(tag_index_list_dto);
 
-              return _context12.abrupt("return", _this5.allSortedTagList);
+              return _context10.abrupt("return", _this5.allSortedTagList);
 
             case 6:
             case "end":
-              return _context12.stop();
+              return _context10.stop();
           }
         }
-      }, _callee12);
+      }, _callee10);
     }))();
   },
   // 없어도 될 것 같음
@@ -1586,14 +1581,14 @@ var TagStore = observable({
   fetchTagData: function fetchTagData() {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               _this6.setTagPanelLoading(true);
 
-              _context13.next = 3;
+              _context11.next = 3;
               return _this6.fetchAllSortedTagList();
 
             case 3:
@@ -1607,19 +1602,19 @@ var TagStore = observable({
 
             case 6:
             case "end":
-              return _context13.stop();
+              return _context11.stop();
           }
         }
-      }, _callee13);
+      }, _callee11);
     }))();
   },
   searchTag: function searchTag(str) {
     var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context14.prev = _context14.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               _this7.setIsSearching(true);
 
@@ -1627,7 +1622,7 @@ var TagStore = observable({
 
               _this7.setSearchStr(str);
 
-              _context14.next = 5;
+              _context12.next = 5;
               return _this7.fetchAllSortedTagList();
 
             case 5:
@@ -1641,10 +1636,10 @@ var TagStore = observable({
 
             case 8:
             case "end":
-              return _context14.stop();
+              return _context12.stop();
           }
         }
-      }, _callee14);
+      }, _callee12);
     }))();
   },
   // search result용 KeyTagObj
@@ -1758,19 +1753,19 @@ var TagStore = observable({
     this.setSortedTagList(_sortedTagList);
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var _yield$NoteRepository2, noteList, resultPageArr;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      var _yield$NoteRepository5, noteList, resultPageArr;
 
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context15.prev = _context15.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
-              _context15.next = 2;
+              _context13.next = 2;
               return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
-              _yield$NoteRepository2 = _context15.sent;
-              noteList = _yield$NoteRepository2.data.dto.noteList;
+              _yield$NoteRepository5 = _context13.sent;
+              noteList = _yield$NoteRepository5.data.dto.noteList;
               resultPageArr = noteList.map(function (page) {
                 var targetChapter = ChapterStore.chapterList.find(function (chapter) {
                   return chapter.id === page.parent_notebook;
@@ -1789,10 +1784,10 @@ var TagStore = observable({
 
             case 6:
             case "end":
-              return _context15.stop();
+              return _context13.stop();
           }
         }
-      }, _callee15);
+      }, _callee13);
     }))();
   },
   setEditCreateTag: function setEditCreateTag() {
@@ -2487,7 +2482,7 @@ var PageStore = observable((_observable$1 = {
       }
 
       if (_this2.isNewPage) {
-        ChapterStore.getNoteChapterList().then(function (chapterList) {
+        ChapterStore.getChapterList().then(function (chapterList) {
           var currentChapter = chapterList.filter(function (chapter) {
             return chapter.id === _this2.createParent;
           })[0];
@@ -2759,9 +2754,9 @@ var PageStore = observable((_observable$1 = {
       }
     };
     this.noteEditDone(updateDTO);
-    if (TagStore.removeTagList) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
-    if (TagStore.addTagList) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
-    if (TagStore.updateTagList) TagStore.updateTag(TagStore.updateTagList);
+    if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
+    if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
+    if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
     this.isNewPage = false;
@@ -5924,7 +5919,7 @@ var Page = function Page(_ref) {
   var _useDrag = useDrag({
     item: {
       id: page.id,
-      type: type === 'notebook' ? 'page' : 'shared_page'
+      type: type === 'notebook' || type === 'default' ? 'page' : 'shared_page'
     },
     begin: function begin(monitor) {
       PageStore.setMovePageId(page.id);
@@ -5992,7 +5987,7 @@ var Page = function Page(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(PageCover, {
-      ref: type === 'notebook' ? function (node) {
+      ref: type === 'notebook' || type === 'default' ? function (node) {
         return drag(drop(node));
       } : drag,
       id: page.id,
@@ -6025,7 +6020,7 @@ var Page = function Page(_ref) {
       onFocus: handleFocus,
       autoFocus: true
     })) : /*#__PURE__*/React.createElement(PageTextCover, {
-      className: PageStore.dragEnterChapterIdx !== chapterIdx ? '' : PageStore.dragEnterPageIdx === index ? 'borderTopLine' : ''
+      className: PageStore.dragEnterChapterIdx === chapterIdx ? PageStore.dragEnterPageIdx === index && (type === 'notebook' || type === 'default') ? 'borderTopLine' : '' : ''
     }, /*#__PURE__*/React.createElement(PageText, null, page.text), /*#__PURE__*/React.createElement(ContextMenu, {
       type: 'page',
       chapterId: chapterId,
@@ -6184,7 +6179,7 @@ var Chapter = function Chapter(_ref) {
   var _useDrag = useDrag({
     item: {
       id: chapter.id,
-      type: chapter.type === 'notebook' ? 'chapter' : 'shared'
+      type: chapter.type === 'notebook' || chapter.type === 'default' ? 'chapter' : 'shared'
     },
     begin: function begin(monitor) {
       ChapterStore.setMoveChapterIdx(index);
@@ -6263,13 +6258,13 @@ var Chapter = function Chapter(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(ChapterContainer, {
-      ref: chapter.type === 'notebook' ? drop : null,
-      className: ChapterStore.dragEnterChapterIdx === index ? 'borderTopLine' : '',
+      ref: chapter.type === 'notebook' || chapter.type === 'default' ? drop : null,
+      className: ChapterStore.dragEnterChapterIdx === index && (chapter.type === 'notebook' || chapter.type === 'default') ? 'borderTopLine' : '',
       id: chapter.id,
       key: chapter.id,
       itemType: "chapter"
     }, /*#__PURE__*/React.createElement(ChapterCover, {
-      ref: chapter.type === 'notebook' ? function (node) {
+      ref: chapter.type === 'notebook' || chapter.type === 'default' ? function (node) {
         return drag(dropChapter(node));
       } : drag,
       onClick: handleChapterBtn
@@ -8195,9 +8190,7 @@ var NoteApp = function NoteApp(_ref) {
       authStore = _useCoreStores.authStore;
 
   NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
-  ChapterStore.getNoteChapterList(); // 임시
-
-  if (!layoutState) layoutState = 'expand';
+  ChapterStore.getNoteChapterList();
 
   var renderCondition = function renderCondition(target) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);

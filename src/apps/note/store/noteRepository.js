@@ -292,20 +292,7 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
-
-  async createTag(tagText, noteId) {
-    try {
-      return await API.post(`note-api/tag`, {
-        dto: {
-          text: tagText,
-          note_id: noteId,
-        },
-      });
-    } catch (e) {
-      throw Error(JSON.stringify(e));
-    }
-  }
-  async createTagList(targetList) {
+  async createTag(targetList) {
     try {
       return await API.post(`note-api/tag`, {
         dto: {
@@ -316,26 +303,22 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
-
-  async deleteTag(tagId, noteId) {
+  async deleteTag(targetList) {
     try {
       return await API.post(`note-api/tag?action=Delete`, {
         dto: {
-          tag_id: tagId,
-          note_id: noteId,
-        },
+          tagList: targetList
+        }
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
-
-  async updateTag(tagId, tagText) {
+  async updateTag(targetList) {
     try {
       return await API.post(`note-api/tag?action=Update`, {
         dto: {
-          tag_id: tagId,
-          text: tagText,
+          tagList: targetList
         },
       });
     } catch (e) {
