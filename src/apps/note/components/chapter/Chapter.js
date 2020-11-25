@@ -109,6 +109,7 @@ const Chapter = ({ chapter, index, onClick }) => {
       }
       className={
         ChapterStore.dragEnterChapterIdx === index
+        && (chapter.type === 'notebook' || chapter.type === 'default')
           ? 'borderTopLine'
           : ''
       }

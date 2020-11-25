@@ -130,11 +130,12 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
       ) : (
           <PageTextCover
             className={
-              PageStore.dragEnterChapterIdx !== chapterIdx
-                ? ''
-                : PageStore.dragEnterPageIdx === index
+              PageStore.dragEnterChapterIdx === chapterIdx
+                ? PageStore.dragEnterPageIdx === index
+                  && (type === 'notebook' || type === 'default')
                   ? 'borderTopLine'
                   : ''
+                : ''
             }
           >
             <PageText>{page.text}</PageText>
