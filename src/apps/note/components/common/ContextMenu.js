@@ -69,12 +69,18 @@ const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pa
     }
   }
 
+  const infoComponent = () => {
+    if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapterId);
+    else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, pageId);
+  }
+
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
 
     if (key === "0") renameComponent();
     else if (key === "1") deleteComponent();
-    else exportComponent();
+    else if (key === "2") exportComponent();
+    else infoComponent();
   };
 
   const menu = (
@@ -82,6 +88,9 @@ const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pa
       <Menu.Item key="0">이름 변경</Menu.Item>
       <Menu.Item key="1">삭제</Menu.Item>
       <Menu.Item key="2">내보내기(.pdf)</Menu.Item>
+      {type === 'shared'
+        ? <Menu.Item key="3">정보 보기</Menu.Item>
+        : null}
     </Menu>
   );
 

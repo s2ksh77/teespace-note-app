@@ -239,6 +239,12 @@ const ChapterStore = observable({
     } = await NoteRepository.getChapterChildren(chapterId);
     return dto;
   },
+  async getChapterInfoList(chapterId) {
+    const { 
+      data: { dto },
+    } = await NoteRepository.getChapterInfoList(chapterId);
+    return dto;
+  },
 
   /**
    * ChapterStore Business Logic in NoteApp
