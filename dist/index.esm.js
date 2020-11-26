@@ -943,6 +943,40 @@ var NoteRepository = /*#__PURE__*/function () {
         }
       });
     }
+  }, {
+    key: "getSearchList",
+    value: function () {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(searchKey) {
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                _context17.prev = 0;
+                _context17.next = 3;
+                return API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
+
+              case 3:
+                return _context17.abrupt("return", _context17.sent);
+
+              case 6:
+                _context17.prev = 6;
+                _context17.t0 = _context17["catch"](0);
+                throw Error(JSON.stringify(_context17.t0));
+
+              case 9:
+              case "end":
+                return _context17.stop();
+            }
+          }
+        }, _callee17, this, [[0, 6]]);
+      }));
+
+      function getSearchList(_x26) {
+        return _getSearchList.apply(this, arguments);
+      }
+
+      return getSearchList;
+    }()
   }]);
 
   return NoteRepository;
@@ -3176,7 +3210,7 @@ var ChapterStore = observable((_observable$2 = {
             } else {
               NoteStore.setShowPage(true);
               chapterId = _this5.chapterList[0].id;
-              pageId = (_this5$chapterList$0$ = _this5.chapterList[0].children) === null || _this5$chapterList$0$ === void 0 ? void 0 : (_this5$chapterList$0$2 = _this5$chapterList$0$[0]) === null || _this5$chapterList$0$2 === void 0 ? void 0 : _this5$chapterList$0$2.id;
+              pageId = _this5.chapterList[0].children.length > 0 ? (_this5$chapterList$0$ = _this5.chapterList[0].children) === null || _this5$chapterList$0$ === void 0 ? void 0 : (_this5$chapterList$0$2 = _this5$chapterList$0$[0]) === null || _this5$chapterList$0$2 === void 0 ? void 0 : _this5$chapterList$0$2.id : '';
 
               _this5.setCurrentChapterId(chapterId);
 
@@ -3838,6 +3872,30 @@ var NoteStore = observable({
   },
   disableScroll: function disableScroll(e) {
     e.preventDefault();
+  },
+  getSearchList: function getSearchList(searchKey) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _yield$NoteRepository, dto;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.getSearchList(searchKey);
+
+            case 2:
+              _yield$NoteRepository = _context2.sent;
+              dto = _yield$NoteRepository.data.dto;
+              return _context2.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
   }
 });
 
