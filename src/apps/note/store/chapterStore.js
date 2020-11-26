@@ -358,7 +358,10 @@ const ChapterStore = observable({
     } else {
       NoteStore.setShowPage(true);
       const chapterId = this.chapterList[0].id;
-      const pageId = this.chapterList[0].children?.[0]?.id;
+      const pageId = 
+        this.chapterList[0].children.length > 0
+          ? this.chapterList[0].children?.[0]?.id
+          : ''
       this.setCurrentChapterId(chapterId);
       PageStore.setCurrentPageId(pageId);
       PageStore.fetchCurrentPageData(pageId);
