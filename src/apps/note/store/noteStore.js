@@ -107,7 +107,7 @@ const NoteStore = observable({
   },
 
   async handleSharedInfo(type, id) {
-    const noteInfo = 
+    const noteInfo =
       type === 'chapter'
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
@@ -120,8 +120,8 @@ const NoteStore = observable({
       ),
       sharedUserName: noteInfo.shared_user_id,
       sharedDate: (
-        !noteInfo.created_date 
-          ? PageStore.modifiedDateFormatting(noteInfo.shared_date) 
+        !noteInfo.created_date
+          ? PageStore.modifiedDateFormatting(noteInfo.shared_date)
           : PageStore.modifiedDateFormatting(noteInfo.created_date)
       )
     };
@@ -148,6 +148,13 @@ const NoteStore = observable({
   disableScroll(e) {
     e.preventDefault();
   },
+  async getSearchList(searchKey) {
+    const {
+      data: { dto }
+    } = await NoteRepository.getSearchList(searchKey);
+
+    return dto;
+  }
 });
 
 export default NoteStore;

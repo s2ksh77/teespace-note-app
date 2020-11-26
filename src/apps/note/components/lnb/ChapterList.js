@@ -19,21 +19,11 @@ const ChapterList = observer(({ type }) => {
       break;
   }
 
-  const onClickChapterBtn = useCallback(async (id, children) => {
-    if (PageStore.isEdit) return;
-    ChapterStore.setCurrentChapterId(id);
-    let pageId = '';
-    if (children.length) pageId = children[0]?.id;
-    NoteStore.setShowPage(true);
-    PageStore.setCurrentPageId(pageId);
-    PageStore.fetchCurrentPageData(pageId);
-  }, []);
-
   return (
     <>
       {targetList.length > 0 &&
         targetList.map((item, index) => (
-          <Chapter key={item.id} chapter={item} index={index} onClick={onClickChapterBtn} />
+          <Chapter key={item.id} chapter={item} index={index} />
         ))}
     </>
   );

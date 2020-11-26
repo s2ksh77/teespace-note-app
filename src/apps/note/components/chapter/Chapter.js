@@ -14,7 +14,7 @@ import {
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/ts_share@3x.png';
 
-const Chapter = ({ chapter, index, onClick }) => {
+const Chapter = ({ chapter, index }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   // 챕터를 다른 챕터 영역에 drop했을 때
@@ -87,9 +87,15 @@ const Chapter = ({ chapter, index, onClick }) => {
     );
   };
 
-  const handleChapterBtn = useCallback(() => {
-    onClick(chapter.id, chapter.children);
-  }, []);
+  const onClickChapterBtn = useCallback(() => {
+    if (PageStore.isEdit) return;
+    ChapterStore.setCurrentChapterId(chapter.id);
+    let pageId = '';
+    if (chapter.children.length > 0) pageId = chapter.children[0].id;
+    NoteStore.setShowPage(true);
+    PageStore.setCurrentPageId(pageId);
+    PageStore.fetchCurrentPageData(pageId);
+  }, [chapter]);
 
   const handleFocus = (e) => e.target.select();
 
@@ -123,7 +129,7 @@ const Chapter = ({ chapter, index, onClick }) => {
           ? (node) => drag(dropChapter(node)) 
           : drag
         }
-        onClick={handleChapterBtn}
+        onClick={onClickChapterBtn}
       >
         {renderChapterIcon()}
         {ChapterStore.getRenameChapterId() === chapter.id ? (
