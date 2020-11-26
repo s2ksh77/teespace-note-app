@@ -378,6 +378,15 @@ class NoteRepository {
       }
     });
   }
+  async getSearchList(searchKey) {
+    try {
+      return await API.get(
+        `note-api/noteSearch?action=List&note_channel_id=${this.chId}&searchValue=${searchKey}`
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
