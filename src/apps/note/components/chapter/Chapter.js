@@ -145,6 +145,7 @@ const Chapter = ({ chapter, index, onClick }) => {
             <ChapterText
               text={chapter.text}
               chapterId={chapter.id}
+              type={chapter.type}
             />
           )}
       </ChapterCover>
@@ -153,7 +154,6 @@ const Chapter = ({ chapter, index, onClick }) => {
         children={chapter.children}
         chapterId={chapter.id}
         chapterIdx={index}
-        type={chapter.type}
       />
     </ChapterContainer>
   ));

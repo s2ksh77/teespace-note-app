@@ -51,6 +51,9 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage(); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'sharedInfo':
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        break;
       default:
         break;
     }
@@ -68,6 +71,8 @@ const NoteMeta = {
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
       case 'titleDuplicate':
         return [{ type: 'confirom', text: '확인' }];
+      case 'sharedInfoConfirm':
+        return [{ type: 'confirom', text: '확인' }];
       default:
         return;
     }
@@ -81,6 +86,7 @@ const NoteMeta = {
       subtitle: '',
       buttonConfig: []
     }
+    const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
     switch (type) {
       case 'chapter':
         dialogType.title = '챕터를 삭제하시겠습니까?';
@@ -117,6 +123,9 @@ const NoteMeta = {
         dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
+      case 'sharedInfo':
+        dialogType.subtitle = `출처 룸 ${sharedRoomName} 전달한 멤버 ${sharedUserName} 전달 날짜 ${sharedDate}`
+        dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
       default:
         break;
     }

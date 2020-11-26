@@ -356,8 +356,7 @@ const PageStore = observable({
     }
   },
 
-  modifiedDateFormatting() {
-    const date = this.currentPageData.modified_date;
+  modifiedDateFormatting(date) {
     const mDate = date.split(' ')[0];
     const mTime = date.split(' ')[1];
     const mYear = parseInt(mDate.split('.')[0]);
@@ -372,12 +371,13 @@ const PageStore = observable({
     if (mHour > 12) mHour = mHour - 12;
     const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
 
-    if (mYear === curDate.getFullYear()) { // 같은 해
+    if (date === this.currentPageData.modified_date
+      && mYear === curDate.getFullYear()) { // 같은 해
       if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
       else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
     }
-    else { // 다른 해
-      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + basicDate;
+    else { // 다른 해, 정보 보기
+      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate;
     }
   },
 
@@ -387,7 +387,7 @@ const PageStore = observable({
       this.currentPageData = dto;
       this.isEdit = dto.is_edit;
       this.noteTitle = dto.note_title;
-      this.modifiedDate = this.modifiedDateFormatting();
+      this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
       EditorStore.setFileList(
         dto.fileList,
       );

@@ -23,6 +23,7 @@ const NoteStore = observable({
   draggedType: '',
   draggedTitle: '',
   draggedOffset: {},
+  sharedInfo: {},
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;
@@ -93,6 +94,7 @@ const NoteStore = observable({
       case 'editCancel':
       case 'titleDuplicate':
       case 'imageDelete':
+      case 'sharedInfo':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -103,6 +105,30 @@ const NoteStore = observable({
         break;
     }
   },
+
+  async handleSharedInfo(type, id) {
+    const noteInfo = 
+      type === 'chapter'
+        ? await ChapterStore.getChapterInfoList(id)
+        : await PageStore.getNoteInfoList(id)
+
+    this.sharedInfo = {
+      sharedRoomName: (
+        noteInfo.shared_room_name === 'MySpace'
+          ? this.userName
+          : noteInfo.shared_room_name
+      ),
+      sharedUserName: noteInfo.shared_user_id,
+      sharedDate: (
+        !noteInfo.created_date 
+          ? PageStore.modifiedDateFormatting(noteInfo.shared_date) 
+          : PageStore.modifiedDateFormatting(noteInfo.created_date)
+      )
+    };
+
+    this.setModalInfo('sharedInfo');
+  },
+
   setLNBChapterCoverRef(ref) {
     this.LNBChapterCoverRef = ref;
   },

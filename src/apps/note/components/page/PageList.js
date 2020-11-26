@@ -6,7 +6,7 @@ import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
 import { handleLinkListener } from '../common/NoteFile';
 
-const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
+const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
 
   const [, drop] = useDrop({
@@ -58,7 +58,6 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx, type }) => {
               children={children}
               chapterId={chapterId}
               chapterIdx={chapterIdx}
-              type={type}
               onClick={handleSelectPage}
             />
           ))
