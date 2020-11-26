@@ -13,7 +13,7 @@ import {
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChapterText = ({ text, chapterId }) => {
+const ChapterText = ({ text, chapterId, type }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
@@ -41,7 +41,7 @@ const ChapterText = ({ text, chapterId }) => {
       >
         <ChapterTextSpan>{text}</ChapterTextSpan>
         <ContextMenu
-          type={"chapter"}
+          noteType={"chapter"}
           chapterId={chapterId}
           chapterTitle={text}
           nextSelectableChapterId={
@@ -54,6 +54,7 @@ const ChapterText = ({ text, chapterId }) => {
               ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
             ) : ("")
           }
+          type={type}
         />
       </ChapterTitle>
       <ChapterFolderBtn>

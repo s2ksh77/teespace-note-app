@@ -126,7 +126,6 @@ export const ModalNormalBtn = styled.div`
   cursor: pointer;
   background-color: #6C56E5;
   color: white;
-  margin-right: 0.38rem;
 `;
 
 export const ModalCancelBtn = styled.div`
@@ -140,6 +139,7 @@ export const ModalCancelBtn = styled.div`
   cursor: pointer;
   border: 1px solid #C6CED6;
   color: #3B3B3B;
+  margin-left: 0.38rem;
 `;
 
 export const SearchLoadingContainer = styled.div`

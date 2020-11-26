@@ -10,12 +10,12 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 import { exportChapterData, exportPageData } from "./NoteFile";
 
-const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId }) => {
+const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.
-    switch (type) {
+    switch (noteType) {
       case "chapter":
         ChapterStore.setRenameChapterId(chapterId);
         ChapterStore.setRenameChapterText(chapterTitle);
@@ -35,7 +35,7 @@ const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTi
     ChapterStore.setNextSelectableChapterId(nextSelectableChapterId);
     PageStore.setNextSelectablePageId(nextSelectablePageId);
 
-    switch (type) {
+    switch (noteType) {
       case "chapter":
         ChapterStore.setDeleteChapterId(chapterId);
         NoteStore.setModalInfo('chapter');
@@ -53,7 +53,7 @@ const ContextMenu = ({ type, chapterId, chapterIdx, pageId, chapterTitle, pageTi
   };
 
   const exportComponent = () => {
-    switch (type) {
+    switch (noteType) {
       case 'chapter':
         ChapterStore.setExportId(chapterId);
         ChapterStore.setExportTitle(chapterTitle);

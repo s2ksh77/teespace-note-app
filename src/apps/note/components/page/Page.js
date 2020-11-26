@@ -12,11 +12,11 @@ import {
   PageTextInput,
 } from '../../styles/pageStyle';
 
-const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) => {
+const Page = ({ page, index, children, chapterId, chapterIdx, onClick }) => {
   const { NoteStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: type === 'notebook' || type === 'default' ? 'page' : 'shared_page' },
+    item: { id: page.id, type: page.type === 'note' ? 'page' : 'shared_page' },
     begin: (monitor) => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
@@ -84,7 +84,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
 
   return useObserver(() => (
     <PageCover
-      ref={type === 'notebook' || type === 'default' ? (node) => drag(drop(node)) : drag}
+      ref={page.type === 'note' ? (node) => drag(drop(node)) : drag}
       id={page.id}
       className={
         'page-li' +
@@ -132,7 +132,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
             className={
               PageStore.dragEnterChapterIdx === chapterIdx
                 ? PageStore.dragEnterPageIdx === index
-                  && (type === 'notebook' || type === 'default')
+                  && (page.type === 'note')
                   ? 'borderTopLine'
                   : ''
                 : ''
@@ -140,7 +140,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
           >
             <PageText>{page.text}</PageText>
             <ContextMenu
-              type={'page'}
+              noteType={'page'}
               chapterId={chapterId}
               chapterIdx={chapterIdx}
               pageId={page.id}
@@ -152,6 +152,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, type, onClick }) =
                     : children[0].id
                   : ''
               }
+              type={page.type}
             />
           </PageTextCover>
         )}
