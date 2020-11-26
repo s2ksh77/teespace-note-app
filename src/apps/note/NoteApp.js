@@ -14,9 +14,6 @@ import GlobalVariable from './GlobalVariable';
 const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { NoteStore, PageStore, EditorStore, ChapterStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
-
-  NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
-  ChapterStore.getNoteChapterList();
   
   const renderCondition = target =>
     !(
@@ -34,12 +31,19 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
+
   useEffect(() => {
     window.addEventListener('click', handleClickOutsideEditor);
     return () => {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
   }, []);
+
+  useEffect(() => {
+    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
+    if (channelId) ChapterStore.fetchChapterList();
+    else ChapterStore.setChapterList([]);
+  },[channelId]);
 
   useEffect(() => {
     // collapse 아닐 때는 setTargetLayout(null) 넣어준다
@@ -70,7 +74,6 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         >
           <LNBContainer />
         </LNB>
-
       )}
       {renderCondition('Content') && (
         <Content>

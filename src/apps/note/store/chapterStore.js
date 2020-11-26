@@ -352,7 +352,6 @@ const ChapterStore = observable({
   },
 
   async fetchChapterList() {
-    if (this.chapterList.length !== 0) return;
     await this.getNoteChapterList();
     if (this.chapterList.length === 0) {
       NoteStore.setShowPage(false);
@@ -366,24 +365,23 @@ const ChapterStore = observable({
     }
   },
 
-  getNoteChapterList() {
-    this.getChapterList().then(notbookList => {
-      this.createMap(notbookList);
-      const sharedList = this.getSharedList(notbookList);
-      this.sharedCnt = sharedList.length;
+  async getNoteChapterList() {
+    const notbookList = await this.getChapterList();
+    this.createMap(notbookList);
+    const sharedList = this.getSharedList(notbookList);
+    this.sharedCnt = sharedList.length;
 
-      let tempChapterList = [];
-      if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-        tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
-        this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
-      }
-      else {
-        this.applyDifference(NoteStore.getChannelId(), notbookList);
-        tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
-      }
-      this.chapterList = tempChapterList.concat(sharedList);
-      return this.chapterList;
-    });
+    let tempChapterList = [];
+    if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+      tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
+      this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
+    }
+    else {
+      this.applyDifference(NoteStore.getChannelId(), notbookList);
+      tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+    }
+    this.chapterList = tempChapterList.concat(sharedList);
+    return this.chapterList;
   },
 
   createNoteChapter(chapterTitle, chapterColor) {
@@ -464,7 +462,7 @@ const ChapterStore = observable({
   },
   async getSearchResult() {
     this.setSearchResult({});
-    const { data: { dto: { notbookList: chapterList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());    // searchResult 만들기
+    const chapterList = await this.getChapterList();// searchResult 만들기
     let resultChapterArr = [], resultPageArr = [];
     chapterList.map((chapter) => {
       // chapter 저장
