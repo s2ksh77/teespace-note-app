@@ -42,7 +42,7 @@ const LNBContainer = () => {
 
   useEffect(() => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
-    ChapterStore.fetchChapterList();
+    // ChapterStore.fetchChapterList();
   }, []);
 
   useEffect(() => {
