@@ -3492,7 +3492,8 @@ var NoteMeta = {
       type: 'alert',
       title: dialogType.title,
       subTitle: dialogType.subtitle ? dialogType.subtitle : null,
-      buttons: buttonList
+      buttons: buttonList,
+      sharedInfo: dialogType.info ? dialogType.info : null
     };
   },
   setEventConfig: function setEventConfig(type) {
@@ -3694,7 +3695,16 @@ var NoteMeta = {
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
 
       case 'sharedInfo':
-        dialogType.subtitle = "\uCD9C\uCC98 \uB8F8 ".concat(sharedRoomName, " \uC804\uB2EC\uD55C \uBA64\uBC84 ").concat(sharedUserName, " \uC804\uB2EC \uB0A0\uC9DC ").concat(sharedDate);
+        dialogType.info = [{
+          title: '출처 룸',
+          content: sharedRoomName
+        }, {
+          title: '전달한 멤버',
+          content: sharedUserName
+        }, {
+          title: '전달 날짜',
+          content: sharedDate
+        }];
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
     }
 
