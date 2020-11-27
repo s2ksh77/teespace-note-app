@@ -5,6 +5,9 @@ import {
   CustomOverlay,
   ModalTitle,
   ModalSubTitle,
+  ModalSharedInfoCover,
+  ModalSharedInfoTitle,
+  ModalSharedInfoContent,
   ButtonGroup,
   IconImg,
   ModalNormalBtn,
@@ -19,7 +22,7 @@ import defaultIcon from '../../assets/ts_info@3x.png';
 const icon = { normal: normalIcon, alert: alertIcon, default: defaultIcon };
 const Modal = () => {
   const { NoteStore } = useNoteStore();
-  const { type, title, subTitle, buttons } = NoteStore.modalInfo;
+  const { type, title, subTitle, buttons, sharedInfo } = NoteStore.modalInfo;
 
   let el = ReactDom.createPortal(
     <>
@@ -28,6 +31,14 @@ const Modal = () => {
         <IconImg src={icon[type]} />
         <ModalTitle>{title}</ModalTitle>
         {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
+        {sharedInfo && sharedInfo.map(info => {
+          return (
+            <ModalSharedInfoCover key={info.title}>
+              <ModalSharedInfoTitle>{info.title}</ModalSharedInfoTitle>
+              <ModalSharedInfoContent>{info.content}</ModalSharedInfoContent>
+            </ModalSharedInfoCover>
+          )
+        })}
         <ButtonGroup>
           {buttons && buttons.map(button => {
             if (button.type === 'cancel') {
