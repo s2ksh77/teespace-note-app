@@ -18,16 +18,17 @@ import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile, handleLinkListener } from '../common/NoteFile';
-
+import NoteRepository from '../../store/noteRepository';
+import { downloadFile, driveCancelCb, driveSuccessCb, handleLinkListener } from '../common/NoteFile';
+import { DriveStore, DriveAttachModal } from 'teespace-drive-app';
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
 window.addEventListener('beforeunload', function (e) {
   if (!PageStore.isReadMode()) PageStore.handleSave();
 })
-
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useNoteStore();
+
   const editorWrapperRef = useRef(null);
 
   const getEditorContent = content => {
@@ -297,7 +298,8 @@ const EditorContainer = () => {
                       type: 'menuitem',
                       text: 'Drive에서 첨부',
                       onAction: function () {
-                        alert('기능 구현 중입니다.')
+                        // alert('기능 구현 중입니다.')
+                        EditorStore.setIsDrive(true);
                       }
                     }
                   ];
@@ -424,6 +426,10 @@ const EditorContainer = () => {
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
+        <DriveAttachModal visible={EditorStore.isDrive}
+          successCallback={driveSuccessCb}
+          cancelCallback={driveCancelCb}
+        />
       </EditorContainerWrapper>
     </>
   ));
