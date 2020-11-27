@@ -981,6 +981,38 @@ var NoteRepository = /*#__PURE__*/function () {
 
       return getSearchList;
     }()
+  }, {
+    key: "createFileMeta",
+    value: function () {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                _context18.next = 2;
+                return teespaceCore.API.post("note-api/noteFileMeta", {
+                  dto: {
+                    fileList: targetList
+                  }
+                });
+
+              case 2:
+                return _context18.abrupt("return", _context18.sent);
+
+              case 3:
+              case "end":
+                return _context18.stop();
+            }
+          }
+        }, _callee18);
+      }));
+
+      function createFileMeta(_x27) {
+        return _createFileMeta.apply(this, arguments);
+      }
+
+      return createFileMeta;
+    }()
   }]);
 
   return NoteRepository;
@@ -1688,6 +1720,7 @@ var EditorStore = mobx.observable((_observable = {
   imgElement: '',
   videoElement: '',
   isFile: false,
+  isDrive: false,
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -1726,6 +1759,9 @@ var EditorStore = mobx.observable((_observable = {
   },
   setVideoElement: function setVideoElement(element) {
     this.videoElement = element;
+  },
+  setIsDrive: function setIsDrive(flag) {
+    this.isDrive = flag;
   }
 }, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
@@ -1753,7 +1789,7 @@ var EditorStore = mobx.observable((_observable = {
                         }
 
                         _context.next = 4;
-                        return teespaceCore.API.Post("http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=" + dto.file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
+                        return teespaceCore.API.Post("http://dev.dev.wapl.ai/CMS/Storage/StorageFile?action=Create&fileID=" + dto.file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
                           headers: {
                             'Content-Type': 'multipart/form-data'
                           }
@@ -1841,6 +1877,36 @@ var EditorStore = mobx.observable((_observable = {
         }
       }
     }, _callee4);
+  }))();
+}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var createCopyArray, _yield$NoteRepository, dto;
+
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            createCopyArray = [];
+            fileArray.forEach(function (file) {
+              createCopyArray.push({
+                note_id: noteId,
+                file_id: file
+              });
+            });
+            _context5.next = 4;
+            return NoteRepository$1.createFileMeta(createCopyArray);
+
+          case 4:
+            _yield$NoteRepository = _context5.sent;
+            dto = _yield$NoteRepository.data.dto;
+            return _context5.abrupt("return", dto);
+
+          case 7:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
   }))();
 }), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
   this.fileList = fileList;
