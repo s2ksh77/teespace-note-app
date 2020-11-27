@@ -110,6 +110,27 @@ export const ModalSubTitle = styled.div`
   height: 0.813rem;
   color: #777777;
 `;
+
+export const ModalSharedInfoCover = styled.div`
+  width: 17.5rem;
+  font-size: 0.81rem;
+  color: #777777;
+`;
+
+export const ModalSharedInfoTitle = styled.span`
+  float: left;
+  font-weight: bold;
+`;
+
+export const ModalSharedInfoContent = styled.span`
+  width: 12rem;  
+  float: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+`;
+
 export const ButtonGroup = styled.div`
   display: flex;
   margin-top: auto;

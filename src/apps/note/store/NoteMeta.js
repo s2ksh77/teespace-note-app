@@ -19,6 +19,7 @@ const NoteMeta = {
       title: dialogType.title,
       subTitle: dialogType.subtitle ? dialogType.subtitle : null,
       buttons: buttonList,
+      sharedInfo: dialogType.info ? dialogType.info : null,
     }
   },
   setEventConfig(type) {
@@ -124,7 +125,11 @@ const NoteMeta = {
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
       case 'sharedInfo':
-        dialogType.subtitle = `출처 룸 ${sharedRoomName} 전달한 멤버 ${sharedUserName} 전달 날짜 ${sharedDate}`
+        dialogType.info = [
+          { title: '출처 룸', content: sharedRoomName },
+          { title: '전달한 멤버', content: sharedUserName },
+          { title: '전달 날짜', content: sharedDate }
+        ]
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
       default:
         break;
