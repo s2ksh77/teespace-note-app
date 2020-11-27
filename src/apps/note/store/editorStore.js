@@ -12,6 +12,7 @@ const EditorStore = observable({
   imgElement: '',
   videoElement: '',
   isFile: false,
+  isDrive: false,
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -51,12 +52,15 @@ const EditorStore = observable({
   setVideoElement(element) {
     this.videoElement = element;
   },
+  setIsDrive(flag) {
+    this.isDrive = flag;
+  },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
     await API.Post(NoteRepository.URL + "/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
       const { data: { dto } } = data;
 
       if (dto.file_id) {
-        await API.Post(`http://222.122.67.176:8080/CMS/Storage/StorageFile?action=Create&fileID=` + dto.file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
+        await API.Post(`http://dev.dev.wapl.ai/CMS/Storage/StorageFile?action=Create&fileID=` + dto.file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
           const { data: { dto } } = data
           if (dto.resultMsg === "Success") {
             if (typeof successCallback === "function") successCallback(dto, index);
@@ -90,6 +94,24 @@ const EditorStore = observable({
       }
     })
   },
+  /**
+   * drive에서 받은 file_id 들의 array
+   * @param {*} fileArray 
+   */
+  async createFileMeta(fileArray, noteId) {
+    const createCopyArray = [];
+    fileArray.forEach(file => {
+      createCopyArray.push({
+        note_id: noteId,
+        file_id: file,
+      })
+    })
+    const {
+      data: { dto },
+    } = await NoteRepository.createFileMeta(createCopyArray);
+    return dto;
+  },
+
   setFileList(fileList) {
     this.fileList = fileList;
     this.checkFile();

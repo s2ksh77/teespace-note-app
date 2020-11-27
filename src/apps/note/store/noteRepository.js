@@ -387,6 +387,13 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+  async createFileMeta(targetList) {
+    return await API.post(`note-api/noteFileMeta`, {
+      dto: {
+        fileList: targetList
+      }
+    });
+  }
 }
 
 export default new NoteRepository();

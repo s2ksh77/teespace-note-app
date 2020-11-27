@@ -35,14 +35,14 @@ export const handleFileUpload = async () => {
             EditorStore.uploadFileList[index].element.removeAttribute('temp-id');
             if (EditorStore.uploadFileList[index].element) {
                 if (EditorStore.uploadFileList[index].element.getAttribute('src')) {
-                    const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+                    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
                     EditorStore.uploadFileList[index].element.setAttribute('src', targetSRC);
                 }
                 if (EditorStore.uploadFileList[index].element.children[0]
                     && EditorStore.uploadFileList[index].element.children[0].children[0]
                     && EditorStore.uploadFileList[index].element.children[0].children[0].getAttribute('src')) {
-                        const targetSRC = `${NoteRepository.FILE_URL}Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-                        EditorStore.uploadFileList[index].element.children[0].children[0].setAttribute('src', targetSRC);
+                    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+                    EditorStore.uploadFileList[index].element.children[0].children[0].setAttribute('src', targetSRC);
                 }
             }
         }
@@ -180,19 +180,49 @@ const handleClickLink = (el) => {
 };
 
 export const handleLinkListener = () => {
-  if (EditorStore.tinymce) {
-    const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
-    if (targetList && targetList.length > 0) {
-        Array.from(targetList).forEach((el) => {
-            if (el.getAttribute('hasListener')) return;
-            el.addEventListener('click', handleClickLink.bind(null, el));
-            el.setAttribute('hasListener', true);
-        });
+    if (EditorStore.tinymce) {
+        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
+        if (targetList && targetList.length > 0) {
+            Array.from(targetList).forEach((el) => {
+                if (el.getAttribute('hasListener')) return;
+                el.addEventListener('click', handleClickLink.bind(null, el));
+                el.setAttribute('hasListener', true);
+            });
+        }
     }
-  }
 }
 
 export const handleFileSync = async () => {
     await handleFileUpload();
     await handleFileDelete();
+}
+
+export const handleImageListener = async () => {
+    if (EditorStore.tinymce && PageStore.isEdit) {
+        const targetImageList = await EditorStore.tinymce.dom.doc.images;
+        console.log(targetImageList);
+    }
+}
+
+export const driveSuccessCb = (fileList) => {
+    EditorStore.setIsDrive(false);
+    console.log('첨부버튼', fileList);
+    if (fileList) {
+        fileList.forEach(file => {
+            if (file.type === 'image') insertDriveImage(file.file_name, file.file_id, file.workspace_id, file.ch_id, file.user_id);
+            // !image 일경우 tempFileList로 넣는거 필요
+            // 여기서 뽑은 fileList 의 id 들 ( drive에 이미 올라간 file id) copy(?)array 하나 관리 필요
+        })
+    }
+    // 저장을 눌렀을때 copy(?)array 를 StorageFile?action=Copy&Type=(Deep) 으로 하나씩 날림
+    // 날리고 retrun 받은 id들을 또 temp array 에서 관리
+    // temp array ex [1,2,3,4,5] ----> EditorStore.createFileMeta(temparray, curpageId);
+}
+export const driveCancelCb = () => {
+    EditorStore.setIsDrive(false);
+}
+
+export const insertDriveImage = (fileName, fileId, roomId, chId, userId) => {
+    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${roomId}&channelID=${chId}&userID=${userId}`;
+    EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
 }
