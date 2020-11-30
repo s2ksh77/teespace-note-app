@@ -10,19 +10,19 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 import { exportChapterData, exportPageData } from "./NoteFile";
 
-const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pageTitle, nextSelectableChapterId, nextSelectablePageId, type }) => {
+const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const renameComponent = () => {
     // 이름을 변경한다.
     switch (noteType) {
       case "chapter":
-        ChapterStore.setRenameChapterId(chapterId);
-        ChapterStore.setRenameChapterText(chapterTitle);
+        ChapterStore.setRenameChapterId(chapter.id);
+        ChapterStore.setRenameChapterText(chapter.text);
         break;
       case "page":
-        PageStore.setRenamePageId(pageId);
-        PageStore.setRenamePageText(pageTitle);
+        PageStore.setRenamePageId(page.id);
+        PageStore.setRenamePageText(page.text);
         PageStore.setIsRename(true);
         break;
       default:
@@ -37,12 +37,12 @@ const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pa
 
     switch (noteType) {
       case "chapter":
-        ChapterStore.setDeleteChapterId(chapterId);
+        ChapterStore.setDeleteChapterId(chapter.id);
         NoteStore.setModalInfo('chapter');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
-        PageStore.setDeletePageList({ note_id: pageId });
+        PageStore.setDeletePageList({ note_id: page.id });
         PageStore.setDeleteParentIdx(chapterIdx);
         NoteStore.setModalInfo('page');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
@@ -55,13 +55,13 @@ const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pa
   const exportComponent = () => {
     switch (noteType) {
       case 'chapter':
-        ChapterStore.setExportId(chapterId);
-        ChapterStore.setExportTitle(chapterTitle);
+        ChapterStore.setExportId(chapter.id);
+        ChapterStore.setExportTitle(chapter.text);
         exportChapterData();
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
-        PageStore.setExportId(pageId);
+        PageStore.setExportId(page.id);
         exportPageData();
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
@@ -70,8 +70,8 @@ const ContextMenu = ({ noteType, chapterId, chapterIdx, pageId, chapterTitle, pa
   }
 
   const infoComponent = () => {
-    if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapterId);
-    else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, pageId);
+    if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapter.id);
+    else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, page.id);
   }
 
   const onClickContextMenu = ({ key, domEvent }) => {

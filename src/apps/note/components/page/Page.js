@@ -12,15 +12,15 @@ import {
   PageTextInput,
 } from '../../styles/pageStyle';
 
-const Page = ({ page, index, children, chapterId, chapterIdx, onClick }) => {
+const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, PageStore } = useNoteStore();
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: page.type === 'note' ? 'page' : 'shared_page' },
+    item: { id: page.id, type: page.type === 'note' ? 'page' : 'shared' },
     begin: (monitor) => {
       PageStore.setMovePageId(page.id);
       PageStore.setMovePageIdx(index);
-      PageStore.setMoveChapterId(chapterId);
+      PageStore.setMoveChapterId(chapter.id);
       PageStore.setMoveChapterIdx(chapterIdx);
 
       NoteStore.setIsDragging(true);
@@ -42,7 +42,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, onClick }) => {
   const [, drop] = useDrop({
     accept: 'page',
     drop: () => {
-      PageStore.movePage(chapterId, chapterIdx, children, index);
+      PageStore.movePage(chapter.id, chapterIdx, chapter.children, index);
     },
     hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx)
@@ -69,7 +69,7 @@ const Page = ({ page, index, children, chapterId, chapterIdx, onClick }) => {
 
   const handlePageTextInput = (isEscape) => {
     if (!isEscape) {
-      PageStore.renameNotePage(chapterId);
+      PageStore.renameNotePage(chapter.id);
       PageStore.setIsRename(false);
     }
 
@@ -141,15 +141,14 @@ const Page = ({ page, index, children, chapterId, chapterIdx, onClick }) => {
             <PageText>{page.text}</PageText>
             <ContextMenu
               noteType={'page'}
-              chapterId={chapterId}
+              chapter={chapter}
               chapterIdx={chapterIdx}
-              pageId={page.id}
-              pageTitle={page.text}
+              page={page}
               nextSelectablePageId={
-                children.length > 1
-                  ? children[0].id === page.id
-                    ? children[1].id
-                    : children[0].id
+                chapter.children.length > 1
+                  ? chapter.children[0].id === page.id
+                    ? chapter.children[1].id
+                    : chapter.children[0].id
                   : ''
               }
               type={page.type}

@@ -13,7 +13,7 @@ import {
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChapterText = ({ text, chapterId, type }) => {
+const ChapterText = ({ chapter }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
@@ -34,27 +34,26 @@ const ChapterText = ({ text, chapterId, type }) => {
     <>
       <ChapterTitle
         className={
-          !NoteStore.isDragging && chapterId === ChapterStore.currentChapterId
+          !NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId
             ? "selectedMenu"
             : ""
         }
       >
-        <ChapterTextSpan>{text}</ChapterTextSpan>
+        <ChapterTextSpan>{chapter.text}</ChapterTextSpan>
         <ContextMenu
           noteType={"chapter"}
-          chapterId={chapterId}
-          chapterTitle={text}
+          chapter={chapter}
           nextSelectableChapterId={
             ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 ? (
-              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id
+              ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id
             ) : ("")
           }
           nextSelectablePageId={
             ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? (
-              ChapterStore.chapterList[0].id === chapterId ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
+              ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
             ) : ("")
           }
-          type={type}
+          type={chapter.type}
         />
       </ChapterTitle>
       <ChapterFolderBtn>
