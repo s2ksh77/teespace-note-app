@@ -499,37 +499,32 @@ const ChapterStore = observable({
       page: resultPageArr
     });
   },
-  async createShareChapter(shareTargetRoomId, shareTargetList) {
-    const targetList = [];
-    // const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
-    // const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
 
-    // if (shareTargetList) {
-    //   shareTargetList.map(chapter => {
-    //     targetList.push(
-    //       {
-    //         id: chapter.id,
-    //         ws_id: NoteRepository.WS_ID,
-    //         note_channel_id: NoteRepository.chId,
-    //         text: chapter.text,
-    //         USER_ID: NoteRepository.USER_ID,
-    //         shared_user_id: NoteRepository.USER_ID,
-    //         shared_room_name: shareTargetRoomName,
-    //         target_workspace_id: shareTargetRoomId,
-    //         target_channel_id: shareTargetChId
-    //       }
-    //     )
-    //   })
-    // }
-    // await NoteRepository.createShareChapter(targetList).then(
-    //   (response) => {
-    //     if (response.status === 200) {
-    //       const {
-    //         data: { dto: notbookList },
-    //       } = response;
-    //     }
-    //   }
-    // );
+  async createShareChapter(targetList) {
+    const {
+      data: { dto }
+    } = await NoteRepository.createShareChapter(targetList);
+    return dto;
+  },
+
+  createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
+    if (!targetChapterList) return;
+    
+    const targetList = targetChapterList.map(chapter => {
+      return ({
+        id: chapter.id,
+        ws_id: NoteRepository.WS_ID,
+        note_channel_id: NoteRepository.chId,
+        text: chapter.text,
+        USER_ID: NoteRepository.USER_ID,
+        shared_user_id: NoteRepository.USER_ID,
+        shared_room_name: sharedRoomName,
+        target_workspace_id: targetRoomId,
+        target_channel_id: targetChId
+      });
+    });
+
+    this.createShareChapter(targetList).then(() => this.getNoteChapterList());
   },
 });
 
