@@ -444,7 +444,11 @@ const ChapterStore = observable({
 
     this.moveChapterIdx = '';
   },
-  // search 관련  
+  /* 
+    - search 관련
+    - 방 바꼈을 때 변수 init 필요
+    - 검색 후 방 바뀌었을 때 변수 init이 안됨
+  */
   async initSearchVar() {
     this.setIsSearching(false);
     this.setIsTagSearching(false);
@@ -458,9 +462,8 @@ const ChapterStore = observable({
     태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
     isSearching이 검색 시작 ~ 검색 결과 출력전까지임
   */
-  async fetchSearchResult(searchStr) {
+  async fetchSearchResult() {
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
-    this.setSearchStr(searchStr); // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
     await this.getSearchResult();
   },
   async getSearchResult() {

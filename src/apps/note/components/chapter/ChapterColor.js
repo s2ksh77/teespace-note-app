@@ -3,13 +3,13 @@ import { useObserver } from "mobx-react";
 import { ColorCover, Color } from "../../styles/chpaterStyle";
 
 const ChapterColor = ({ color }) => {
-  return useObserver(() => (
+  return (
     <>
       <ColorCover>
         <Color color={color} background={color} />
       </ColorCover>
     </>
-  ));
+  );
 };
 
 export default ChapterColor;

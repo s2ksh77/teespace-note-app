@@ -41,6 +41,8 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
 
   useEffect(() => {
     NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
+    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
+    ChapterStore.initSearchVar();
     if (channelId) ChapterStore.fetchChapterList();
     else ChapterStore.setChapterList([]);
   },[channelId]);
