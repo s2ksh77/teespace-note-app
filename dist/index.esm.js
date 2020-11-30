@@ -2750,46 +2750,46 @@ var PageStore = observable((_observable$1 = {
       }
     }
   }
-}), _defineProperty(_observable$1, "createSharePage", function createSharePage(shareTargetRoomId, shareTargetList) {// const shareTargetChId = roomStore.getChannelIds(shareTargetRoomId);
-  // const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
-  // if (shareTargetList) {
-  //   let targetList = [];
-  //   shareTargetList.map(page => {
-  //     targetList.push(
-  //       {
-  //         WS_ID: NoteRepository.WS_ID,
-  //         note_id: (page.note_id || page.id),
-  //         note_channel_id: NoteRepository.chId,
-  //         USER_ID: NoteRepository.USER_ID,
-  //         shared_user_id: NoteRepository.USER_ID,
-  //         shared_room_name: shareTargetRoomName,
-  //         target_workspace_id: shareTargetRoomId,
-  //         target_channel_id: shareTargetChId
-  //       }
-  //     )
-  //   })
-  // }
-  // await NoteRepository.createSharePage(targetList).then(
-  //   (response) => {
-  //     if (response.status === 200) {
-  //       const {
-  //         data: { dto: noteList },
-  //       } = response;
-  //     }
-  //   }
-  // );
-
+}), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+    var _yield$NoteRepository8, noteList;
+
     return regeneratorRuntime.wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
+            _context11.next = 2;
+            return NoteRepository$1.createSharePage(targetList);
+
+          case 2:
+            _yield$NoteRepository8 = _context11.sent;
+            noteList = _yield$NoteRepository8.data.dto.noteList;
+            return _context11.abrupt("return", noteList);
+
+          case 5:
           case "end":
             return _context11.stop();
         }
       }
     }, _callee11);
   }))();
+}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
+  if (!targetPageList) return;
+  var targetList = targetPageList.map(function (page) {
+    return {
+      WS_ID: NoteRepository$1.WS_ID,
+      note_id: page.note_id || page.id,
+      note_channel_id: NoteRepository$1.chId,
+      USER_ID: NoteRepository$1.USER_ID,
+      shared_user_id: NoteRepository$1.USER_ID,
+      shared_room_name: sharedRoomName,
+      target_workspace_id: targetRoomId,
+      target_channel_id: targetChId
+    };
+  });
+  this.createSharePage(targetList).then(function () {
+    return ChapterStore.getNoteChapterList();
+  });
 }), _observable$1));
 
 var _observable$2;
@@ -3498,47 +3498,49 @@ var ChapterStore = observable((_observable$2 = {
       }
     }, _callee11);
   }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(shareTargetRoomId, shareTargetList) {
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    var _yield$NoteRepository7, dto;
+
     return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
-            // const shareTargetRoomName = roomStore.getRoomName(shareTargetRoomId);
-            // if (shareTargetList) {
-            //   shareTargetList.map(chapter => {
-            //     targetList.push(
-            //       {
-            //         id: chapter.id,
-            //         ws_id: NoteRepository.WS_ID,
-            //         note_channel_id: NoteRepository.chId,
-            //         text: chapter.text,
-            //         USER_ID: NoteRepository.USER_ID,
-            //         shared_user_id: NoteRepository.USER_ID,
-            //         shared_room_name: shareTargetRoomName,
-            //         target_workspace_id: shareTargetRoomId,
-            //         target_channel_id: shareTargetChId
-            //       }
-            //     )
-            //   })
-            // }
-            // await NoteRepository.createShareChapter(targetList).then(
-            //   (response) => {
-            //     if (response.status === 200) {
-            //       const {
-            //         data: { dto: notbookList },
-            //       } = response;
-            //     }
-            //   }
-            // );
+            _context12.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
 
-          case 1:
+          case 2:
+            _yield$NoteRepository7 = _context12.sent;
+            dto = _yield$NoteRepository7.data.dto;
+            return _context12.abrupt("return", dto);
+
+          case 5:
           case "end":
             return _context12.stop();
         }
       }
     }, _callee12);
   }))();
+}), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
+  var _this13 = this;
+
+  if (!targetChapterList) return;
+  var targetList = targetChapterList.map(function (chapter) {
+    return {
+      id: chapter.id,
+      ws_id: NoteRepository$1.WS_ID,
+      note_channel_id: NoteRepository$1.chId,
+      text: chapter.text,
+      USER_ID: NoteRepository$1.USER_ID,
+      shared_user_id: NoteRepository$1.USER_ID,
+      shared_room_name: sharedRoomName,
+      target_workspace_id: targetRoomId,
+      target_channel_id: targetChId
+    };
+  });
+  this.createShareChapter(targetList).then(function () {
+    return _this13.getNoteChapterList();
+  });
 }), _observable$2));
 
 var NoteMeta = {
