@@ -6,19 +6,19 @@ import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
 import { handleLinkListener } from '../common/NoteFile';
 
-const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
+const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
 
   const [, drop] = useDrop({
     accept: 'page',
     drop: () => {
-      PageStore.movePage(chapterId, chapterIdx, children, children.length);
+      PageStore.movePage(chapter.id, chapterIdx, chapter.children, chapter.children.length);
     },
     hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx)
         PageStore.setDragEnterChapterIdx(chapterIdx);
-      if (PageStore.dragEnterPageIdx !== children.length)
-        PageStore.setDragEnterPageIdx(children.length);
+      if (PageStore.dragEnterPageIdx !== chapter.children.length)
+        PageStore.setDragEnterPageIdx(chapter.children.length);
     },
   });
 
@@ -37,7 +37,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
       return;
     }
     NoteStore.setShowPage(true);
-    ChapterStore.setCurrentChapterId(chapterId);
+    ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.setCurrentPageId(id);    
     PageStore.fetchCurrentPageData(id);
     handleLinkListener();
@@ -50,13 +50,12 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
     <>
       <Observer>
         {() =>
-          children.map((item, index) => (
+          chapter.children.map((item, index) => (
             <Page
               key={item.id}
               page={item}
               index={index}
-              children={children}
-              chapterId={chapterId}
+              chapter={chapter}
               chapterIdx={chapterIdx}
               onClick={handleSelectPage}
             />
@@ -68,7 +67,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
           <div style={{ height: '0px', marginLeft: '1.875rem' }}
             className={
               PageStore.dragEnterChapterIdx === chapterIdx &&
-                PageStore.dragEnterPageIdx === children.length
+                PageStore.dragEnterPageIdx === chapter.children.length
                 ? 'borderTopLine'
                 : ''
             }
@@ -80,7 +79,7 @@ const PageList = ({ showNewPage, children, chapterId, chapterIdx }) => {
         className={'page-li'}
         show={showNewPage}
       >
-        <NewPageBtn onClick={handleNewBtnClick(chapterId)}>
+        <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>
         </NewPageBtn>
       </NewPage>

@@ -149,16 +149,13 @@ const Chapter = ({ chapter, index }) => {
           />
         ) : (
             <ChapterText
-              text={chapter.text}
-              chapterId={chapter.id}
-              type={chapter.type}
+              chapter={chapter}
             />
           )}
       </ChapterCover>
       <PageList
         showNewPage={!['shared', 'shared_page'].includes(chapter.type)}
-        children={chapter.children}
-        chapterId={chapter.id}
+        chapter={chapter}
         chapterIdx={index}
       />
     </ChapterContainer>
