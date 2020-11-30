@@ -22,7 +22,6 @@ import {isFilled} from '../common/validators';
 const LNBHeader = ({ createNewChapter }) => {
   const { ChapterStore, PageStore } = useNoteStore();
   const inputRef = useRef(null);
-  const [searchStr, setSearchStr] = useState("");
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
@@ -45,17 +44,16 @@ const LNBHeader = ({ createNewChapter }) => {
 
   const onSubmitSearchBtn = async (e) => {
     e.preventDefault();
-    if (ChapterStore.isTagSearching || !isFilled(searchStr)) return;
-    await ChapterStore.fetchSearchResult(searchStr);
+    if (ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr)) return;
+    await ChapterStore.fetchSearchResult();
     inputRef.current.focus();
   }
 
   const onChangeInput = (e) => {
-    setSearchStr(e.target.value);
+    ChapterStore.setSearchStr(e.target.value);
   }
 
   const onClickCancelBtn = (e) => {
-    setSearchStr('');
     ChapterStore.initSearchVar();
   }
 
@@ -81,7 +79,7 @@ const LNBHeader = ({ createNewChapter }) => {
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
           <LnbTitleSearchInput
-            ref={inputRef} value={searchStr} onChange={onChangeInput}
+            ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
             placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
             disabled={ChapterStore.isTagSearching ? true : false} 
             onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
@@ -93,7 +91,7 @@ const LNBHeader = ({ createNewChapter }) => {
             </SearchTagChip> 
           ) :null}
           <Button src={cancelImg}
-            style={(ChapterStore.isSearching || searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
+            style={(ChapterStore.isSearching || ChapterStore.searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
