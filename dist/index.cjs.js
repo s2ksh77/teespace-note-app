@@ -3426,7 +3426,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
       }
     }, _callee9);
   }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult(searchStr) {
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
   var _this11 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
@@ -3437,13 +3437,10 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _this11.setIsSearching(true); // 검색 결과 출력 종료까지임
 
 
-            _this11.setSearchStr(searchStr); // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
-
-
-            _context10.next = 4;
+            _context10.next = 3;
             return _this11.getSearchResult();
 
-          case 4:
+          case 3:
           case "end":
             return _context10.stop();
         }
