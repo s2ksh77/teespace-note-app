@@ -4,7 +4,7 @@ import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
 import NoteMeta from './NoteMeta';
-import { WWMS } from 'teespace-core';
+import { WWMS, UserStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
@@ -111,14 +111,11 @@ const NoteStore = observable({
       type === 'chapter'
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
+    const sharedUser = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
 
     this.sharedInfo = {
-      sharedRoomName: (
-        noteInfo.shared_room_name === 'MySpace'
-          ? this.userName
-          : noteInfo.shared_room_name
-      ),
-      sharedUserName: noteInfo.shared_user_id,
+      sharedRoomName: noteInfo.shared_room_name,
+      sharedUserName: sharedUser.name,
       sharedDate: (
         !noteInfo.created_date
           ? PageStore.modifiedDateFormatting(noteInfo.shared_date)
