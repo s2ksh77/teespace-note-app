@@ -66,7 +66,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     // const targetRoomIds = [NoteRepository.WS_ID, ];
     // const sharedRoomName = roomStore.rooms[NoteRepository.WS_ID].name;
     // targetRoomIds.forEach(targetRoomId => {
-    //   const targetChId = roomStore.getChannelIds({ roomId: targetRoomId })['CHN0003'];
+    //   const targetChId = roomStore.getChannelIds({ roomId: targetRoomId })[NoteRepository.CH_TYPE];
     //   if (noteType === 'chapter')
     //     ChapterStore.createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, [chapter, ]);
     //   else if (noteType === 'page')
