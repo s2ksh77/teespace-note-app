@@ -3891,7 +3891,7 @@ var NoteStore = mobx.observable({
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var noteInfo;
+      var noteInfo, sharedUser;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -3918,15 +3918,22 @@ var NoteStore = mobx.observable({
 
             case 9:
               noteInfo = _context.t0;
+              _context.next = 12;
+              return teespaceCore.UserStore.getProfile({
+                userId: noteInfo.shared_user_id
+              });
+
+            case 12:
+              sharedUser = _context.sent;
               _this.sharedInfo = {
-                sharedRoomName: noteInfo.shared_room_name === 'MySpace' ? _this.userName : noteInfo.shared_room_name,
-                sharedUserName: noteInfo.shared_user_id,
+                sharedRoomName: noteInfo.shared_room_name,
+                sharedUserName: sharedUser.name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date) : PageStore.modifiedDateFormatting(noteInfo.created_date)
               };
 
               _this.setModalInfo('sharedInfo');
 
-            case 12:
+            case 15:
             case "end":
               return _context.stop();
           }
