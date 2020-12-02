@@ -124,6 +124,7 @@ const NoteMeta = {
         dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
+        break;
       case 'sharedInfo':
         dialogType.info = [
           { title: '출처 룸', content: sharedRoomName },
@@ -131,6 +132,7 @@ const NoteMeta = {
           { title: '전달 날짜', content: sharedDate }
         ]
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+        break;
       default:
         break;
     }
