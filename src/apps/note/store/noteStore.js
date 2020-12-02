@@ -24,6 +24,11 @@ const NoteStore = observable({
   draggedTitle: '',
   draggedOffset: {},
   sharedInfo: {},
+  initVariables() {
+    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
+    ChapterStore.initSearchVar();
+    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+  },
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
     this.workspaceId = wsId;

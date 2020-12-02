@@ -38,15 +38,8 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
   }, []);
-
-  useEffect(() => {
-    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, NoteStore.addWWMSHandler());
-    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
-    ChapterStore.initSearchVar();
-    if (channelId) ChapterStore.fetchChapterList();
-    else ChapterStore.setChapterList([]);
-  },[channelId]);
-
+  
+  // layoutState가 똑같은게 들어올 때는 타지 않음
   useEffect(() => {
     // collapse 아닐 때는 setTargetLayout(null) 넣어준다
     if (layoutState === 'collapse') {
@@ -64,6 +57,15 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     }
     NoteStore.setLayoutState(layoutState);
   }, [layoutState]);
+
+  useEffect(() => {
+    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, () => {
+      NoteStore.addWWMSHandler();
+      NoteStore.initVariables();
+    });    
+    if (channelId) ChapterStore.fetchChapterList();
+    else ChapterStore.setChapterList([]);
+  },[channelId]);
 
   return useObserver(() => (
     <>
