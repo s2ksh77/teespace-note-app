@@ -1805,6 +1805,7 @@ var EditorStore = mobx.observable((_observable = {
   deleteFileId: '',
   deleteFileName: '',
   deleteFileIndex: '',
+  uploadDTO: [],
   uploadFileList: [],
   deleteFileList: [],
   tempFileList: [],
@@ -1867,7 +1868,7 @@ var EditorStore = mobx.observable((_observable = {
                         }
 
                         _context.next = 4;
-                        return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + dto.log_file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
+                        return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + dto.log_file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + NoteRepository$1.chId + '&userID=' + NoteRepository$1.USER_ID, file, {
                           headers: {
                             'Content-Type': 'multipart/form-data'
                           }
@@ -2033,6 +2034,37 @@ var EditorStore = mobx.observable((_observable = {
   this.deleteFileId = id;
   this.deleteFileName = name;
   this.deleteFileIndex = index;
+}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(config, file, element) {
+  var fileName = config.fileName,
+      fileExtension = config.fileExtension,
+      fileSize = config.fileSize;
+  var uploadMeta = {
+    "dto": {
+      "workspace_id": NoteRepository$1.WS_ID,
+      "channel_id": NoteRepository$1.chId,
+      "storageFileInfo": {
+        "user_id": NoteRepository$1.USER_ID,
+        "file_last_update_user_id": NoteRepository$1.USER_ID,
+        "file_id": '',
+        "file_name": fileName,
+        "file_extension": fileExtension,
+        "file_created_at": '',
+        "file_updated_at": '',
+        "file_size": fileSize,
+        "user_context_1": PageStore.currentPageId,
+        "user_context_2": '',
+        "user_context_3": ''
+      }
+    }
+  };
+  var uploadArr = {
+    uploadMeta: uploadMeta,
+    file: file,
+    element: element
+  };
+  this.setUploadDTO(uploadArr);
+}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
+  this.uploadDTO = meta;
 }), _defineProperty(_observable, "setUploadFileMeta", function setUploadFileMeta(type, tempId, config, file, element) {
   var fileName = config.fileName,
       fileExtension = config.fileExtension,
