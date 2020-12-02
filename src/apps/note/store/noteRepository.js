@@ -326,6 +326,20 @@ class NoteRepository {
     }
   }
 
+  async storageFileDeepCopy(fileId) {
+    const targetSRC = `${this.FILE_URL}/Storage/StorageFile?action=Copy&Type=Deep`;
+    return API.Put(targetSRC, {
+      dto: {
+        workspace_id: this.WS_ID,
+        channel_id: this.chId,
+        storageFileInfo: {
+            user_id: this.USER_ID,
+            file_id: fileId
+        }
+      }
+    })
+  }
+
   deleteFile(deleteFileId) {
     return API.put(`note-api/noteFile?action=Delete`, {
       dto: {
