@@ -887,6 +887,41 @@ var NoteRepository = /*#__PURE__*/function () {
       return updateTag;
     }()
   }, {
+    key: "storageFileDeepCopy",
+    value: function () {
+      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(fileId) {
+        var targetSRC;
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                targetSRC = "".concat(this.FILE_URL, "/Storage/StorageFile?action=Copy&Type=Deep");
+                return _context17.abrupt("return", teespaceCore.API.Put(targetSRC, {
+                  dto: {
+                    workspace_id: this.WS_ID,
+                    channel_id: this.chId,
+                    storageFileInfo: {
+                      user_id: this.USER_ID,
+                      file_id: fileId
+                    }
+                  }
+                }));
+
+              case 2:
+              case "end":
+                return _context17.stop();
+            }
+          }
+        }, _callee17, this);
+      }));
+
+      function storageFileDeepCopy(_x26) {
+        return _storageFileDeepCopy.apply(this, arguments);
+      }
+
+      return storageFileDeepCopy;
+    }()
+  }, {
     key: "deleteFile",
     value: function deleteFile(deleteFileId) {
       return teespaceCore.API.put("note-api/noteFile?action=Delete", {
@@ -950,32 +985,32 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getSearchList",
     value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(searchKey) {
-        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(searchKey) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
           while (1) {
-            switch (_context17.prev = _context17.next) {
+            switch (_context18.prev = _context18.next) {
               case 0:
-                _context17.prev = 0;
-                _context17.next = 3;
+                _context18.prev = 0;
+                _context18.next = 3;
                 return teespaceCore.API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
 
               case 3:
-                return _context17.abrupt("return", _context17.sent);
+                return _context18.abrupt("return", _context18.sent);
 
               case 6:
-                _context17.prev = 6;
-                _context17.t0 = _context17["catch"](0);
-                throw Error(JSON.stringify(_context17.t0));
+                _context18.prev = 6;
+                _context18.t0 = _context18["catch"](0);
+                throw Error(JSON.stringify(_context18.t0));
 
               case 9:
               case "end":
-                return _context17.stop();
+                return _context18.stop();
             }
           }
-        }, _callee17, this, [[0, 6]]);
+        }, _callee18, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x26) {
+      function getSearchList(_x27) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -984,12 +1019,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createFileMeta",
     value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(targetList) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context19.prev = _context19.next) {
               case 0:
-                _context18.next = 2;
+                _context19.next = 2;
                 return teespaceCore.API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -997,17 +1032,17 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context18.abrupt("return", _context18.sent);
+                return _context19.abrupt("return", _context19.sent);
 
               case 3:
               case "end":
-                return _context18.stop();
+                return _context19.stop();
             }
           }
-        }, _callee18);
+        }, _callee19);
       }));
 
-      function createFileMeta(_x27) {
+      function createFileMeta(_x28) {
         return _createFileMeta.apply(this, arguments);
       }
 
