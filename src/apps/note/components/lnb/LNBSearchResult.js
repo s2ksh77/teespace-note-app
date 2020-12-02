@@ -18,6 +18,7 @@ const LNBSearchResult = () => {
     PageStore.setCurrentPageId(pageId);    
     PageStore.fetchCurrentPageData(pageId);
     ChapterStore.initSearchVar();
+    await ChapterStore.getNoteChapterList();
     NoteStore.setShowPage(true);
     ChapterStore.setScrollIntoViewId(chapterId);
   }
