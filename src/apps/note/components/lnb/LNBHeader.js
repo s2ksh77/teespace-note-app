@@ -55,11 +55,13 @@ const LNBHeader = ({ createNewChapter }) => {
 
   const onClickCancelBtn = (e) => {
     ChapterStore.initSearchVar();
+    ChapterStore.getNoteChapterList();
   }
 
   // 태그칩에 있는 취소 버튼
   const cancelSearchingTagNote = (e) => {
     ChapterStore.initSearchVar();
+    ChapterStore.getNoteChapterList();
   }
 
   // e.target에서 filtering하려고 data-btn 속성 추가

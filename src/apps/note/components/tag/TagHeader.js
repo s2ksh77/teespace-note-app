@@ -24,6 +24,7 @@ const TagHeader = () => {
   const handleLayoutBtn = () => {
     NoteStore.setTargetLayout('LNB');
     ChapterStore.initSearchVar();
+    ChapterStore.getNoteChapterList();
   }
 
   const onSubmitForm = e => {

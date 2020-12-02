@@ -468,12 +468,11 @@ const ChapterStore = observable({
     - 방 바꼈을 때 변수 init 필요
     - 검색 후 방 바뀌었을 때 변수 init이 안됨
   */
-  async initSearchVar() {
+  initSearchVar() {
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
     this.setSearchStr("");
-    await this.getNoteChapterList();
   },
   /*
     태그와 챕터리스트 isSearching이 다름
