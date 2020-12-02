@@ -104,8 +104,8 @@ export const handleFileDelete = async () => {
     }
 }
 export const downloadFile = (fileId) => {
-    if (fileId) {
-        window.open(NoteRepository.FILE_URL + "Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
+    if (fileId) {      
+        window.open(NoteRepository.FILE_URL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
             "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
         return;
     }
