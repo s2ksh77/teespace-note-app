@@ -56,11 +56,11 @@ const EditorStore = observable({
     this.isDrive = flag;
   },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
-    await API.Post(NoteRepository.URL + "/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
+    await API.post("note-api/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
       const { data: { dto } } = data;
 
-      if (dto.file_id) {
-        await API.Post(`http://dev.dev.wapl.ai/CMS/Storage/StorageFile?action=Create&fileID=` + dto.file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
+      if (dto.log_file_id) {
+        await API.post(`Storage/StorageFile?action=Create&fileID=` + dto.log_file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
           const { data: { dto } } = data
           if (dto.resultMsg === "Success") {
             if (typeof successCallback === "function") successCallback(dto, index);
