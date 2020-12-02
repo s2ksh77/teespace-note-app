@@ -19,6 +19,7 @@ const EditorStore = observable({
   deleteFileId: '',
   deleteFileName: '',
   deleteFileIndex: '',
+  uploadDTO: [],
   uploadFileList: [],
   deleteFileList: [],
   tempFileList: [],
@@ -60,7 +61,7 @@ const EditorStore = observable({
       const { data: { dto } } = data;
 
       if (dto.log_file_id) {
-        await API.post(`Storage/StorageFile?action=Create&fileID=` + dto.log_file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
+        await API.post(`Storage/StorageFile?action=Create&fileID=` + dto.log_file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + NoteRepository.chId + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
           const { data: { dto } } = data
           if (dto.resultMsg === "Success") {
             if (typeof successCallback === "function") successCallback(dto, index);
@@ -167,6 +168,38 @@ const EditorStore = observable({
     this.deleteFileId = id;
     this.deleteFileName = name;
     this.deleteFileIndex = index;
+  },
+  setUploadFileDTO(config, file, element) {
+    const { fileName, fileExtension, fileSize } = config;
+    const uploadMeta = {
+      "dto":
+      {
+        "workspace_id": NoteRepository.WS_ID,
+        "channel_id": NoteRepository.chId,
+        "storageFileInfo": {
+          "user_id": NoteRepository.USER_ID,
+          "file_last_update_user_id": NoteRepository.USER_ID,
+          "file_id": '',
+          "file_name": fileName,
+          "file_extension": fileExtension,
+          "file_created_at": '',
+          "file_updated_at": '',
+          "file_size": fileSize,
+          "user_context_1": PageStore.currentPageId,
+          "user_context_2": '',
+          "user_context_3": ''
+        }
+      }
+    };
+    const uploadArr = {
+      uploadMeta,
+      file,
+      element
+    };
+    this.setUploadDTO(uploadArr);
+  },
+  setUploadDTO(meta) {
+    this.uploadDTO = meta;
   },
   setUploadFileMeta(type, tempId, config, file, element) {
     const { fileName, fileExtension, fileSize } = config;

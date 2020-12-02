@@ -7,6 +7,51 @@ import NoteRepository from '../../store/noteRepository';
 import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 
+export const handleUpload = () => {
+    if (EditorStore.uploadDTO) {
+        const _success = (data) => {
+            if (data.resultMsg === 'Success') {
+                if (EditorStore.uploadDTO.element) replaceTempFileId(EditorStore.uploadDTO.element, data.storageFileInfoList[0].file_id);
+                EditorStore.setUploadDTO([]);
+                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                    EditorStore.setFileList(
+                        dto.fileList,
+                    );
+                });
+            } else if (data.resultMsg === 'Fail') {
+                EditorStore.uploadDTO.element.remove();
+            }
+        }
+        const _failure = e => {
+            console.warn('error ---> ', e);
+        };
+        try {
+            EditorStore.uploadFile(EditorStore.uploadDTO.uploadMeta, EditorStore.uploadDTO.file, _success, _failure)
+        } catch (e) {
+            console.warn('error ---> ', e);
+        } finally { }
+    }
+}
+
+export const handleDriveCopy = () => {
+
+}
+export const replaceTempFileId = (node, fileId) => {
+    if (!node) return;
+    node.setAttribute('id', fileId);
+    node.removeAttribute('temp-id');
+    if (node.getAttribute('src')) {
+        const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+        node.setAttribute('src', targetSRC);
+    }
+    if (node.children[0]
+        && node.children[0].children[0]
+        && node.children[0].children[0].getAttribute('src')) {
+        const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+        node.children[0].children[0].setAttribute('src', targetSRC);
+    }
+}
+
 export const handleFileUpload = async () => {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
@@ -104,7 +149,7 @@ export const handleFileDelete = async () => {
     }
 }
 export const downloadFile = (fileId) => {
-    if (fileId) {      
+    if (fileId) {
         window.open(NoteRepository.FILE_URL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
             "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
         return;
