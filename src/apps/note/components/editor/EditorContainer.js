@@ -19,7 +19,7 @@ import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
 import NoteRepository from '../../store/noteRepository';
-import { downloadFile, driveCancelCb, driveSuccessCb, handleLinkListener } from '../common/NoteFile';
+import { downloadFile, driveCancelCb, driveSuccessCb, handleLinkListener, handleUpload } from '../common/NoteFile';
 import { DriveStore, DriveAttachModal } from 'teespace-drive-app';
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -63,25 +63,29 @@ const EditorContainer = () => {
 
     if (isImage) {
       const currentImg = EditorStore.getImgElement();
-      const tempArr = currentImg.getAttribute('src').split('/');
-      const tempId = tempArr[tempArr.length - 1];
-      EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
-      currentImg.setAttribute('temp-id', tempId);
+      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, currentImg);
+      // const tempArr = currentImg.getAttribute('src').split('/');
+      // const tempId = tempArr[tempArr.length - 1];
+      // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
+      // currentImg.setAttribute('temp-id', tempId);
     }
     else if (isVideo) {
       const currentVideo = EditorStore.getVideoElement();
-      const tempId = Math.random().toString(36).substr(2, 8);
-      EditorStore.setUploadFileMeta('video', tempId, { fileName, fileExtension, fileSize }, fd, currentVideo);
-      currentVideo.setAttribute('temp-id', tempId);
+      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, currentVideo);
+      // const tempId = Math.random().toString(36).substr(2, 8);
+      // EditorStore.setUploadFileMeta('video', tempId, { fileName, fileExtension, fileSize }, fd, currentVideo);
+      // currentVideo.setAttribute('temp-id', tempId);
     }
     else {
-      const tempId = Math.random().toString(36).substr(2, 8);
-      EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
-      const currentFile = document.getElementById(tempId);
-      // 실제 업로드 data set
-      EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
-      currentFile.setAttribute('temp-id', tempId);
+      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd);
+      // const tempId = Math.random().toString(36).substr(2, 8);
+      // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
+      // const currentFile = document.getElementById(tempId);
+      // // 실제 업로드 data set
+      // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
+      // currentFile.setAttribute('temp-id', tempId);
     }
+    handleUpload();
   };
 
   const handleFileBlob = (type) => {
