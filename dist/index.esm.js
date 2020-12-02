@@ -1766,7 +1766,7 @@ var EditorStore = observable((_observable = {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return API.Post(NoteRepository$1.URL + "/noteFile", JSON.stringify(dto), {
+            return API.post("note-api/noteFile", JSON.stringify(dto), {
               headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
               }
@@ -1779,13 +1779,13 @@ var EditorStore = observable((_observable = {
                       case 0:
                         dto = data.data.dto;
 
-                        if (!dto.file_id) {
+                        if (!dto.log_file_id) {
                           _context.next = 4;
                           break;
                         }
 
                         _context.next = 4;
-                        return API.Post("http://dev.dev.wapl.ai/CMS/Storage/StorageFile?action=Create&fileID=" + dto.file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
+                        return API.post("Storage/StorageFile?action=Create&fileID=" + dto.log_file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + dto.ch_id + '&userID=' + NoteRepository$1.USER_ID, file, {
                           headers: {
                             'Content-Type': 'multipart/form-data'
                           }
