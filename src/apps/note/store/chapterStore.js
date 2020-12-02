@@ -147,6 +147,7 @@ const ChapterStore = observable({
     const COLOR_ARRAY = Object.values(this.colorArray);
     this.isNewChapterColor =
       COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
+    return this.isNewChapterColor;
   },
   getChapterColor(chapterId) {
     const { value } = NoteRepository.getChapterColor(chapterId);
@@ -231,6 +232,11 @@ const ChapterStore = observable({
   },
   async renameChapter(renameId, renameText, color) {
     const { dto } = await NoteRepository.renameChapter(renameId, renameText, color)
+    return dto;
+  },
+  async updateChapterColor(chapterId) {    
+    const targetColor = this.getChapterRandomColor();
+    const { dto } = await NoteRepository.updateChapterColor(chapterId, targetColor)
     return dto;
   },
   async getChapterChildren(chapterId) {
@@ -367,6 +373,18 @@ const ChapterStore = observable({
       PageStore.fetchCurrentPageData(pageId);
     }
   },
+  
+  async checkDefaultChapterColor(notbookList) {
+    const idx = notbookList.findIndex(chapter => chapter.type === "default");
+    if (idx === -1) return notbookList;
+    const defaultChapter = notbookList.splice(idx,1);
+    if (defaultChapter[0]?.color === null) {
+      const {color} = await this.updateChapterColor(defaultChapter[0].id);
+      defaultChapter[0].color = color;
+      return notbookList.concat(defaultChapter);
+    }
+    return notbookList;
+  },
 
   async getNoteChapterList() {
     const notbookList = await this.getChapterList();
@@ -377,6 +395,7 @@ const ChapterStore = observable({
     let tempChapterList = [];
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
+      tempChapterList = await this.checkDefaultChapterColor(tempChapterList);
       this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
     }
     else {

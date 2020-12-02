@@ -112,6 +112,19 @@ class NoteRepository {
     );
     return data.color;
   }
+  async updateChapterColor(chapterId, targetColor) {
+    try {
+      const {data} = await API.put(`note-api/notebooks?action=Update`, {
+        dto: {
+          id : chapterId,
+          color: targetColor
+        }
+      })
+      return data;
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 
   getChapterText(chapterId) {
     const { data } = API.Get(
