@@ -120,6 +120,11 @@ const FileLayout = () => {
         }
     }, []);
 
+    const handleClickDropDown = (fileId) => (e) => {
+      e.stopPropagation(); 
+      EditorStore.setDownLoadFileId(fileId);
+    }
+
     return useObserver(() => (
         <>
             <FileBodyLayout id='fileLayout'>
@@ -133,7 +138,7 @@ const FileLayout = () => {
                         onMouseEnter={handleMouseHover.bind(null, item.file_id)}
                         onMouseLeave={handleMouseLeave}>
                         <FileContent>
-                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={(e) => { e.stopPropagation(); EditorStore.setDownLoadFileId(item.file_id) }} >
+                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
                                 <FileDownloadIcon>
                                     {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>

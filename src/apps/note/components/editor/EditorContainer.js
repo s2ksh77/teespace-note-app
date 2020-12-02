@@ -414,7 +414,7 @@ const EditorContainer = () => {
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: 'ko_KR',
             toolbar_drawer: false,
-            paste_data_images: true,
+            paste_data_images: true, // add images by drag and drop
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: editorContentCSS
