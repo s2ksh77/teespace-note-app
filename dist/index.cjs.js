@@ -3762,6 +3762,7 @@ var NoteMeta = {
         dialogType.title = "\uC120\uD0DD\uD55C ".concat(EditorStore.tinymce.selection.getNode().getAttribute('data-name'), " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
+        break;
 
       case 'sharedInfo':
         dialogType.info = [{
@@ -3775,6 +3776,7 @@ var NoteMeta = {
           content: sharedDate
         }];
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+        break;
     }
 
     return dialogType;
