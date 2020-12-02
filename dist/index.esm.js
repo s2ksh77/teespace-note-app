@@ -3566,6 +3566,11 @@ var ChapterStore = observable((_observable$2 = {
 
   this.moveChapterIdx = '';
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
+  this.setIsSearching(false);
+  this.setIsTagSearching(false);
+  this.setSearchResult({});
+  this.setSearchStr("");
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
   var _this12 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
@@ -3573,66 +3578,40 @@ var ChapterStore = observable((_observable$2 = {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
-            _this12.setIsSearching(false);
+            _this12.setIsSearching(true); // 검색 결과 출력 종료까지임
 
-            _this12.setIsTagSearching(false);
 
-            _this12.setSearchResult({});
+            _context11.next = 3;
+            return _this12.getSearchResult();
 
-            _this12.setSearchStr("");
-
-            _context11.next = 6;
-            return _this12.getNoteChapterList();
-
-          case 6:
+          case 3:
           case "end":
             return _context11.stop();
         }
       }
     }, _callee11);
   }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
   var _this13 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    var chapterList, resultChapterArr, resultPageArr;
     return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
-            _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
-
+            _this13.setSearchResult({});
 
             _context12.next = 3;
-            return _this13.getSearchResult();
+            return _this13.getChapterList();
 
           case 3:
-          case "end":
-            return _context12.stop();
-        }
-      }
-    }, _callee12);
-  }))();
-}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
-  var _this14 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-    var chapterList, resultChapterArr, resultPageArr;
-    return regeneratorRuntime.wrap(function _callee13$(_context13) {
-      while (1) {
-        switch (_context13.prev = _context13.next) {
-          case 0:
-            _this14.setSearchResult({});
-
-            _context13.next = 3;
-            return _this14.getChapterList();
-
-          case 3:
-            chapterList = _context13.sent;
+            chapterList = _context12.sent;
             // searchResult 만들기
             resultChapterArr = [], resultPageArr = [];
             chapterList.map(function (chapter) {
               // chapter 저장
-              if (chapter.text.includes(_this14.searchStr)) {
+              if (chapter.text.includes(_this13.searchStr)) {
                 resultChapterArr.push({
                   id: chapter.id,
                   title: chapter.text,
@@ -3644,7 +3623,7 @@ var ChapterStore = observable((_observable$2 = {
 
 
               chapter.children.map(function (page) {
-                if (page.text.includes(_this14.searchStr)) {
+                if (page.text.includes(_this13.searchStr)) {
                   resultPageArr.push({
                     chapterId: chapter.id,
                     chapterTitle: chapter.text,
@@ -3655,43 +3634,43 @@ var ChapterStore = observable((_observable$2 = {
               });
             });
 
-            _this14.setSearchResult({
+            _this13.setSearchResult({
               chapter: resultChapterArr,
               page: resultPageArr
             });
 
           case 7:
           case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12);
+  }))();
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    var _yield$NoteRepository8, dto;
+
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
+
+          case 2:
+            _yield$NoteRepository8 = _context13.sent;
+            dto = _yield$NoteRepository8.data.dto;
+            return _context13.abrupt("return", dto);
+
+          case 5:
+          case "end":
             return _context13.stop();
         }
       }
     }, _callee13);
   }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-    var _yield$NoteRepository8, dto;
-
-    return regeneratorRuntime.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            _context14.next = 2;
-            return NoteRepository$1.createShareChapter(targetList);
-
-          case 2:
-            _yield$NoteRepository8 = _context14.sent;
-            dto = _yield$NoteRepository8.data.dto;
-            return _context14.abrupt("return", dto);
-
-          case 5:
-          case "end":
-            return _context14.stop();
-        }
-      }
-    }, _callee14);
-  }))();
 }), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
-  var _this15 = this;
+  var _this14 = this;
 
   if (!targetChapterList) return;
   var targetList = targetChapterList.map(function (chapter) {
@@ -3708,7 +3687,7 @@ var ChapterStore = observable((_observable$2 = {
     };
   });
   this.createShareChapter(targetList).then(function () {
-    return _this15.getNoteChapterList();
+    return _this14.getNoteChapterList();
   });
 }), _observable$2));
 
@@ -3971,6 +3950,11 @@ var NoteStore = observable({
   draggedTitle: '',
   draggedOffset: {},
   sharedInfo: {},
+  initVariables: function initVariables() {
+    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
+    ChapterStore.initSearchVar();
+    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+  },
   setWsId: function setWsId(wsId) {
     NoteRepository$1.setWsId(wsId);
     this.workspaceId = wsId;
