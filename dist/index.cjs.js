@@ -2969,6 +2969,11 @@ var _observable$2;
 var ChapterStore = mobx.observable((_observable$2 = {
   chapterColor: "",
   chapterList: [],
+  sortedChapterList: {
+    roomChapterList: [],
+    sharedPageList: [],
+    sharedChapterList: []
+  },
   currentChapterId: "",
   chapterNewTitle: "",
   isNewChapterColor: "",
@@ -3205,6 +3210,12 @@ var ChapterStore = mobx.observable((_observable$2 = {
   },
   setChapterList: function setChapterList(chapterList) {
     this.chapterList = chapterList;
+  },
+  getSortedChapterList: function getSortedChapterList() {
+    return this.sortedChapterList;
+  },
+  setSortedChapterList: function setSortedChapterList(obj) {
+    this.sortedChapterList = obj;
   },
   createChapter: function createChapter(chapterTitle, chapterColor) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
@@ -3570,7 +3581,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
             tempChapterList = notbookList.filter(function (chapter) {
               return chapter.type === 'notebook' || chapter.type === 'default';
-            });
+            }); // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
+
             _context10.next = 11;
             return _this8.checkDefaultChapterColor(tempChapterList);
 
@@ -3588,16 +3600,31 @@ var ChapterStore = mobx.observable((_observable$2 = {
             tempChapterList = _this8.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
 
           case 17:
-            _this8.chapterList = tempChapterList.concat(sharedList);
+            _this8.chapterList = tempChapterList.concat(sharedList); // component에서 render하기 좋도록 category 분류하기
+
+            _this8.sortChapterList();
+
             return _context10.abrupt("return", _this8.chapterList);
 
-          case 19:
+          case 20:
           case "end":
             return _context10.stop();
         }
       }
     }, _callee10);
   }))();
+}), _defineProperty(_observable$2, "sortChapterList", function sortChapterList() {
+  var _roomChapterList = [],
+      _sharedPageList = [],
+      _sharedChapterList = [];
+  this.chapterList.forEach(function (chapter) {
+    if (chapter.type === "shared_page") _sharedPageList.push(chapter);else if (chapter.type === 'shared') _sharedChapterList.push(chapter);else _roomChapterList.push(chapter);
+  });
+  this.setSortedChapterList({
+    roomChapterList: _roomChapterList,
+    sharedPageList: _sharedPageList,
+    sharedChapterList: _sharedChapterList
+  });
 }), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
   var _this9 = this;
 
