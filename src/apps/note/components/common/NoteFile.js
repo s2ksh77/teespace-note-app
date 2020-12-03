@@ -35,12 +35,9 @@ export const handleUpload = () => {
 export const driveSuccessCb = (fileList) => {
     console.log('첨부버튼', fileList);
     if (fileList) {
-        fileList.forEach(file => {
-            EditorStore.addDriveFileList(file);
-        }).then(() => {
-            handleDriveCopy();
-            EditorStore.setIsDrive(false);
-        })
+        fileList.forEach(file => EditorStore.addDriveFileList(file));
+        handleDriveCopy();
+        EditorStore.setIsDrive(false);
     }
 }
 export const driveCancelCb = () => {
