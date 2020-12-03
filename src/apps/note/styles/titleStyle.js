@@ -45,6 +45,7 @@ export const EditBtn = styled.button`
 export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
+  height:100%;
   outline: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -54,7 +55,7 @@ export const EditorTitle = styled.input`
   background-image: none;
   border-radius: 0.125rem;
   color: inherit;
-  font-size: inherit;
+  font-size: 0.875rem;
   font-style: inherit;
   font-weight: inherit;
   background-color: #ffffff;

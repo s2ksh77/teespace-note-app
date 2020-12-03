@@ -14,6 +14,7 @@ export const LNBChapterCover = styled.div`
 `;
 
 export const LNBNewChapter = styled.div`
+  position:relative;
   user-select: none;
   margin: 0rem 0.81rem;
   padding: 0rem;
