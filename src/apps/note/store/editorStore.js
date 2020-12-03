@@ -26,6 +26,7 @@ const EditorStore = observable({
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  driveFileList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -82,6 +83,9 @@ const EditorStore = observable({
     this.fileLayoutList.splice(this.deleteFileIndex, 1);
     if (this.fileLayoutList.length === 0) this.setIsFile(false);
   },
+  addDriveFileList(fileInfo) {
+    this.driveFileList.push(fileInfo);
+  },
   async deleteFile(deleteId) {
     await NoteRepository.deleteFile(deleteId).then(response => {
       const { data: { dto } } = response;
@@ -95,24 +99,6 @@ const EditorStore = observable({
       }
     })
   },
-  /**
-   * drive에서 받은 file_id 들의 array
-   * @param {*} fileArray 
-   */
-  async createFileMeta(fileArray, noteId) {
-    const createCopyArray = [];
-    fileArray.forEach(file => {
-      createCopyArray.push({
-        note_id: noteId,
-        file_id: file,
-      })
-    })
-    const {
-      data: { dto },
-    } = await NoteRepository.createFileMeta(createCopyArray);
-    return dto;
-  },
-
   setFileList(fileList) {
     this.fileList = fileList;
     this.checkFile();
@@ -286,6 +272,55 @@ const EditorStore = observable({
     this.tinymce.focus();
     NoteStore.setModalInfo(null);
   },
+  /**
+   * drive에서 받은 file_id 들의 array
+   * @param {*} fileArray 
+  */
+  async createFileMeta(fileArray, noteId) {
+    const createCopyArray = [];
+    fileArray.forEach(file => {
+      createCopyArray.push({
+        note_id: noteId,
+        file_id: file,
+      })
+    })
+    const {
+      data: { dto },
+    } = await NoteRepository.createFileMeta(createCopyArray);
+    return dto;
+  },
+  async storageFileDeepCopy(fileId, type) {
+    const retrunFileId = '';
+    const {
+      data: { dto }
+    } = await NoteRepository.storageFileDeepCopy(fileId);
+    if (dto.resultMsg === 'Success') {
+      retrunFileId = dto.storageFileInfoList[0].file_id;
+      createDriveElement(type, retrunFileId);
+    }
+    return retrunFileId;
+  },
+  createDriveElement(type, fileId) {
+    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+    switch (type) {
+      case 'image':
+        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '"/>')
+        break;
+      case 'video':
+        EditorStore.tinymce.insertContent(
+          `<p>
+            <span class="mce-preview-object mce-object-video" contenteditable="false" data-mce-object="video" data-mce-p-allowfullscreen="allowfullscreen" data-mce-p-frameborder="no" data-mce-p-scrolling="no" data-mce-p-src='' data-mce-html="%20">
+              <video width="400" controls>
+                <source src=${targetSRC} />
+              </video>
+            </span>
+          </p>`
+        );
+        break;
+      default:
+        break;
+    }
+  }
 });
 
 export default EditorStore;

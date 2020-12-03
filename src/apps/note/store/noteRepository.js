@@ -114,9 +114,9 @@ class NoteRepository {
   }
   async updateChapterColor(chapterId, targetColor) {
     try {
-      const {data} = await API.put(`note-api/notebooks?action=Update`, {
+      const { data } = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
-          id : chapterId,
+          id: chapterId,
           color: targetColor
         }
       })
@@ -341,16 +341,20 @@ class NoteRepository {
 
   async storageFileDeepCopy(fileId) {
     const targetSRC = `${this.FILE_URL}/Storage/StorageFile?action=Copy&Type=Deep`;
-    return API.Put(targetSRC, {
-      dto: {
-        workspace_id: this.WS_ID,
-        channel_id: this.chId,
-        storageFileInfo: {
+    try {
+      return await API.put(targetSRC, {
+        dto: {
+          workspace_id: this.WS_ID,
+          channel_id: this.chId,
+          storageFileInfo: {
             user_id: this.USER_ID,
             file_id: fileId
+          }
         }
-      }
-    })
+      })
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   deleteFile(deleteFileId) {
