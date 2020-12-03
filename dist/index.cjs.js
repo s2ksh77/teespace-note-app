@@ -1963,7 +1963,7 @@ var EditorStore = mobx.observable((_observable = {
               var dto = response.data.dto;
 
               if (dto.resultMsg === 'Success') {
-                ChapterStore.getChapterList();
+                ChapterStore.getNoteChapterList();
               }
             });
 
@@ -2590,13 +2590,13 @@ var PageStore = mobx.observable((_observable$1 = {
       }
 
       if (_this2.isNewPage) {
-        ChapterStore.getChapterList().then(function (chapterList) {
+        ChapterStore.getNoteChapterList().then(function (chapterList) {
           var currentChapter = chapterList.filter(function (chapter) {
             return chapter.id === _this2.createParent;
           })[0];
           ChapterStore.setCurrentChapterId(_this2.createParent);
 
-          if (currentChapter.children.length > 1) {
+          if (currentChapter.children.length >= 1) {
             var pageId = currentChapter.children[0].id;
             _this2.isNewPage = false;
 
