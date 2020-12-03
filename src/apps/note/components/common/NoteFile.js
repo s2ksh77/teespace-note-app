@@ -32,10 +32,46 @@ export const handleUpload = () => {
         } finally { }
     }
 }
-
-export const handleDriveCopy = () => {
-
+export const driveSuccessCb = (fileList) => {
+    console.log('첨부버튼', fileList);
+    if (fileList) {
+        fileList.forEach(file => {
+            EditorStore.addDriveFileList(file);
+        }).then(() => {
+            handleDriveCopy();
+            EditorStore.setIsDrive(false);
+        })
+    }
 }
+export const driveCancelCb = () => {
+    EditorStore.setIsDrive(false);
+}
+
+export const handleDriveCopy = async () => {
+    let copyArr = [];
+    if (EditorStore.driveFileList) {
+        copyArr = toJS(EditorStore.driveFileList).map(item => {
+            return EditorStore.storageFileDeepCopy(item.file_id, item.type);
+        })
+        try {
+            await Promise.all(copyArr).then(() => {
+                EditorStore.driveFileList = [];
+                EditorStore.createFileMeta(copyArr, PageStore.getCurrentPageId()).then(dto => {
+                    if (dto.resultMsg === 'Success') {
+                        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                            EditorStore.setFileList(
+                                dto.fileList,
+                            );
+                        });
+                    }
+                });
+            })
+        } catch (e) {
+            throw Error(JSON.stringify(e));
+        } finally { }
+    }
+}
+
 export const replaceTempFileId = (node, fileId) => {
     if (!node) return;
     node.setAttribute('id', fileId);
@@ -247,27 +283,4 @@ export const handleImageListener = async () => {
         const targetImageList = await EditorStore.tinymce.dom.doc.images;
         console.log(targetImageList);
     }
-}
-
-export const driveSuccessCb = (fileList) => {
-    EditorStore.setIsDrive(false);
-    console.log('첨부버튼', fileList);
-    if (fileList) {
-        fileList.forEach(file => {
-            if (file.type === 'image') insertDriveImage(file.file_name, file.file_id, file.workspace_id, file.ch_id, file.user_id);
-            // !image 일경우 tempFileList로 넣는거 필요
-            // 여기서 뽑은 fileList 의 id 들 ( drive에 이미 올라간 file id) copy(?)array 하나 관리 필요
-        })
-    }
-    // 저장을 눌렀을때 copy(?)array 를 StorageFile?action=Copy&Type=(Deep) 으로 하나씩 날림
-    // 날리고 retrun 받은 id들을 또 temp array 에서 관리
-    // temp array ex [1,2,3,4,5] ----> EditorStore.createFileMeta(temparray, curpageId);
-}
-export const driveCancelCb = () => {
-    EditorStore.setIsDrive(false);
-}
-
-export const insertDriveImage = (fileName, fileId, roomId, chId, userId) => {
-    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${roomId}&channelID=${chId}&userID=${userId}`;
-    EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
 }
