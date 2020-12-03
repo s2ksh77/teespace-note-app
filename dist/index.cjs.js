@@ -113,10 +113,6 @@ function _objectSpread2(target) {
   return target;
 }
 
-function _readOnlyError(name) {
-  throw new Error("\"" + name + "\" is read-only");
-}
-
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -1813,6 +1809,7 @@ var EditorStore = mobx.observable((_observable = {
   videoElement: '',
   isFile: false,
   isDrive: false,
+  isAttatch: false,
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -1856,6 +1853,9 @@ var EditorStore = mobx.observable((_observable = {
   },
   setIsDrive: function setIsDrive(flag) {
     this.isDrive = flag;
+  },
+  setIsAttatch: function setIsAttatch(flag) {
+    this.isAttatch = flag;
   }
 }, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
@@ -2163,29 +2163,37 @@ var EditorStore = mobx.observable((_observable = {
     }, _callee5);
   }))();
 }), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
+  var _this2 = this;
+
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    var retrunFileId, _yield$NoteRepository2, dto;
+    var _yield$NoteRepository2, dto, retrunFileId;
 
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            retrunFileId = '';
-            _context6.next = 3;
+            _context6.next = 2;
             return NoteRepository$1.storageFileDeepCopy(fileId);
 
-          case 3:
+          case 2:
             _yield$NoteRepository2 = _context6.sent;
             dto = _yield$NoteRepository2.data.dto;
 
-            if (dto.resultMsg === 'Success') {
-              retrunFileId = (_readOnlyError("retrunFileId"), dto.storageFileInfoList[0].file_id);
-              createDriveElement(type, retrunFileId);
+            if (!(dto.resultMsg === 'Success')) {
+              _context6.next = 10;
+              break;
             }
+
+            retrunFileId = dto.storageFileInfoList[0].file_id;
+
+            _this2.createDriveElement(type, retrunFileId);
 
             return _context6.abrupt("return", retrunFileId);
 
-          case 7:
+          case 10:
+            return _context6.abrupt("return");
+
+          case 11:
           case "end":
             return _context6.stop();
         }
