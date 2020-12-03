@@ -14,9 +14,9 @@ import {
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/ts_share@3x.png';
 
-const Chapter = ({ chapter, index }) => {
+const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-
+  
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
     accept: 'chapter',
@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: chapter.type === 'notebook' || chapter.type === 'default' ? 'chapter' : 'shared' },
+    item: { id: chapter.id, type: isShared ? 'shared' : 'chapter' },
     begin: (monitor) => {
       ChapterStore.setMoveChapterIdx(index);
 
@@ -100,7 +100,7 @@ const Chapter = ({ chapter, index }) => {
   const handleFocus = (e) => e.target.select();
 
   const renderChapterIcon = () => {
-    if (!["shared", "shared_page"].includes(chapter.type)) {
+    if (!isShared) {
       return <ChapterColor color={chapter.color} chapterId={chapter.id} />;
     } else {
       return <ChapterShareIcon selected={ChapterStore.getCurrentChapterId() === chapter.id} src={shareImg} />
@@ -108,14 +108,10 @@ const Chapter = ({ chapter, index }) => {
   }
   return useObserver(() => (
     <ChapterContainer
-      ref={
-        chapter.type === 'notebook' || chapter.type === 'default'
-        ? drop 
-        : null
-      }
+      ref={!isShared ? drop : null}
       className={
         ChapterStore.dragEnterChapterIdx === index
-        && (chapter.type === 'notebook' || chapter.type === 'default')
+        && (!isShared)
           ? 'borderTopLine'
           : ''
       }
@@ -125,7 +121,7 @@ const Chapter = ({ chapter, index }) => {
     >
       <ChapterCover
         ref={
-          chapter.type === 'notebook' || chapter.type === 'default' 
+          !isShared 
           ? (node) => drag(dropChapter(node)) 
           : drag
         }
@@ -154,7 +150,7 @@ const Chapter = ({ chapter, index }) => {
           )}
       </ChapterCover>
       <PageList
-        showNewPage={!['shared', 'shared_page'].includes(chapter.type)}
+        showNewPage={!isShared}
         chapter={chapter}
         chapterIdx={index}
       />

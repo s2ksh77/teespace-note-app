@@ -66,10 +66,13 @@ const LNBContainer = () => {
                   ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
                   : null
                 : null}
-              <ChapterList type={""} />
+              {ChapterStore.sortedChapterList.roomChapterList.length > 0 ? 
+                <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />
-              <ChapterList type={"shared_page"} />
-              <ChapterList type={"shared"} />
+              {ChapterStore.sortedChapterList.sharedPageList.length > 0 ? 
+                <ChapterList type={"sharedPageList"} isShared={true} /> : null}
+              {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ? 
+                <ChapterList type={"sharedChapterList"} isShared={true} /> : null}                
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>

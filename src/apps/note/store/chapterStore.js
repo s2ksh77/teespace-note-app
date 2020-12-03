@@ -8,6 +8,11 @@ import { type } from "ramda";
 const ChapterStore = observable({
   chapterColor: "",
   chapterList: [],
+  sortedChapterList:{
+    roomChapterList:[],
+    sharedPageList:[],
+    sharedChapterList:[]
+  },
   currentChapterId: "",
   chapterNewTitle: "",
   isNewChapterColor: "",
@@ -221,6 +226,12 @@ const ChapterStore = observable({
   setChapterList(chapterList) {
     this.chapterList = chapterList;
   },
+  getSortedChapterList() {
+    return this.sortedChapterList;
+  },
+  setSortedChapterList(obj) {
+    this.sortedChapterList = obj;
+  },
 
   async createChapter(chapterTitle, chapterColor) {
     const { dto } = await NoteRepository.createChapter(chapterTitle, chapterColor);
@@ -395,6 +406,7 @@ const ChapterStore = observable({
     let tempChapterList = [];
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
+      // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
       tempChapterList = await this.checkDefaultChapterColor(tempChapterList);
       this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
     }
@@ -403,7 +415,26 @@ const ChapterStore = observable({
       tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
     }
     this.chapterList = tempChapterList.concat(sharedList);
+
+    // component에서 render하기 좋도록 category 분류하기
+    this.sortChapterList();
     return this.chapterList;
+  },
+
+  sortChapterList() {
+    let _roomChapterList=[], _sharedPageList=[], _sharedChapterList=[];
+
+    this.chapterList.forEach(chapter=>{
+      if (chapter.type === "shared_page") _sharedPageList.push(chapter);
+      else if (chapter.type === 'shared') _sharedChapterList.push(chapter);
+      else _roomChapterList.push(chapter);
+    })
+
+    this.setSortedChapterList({
+      roomChapterList : _roomChapterList,
+      sharedPageList : _sharedPageList,
+      sharedChapterList : _sharedChapterList
+    })
   },
 
   createNoteChapter(chapterTitle, chapterColor) {
