@@ -59,7 +59,8 @@ const ChapterText = ({ chapter }) => {
       <ChapterFolderBtn>
         <FontAwesomeIcon
           icon={isFold ? faAngleDown : faAngleUp}
-          size={"2x"}
+          style={{color:'#75757F'}}
+          size={"lg"}
           onClick={handleFoldClick}
         />
       </ChapterFolderBtn>
