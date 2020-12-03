@@ -95,7 +95,7 @@ const EditorStore = observable({
     await NoteRepository.deleteAllFile(this.fileList).then(response => {
       const { data: { dto } } = response;
       if (dto.resultMsg === 'Success') {
-        ChapterStore.getChapterList();
+        ChapterStore.getNoteChapterList();
       }
     })
   },
