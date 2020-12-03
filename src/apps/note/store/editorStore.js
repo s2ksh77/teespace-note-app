@@ -13,6 +13,7 @@ const EditorStore = observable({
   videoElement: '',
   isFile: false,
   isDrive: false,
+  isAttatch: false,
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -56,6 +57,9 @@ const EditorStore = observable({
   },
   setIsDrive(flag) {
     this.isDrive = flag;
+  },
+  setIsAttatch(flag) {
+    this.isAttatch = flag;
   },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
     await API.post("note-api/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
@@ -290,15 +294,14 @@ const EditorStore = observable({
     return dto;
   },
   async storageFileDeepCopy(fileId, type) {
-    const retrunFileId = '';
     const {
       data: { dto }
     } = await NoteRepository.storageFileDeepCopy(fileId);
     if (dto.resultMsg === 'Success') {
-      retrunFileId = dto.storageFileInfoList[0].file_id;
-      createDriveElement(type, retrunFileId);
-    }
-    return retrunFileId;
+      const retrunFileId = dto.storageFileInfoList[0].file_id;
+      this.createDriveElement(type, retrunFileId);
+      return retrunFileId;
+    } else return;
   },
   createDriveElement(type, fileId) {
     const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;

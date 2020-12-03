@@ -33,15 +33,17 @@ export const handleUpload = () => {
     }
 }
 export const driveSuccessCb = (fileList) => {
-    console.log('첨부버튼', fileList);
     if (fileList) {
         fileList.forEach(file => EditorStore.addDriveFileList(file));
         handleDriveCopy();
+        EditorStore.setIsAttatch(true);
         EditorStore.setIsDrive(false);
     }
 }
 export const driveCancelCb = () => {
+    EditorStore.setIsAttatch(true);
     EditorStore.setIsDrive(false);
+    setTimeout(() => { EditorStore.setIsAttatch(false); }, 100)
 }
 
 export const handleDriveCopy = async () => {
@@ -49,11 +51,13 @@ export const handleDriveCopy = async () => {
     if (EditorStore.driveFileList) {
         copyArr = toJS(EditorStore.driveFileList).map(item => {
             return EditorStore.storageFileDeepCopy(item.file_id, item.type);
-        })
-        try {
-            await Promise.all(copyArr).then(() => {
-                EditorStore.driveFileList = [];
-                EditorStore.createFileMeta(copyArr, PageStore.getCurrentPageId()).then(dto => {
+        });
+        await Promise.all(copyArr).then(results => {
+            const resultArray = toJS(results).filter(result => result !== undefined);
+            EditorStore.driveFileList = [];
+
+            if (resultArray.length > 0) {
+                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
                     if (dto.resultMsg === 'Success') {
                         PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
                             EditorStore.setFileList(
@@ -62,10 +66,9 @@ export const handleDriveCopy = async () => {
                         });
                     }
                 });
-            })
-        } catch (e) {
-            throw Error(JSON.stringify(e));
-        } finally { }
+            }
+            EditorStore.setIsAttatch(false);
+        })
     }
 }
 
@@ -85,69 +88,6 @@ export const replaceTempFileId = (node, fileId) => {
     }
 }
 
-export const handleFileUpload = async () => {
-    const imgTarget = await EditorStore.tinymce.dom.doc.images;
-    const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
-    const fileTarget = document.querySelectorAll('div[temp-id]');
-    const imgArray = [...imgTarget];
-    const videoArray = [...videoTarget];
-    const fileArray = [...fileTarget];
-    let uploadArr = [];
-
-    imgArray.forEach(img => {
-        if (EditorStore.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0] !== undefined)
-            EditorStore.uploadFileList.push(EditorStore.fileMetaList.filter(item => item.KEY === img.getAttribute('temp-id'))[0]);
-    })
-    videoArray.forEach(video => {
-        if (EditorStore.fileMetaList.filter(item => item.KEY === video.getAttribute('temp-id'))[0] !== undefined)
-            EditorStore.uploadFileList.push(EditorStore.fileMetaList.filter(item => item.KEY === video.getAttribute('temp-id'))[0]);
-    })
-    fileArray.forEach(file => {
-        if (EditorStore.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0] !== undefined)
-            EditorStore.uploadFileList.push(EditorStore.fileMetaList.filter(item => item.KEY === file.getAttribute('temp-id'))[0]);
-    })
-
-    const _success = (data, index) => {
-        if (data.resultMsg === 'Success') {
-            EditorStore.uploadFileList[index].element.setAttribute('id', data.storageFileInfoList[0].file_id);
-            EditorStore.uploadFileList[index].element.removeAttribute('temp-id');
-            if (EditorStore.uploadFileList[index].element) {
-                if (EditorStore.uploadFileList[index].element.getAttribute('src')) {
-                    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-                    EditorStore.uploadFileList[index].element.setAttribute('src', targetSRC);
-                }
-                if (EditorStore.uploadFileList[index].element.children[0]
-                    && EditorStore.uploadFileList[index].element.children[0].children[0]
-                    && EditorStore.uploadFileList[index].element.children[0].children[0].getAttribute('src')) {
-                    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${data.storageFileInfoList[0].file_id}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-                    EditorStore.uploadFileList[index].element.children[0].children[0].setAttribute('src', targetSRC);
-                }
-            }
-        }
-    }
-    const _failure = e => {
-        console.warn('error ---> ', e);
-    };
-    if (EditorStore.uploadFileList.length > 0) {
-        if (EditorStore.uploadFileList[0] !== undefined) {
-            uploadArr = toJS(EditorStore.uploadFileList).map((item, index) => {
-                return EditorStore.uploadFile(item.uploadMeta, item.file, _success, _failure, index)
-            })
-
-            try {
-                await Promise.all(uploadArr).then(() => {
-                    EditorStore.uploadFileList = [];
-                    EditorStore.fileMetaList = [];
-                    PageStore.setContent(EditorStore.tinymce.getContent());
-                })
-            } catch (e) {
-
-            } finally {
-
-            }
-        }
-    }
-}
 export const handleFileDelete = async () => {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
     const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
@@ -271,7 +211,6 @@ export const handleLinkListener = () => {
 }
 
 export const handleFileSync = async () => {
-    await handleFileUpload();
     await handleFileDelete();
 }
 

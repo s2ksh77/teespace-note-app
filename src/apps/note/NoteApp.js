@@ -22,7 +22,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
 
   const handleClickOutsideEditor = (e) => {
     if (!PageStore.isEdit) return;
-    if (EditorStore.isDrive) return;
+    if (EditorStore.isDrive || EditorStore.isAttatch) return;
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper?.contains(e.target)) return;
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
@@ -63,10 +63,10 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, () => {
       NoteStore.addWWMSHandler();
       NoteStore.initVariables();
-    });    
+    });
     if (channelId) ChapterStore.fetchChapterList();
     else ChapterStore.setChapterList([]);
-  },[channelId]);
+  }, [channelId]);
 
   return useObserver(() => (
     <>
