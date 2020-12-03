@@ -22,6 +22,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
 
   const handleClickOutsideEditor = (e) => {
     if (!PageStore.isEdit) return;
+    if (EditorStore.isDrive) return;
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper?.contains(e.target)) return;
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
