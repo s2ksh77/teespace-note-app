@@ -18,7 +18,7 @@ export const EditorHeaderContainer1 = styled.div`
   width: 80%;
 `;
 export const EditPreBtnWrapper = styled.div`
-  display: ${props=> (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
   align-items: center;
   margin-right: 0.5rem;
   cursor:pointer;
@@ -103,7 +103,6 @@ export const LnbTitleCover = styled.div`
 export const LnbTitleNewButton = styled.button`
   align-items: center;
   display: flex;
-  flex-shrink:0;
   width: 6.31rem;
   height: 1.88rem;
   margin-right: 0.63rem;
@@ -113,6 +112,7 @@ export const LnbTitleNewButton = styled.button`
   border: 0px solid #ffffff;
   border-radius: 25px;
   background-color: #008cc8;
+  min-width:3rem;
   &:hover {
     background-color: #1ea8df;
     cursor: pointer;
@@ -132,8 +132,9 @@ export const LnbTitleSearchContainer = styled.form`
   border-radius: 1.563rem 1.563rem;
   border: 0.0625rem solid #c6ced6;
   box-sizing: border-box;
-  flex: 1;
   margin: auto 0;
+  flex:1;
+  min-width:12rem;
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -160,7 +161,7 @@ export const LnbTitleSearchInput = styled.input`
 `;
 
 export const TagSearchForm = styled.form`
-  display:${props=>props.show ? "block" : "none"};
+  display:${props => props.show ? "block" : "none"};
   margin-left:auto;
 `;
 

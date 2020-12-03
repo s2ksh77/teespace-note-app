@@ -247,11 +247,11 @@ export const GlobalStyle = createGlobalStyle`
 export const LNB = styled.div`
   height: 100%;
   border-right: 1px solid #e3e7eb;
-  flex: 1 1 23.06rem;
-  min-width: 23.06rem;
+  flex: 1 1 21.06rem;
+  min-width: 21.06rem;
 `;
 export const Content = styled.div`
-  flex: 2 2 46rem;
+  flex: 2 2 42rem;
   height: 100%;
   overflow-x: hidden;
   position: relative;
