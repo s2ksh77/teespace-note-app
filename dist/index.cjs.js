@@ -113,6 +113,10 @@ function _objectSpread2(target) {
   return target;
 }
 
+function _readOnlyError(name) {
+  throw new Error("\"" + name + "\" is read-only");
+}
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -939,7 +943,9 @@ var NoteRepository = /*#__PURE__*/function () {
             switch (_context18.prev = _context18.next) {
               case 0:
                 targetSRC = "".concat(this.FILE_URL, "/Storage/StorageFile?action=Copy&Type=Deep");
-                return _context18.abrupt("return", teespaceCore.API.Put(targetSRC, {
+                _context18.prev = 1;
+                _context18.next = 4;
+                return teespaceCore.API.put(targetSRC, {
                   dto: {
                     workspace_id: this.WS_ID,
                     channel_id: this.chId,
@@ -948,14 +954,22 @@ var NoteRepository = /*#__PURE__*/function () {
                       file_id: fileId
                     }
                   }
-                }));
+                });
 
-              case 2:
+              case 4:
+                return _context18.abrupt("return", _context18.sent);
+
+              case 7:
+                _context18.prev = 7;
+                _context18.t0 = _context18["catch"](1);
+                throw Error(JSON.stringify(_context18.t0));
+
+              case 10:
               case "end":
                 return _context18.stop();
             }
           }
-        }, _callee18, this);
+        }, _callee18, this, [[1, 7]]);
       }));
 
       function storageFileDeepCopy(_x28) {
@@ -1812,6 +1826,7 @@ var EditorStore = mobx.observable((_observable = {
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  driveFileList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -1915,6 +1930,8 @@ var EditorStore = mobx.observable((_observable = {
 }), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
   this.fileLayoutList.splice(this.deleteFileIndex, 1);
   if (this.fileLayoutList.length === 0) this.setIsFile(false);
+}), _defineProperty(_observable, "addDriveFileList", function addDriveFileList(fileInfo) {
+  this.driveFileList.push(fileInfo);
 }), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
@@ -1956,36 +1973,6 @@ var EditorStore = mobx.observable((_observable = {
         }
       }
     }, _callee4);
-  }))();
-}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var createCopyArray, _yield$NoteRepository, dto;
-
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            createCopyArray = [];
-            fileArray.forEach(function (file) {
-              createCopyArray.push({
-                note_id: noteId,
-                file_id: file
-              });
-            });
-            _context5.next = 4;
-            return NoteRepository$1.createFileMeta(createCopyArray);
-
-          case 4:
-            _yield$NoteRepository = _context5.sent;
-            dto = _yield$NoteRepository.data.dto;
-            return _context5.abrupt("return", dto);
-
-          case 7:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
   }))();
 }), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
   this.fileList = fileList;
@@ -2145,6 +2132,78 @@ var EditorStore = mobx.observable((_observable = {
   if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
   this.tinymce.focus();
   NoteStore.setModalInfo(null);
+}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var createCopyArray, _yield$NoteRepository, dto;
+
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            createCopyArray = [];
+            fileArray.forEach(function (file) {
+              createCopyArray.push({
+                note_id: noteId,
+                file_id: file
+              });
+            });
+            _context5.next = 4;
+            return NoteRepository$1.createFileMeta(createCopyArray);
+
+          case 4:
+            _yield$NoteRepository = _context5.sent;
+            dto = _yield$NoteRepository.data.dto;
+            return _context5.abrupt("return", dto);
+
+          case 7:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }))();
+}), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    var retrunFileId, _yield$NoteRepository2, dto;
+
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            retrunFileId = '';
+            _context6.next = 3;
+            return NoteRepository$1.storageFileDeepCopy(fileId);
+
+          case 3:
+            _yield$NoteRepository2 = _context6.sent;
+            dto = _yield$NoteRepository2.data.dto;
+
+            if (dto.resultMsg === 'Success') {
+              retrunFileId = (_readOnlyError("retrunFileId"), dto.storageFileInfoList[0].file_id);
+              createDriveElement(type, retrunFileId);
+            }
+
+            return _context6.abrupt("return", retrunFileId);
+
+          case 7:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }))();
+}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId) {
+  var targetSRC = "".concat(NoteRepository$1.FILE_URL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
+
+  switch (type) {
+    case 'image':
+      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '"/>');
+      break;
+
+    case 'video':
+      EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
+      break;
+  }
 }), _observable));
 
 var _observable$1;
