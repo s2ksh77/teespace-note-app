@@ -207,6 +207,10 @@ export const ModalNormalBtn = styled.div`
   background-color: #6C56E5;
   color: white;
   margin-left: 0.38rem;
+  &:hover{
+    background-color: #DCDDFF;
+    color: #000000;
+  }
 `;
 
 export const ModalCancelBtn = styled.div`
@@ -221,6 +225,10 @@ export const ModalCancelBtn = styled.div`
   border: 1px solid #C6CED6;
   color: #3B3B3B;
   margin-left: 0.38rem;
+  &:hover{
+    background-color: #DCDDFF;
+    color: #000000;
+  }
 `;
 
 export const SearchLoadingContainer = styled.div`
