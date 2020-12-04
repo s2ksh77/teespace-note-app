@@ -4071,7 +4071,7 @@ var NoteStore = mobx.observable({
   // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
   targetLayout: null,
-  isExpanded: false,
+  isContentExpanded: false,
   showModal: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
@@ -4141,8 +4141,8 @@ var NoteStore = mobx.observable({
   setTargetLayout: function setTargetLayout(target) {
     this.targetLayout = target;
   },
-  setIsExpanded: function setIsExpanded() {
-    this.isExpanded = !this.isExpanded;
+  toggleIsContentExpanded: function toggleIsContentExpanded() {
+    this.isContentExpanded = !this.isContentExpanded;
   },
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
