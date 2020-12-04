@@ -2864,7 +2864,7 @@ var PageStore = mobx.observable((_observable$1 = {
     var _EditorStore$tinymce2;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
+      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else this.setTitle('제목 없음');
     }
 
     var updateDTO = {
