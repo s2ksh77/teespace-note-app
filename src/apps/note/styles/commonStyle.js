@@ -15,12 +15,12 @@ export const ContentHeaderCover = styled.div`
   flex-direction: row;
   padding: 0 0.75rem;
   box-sizing: border-box;
-  border-bottom: ${props => props.borderBottom ? 
+  border-bottom: ${props => props.borderBottom ?
     "0.0625rem solid #dadada" : ""};
 `;
 
 export const PreBtnWrapper = styled.div`
-  display: ${props=> (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
   align-items: center;
   margin-right: 0.5rem;
   cursor:pointer;
@@ -206,6 +206,11 @@ export const ModalNormalBtn = styled.div`
   cursor: pointer;
   background-color: #6C56E5;
   color: white;
+  margin-left: 0.38rem;
+  &:hover{
+    background-color: #DCDDFF;
+    color: #000000;
+  }
 `;
 
 export const ModalCancelBtn = styled.div`
@@ -220,6 +225,10 @@ export const ModalCancelBtn = styled.div`
   border: 1px solid #C6CED6;
   color: #3B3B3B;
   margin-left: 0.38rem;
+  &:hover{
+    background-color: #DCDDFF;
+    color: #000000;
+  }
 `;
 
 export const SearchLoadingContainer = styled.div`
