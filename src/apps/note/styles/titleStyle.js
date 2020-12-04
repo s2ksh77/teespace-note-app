@@ -1,27 +1,12 @@
 import styled from 'styled-components';
 
-export const EditorHeaderCover = styled.div`
-  white-space: nowrap;
-  width: calc(100% - 0px);
-  height: 3rem;
-  display: flex;
-  flex-direction: row;
-  padding: 0 0.75rem !important;
-  box-sizing: border-box;
-`;
-
+// contents가 tag일 때
 export const EditorHeaderContainer1 = styled.div`
   display: flex;
   flex: auto;
   position: relative;
   align-items: center;
   width: 80%;
-`;
-export const EditPreBtnWrapper = styled.div`
-  display: ${props => (props.show ? "flex" : "none")};
-  align-items: center;
-  margin-right: 0.5rem;
-  cursor:pointer;
 `;
 
 export const EditBtn = styled.button`
@@ -65,10 +50,16 @@ export const EditorTitle = styled.input`
 export const EditorHeaderContainer2 = styled.div`
   display: ${(props) => props.show ? "flex" : "none"};
   flex: auto;
+  flex-shrink:0;
   position: relative;
   justify-content:flex-end;
   align-items: center;
   width: 20%;  
+`;
+
+export const EditingImg = styled.img`
+  width: 1.13rem;
+  margin-right: 0.5rem;
 `;
 
 export const ModifiedUser = styled.span`

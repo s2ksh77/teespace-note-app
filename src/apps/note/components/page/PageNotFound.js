@@ -1,18 +1,35 @@
 import React from 'react';
-import '../../styles/note.css';
 import noPageImage from '../../assets/no_file.png';
+import ContentHeader from '../common/ContentHeader';
+import useNoteStore from '../../store/useStore';
+import {
+  ContentBodyCover,
+  NoneContainer,
+  NoneTitle,
+  NoneText,
+  NoneImg,
+} from '../../styles/commonStyle';
 
 // 페이지가 존재하지 않습니다
-const PageNotFound = () => {
+const PageNotFound = () => {  
+  const { NoteStore, ChapterStore } = useNoteStore();
+  // 뒤로 가기 버튼
+  const handleLayoutBtn = () => {
+    NoteStore.setTargetLayout('LNB');
+    ChapterStore.getNoteChapterList();
+  }
   return (
     <>
-      <div className="note-editor_page-none">
-        <div className="note-no_page_title">페이지가 없습니다.</div>
-        <span className="note-no_page_text">
-          시작하려면 "새 페이지 추가" 버튼을 클릭하세요.
-        </span>
-        <img className="note-no_page_image" src={noPageImage} alt="page_not_found" />
-      </div>
+      <ContentHeader handleBackBtn={handleLayoutBtn} />
+      <ContentBodyCover>
+        <NoneContainer>
+          <NoneTitle>페이지가 없습니다.</NoneTitle>
+          <NoneText>
+            시작하려면 "새 페이지 추가" 버튼을 클릭하세요.
+          </NoneText>
+          <NoneImg src={noPageImage} alt="page_not_found" />
+        </NoneContainer>
+      </ContentBodyCover>      
     </>
   );
 };

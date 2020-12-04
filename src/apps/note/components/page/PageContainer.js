@@ -2,7 +2,6 @@ import React from 'react';
 import useNoteStore from '../../store/useStore';
 import { observer } from 'mobx-react';
 import EditorContainer from '../editor/EditorContainer';
-import '../../styles/note.css';
 import LoadingImgContainer from '../common/LoadingImgContainer';
 import PageNotFound from './PageNotFound';
 

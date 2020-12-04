@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import TagStore from '../../store/tagStore';
 import TagContentContainer from './TagContentContainer';
-import { TagContentCover } from '../../styles/tagStyle';
+import { ContentBodyCover } from '../../styles/commonStyle';
 import TagHeader from './TagHeader';
 import TagNotFound from './TagNotFound'
 import LoadingImgContainer from '../common/LoadingImgContainer';
@@ -30,9 +30,9 @@ const TagContainer = () => {
   return useObserver(() => (
     <>
       <TagHeader />
-      <TagContentCover>
+      <ContentBodyCover>
         {renderContent()}
-      </TagContentCover>
+      </ContentBodyCover>
     </>
   ));
 };

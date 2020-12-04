@@ -7,6 +7,65 @@ export const HeaderButtonContainer = styled.div`
   margin-left: 0.75rem;
 `;
 
+export const ContentHeaderCover = styled.div`
+  height: 3rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  padding: 0 0.75rem;
+  box-sizing: border-box;
+  border-bottom: ${props => props.borderBottom ? 
+    "0.0625rem solid #dadada" : ""};
+`;
+
+export const PreBtnWrapper = styled.div`
+  display: ${props=> (props.show ? "flex" : "none")};
+  align-items: center;
+  margin-right: 0.5rem;
+  cursor:pointer;
+`;
+
+export const ContentBodyCover = styled.div`
+  width: 100%;
+  height: calc(100% - 3rem);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 0.75rem;
+`;
+
+export const NoneContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const NoneTitle = styled.div`
+  font-size: 0.938rem;
+  font-weight: 400;
+  color: #000000;
+  width: auto;
+  height: 1.38rem;
+  line-height: normal;
+`;
+
+export const NoneText = styled.span`
+  font-size: 0.75rem;
+  font-weight: 300;
+  margin-top: 0.75rem;
+  color: #777777;
+`;
+
+export const NoneImg = styled.img`
+  width: 13rem;
+  margin-top: 2.19rem;
+`
+
 export const Button = styled.img`
   width: 1rem;
   height: 1rem;

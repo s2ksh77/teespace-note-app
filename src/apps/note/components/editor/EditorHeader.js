@@ -2,22 +2,18 @@ import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import {
-  EditorHeaderCover,
   EditorHeaderContainer1,
   EditBtn,
   EditorTitle,
   EditorHeaderContainer2,
+  EditingImg,
   ModifiedUser,
   ModifiedTime,
-  EditPreBtnWrapper,
 } from '../../styles/titleStyle';
-import HeaderButtons from '../common/buttons';
+import ContentHeader from '../common/ContentHeader';
 import editingImg from '../../assets/TeeSpace_working.gif';
-import preImg from '../../assets/back.svg';
-import { Button } from '../../styles/commonStyle';
 import { handleFileSync } from '../common/NoteFile';
 
-const editingImgStyle = { width: '1.13rem', marginRight: '0.5rem' };
 const EditorHeader = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
@@ -59,12 +55,10 @@ const EditorHeader = () => {
 
   return useObserver(() => (
     <>
-      <EditorHeaderCover>
-        <EditPreBtnWrapper
-          show={NoteStore.layoutState === 'collapse'}
-        >
-          <Button src={preImg} onClick={handleLayoutBtn} />
-        </EditPreBtnWrapper>
+      <ContentHeader 
+        handleBackBtn={handleLayoutBtn}
+        alignment={"center"}
+      >
         <EditorHeaderContainer1>
           <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>{editBtnText}</EditBtn>
           <EditorTitle
@@ -78,7 +72,7 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
-          {PageStore.isEdit && <img style={editingImgStyle} src={editingImg} />}
+          {PageStore.isEdit && <EditingImg src={editingImg} />}
           <ModifiedUser>
             {PageStore.isEdit
               ? PageStore.prevModifiedUserName
@@ -86,8 +80,7 @@ const EditorHeader = () => {
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
         </EditorHeaderContainer2>
-        <HeaderButtons />
-      </EditorHeaderCover>
+      </ContentHeader>
     </>
   ));
 };
