@@ -444,6 +444,7 @@ const PageStore = observable({
   handleSave() {
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
+      else this.setTitle('제목 없음');
     }
     const updateDTO = {
       dto: {
