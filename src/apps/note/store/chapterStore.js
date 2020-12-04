@@ -443,6 +443,7 @@ const ChapterStore = observable({
         this.getNoteChapterList();
         this.setCurrentChapterId(notbookList.id);
         PageStore.setCurrentPageId(notbookList.children[0].id);
+        PageStore.setTitle(notbookList.children[0].text);
         this.setChapterTempUl(false);
         this.setAllDeleted(false);
       }
