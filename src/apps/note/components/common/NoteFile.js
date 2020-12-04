@@ -1,6 +1,7 @@
 import useNoteStore from '../../store/useStore';
 import html2pdf from 'html2pdf.js';
 import { toJS } from 'mobx';
+import { API } from 'teespace-core';
 import { openLink } from '../editor/customLink';
 import EditorStore from '../../store/editorStore';
 import NoteRepository from '../../store/noteRepository';
@@ -77,13 +78,13 @@ export const replaceTempFileId = (node, fileId) => {
     node.setAttribute('id', fileId);
     node.removeAttribute('temp-id');
     if (node.getAttribute('src')) {
-        const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+        const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
         node.setAttribute('src', targetSRC);
     }
     if (node.children[0]
         && node.children[0].children[0]
         && node.children[0].children[0].getAttribute('src')) {
-        const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+        const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
         node.children[0].children[0].setAttribute('src', targetSRC);
     }
 }
@@ -123,7 +124,7 @@ export const handleFileDelete = async () => {
 }
 export const downloadFile = (fileId) => {
     if (fileId) {
-        window.open(NoteRepository.FILE_URL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
+        window.open(API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
             "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
         return;
     }
@@ -202,10 +203,10 @@ const handleClickImg = (el) => {
 
     const file = el.getAttribute('data-name').split('.');
     EditorStore.setPreviewFileMeta({
-        userId: NoteRepository.USER_ID,      
-        channelId: NoteRepository.chId,   
-        roomId: NoteRepository.WS_ID,      
-        fileId: el.id,      
+        userId: NoteRepository.USER_ID,
+        channelId: NoteRepository.chId,
+        roomId: NoteRepository.WS_ID,
+        fileId: el.id,
         fileName: file[0],
         fileExtension: file[1],
     })
@@ -219,7 +220,7 @@ export const handleEditorContentsListener = () => {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
                 if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));
-                else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el)); 
+                else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
                 el.setAttribute('hasListener', true);
             });
         }
