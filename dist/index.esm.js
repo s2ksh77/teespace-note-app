@@ -3638,6 +3638,7 @@ var ChapterStore = observable((_observable$2 = {
     _this9.setCurrentChapterId(notbookList.id);
 
     PageStore.setCurrentPageId(notbookList.children[0].id);
+    PageStore.setTitle(notbookList.children[0].text);
 
     _this9.setChapterTempUl(false);
 
