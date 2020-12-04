@@ -490,6 +490,7 @@ const ChapterStore = observable({
     }
 
     this.moveChapterIdx = '';
+    this.getNoteChapterList();
   },
   /* 
     - search 관련
