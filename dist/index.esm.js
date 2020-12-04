@@ -153,13 +153,13 @@ var NoteRepository = /*#__PURE__*/function () {
     _classCallCheck(this, NoteRepository);
 
     this.URL = 'http://222.122.67.176:8080/CMS/Note';
-    this.FILE_URL = process.env.REACT_APP_SERVICE_URL;
+    this.FILE_URL = process.env.REACT_APP_DEV_SERVICE_URL;
     this.WS_ID = '';
     this.CH_TYPE = 'CHN0003';
     this.USER_ID = '';
     this.chId = '';
     this.USER_NAME = '';
-    this.URL = url || process.env.REACT_APP_SERVICE_URL + '/Note';
+    this.URL = url || process.env.REACT_APP_DEV_SERVICE_URL;
   }
 
   _createClass(NoteRepository, [{
@@ -934,7 +934,7 @@ var NoteRepository = /*#__PURE__*/function () {
           while (1) {
             switch (_context18.prev = _context18.next) {
               case 0:
-                targetSRC = "".concat(this.FILE_URL, "/Storage/StorageFile?action=Copy&Type=Deep");
+                targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
                 _context18.prev = 1;
                 _context18.next = 4;
                 return API.put(targetSRC, {
@@ -1001,7 +1001,7 @@ var NoteRepository = /*#__PURE__*/function () {
         fileList.map(function (file) {
           return deleteFileList.push(file.file_id);
         });
-        return API.put("".concat(this.FILE_URL, "Storage/StorageFile?action=MultiDelete"), {
+        return API.put("Storage/StorageFile?action=MultiDelete", {
           dto: {
             workspace_id: this.WS_ID,
             channel_id: this.chId,
@@ -1806,6 +1806,8 @@ var EditorStore = observable((_observable = {
   isFile: false,
   isDrive: false,
   isAttatch: false,
+  isPreview: false,
+  previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -1852,6 +1854,12 @@ var EditorStore = observable((_observable = {
   },
   setIsAttatch: function setIsAttatch(flag) {
     this.isAttatch = flag;
+  },
+  setIsPreview: function setIsPreview(flag) {
+    this.isPreview = flag;
+  },
+  setPreviewFileMeta: function setPreviewFileMeta(fileMeta) {
+    this.previewFileMeta = fileMeta;
   }
 }, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
@@ -2162,7 +2170,7 @@ var EditorStore = observable((_observable = {
   var _this2 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    var _yield$NoteRepository2, dto, retrunFileId;
+    var _yield$NoteRepository2, dto, retrunFileId, returnFileName;
 
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
@@ -2176,32 +2184,33 @@ var EditorStore = observable((_observable = {
             dto = _yield$NoteRepository2.data.dto;
 
             if (!(dto.resultMsg === 'Success')) {
-              _context6.next = 10;
+              _context6.next = 11;
               break;
             }
 
             retrunFileId = dto.storageFileInfoList[0].file_id;
+            returnFileName = dto.storageFileInfoList[0].file_name;
 
-            _this2.createDriveElement(type, retrunFileId);
+            _this2.createDriveElement(type, retrunFileId, returnFileName);
 
             return _context6.abrupt("return", retrunFileId);
 
-          case 10:
+          case 11:
             return _context6.abrupt("return");
 
-          case 11:
+          case 12:
           case "end":
             return _context6.stop();
         }
       }
     }, _callee6);
   }))();
-}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId) {
-  var targetSRC = "".concat(NoteRepository$1.FILE_URL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
+}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
+  var targetSRC = "".concat(API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
 
   switch (type) {
     case 'image':
-      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '"/>');
+      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
       break;
 
     case 'video':
@@ -3710,6 +3719,7 @@ var ChapterStore = observable((_observable$2 = {
   }
 
   this.moveChapterIdx = '';
+  this.getNoteChapterList();
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
   this.setIsSearching(false);
   this.setIsTagSearching(false);
