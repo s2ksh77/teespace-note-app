@@ -40,7 +40,7 @@ export const PageText = styled.a`
   max-width: calc(100% - 2rem);
   min-width: calc(100% - 2.775rem);
   overflow: hidden;
-  /* text-overflow: ellipsis; */
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 300;
   &:hover {

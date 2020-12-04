@@ -66,7 +66,16 @@ const DragPreview = ({ type, title }) => {
           style={{ position: 'absolute', top: '-1.5rem', left: '-2.5rem' }}
         />
         : null}
-      {title}
+      {type === 'chapter'
+        ? title
+        : <span 
+          style={{ 
+            paddingRight: '1.75rem', overflow: 'hidden', 
+            textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+          }}>
+            {title}
+        </span>
+      }
     </div>
   ));
 };

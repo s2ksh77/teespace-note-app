@@ -84,6 +84,8 @@ export const ChapterTitle = styled.span`
 
 export const ChapterTextSpan = styled.span`
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   max-width: 100%;
   min-width: calc(100% - 1.3rem);
   line-height: normal;
