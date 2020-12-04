@@ -74,7 +74,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       {renderCondition('LNB') && (
         <LNB
           style={
-            NoteStore.isExpanded ? { display: 'none' } : { display: 'flex' }
+            NoteStore.isContentExpanded ? { display: 'none' } : { display: 'flex' }
           }
         >
           <LNBContainer />
@@ -83,9 +83,9 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       {renderCondition('Content') && (
         <Content>
           <FoldBtn
-            className={NoteStore.isExpanded ? 'flipBtn' : ''}
+            isExpanded={NoteStore.isContentExpanded}
             show={(NoteStore.showPage && (NoteStore.layoutState !== "collapse"))}
-            onClick={() => NoteStore.setIsExpanded()}
+            onClick={() => NoteStore.toggleIsContentExpanded()}
           >
             <FoldBtnImg src={foldImg} />
           </FoldBtn>

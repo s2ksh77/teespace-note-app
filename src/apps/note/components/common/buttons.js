@@ -5,7 +5,6 @@ import useNoteStore from '../../store/useStore';
 import ExpandImg from '../../assets/ts_maximize@3x.png';
 import CollapseImg from '../../assets/ts_minimize@3x.png';
 import cancel from '../../assets/ts_cancel@3x.png';
-import '../../styles/note.css';
 import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
 
 const style = { cursor: 'pointer', marginLeft: '0.69rem' };

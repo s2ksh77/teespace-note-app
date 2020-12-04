@@ -113,7 +113,6 @@ const TagListContainer = () => {
   }
 
   const handleClickTag = (idx, e) => {
-    console.log('handleClickTag',idx)
     const prev = focusedTag.current;
     changeFocusedTag(prev, idx);
   }

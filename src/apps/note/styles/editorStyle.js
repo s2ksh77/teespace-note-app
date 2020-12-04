@@ -35,7 +35,8 @@ export const FoldBtn = styled.div`
   position: fixed;
   z-index: 18;
   top: 50%;
-  transform: translate(-0.9rem, 0rem);
+  transform: ${props => props.isExpanded ? "rotate(180deg)"
+    : "translate(-0.9rem, 0rem)"};
   &:hover {
     background-color: #008CC8;
   }

@@ -15,7 +15,7 @@ const NoteStore = observable({
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
   targetLayout: null,
-  isExpanded: false,
+  isContentExpanded: false,
   showModal: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
@@ -84,8 +84,8 @@ const NoteStore = observable({
   setTargetLayout(target) {
     this.targetLayout = target;
   },
-  setIsExpanded() {
-    this.isExpanded = !this.isExpanded;
+  toggleIsContentExpanded() {
+    this.isContentExpanded = !this.isContentExpanded;
   },
   setShowModal(showModal) {
     this.showModal = showModal;

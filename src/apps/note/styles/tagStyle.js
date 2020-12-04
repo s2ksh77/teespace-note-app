@@ -101,27 +101,6 @@ export const TagTxt = styled.div`
   font-weight: 400;
   margin-left:1.69rem;
 `;
-// contents가 tag일 때
-export const TagMenuHeader = styled.div`
-  height: 3rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 0.75rem;
-  box-sizing: border-box;
-  border-bottom: 0.0625rem solid #dadada;
-`;
-
-export const TagContentCover = styled.div`
-  width: 100%;
-  height: calc(100% - 3rem);
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.25rem 0.75rem;
-`;
 
 export const { Panel } = Collapse;
 
