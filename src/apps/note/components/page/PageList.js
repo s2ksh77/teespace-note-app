@@ -21,12 +21,10 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     },
   });
 
-  const handleNewBtnClick = targetId => async () => {
+  const handleNewBtnClick = targetId => () => {
     PageStore.setCreatePageParent(targetId);
     PageStore.setCreatePageParentIdx(chapterIdx);
-    await PageStore.createNotePage();
-    NoteStore.setTargetLayout('Content');
-    NoteStore.setShowPage(true);
+    PageStore.createNotePage();
   };
 
   const handleSelectPage = useCallback(async (id, e) => {
@@ -37,7 +35,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     }
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapter.id);
-    PageStore.setCurrentPageId(id);    
+    PageStore.setCurrentPageId(id);
     PageStore.fetchCurrentPageData(id);
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');

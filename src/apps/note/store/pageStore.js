@@ -257,6 +257,8 @@ const PageStore = observable({
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       this.currentPageId = dto.note_id;
       this.isNewPage = true;
+      NoteStore.setTargetLayout('Content');
+      NoteStore.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(
         dto.fileList,
@@ -527,7 +529,7 @@ const PageStore = observable({
 
   createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
     if (!targetPageList) return;
-    
+
     const targetList = targetPageList.map(page => {
       return ({
         WS_ID: NoteRepository.WS_ID,
