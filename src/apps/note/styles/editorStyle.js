@@ -194,7 +194,7 @@ export const FileCloseBtn = styled.img`
 `
 
 export const editorContentCSS = ` 
-  a {
+  a, img {
     cursor:pointer;
   }
   .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn } from '../../styles/editorStyle';
 import useNoteStore from '../../store/useStore';
+import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
 import downloadBtn from '../../assets/drive_download.svg';
 import txt from '../../assets/drive_txt.svg';

@@ -14,6 +14,8 @@ const EditorStore = observable({
   isFile: false,
   isDrive: false,
   isAttatch: false,
+  isPreview: false,
+  previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -60,6 +62,12 @@ const EditorStore = observable({
   },
   setIsAttatch(flag) {
     this.isAttatch = flag;
+  },
+  setIsPreview(flag) {
+    this.isPreview = flag;
+  },
+  setPreviewFileMeta(fileMeta) {
+    this.previewFileMeta = fileMeta;
   },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
     await API.post("note-api/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
@@ -299,15 +307,16 @@ const EditorStore = observable({
     } = await NoteRepository.storageFileDeepCopy(fileId);
     if (dto.resultMsg === 'Success') {
       const retrunFileId = dto.storageFileInfoList[0].file_id;
-      this.createDriveElement(type, retrunFileId);
+      const returnFileName = dto.storageFileInfoList[0].file_name;
+      this.createDriveElement(type, retrunFileId, returnFileName);
       return retrunFileId;
     } else return;
   },
-  createDriveElement(type, fileId) {
-    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+  createDriveElement(type, fileId, fileName) {
+    const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
     switch (type) {
       case 'image':
-        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '"/>')
+        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
         break;
       case 'video':
         EditorStore.tinymce.insertContent(

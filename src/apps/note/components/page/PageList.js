@@ -4,7 +4,6 @@ import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
-import { handleLinkListener } from '../common/NoteFile';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
@@ -40,7 +39,6 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.setCurrentPageId(id);    
     PageStore.fetchCurrentPageData(id);
-    handleLinkListener();
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
     EditorStore.tinymce?.undoManager.clear();

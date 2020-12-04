@@ -5,7 +5,7 @@ const { default: axios } = require('axios');
 class NoteRepository {
   URL = 'http://222.122.67.176:8080/CMS/Note';
 
-  FILE_URL = process.env.REACT_APP_SERVICE_URL;
+  FILE_URL = process.env.REACT_APP_DEV_SERVICE_URL;
 
   WS_ID = '';
   CH_TYPE = 'CHN0003';
@@ -20,7 +20,7 @@ class NoteRepository {
   // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
-    this.URL = url || process.env.REACT_APP_SERVICE_URL + '/Note';
+    this.URL = url || process.env.REACT_APP_DEV_SERVICE_URL;
   }
 
   setWsId(targetWsId) {
@@ -340,7 +340,7 @@ class NoteRepository {
   }
 
   async storageFileDeepCopy(fileId) {
-    const targetSRC = `${this.FILE_URL}/Storage/StorageFile?action=Copy&Type=Deep`;
+    const targetSRC = `Storage/StorageFile?action=Copy&Type=Deep`;
     try {
       return await API.put(targetSRC, {
         dto: {
@@ -382,7 +382,7 @@ class NoteRepository {
     let deleteFileList = [];
     if (fileList) {
       fileList.map(file => deleteFileList.push(file.file_id));
-      return API.put(`${this.FILE_URL}Storage/StorageFile?action=MultiDelete`, {
+      return API.put(`Storage/StorageFile?action=MultiDelete`, {
         dto: {
           workspace_id: this.WS_ID,
           channel_id: this.chId,
