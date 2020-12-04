@@ -307,15 +307,16 @@ const EditorStore = observable({
     } = await NoteRepository.storageFileDeepCopy(fileId);
     if (dto.resultMsg === 'Success') {
       const retrunFileId = dto.storageFileInfoList[0].file_id;
-      this.createDriveElement(type, retrunFileId);
+      const returnFileName = dto.storageFileInfoList[0].file_name;
+      this.createDriveElement(type, retrunFileId, returnFileName);
       return retrunFileId;
     } else return;
   },
-  createDriveElement(type, fileId) {
-    const targetSRC = `${NoteRepository.FILE_URL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+  createDriveElement(type, fileId, fileName) {
+    const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
     switch (type) {
       case 'image':
-        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '"/>')
+        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
         break;
       case 'video':
         EditorStore.tinymce.insertContent(
