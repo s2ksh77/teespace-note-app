@@ -14,6 +14,8 @@ const EditorStore = observable({
   isFile: false,
   isDrive: false,
   isAttatch: false,
+  isPreview: false,
+  previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
   downloadFileId: '',
@@ -60,6 +62,12 @@ const EditorStore = observable({
   },
   setIsAttatch(flag) {
     this.isAttatch = flag;
+  },
+  setIsPreview(flag) {
+    this.isPreview = flag;
+  },
+  setPreviewFileMeta(fileMeta) {
+    this.previewFileMeta = fileMeta;
   },
   uploadFile: async function (dto, file, successCallback, errorCallback, index) {
     await API.post("note-api/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {

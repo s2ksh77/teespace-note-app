@@ -197,13 +197,29 @@ const handleClickLink = (el) => {
     openLink(href, target);
 };
 
-export const handleLinkListener = () => {
+const handleClickImg = (el) => {
+    if (!PageStore.isReadMode()) return;
+
+    const file = el.getAttribute('data-name').split('.');
+    EditorStore.setPreviewFileMeta({
+        userId: NoteRepository.USER_ID,      
+        channelId: NoteRepository.chId,   
+        roomId: NoteRepository.WS_ID,      
+        fileId: el.id,      
+        fileName: file[0],
+        fileExtension: file[1],
+    })
+    EditorStore.setIsPreview(true);
+};
+
+export const handleEditorContentsListener = () => {
     if (EditorStore.tinymce) {
-        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll('a');
+        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll(['a', 'img']);
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
-                el.addEventListener('click', handleClickLink.bind(null, el));
+                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));
+                else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el)); 
                 el.setAttribute('hasListener', true);
             });
         }

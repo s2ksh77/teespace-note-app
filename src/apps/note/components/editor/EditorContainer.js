@@ -19,8 +19,8 @@ import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
 import NoteRepository from '../../store/noteRepository';
-import { downloadFile, driveCancelCb, driveSuccessCb, handleLinkListener, handleUpload } from '../common/NoteFile';
-import { DriveStore, DriveAttachModal } from 'teespace-drive-app';
+import { downloadFile, driveCancelCb, driveSuccessCb, handleEditorContentsListener, handleUpload } from '../common/NoteFile';
+import { DriveStore, DriveAttachModal, FilePreview } from 'teespace-drive-app';
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
 window.addEventListener('beforeunload', function (e) {
@@ -211,7 +211,10 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // fired when a dialog has been opend
               editor.on('init', () => {
-                handleLinkListener();
+                handleEditorContentsListener();
+              })
+              editor.on('PostProcess', () => {
+                handleEditorContentsListener();
               })
               editor.on('OpenWindow', (e) => {
                 try {
@@ -434,6 +437,14 @@ const EditorContainer = () => {
           successCallback={driveSuccessCb}
           cancelCallback={driveCancelCb}
         />
+        {PageStore.isReadMode() && EditorStore.isPreview
+          ? <FilePreview
+              visible={EditorStore.isPreview}
+              fileMeta={EditorStore.previewFileMeta}
+              handleClose={() => EditorStore.setIsPreview(false)}
+            />
+          : null
+        }
       </EditorContainerWrapper>
     </>
   ));
