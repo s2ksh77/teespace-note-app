@@ -42,6 +42,7 @@ const EditorContainer = () => {
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
     initialMode();
   };
+
   const handleFileHandler = (blobInfo, success, failure, progress) => {
     let fileName = blobInfo.blob().name;
     let dotIndex = fileName.lastIndexOf('.');
@@ -137,18 +138,31 @@ const EditorContainer = () => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly');
-      if (document.querySelector('.tox-editor-header'))
+      if (document.querySelector('.tox-editor-header')) {
+        console.log('read?')
         document.querySelector('.tox-editor-header').style.display = 'none';
+      }
       if (document.querySelector('.tox-tinymce'))
         document.querySelector('.tox-tinymce').style.height =
           'calc(100% - 8.8rem)';
     } else {
       EditorStore.tinymce?.setMode('design');
-      if (document.querySelector('.tox-editor-header'))
+      if (document.querySelector('.tox-editor-header')) {
         document.querySelector('.tox-editor-header').style.display = 'block';
-      if (document.querySelector('.tox-tinymce'))
+      } else if (!document.querySelector('.tox-editor-header')) {
+        setTimeout(() => {
+          document.querySelector('.tox-editor-header').style.display = 'block';
+        }, 1000)
+      }
+      if (document.querySelector('.tox-tinymce')) {
         document.querySelector('.tox-tinymce').style.height =
           'calc(100% - 6rem)';
+      } else if (!document.querySelector('.tox-tinymce')) {
+        setTimeout(() => {
+          document.querySelector('.tox-tinymce').style.height =
+            'calc(100% - 6rem)';
+        }, 1000)
+      }
     }
   }, [PageStore.isReadMode()]);
 
@@ -439,10 +453,10 @@ const EditorContainer = () => {
         />
         {PageStore.isReadMode() && EditorStore.isPreview
           ? <FilePreview
-              visible={EditorStore.isPreview}
-              fileMeta={EditorStore.previewFileMeta}
-              handleClose={() => EditorStore.setIsPreview(false)}
-            />
+            visible={EditorStore.isPreview}
+            fileMeta={EditorStore.previewFileMeta}
+            handleClose={() => EditorStore.setIsPreview(false)}
+          />
           : null
         }
       </EditorContainerWrapper>

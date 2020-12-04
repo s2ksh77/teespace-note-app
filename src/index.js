@@ -8,8 +8,8 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <CoreStoreProvider
     config={{
-      serviceURL: process.env.REACT_APP_SERVICE_URL,
-      websocketURL: process.env.REACT_APP_WEBSOCKET_URL,
+      serviceURL: process.env.REACT_APP_DEV_SERVICE_URL,
+      websocketURL: process.env.REACT_APP_DEV_WEBSOCKET_URL,
     }}
   >
     <App />
