@@ -15,7 +15,7 @@ const LNBSearchResult = () => {
   // 챕터 검색때만 초기화
   const onClickChapterBtn = (chapterId, pageId) => async () => {
     ChapterStore.setCurrentChapterId(chapterId);
-    PageStore.setCurrentPageId(pageId);    
+    PageStore.setCurrentPageId(pageId);
     PageStore.fetchCurrentPageData(pageId);
     ChapterStore.initSearchVar();
     await ChapterStore.getNoteChapterList();
@@ -24,9 +24,9 @@ const LNBSearchResult = () => {
   }
 
   const onClickPageBtn = (chapterId, pageId) => async () => {
-    if (PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapterId);
-    PageStore.setCurrentPageId(pageId);    
+    PageStore.setCurrentPageId(pageId);
     PageStore.fetchCurrentPageData(pageId);
     // ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);

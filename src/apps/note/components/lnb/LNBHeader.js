@@ -16,7 +16,7 @@ import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
-import {isFilled} from '../common/validators';
+import { isFilled } from '../common/validators';
 
 const LNBHeader = ({ createNewChapter }) => {
   const { ChapterStore, PageStore } = useNoteStore();
@@ -29,7 +29,7 @@ const LNBHeader = ({ createNewChapter }) => {
   }
 
   const handleNewChapterClick = async () => {
-    if (PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     if (!ChapterStore.isNewChapter) {
       ChapterStore.setChapterTempUl(true); // isNewChapter = true;
       ChapterStore.getChapterRandomColor();
@@ -82,15 +82,15 @@ const LNBHeader = ({ createNewChapter }) => {
           <LnbTitleSearchInput
             ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
             placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
-            disabled={ChapterStore.isTagSearching ? true : false} 
+            disabled={ChapterStore.isTagSearching ? true : false}
             onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
           />
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
               <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
-            </SearchTagChip> 
-          ) :null}
+            </SearchTagChip>
+          ) : null}
           <Button src={cancelImg}
             style={(ChapterStore.isSearching || ChapterStore.searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>

@@ -9,6 +9,7 @@ const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  otherEdit: false,
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
@@ -49,7 +50,21 @@ const PageStore = observable({
     this.isEdit = id;
   },
   isReadMode() {
-    return this.isEdit === null || this.isEdit === '';
+    if (this.isEdit === null || this.isEdit === '') {
+      this.setOtherEdit(false);
+      return true;
+    }
+    else if (this.is_edit !== null && NoteRepository.USER_ID === PageStore.getCurrentPageData().is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    }
+    else {
+      this.setOtherEdit(true);
+      return true;
+    };
+  },
+  setOtherEdit(flag) {
+    this.otherEdit = flag;
   },
   getContent() {
     return this.noteContent;
@@ -440,7 +455,10 @@ const PageStore = observable({
       this.setDeletePageList({ note_id: this.currentPageId });
       this.deleteParentIdx = this.createParentIdx;
       this.deleteNotePage();
-    } else this.noteNoneEdit(this.currentPageId);
+    } else {
+      if (this.otherEdit) return;
+      else this.noteNoneEdit(this.currentPageId);
+    }
   },
 
   handleSave() {

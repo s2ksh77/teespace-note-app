@@ -16,7 +16,7 @@ import shareImg from '../../assets/ts_share@3x.png';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  
+
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
     accept: 'chapter',
@@ -88,7 +88,7 @@ const Chapter = ({ chapter, index, isShared }) => {
   };
 
   const onClickChapterBtn = useCallback(() => {
-    if (PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapter.id);
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
@@ -111,7 +111,7 @@ const Chapter = ({ chapter, index, isShared }) => {
       ref={!isShared ? drop : null}
       className={
         ChapterStore.dragEnterChapterIdx === index
-        && (!isShared)
+          && (!isShared)
           ? 'borderTopLine'
           : ''
       }
@@ -121,9 +121,9 @@ const Chapter = ({ chapter, index, isShared }) => {
     >
       <ChapterCover
         ref={
-          !isShared 
-          ? (node) => drag(dropChapter(node)) 
-          : drag
+          !isShared
+            ? (node) => drag(dropChapter(node))
+            : drag
         }
         onClick={onClickChapterBtn}
       >

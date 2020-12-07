@@ -25,6 +25,12 @@ export const EditBtn = styled.button`
   &:focus {
     outline: none;
   }
+  &:disabled {
+    background: #ccc;
+    color: #fff;
+    border: 0;
+    cursor: not-allowed;
+  }
 `;
 
 export const EditorTitle = styled.input`

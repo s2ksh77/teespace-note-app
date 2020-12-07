@@ -19,7 +19,7 @@ const EditorHeader = () => {
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
-    if (!PageStore.isEdit) {
+    if (!PageStore.isReadMode()) {
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
@@ -35,7 +35,10 @@ const EditorHeader = () => {
       target: { innerText },
     } = e;
     if (innerText === '수정') {
-      PageStore.noteEditStart(PageStore.currentPageData.note_id);
+      if (PageStore.otherEdit) alert("팝업");
+      else {
+        PageStore.noteEditStart(PageStore.currentPageData.note_id);
+      }
     } else if (innerText === '저장') {
       // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync()
@@ -51,11 +54,11 @@ const EditorHeader = () => {
   };
 
   const editBtnText =
-    PageStore.isEdit === null || PageStore.isEdit === '' ? '수정' : '저장';
+    PageStore.isReadMode() ? '수정' : '저장';
 
   return useObserver(() => (
     <>
-      <ContentHeader 
+      <ContentHeader
         handleBackBtn={handleLayoutBtn}
         alignment={"center"}
       >
@@ -67,14 +70,14 @@ const EditorHeader = () => {
             placeholder='제목 없음'
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
-            disabled={PageStore.isEdit ? false : true}
+            disabled={!PageStore.isReadMode() ? false : true}
             autoComplete="off"
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
-          {PageStore.isEdit && <EditingImg src={editingImg} />}
+          {!PageStore.isReadMode() || PageStore.otherEdit && <EditingImg src={editingImg} />}
           <ModifiedUser>
-            {PageStore.isEdit
+            {!PageStore.isReadMode()
               ? PageStore.prevModifiedUserName
               : PageStore.currentPageData.user_name}
           </ModifiedUser>
