@@ -2228,6 +2228,7 @@ var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  otherEdit: false,
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
@@ -2270,7 +2271,19 @@ var PageStore = mobx.observable((_observable$1 = {
     this.isEdit = id;
   },
   isReadMode: function isReadMode() {
-    return this.isEdit === null || this.isEdit === '';
+    if (this.isEdit === null || this.isEdit === '') {
+      this.setOtherEdit(false);
+      return true;
+    } else if (this.is_edit !== null && NoteRepository$1.USER_ID === PageStore.getCurrentPageData().is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    } else {
+      this.setOtherEdit(true);
+      return true;
+    }
+  },
+  setOtherEdit: function setOtherEdit(flag) {
+    this.otherEdit = flag;
   },
   getContent: function getContent() {
     return this.noteContent;
@@ -2844,17 +2857,34 @@ var PageStore = mobx.observable((_observable$1 = {
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              if (_this10.isNewPage) {
-                _this10.setDeletePageList({
-                  note_id: _this10.currentPageId
-                });
+              if (!_this10.isNewPage) {
+                _context10.next = 6;
+                break;
+              }
 
-                _this10.deleteParentIdx = _this10.createParentIdx;
+              _this10.setDeletePageList({
+                note_id: _this10.currentPageId
+              });
 
-                _this10.deleteNotePage();
-              } else _this10.noteNoneEdit(_this10.currentPageId);
+              _this10.deleteParentIdx = _this10.createParentIdx;
 
-            case 1:
+              _this10.deleteNotePage();
+
+              _context10.next = 11;
+              break;
+
+            case 6:
+              if (!_this10.otherEdit) {
+                _context10.next = 10;
+                break;
+              }
+
+              return _context10.abrupt("return");
+
+            case 10:
+              _this10.noteNoneEdit(_this10.currentPageId);
+
+            case 11:
             case "end":
               return _context10.stop();
           }
@@ -4088,8 +4118,43 @@ var NoteMeta = {
 };
 
 var handleWebsocket = function handleWebsocket(message) {
-  console.log(message);
-  var EVENT_CASE = message.NOTI_ETC.split(',')[0];
+  var EVENT_TYPE = {
+    CREATE: "CREATE",
+    DELETE: "DELETE",
+    REMOVE: "REMOVE",
+    UPDATE: "UPDATE",
+    EDIT_START: "EDIT",
+    EDIT_DONE: "EDITDONE",
+    RENAME: "RENAME",
+    CHAPTER_RENAME: "CHAPTERRENAME",
+    CHAPTER_CREATE: "CHAPTERCREATE",
+    CHAPTER_DELETE: "CHAPTERDELETE",
+    NONEDIT: "NONEDIT",
+    MOVE: "MOVE"
+  };
+
+  if (message.NOTI_ETC === null) {
+    console.warn(" NOTE_ETC is empty");
+    return;
+  }
+
+  if (message.NOTI_ETC) {
+    var loginUSER = NoteRepository$1.USER_ID;
+    var EVENT_CASE = message.NOTI_ETC.split(',')[0];
+    var USER_INFO = message.NOTI_ETC.split(':');
+    var targetID = USER_INFO[1];
+    var targetUSER = USER_INFO[2];
+
+    switch (EVENT_CASE) {
+      case EVENT_TYPE.CREATE:
+        if (targetUSER === loginUSER) return;else {
+          // if (PageStore.getIsEdit() === loginUSER) return;
+          // else 
+          ChapterStore.getNoteChapterList();
+        }
+        break;
+    }
+  }
 };
 
 var NoteStore = mobx.observable({
