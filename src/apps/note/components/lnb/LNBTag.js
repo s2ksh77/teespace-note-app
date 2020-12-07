@@ -20,7 +20,7 @@ const LNBTag = memo(() => {
   });
 
   const onClickTagMenuBtn = () => {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     NoteStore.setShowPage(false);
     if (NoteStore.layoutState === 'collapse') {
       NoteStore.setTargetLayout('Content');

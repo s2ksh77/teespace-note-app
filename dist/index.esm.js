@@ -4575,7 +4575,7 @@ function _templateObject10() {
 }
 
 function _templateObject9() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #888D96;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #888D96;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject9 = function _templateObject9() {
     return data;
@@ -4585,7 +4585,7 @@ function _templateObject9() {
 }
 
 function _templateObject8() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.8125rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.8125rem;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject8 = function _templateObject8() {
     return data;
@@ -4595,7 +4595,7 @@ function _templateObject8() {
 }
 
 function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: rgba(30,168,223,0.20);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: rgba(30,168,223,0.20);\n  }\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -4605,7 +4605,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -5432,7 +5432,7 @@ var HeaderButtons = function HeaderButtons() {
   };
 
   var handleCancelBtn = function handleCancelBtn(e) {
-    if (PageStore.isReadMode()) {
+    if (!PageStore.isReadMode()) {
       NoteStore.setModalInfo('editCancel');
     }
 
@@ -5474,7 +5474,7 @@ var LNBHeader = function LNBHeader(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!PageStore.isReadMode()) {
+              if (PageStore.isReadMode()) {
                 _context.next = 2;
                 break;
               }
@@ -5832,7 +5832,7 @@ var LNBTag = /*#__PURE__*/memo(function () {
       drop = _useDrop2[1];
 
   var onClickTagMenuBtn = function onClickTagMenuBtn() {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     NoteStore.setShowPage(false);
 
     if (NoteStore.layoutState === 'collapse') {
@@ -5971,7 +5971,7 @@ var changeButtonStyle = function changeButtonStyle(idx, count) {
   }
 };
 var openLink = function openLink(url, target) {
-  if (PageStore.isReadMode()) return;
+  if (!PageStore.isReadMode()) return;
 
   if (target !== '_blank') {
     document.location.href = url;
@@ -6925,7 +6925,7 @@ var Chapter = function Chapter(_ref) {
   };
 
   var onClickChapterBtn = useCallback(function () {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapter.id);
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
@@ -7054,7 +7054,7 @@ var LNBSearchResult = function LNBSearchResult() {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              if (!PageStore.isReadMode()) {
+              if (PageStore.isReadMode()) {
                 _context2.next = 2;
                 break;
               }
