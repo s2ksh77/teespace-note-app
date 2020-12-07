@@ -300,7 +300,7 @@ const TagStore = observable({
       })
       if (Object.keys(resultKeyTags).length > 0) {
         results[KEY.toUpperCase()] = resultKeyTags;
-        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY);
+        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
       }
     })
     this.setKeyTagPairObj({ ...results });
