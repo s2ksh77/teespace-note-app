@@ -1,8 +1,38 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const EditorContainerWrapper = styled.div`
   width:100%;
   height:100%;
+  ${props => props.mode === "false" && css`
+    .tox-editor-header{
+     display:block;
+    }
+  `}
+  ${props => props.mode === "true" && css`
+    .tox-editor-header{
+      display:none;
+    }
+  `}
+  ${props => (props.isFile === "false" && props.mode === "true") && css`
+    .tox-tinymce{
+      height: calc(100% - 8.8rem) !important;
+    }
+  `}
+  ${props => (props.isFile === "true" && props.mode === "true") && css`
+    .tox-tinymce{
+      height: calc(100% - 13.8rem) !important;
+    }
+  `}
+  ${props => (props.isFile === "false" && props.mode === "false") && css`
+    .tox-tinymce{
+      height: calc(100% - 6rem) !important;
+    }
+  `}
+  ${props => (props.isFile === "true" && props.mode === "false") && css`
+    .tox-tinymce{
+      height: calc(100% - 11rem) !important;
+    }
+  `}
 `;
 
 export const ReadModeContainer = styled.div`
