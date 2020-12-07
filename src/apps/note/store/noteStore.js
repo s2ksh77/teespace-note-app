@@ -100,6 +100,7 @@ const NoteStore = observable({
       case 'titleDuplicate':
       case 'imageDelete':
       case 'sharedInfo':
+      case 'editingPage':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;

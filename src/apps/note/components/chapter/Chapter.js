@@ -88,7 +88,7 @@ const Chapter = ({ chapter, index, isShared }) => {
   };
 
   const onClickChapterBtn = useCallback(() => {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapter.id);
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;

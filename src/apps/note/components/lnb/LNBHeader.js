@@ -29,7 +29,7 @@ const LNBHeader = ({ createNewChapter }) => {
   }
 
   const handleNewChapterClick = async () => {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     if (!ChapterStore.isNewChapter) {
       ChapterStore.setChapterTempUl(true); // isNewChapter = true;
       ChapterStore.getChapterRandomColor();

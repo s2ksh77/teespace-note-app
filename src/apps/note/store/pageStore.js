@@ -33,6 +33,8 @@ const PageStore = observable({
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
+  editingUserID: '',
+  editingUserName: '',
 
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
@@ -59,12 +61,25 @@ const PageStore = observable({
       return false;
     }
     else {
+      this.setEditingUserID(PageStore.getCurrentPageData().is_edit);
       this.setOtherEdit(true);
       return true;
     };
   },
   setOtherEdit(flag) {
     this.otherEdit = flag;
+  },
+  setEditingUserID(targetID) {
+    this.editingUserID = targetID;
+  },
+  getEditingUserID() {
+    return this.editingUserID;
+  },
+  setEditingUserName(targetName) {
+    this.editingUserName = targetName;
+  },
+  getEditingUserName() {
+    return this.editingUserName;
   },
   getContent() {
     return this.noteContent;

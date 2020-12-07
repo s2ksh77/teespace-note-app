@@ -24,7 +24,7 @@ const LNBSearchResult = () => {
   }
 
   const onClickPageBtn = (chapterId, pageId) => async () => {
-    if (PageStore.isReadMode()) return;
+    if (!PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapterId);
     PageStore.setCurrentPageId(pageId);
     PageStore.fetchCurrentPageData(pageId);

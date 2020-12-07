@@ -53,6 +53,9 @@ export const ChapterSearchResultTitle = styled.div`
   padding-left: 1.19rem;
   font-size: 0.8125rem;
   font-weight: bold;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 export const PageSearchResult = styled.div`
   position:relative;
@@ -67,14 +70,26 @@ export const PageSearchResult = styled.div`
   &:hover {
     background-color: rgba(30,168,223,0.20);
   }
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `
 
 export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
   color: #888D96;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `
 
 export const SearchResultBotttom = styled.div`

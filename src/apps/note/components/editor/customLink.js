@@ -107,7 +107,7 @@ export const changeButtonStyle = (idx, count) => {
 }
 
 export const openLink = (url, target) => {
-  if (PageStore.isReadMode()) return;
+  if (!PageStore.isReadMode()) return;
 
   if (target !== '_blank') {
     document.location.href = url;
