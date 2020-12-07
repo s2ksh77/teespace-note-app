@@ -388,13 +388,13 @@ const ChapterStore = observable({
   async checkDefaultChapterColor(notbookList) {
     const idx = notbookList.findIndex(chapter => chapter.type === "default");
     if (idx === -1) return notbookList;
+
     const defaultChapter = notbookList.splice(idx,1);
     if (defaultChapter[0]?.color === null) {
       const {color} = await this.updateChapterColor(defaultChapter[0].id);
       defaultChapter[0].color = color;
-      return notbookList.concat(defaultChapter);
     }
-    return notbookList;
+    return notbookList.concat(defaultChapter);
   },
 
   async getNoteChapterList() {
@@ -403,7 +403,7 @@ const ChapterStore = observable({
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
 
-    let tempChapterList = [];
+    let tempChapterList = [];    
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
       // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
