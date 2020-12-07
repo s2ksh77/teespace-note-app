@@ -285,13 +285,13 @@ var NoteRepository = /*#__PURE__*/function () {
     _classCallCheck(this, NoteRepository);
 
     this.URL = 'http://222.122.67.176:8080/CMS/Note';
-    this.FILE_URL = process.env.REACT_APP_DEV_SERVICE_URL;
+    this.FILE_URL = process.env.REACT_APP_DEV_SERVICE_DOMAIN;
     this.WS_ID = '';
     this.CH_TYPE = 'CHN0003';
     this.USER_ID = '';
     this.chId = '';
     this.USER_NAME = '';
-    this.URL = url || process.env.REACT_APP_DEV_SERVICE_URL;
+    this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
   }
 
   _createClass(NoteRepository, [{
@@ -4664,7 +4664,7 @@ function _templateObject8$1() {
 }
 
 function _templateObject7$1() {
-  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0 0 0.38rem !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0 0 0.38rem !important;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject7$1 = function _templateObject7() {
     return data;
