@@ -79,6 +79,9 @@ export const ModifiedTime = styled.span`
   font-size: 0.6875rem;
   border-left: 1px solid #d8d8d8 !important;
   padding: 0 0 0 0.38rem !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const LnbTitleCover = styled.div`

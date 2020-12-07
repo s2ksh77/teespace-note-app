@@ -5,7 +5,7 @@ const { default: axios } = require('axios');
 class NoteRepository {
   URL = 'http://222.122.67.176:8080/CMS/Note';
 
-  FILE_URL = process.env.REACT_APP_DEV_SERVICE_URL;
+  FILE_URL = process.env.REACT_APP_DEV_SERVICE_DOMAIN;
 
   WS_ID = '';
   CH_TYPE = 'CHN0003';
@@ -20,7 +20,7 @@ class NoteRepository {
   // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
 
   constructor(url) {
-    this.URL = url || process.env.REACT_APP_DEV_SERVICE_URL;
+    this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
   }
 
   setWsId(targetWsId) {
