@@ -14,14 +14,14 @@ import GlobalVariable from './GlobalVariable';
 const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { NoteStore, PageStore, EditorStore, ChapterStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
-  
+
   const renderCondition = target =>
     !(
       NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
     );
 
   const handleClickOutsideEditor = (e) => {
-    if (!PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     if (EditorStore.isDrive || EditorStore.isAttatch) return;
     if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper?.contains(e.target)) return;
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
@@ -29,7 +29,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     if (e.target.download) return;
 
     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-    if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
+    if (!isUndoActive && !PageStore.isReadMode() && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
 
@@ -39,7 +39,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
   }, []);
-  
+
   // layoutState가 똑같은게 들어올 때는 타지 않음
   useEffect(() => {
     // collapse 아닐 때는 setTargetLayout(null) 넣어준다

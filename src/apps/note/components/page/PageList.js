@@ -28,11 +28,6 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   };
 
   const handleSelectPage = useCallback(async (id, e) => {
-    if (PageStore.isEdit) {
-      // NoteApp에 있는 handleClickOutsideEditor 함수 안타게 하기
-      if (PageStore.currentPageId === id) e.stopPropagation();
-      return;
-    }
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.setCurrentPageId(id);

@@ -14,7 +14,7 @@ import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/tag_add.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
-import {isFilled, checkWhitespace} from '../common/validators';
+import { isFilled, checkWhitespace } from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
@@ -38,7 +38,7 @@ const TagListContainer = () => {
   };
 
   const toggleTagInput = () => {
-    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewTag(true);
+    if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);
     else TagStore.setIsNewTag(false);
   };
 
@@ -161,12 +161,12 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Tooltip title={PageStore.isEdit ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
+        <Tooltip title={!PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
         </Tooltip>
-        <AddTagForm 
+        <AddTagForm
           show={TagStore.isNewTag}
           toggleTagInput={toggleTagInput}
         />
@@ -188,19 +188,24 @@ const TagListContainer = () => {
                   key={index}
                   data-idx={index}
                   id={item.tag_id}
-                  closable={isFilled(PageStore.isEdit) ? true :false}
+                  closable={PageStore.isReadMode() ? false : true}
                   tabIndex="0"
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
                   onClick={handleClickTag.bind(null, index)}
                   onKeyDown={handleKeyDownTag.bind(null)}
                 >
-                  <TagText
-                    onDoubleClick={handleChangeTag(item.text,index, item.tag_id)}
+                  {!PageStore.isReadMode() ? <TagText
+                    onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
                   >
                     {item.text.length > 5
                       ? `${item.text.slice(0, 5)}...`
                       : item.text}
                   </TagText>
+                    : <TagText>{item.text.length > 5
+                      ? `${item.text.slice(0, 5)}...`
+                      : item.text}
+                    </TagText>
+                  }
                 </Tag>
               )
           )}
