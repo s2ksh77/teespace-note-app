@@ -1831,7 +1831,7 @@ var TagStore = mobx.observable({
 
       if (Object.keys(resultKeyTags).length > 0) {
         results[KEY.toUpperCase()] = resultKeyTags;
-        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY);
+        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
       }
     });
     this.setKeyTagPairObj(_objectSpread2({}, results));
@@ -2401,6 +2401,7 @@ var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  otherEdit: false,
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
@@ -2427,6 +2428,8 @@ var PageStore = mobx.observable((_observable$1 = {
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
+  editingUserID: '',
+  editingUserName: '',
   setNoteInfoList: function setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
   },
@@ -2443,7 +2446,32 @@ var PageStore = mobx.observable((_observable$1 = {
     this.isEdit = id;
   },
   isReadMode: function isReadMode() {
-    return this.isEdit === null || this.isEdit === '';
+    if (this.isEdit === null || this.isEdit === '') {
+      this.setOtherEdit(false);
+      return true;
+    } else if (this.is_edit !== null && NoteRepository$1.USER_ID === PageStore.getCurrentPageData().is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    } else {
+      this.setEditingUserID(PageStore.getCurrentPageData().is_edit);
+      this.setOtherEdit(true);
+      return true;
+    }
+  },
+  setOtherEdit: function setOtherEdit(flag) {
+    this.otherEdit = flag;
+  },
+  setEditingUserID: function setEditingUserID(targetID) {
+    this.editingUserID = targetID;
+  },
+  getEditingUserID: function getEditingUserID() {
+    return this.editingUserID;
+  },
+  setEditingUserName: function setEditingUserName(targetName) {
+    this.editingUserName = targetName;
+  },
+  getEditingUserName: function getEditingUserName() {
+    return this.editingUserName;
   },
   getContent: function getContent() {
     return this.noteContent;
@@ -3017,17 +3045,34 @@ var PageStore = mobx.observable((_observable$1 = {
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              if (_this10.isNewPage) {
-                _this10.setDeletePageList({
-                  note_id: _this10.currentPageId
-                });
+              if (!_this10.isNewPage) {
+                _context10.next = 6;
+                break;
+              }
 
-                _this10.deleteParentIdx = _this10.createParentIdx;
+              _this10.setDeletePageList({
+                note_id: _this10.currentPageId
+              });
 
-                _this10.deleteNotePage();
-              } else _this10.noteNoneEdit(_this10.currentPageId);
+              _this10.deleteParentIdx = _this10.createParentIdx;
 
-            case 1:
+              _this10.deleteNotePage();
+
+              _context10.next = 11;
+              break;
+
+            case 6:
+              if (!_this10.otherEdit) {
+                _context10.next = 10;
+                break;
+              }
+
+              return _context10.abrupt("return");
+
+            case 10:
+              _this10.noteNoneEdit(_this10.currentPageId);
+
+            case 11:
             case "end":
               return _context10.stop();
           }
@@ -3722,7 +3767,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
             defaultChapter = notbookList.splice(idx, 1);
 
             if (!(((_defaultChapter$ = defaultChapter[0]) === null || _defaultChapter$ === void 0 ? void 0 : _defaultChapter$.color) === null)) {
-              _context9.next = 11;
+              _context9.next = 10;
               break;
             }
 
@@ -3733,12 +3778,11 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _yield$_this7$updateC = _context9.sent;
             color = _yield$_this7$updateC.color;
             defaultChapter[0].color = color;
+
+          case 10:
             return _context9.abrupt("return", notbookList.concat(defaultChapter));
 
           case 11:
-            return _context9.abrupt("return", notbookList);
-
-          case 12:
           case "end":
             return _context9.stop();
         }
@@ -4133,6 +4177,13 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+
+      case 'editingPage':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
+        break;
     }
 
     return eventList;
@@ -4150,6 +4201,7 @@ var NoteMeta = {
           text: '취소'
         }];
 
+      case 'editingPage':
       case 'confirm':
         return [{
           type: 'confirom',
@@ -4193,6 +4245,7 @@ var NoteMeta = {
       subtitle: '',
       buttonConfig: []
     };
+    var editingUserName = PageStore.editingUserName;
     var _NoteStore$sharedInfo = NoteStore.sharedInfo,
         sharedRoomName = _NoteStore$sharedInfo.sharedRoomName,
         sharedUserName = _NoteStore$sharedInfo.sharedUserName,
@@ -4242,6 +4295,12 @@ var NoteMeta = {
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
         break;
 
+      case 'editingPage':
+        dialogType.title = '수정할 수 없습니다.';
+        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.buttonConfig = this.setButtonConfig('editingPage');
+        break;
+
       case 'sharedInfo':
         dialogType.info = [{
           title: '출처 룸',
@@ -4262,8 +4321,43 @@ var NoteMeta = {
 };
 
 var handleWebsocket = function handleWebsocket(message) {
-  console.log(message);
-  var EVENT_CASE = message.NOTI_ETC.split(',')[0];
+  var EVENT_TYPE = {
+    CREATE: "CREATE",
+    DELETE: "DELETE",
+    REMOVE: "REMOVE",
+    UPDATE: "UPDATE",
+    EDIT_START: "EDIT",
+    EDIT_DONE: "EDITDONE",
+    RENAME: "RENAME",
+    CHAPTER_RENAME: "CHAPTERRENAME",
+    CHAPTER_CREATE: "CHAPTERCREATE",
+    CHAPTER_DELETE: "CHAPTERDELETE",
+    NONEDIT: "NONEDIT",
+    MOVE: "MOVE"
+  };
+
+  if (message.NOTI_ETC === null) {
+    console.warn(" NOTE_ETC is empty");
+    return;
+  }
+
+  if (message.NOTI_ETC) {
+    var loginUSER = NoteRepository$1.USER_ID;
+    var EVENT_CASE = message.NOTI_ETC.split(',')[0];
+    var USER_INFO = message.NOTI_ETC.split(':');
+    var targetID = USER_INFO[1];
+    var targetUSER = USER_INFO[2];
+
+    switch (EVENT_CASE) {
+      case EVENT_TYPE.CREATE:
+        if (targetUSER === loginUSER) return;else {
+          // if (PageStore.getIsEdit() === loginUSER) return;
+          // else 
+          ChapterStore.getNoteChapterList();
+        }
+        break;
+    }
+  }
 };
 
 var NoteStore = mobx.observable({
@@ -4361,6 +4455,7 @@ var NoteStore = mobx.observable({
       case 'titleDuplicate':
       case 'imageDelete':
       case 'sharedInfo':
+      case 'editingPage':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -4714,7 +4809,7 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 3.5rem;\n  height: 1.69rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #008cc8;\n  &:hover {\n    background-color: #1ea8df;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 3.5rem;\n  height: 1.69rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #008cc8;\n  &:hover {\n    background-color: #1ea8df;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
 
   _templateObject2$1 = function _templateObject2() {
     return data;
@@ -5348,7 +5443,7 @@ var HeaderButtons = function HeaderButtons() {
   };
 
   var handleCancelBtn = function handleCancelBtn(e) {
-    if (PageStore.isEdit) {
+    if (PageStore.isReadMode()) {
       NoteStore.setModalInfo('editCancel');
     }
 
@@ -5390,7 +5485,7 @@ var LNBHeader = function LNBHeader(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!PageStore.isEdit) {
+              if (!PageStore.isReadMode()) {
                 _context.next = 2;
                 break;
               }
@@ -5748,7 +5843,7 @@ var LNBTag = /*#__PURE__*/React.memo(function () {
       drop = _useDrop2[1];
 
   var onClickTagMenuBtn = function onClickTagMenuBtn() {
-    if (PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     NoteStore.setShowPage(false);
 
     if (NoteStore.layoutState === 'collapse') {
@@ -5887,7 +5982,7 @@ var changeButtonStyle = function changeButtonStyle(idx, count) {
   }
 };
 var openLink = function openLink(url, target) {
-  if (PageStore.isEdit) return;
+  if (PageStore.isReadMode()) return;
 
   if (target !== '_blank') {
     document.location.href = url;
@@ -6709,16 +6804,6 @@ var PageList = function PageList(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!PageStore.isEdit) {
-                _context.next = 3;
-                break;
-              }
-
-              // NoteApp에 있는 handleClickOutsideEditor 함수 안타게 하기
-              if (PageStore.currentPageId === id) e.stopPropagation();
-              return _context.abrupt("return");
-
-            case 3:
               NoteStore.setShowPage(true);
               ChapterStore.setCurrentChapterId(chapter.id);
               PageStore.setCurrentPageId(id);
@@ -6726,7 +6811,7 @@ var PageList = function PageList(_ref) {
               if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
 
-            case 9:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -6851,7 +6936,7 @@ var Chapter = function Chapter(_ref) {
   };
 
   var onClickChapterBtn = React.useCallback(function () {
-    if (PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     ChapterStore.setCurrentChapterId(chapter.id);
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
@@ -6980,7 +7065,7 @@ var LNBSearchResult = function LNBSearchResult() {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              if (!PageStore.isEdit) {
+              if (!PageStore.isReadMode()) {
                 _context2.next = 2;
                 break;
               }
@@ -7284,7 +7369,10 @@ var EditorHeader = function EditorHeader() {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       PageStore = _useNoteStore.PageStore,
-      EditorStore = _useNoteStore.EditorStore; // 뒤로 가기 버튼
+      EditorStore = _useNoteStore.EditorStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      userStore = _useCoreStores.userStore; // 뒤로 가기 버튼
 
 
   var handleLayoutBtn = /*#__PURE__*/function () {
@@ -7295,7 +7383,7 @@ var EditorHeader = function EditorHeader() {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (PageStore.isEdit) {
+              if (PageStore.isReadMode()) {
                 _context.next = 4;
                 break;
               }
@@ -7338,7 +7426,7 @@ var EditorHeader = function EditorHeader() {
 
   var handleClickBtn = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-      var innerText;
+      var innerText, res;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -7346,26 +7434,44 @@ var EditorHeader = function EditorHeader() {
               innerText = e.target.innerText;
 
               if (!(innerText === '수정')) {
-                _context2.next = 5;
+                _context2.next = 13;
                 break;
               }
 
-              PageStore.noteEditStart(PageStore.currentPageData.note_id);
-              _context2.next = 8;
-              break;
+              if (!PageStore.otherEdit) {
+                _context2.next = 10;
+                break;
+              }
+
+              _context2.next = 5;
+              return userStore.fetchProfile(PageStore.getEditingUserID());
 
             case 5:
+              res = _context2.sent;
+              PageStore.setEditingUserName(res.name);
+              NoteStore.setModalInfo('editingPage');
+              _context2.next = 11;
+              break;
+
+            case 10:
+              PageStore.noteEditStart(PageStore.currentPageData.note_id);
+
+            case 11:
+              _context2.next = 16;
+              break;
+
+            case 13:
               if (!(innerText === '저장')) {
-                _context2.next = 8;
+                _context2.next = 16;
                 break;
               }
 
-              _context2.next = 8;
+              _context2.next = 16;
               return handleFileSync().then(function () {
                 return PageStore.handleSave();
               });
 
-            case 8:
+            case 16:
             case "end":
               return _context2.stop();
           }
@@ -7383,7 +7489,7 @@ var EditorHeader = function EditorHeader() {
     PageStore.setTitle(value);
   };
 
-  var editBtnText = PageStore.isEdit === null || PageStore.isEdit === '' ? '수정' : '저장';
+  var editBtnText = PageStore.isReadMode() ? '수정' : '저장';
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
       handleBackBtn: handleLayoutBtn,
@@ -7397,13 +7503,13 @@ var EditorHeader = function EditorHeader() {
       placeholder: "\uC81C\uBAA9 \uC5C6\uC74C",
       value: PageStore.noteTitle,
       onChange: handleTitleInput,
-      disabled: PageStore.isEdit ? false : true,
+      disabled: !PageStore.isReadMode() ? false : true,
       autoComplete: "off"
     })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, {
       show: NoteStore.layoutState !== "collapse"
-    }, PageStore.isEdit && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    }, !PageStore.isReadMode() || PageStore.otherEdit && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$9
-    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, PageStore.isEdit ? PageStore.prevModifiedUserName : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate))));
+    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? PageStore.prevModifiedUserName : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate))));
   });
 };
 
@@ -7775,7 +7881,7 @@ var TagListContainer = function TagListContainer() {
   };
 
   var toggleTagInput = function toggleTagInput() {
-    if (!TagStore.isNewTag && PageStore.isEdit) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
+    if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
   };
 
   var onClickNewTagBtn = function onClickNewTagBtn() {
@@ -7895,7 +8001,7 @@ var TagListContainer = function TagListContainer() {
   });
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(EditorTagCover, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
-      title: PageStore.isEdit ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"
+      title: !PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"
     }, /*#__PURE__*/React__default['default'].createElement(TagNewBtn, null, /*#__PURE__*/React__default['default'].createElement(TagNewBtnIcon, {
       src: img$a,
       onClick: onClickNewTagBtn
@@ -7918,14 +8024,14 @@ var TagListContainer = function TagListContainer() {
         key: index,
         "data-idx": index,
         id: item.tag_id,
-        closable: isFilled(PageStore.isEdit) ? true : false,
+        closable: PageStore.isReadMode() ? false : true,
         tabIndex: "0",
         onClose: handleCloseBtn.bind(null, item.tag_id, item.text),
         onClick: handleClickTag.bind(null, index),
         onKeyDown: handleKeyDownTag.bind(null)
-      }, /*#__PURE__*/React__default['default'].createElement(TagText, {
+      }, !PageStore.isReadMode() ? /*#__PURE__*/React__default['default'].createElement(TagText, {
         onDoubleClick: handleChangeTag(item.text, index, item.tag_id)
-      }, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text));
+      }, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text) : /*#__PURE__*/React__default['default'].createElement(TagText, null, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text));
     }))));
   });
 };
@@ -8857,7 +8963,7 @@ var NoteApp = function NoteApp(_ref) {
   var handleClickOutsideEditor = function handleClickOutsideEditor(e) {
     var _GlobalVariable$edito, _document$querySelect, _document$querySelect2, _EditorStore$tinymce;
 
-    if (!PageStore.isEdit) return;
+    if (PageStore.isReadMode()) return;
     if (EditorStore.isDrive || EditorStore.isAttatch) return;
     if (GlobalVariable.editorWrapper && ((_GlobalVariable$edito = GlobalVariable.editorWrapper) === null || _GlobalVariable$edito === void 0 ? void 0 : _GlobalVariable$edito.contains(e.target))) return;
     if (GlobalVariable.editorWrapper && ((_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.contains(e.target))) return;
@@ -8865,7 +8971,7 @@ var NoteApp = function NoteApp(_ref) {
     if (e.target.download) return;
     var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
 
-    if (!isUndoActive) {
+    if (!isUndoActive && !PageStore.isReadMode() && !PageStore.otherEdit) {
       PageStore.handleNoneEdit();
       return;
     }

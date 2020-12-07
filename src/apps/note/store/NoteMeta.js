@@ -55,6 +55,9 @@ const NoteMeta = {
       case 'sharedInfo':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'editingPage':
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        break;
       default:
         break;
     }
@@ -66,6 +69,7 @@ const NoteMeta = {
       case 'fileDelete':
       case 'imageDelete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
+      case 'editingPage':
       case 'confirm':
         return [{ type: 'confirom', text: '확인' }];
       case 'editCancel':
@@ -87,6 +91,7 @@ const NoteMeta = {
       subtitle: '',
       buttonConfig: []
     }
+    const editingUserName = PageStore.editingUserName;
     const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
     switch (type) {
       case 'chapter':
@@ -124,6 +129,11 @@ const NoteMeta = {
         dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
         dialogType.buttonConfig = this.setButtonConfig('imageDelete');
+        break;
+      case 'editingPage':
+        dialogType.title = '수정할 수 없습니다.';
+        dialogType.subtitle = `${editingUserName} 님이 수정 중 입니다.`;
+        dialogType.buttonConfig = this.setButtonConfig('editingPage');
         break;
       case 'sharedInfo':
         dialogType.info = [

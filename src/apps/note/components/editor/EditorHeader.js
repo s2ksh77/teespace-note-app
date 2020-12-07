@@ -13,9 +13,11 @@ import {
 import ContentHeader from '../common/ContentHeader';
 import editingImg from '../../assets/TeeSpace_working.gif';
 import { handleFileSync } from '../common/NoteFile';
+import { useCoreStores } from 'teespace-core';
 
 const EditorHeader = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { userStore } = useCoreStores();
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
@@ -35,7 +37,11 @@ const EditorHeader = () => {
       target: { innerText },
     } = e;
     if (innerText === '수정') {
-      if (PageStore.otherEdit) alert("팝업");
+      if (PageStore.otherEdit) {
+        const res = await userStore.fetchProfile(PageStore.getEditingUserID());
+        PageStore.setEditingUserName(res.name);
+        NoteStore.setModalInfo('editingPage');
+      }
       else {
         PageStore.noteEditStart(PageStore.currentPageData.note_id);
       }
