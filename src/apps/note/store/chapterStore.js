@@ -407,9 +407,7 @@ const ChapterStore = observable({
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
       // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
-      console.log('tempChapterList_before', tempChapterList)
       tempChapterList = await this.checkDefaultChapterColor(tempChapterList);
-      console.log('tempChapterList_after',tempChapterList)
       this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
     }
     else {
