@@ -1654,7 +1654,7 @@ var TagStore = observable({
 
       if (Object.keys(resultKeyTags).length > 0) {
         results[KEY.toUpperCase()] = resultKeyTags;
-        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY);
+        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
       }
     });
     this.setKeyTagPairObj(_objectSpread2({}, results));
@@ -3545,7 +3545,7 @@ var ChapterStore = observable((_observable$2 = {
             defaultChapter = notbookList.splice(idx, 1);
 
             if (!(((_defaultChapter$ = defaultChapter[0]) === null || _defaultChapter$ === void 0 ? void 0 : _defaultChapter$.color) === null)) {
-              _context9.next = 11;
+              _context9.next = 10;
               break;
             }
 
@@ -3556,12 +3556,11 @@ var ChapterStore = observable((_observable$2 = {
             _yield$_this7$updateC = _context9.sent;
             color = _yield$_this7$updateC.color;
             defaultChapter[0].color = color;
+
+          case 10:
             return _context9.abrupt("return", notbookList.concat(defaultChapter));
 
           case 11:
-            return _context9.abrupt("return", notbookList);
-
-          case 12:
           case "end":
             return _context9.stop();
         }
