@@ -57,9 +57,6 @@ export const GlobalStyle = createGlobalStyle`
       margin-left:auto !important;
     }
   }
-  .tox-editor-header{
-    display:none;
-  }
   .mce-tinymce iframe{
     flex: 1;
   }

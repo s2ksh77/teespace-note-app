@@ -3,7 +3,7 @@ import { observable, toJS } from 'mobx';
 import { API, WWMS, UserStore, EventBus, useCoreStores } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faAngleDown, faAngleUp, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Dropdown, Collapse, Tag, Menu, Tooltip } from 'antd';
@@ -7233,7 +7233,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .tox-editor-header{\n    display:none;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -7396,8 +7396,68 @@ var EditorHeader = function EditorHeader() {
   });
 };
 
-function _templateObject19$1() {
+function _templateObject25$1() {
   var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  margin-top: 0.38rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
+
+  _templateObject25$1 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject24$1() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  width: 1.625rem;\n  font-size: 0.625rem;\n  padding-left: 0.4625rem;\n  color: #75757F;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  position: absolute;\n  top: 0;\n  right: 0;\n"]);
+
+  _templateObject24$1 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject23$1() {
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 12px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+
+  _templateObject23$1 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject22$1() {
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 10.55rem;\n"]);
+
+  _templateObject22$1 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject21$1() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.6875rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
+
+  _templateObject21$1 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject20$1() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+
+  _templateObject20$1 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject19$1() {
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 10.55rem;\n  overflow: inherit;\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  height: 40px;\n  cursor : pointer;\n"]);
 
   _templateObject19$1 = function _templateObject19() {
     return data;
@@ -7407,7 +7467,7 @@ function _templateObject19$1() {
 }
 
 function _templateObject18$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  width: 1.625rem;\n  font-size: 0.625rem;\n  padding-left: 0.4625rem;\n  color: #75757F;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  position: absolute;\n  top: 0;\n  right: 0;\n"]);
+  var data = _taggedTemplateLiteral(["\n"]);
 
   _templateObject18$2 = function _templateObject18() {
     return data;
@@ -7417,7 +7477,7 @@ function _templateObject18$2() {
 }
 
 function _templateObject17$2() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 12px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:1.875rem;\n  height:1.875rem;\n"]);
 
   _templateObject17$2 = function _templateObject17() {
     return data;
@@ -7427,7 +7487,7 @@ function _templateObject17$2() {
 }
 
 function _templateObject16$2() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 10.55rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n  ", ":hover & {\n    display:none;\n  }\n"]);
 
   _templateObject16$2 = function _templateObject16() {
     return data;
@@ -7437,7 +7497,7 @@ function _templateObject16$2() {
 }
 
 function _templateObject15$2() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.6875rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n"]);
 
   _templateObject15$2 = function _templateObject15() {
     return data;
@@ -7447,7 +7507,7 @@ function _templateObject15$2() {
 }
 
 function _templateObject14$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  padding: 5px;\n  display: flex;\n  margin-left: 0px;\n"]);
 
   _templateObject14$3 = function _templateObject14() {
     return data;
@@ -7457,7 +7517,7 @@ function _templateObject14$3() {
 }
 
 function _templateObject13$3() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 10.55rem;\n  overflow: inherit;\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  height: 40px;\n  cursor : pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  width: 13.75rem;\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 3.5rem;\n  margin-left: 0.5rem;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:hover{\n    background-color: #DCDDFF;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
   _templateObject13$3 = function _templateObject13() {
     return data;
@@ -7467,7 +7527,7 @@ function _templateObject13$3() {
 }
 
 function _templateObject12$3() {
-  var data = _taggedTemplateLiteral(["\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:100%;\n  display : flex;\n  align-items: center;\n  height: 4.9rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
 
   _templateObject12$3 = function _templateObject12() {
     return data;
@@ -7477,7 +7537,7 @@ function _templateObject12$3() {
 }
 
 function _templateObject11$3() {
-  var data = _taggedTemplateLiteral(["\n  width:1.875rem;\n  height:1.875rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
 
   _templateObject11$3 = function _templateObject11() {
     return data;
@@ -7487,7 +7547,7 @@ function _templateObject11$3() {
 }
 
 function _templateObject10$5() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n  ", ":hover & {\n    display:none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #1ea8df;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #008CC8;\n  }\n"]);
 
   _templateObject10$5 = function _templateObject10() {
     return data;
@@ -7497,7 +7557,7 @@ function _templateObject10$5() {
 }
 
 function _templateObject9$6() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject9$6 = function _templateObject9() {
     return data;
@@ -7507,7 +7567,7 @@ function _templateObject9$6() {
 }
 
 function _templateObject8$6() {
-  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  padding: 5px;\n  display: flex;\n  margin-left: 0px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid rgb(218, 218, 218);\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
   _templateObject8$6 = function _templateObject8() {
     return data;
@@ -7517,7 +7577,7 @@ function _templateObject8$6() {
 }
 
 function _templateObject7$6() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  width: 13.75rem;\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 3.5rem;\n  margin-left: 0.5rem;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:hover{\n    background-color: #DCDDFF;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 11rem) !important;\n    }\n  "]);
 
   _templateObject7$6 = function _templateObject7() {
     return data;
@@ -7527,7 +7587,7 @@ function _templateObject7$6() {
 }
 
 function _templateObject6$6() {
-  var data = _taggedTemplateLiteral(["\n  width:100%;\n  display : flex;\n  align-items: center;\n  height: 4.9rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 6rem) !important;\n    }\n  "]);
 
   _templateObject6$6 = function _templateObject6() {
     return data;
@@ -7537,7 +7597,7 @@ function _templateObject6$6() {
 }
 
 function _templateObject5$6() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 13.8rem) !important;\n    }\n  "]);
 
   _templateObject5$6 = function _templateObject5() {
     return data;
@@ -7547,7 +7607,7 @@ function _templateObject5$6() {
 }
 
 function _templateObject4$7() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #1ea8df;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #008CC8;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 8.8rem) !important;\n    }\n  "]);
 
   _templateObject4$7 = function _templateObject4() {
     return data;
@@ -7557,7 +7617,7 @@ function _templateObject4$7() {
 }
 
 function _templateObject3$7() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-editor-header{\n      display:none;\n    }\n  "]);
 
   _templateObject3$7 = function _templateObject3() {
     return data;
@@ -7567,7 +7627,7 @@ function _templateObject3$7() {
 }
 
 function _templateObject2$7() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid rgb(218, 218, 218);\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-editor-header{\n     display:block;\n    }\n  "]);
 
   _templateObject2$7 = function _templateObject2() {
     return data;
@@ -7577,7 +7637,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  width:100%;\n  height:100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:100%;\n  height:100%;\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -7585,29 +7645,41 @@ function _templateObject$7() {
 
   return data;
 }
-var EditorContainerWrapper = styled.div(_templateObject$7());
-var ReadModeContainer = styled.div(_templateObject2$7());
-var ReadModeText = styled.span(_templateObject3$7());
-var FoldBtn = styled.div(_templateObject4$7(), function (props) {
+var EditorContainerWrapper = styled.div(_templateObject$7(), function (props) {
+  return props.mode === "false" && css(_templateObject2$7());
+}, function (props) {
+  return props.mode === "true" && css(_templateObject3$7());
+}, function (props) {
+  return props.isFile === "false" && props.mode === "true" && css(_templateObject4$7());
+}, function (props) {
+  return props.isFile === "true" && props.mode === "true" && css(_templateObject5$6());
+}, function (props) {
+  return props.isFile === "false" && props.mode === "false" && css(_templateObject6$6());
+}, function (props) {
+  return props.isFile === "true" && props.mode === "false" && css(_templateObject7$6());
+});
+var ReadModeContainer = styled.div(_templateObject8$6());
+var ReadModeText = styled.span(_templateObject9$6());
+var FoldBtn = styled.div(_templateObject10$5(), function (props) {
   return props.show ? "flex" : "none";
 }, function (props) {
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
 });
-var FoldBtnImg = styled.img(_templateObject5$6());
-var FileBodyLayout = styled.div(_templateObject6$6());
-var FileBody = styled.div(_templateObject7$6());
-var FileContent = styled.div(_templateObject8$6());
-var FileDownloadIcon = styled.div(_templateObject9$6());
-var FileExtensionIcon = styled.div(_templateObject10$5(), FileBody);
-var FileDownloadBtn = styled.img(_templateObject11$3());
-var FileExtensionBtn = styled.img(_templateObject12$3());
-var FileData = styled.div(_templateObject13$3());
-var FileDataName = styled.div(_templateObject14$3());
-var FileName = styled.div(_templateObject15$2());
-var FileDataTime = styled.div(_templateObject16$2());
-var FileTime = styled.div(_templateObject17$2());
-var FileClose = styled.div(_templateObject18$2());
-var FileCloseBtn = styled.img(_templateObject19$1());
+var FoldBtnImg = styled.img(_templateObject11$3());
+var FileBodyLayout = styled.div(_templateObject12$3());
+var FileBody = styled.div(_templateObject13$3());
+var FileContent = styled.div(_templateObject14$3());
+var FileDownloadIcon = styled.div(_templateObject15$2());
+var FileExtensionIcon = styled.div(_templateObject16$2(), FileBody);
+var FileDownloadBtn = styled.img(_templateObject17$2());
+var FileExtensionBtn = styled.img(_templateObject18$2());
+var FileData = styled.div(_templateObject19$1());
+var FileDataName = styled.div(_templateObject20$1());
+var FileName = styled.div(_templateObject21$1());
+var FileDataTime = styled.div(_templateObject22$1());
+var FileTime = styled.div(_templateObject23$1());
+var FileClose = styled.div(_templateObject24$1());
+var FileCloseBtn = styled.img(_templateObject25$1());
 var editorContentCSS = " \n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
 
 const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/tag_add%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/tag_add' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M16%2c12 C16.5522848%2c12 17%2c12.4477153 17%2c13 L16.9996194%2c15 L19%2c15 C19.5522848%2c15 20%2c15.4477153 20%2c16 C20%2c16.5522848 19.5522848%2c17 19%2c17 L16.9996194%2c17 L17%2c19 C17%2c19.5522848 16.5522848%2c20 16%2c20 C15.4477153%2c20 15%2c19.5522848 15%2c19 L14.9996194%2c17 L13%2c17 C12.4477153%2c17 12%2c16.5522848 12%2c16 C12%2c15.4477153 12.4477153%2c15 13%2c15 L14.9996194%2c15 L15%2c13 C15%2c12.4477153 15.4477153%2c12 16%2c12 Z M8.34023349%2c1.00074646 L14.3094032%2c1.23974807 C15.0221643%2c1.26919481 15.6289873%2c1.87289763 15.6577193%2c2.58806415 L15.8973704%2c8.5532031 C15.9079389%2c8.89539977 15.7927278%2c9.20762807 15.5687793%2c9.43947123 L13.6616194%2c11.346 L9.53741848%2c15.4710789 C9.08530775%2c15.9231896 8.3387291%2c15.9245472 7.81438626%2c15.4959105 L7.70561696%2c15.3974858 L3.80461938%2c11.496 L3.02365047%2c12.2861419 L9.12199782%2c18.3939493 L10.9866194%2c16.474 L12.0926194%2c17.534 L10.0106081%2c19.6093089 C9.5775224%2c20.0686785 8.874178%2c20.0836069 8.38701228%2c19.6654142 L8.28610575%2c19.5691763 L1.91528974%2c13.1731645 C1.4614885%2c12.6931552 1.41548103%2c11.9467627 1.78862933%2c11.4492151 L1.87500948%2c11.3465943 L2.72861938%2c10.421 L1.49998163%2c9.19185043 C0.975025961%2c8.66689476 0.941984154%2c7.84445326 1.42638851%2c7.36004891 L7.44361108%2c1.34282634 C7.67684281%2c1.10959461 7.99493852%2c0.989308278 8.34023349%2c1.00074646 Z M8.4872346%2c2.49877551 L2.66190168%2c8.32410843 L8.57335896%2c14.2355657 L14.3986919%2c8.41023278 L14.1711831%2c2.72712965 L8.4872346%2c2.49877551 Z M11.4271541%2c4.00000003 C11.9794389%2c4.00000003 12.4271541%2c4.44771528 12.4271541%2c5.00000003 C12.4271541%2c5.55228478 11.9794389%2c6.00000003 11.4271541%2c6.00000003 C10.8748694%2c6.00000003 10.4271541%2c5.55228478 10.4271541%2c5.00000003 C10.4271541%2c4.44771528 10.8748694%2c4.00000003 11.4271541%2c4.00000003 Z' id='Combined-Shape' fill='rgb(117%2c 117%2c 127)'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
@@ -8162,9 +8234,7 @@ var EditorContainer = function EditorContainer() {
     };
 
     input.click();
-  }; // useLayoutEffect : it gets executed right after a React component render lifecycle, 
-  // and before useEffect gets triggered.
-
+  };
 
   useLayoutEffect(function () {
     // 모드 변경의 목적
@@ -8172,43 +8242,12 @@ var EditorContainer = function EditorContainer() {
       var _EditorStore$tinymce;
 
       (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setMode('readonly');
-
-      if (document.querySelector('.tox-editor-header')) {
-        console.log('read?');
-        document.querySelector('.tox-editor-header').style.display = 'none';
-      }
-
-      if (document.querySelector('.tox-tinymce')) document.querySelector('.tox-tinymce').style.height = 'calc(100% - 8.8rem)';
     } else {
       var _EditorStore$tinymce2;
 
       (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.setMode('design');
-
-      if (document.querySelector('.tox-editor-header')) {
-        document.querySelector('.tox-editor-header').style.display = 'block';
-      } else if (!document.querySelector('.tox-editor-header')) {
-        setTimeout(function () {
-          document.querySelector('.tox-editor-header').style.display = 'block';
-        }, 1000);
-      }
-
-      if (document.querySelector('.tox-tinymce')) {
-        document.querySelector('.tox-tinymce').style.height = 'calc(100% - 6rem)';
-      } else if (!document.querySelector('.tox-tinymce')) {
-        setTimeout(function () {
-          document.querySelector('.tox-tinymce').style.height = 'calc(100% - 6rem)';
-        }, 1000);
-      }
     }
   }, [PageStore.isReadMode()]);
-  useEffect(function () {
-    // Layout에 따른 height 변경의 목적
-    if (PageStore.isReadMode()) {
-      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = 'calc(100% - 8.8rem)';else if (document.querySelector('.tox-tinymce') && EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = 'calc(100% - 13.8rem)';
-    } else {
-      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = 'calc(100% - 6rem)';else if (document.querySelector('.tox-tinymce') && EditorStore.isFile) document.querySelector('.tox-tinymce').style.height = 'calc(100% - 11rem)';
-    }
-  });
 
   var initialMode = function initialMode() {
     var _EditorStore$tinymce3, _EditorStore$tinymce4;
@@ -8227,7 +8266,9 @@ var EditorContainer = function EditorContainer() {
   }, [editorWrapperRef.current]);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorContainerWrapper, {
-      ref: editorWrapperRef
+      ref: editorWrapperRef,
+      mode: PageStore.isReadMode().toString(),
+      isFile: EditorStore.isFile.toString()
     }, /*#__PURE__*/React.createElement(EditorHeader, null), PageStore.isReadMode() ? /*#__PURE__*/React.createElement(ReadModeContainer, {
       style: {
         display: 'flex'

@@ -132,58 +132,14 @@ const EditorContainer = () => {
     input.click();
   }
 
-  // useLayoutEffect : it gets executed right after a React component render lifecycle, 
-  // and before useEffect gets triggered.
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly');
-      if (document.querySelector('.tox-editor-header')) {
-        console.log('read?')
-        document.querySelector('.tox-editor-header').style.display = 'none';
-      }
-      if (document.querySelector('.tox-tinymce'))
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 8.8rem)';
     } else {
       EditorStore.tinymce?.setMode('design');
-      if (document.querySelector('.tox-editor-header')) {
-        document.querySelector('.tox-editor-header').style.display = 'block';
-      } else if (!document.querySelector('.tox-editor-header')) {
-        setTimeout(() => {
-          document.querySelector('.tox-editor-header').style.display = 'block';
-        }, 1000)
-      }
-      if (document.querySelector('.tox-tinymce')) {
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 6rem)';
-      } else if (!document.querySelector('.tox-tinymce')) {
-        setTimeout(() => {
-          document.querySelector('.tox-tinymce').style.height =
-            'calc(100% - 6rem)';
-        }, 1000)
-      }
     }
   }, [PageStore.isReadMode()]);
-
-  useEffect(() => {
-    // Layout에 따른 height 변경의 목적
-    if (PageStore.isReadMode()) {
-      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile)
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 8.8rem)';
-      else if (document.querySelector('.tox-tinymce') && EditorStore.isFile)
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 13.8rem)';
-    } else {
-      if (document.querySelector('.tox-tinymce') && !EditorStore.isFile)
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 6rem)';
-      else if (document.querySelector('.tox-tinymce') && EditorStore.isFile)
-        document.querySelector('.tox-tinymce').style.height =
-          'calc(100% - 11rem)';
-    }
-  });
 
   const initialMode = () => {
     if (PageStore.isReadMode()) EditorStore.tinymce?.setMode('readonly');
@@ -201,7 +157,7 @@ const EditorContainer = () => {
 
   return useObserver(() => (
     <>
-      <EditorContainerWrapper ref={editorWrapperRef}>
+      <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()}>
         <EditorHeader />
         {PageStore.isReadMode() ? (
           <ReadModeContainer style={{ display: 'flex' }}>
