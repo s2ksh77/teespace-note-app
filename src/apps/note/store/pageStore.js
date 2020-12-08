@@ -496,6 +496,7 @@ const PageStore = observable({
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
+    EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
     this.isNewPage = false;
   },
