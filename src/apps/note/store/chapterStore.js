@@ -8,10 +8,10 @@ import { type } from "ramda";
 const ChapterStore = observable({
   chapterColor: "",
   chapterList: [],
-  sortedChapterList:{
-    roomChapterList:[],
-    sharedPageList:[],
-    sharedChapterList:[]
+  sortedChapterList: {
+    roomChapterList: [],
+    sharedPageList: [],
+    sharedChapterList: []
   },
   currentChapterId: "",
   chapterNewTitle: "",
@@ -245,7 +245,7 @@ const ChapterStore = observable({
     const { dto } = await NoteRepository.renameChapter(renameId, renameText, color)
     return dto;
   },
-  async updateChapterColor(chapterId) {    
+  async updateChapterColor(chapterId) {
     const targetColor = this.getChapterRandomColor();
     const { dto } = await NoteRepository.updateChapterColor(chapterId, targetColor)
     return dto;
@@ -257,7 +257,7 @@ const ChapterStore = observable({
     return dto;
   },
   async getChapterInfoList(chapterId) {
-    const { 
+    const {
       data: { dto },
     } = await NoteRepository.getChapterInfoList(chapterId);
     return dto;
@@ -375,7 +375,7 @@ const ChapterStore = observable({
     } else {
       NoteStore.setShowPage(true);
       const chapterId = this.chapterList[0].id;
-      const pageId = 
+      const pageId =
         this.chapterList[0].children.length > 0
           ? this.chapterList[0].children?.[0]?.id
           : ''
@@ -384,14 +384,14 @@ const ChapterStore = observable({
       PageStore.fetchCurrentPageData(pageId);
     }
   },
-  
+
   async checkDefaultChapterColor(notbookList) {
     const idx = notbookList.findIndex(chapter => chapter.type === "default");
     if (idx === -1) return notbookList;
 
-    const defaultChapter = notbookList.splice(idx,1);
+    const defaultChapter = notbookList.splice(idx, 1);
     if (defaultChapter[0]?.color === null) {
-      const {color} = await this.updateChapterColor(defaultChapter[0].id);
+      const { color } = await this.updateChapterColor(defaultChapter[0].id);
       defaultChapter[0].color = color;
     }
     return notbookList.concat(defaultChapter);
@@ -403,7 +403,7 @@ const ChapterStore = observable({
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
 
-    let tempChapterList = [];    
+    let tempChapterList = [];
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
       // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
@@ -422,18 +422,18 @@ const ChapterStore = observable({
   },
 
   sortChapterList() {
-    let _roomChapterList=[], _sharedPageList=[], _sharedChapterList=[];
+    let _roomChapterList = [], _sharedPageList = [], _sharedChapterList = [];
 
-    this.chapterList.forEach(chapter=>{
+    this.chapterList.forEach(chapter => {
       if (chapter.type === "shared_page") _sharedPageList.push(chapter);
       else if (chapter.type === 'shared') _sharedChapterList.push(chapter);
       else _roomChapterList.push(chapter);
     })
 
     this.setSortedChapterList({
-      roomChapterList : _roomChapterList,
-      sharedPageList : _sharedPageList,
-      sharedChapterList : _sharedChapterList
+      roomChapterList: _roomChapterList,
+      sharedPageList: _sharedPageList,
+      sharedChapterList: _sharedChapterList
     })
   },
 
@@ -471,7 +471,7 @@ const ChapterStore = observable({
       const copyOfChapterList = this.chapterList.slice();
       const target = this.chapterList[this.moveChapterIdx];
       const targetInLocalStorage = item[this.moveChapterIdx];
-      
+
       if (this.moveChapterIdx < moveTargetChapterIdx) {
         copyOfChapterList.splice(moveTargetChapterIdx, 0, target);
         copyOfChapterList.splice(this.moveChapterIdx, 1);
@@ -502,6 +502,15 @@ const ChapterStore = observable({
     this.setIsTagSearching(false);
     this.setSearchResult({});
     this.setSearchStr("");
+  },
+  async getChapterFirstPage(targetId) {
+    this.getChapterList().then(chapterList => {
+      const targetChapter = chapterList.filter(chapter => chapter.id === targetId)[0];
+      if (targetChapter.children.length > 0) {
+        PageStore.setCurrentPageId(targetChapter.children[0].id);
+        PageStore.fetchCurrentPageData(targetChapter.children[0].id);
+      } else PageStore.setCurrentPageId('');
+    })
   },
   /*
     태그와 챕터리스트 isSearching이 다름
@@ -556,7 +565,7 @@ const ChapterStore = observable({
 
   createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
     if (!targetChapterList) return;
-    
+
     const targetList = targetChapterList.map(chapter => {
       return ({
         id: chapter.id,
