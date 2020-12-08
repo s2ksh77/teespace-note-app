@@ -1,6 +1,6 @@
 import { observable, toJS } from 'mobx';
 import { API, WWMS, UserStore } from 'teespace-core';
-import 'ramda';
+import { isNil, isEmpty } from 'ramda';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -1103,6 +1103,13 @@ var NoteRepository = /*#__PURE__*/function () {
 }();
 
 var NoteRepository$1 = new NoteRepository();
+
+// isNil : Checks if the input value is null or undefined.
+// isEmpty : Returns true if the given value is its type's empty value; false otherwise.
+
+var isFilled = function isFilled(value) {
+  return !isNil(value) && !isEmpty(value) ? true : false;
+};
 
 var checkNotDuplicate = function checkNotDuplicate(targetArr, key, value) {
   return targetArr.find(function (item) {
@@ -2769,37 +2776,64 @@ var PageStore = observable((_observable$1 = {
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this5 = this;
 
-    this.getNoteInfoList(noteId).then(function (dto) {
-      _this5.noteInfoList = dto;
-      _this5.currentPageData = dto;
-      _this5.isEdit = dto.is_edit;
-      _this5.noteTitle = dto.note_title;
-      _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
-      EditorStore.setFileList(dto.fileList);
-    });
-  },
-  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
-    var _this6 = this;
-
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var dto;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              if (!pageId) {
-                _context9.next = 7;
+              _context9.next = 2;
+              return _this5.getNoteInfoList(noteId);
+
+            case 2:
+              dto = _context9.sent;
+
+              if (isFilled(dto.note_id)) {
+                _context9.next = 6;
                 break;
               }
 
-              _context9.next = 3;
+              if (_this5.currentPageId === noteId) _this5.currentPageId = '';
+              return _context9.abrupt("return");
+
+            case 6:
+              _this5.noteInfoList = dto;
+              _this5.currentPageData = dto;
+              _this5.isEdit = dto.is_edit;
+              _this5.noteTitle = dto.note_title;
+              _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
+              EditorStore.setFileList(dto.fileList);
+
+            case 12:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }))();
+  },
+  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
+    var _this6 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              if (!pageId) {
+                _context10.next = 7;
+                break;
+              }
+
+              _context10.next = 3;
               return _this6.fetchNoteInfoList(pageId);
 
             case 3:
-              _context9.next = 5;
+              _context10.next = 5;
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context9.next = 8;
+              _context10.next = 8;
               break;
 
             case 7:
@@ -2807,10 +2841,10 @@ var PageStore = observable((_observable$1 = {
 
             case 8:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
         }
-      }, _callee9);
+      }, _callee10);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -2851,13 +2885,13 @@ var PageStore = observable((_observable$1 = {
   handleNoneEdit: function handleNoneEdit() {
     var _this10 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (!_this10.isNewPage) {
-                _context10.next = 6;
+                _context11.next = 6;
                 break;
               }
 
@@ -2869,26 +2903,26 @@ var PageStore = observable((_observable$1 = {
 
               _this10.deleteNotePage();
 
-              _context10.next = 11;
+              _context11.next = 11;
               break;
 
             case 6:
               if (!_this10.otherEdit) {
-                _context10.next = 10;
+                _context11.next = 10;
                 break;
               }
 
-              return _context10.abrupt("return");
+              return _context11.abrupt("return");
 
             case 10:
               _this10.noteNoneEdit(_this10.currentPageId);
 
             case 11:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   handleSave: function handleSave() {
@@ -2973,27 +3007,27 @@ var PageStore = observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
     var _yield$NoteRepository8, noteList;
 
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
-            _context11.next = 2;
+            _context12.next = 2;
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository8 = _context11.sent;
+            _yield$NoteRepository8 = _context12.sent;
             noteList = _yield$NoteRepository8.data.dto.noteList;
-            return _context11.abrupt("return", noteList);
+            return _context12.abrupt("return", noteList);
 
           case 5:
           case "end":
-            return _context11.stop();
+            return _context12.stop();
         }
       }
-    }, _callee11);
+    }, _callee12);
   }))();
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
   if (!targetPageList) return;
