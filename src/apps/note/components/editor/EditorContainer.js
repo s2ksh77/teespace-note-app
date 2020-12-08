@@ -84,7 +84,7 @@ const EditorContainer = () => {
     var input = document.createElement('input');
     if (type === 'image') {
       input.setAttribute('type', 'file');
-      input.setAttribute('accept', 'image/*');
+      input.setAttribute('accept', ['image/*', 'video/*']);
     }
     else input.setAttribute('type', 'file');
     input.onchange = function () {
