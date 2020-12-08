@@ -4,6 +4,7 @@ import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
+import {isFilled} from '../components/common/validators';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -413,17 +414,20 @@ const PageStore = observable({
     }
   },
 
-  fetchNoteInfoList(noteId) {
-    this.getNoteInfoList(noteId).then(dto => {
-      this.noteInfoList = dto;
-      this.currentPageData = dto;
-      this.isEdit = dto.is_edit;
-      this.noteTitle = dto.note_title;
-      this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
-      EditorStore.setFileList(
-        dto.fileList,
-      );
-    });
+  async fetchNoteInfoList(noteId) {
+    const dto = await this.getNoteInfoList(noteId);
+    if (!isFilled(dto.note_id)) {
+      if (this.currentPageId === noteId) this.currentPageId = '';
+      return;
+    }
+    this.noteInfoList = dto;
+    this.currentPageData = dto;
+    this.isEdit = dto.is_edit;
+    this.noteTitle = dto.note_title;
+    this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
+    EditorStore.setFileList(
+      dto.fileList,
+    );
   },
 
   async fetchCurrentPageData(pageId) {
