@@ -48,18 +48,16 @@ const EditorContainer = () => {
     let dotIndex = fileName.lastIndexOf('.');
     let fileExtension;
     let fileSize = blobInfo.blob().size;
-    let isImage, isVideo;
+    let isImage;
     if (dotIndex !== -1) {
       fileExtension = fileName.substring(dotIndex + 1, fileName.length);
       fileName = fileName.substring(0, dotIndex);
     }
 
     isImage = EditorStore.uploadFileIsImage(fileExtension);
-    isVideo = EditorStore.uploadFileIsVideo(fileExtension);
 
     const fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());
-    else if (isVideo) fd.append('video', blobInfo.blob());
     else fd.append('file', blobInfo.blob());
 
     if (isImage) {
@@ -69,13 +67,6 @@ const EditorContainer = () => {
       // const tempId = tempArr[tempArr.length - 1];
       // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
       // currentImg.setAttribute('temp-id', tempId);
-    }
-    else if (isVideo) {
-      const currentVideo = EditorStore.getVideoElement();
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, currentVideo);
-      // const tempId = Math.random().toString(36).substr(2, 8);
-      // EditorStore.setUploadFileMeta('video', tempId, { fileName, fileExtension, fileSize }, fd, currentVideo);
-      // currentVideo.setAttribute('temp-id', tempId);
     }
     else {
       EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd);
@@ -93,14 +84,13 @@ const EditorContainer = () => {
     var input = document.createElement('input');
     if (type === 'image') {
       input.setAttribute('type', 'file');
-      input.setAttribute('accept', ['image/*', 'video/*']);
+      input.setAttribute('accept', 'image/*');
     }
     else input.setAttribute('type', 'file');
     input.onchange = function () {
       var file = this.files[0];
       var reader = new FileReader();
       var isImage = EditorStore.readerIsImage(file.type);
-      var isVideo = EditorStore.readerIsVideo(file.type);
       reader.onload = function () {
         var id = 'blobid' + (new Date()).getTime();
         var blobCache = EditorStore.tinymce.editorUpload.blobCache;
@@ -113,17 +103,6 @@ const EditorContainer = () => {
           img.setAttribute('src', reader.result);
           img.setAttribute('data-name', file.name);
           EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
-        }
-        else if (isVideo) {
-          EditorStore.tinymce.insertContent(
-            `<p>
-              <span class="mce-preview-object mce-object-video" contenteditable="false" data-mce-object="video" data-mce-p-allowfullscreen="allowfullscreen" data-mce-p-frameborder="no" data-mce-p-scrolling="no" data-mce-p-src='' data-mce-html="%20">
-                <video width="400" controls>
-                  <source src=${reader.result} />
-                </video>
-              </span>
-            </p>`
-          );
         }
         handleFileHandler(blobInfo, { title: file.name });
       };
@@ -198,9 +177,6 @@ const EditorContainer = () => {
                 if (e.element.children[0] !== undefined) {
                   if (e.element.children[0].tagName === 'IMG') {
                     EditorStore.setImgElement(e.element.children[0]);
-                  }
-                  else if (e.element.children[0].tagName === 'SPAN') {
-                    EditorStore.setVideoElement(e.element.children[0])
                   }
                 }
                 // url invalid면 red highlighting
