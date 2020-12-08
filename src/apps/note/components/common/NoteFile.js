@@ -91,16 +91,13 @@ export const replaceTempFileId = (node, fileId) => {
 
 export const handleFileDelete = async () => {
     const imgTarget = await EditorStore.tinymce.dom.doc.images;
-    const videoTarget = await EditorStore.tinymce.dom.doc.getElementsByClassName('mce-object-video');
     const fileTarget = document.querySelectorAll('div #fileLayout [id]');
     const imgArray = [...imgTarget];
-    const videoArray = [...videoTarget];
     const fileArray = [...fileTarget];
 
     let deleteArr = [];
 
     imgArray.forEach(img => EditorStore.tempFileList.push(img.getAttribute('id')));
-    videoArray.forEach(video => EditorStore.tempFileList.push(video.getAttribute('id')));
     fileArray.forEach(file => EditorStore.tempFileList.push(file.getAttribute('id')));
 
     if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(file => !EditorStore.tempFileList.includes(file.file_id))

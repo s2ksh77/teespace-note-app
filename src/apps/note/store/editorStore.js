@@ -10,7 +10,6 @@ const EditorStore = observable({
   tinymce: null,
   uploadFile: "",
   imgElement: '',
-  videoElement: '',
   isFile: false,
   isDrive: false,
   isAttatch: false,
@@ -50,12 +49,6 @@ const EditorStore = observable({
   },
   getImgElement() {
     return this.imgElement;
-  },
-  getVideoElement() {
-    return this.videoElement;
-  },
-  setVideoElement(element) {
-    this.videoElement = element;
   },
   setIsDrive(flag) {
     this.isDrive = flag;
@@ -146,15 +139,8 @@ const EditorStore = observable({
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
     return ImageExt.includes(ext.toLowerCase());
   },
-  uploadFileIsVideo(ext) {
-    let videoExts = ['mp4', 'm4v', 'ogv', 'webm', 'mov'];
-    return videoExts.includes(ext.toLowerCase());
-  },
   readerIsImage(type) {
     return type.includes('image/');
-  },
-  readerIsVideo(type) {
-    return type.includes('video/');
   },
   setFileIndex(idx) {
     this.selectFileIdx = idx;

@@ -6,10 +6,11 @@ import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
 import downloadBtn from '../../assets/drive_download.svg';
 import txt from '../../assets/drive_txt.svg';
-import pdf from '../../assets/drive_topoint.svg';
+import pdf from '../../assets/pdf.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
+import video from '../../assets/movie.svg';
 import { Dropdown, Menu } from 'antd';
 import { downloadFile } from '../common/NoteFile';
 
@@ -28,6 +29,8 @@ const FileLayout = () => {
                 return excel;
             case 'docx':
                 return docs;
+            case 'mp4':
+                return video;
             default: return file;
         }
     }
@@ -96,6 +99,20 @@ const FileLayout = () => {
                 break;
         }
     }
+
+    const onClickFileName = (item) => {
+        EditorStore.setPreviewFileMeta({
+            userId: NoteRepository.USER_ID,      
+            channelId: NoteRepository.chId,   
+            roomId: NoteRepository.WS_ID,      
+            fileId: item.file_id ? item.file_id : item.user_context_2,      
+            fileName: item.file_name,
+            fileExtension: item.file_extension,
+        })
+
+        EditorStore.setIsPreview(true);
+    }
+
     const handleFileRemove = (fileId, filename, index) => {
         // temp id
         if (fileId.length === 8) {
@@ -147,7 +164,15 @@ const FileLayout = () => {
 
                             <FileData>
                                 <FileDataName>
-                                    <FileName>{item.file_name + '.' + item.file_extension}</FileName>
+                                    <FileName 
+                                        onClick={
+                                            PageStore.isReadMode()
+                                            ? onClickFileName.bind(null, item)
+                                            : null
+                                        }
+                                    >
+                                        {item.file_name + '.' + item.file_extension}
+                                    </FileName>
                                 </FileDataName>
                                 <FileDataTime>
                                     <FileTime>{item.file_size ? EditorStore.convertFileSize(item.file_size) : null}</FileTime>
