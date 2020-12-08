@@ -1802,7 +1802,6 @@ var EditorStore = observable((_observable = {
   tinymce: null,
   uploadFile: "",
   imgElement: '',
-  videoElement: '',
   isFile: false,
   isDrive: false,
   isAttatch: false,
@@ -1842,12 +1841,6 @@ var EditorStore = observable((_observable = {
   },
   getImgElement: function getImgElement() {
     return this.imgElement;
-  },
-  getVideoElement: function getVideoElement() {
-    return this.videoElement;
-  },
-  setVideoElement: function setVideoElement(element) {
-    this.videoElement = element;
   },
   setIsDrive: function setIsDrive(flag) {
     this.isDrive = flag;
@@ -2010,13 +2003,8 @@ var EditorStore = observable((_observable = {
 }), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
-}), _defineProperty(_observable, "uploadFileIsVideo", function uploadFileIsVideo(ext) {
-  var videoExts = ['mp4', 'm4v', 'ogv', 'webm', 'mov'];
-  return videoExts.includes(ext.toLowerCase());
 }), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
-}), _defineProperty(_observable, "readerIsVideo", function readerIsVideo(type) {
-  return type.includes('video/');
 }), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
   this.selectFileIdx = idx;
 }), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
@@ -2904,7 +2892,7 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce2;
+    var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else this.setTitle('제목 없음');
@@ -2925,7 +2913,8 @@ var PageStore = observable((_observable$1 = {
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     NoteStore.setShowModal(false);
-    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
+    (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
