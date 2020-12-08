@@ -3,11 +3,9 @@ import ChapterStore from '../../store/chapterStore';
 import NoteRepository from '../../store/noteRepository';
 
 export const handleWebsocket = (message) => {
-
     const EVENT_TYPE = {
         CREATE: "CREATE",
         DELETE: "DELETE",
-        REMOVE: "REMOVE",
         UPDATE: "UPDATE",
         EDIT_START: "EDIT",
         EDIT_DONE: "EDITDONE",
@@ -23,43 +21,66 @@ export const handleWebsocket = (message) => {
         return;
     }
     if (message.NOTI_ETC) {
-
         const loginUSER = NoteRepository.USER_ID;
         const EVENT_CASE = message.NOTI_ETC.split(',')[0];
-        const USER_INFO = message.NOTI_ETC.split(':');
-        const targetID = USER_INFO[1];
-        const targetUSER = USER_INFO[2];
+        const MESSAGE_INFO = message.NOTI_ETC.split(',')[1];
+        const Info = MESSAGE_INFO.split(':');
+        let targetID = Info[0];
+        let targetUSER = Info[1];
 
         switch (EVENT_CASE) {
             case EVENT_TYPE.CREATE:
                 if (targetUSER === loginUSER) return;
+                else ChapterStore.getNoteChapterList();
+                break;
+            case EVENT_TYPE.DELETE:
+                if (targetUSER === loginUSER) return;
                 else {
-                    // if (PageStore.getIsEdit() === loginUSER) return;
-                    // else 
+                    if (PageStore.getCurrentPageId() === targetID) {
+                        ChapterStore.setCurrentChapterId(ChapterStore.getCurrentChapterId());
+                        ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
+                    }
                     ChapterStore.getNoteChapterList();
                 }
                 break;
-            case EVENT_TYPE.DELETE:
-                break;
-            case EVENT_TYPE.REMOVE:
-                break;
             case EVENT_TYPE.UPDATE:
-                break;
-            case EVENT_TYPE.EDIT_START:
-                break;
             case EVENT_TYPE.EDIT_DONE:
-                break;
-            case EVENT_TYPE.RENAME:
-                break;
             case EVENT_TYPE.NONEDIT:
+            case EVENT_TYPE.EDIT_START: // EDIT,NOTE_ID:USER_ID
+                if (targetUSER === loginUSER) return;
+                else {
+                    if (PageStore.getCurrentPageId() === targetID) {
+                        PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
+                    }
+                    ChapterStore.getNoteChapterList();
+                }
                 break;
-            case EVENT_TYPE.MOVE:
-                break;
-            case EVENT_TYPE.CHAPTER_RENAME:
+            case EVENT_TYPE.MOVE: // 서버에서 곧 넣을 예정
                 break;
             case EVENT_TYPE.CHAPTER_CREATE:
+            case EVENT_TYPE.CHAPTER_RENAME:
+                if (targetUSER === loginUSER) return;
+                else {
+                    ChapterStore.getNoteChapterList();
+                }
                 break;
             case EVENT_TYPE.CHAPTER_DELETE:
+                if (targetUSER === loginUSER) return;
+                else {
+                    if (ChapterStore.getCurrentChapterId() === targetID) {
+                        ChapterStore.getNoteChapterList();
+                        setTimeout(() => {
+                            if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
+                                const firstChapter = ChapterStore.chapterList[0];
+                                ChapterStore.setCurrentChapterId(firstChapter.id);
+                                if (firstChapter.children && firstChapter.children.length > 0) {
+                                    PageStore.setCurrentPageId(firstChapter.children[0].id);
+                                    PageStore.fetchCurrentPageData(firstChapter.children[0].id);
+                                } else PageStore.setCurrentPageId('');
+                            } else NoteStore.setShowPage(false);
+                        }, 200)
+                    } else ChapterStore.getNoteChapterList();
+                }
                 break;
         }
     }
