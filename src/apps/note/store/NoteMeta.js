@@ -151,6 +151,11 @@ const NoteMeta = {
         break;
       case 'shareRoom':
         dialogType.buttonConfig = this.setButtonConfig('shareRoom');
+        break;      
+      case 'deletedPage':
+        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('deletedPage');
         break;
       default:
         break;
