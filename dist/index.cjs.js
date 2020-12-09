@@ -2894,6 +2894,9 @@ var PageStore = mobx.observable((_observable$1 = {
               return _context9.abrupt("return");
 
             case 6:
+              // fetchNoteInfoList할 때 setCurrentPageId하기
+              _this5.setCurrentPageId(dto.note_id);
+
               _this5.noteInfoList = dto;
               _this5.currentPageData = dto;
               _this5.isEdit = dto.is_edit;
@@ -2901,7 +2904,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 12:
+            case 13:
             case "end":
               return _context9.stop();
           }
@@ -3653,8 +3656,6 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var _this6 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-    var _this6$chapterList$0$, _this6$chapterList$0$2, chapterId, pageId;
-
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -3667,13 +3668,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
               NoteStore$1.setShowPage(false);
             } else {
               NoteStore$1.setShowPage(true);
-              chapterId = _this6.chapterList[0].id;
-              pageId = _this6.chapterList[0].children.length > 0 ? (_this6$chapterList$0$ = _this6.chapterList[0].children) === null || _this6$chapterList$0$ === void 0 ? void 0 : (_this6$chapterList$0$2 = _this6$chapterList$0$[0]) === null || _this6$chapterList$0$2 === void 0 ? void 0 : _this6$chapterList$0$2.id : '';
 
-              _this6.setCurrentChapterId(chapterId);
-
-              PageStore.setCurrentPageId(pageId);
-              PageStore.fetchCurrentPageData(pageId);
+              _this6.setFirstNoteInfo();
             }
 
           case 3:
@@ -4036,6 +4032,51 @@ var ChapterStore = mobx.observable((_observable$2 = {
   this.createShareChapter(targetList).then(function () {
     return _this15.getNoteChapterList();
   });
+}), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
+  if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
+  if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
+  if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+  return null;
+}), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
+  var _this16 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+    var targetChapter, chapterId, pageId;
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            targetChapter = _this16.getFirstRenderedChapter();
+
+            if (targetChapter) {
+              _context16.next = 5;
+              break;
+            }
+
+            _this16.setCurrentChapterId('');
+
+            PageStore.setCurrentPageId('');
+            return _context16.abrupt("return");
+
+          case 5:
+            chapterId = targetChapter.id;
+            pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
+
+            _context16.next = 9;
+            return PageStore.fetchCurrentPageData(pageId);
+
+          case 9:
+            // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
+            // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
+            _this16.setCurrentChapterId(chapterId);
+
+          case 10:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16);
+  }))();
 }), _observable$2));
 
 var NoteMeta = {
@@ -4157,6 +4198,9 @@ var NoteMeta = {
       case 'shareRoom':
         eventList.push(function (e) {
           e.stopPropagation();
+          NoteStore$1.shareNote();
+          NoteStore$1.setIsShared(false);
+          NoteStore$1.setModalInfo(null);
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -4302,9 +4346,16 @@ var NoteMeta = {
           content: sharedDate
         }];
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+        break;
 
       case 'shareRoom':
         dialogType.buttonConfig = this.setButtonConfig('shareRoom');
+        break;
+
+      case 'deletedPage':
+        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('deletedPage');
         break;
     }
 
@@ -4422,10 +4473,14 @@ var NoteStore$1 = mobx.observable({
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
+  shareNoteType: '',
+  shareContent: '',
+  shareArrays: {},
   initVariables: function initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
   },
   setWsId: function setWsId(wsId) {
     NoteRepository$1.setWsId(wsId);
@@ -4477,7 +4532,6 @@ var NoteStore$1 = mobx.observable({
   },
   setLayoutState: function setLayoutState(state) {
     this.layoutState = state;
-    if (state !== 'collapse') this.targetLayout = null;
   },
   // lnb, content 중 하나
   setTargetLayout: function setTargetLayout(target) {
@@ -4488,6 +4542,15 @@ var NoteStore$1 = mobx.observable({
   },
   setIsShared: function setIsShared(flag) {
     this.isShared = flag;
+  },
+  setShareNoteType: function setShareNoteType(noteType) {
+    this.shareNoteType = noteType;
+  },
+  setShareContent: function setShareContent(content) {
+    this.shareContent = content;
+  },
+  setShareArrays: function setShareArrays(arrs) {
+    this.shareArrays = arrs;
   },
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
@@ -4568,6 +4631,18 @@ var NoteStore$1 = mobx.observable({
         }
       }, _callee);
     }))();
+  },
+  shareNote: function shareNote() {
+    var _this2 = this;
+
+    // shareArrays: { userArray, roomArray }
+    var sharedRoomName = teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+    this.shareArrays.roomArray.forEach(function (room) {
+      var targetChId = teespaceCore.RoomStore.getChannelIds({
+        roomId: room.id
+      })[NoteRepository$1.CH_TYPE];
+      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [_this2.shareContent]);
+    });
   },
   setLNBChapterCoverRef: function setLNBChapterCoverRef(ref) {
     this.LNBChapterCoverRef = ref;
