@@ -374,14 +374,7 @@ const ChapterStore = observable({
       NoteStore.setShowPage(false);
     } else {
       NoteStore.setShowPage(true);
-      const chapterId = this.chapterList[0].id;
-      const pageId =
-        this.chapterList[0].children.length > 0
-          ? this.chapterList[0].children?.[0]?.id
-          : ''
-      this.setCurrentChapterId(chapterId);
-      PageStore.setCurrentPageId(pageId);
-      PageStore.fetchCurrentPageData(pageId);
+      this.setFirstNoteInfo();
     }
   },
 
@@ -582,6 +575,27 @@ const ChapterStore = observable({
 
     this.createShareChapter(targetList).then(() => this.getNoteChapterList());
   },
+  getFirstRenderedChapter() {
+    if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
+    if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
+    if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+    return null;
+  },
+  async setFirstNoteInfo() {
+    const targetChapter = this.getFirstRenderedChapter();
+    if (!targetChapter) {
+      this.setCurrentChapterId('');
+      PageStore.setCurrentPageId('');
+      return;
+    }
+    const chapterId = targetChapter.id;
+    const pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
+    // setCurrentPageId는 fetchNoetInfoList에서
+    await PageStore.fetchCurrentPageData(pageId);
+    // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
+    // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
+    this.setCurrentChapterId(chapterId);    
+  }
 });
 
 export default ChapterStore;

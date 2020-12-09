@@ -126,6 +126,57 @@ export const ContextMenuCover = styled(Dropdown)`
 
 export const ContextMenuIconCover = styled.span``;
 
+// ShareNoteMessage
+export const MessageCover = styled.div`
+  border-radius: 0.75rem;
+  background-color: white;
+  width: 17.25rem;
+  height: 4.25rem;
+  display: flex;
+  padding: 0.88rem 0.75rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  &:hover {
+    text-decoration:underline;
+  }
+`;
+
+export const MessageNoteImg = styled.img`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+export const MessageNoteInfo = styled.div`
+  padding: 0.12rem 0 0.12rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: calc(100% - 2.5rem);
+  box-sizing: border-box;
+`;
+
+export const NoteTitleCover = styled.div`
+  font-size: 0.813rem;
+  display: flex;
+  height: 50%;
+  align-items: center;
+`
+
+export const NoteTitle = styled.span`
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+export const NoteDate = styled.div`
+  font-size: 0.688rem;
+  color: #5B5F62;
+  display: flex;
+  height: 50%;
+  align-items: center;
+`;
+
 // Modal.js
 export const CustomOverlay = styled.div`
   position: fixed;

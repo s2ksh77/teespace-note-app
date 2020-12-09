@@ -31,7 +31,8 @@ const NoteStore = observable({
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
   },
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
@@ -82,7 +83,6 @@ const NoteStore = observable({
   },
   setLayoutState(state) {
     this.layoutState = state;
-    if (state !== 'collapse') this.targetLayout = null;
   },
   // lnb, content 중 하나
   setTargetLayout(target) {
