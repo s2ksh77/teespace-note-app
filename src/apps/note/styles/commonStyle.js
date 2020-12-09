@@ -136,6 +136,35 @@ export const CustomOverlay = styled.div`
   background-color: rgba(0,0,0,.7);
   z-index: 1000;
 `;
+export const RoomShareModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width:auto;
+  height:auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%,-50%);
+  background-color: #FFF;
+  padding: 1.25rem;
+  box-sizing:border-box;
+  z-index: 1000;
+`;
+export const RoomShareTitleContainer = styled.div`
+  width: 100%;
+  height: 2rem;
+  display: flex;
+  font-size: 0.88rem;
+  align-items: center;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 1rem;
+`
+export const RoomShareTitle = styled.div`
+  flex: 1;
+  text-align: center;
+`
 
 export const CustomModal = styled.div`
   position: fixed;
@@ -192,7 +221,7 @@ export const ModalSharedInfoContent = styled.span`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  margin-top: auto;
+  margin-top: 0.5rem;
   margin-bottom: 0rem;
 `;
 export const ModalNormalBtn = styled.div`

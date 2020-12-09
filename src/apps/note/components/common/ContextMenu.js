@@ -61,6 +61,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
       modal에서 체크된 roomIds를 받는다.
       roomIds를 돌아가며 선택된 list를 보내준다.
     */
+    NoteStore.setIsShared(true);
+    NoteStore.setModalInfo('shareRoom');
     // const targetRoomIds = shareModal.getRoomIds();
     // const sharedRoomName = roomStore.getRoom(NoteRepository.WS_ID).name;
     // const targetRoomIds = [NoteRepository.WS_ID, ];

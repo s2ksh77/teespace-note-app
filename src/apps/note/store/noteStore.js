@@ -24,6 +24,7 @@ const NoteStore = observable({
   draggedTitle: '',
   draggedOffset: {},
   sharedInfo: {},
+  isShared: false,
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
@@ -87,6 +88,9 @@ const NoteStore = observable({
   toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
   },
+  setIsShared(flag) {
+    this.isShared = flag;
+  },
   setShowModal(showModal) {
     this.showModal = showModal;
   },
@@ -101,6 +105,7 @@ const NoteStore = observable({
       case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
+      case 'shareRoom':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;

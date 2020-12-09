@@ -58,6 +58,10 @@ const NoteMeta = {
       case 'editingPage':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'shareRoom':
+        eventList.push(function (e) { e.stopPropagation(); })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); NoteStore.setIsShared(false); });
+        break;
       default:
         break;
     }
@@ -71,13 +75,15 @@ const NoteMeta = {
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'editingPage':
       case 'confirm':
-        return [{ type: 'confirom', text: '확인' }];
+        return [{ type: 'confirm', text: '확인' }];
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
       case 'titleDuplicate':
-        return [{ type: 'confirom', text: '확인' }];
+        return [{ type: 'confirm', text: '확인' }];
       case 'sharedInfoConfirm':
-        return [{ type: 'confirom', text: '확인' }];
+        return [{ type: 'confirm', text: '확인' }];
+      case 'shareRoom':
+        return [{ type: 'share', text: '전달' }, { type: 'cancel', text: '취소' }]
       default:
         return;
     }
@@ -142,6 +148,8 @@ const NoteMeta = {
           { title: '전달 날짜', content: sharedDate }
         ]
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+      case 'shareRoom':
+        dialogType.buttonConfig = this.setButtonConfig('shareRoom');
         break;
       default:
         break;
