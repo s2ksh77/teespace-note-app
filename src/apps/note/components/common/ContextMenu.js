@@ -56,24 +56,10 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
   };
 
   const shareComponent = () => {
-    /*
-      룸을 체크할 수 있는 modal을 띄운다.
-      modal에서 체크된 roomIds를 받는다.
-      roomIds를 돌아가며 선택된 list를 보내준다.
-    */
+    NoteStore.setShareNoteType(noteType);
+    NoteStore.setShareContent(noteType === 'chapter' ? chapter : page);
     NoteStore.setIsShared(true);
     NoteStore.setModalInfo('shareRoom');
-    // const targetRoomIds = shareModal.getRoomIds();
-    // const sharedRoomName = roomStore.getRoom(NoteRepository.WS_ID).name;
-    // const targetRoomIds = [NoteRepository.WS_ID, ];
-    // const sharedRoomName = roomStore.rooms[NoteRepository.WS_ID].name;
-    // targetRoomIds.forEach(targetRoomId => {
-    //   const targetChId = roomStore.getChannelIds({ roomId: targetRoomId })[NoteRepository.CH_TYPE];
-    //   if (noteType === 'chapter')
-    //     ChapterStore.createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, [chapter, ]);
-    //   else if (noteType === 'page')
-    //     PageStore.createNoteSharePage(targetRoomId, targetChId, sharedRoomName, [page, ]);
-    // });
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
@@ -114,7 +100,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       <Menu.Item key="0">이름 변경</Menu.Item>
       <Menu.Item key="1">삭제</Menu.Item>
-      {/* <Menu.Item key="2">다른 룸으로 전달</Menu.Item> */}
+      <Menu.Item key="2">다른 룸으로 전달</Menu.Item>
       <Menu.Item key="3">내보내기(.pdf)</Menu.Item>
       {type === 'shared'
         ? <Menu.Item key="4">정보 보기</Menu.Item>
