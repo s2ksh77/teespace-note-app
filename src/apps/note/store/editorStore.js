@@ -62,20 +62,31 @@ const EditorStore = observable({
   setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
   },
-  uploadFile: async function (dto, file, successCallback, errorCallback, index) {
-    await API.post("note-api/noteFile", JSON.stringify(dto), { headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(async data => {
-      const { data: { dto } } = data;
-
+  async createUploadMeta(meta) {
+    const {
+      data: { dto },
+    } = await NoteRepository.createUploadMeta(meta);
+    if (dto.log_file_id) {
+      return dto.log_file_id;
+    }
+  },
+  async createUploadStorage(fileId, file) {
+    const {
+      data: { dto },
+    } = await NoteRepository.createUploadStorage(fileId, file);
+    return dto;
+  },
+  uploadFile: async function (dto, file, index) {
+    this.createUploadMeta(dto).then(dto => {
       if (dto.log_file_id) {
-        await API.post(`Storage/StorageFile?action=Create&fileID=` + dto.log_file_id + '&workspaceID=' + NoteRepository.WS_ID + '&channelID=' + NoteRepository.chId + '&userID=' + NoteRepository.USER_ID, file, { headers: { 'Content-Type': 'multipart/form-data' } }).then(data => {
-          const { data: { dto } } = data
+        this.createUploadStorage(dto.log_file_id, file).then(dto => {
           if (dto.resultMsg === "Success") {
-            if (typeof successCallback === "function") successCallback(dto, index);
+            const returnID = dto.storageFileInfoList[0].file_id;
+            const returnIndex = index;
+            return returnID;
           } else {
-            if (typeof errorCallback === "function") errorCallback(dto, index)
+
           }
-        }).catch(error => {
-          console.log(error)
         })
       }
     })
@@ -183,7 +194,7 @@ const EditorStore = observable({
     this.setUploadDTO(uploadArr);
   },
   setUploadDTO(meta) {
-    this.uploadDTO = meta;
+    this.uploadDTO.push(meta);
   },
   setUploadFileMeta(type, tempId, config, file, element) {
     const { fileName, fileExtension, fileSize } = config;

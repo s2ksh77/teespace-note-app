@@ -357,6 +357,28 @@ class NoteRepository {
     }
   }
 
+  async createUploadMeta(dto) {
+    try {
+      return await API.post("note-api/noteFile", dto)
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+  async createUploadStorage(fileId, file) {
+    try {
+      return await API.post(`Storage/StorageFile?action=Create&fileID=` + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        },
+        xhrFields: {
+          withCredentials: true,
+        },
+      })
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
   deleteFile(deleteFileId) {
     return API.put(`note-api/noteFile?action=Delete`, {
       dto: {
