@@ -100,7 +100,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       <Menu.Item key="0">이름 변경</Menu.Item>
       <Menu.Item key="1">삭제</Menu.Item>
-      <Menu.Item key="2">다른 룸으로 전달</Menu.Item>
+      {/* <Menu.Item key="2">다른 룸으로 전달</Menu.Item> */}
       <Menu.Item key="3">내보내기(.pdf)</Menu.Item>
       {type === 'shared'
         ? <Menu.Item key="4">정보 보기</Menu.Item>
