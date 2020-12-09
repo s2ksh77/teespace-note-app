@@ -4149,6 +4149,17 @@ var NoteMeta = {
           NoteStore$1.setModalInfo(null);
         });
         break;
+
+      case 'shareRoom':
+        eventList.push(function (e) {
+          e.stopPropagation();
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore$1.setModalInfo(null);
+          NoteStore$1.setIsShared(false);
+        });
+        break;
     }
 
     return eventList;
@@ -4169,7 +4180,7 @@ var NoteMeta = {
       case 'editingPage':
       case 'confirm':
         return [{
-          type: 'confirom',
+          type: 'confirm',
           text: '확인'
         }];
 
@@ -4187,14 +4198,23 @@ var NoteMeta = {
 
       case 'titleDuplicate':
         return [{
-          type: 'confirom',
+          type: 'confirm',
           text: '확인'
         }];
 
       case 'sharedInfoConfirm':
         return [{
-          type: 'confirom',
+          type: 'confirm',
           text: '확인'
+        }];
+
+      case 'shareRoom':
+        return [{
+          type: 'share',
+          text: '전달'
+        }, {
+          type: 'cancel',
+          text: '취소'
         }];
 
       default:
@@ -4278,6 +4298,9 @@ var NoteMeta = {
           content: sharedDate
         }];
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+
+      case 'shareRoom':
+        dialogType.buttonConfig = this.setButtonConfig('shareRoom');
         break;
     }
 
@@ -4394,6 +4417,7 @@ var NoteStore$1 = observable({
   draggedTitle: '',
   draggedOffset: {},
   sharedInfo: {},
+  isShared: false,
   initVariables: function initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
@@ -4458,6 +4482,9 @@ var NoteStore$1 = observable({
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
   },
+  setIsShared: function setIsShared(flag) {
+    this.isShared = flag;
+  },
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
   },
@@ -4472,6 +4499,7 @@ var NoteStore$1 = observable({
       case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
+      case 'shareRoom':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
