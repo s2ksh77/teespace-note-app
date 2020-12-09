@@ -59,7 +59,7 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'shareRoom':
-        eventList.push(function (e) { e.stopPropagation(); })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.shareNote(); NoteStore.setIsShared(false); NoteStore.setModalInfo(null); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); NoteStore.setIsShared(false); });
         break;
       default:
@@ -148,8 +148,14 @@ const NoteMeta = {
           { title: '전달 날짜', content: sharedDate }
         ]
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+        break;
       case 'shareRoom':
         dialogType.buttonConfig = this.setButtonConfig('shareRoom');
+        break;      
+      case 'deletedPage':
+        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('deletedPage');
         break;
       default:
         break;

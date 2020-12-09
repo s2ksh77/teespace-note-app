@@ -42,19 +42,11 @@ const Modal = () => {
               <Button src={cancelImg}></Button>
             </RoomShareTitleContainer>
             <ItemSelector
-              isVisibleRoom={false}
-              disabledIds={[
-                userStore.myProfile.id,
-                roomStore.getRoomArray()[0].id,
-                roomStore.getRoomArray()[1].id,
-              ]}
+              isVisibleRoom={true}
               onSelectChange={data => {
                 console.log(data)
+                NoteStore.setShareArrays(data);
               }}
-              defaultSelectedUsers={[userStore.myProfile]}
-              defaultSelectedRooms={roomStore
-                .getRoomArray()
-                .filter(roomInfo => roomInfo.isVisible)}
             />
             <ButtonGroup>
               {buttons && buttons.map(button => {

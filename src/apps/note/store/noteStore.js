@@ -4,7 +4,7 @@ import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
 import NoteMeta from './NoteMeta';
-import { WWMS, UserStore } from 'teespace-core';
+import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
@@ -25,10 +25,14 @@ const NoteStore = observable({
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
+  shareNoteType: '',
+  shareContent: '',
+  shareArrays: {},
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
   },
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
@@ -79,7 +83,6 @@ const NoteStore = observable({
   },
   setLayoutState(state) {
     this.layoutState = state;
-    if (state !== 'collapse') this.targetLayout = null;
   },
   // lnb, content 중 하나
   setTargetLayout(target) {
@@ -90,6 +93,15 @@ const NoteStore = observable({
   },
   setIsShared(flag) {
     this.isShared = flag;
+  },
+  setShareNoteType(noteType) {
+    this.shareNoteType = noteType;
+  },
+  setShareContent(content) {
+    this.shareContent = content;
+  },
+  setShareArrays(arrs) {
+    this.shareArrays = arrs;
   },
   setShowModal(showModal) {
     this.showModal = showModal;
@@ -135,6 +147,22 @@ const NoteStore = observable({
     };
 
     this.setModalInfo('sharedInfo');
+  },
+
+  shareNote() {
+    // shareArrays: { userArray, roomArray }
+    const sharedRoomName = (
+      RoomStore.getRoom(NoteRepository.WS_ID).name === '대화상대 없음'
+        ? this.userName
+        : RoomStore.getRoom(NoteRepository.WS_ID).name
+    );
+    this.shareArrays.roomArray.forEach(room => {
+      const targetChId = RoomStore.getChannelIds({ roomId: room.id })[NoteRepository.CH_TYPE];
+      if (this.shareNoteType === 'chapter')
+        ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [this.shareContent, ]);
+      else if (this.shareNoteType === 'page')
+        PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [this.shareContent, ]);
+    })
   },
 
   setLNBChapterCoverRef(ref) {

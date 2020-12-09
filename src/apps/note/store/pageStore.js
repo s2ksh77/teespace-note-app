@@ -420,6 +420,8 @@ const PageStore = observable({
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
+    // fetchNoteInfoList할 때 setCurrentPageId하기
+    this.setCurrentPageId(dto.note_id);
     this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
