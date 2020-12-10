@@ -31,7 +31,7 @@ export const GlobalStyle = createGlobalStyle`
   .ant-collapse-item {
     border:0 !important;
   }
-  .ant-tag{
+  .antTag{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,9 +53,6 @@ export const GlobalStyle = createGlobalStyle`
     user-select: none;
     outline: none !important;
     background-color: rgba(30,168,223,0.20);
-    > .ant-tag-close-icon {
-      margin-left:auto !important;
-    }
   }
   .mce-tinymce iframe{
     flex: 1;

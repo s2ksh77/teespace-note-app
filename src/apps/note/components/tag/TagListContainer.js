@@ -185,6 +185,7 @@ const TagListContainer = () => {
               />
             ) : (
                 <Tag
+                  className={'antTag'}
                   key={index}
                   data-idx={index}
                   id={item.tag_id}

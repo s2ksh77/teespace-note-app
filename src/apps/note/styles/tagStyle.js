@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Collapse, Tag } from 'antd';
+import { Collapse } from 'antd';
 
 export const EditorTagCover = styled.div`
   white-space: nowrap;
@@ -121,6 +121,30 @@ export const TagChipGroup = styled.div`
   display:flex;
   width:100%;
   flex-wrap:wrap;
+`;
+
+export const Tag = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:0 0.63rem !important;
+  margin-bottom: 0.4375rem;
+  margin-top: 0.4375rem;
+  margin-right: 0.38rem;
+  color: #333333;
+  font-size: 0.875rem;
+  font-weight: 400;
+  border: 0.0625rem solid #1EA8DF;
+  border-radius: 1.563rem;
+  min-width: 4.5rem;
+  max-width: 9.31rem;
+  height: 1.88rem;
+  z-index: 1;
+  float: left;
+  cursor: pointer;
+  user-select: none;
+  outline: none !important;
+  background-color: rgba(30,168,223,0.20);
 `;
 
 export const TagChip = styled(Tag)`
