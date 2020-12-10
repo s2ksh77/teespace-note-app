@@ -62,6 +62,8 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.shareNote(); NoteStore.setIsShared(false); NoteStore.setModalInfo(null); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); NoteStore.setIsShared(false); });
         break;
+      case 'multiFileSomeFail':
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
       default:
         break;
     }
@@ -75,13 +77,12 @@ const NoteMeta = {
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'editingPage':
       case 'confirm':
+      case 'titleDuplicate':
+      case 'sharedInfoConfirm':
+      case 'multiFileSomeFail':
         return [{ type: 'confirm', text: '확인' }];
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
-      case 'titleDuplicate':
-        return [{ type: 'confirm', text: '확인' }];
-      case 'sharedInfoConfirm':
-        return [{ type: 'confirm', text: '확인' }];
       case 'shareRoom':
         return [{ type: 'share', text: '전달' }, { type: 'cancel', text: '취소' }]
       default:
@@ -151,11 +152,16 @@ const NoteMeta = {
         break;
       case 'shareRoom':
         dialogType.buttonConfig = this.setButtonConfig('shareRoom');
-        break;      
+        break;
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
         dialogType.subtitle = '';
         dialogType.buttonConfig = this.setButtonConfig('deletedPage');
+        break;
+      case 'multiFileSomeFail':
+        dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
+        dialogType.subtitle = `(${EditorStore.uploadLength}개 항목 중 ${EditorStore.failCount}개 실패)`;
+        dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
         break;
       default:
         break;

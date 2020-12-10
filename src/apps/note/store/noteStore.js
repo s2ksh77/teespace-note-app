@@ -118,6 +118,7 @@ const NoteStore = observable({
       case 'sharedInfo':
       case 'editingPage':
       case 'shareRoom':
+      case 'multiFileSomeFail':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -158,7 +159,7 @@ const NoteStore = observable({
 
     this.shareArrays.userArray.forEach(async user => {
       const friendId = user.friendId ? user.friendId : user.id;
-      const room = RoomStore.getDMRoom(this.user_id,friendId)
+      const room = RoomStore.getDMRoom(this.user_id, friendId)
 
       let roomId;
       if (room.result) {
@@ -167,24 +168,24 @@ const NoteStore = observable({
       else {
         const res = await RoomStore.createRoom({
           creatorId: this.user_id,
-          userList: [{userId: friendId}]
+          userList: [{ userId: friendId }]
         });
         roomId = res.roomId;
       }
 
       const targetChId = RoomStore.getChannelIds({ roomId: roomId })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [this.shareContent, ]);
+        ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [this.shareContent, ]);
+        PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [this.shareContent,]);
     })
 
     this.shareArrays.roomArray.forEach(room => {
       const targetChId = RoomStore.getChannelIds({ roomId: room.id })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [this.shareContent, ]);
+        ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [this.shareContent, ]);
+        PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [this.shareContent,]);
     })
   },
 

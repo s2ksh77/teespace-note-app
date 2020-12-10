@@ -1,3 +1,4 @@
+import { Progress } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const EditorContainerWrapper = styled.div`
@@ -92,11 +93,23 @@ export const FileBody = styled.div`
   position: relative;
   padding: 0.375rem;
   border-radius: 0.5rem;
-  width: 13.75rem;
+  ${props =>
+    props.closable ?
+      css`
+      width: 13.75rem;
+      min-width: 13.75rem;
+    `
+      : css`
+      width: 12.5rem;
+      min-width: 12.5rem;
+    `
+  }
   box-sizing: border-box; 
   border : 1px solid #dadada;
   height: 3.5rem;
   margin-left: 0.5rem;
+  flex-direction : row;
+  flex-wrap : wrap;
   &:first-child{
     margin-left: 0rem;
   }
@@ -125,6 +138,20 @@ export const FileDownloadIcon = styled.div`
   width: 1.875rem;
   height: 1.875rem;
 `
+export const FileErrorIcon = styled.div`
+  .anticon-exclamation-circle {
+    position: absolute;
+    left : 1.5rem;
+    font-size: 0.875rem;
+    color: #FB3A3A;
+  }
+`
+
+export const ProgressWrapper = styled.div` 
+  width: 100%;
+  top: -0.5rem !important;
+  position: relative !important;
+`
 
 export const FileExtensionIcon = styled.div`
   display: flex;
@@ -143,8 +170,6 @@ export const FileExtensionIcon = styled.div`
 `
 
 export const FileDownloadBtn = styled.img`
-  width:1.875rem;
-  height:1.875rem;
 `
 export const FileExtensionBtn = styled.img`
 `
@@ -152,12 +177,9 @@ export const FileExtensionBtn = styled.img`
 export const FileData = styled.div`
   height: auto;
   line-height: 0.9375rem;
-  max-width: 10.55rem;
+  max-width: 9.55rem;
   overflow: inherit;
   display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   height: 40px;
   cursor : pointer;
 `
@@ -171,12 +193,15 @@ export const FileDataName = styled.div`
   white-space: nowrap;
 `
 export const FileName = styled.div`
-  font-size: 0.6875rem;
+  font-size: 0.69rem;
   background-color: inherit;
   margin-right: 0rem;
   margin-top: 0;
   color: #45474A;
   line-height: 0.9375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   &:hover{
     text-decoration: underline;
   }
@@ -189,14 +214,14 @@ export const FileDataTime = styled.div`
   line-height: 0.9375rem;
   height: auto;
   overflow: inherit;
-  max-width: 10.55rem;
+  max-width: 9.55rem;
 `
 
 export const FileTime = styled.div`
   background-color: inherit;
   line-height: 0.9375rem;
   display: inline-block;
-  font-size: 12px;
+  font-size: 0.63rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

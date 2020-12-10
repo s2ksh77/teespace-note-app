@@ -4,6 +4,7 @@ import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import NoteStore from './noteStore';
+import { handleUpload } from '../components/common/NoteFile';
 
 const EditorStore = observable({
   contents: '',
@@ -28,10 +29,14 @@ const EditorStore = observable({
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  tempFileLayoutList: [],
   driveFileList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
+  uploadLength: '',
+  processLength: 0,
+  failCount: 0,
   setContents(content) {
     this.contents = content;
   },
@@ -62,18 +67,18 @@ const EditorStore = observable({
   setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
   },
-  async createUploadMeta(meta) {
+  async createUploadMeta(meta, type) {
     const {
       data: { dto },
     } = await NoteRepository.createUploadMeta(meta);
     if (dto.log_file_id) {
-      return dto.log_file_id;
+      return { id: dto.log_file_id, type: type };
     }
   },
-  async createUploadStorage(fileId, file) {
+  async createUploadStorage(fileId, file, handleProcess) {
     const {
       data: { dto },
-    } = await NoteRepository.createUploadStorage(fileId, file);
+    } = await NoteRepository.createUploadStorage(fileId, file, handleProcess);
     return dto;
   },
   uploadFile: async function (dto, file, index) {
@@ -103,9 +108,10 @@ const EditorStore = observable({
     this.driveFileList.push(fileInfo);
   },
   async deleteFile(deleteId) {
-    await NoteRepository.deleteFile(deleteId).then(response => {
-      const { data: { dto } } = response;
-    })
+    const {
+      data: { dto },
+    } = await NoteRepository.deleteFile(deleteId)
+    return dto;
   },
   async deleteAllFile() {
     await NoteRepository.deleteAllFile(this.fileList).then(response => {
@@ -164,7 +170,7 @@ const EditorStore = observable({
     this.deleteFileName = name;
     this.deleteFileIndex = index;
   },
-  setUploadFileDTO(config, file, element) {
+  setUploadFileDTO(config, file, type) {
     const { fileName, fileExtension, fileSize } = config;
     const uploadMeta = {
       "dto":
@@ -186,15 +192,36 @@ const EditorStore = observable({
         }
       }
     };
+    const tempMeta = {
+      "user_id": NoteRepository.USER_ID,
+      "file_last_update_user_id": NoteRepository.USER_ID,
+      "file_id": '',
+      "file_name": fileName,
+      "file_extension": fileExtension,
+      "file_created_at": '',
+      "file_updated_at": this.getTempTimeFormat(),
+      "file_size": fileSize,
+      "user_context_1": '',
+      "user_context_2": '',
+      "user_context_3": '',
+      "progress": 0,
+      "type": type,
+      "error": false
+    }
+    this.setTempFileList(tempMeta)
     const uploadArr = {
       uploadMeta,
       file,
-      element
+      type
     };
     this.setUploadDTO(uploadArr);
   },
   setUploadDTO(meta) {
     this.uploadDTO.push(meta);
+    if (this.uploadDTO.length === this.uploadLength) handleUpload();
+  },
+  setFileLength(length) {
+    this.uploadLength = length;
   },
   setUploadFileMeta(type, tempId, config, file, element) {
     const { fileName, fileExtension, fileSize } = config;
@@ -263,7 +290,7 @@ const EditorStore = observable({
     this.setTempFileList(tempMeta);
   },
   setTempFileList(target) {
-    this.fileLayoutList.push(target);
+    this.tempFileLayoutList.push(target);
     if (!this.isFile) this.setIsFile(true);
   },
 
