@@ -27,7 +27,7 @@ const NoteStore = observable({
   isShared: false,
   shareNoteType: '',
   shareContent: '',
-  shareArrays: {},
+  shareArrays: {}, // { userArray, roomArray }
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
@@ -150,12 +150,35 @@ const NoteStore = observable({
   },
 
   shareNote() {
-    // shareArrays: { userArray, roomArray }
     const sharedRoomName = (
       RoomStore.getRoom(NoteRepository.WS_ID).name === '대화상대 없음'
         ? this.userName
         : RoomStore.getRoom(NoteRepository.WS_ID).name
     );
+
+    this.shareArrays.userArray.forEach(async user => {
+      const friendId = user.friendId ? user.friendId : user.id;
+      const room = RoomStore.getDMRoom(this.user_id,friendId)
+
+      let roomId;
+      if (room.result) {
+        roomId = room.roomInfo.id;
+      }
+      else {
+        const res = await RoomStore.createRoom({
+          creatorId: this.user_id,
+          userList: [{userId: friendId}]
+        });
+        roomId = res.roomId;
+      }
+
+      const targetChId = RoomStore.getChannelIds({ roomId: roomId })[NoteRepository.CH_TYPE];
+      if (this.shareNoteType === 'chapter')
+        ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [this.shareContent, ]);
+      else if (this.shareNoteType === 'page')
+        PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [this.shareContent, ]);
+    })
+
     this.shareArrays.roomArray.forEach(room => {
       const targetChId = RoomStore.getChannelIds({ roomId: room.id })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
