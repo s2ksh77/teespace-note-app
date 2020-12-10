@@ -364,7 +364,7 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
-  async createUploadStorage(fileId, file) {
+  async createUploadStorage(fileId, file, onUploadProgress) {
     try {
       return await API.post(`Storage/StorageFile?action=Create&fileID=` + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
         headers: {
@@ -373,31 +373,36 @@ class NoteRepository {
         xhrFields: {
           withCredentials: true,
         },
+        onUploadProgress
       })
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
 
-  deleteFile(deleteFileId) {
-    return API.put(`note-api/noteFile?action=Delete`, {
-      dto: {
-        workspace_id: this.WS_ID,
-        channel_id: this.chId,
-        storageFileInfo: {
-          user_id: '',
-          file_last_update_user_id: '',
-          file_id: deleteFileId,
-          file_name: '',
-          file_extension: '',
-          file_created_at: '',
-          file_updated_at: '',
-          user_context_1: '',
-          user_context_2: '',
-          user_context_3: ''
+  async deleteFile(deleteFileId) {
+    try {
+      return await API.put(`note-api/noteFile?action=Delete`, {
+        dto: {
+          workspace_id: this.WS_ID,
+          channel_id: this.chId,
+          storageFileInfo: {
+            user_id: '',
+            file_last_update_user_id: '',
+            file_id: deleteFileId,
+            file_name: '',
+            file_extension: '',
+            file_created_at: '',
+            file_updated_at: '',
+            user_context_1: '',
+            user_context_2: '',
+            user_context_3: ''
+          }
         }
-      }
-    })
+      })
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   deleteAllFile(fileList) {

@@ -7,32 +7,51 @@ import EditorStore from '../../store/editorStore';
 import NoteRepository from '../../store/noteRepository';
 import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
+import { type } from 'ramda';
+import NoteStore from '../../store/noteStore';
 
-export const handleUpload = () => {
+export const handleUpload = async () => {
+    let uploadArr = [];
     if (EditorStore.uploadDTO) {
-        const _success = (data) => {
-            if (data.resultMsg === 'Success') {
-                if (EditorStore.uploadDTO.element) replaceTempFileId(EditorStore.uploadDTO.element, data.storageFileInfoList[0].file_id);
-                EditorStore.setUploadDTO([]);
-                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-                    EditorStore.setFileList(
-                        dto.fileList,
-                    );
-                });
-            } else if (data.resultMsg === 'Fail') {
-                EditorStore.uploadDTO.element.remove();
+        uploadArr = toJS(EditorStore.uploadDTO).map(item => {
+            return EditorStore.createUploadMeta(item.uploadMeta, item.type);
+        });
+        await Promise.all(uploadArr).then(results => {
+            if (EditorStore.uploadDTO.length === results.length) {
+                for (let i = 0; i < results.length; i++) {
+                    (function (result) {
+                        if (result.id !== undefined) {
+                            const handleUploadProgress = (e) => {
+                                const totalLength = e.lengthComputable
+                                    ? e.total
+                                    : e.target.getResponseHeader('content-length') ||
+                                    e.target.getResponseHeader('x-decompressed-content-length');
+                                EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                                EditorStore.tempFileLayoutList[i].file_id = result.id;
+                            }
+                            EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(dto => {
+                                if (dto.resultMsg === 'Success') {
+                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.uploadDTO[i].uploadMeta.fileName);
+                                    EditorStore.tempFileLayoutList[i].progress = 0;
+                                } else if (dto.resultMsg === 'Fail') {
+                                    EditorStore.failCount++;
+                                    EditorStore.tempFileLayoutList[i].progress = 0;
+                                    EditorStore.tempFileLayoutList[i].error = true;
+                                }
+                                EditorStore.processLength++
+                                if (EditorStore.processLength == EditorStore.uploadLength) {
+                                    EditorStore.uploadDTO = [];
+                                    if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+                                }
+                            })
+                        }
+                    })(results[i])
+                }
             }
-        }
-        const _failure = e => {
-            console.warn('error ---> ', e);
-        };
-        try {
-            EditorStore.uploadFile(EditorStore.uploadDTO.uploadMeta, EditorStore.uploadDTO.file, _success, _failure)
-        } catch (e) {
-            console.warn('error ---> ', e);
-        } finally { }
+        })
     }
 }
+
 export const driveSuccessCb = (fileList) => {
     if (fileList) {
         fileList.forEach(file => EditorStore.addDriveFileList(file));

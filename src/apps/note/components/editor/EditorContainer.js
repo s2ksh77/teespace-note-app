@@ -55,29 +55,26 @@ const EditorContainer = () => {
     }
 
     isImage = EditorStore.uploadFileIsImage(fileExtension);
-
     const fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob());
 
     if (isImage) {
       const currentImg = EditorStore.getImgElement();
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, currentImg);
+      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'image');
       // const tempArr = currentImg.getAttribute('src').split('/');
       // const tempId = tempArr[tempArr.length - 1];
       // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
       // currentImg.setAttribute('temp-id', tempId);
     }
     else {
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd);
-      // const tempId = Math.random().toString(36).substr(2, 8);
+      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'file');
       // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
       // const currentFile = document.getElementById(tempId);
       // // 실제 업로드 data set
       // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
       // currentFile.setAttribute('temp-id', tempId);
     }
-    handleUpload();
   };
 
   const handleFileBlob = (type) => {
@@ -85,28 +82,37 @@ const EditorContainer = () => {
     if (type === 'image') {
       input.setAttribute('type', 'file');
       input.setAttribute('accept', ['image/*', 'video/*']);
+      input.setAttribute('multiple', true);
     }
-    else input.setAttribute('type', 'file');
+    else {
+      input.setAttribute('type', 'file');
+      input.setAttribute('multiple', true);
+    }
     input.onchange = function () {
-      var file = this.files[0];
-      var reader = new FileReader();
-      var isImage = EditorStore.readerIsImage(file.type);
-      reader.onload = function () {
-        var id = 'blobid' + (new Date()).getTime();
-        var blobCache = EditorStore.tinymce.editorUpload.blobCache;
-        var base64 = reader.result.split(',')[1];
-        var baseUri = reader.result;
-        var blobInfo = blobCache.create(id, file, base64, file.name);
-        blobCache.add(blobInfo);
-        if (isImage) {
-          var img = new Image();
-          img.setAttribute('src', reader.result);
-          img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
-        }
-        handleFileHandler(blobInfo, { title: file.name });
-      };
-      reader.readAsDataURL(file);
+      var files = this.files;
+      EditorStore.setFileLength(files.length);
+      for (let i = 0; i < files.length; i++) {
+        (function (file) {
+          var reader = new FileReader();
+          // var isImage = EditorStore.readerIsImage(file.type);
+          reader.onload = function () {
+            var id = 'blobid' + (new Date()).getTime();
+            var blobCache = EditorStore.tinymce.editorUpload.blobCache;
+            var base64 = reader.result.split(',')[1];
+            var baseUri = reader.result;
+            var blobInfo = blobCache.create(id, file, base64, file.name);
+            blobCache.add(blobInfo);
+            // if (isImage) {
+            //   var img = new Image();
+            //   img.setAttribute('src', reader.result);
+            //   img.setAttribute('data-name', file.name);
+            //   EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
+            // }
+            handleFileHandler(blobInfo, { title: file.name });
+          };
+          reader.readAsDataURL(file);
+        })(files[i])
+      }
     };
     input.click();
   }

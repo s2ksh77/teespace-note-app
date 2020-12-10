@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn } from '../../styles/editorStyle';
+import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn, FileErrorIcon, ProgressWrapper } from '../../styles/editorStyle';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
@@ -11,8 +11,9 @@ import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 import video from '../../assets/movie.svg';
-import { Dropdown, Menu } from 'antd';
+import { Dropdown, Menu, Progress } from 'antd';
 import { downloadFile } from '../common/NoteFile';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
@@ -102,10 +103,10 @@ const FileLayout = () => {
 
     const onClickFileName = (item) => {
         EditorStore.setPreviewFileMeta({
-            userId: NoteRepository.USER_ID,      
-            channelId: NoteRepository.chId,   
-            roomId: NoteRepository.WS_ID,      
-            fileId: item.file_id ? item.file_id : item.user_context_2,      
+            userId: NoteRepository.USER_ID,
+            channelId: NoteRepository.chId,
+            roomId: NoteRepository.WS_ID,
+            fileId: item.file_id ? item.file_id : item.user_context_2,
             fileName: item.file_name,
             fileExtension: item.file_extension,
         })
@@ -113,16 +114,31 @@ const FileLayout = () => {
         EditorStore.setIsPreview(true);
     }
 
-    const handleFileRemove = (fileId, filename, index) => {
-        // temp id
-        if (fileId.length === 8) {
-            EditorStore.fileLayoutList.splice(index, 1);
-            if (EditorStore.fileLayoutList.length === 0) EditorStore.setIsFile(false);
+    const handleFileRemove = async (fileId, index, type) => {
+        if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
+            EditorStore.tempFileLayoutList[index].deleted = true;
+            await EditorStore.deleteFile(fileId).then(dto => {
+                if (dto.resultMsg === 'Success') {
+                    setTimeout(() => {
+                        EditorStore.tempFileLayoutList.splice(index, 1);
+                    }, 1000);
+                } else if (dto.resultMsg === 'Fail') {
+                    EditorStore.tempFileLayoutList[index].deleted = undefined;
+                }
+            });
+        } else if (type === 'uploaded' && EditorStore.fileLayoutList.length > 0) {
+            EditorStore.fileLayoutList[index].deleted = true;
+            await EditorStore.deleteFile(fileId).then(dto => {
+                if (dto.resultMsg === 'Success') {
+                    setTimeout(() => {
+                        EditorStore.fileLayoutList.splice(index, 1);
+                    }, 1000);
+                } else if (dto.resultMsg === 'Fail') {
+                    EditorStore.fileLayoutList[index].deleted = undefined;
+                }
+            });
         }
-        else {
-            EditorStore.setDeleteFileConfig(fileId, filename, index);
-            NoteStore.setModalInfo('fileDelete');
-        }
+        if (EditorStore.fileLayoutList.length === 0 && EditorStore.tempFileLayoutList.length === 0) EditorStore.setIsFile(false);
     }
 
     const menu = (
@@ -139,13 +155,62 @@ const FileLayout = () => {
     }, []);
 
     const handleClickDropDown = (fileId) => (e) => {
-      e.stopPropagation(); 
-      EditorStore.setDownLoadFileId(fileId);
+        e.stopPropagation();
+        EditorStore.setDownLoadFileId(fileId);
     }
 
     return useObserver(() => (
         <>
             <FileBodyLayout id='fileLayout'>
+                {EditorStore.tempFileLayoutList.map((item, index) => (
+                    item.type === 'file' ? <FileBody id={item.file_id ? item.file_id : item.user_context_2}
+                        key={index}
+                        onClick={handleFileBodyClick.bind(null, item.file_id)}
+                        className={index === EditorStore.selectFileIdx ? 'selected' : ''}
+                        onKeyDown={handleKeyDownFile}
+                        tabIndex={index}
+                        closable={!PageStore.isReadMode()}
+                        onMouseEnter={handleMouseHover.bind(null, item.file_id)}
+                        onMouseLeave={handleMouseLeave}>
+                        <FileContent>
+                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
+                                <FileDownloadIcon>
+                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                </FileDownloadIcon>
+                            </Dropdown>
+                            {item.error ? <FileErrorIcon><ExclamationCircleFilled /></FileErrorIcon> : null}
+                            <FileData>
+                                <FileDataName>
+                                    <FileName
+                                        onClick={
+                                            PageStore.isReadMode()
+                                                ? onClickFileName.bind(null, item)
+                                                : null
+                                        }
+                                    >
+                                        {item.file_name + '.' + item.file_extension}
+                                    </FileName>
+                                </FileDataName>
+                                <FileDataTime>
+                                    <FileTime>{item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null}</FileTime>
+                                    <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'}</FileTime>
+                                </FileDataTime>
+                            </FileData>
+                            <FileClose style={!PageStore.isReadMode() && item.file_id === hoverFileId ? { display: 'flex' } : { display: 'none' }}>
+                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')} />
+                            </FileClose>
+                        </FileContent>
+                        <ProgressWrapper>
+                            {item.progress ? <Progress
+                                percent={item.progress * 100}
+                                showInfo={false}
+                                strokeWidth={'0.25rem'}
+                                trailColor="#E3E4E9"
+                                strokeColor="#6C56E5"
+                            /> : null}
+                        </ProgressWrapper>
+                    </FileBody> : null
+                ))}
                 {EditorStore.fileLayoutList.map((item, index) => (
                     <FileBody id={item.file_id ? item.file_id : item.user_context_2}
                         key={index}
@@ -153,6 +218,7 @@ const FileLayout = () => {
                         className={index === EditorStore.selectFileIdx ? 'selected' : ''}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
+                        closable={!PageStore.isReadMode()}
                         onMouseEnter={handleMouseHover.bind(null, item.file_id)}
                         onMouseLeave={handleMouseLeave}>
                         <FileContent>
@@ -164,22 +230,22 @@ const FileLayout = () => {
 
                             <FileData>
                                 <FileDataName>
-                                    <FileName 
+                                    <FileName
                                         onClick={
                                             PageStore.isReadMode()
-                                            ? onClickFileName.bind(null, item)
-                                            : null
+                                                ? onClickFileName.bind(null, item)
+                                                : null
                                         }
                                     >
                                         {item.file_name + '.' + item.file_extension}
                                     </FileName>
                                 </FileDataName>
                                 <FileDataTime>
-                                    <FileTime>{item.file_size ? EditorStore.convertFileSize(item.file_size) : null}</FileTime>
+                                    <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'}</FileTime>
                                 </FileDataTime>
                             </FileData>
                             <FileClose style={!PageStore.isReadMode() && item.file_id === hoverFileId ? { display: 'flex' } : { display: 'none' }}>
-                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, item.file_name, index)} />
+                                <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'uploaded')} />
                             </FileClose>
                         </FileContent>
                     </FileBody>
