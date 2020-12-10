@@ -21,7 +21,7 @@ const EditorHeader = () => {
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
-    if (!PageStore.isReadMode()) {
+    if (PageStore.isReadMode()) {
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();

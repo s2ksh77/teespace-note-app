@@ -74,7 +74,6 @@ export const ChapterTitle = styled.span`
   display: flex;
   flex: auto;
   margin-left: 1.69rem;
-  margin-right: 0.2rem;
   height: 100%;
   font-weight: 500;
   max-width: calc(100% - 3.36rem);
