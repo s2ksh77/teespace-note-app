@@ -224,6 +224,9 @@ export const FileCloseBtn = styled.img`
 `
 
 export const editorContentCSS = ` 
+  body{
+    font-family : "Noto Sans KR",sans-serif !important;
+  }
   a, img {
     cursor:pointer;
   }
