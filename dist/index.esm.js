@@ -4472,6 +4472,7 @@ var NoteStore$1 = observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {},
+  // { userArray, roomArray }
   initVariables: function initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
@@ -4631,8 +4632,57 @@ var NoteStore$1 = observable({
   shareNote: function shareNote() {
     var _this2 = this;
 
-    // shareArrays: { userArray, roomArray }
     var sharedRoomName = RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+    this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
+        var friendId, room, roomId, res, targetChId;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                friendId = user.friendId ? user.friendId : user.id;
+                room = RoomStore.getDMRoom(_this2.user_id, friendId);
+
+                if (!room.result) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                roomId = room.roomInfo.id;
+                _context2.next = 10;
+                break;
+
+              case 6:
+                _context2.next = 8;
+                return RoomStore.createRoom({
+                  creatorId: _this2.user_id,
+                  userList: [{
+                    userId: friendId
+                  }]
+                });
+
+              case 8:
+                res = _context2.sent;
+                roomId = res.roomId;
+
+              case 10:
+                targetChId = RoomStore.getChannelIds({
+                  roomId: roomId
+                })[NoteRepository$1.CH_TYPE];
+                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [_this2.shareContent]);
+
+              case 12:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
     this.shareArrays.roomArray.forEach(function (room) {
       var targetChId = RoomStore.getChannelIds({
         roomId: room.id
@@ -4659,27 +4709,27 @@ var NoteStore$1 = observable({
     e.preventDefault();
   },
   getSearchList: function getSearchList(searchKey) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var _yield$NoteRepository, dto;
 
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              _context2.next = 2;
+              _context3.next = 2;
               return NoteRepository$1.getSearchList(searchKey);
 
             case 2:
-              _yield$NoteRepository = _context2.sent;
+              _yield$NoteRepository = _context3.sent;
               dto = _yield$NoteRepository.data.dto;
-              return _context2.abrupt("return", dto);
+              return _context3.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2);
+      }, _callee3);
     }))();
   }
 });
