@@ -11,8 +11,11 @@ import {
 } from '../../styles/commonStyle';
 
 // 페이지가 존재하지 않습니다
-const PageNotFound = () => {  
+const PageNotFound = ({type}) => { 
   const { NoteStore, ChapterStore } = useNoteStore();
+  // 다국어지원 대비?
+  const str = (type==="page") ? "페이지" : "챕터";
+
   // 뒤로 가기 버튼
   const handleLayoutBtn = () => {
     NoteStore.setTargetLayout('LNB');
@@ -23,9 +26,9 @@ const PageNotFound = () => {
       <ContentHeader handleBackBtn={handleLayoutBtn} />
       <ContentBodyCover>
         <NoneContainer>
-          <NoneTitle>페이지가 없습니다.</NoneTitle>
+          <NoneTitle>{str}가 없습니다.</NoneTitle>
           <NoneText>
-            시작하려면 "새 페이지 추가" 버튼을 클릭하세요.
+            시작하려면 "새 {str} 추가" 버튼을 클릭하세요.
           </NoneText>
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>

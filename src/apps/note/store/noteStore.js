@@ -8,6 +8,7 @@ import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
+  loadingNoteApp:true,
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
@@ -28,11 +29,11 @@ const NoteStore = observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {}, // { userArray, roomArray }
-  initVariables() {
-    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
-    ChapterStore.initSearchVar();
-    ChapterStore.setCurrentChapterId('');
-    PageStore.setCurrentPageId('');
+  getLoadingNoteApp() {
+    return this.loadingNoteApp;
+  },
+  setLoadingNoteApp(isLoading) {
+    this.loadingNoteApp = isLoading;
   },
   setWsId(wsId) {
     NoteRepository.setWsId(wsId);
@@ -65,6 +66,14 @@ const NoteStore = observable({
     NoteStore.setUserName(userName);
     NoteStore.setUserId(userId);
     if (typeof callback === 'function') callback();
+  },
+  initVariables() {
+    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
+    ChapterStore.initSearchVar();
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
+    ChapterStore.setChapterList([]);
+    this.setShowPage(true);
   },
   addWWMSHandler() {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', handleWebsocket);

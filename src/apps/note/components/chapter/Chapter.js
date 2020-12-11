@@ -93,7 +93,6 @@ const Chapter = ({ chapter, index, isShared }) => {
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
-    PageStore.setCurrentPageId(pageId);
     PageStore.fetchCurrentPageData(pageId);
   }, [chapter]);
 
