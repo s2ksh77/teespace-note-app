@@ -9597,9 +9597,9 @@ var NoteApp = function NoteApp(_ref) {
 
     if (PageStore.isReadMode()) return;
     if (EditorStore.isDrive || EditorStore.isAttatch) return;
-    if (GlobalVariable.editorWrapper && ((_GlobalVariable$edito = GlobalVariable.editorWrapper) === null || _GlobalVariable$edito === void 0 ? void 0 : _GlobalVariable$edito.contains(e.target))) return;
-    if (GlobalVariable.editorWrapper && ((_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.contains(e.target))) return;
-    if ((_document$querySelect2 = document.querySelector('.tox-pop__dialog')) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.contains(e.target)) return;
+    if (GlobalVariable.editorWrapper && (_GlobalVariable$edito = GlobalVariable.editorWrapper) !== null && _GlobalVariable$edito !== void 0 && _GlobalVariable$edito.contains(e.target)) return;
+    if (GlobalVariable.editorWrapper && (_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) !== null && _document$querySelect !== void 0 && _document$querySelect.contains(e.target)) return;
+    if ((_document$querySelect2 = document.querySelector('.tox-pop__dialog')) !== null && _document$querySelect2 !== void 0 && _document$querySelect2.contains(e.target)) return;
     if (e.target.download) return;
     var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
 
