@@ -37,6 +37,7 @@ const EditorStore = observable({
   fileExtension: "",
   uploadLength: '',
   processLength: 0,
+  processCount: 0,
   failCount: 0,
   setContents(content) {
     this.contents = content;
@@ -228,11 +229,10 @@ const EditorStore = observable({
     if (this.uploadDTO.length === this.uploadLength) handleUpload();
   },
   setTempFileList(target) {
-    this.tempArray.push(target);
-    if (this.tempArray.length === this.uploadLength) {
-      this.tempFileLayoutList = this.tempArray;
-      this.tempArray = [];
-    }
+    if (this.processCount !== this.uploadLength) {
+      this.tempFileLayoutList.unshift(target);
+      this.processCount++
+    } else this.processCount = 0;
     if (!this.isFile) this.setIsFile(true);
   },
   setFileLength(length) {
@@ -285,11 +285,30 @@ const EditorStore = observable({
       data: { dto }
     } = await NoteRepository.storageFileDeepCopy(fileId);
     if (dto.resultMsg === 'Success') {
-      const retrunFileId = dto.storageFileInfoList[0].file_id;
-      const returnFileName = dto.storageFileInfoList[0].file_name;
-      this.createDriveElement(type, retrunFileId, returnFileName);
-      return retrunFileId;
-    } else return;
+      const { file_id, file_name, file_extension, file_updated_at, file_size } = dto.storageFileInfoList[0];
+      const isImage = (type === 'image') ? true : false;
+      const tempMeta = {
+        "user_id": NoteRepository.USER_ID,
+        "file_last_update_user_id": NoteRepository.USER_ID,
+        "file_id": file_id,
+        "file_name": file_name,
+        "file_extension": file_extension,
+        "file_created_at": '',
+        "file_updated_at": file_updated_at,
+        "file_size": file_size,
+        "user_context_1": '',
+        "user_context_2": '',
+        "user_context_3": '',
+        "progress": 0,
+        "type": isImage ? 'image' : 'file',
+        "error": false
+      }
+      this.setTempFileList(tempMeta);
+      if (isImage) EditorStore.createDriveElement('image', file_id, file_name);
+      return { id: file_id, type: type };
+    } else {
+      EditorStore.failCount++;
+    };
   },
   createDriveElement(type, fileId, fileName) {
     const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
