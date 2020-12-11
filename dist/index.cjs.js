@@ -2014,6 +2014,7 @@ var EditorStore = mobx.observable((_observable = {
   fileExtension: "",
   uploadLength: '',
   processLength: 0,
+  processCount: 0,
   failCount: 0,
   setContents: function setContents(content) {
     this.contents = content;
@@ -2287,12 +2288,10 @@ var EditorStore = mobx.observable((_observable = {
   this.uploadDTO.push(meta);
   if (this.uploadDTO.length === this.uploadLength) handleUpload();
 }), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
-  this.tempArray.push(target);
-
-  if (this.tempArray.length === this.uploadLength) {
-    this.tempFileLayoutList = this.tempArray;
-    this.tempArray = [];
-  }
+  if (this.processCount !== this.uploadLength) {
+    this.tempFileLayoutList.unshift(target);
+    this.processCount++;
+  } else this.processCount = 0;
 
   if (!this.isFile) this.setIsFile(true);
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
@@ -2353,7 +2352,7 @@ var EditorStore = mobx.observable((_observable = {
   var _this3 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    var _yield$NoteRepository5, dto, retrunFileId, returnFileName;
+    var _yield$NoteRepository5, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
 
     return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
@@ -2367,21 +2366,43 @@ var EditorStore = mobx.observable((_observable = {
             dto = _yield$NoteRepository5.data.dto;
 
             if (!(dto.resultMsg === 'Success')) {
-              _context7.next = 11;
+              _context7.next = 13;
               break;
             }
 
-            retrunFileId = dto.storageFileInfoList[0].file_id;
-            returnFileName = dto.storageFileInfoList[0].file_name;
+            _dto$storageFileInfoL = dto.storageFileInfoList[0], file_id = _dto$storageFileInfoL.file_id, file_name = _dto$storageFileInfoL.file_name, file_extension = _dto$storageFileInfoL.file_extension, file_updated_at = _dto$storageFileInfoL.file_updated_at, file_size = _dto$storageFileInfoL.file_size;
+            isImage = type === 'image' ? true : false;
+            tempMeta = {
+              "user_id": NoteRepository$1.USER_ID,
+              "file_last_update_user_id": NoteRepository$1.USER_ID,
+              "file_id": file_id,
+              "file_name": file_name,
+              "file_extension": file_extension,
+              "file_created_at": '',
+              "file_updated_at": file_updated_at,
+              "file_size": file_size,
+              "user_context_1": '',
+              "user_context_2": '',
+              "user_context_3": '',
+              "progress": 0,
+              "type": isImage ? 'image' : 'file',
+              "error": false
+            };
 
-            _this3.createDriveElement(type, retrunFileId, returnFileName);
+            _this3.setTempFileList(tempMeta);
 
-            return _context7.abrupt("return", retrunFileId);
+            if (isImage) EditorStore.createDriveElement('image', file_id, file_name);
+            return _context7.abrupt("return", {
+              id: file_id,
+              type: type
+            });
 
-          case 11:
-            return _context7.abrupt("return");
+          case 13:
+            EditorStore.failCount++;
 
-          case 12:
+          case 14:
+
+          case 15:
           case "end":
             return _context7.stop();
         }
