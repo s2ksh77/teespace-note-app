@@ -416,12 +416,14 @@ const PageStore = observable({
 
   async fetchNoteInfoList(noteId) {
     const dto = await this.getNoteInfoList(noteId);
+    // 없는 노트일 때 && 가져오려했던 noteId가 currentPageId일 때 초기화하기
     if (!isFilled(dto.note_id)) {
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
     // fetchNoteInfoList할 때 setCurrentPageId하기
     this.setCurrentPageId(dto.note_id);
+    ChapterStore.setCurrentChapterId(dto.parent_notebook);
     this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;

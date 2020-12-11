@@ -7,6 +7,7 @@ import { type } from "ramda";
 
 const ChapterStore = observable({
   chapterColor: "",
+  loadingPageInfo:false, // 2panel(pageContainer용)
   chapterList: [],
   sortedChapterList: {
     roomChapterList: [],
@@ -50,6 +51,12 @@ const ChapterStore = observable({
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
+  getLoadingPageInfo() {
+    return this.loadingPageInfo;
+  },
+  setLoadingPageInfo(isLoading) {
+    this.loadingPageInfo = isLoading;
+  },
   getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -368,16 +375,6 @@ const ChapterStore = observable({
     return localChapterList;
   },
 
-  async fetchChapterList() {
-    await this.getNoteChapterList();
-    if (this.chapterList.length === 0) {
-      NoteStore.setShowPage(false);
-    } else {
-      NoteStore.setShowPage(true);
-      this.setFirstNoteInfo();
-    }
-  },
-
   async checkDefaultChapterColor(notbookList) {
     const idx = notbookList.findIndex(chapter => chapter.type === "default");
     if (idx === -1) return notbookList;
@@ -581,6 +578,7 @@ const ChapterStore = observable({
     if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
     return null;
   },
+
   async setFirstNoteInfo() {
     const targetChapter = this.getFirstRenderedChapter();
     if (!targetChapter) {
@@ -595,7 +593,26 @@ const ChapterStore = observable({
     // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
     // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
     this.setCurrentChapterId(chapterId);    
-  }
+  },
+  /*
+    loading true->false가 들어간 함수
+  */
+  // 처음 축소 상태에서 확대 상태로 바꿀 때
+  async fetchFirstNote() {
+    ChapterStore.setLoadingPageInfo(true);
+    await ChapterStore.setFirstNoteInfo();
+    ChapterStore.setLoadingPageInfo(false);
+  },
+  // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
+  async fetchChapterList() {
+    this.setLoadingPageInfo(true);
+    await this.getNoteChapterList();
+
+    if (this.chapterList.length > 0) {
+      await this.setFirstNoteInfo();
+    }
+    this.setLoadingPageInfo(false);
+  },
 });
 
 export default ChapterStore;
