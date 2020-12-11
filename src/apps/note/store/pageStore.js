@@ -485,7 +485,13 @@ const PageStore = observable({
   handleSave() {
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
-      else this.setTitle('제목 없음');
+      else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
+        if (EditorStore.tempFileLayoutList.length > 0) {
+          this.setTitle(EditorStore.tempFileLayoutList[0].file_name);
+        } else if (EditorStore.fileLayoutList.length > 0) {
+          this.setTitle(EditorStore.fileLayoutList[0].file_name);
+        }
+      } else this.setTitle('제목 없음');
     }
     const updateDTO = {
       dto: {
