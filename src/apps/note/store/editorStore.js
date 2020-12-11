@@ -304,7 +304,7 @@ const EditorStore = observable({
         "error": false
       }
       this.setTempFileList(tempMeta);
-      if (isImage) EditorStore.createDriveElement('image', file_id, file_name);
+      if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
       return { id: file_id, type: type };
     } else {
       EditorStore.failCount++;

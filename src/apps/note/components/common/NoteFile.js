@@ -31,7 +31,7 @@ export const handleUpload = async () => {
                             }
                             EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(dto => {
                                 if (dto.resultMsg === 'Success') {
-                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
+                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
                                     EditorStore.tempFileLayoutList[i].progress = 0;
                                 } else if (dto.resultMsg === 'Fail') {
                                     EditorStore.failCount++;
@@ -42,6 +42,14 @@ export const handleUpload = async () => {
                                 if (EditorStore.processLength == EditorStore.uploadLength) {
                                     EditorStore.uploadDTO = [];
                                     if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+                                    else if (EditorStore.failCount === 0) {
+                                        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                                            EditorStore.setFileList(
+                                                dto.fileList,
+                                            );
+                                            EditorStore.tempFileLayoutList = [];
+                                        });
+                                    }
                                 }
                             })
                         }
@@ -78,18 +86,24 @@ export const handleDriveCopy = async () => {
             if (EditorStore.driveFileList.length === results.length) {
                 for (let i = 0; i < results.length; i++) {
                     (function (result) {
-                        if (result.id !== undefined) {
-                            resultArray.push(result.id);
-                            EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
-                                if (dto.resultMsg === 'Success') {
-                                    EditorStore.driveFileList = [];
-                                    if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
-                                    EditorStore.setIsAttatch(false);
-                                }
-                            });
-                        }
+                        if (result.id !== undefined) resultArray.push(result.id);
                     })(results[i])
                 }
+                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
+                    if (dto.resultMsg === 'Success') {
+                        EditorStore.driveFileList = [];
+                        if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+                        else if (EditorStore.failCount === 0) {
+                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                                EditorStore.setFileList(
+                                    dto.fileList,
+                                );
+                                EditorStore.tempFileLayoutList = [];
+                            });
+                            EditorStore.setIsAttatch(false);
+                        }
+                    }
+                });
             }
         })
     }
