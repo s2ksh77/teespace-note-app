@@ -159,25 +159,16 @@ const NoteStore = observable({
 
     this.shareArrays.userArray.forEach(async user => {
       const friendId = user.friendId ? user.friendId : user.id;
-      const room = RoomStore.getDMRoom(this.user_id, friendId)
+      const res = await RoomStore.createRoom({
+        creatorId: this.user_id,
+        userList: [{ userId: friendId }]
+      });
 
-      let roomId;
-      if (room.result) {
-        roomId = room.roomInfo.id;
-      }
-      else {
-        const res = await RoomStore.createRoom({
-          creatorId: this.user_id,
-          userList: [{ userId: friendId }]
-        });
-        roomId = res.roomId;
-      }
-
-      const targetChId = RoomStore.getChannelIds({ roomId: roomId })[NoteRepository.CH_TYPE];
+      const targetChId = RoomStore.getChannelIds({ roomId: res.roomId })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [this.shareContent,]);
+        ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [this.shareContent,]);
+        PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [this.shareContent,]);
     })
 
     this.shareArrays.roomArray.forEach(room => {
