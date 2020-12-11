@@ -31,7 +31,7 @@ export const handleUpload = async () => {
                             }
                             EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(dto => {
                                 if (dto.resultMsg === 'Success') {
-                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
+                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
                                     EditorStore.tempFileLayoutList[i].progress = 0;
                                 } else if (dto.resultMsg === 'Fail') {
                                     EditorStore.failCount++;
