@@ -54,6 +54,7 @@ export const handleUpload = async () => {
 
 export const driveSuccessCb = (fileList) => {
     if (fileList) {
+        EditorStore.setFileLength(fileList.length);
         fileList.forEach(file => EditorStore.addDriveFileList(file));
         handleDriveCopy();
         EditorStore.setIsAttatch(true);
@@ -68,26 +69,28 @@ export const driveCancelCb = () => {
 
 export const handleDriveCopy = async () => {
     let copyArr = [];
+    let resultArray = [];
     if (EditorStore.driveFileList) {
         copyArr = toJS(EditorStore.driveFileList).map(item => {
             return EditorStore.storageFileDeepCopy(item.file_id, item.type);
         });
         await Promise.all(copyArr).then(results => {
-            const resultArray = toJS(results).filter(result => result !== undefined);
-            EditorStore.driveFileList = [];
-
-            if (resultArray.length > 0) {
-                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
-                    if (dto.resultMsg === 'Success') {
-                        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-                            EditorStore.setFileList(
-                                dto.fileList,
-                            );
-                        });
-                    }
-                });
+            if (EditorStore.driveFileList.length === results.length) {
+                for (let i = 0; i < results.length; i++) {
+                    (function (result) {
+                        if (result.id !== undefined) {
+                            resultArray.push(result.id);
+                            EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
+                                if (dto.resultMsg === 'Success') {
+                                    EditorStore.driveFileList = [];
+                                    if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+                                    EditorStore.setIsAttatch(false);
+                                }
+                            });
+                        }
+                    })(results[i])
+                }
             }
-            EditorStore.setIsAttatch(false);
         })
     }
 }
