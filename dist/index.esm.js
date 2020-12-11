@@ -1940,7 +1940,7 @@ var handleUpload = /*#__PURE__*/function () {
 
                       EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
                         if (dto.resultMsg === 'Success') {
-                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.uploadDTO[i].uploadMeta.fileName);
+                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
                           EditorStore.tempFileLayoutList[i].progress = 0;
                         } else if (dto.resultMsg === 'Fail') {
                           EditorStore.failCount++;
@@ -2002,6 +2002,7 @@ var EditorStore = observable((_observable = {
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  tempArray: [],
   tempFileLayoutList: [],
   driveFileList: [],
   fileName: "",
@@ -2212,6 +2213,13 @@ var EditorStore = observable((_observable = {
     this.setIsFile(true);
     this.setFileArray(checkFile);
   }
+}), _defineProperty(_observable, "isFileLength", function isFileLength() {
+  var temp = this.tempFileLayoutList.filter(function (file) {
+    return file.type === 'file';
+  }).length;
+  var uploaded = this.fileLayoutList.length;
+  var totalLength = temp + uploaded;
+  if (totalLength === 0) this.setIsFile(false);
 }), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
@@ -2274,44 +2282,17 @@ var EditorStore = observable((_observable = {
 }), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
   this.uploadDTO.push(meta);
   if (this.uploadDTO.length === this.uploadLength) handleUpload();
+}), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
+  this.tempArray.push(target);
+
+  if (this.tempArray.length === this.uploadLength) {
+    this.tempFileLayoutList = this.tempArray;
+    this.tempArray = [];
+  }
+
+  if (!this.isFile) this.setIsFile(true);
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
-}), _defineProperty(_observable, "setUploadFileMeta", function setUploadFileMeta(type, tempId, config, file, element) {
-  var fileName = config.fileName,
-      fileExtension = config.fileExtension,
-      fileSize = config.fileSize;
-  var uploadMeta = {
-    "dto": {
-      "workspace_id": NoteRepository$1.WS_ID,
-      "channel_id": NoteRepository$1.chId,
-      "storageFileInfo": {
-        "user_id": NoteRepository$1.USER_ID,
-        "file_last_update_user_id": NoteRepository$1.USER_ID,
-        "file_id": '',
-        "file_name": fileName,
-        "file_extension": fileExtension,
-        "file_created_at": '',
-        "file_updated_at": '',
-        "file_size": fileSize,
-        "user_context_1": PageStore.currentPageId,
-        "user_context_2": '',
-        "user_context_3": ''
-      }
-    }
-  };
-  var uploadArr = {
-    KEY: tempId,
-    TYPE: type,
-    uploadMeta: uploadMeta,
-    file: file,
-    element: element
-  };
-  this.setFileMetaList(uploadArr);
-}), _defineProperty(_observable, "setFileMetaList", function setFileMetaList(fileMeta) {
-  this.fileMetaList.push(fileMeta);
-  console.log(toJS(this.fileMetaList));
-}), _defineProperty(_observable, "getFileMetaList", function getFileMetaList() {
-  return this.fileMetaList;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
@@ -2321,28 +2302,6 @@ var EditorStore = observable((_observable = {
   day = day >= 10 ? day : '0' + day;
   var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   return year + '-' + month + '-' + day + ' ' + time;
-}), _defineProperty(_observable, "setTempFileMeta", function setTempFileMeta(config) {
-  var tempId = config.tempId,
-      fileName = config.fileName,
-      fileExtension = config.fileExtension,
-      fileSize = config.fileSize;
-  var tempMeta = {
-    "user_id": NoteRepository$1.USER_ID,
-    "file_last_update_user_id": NoteRepository$1.USER_ID,
-    "file_id": '',
-    "file_name": fileName,
-    "file_extension": fileExtension,
-    "file_created_at": '',
-    "file_updated_at": this.getTempTimeFormat(),
-    "file_size": fileSize,
-    "user_context_1": '',
-    "user_context_2": tempId,
-    "user_context_3": ''
-  };
-  this.setTempFileList(tempMeta);
-}), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
-  this.tempFileLayoutList.push(target);
-  if (!this.isFile) this.setIsFile(true);
 }), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
   if (bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -3174,7 +3133,7 @@ var PageStore = observable((_observable$1 = {
     if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
-    if (EditorStore.tempFileLayoutList > 0) EditorStore.tempFileLayoutList = [];
+    if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
     (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
@@ -4772,25 +4731,13 @@ var NoteStore$1 = observable({
     var sharedRoomName = RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
     this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
-        var friendId, room, roomId, res, targetChId;
+        var friendId, res, targetChId;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 friendId = user.friendId ? user.friendId : user.id;
-                room = RoomStore.getDMRoom(_this2.user_id, friendId);
-
-                if (!room.result) {
-                  _context2.next = 6;
-                  break;
-                }
-
-                roomId = room.roomInfo.id;
-                _context2.next = 10;
-                break;
-
-              case 6:
-                _context2.next = 8;
+                _context2.next = 3;
                 return RoomStore.createRoom({
                   creatorId: _this2.user_id,
                   userList: [{
@@ -4798,17 +4745,14 @@ var NoteStore$1 = observable({
                   }]
                 });
 
-              case 8:
+              case 3:
                 res = _context2.sent;
-                roomId = res.roomId;
-
-              case 10:
                 targetChId = RoomStore.getChannelIds({
-                  roomId: roomId
+                  roomId: res.roomId
                 })[NoteRepository$1.CH_TYPE];
-                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(roomId, targetChId, sharedRoomName, [_this2.shareContent]);
+                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);
 
-              case 12:
+              case 6:
               case "end":
                 return _context2.stop();
             }
