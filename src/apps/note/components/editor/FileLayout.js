@@ -115,13 +115,16 @@ const FileLayout = () => {
     }
 
     const handleFileRemove = async (fileId, index, type) => {
+        let filelength;
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
             EditorStore.tempFileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
                 if (dto.resultMsg === 'Success') {
                     setTimeout(() => {
                         EditorStore.tempFileLayoutList.splice(index, 1);
+                        EditorStore.isFileLength();
                     }, 1000);
+
                 } else if (dto.resultMsg === 'Fail') {
                     EditorStore.tempFileLayoutList[index].deleted = undefined;
                 }
@@ -132,13 +135,13 @@ const FileLayout = () => {
                 if (dto.resultMsg === 'Success') {
                     setTimeout(() => {
                         EditorStore.fileLayoutList.splice(index, 1);
+                        EditorStore.isFileLength();
                     }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                     EditorStore.fileLayoutList[index].deleted = undefined;
                 }
             });
         }
-        if (EditorStore.fileLayoutList.length === 0 && EditorStore.tempFileLayoutList.length === 0) EditorStore.setIsFile(false);
     }
 
     const menu = (
