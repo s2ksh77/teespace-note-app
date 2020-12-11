@@ -6,6 +6,7 @@ var React = require('react');
 var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
+var html2pdf = require('html2pdf.js');
 var mobxReact = require('mobx-react');
 var styled = require('styled-components');
 var reactFontawesome = require('@fortawesome/react-fontawesome');
@@ -13,17 +14,17 @@ var freeSolidSvgIcons = require('@fortawesome/free-solid-svg-icons');
 var antd = require('antd');
 var reactDnd = require('react-dnd');
 var reactDndHtml5Backend = require('react-dnd-html5-backend');
-var html2pdf = require('html2pdf.js');
 require('antd/dist/antd.css');
 var tinymceReact = require('@tinymce/tinymce-react');
+var icons = require('@ant-design/icons');
 var teespaceDriveApp = require('teespace-drive-app');
 var ReactDom = require('react-dom');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
+var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var ReactDom__default = /*#__PURE__*/_interopDefaultLegacy(ReactDom);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -1103,27 +1104,132 @@ var NoteRepository = /*#__PURE__*/function () {
       return storageFileDeepCopy;
     }()
   }, {
-    key: "deleteFile",
-    value: function deleteFile(deleteFileId) {
-      return teespaceCore.API.put("note-api/noteFile?action=Delete", {
-        dto: {
-          workspace_id: this.WS_ID,
-          channel_id: this.chId,
-          storageFileInfo: {
-            user_id: '',
-            file_last_update_user_id: '',
-            file_id: deleteFileId,
-            file_name: '',
-            file_extension: '',
-            file_created_at: '',
-            file_updated_at: '',
-            user_context_1: '',
-            user_context_2: '',
-            user_context_3: ''
+    key: "createUploadMeta",
+    value: function () {
+      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(dto) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+          while (1) {
+            switch (_context19.prev = _context19.next) {
+              case 0:
+                _context19.prev = 0;
+                _context19.next = 3;
+                return teespaceCore.API.post("note-api/noteFile", dto);
+
+              case 3:
+                return _context19.abrupt("return", _context19.sent);
+
+              case 6:
+                _context19.prev = 6;
+                _context19.t0 = _context19["catch"](0);
+                throw Error(JSON.stringify(_context19.t0));
+
+              case 9:
+              case "end":
+                return _context19.stop();
+            }
           }
-        }
-      });
-    }
+        }, _callee19, null, [[0, 6]]);
+      }));
+
+      function createUploadMeta(_x29) {
+        return _createUploadMeta.apply(this, arguments);
+      }
+
+      return createUploadMeta;
+    }()
+  }, {
+    key: "createUploadStorage",
+    value: function () {
+      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId, file, onUploadProgress) {
+        return regeneratorRuntime.wrap(function _callee20$(_context20) {
+          while (1) {
+            switch (_context20.prev = _context20.next) {
+              case 0:
+                _context20.prev = 0;
+                _context20.next = 3;
+                return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+                  headers: {
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress
+                });
+
+              case 3:
+                return _context20.abrupt("return", _context20.sent);
+
+              case 6:
+                _context20.prev = 6;
+                _context20.t0 = _context20["catch"](0);
+                throw Error(JSON.stringify(_context20.t0));
+
+              case 9:
+              case "end":
+                return _context20.stop();
+            }
+          }
+        }, _callee20, this, [[0, 6]]);
+      }));
+
+      function createUploadStorage(_x30, _x31, _x32) {
+        return _createUploadStorage.apply(this, arguments);
+      }
+
+      return createUploadStorage;
+    }()
+  }, {
+    key: "deleteFile",
+    value: function () {
+      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(deleteFileId) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+          while (1) {
+            switch (_context21.prev = _context21.next) {
+              case 0:
+                _context21.prev = 0;
+                _context21.next = 3;
+                return teespaceCore.API.put("note-api/noteFile?action=Delete", {
+                  dto: {
+                    workspace_id: this.WS_ID,
+                    channel_id: this.chId,
+                    storageFileInfo: {
+                      user_id: '',
+                      file_last_update_user_id: '',
+                      file_id: deleteFileId,
+                      file_name: '',
+                      file_extension: '',
+                      file_created_at: '',
+                      file_updated_at: '',
+                      user_context_1: '',
+                      user_context_2: '',
+                      user_context_3: ''
+                    }
+                  }
+                });
+
+              case 3:
+                return _context21.abrupt("return", _context21.sent);
+
+              case 6:
+                _context21.prev = 6;
+                _context21.t0 = _context21["catch"](0);
+                throw Error(JSON.stringify(_context21.t0));
+
+              case 9:
+              case "end":
+                return _context21.stop();
+            }
+          }
+        }, _callee21, this, [[0, 6]]);
+      }));
+
+      function deleteFile(_x33) {
+        return _deleteFile.apply(this, arguments);
+      }
+
+      return deleteFile;
+    }()
   }, {
     key: "deleteAllFile",
     value: function deleteAllFile(fileList) {
@@ -1166,32 +1272,32 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getSearchList",
     value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(searchKey) {
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(searchKey) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
           while (1) {
-            switch (_context19.prev = _context19.next) {
+            switch (_context22.prev = _context22.next) {
               case 0:
-                _context19.prev = 0;
-                _context19.next = 3;
+                _context22.prev = 0;
+                _context22.next = 3;
                 return teespaceCore.API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
 
               case 3:
-                return _context19.abrupt("return", _context19.sent);
+                return _context22.abrupt("return", _context22.sent);
 
               case 6:
-                _context19.prev = 6;
-                _context19.t0 = _context19["catch"](0);
-                throw Error(JSON.stringify(_context19.t0));
+                _context22.prev = 6;
+                _context22.t0 = _context22["catch"](0);
+                throw Error(JSON.stringify(_context22.t0));
 
               case 9:
               case "end":
-                return _context19.stop();
+                return _context22.stop();
             }
           }
-        }, _callee19, this, [[0, 6]]);
+        }, _callee22, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x29) {
+      function getSearchList(_x34) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -1200,12 +1306,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createFileMeta",
     value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(targetList) {
-        return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(targetList) {
+        return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
-            switch (_context20.prev = _context20.next) {
+            switch (_context23.prev = _context23.next) {
               case 0:
-                _context20.next = 2;
+                _context23.next = 2;
                 return teespaceCore.API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -1213,17 +1319,17 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context20.abrupt("return", _context20.sent);
+                return _context23.abrupt("return", _context23.sent);
 
               case 3:
               case "end":
-                return _context20.stop();
+                return _context23.stop();
             }
           }
-        }, _callee20);
+        }, _callee23);
       }));
 
-      function createFileMeta(_x30) {
+      function createFileMeta(_x35) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -1973,6 +2079,512 @@ var TagStore = mobx.observable({
   }
 });
 
+const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+
+/*
+  Link Dialog 관련
+*/
+
+var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
+  var title = header.querySelector('.tox-dialog__title');
+  title.style.margin = 'auto';
+  title.textContent = '링크 삽입';
+}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
+
+
+var renderErrorMark = function renderErrorMark(target) {
+  var img$1 = document.createElement('img');
+  img$1.src = img;
+  img$1.classList.add('note-link-error');
+  var tooltip = document.createElement('div');
+  tooltip.classList.add('note-link-error-tooltip');
+  tooltip.textContent = '해당 URL은 유효하지 않습니다.';
+  target.appendChild(img$1);
+  target.appendChild(tooltip);
+  return [img$1, tooltip];
+};
+
+var renderValidation = function renderValidation(targetInput, errorMark, saveBtn) {
+  var _value = targetInput.value; // 가독성을 위해 중복 검사함
+  // 빈 str이거나 invalid
+
+  if (!checkUrlValidation(_value)) {
+    saveBtn.setAttribute('disabled', true);
+  } else saveBtn.removeAttribute('disabled'); // errorMark는 invalid할 때만
+
+
+  if (!isFilled(_value) || validUrl(_value)) {
+    errorMark.map(function (child) {
+      return child.classList.remove('note-show-element');
+    });
+    targetInput.classList.remove('note-link-input');
+  } else {
+    errorMark.map(function (child) {
+      return child.classList.add('note-show-element');
+    });
+    targetInput.classList.add('note-link-input');
+  }
+};
+
+var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
+  var formStr = {
+    url: "링크",
+    text: "텍스트"
+  }; // string 바꿔주기, renderValidationErrorMark
+
+  Array.from(form.childNodes).map(function (child, idx) {
+    var label$ = child.querySelector('.tox-form__group label');
+    var input$ = child.querySelector('input');
+    var content = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
+
+    label$.textContent = formStr[content];
+    /*
+      Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
+    */
+
+    if (content === "url") {
+      var _footer$querySelector;
+
+      var saveBtn = (_footer$querySelector = footer.querySelector('.tox-dialog__footer-end')) === null || _footer$querySelector === void 0 ? void 0 : _footer$querySelector.childNodes[1];
+      var errorMark = renderErrorMark(input$.parentElement); // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
+
+      renderValidation(input$, errorMark, saveBtn);
+
+      input$.oninput = function (e) {
+        renderValidation(input$, errorMark, saveBtn);
+      };
+    }
+  }); // 텍스트, 링크 순으로 바꿔주기
+
+  form.classList.add('link-dialog-reverse');
+};
+
+var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
+  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
+  btnGroup.classList.add('note-link-footer');
+};
+
+var changeLinkDialog = function changeLinkDialog() {
+  try {
+    var dialog = document.querySelector('.tox-dialog');
+    var footer = dialog.querySelector('.tox-dialog__footer');
+    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
+    changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
+    changeLinkDialogFooter(footer);
+  } catch (err) {
+    throw Error(err);
+  }
+};
+/*
+  Link context Toolbar 관련
+  custimizing contextToolbar
+*/
+
+var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
+var changeButtonStyle = function changeButtonStyle(idx, count) {
+  var _toolbar$childNodes;
+
+  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
+  toolbar.classList.add('link-toolbar');
+  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
+
+  if (toolbar && target) {
+    var strNode = document.createElement('div');
+    strNode.textContent = linkToolbarStr[idx];
+    target.appendChild(strNode);
+  } else if (count >= 50) return;else {
+    setTimeout(changeButtonStyle, 50, idx, count + 1);
+  }
+};
+var openLink = function openLink(url, target) {
+  if (!PageStore.isReadMode()) return;
+
+  if (target !== '_blank') {
+    document.location.href = url;
+    return;
+  }
+
+  var link = document.createElement('a');
+  link.href = url;
+  link.target = target;
+  link.rel = 'noopener';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+var handleUpload = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var uploadArr;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            uploadArr = [];
+
+            if (!EditorStore.uploadDTO) {
+              _context.next = 5;
+              break;
+            }
+
+            uploadArr = mobx.toJS(EditorStore.uploadDTO).map(function (item) {
+              return EditorStore.createUploadMeta(item.uploadMeta, item.type);
+            });
+            _context.next = 5;
+            return Promise.all(uploadArr).then(function (results) {
+              if (EditorStore.uploadDTO.length === results.length) {
+                var _loop = function _loop(i) {
+                  (function (result) {
+                    if (result.id !== undefined) {
+                      var handleUploadProgress = function handleUploadProgress(e) {
+                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
+                        EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                        EditorStore.tempFileLayoutList[i].file_id = result.id;
+                      };
+
+                      EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
+                        if (dto.resultMsg === 'Success') {
+                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                        } else if (dto.resultMsg === 'Fail') {
+                          EditorStore.failCount++;
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                          EditorStore.tempFileLayoutList[i].error = true;
+                        }
+
+                        EditorStore.processLength++;
+
+                        if (EditorStore.processLength == EditorStore.uploadLength) {
+                          EditorStore.uploadDTO = [];
+                          if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');
+                        }
+                      });
+                    }
+                  })(results[i]);
+                };
+
+                for (var i = 0; i < results.length; i++) {
+                  _loop(i);
+                }
+              }
+            });
+
+          case 5:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function handleUpload() {
+    return _ref.apply(this, arguments);
+  };
+}();
+var driveSuccessCb = function driveSuccessCb(fileList) {
+  if (fileList) {
+    fileList.forEach(function (file) {
+      return EditorStore.addDriveFileList(file);
+    });
+    handleDriveCopy();
+    EditorStore.setIsAttatch(true);
+    EditorStore.setIsDrive(false);
+  }
+};
+var driveCancelCb = function driveCancelCb() {
+  EditorStore.setIsAttatch(true);
+  EditorStore.setIsDrive(false);
+  setTimeout(function () {
+    EditorStore.setIsAttatch(false);
+  }, 100);
+};
+var handleDriveCopy = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var copyArr;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            copyArr = [];
+
+            if (!EditorStore.driveFileList) {
+              _context2.next = 5;
+              break;
+            }
+
+            copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
+              return EditorStore.storageFileDeepCopy(item.file_id, item.type);
+            });
+            _context2.next = 5;
+            return Promise.all(copyArr).then(function (results) {
+              var resultArray = mobx.toJS(results).filter(function (result) {
+                return result !== undefined;
+              });
+              EditorStore.driveFileList = [];
+
+              if (resultArray.length > 0) {
+                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
+                  if (dto.resultMsg === 'Success') {
+                    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                      EditorStore.setFileList(dto.fileList);
+                    });
+                  }
+                });
+              }
+
+              EditorStore.setIsAttatch(false);
+            });
+
+          case 5:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function handleDriveCopy() {
+    return _ref2.apply(this, arguments);
+  };
+}();
+var handleFileDelete = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return EditorStore.tinymce.dom.doc.images;
+
+          case 2:
+            imgTarget = _context3.sent;
+            fileTarget = document.querySelectorAll('div #fileLayout [id]');
+            imgArray = _toConsumableArray(imgTarget);
+            fileArray = _toConsumableArray(fileTarget);
+            deleteArr = [];
+            imgArray.forEach(function (img) {
+              return EditorStore.tempFileList.push(img.getAttribute('id'));
+            });
+            fileArray.forEach(function (file) {
+              return EditorStore.tempFileList.push(file.getAttribute('id'));
+            });
+            if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(function (file) {
+              return !EditorStore.tempFileList.includes(file.file_id);
+            });
+
+            if (!EditorStore.deleteFileList) {
+              _context3.next = 21;
+              break;
+            }
+
+            deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
+            });
+            _context3.prev = 12;
+            _context3.next = 15;
+            return Promise.all(deleteArr).then(function () {
+              EditorStore.deleteFileList = [];
+              EditorStore.tempFileList = [];
+              PageStore.setContent(EditorStore.tinymce.getContent());
+            });
+
+          case 15:
+            _context3.next = 19;
+            break;
+
+          case 17:
+            _context3.prev = 17;
+            _context3.t0 = _context3["catch"](12);
+
+          case 19:
+            _context3.prev = 19;
+            return _context3.finish(19);
+
+          case 21:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[12, 17, 19, 21]]);
+  }));
+
+  return function handleFileDelete() {
+    return _ref3.apply(this, arguments);
+  };
+}();
+var downloadFile = function downloadFile(fileId) {
+  if (fileId) {
+    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
+    return;
+  }
+
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = EditorStore.tinymce.selection.getNode().src;
+  a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
+  a.click();
+  document.body.removeChild(a);
+};
+var makeExportElement = function makeExportElement(data, type) {
+  var fragment = document.createElement('div');
+  fragment.style.visibility = 'visible';
+  fragment.style.opacity = 0;
+  fragment.style.width = 'fit-content';
+  fragment.setAttribute('id', 'exportTarget');
+  var targetDIV = document.createElement('div');
+  targetDIV.setAttribute('id', 'exportTargetDiv');
+  targetDIV.setAttribute('class', 'export');
+  targetDIV.innerHTML = data;
+  fragment.appendChild(targetDIV);
+  document.body.appendChild(fragment);
+  exportDownloadPDF(type);
+};
+var exportDownloadPDF = function exportDownloadPDF(type) {
+  var element = document.getElementById('exportTargetDiv');
+  var opt = {
+    margin: 2,
+    filename: type === 'page' ? "".concat(PageStore.exportPageTitle, ".pdf") : "".concat(ChapterStore.exportChapterTitle, ".pdf"),
+    pagebreak: {
+      after: '.afterClass',
+      avoid: 'span'
+    },
+    image: {
+      type: 'jpeg',
+      quality: 0.98
+    },
+    jsPDF: {
+      unit: 'pt',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
+  html2pdf__default['default'](element, opt).then(function () {
+    document.getElementById('exportTarget').remove();
+  });
+};
+var exportChapterData = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    var returnData;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            returnData = '';
+            _context4.next = 3;
+            return NoteRepository$1.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
+              var noteList = response.data.dto.noteList;
+
+              if (noteList.length > 0) {
+                noteList.forEach(function (page, idx) {
+                  returnData += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                });
+              } else return alert('하위에 속한 페이지가 없습니다.');
+
+              makeExportElement(returnData, 'chapter');
+            });
+
+          case 3:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function exportChapterData() {
+    return _ref4.apply(this, arguments);
+  };
+}();
+var exportPageData = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var returnData;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            returnData = '';
+            _context5.next = 3;
+            return NoteRepository$1.getNoteInfoList(PageStore.exportPageId).then(function (response) {
+              var dto = response.data.dto;
+              PageStore.exportPageTitle = dto.note_title;
+              returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            });
+
+          case 3:
+            makeExportElement(returnData, 'page');
+
+          case 4:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
+
+  return function exportPageData() {
+    return _ref5.apply(this, arguments);
+  };
+}();
+
+var handleClickLink = function handleClickLink(el) {
+  var href = el.getAttribute('href');
+  var target = el.getAttribute('target');
+  openLink(href, target);
+};
+
+var handleClickImg = function handleClickImg(el) {
+  if (!PageStore.isReadMode()) return;
+  var file = el.getAttribute('data-name').split('.');
+  EditorStore.setPreviewFileMeta({
+    userId: NoteRepository$1.USER_ID,
+    channelId: NoteRepository$1.chId,
+    roomId: NoteRepository$1.WS_ID,
+    fileId: el.id,
+    fileName: file[0],
+    fileExtension: file[1]
+  });
+  EditorStore.setIsPreview(true);
+};
+
+var handleEditorContentsListener = function handleEditorContentsListener() {
+  if (EditorStore.tinymce) {
+    var _EditorStore$tinymce$;
+
+    var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
+
+    if (targetList && targetList.length > 0) {
+      Array.from(targetList).forEach(function (el) {
+        if (el.getAttribute('hasListener')) return;
+        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+        el.setAttribute('hasListener', true);
+      });
+    }
+  }
+};
+var handleFileSync = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return handleFileDelete();
+
+          case 2:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+
+  return function handleFileSync() {
+    return _ref6.apply(this, arguments);
+  };
+}();
+
 var _observable;
 var EditorStore = mobx.observable((_observable = {
   contents: '',
@@ -1997,10 +2609,15 @@ var EditorStore = mobx.observable((_observable = {
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  tempArray: [],
+  tempFileLayoutList: [],
   driveFileList: [],
   fileName: "",
   fileSize: "",
   fileExtension: "",
+  uploadLength: '',
+  processLength: 0,
+  failCount: 0,
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -2030,71 +2647,92 @@ var EditorStore = mobx.observable((_observable = {
   },
   setPreviewFileMeta: function setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
+  },
+  createUploadMeta: function createUploadMeta(meta, type) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _yield$NoteRepository, dto;
+
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return NoteRepository$1.createUploadMeta(meta);
+
+            case 2:
+              _yield$NoteRepository = _context.sent;
+              dto = _yield$NoteRepository.data.dto;
+
+              if (!dto.log_file_id) {
+                _context.next = 6;
+                break;
+              }
+
+              return _context.abrupt("return", {
+                id: dto.log_file_id,
+                type: type
+              });
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  createUploadStorage: function createUploadStorage(fileId, file, handleProcess) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _yield$NoteRepository2, dto;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.createUploadStorage(fileId, file, handleProcess);
+
+            case 2:
+              _yield$NoteRepository2 = _context2.sent;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
   }
 }, _defineProperty(_observable, "uploadFile", function () {
-  var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto, file, successCallback, errorCallback, index) {
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+  var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(dto, file, index) {
+    var _this = this;
+
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.next = 2;
-            return teespaceCore.API.post("note-api/noteFile", JSON.stringify(dto), {
-              headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-              }
-            }).then( /*#__PURE__*/function () {
-              var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(data) {
-                var dto;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        dto = data.data.dto;
-
-                        if (!dto.log_file_id) {
-                          _context.next = 4;
-                          break;
-                        }
-
-                        _context.next = 4;
-                        return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + dto.log_file_id + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + NoteRepository$1.chId + '&userID=' + NoteRepository$1.USER_ID, file, {
-                          headers: {
-                            'Content-Type': 'multipart/form-data'
-                          }
-                        }).then(function (data) {
-                          var dto = data.data.dto;
-
-                          if (dto.resultMsg === "Success") {
-                            if (typeof successCallback === "function") successCallback(dto, index);
-                          } else {
-                            if (typeof errorCallback === "function") errorCallback(dto, index);
-                          }
-                        }).catch(function (error) {
-                          console.log(error);
-                        });
-
-                      case 4:
-                      case "end":
-                        return _context.stop();
-                    }
+            this.createUploadMeta(dto).then(function (dto) {
+              if (dto.log_file_id) {
+                _this.createUploadStorage(dto.log_file_id, file).then(function (dto) {
+                  if (dto.resultMsg === "Success") {
+                    var returnID = dto.storageFileInfoList[0].file_id;
+                    return returnID;
                   }
-                }, _callee);
-              }));
+                });
+              }
+            });
 
-              return function (_x6) {
-                return _ref.apply(this, arguments);
-              };
-            }());
-
-          case 2:
+          case 1:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
+    }, _callee3, this);
   }));
 
-  function uploadFile(_x, _x2, _x3, _x4, _x5) {
+  function uploadFile(_x, _x2, _x3) {
     return _uploadFile.apply(this, arguments);
   }
 
@@ -2107,33 +2745,38 @@ var EditorStore = mobx.observable((_observable = {
 }), _defineProperty(_observable, "addDriveFileList", function addDriveFileList(fileInfo) {
   this.driveFileList.push(fileInfo);
 }), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return NoteRepository$1.deleteFile(deleteId).then(function (response) {
-              var dto = response.data.dto;
-            });
-
-          case 2:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3);
-  }))();
-}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile() {
-  var _this = this;
-
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    var _yield$NoteRepository3, dto;
+
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return NoteRepository$1.deleteAllFile(_this.fileList).then(function (response) {
+            return NoteRepository$1.deleteFile(deleteId);
+
+          case 2:
+            _yield$NoteRepository3 = _context4.sent;
+            dto = _yield$NoteRepository3.data.dto;
+            return _context4.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }))();
+}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile() {
+  var _this2 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return NoteRepository$1.deleteAllFile(_this2.fileList).then(function (response) {
               var dto = response.data.dto;
 
               if (dto.resultMsg === 'Success') {
@@ -2143,10 +2786,10 @@ var EditorStore = mobx.observable((_observable = {
 
           case 2:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
       }
-    }, _callee4);
+    }, _callee5);
   }))();
 }), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
   this.fileList = fileList;
@@ -2177,6 +2820,13 @@ var EditorStore = mobx.observable((_observable = {
     this.setIsFile(true);
     this.setFileArray(checkFile);
   }
+}), _defineProperty(_observable, "isFileLength", function isFileLength() {
+  var temp = this.tempFileLayoutList.filter(function (file) {
+    return file.type === 'file';
+  }).length;
+  var uploaded = this.fileLayoutList.length;
+  var totalLength = temp + uploaded;
+  if (totalLength === 0) this.setIsFile(false);
 }), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
@@ -2190,7 +2840,7 @@ var EditorStore = mobx.observable((_observable = {
   this.deleteFileId = id;
   this.deleteFileName = name;
   this.deleteFileIndex = index;
-}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(config, file, element) {
+}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(config, file, type) {
   var fileName = config.fileName,
       fileExtension = config.fileExtension,
       fileSize = config.fileSize;
@@ -2213,64 +2863,6 @@ var EditorStore = mobx.observable((_observable = {
       }
     }
   };
-  var uploadArr = {
-    uploadMeta: uploadMeta,
-    file: file,
-    element: element
-  };
-  this.setUploadDTO(uploadArr);
-}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
-  this.uploadDTO = meta;
-}), _defineProperty(_observable, "setUploadFileMeta", function setUploadFileMeta(type, tempId, config, file, element) {
-  var fileName = config.fileName,
-      fileExtension = config.fileExtension,
-      fileSize = config.fileSize;
-  var uploadMeta = {
-    "dto": {
-      "workspace_id": NoteRepository$1.WS_ID,
-      "channel_id": NoteRepository$1.chId,
-      "storageFileInfo": {
-        "user_id": NoteRepository$1.USER_ID,
-        "file_last_update_user_id": NoteRepository$1.USER_ID,
-        "file_id": '',
-        "file_name": fileName,
-        "file_extension": fileExtension,
-        "file_created_at": '',
-        "file_updated_at": '',
-        "file_size": fileSize,
-        "user_context_1": PageStore.currentPageId,
-        "user_context_2": '',
-        "user_context_3": ''
-      }
-    }
-  };
-  var uploadArr = {
-    KEY: tempId,
-    TYPE: type,
-    uploadMeta: uploadMeta,
-    file: file,
-    element: element
-  };
-  this.setFileMetaList(uploadArr);
-}), _defineProperty(_observable, "setFileMetaList", function setFileMetaList(fileMeta) {
-  this.fileMetaList.push(fileMeta);
-  console.log(mobx.toJS(this.fileMetaList));
-}), _defineProperty(_observable, "getFileMetaList", function getFileMetaList() {
-  return this.fileMetaList;
-}), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
-  var date = new Date();
-  var year = date.getFullYear();
-  var month = 1 + date.getMonth();
-  month = month >= 10 ? month : '0' + month;
-  var day = date.getDate();
-  day = day >= 10 ? day : '0' + day;
-  var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-  return year + '-' + month + '-' + day + ' ' + time;
-}), _defineProperty(_observable, "setTempFileMeta", function setTempFileMeta(config) {
-  var tempId = config.tempId,
-      fileName = config.fileName,
-      fileExtension = config.fileExtension,
-      fileSize = config.fileSize;
   var tempMeta = {
     "user_id": NoteRepository$1.USER_ID,
     "file_last_update_user_id": NoteRepository$1.USER_ID,
@@ -2281,13 +2873,42 @@ var EditorStore = mobx.observable((_observable = {
     "file_updated_at": this.getTempTimeFormat(),
     "file_size": fileSize,
     "user_context_1": '',
-    "user_context_2": tempId,
-    "user_context_3": ''
+    "user_context_2": '',
+    "user_context_3": '',
+    "progress": 0,
+    "type": type,
+    "error": false
   };
   this.setTempFileList(tempMeta);
+  var uploadArr = {
+    uploadMeta: uploadMeta,
+    file: file,
+    type: type
+  };
+  this.setUploadDTO(uploadArr);
+}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
+  this.uploadDTO.push(meta);
+  if (this.uploadDTO.length === this.uploadLength) handleUpload();
 }), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
-  this.fileLayoutList.push(target);
+  this.tempArray.push(target);
+
+  if (this.tempArray.length === this.uploadLength) {
+    this.tempFileLayoutList = this.tempArray;
+    this.tempArray = [];
+  }
+
   if (!this.isFile) this.setIsFile(true);
+}), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
+  this.uploadLength = length;
+}), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = 1 + date.getMonth();
+  month = month >= 10 ? month : '0' + month;
+  var day = date.getDate();
+  day = day >= 10 ? day : '0' + day;
+  var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+  return year + '-' + month + '-' + day + ' ' + time;
 }), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
   if (bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -2302,12 +2923,12 @@ var EditorStore = mobx.observable((_observable = {
   this.tinymce.focus();
   NoteStore$1.setModalInfo(null);
 }), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var createCopyArray, _yield$NoteRepository, dto;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    var createCopyArray, _yield$NoteRepository4, dto;
 
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
             createCopyArray = [];
             fileArray.forEach(function (file) {
@@ -2316,59 +2937,59 @@ var EditorStore = mobx.observable((_observable = {
                 file_id: file
               });
             });
-            _context5.next = 4;
+            _context6.next = 4;
             return NoteRepository$1.createFileMeta(createCopyArray);
 
           case 4:
-            _yield$NoteRepository = _context5.sent;
-            dto = _yield$NoteRepository.data.dto;
-            return _context5.abrupt("return", dto);
+            _yield$NoteRepository4 = _context6.sent;
+            dto = _yield$NoteRepository4.data.dto;
+            return _context6.abrupt("return", dto);
 
           case 7:
           case "end":
-            return _context5.stop();
+            return _context6.stop();
         }
       }
-    }, _callee5);
+    }, _callee6);
   }))();
 }), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
-  var _this2 = this;
+  var _this3 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    var _yield$NoteRepository2, dto, retrunFileId, returnFileName;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    var _yield$NoteRepository5, dto, retrunFileId, returnFileName;
 
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            _context6.next = 2;
+            _context7.next = 2;
             return NoteRepository$1.storageFileDeepCopy(fileId);
 
           case 2:
-            _yield$NoteRepository2 = _context6.sent;
-            dto = _yield$NoteRepository2.data.dto;
+            _yield$NoteRepository5 = _context7.sent;
+            dto = _yield$NoteRepository5.data.dto;
 
             if (!(dto.resultMsg === 'Success')) {
-              _context6.next = 11;
+              _context7.next = 11;
               break;
             }
 
             retrunFileId = dto.storageFileInfoList[0].file_id;
             returnFileName = dto.storageFileInfoList[0].file_name;
 
-            _this2.createDriveElement(type, retrunFileId, returnFileName);
+            _this3.createDriveElement(type, retrunFileId, returnFileName);
 
-            return _context6.abrupt("return", retrunFileId);
+            return _context7.abrupt("return", retrunFileId);
 
           case 11:
-            return _context6.abrupt("return");
+            return _context7.abrupt("return");
 
           case 12:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee7);
   }))();
 }), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
   var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
@@ -2946,37 +3567,67 @@ var PageStore = mobx.observable((_observable$1 = {
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this5 = this;
 
-    this.getNoteInfoList(noteId).then(function (dto) {
-      _this5.noteInfoList = dto;
-      _this5.currentPageData = dto;
-      _this5.isEdit = dto.is_edit;
-      _this5.noteTitle = dto.note_title;
-      _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
-      EditorStore.setFileList(dto.fileList);
-    });
-  },
-  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
-    var _this6 = this;
-
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var dto;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              if (!pageId) {
-                _context9.next = 7;
+              _context9.next = 2;
+              return _this5.getNoteInfoList(noteId);
+
+            case 2:
+              dto = _context9.sent;
+
+              if (isFilled(dto.note_id)) {
+                _context9.next = 6;
                 break;
               }
 
-              _context9.next = 3;
+              if (_this5.currentPageId === noteId) _this5.currentPageId = '';
+              return _context9.abrupt("return");
+
+            case 6:
+              // fetchNoteInfoList할 때 setCurrentPageId하기
+              _this5.setCurrentPageId(dto.note_id);
+
+              _this5.noteInfoList = dto;
+              _this5.currentPageData = dto;
+              _this5.isEdit = dto.is_edit;
+              _this5.noteTitle = dto.note_title;
+              _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
+              EditorStore.setFileList(dto.fileList);
+
+            case 13:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }))();
+  },
+  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
+    var _this6 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              if (!pageId) {
+                _context10.next = 7;
+                break;
+              }
+
+              _context10.next = 3;
               return _this6.fetchNoteInfoList(pageId);
 
             case 3:
-              _context9.next = 5;
+              _context10.next = 5;
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context9.next = 8;
+              _context10.next = 8;
               break;
 
             case 7:
@@ -2984,10 +3635,10 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 8:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
         }
-      }, _callee9);
+      }, _callee10);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -3028,13 +3679,13 @@ var PageStore = mobx.observable((_observable$1 = {
   handleNoneEdit: function handleNoneEdit() {
     var _this10 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (!_this10.isNewPage) {
-                _context10.next = 6;
+                _context11.next = 6;
                 break;
               }
 
@@ -3046,33 +3697,39 @@ var PageStore = mobx.observable((_observable$1 = {
 
               _this10.deleteNotePage();
 
-              _context10.next = 11;
+              _context11.next = 11;
               break;
 
             case 6:
               if (!_this10.otherEdit) {
-                _context10.next = 10;
+                _context11.next = 10;
                 break;
               }
 
-              return _context10.abrupt("return");
+              return _context11.abrupt("return");
 
             case 10:
               _this10.noteNoneEdit(_this10.currentPageId);
 
             case 11:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   handleSave: function handleSave() {
     var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else this.setTitle('제목 없음');
+      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
+        if (EditorStore.tempFileLayoutList.length > 0) {
+          this.setTitle(EditorStore.tempFileLayoutList[0].file_name);
+        } else if (EditorStore.fileLayoutList.length > 0) {
+          this.setTitle(EditorStore.fileLayoutList[0].file_name);
+        }
+      } else this.setTitle('제목 없음');
     }
 
     var updateDTO = {
@@ -3089,6 +3746,7 @@ var PageStore = mobx.observable((_observable$1 = {
     if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
+    if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
     (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
@@ -3150,27 +3808,27 @@ var PageStore = mobx.observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
     var _yield$NoteRepository8, noteList;
 
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
-            _context11.next = 2;
+            _context12.next = 2;
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository8 = _context11.sent;
+            _yield$NoteRepository8 = _context12.sent;
             noteList = _yield$NoteRepository8.data.dto.noteList;
-            return _context11.abrupt("return", noteList);
+            return _context12.abrupt("return", noteList);
 
           case 5:
           case "end":
-            return _context11.stop();
+            return _context12.stop();
         }
       }
-    }, _callee11);
+    }, _callee12);
   }))();
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
   if (!targetPageList) return;
@@ -3699,8 +4357,6 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var _this6 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-    var _this6$chapterList$0$, _this6$chapterList$0$2, chapterId, pageId;
-
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -3713,13 +4369,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
               NoteStore$1.setShowPage(false);
             } else {
               NoteStore$1.setShowPage(true);
-              chapterId = _this6.chapterList[0].id;
-              pageId = _this6.chapterList[0].children.length > 0 ? (_this6$chapterList$0$ = _this6.chapterList[0].children) === null || _this6$chapterList$0$ === void 0 ? void 0 : (_this6$chapterList$0$2 = _this6$chapterList$0$[0]) === null || _this6$chapterList$0$2 === void 0 ? void 0 : _this6$chapterList$0$2.id : '';
 
-              _this6.setCurrentChapterId(chapterId);
-
-              PageStore.setCurrentPageId(pageId);
-              PageStore.fetchCurrentPageData(pageId);
+              _this6.setFirstNoteInfo();
             }
 
           case 3:
@@ -4082,6 +4733,51 @@ var ChapterStore = mobx.observable((_observable$2 = {
   this.createShareChapter(targetList).then(function () {
     return _this15.getNoteChapterList();
   });
+}), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
+  if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
+  if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
+  if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+  return null;
+}), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
+  var _this16 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+    var targetChapter, chapterId, pageId;
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            targetChapter = _this16.getFirstRenderedChapter();
+
+            if (targetChapter) {
+              _context16.next = 5;
+              break;
+            }
+
+            _this16.setCurrentChapterId('');
+
+            PageStore.setCurrentPageId('');
+            return _context16.abrupt("return");
+
+          case 5:
+            chapterId = targetChapter.id;
+            pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
+
+            _context16.next = 9;
+            return PageStore.fetchCurrentPageData(pageId);
+
+          case 9:
+            // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
+            // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
+            _this16.setCurrentChapterId(chapterId);
+
+          case 10:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16);
+  }))();
 }), _observable$2));
 
 var NoteMeta = {
@@ -4199,6 +4895,26 @@ var NoteMeta = {
           NoteStore$1.setModalInfo(null);
         });
         break;
+
+      case 'shareRoom':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore$1.shareNote();
+          NoteStore$1.setIsShared(false);
+          NoteStore$1.setModalInfo(null);
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore$1.setModalInfo(null);
+          NoteStore$1.setIsShared(false);
+        });
+        break;
+
+      case 'multiFileSomeFail':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore$1.setModalInfo(null);
+        });
     }
 
     return eventList;
@@ -4218,8 +4934,11 @@ var NoteMeta = {
 
       case 'editingPage':
       case 'confirm':
+      case 'titleDuplicate':
+      case 'sharedInfoConfirm':
+      case 'multiFileSomeFail':
         return [{
-          type: 'confirom',
+          type: 'confirm',
           text: '확인'
         }];
 
@@ -4235,16 +4954,13 @@ var NoteMeta = {
           text: '취소'
         }];
 
-      case 'titleDuplicate':
+      case 'shareRoom':
         return [{
-          type: 'confirom',
-          text: '확인'
-        }];
-
-      case 'sharedInfoConfirm':
-        return [{
-          type: 'confirom',
-          text: '확인'
+          type: 'share',
+          text: '전달'
+        }, {
+          type: 'cancel',
+          text: '취소'
         }];
 
       default:
@@ -4328,6 +5044,22 @@ var NoteMeta = {
           content: sharedDate
         }];
         dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
+        break;
+
+      case 'shareRoom':
+        dialogType.buttonConfig = this.setButtonConfig('shareRoom');
+        break;
+
+      case 'deletedPage':
+        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('deletedPage');
+        break;
+
+      case 'multiFileSomeFail':
+        dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
+        dialogType.subtitle = "(".concat(EditorStore.uploadLength, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(EditorStore.failCount, "\uAC1C \uC2E4\uD328)");
+        dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
         break;
     }
 
@@ -4444,10 +5176,16 @@ var NoteStore$1 = mobx.observable({
   draggedTitle: '',
   draggedOffset: {},
   sharedInfo: {},
+  isShared: false,
+  shareNoteType: '',
+  shareContent: '',
+  shareArrays: {},
+  // { userArray, roomArray }
   initVariables: function initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    if (this.layoutState === "collapse") this.setTargetLayout('LNB');
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
   },
   setWsId: function setWsId(wsId) {
     NoteRepository$1.setWsId(wsId);
@@ -4499,7 +5237,6 @@ var NoteStore$1 = mobx.observable({
   },
   setLayoutState: function setLayoutState(state) {
     this.layoutState = state;
-    if (state !== 'collapse') this.targetLayout = null;
   },
   // lnb, content 중 하나
   setTargetLayout: function setTargetLayout(target) {
@@ -4507,6 +5244,18 @@ var NoteStore$1 = mobx.observable({
   },
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
+  },
+  setIsShared: function setIsShared(flag) {
+    this.isShared = flag;
+  },
+  setShareNoteType: function setShareNoteType(noteType) {
+    this.shareNoteType = noteType;
+  },
+  setShareContent: function setShareContent(content) {
+    this.shareContent = content;
+  },
+  setShareArrays: function setShareArrays(arrs) {
+    this.shareArrays = arrs;
   },
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
@@ -4522,6 +5271,8 @@ var NoteStore$1 = mobx.observable({
       case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
+      case 'shareRoom':
+      case 'multiFileSomeFail':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -4587,6 +5338,52 @@ var NoteStore$1 = mobx.observable({
       }, _callee);
     }))();
   },
+  shareNote: function shareNote() {
+    var _this2 = this;
+
+    var sharedRoomName = teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+    this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
+        var friendId, res, targetChId;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                friendId = user.friendId ? user.friendId : user.id;
+                _context2.next = 3;
+                return teespaceCore.RoomStore.createRoom({
+                  creatorId: _this2.user_id,
+                  userList: [{
+                    userId: friendId
+                  }]
+                });
+
+              case 3:
+                res = _context2.sent;
+                targetChId = teespaceCore.RoomStore.getChannelIds({
+                  roomId: res.roomId
+                })[NoteRepository$1.CH_TYPE];
+                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+    this.shareArrays.roomArray.forEach(function (room) {
+      var targetChId = teespaceCore.RoomStore.getChannelIds({
+        roomId: room.id
+      })[NoteRepository$1.CH_TYPE];
+      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [_this2.shareContent]);
+    });
+  },
   setLNBChapterCoverRef: function setLNBChapterCoverRef(ref) {
     this.LNBChapterCoverRef = ref;
   },
@@ -4606,27 +5403,27 @@ var NoteStore$1 = mobx.observable({
     e.preventDefault();
   },
   getSearchList: function getSearchList(searchKey) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var _yield$NoteRepository, dto;
 
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              _context2.next = 2;
+              _context3.next = 2;
               return NoteRepository$1.getSearchList(searchKey);
 
             case 2:
-              _yield$NoteRepository = _context2.sent;
+              _yield$NoteRepository = _context3.sent;
               dto = _yield$NoteRepository.data.dto;
-              return _context2.abrupt("return", dto);
+              return _context3.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2);
+      }, _callee3);
     }))();
   }
 });
@@ -4913,10 +5710,100 @@ var TagSearchForm = styled__default['default'].form(_templateObject13(), functio
 });
 var TagTitleSearchContainer = styled__default['default'].div(_templateObject14());
 
-const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
+const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
+
+function _templateObject40() {
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
+
+  _templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject39() {
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+
+  _templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject38() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+
+  _templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject37() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+
+  _templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject36() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #C6CED6;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+
+  _templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject35() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #6C56E5;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+
+  _templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject34() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  margin-top: 0.5rem;\n  margin-bottom: 0rem;\n"]);
+
+  _templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject33() {
+  var data = _taggedTemplateLiteral(["\n  width: 12rem;  \n  float: right;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
+
+  _templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject32() {
+  var data = _taggedTemplateLiteral(["\n  float: left;\n  font-weight: bold;\n"]);
+
+  _templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject31() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 17.5rem;\n  font-size: 0.81rem;\n  color: #777777;\n"]);
 
   _templateObject31 = function _templateObject31() {
     return data;
@@ -4926,7 +5813,7 @@ function _templateObject31() {
 }
 
 function _templateObject30() {
-  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 0.813rem;\n  color: #777777;\n"]);
 
   _templateObject30 = function _templateObject30() {
     return data;
@@ -4936,7 +5823,7 @@ function _templateObject30() {
 }
 
 function _templateObject29() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 1rem;\n"]);
 
   _templateObject29 = function _templateObject29() {
     return data;
@@ -4946,7 +5833,7 @@ function _templateObject29() {
 }
 
 function _templateObject28() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width: 1.25rem;\n  height: 1.25rem;\n  margin: 0.88rem auto 0.94rem auto;\n"]);
 
   _templateObject28 = function _templateObject28() {
     return data;
@@ -4956,7 +5843,7 @@ function _templateObject28() {
 }
 
 function _templateObject27() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #C6CED6;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width:22.5rem;\n  height:11.88rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  padding: 1.25rem;\n  box-sizing:border-box;\n  z-index: 1000;\n"]);
 
   _templateObject27 = function _templateObject27() {
     return data;
@@ -4966,7 +5853,7 @@ function _templateObject27() {
 }
 
 function _templateObject26() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #6C56E5;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: 1;\n  text-align: center;\n"]);
 
   _templateObject26 = function _templateObject26() {
     return data;
@@ -4976,7 +5863,7 @@ function _templateObject26() {
 }
 
 function _templateObject25() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  margin-top: auto;\n  margin-bottom: 0rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2rem;\n  display: flex;\n  font-size: 0.88rem;\n  align-items: center;\n  border-bottom: 1px solid #dddddd;\n  padding-bottom: 1rem;\n"]);
 
   _templateObject25 = function _templateObject25() {
     return data;
@@ -4986,7 +5873,7 @@ function _templateObject25() {
 }
 
 function _templateObject24() {
-  var data = _taggedTemplateLiteral(["\n  width: 12rem;  \n  float: right;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width:auto;\n  height:auto;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  padding: 1.25rem;\n  box-sizing:border-box;\n  z-index: 1000;\n"]);
 
   _templateObject24 = function _templateObject24() {
     return data;
@@ -4996,7 +5883,7 @@ function _templateObject24() {
 }
 
 function _templateObject23() {
-  var data = _taggedTemplateLiteral(["\n  float: left;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0,0,0,.7);\n  z-index: 1000;\n"]);
 
   _templateObject23 = function _templateObject23() {
     return data;
@@ -5006,7 +5893,7 @@ function _templateObject23() {
 }
 
 function _templateObject22() {
-  var data = _taggedTemplateLiteral(["\n  width: 17.5rem;\n  font-size: 0.81rem;\n  color: #777777;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  color: #5B5F62;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
 
   _templateObject22 = function _templateObject22() {
     return data;
@@ -5016,7 +5903,7 @@ function _templateObject22() {
 }
 
 function _templateObject21() {
-  var data = _taggedTemplateLiteral(["\n  height: 0.813rem;\n  color: #777777;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n"]);
 
   _templateObject21 = function _templateObject21() {
     return data;
@@ -5026,7 +5913,7 @@ function _templateObject21() {
 }
 
 function _templateObject20() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 1rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.813rem;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
 
   _templateObject20 = function _templateObject20() {
     return data;
@@ -5036,7 +5923,7 @@ function _templateObject20() {
 }
 
 function _templateObject19() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width: 1.25rem;\n  height: 1.25rem;\n  margin: 0.88rem auto 0.94rem auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding: 0.12rem 0 0.12rem 0.75rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around;\n  width: calc(100% - 2.5rem);\n  box-sizing: border-box;\n"]);
 
   _templateObject19 = function _templateObject19() {
     return data;
@@ -5046,7 +5933,7 @@ function _templateObject19() {
 }
 
 function _templateObject18() {
-  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width:22.5rem;\n  height:11.88rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  padding: 1.25rem;\n  box-sizing:border-box;\n  z-index: 1000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 2.5rem;\n  height: 2.5rem;\n"]);
 
   _templateObject18 = function _templateObject18() {
     return data;
@@ -5056,7 +5943,7 @@ function _templateObject18() {
 }
 
 function _templateObject17() {
-  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0,0,0,.7);\n  z-index: 1000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 17.25rem;\n  height: 4.25rem;\n  display: flex;\n  padding: 0.88rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -5244,26 +6131,46 @@ var SearchKeyword = styled__default['default'].span(_templateObject12$1());
 var NoSearchResultTitle = styled__default['default'].span(_templateObject13$1());
 var NoSearchResultImg = styled__default['default'].img(_templateObject14$1());
 var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject15());
-var ContextMenuIconCover = styled__default['default'].span(_templateObject16()); // Modal.js
+var ContextMenuIconCover = styled__default['default'].span(_templateObject16()); // ShareNoteMessage
 
-var CustomOverlay = styled__default['default'].div(_templateObject17());
-var CustomModal = styled__default['default'].div(_templateObject18());
-var IconImg = styled__default['default'].img(_templateObject19());
-var ModalTitle = styled__default['default'].div(_templateObject20());
-var ModalSubTitle = styled__default['default'].div(_templateObject21());
-var ModalSharedInfoCover = styled__default['default'].div(_templateObject22());
-var ModalSharedInfoTitle = styled__default['default'].span(_templateObject23());
-var ModalSharedInfoContent = styled__default['default'].span(_templateObject24());
-var ButtonGroup = styled__default['default'].div(_templateObject25());
-var ModalNormalBtn = styled__default['default'].div(_templateObject26());
-var ModalCancelBtn = styled__default['default'].div(_templateObject27());
-var SearchLoadingContainer = styled__default['default'].div(_templateObject28());
-var SearchLoadingTxt = styled__default['default'].div(_templateObject29());
-var SearchLoadingImg = styled__default['default'].img(_templateObject30());
-var RightAligned = styled__default['default'].div(_templateObject31());
+var MessageCover = styled__default['default'].div(_templateObject17());
+var MessageNoteImg = styled__default['default'].img(_templateObject18());
+var MessageNoteInfo = styled__default['default'].div(_templateObject19());
+var NoteTitleCover = styled__default['default'].div(_templateObject20());
+var NoteTitle = styled__default['default'].span(_templateObject21());
+var NoteDate = styled__default['default'].div(_templateObject22()); // Modal.js
+
+var CustomOverlay = styled__default['default'].div(_templateObject23());
+var RoomShareModal = styled__default['default'].div(_templateObject24());
+var RoomShareTitleContainer = styled__default['default'].div(_templateObject25());
+var RoomShareTitle = styled__default['default'].div(_templateObject26());
+var CustomModal = styled__default['default'].div(_templateObject27());
+var IconImg = styled__default['default'].img(_templateObject28());
+var ModalTitle = styled__default['default'].div(_templateObject29());
+var ModalSubTitle = styled__default['default'].div(_templateObject30());
+var ModalSharedInfoCover = styled__default['default'].div(_templateObject31());
+var ModalSharedInfoTitle = styled__default['default'].span(_templateObject32());
+var ModalSharedInfoContent = styled__default['default'].span(_templateObject33());
+var ButtonGroup = styled__default['default'].div(_templateObject34());
+var ModalNormalBtn = styled__default['default'].div(_templateObject35());
+var ModalCancelBtn = styled__default['default'].div(_templateObject36());
+var SearchLoadingContainer = styled__default['default'].div(_templateObject37());
+var SearchLoadingTxt = styled__default['default'].div(_templateObject38());
+var SearchLoadingImg = styled__default['default'].img(_templateObject39());
+var RightAligned = styled__default['default'].div(_templateObject40());
+
+function _templateObject19$1() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  margin-left: auto;\n  font-weight: bold;\n  align-self: center;\n  color: #008cc8;\n"]);
+
+  _templateObject19$1 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject18$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  margin-left: auto;\n  font-weight: bold;\n  align-self: center;\n  color: #008cc8;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: block;\n  align-items: center;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject18$1 = function _templateObject18() {
     return data;
@@ -5273,7 +6180,7 @@ function _templateObject18$1() {
 }
 
 function _templateObject17$1() {
-  var data = _taggedTemplateLiteral(["\n  display: block;\n  align-items: center;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n"]);
 
   _templateObject17$1 = function _templateObject17() {
     return data;
@@ -5283,7 +6190,7 @@ function _templateObject17$1() {
 }
 
 function _templateObject16$1() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding: 0 0.63rem;\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -5293,7 +6200,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem !important;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #333333;\n  font-size: 0.875rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  min-width: 4.5rem;\n  max-width: 9.31rem;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n"]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -5461,14 +6368,15 @@ var StyledCollapse = styled__default['default'](antd.Collapse)(_templateObject11
 var TagKeyChildren = styled__default['default'].div(_templateObject12$2());
 var TagKeyContainer = styled__default['default'].div(_templateObject13$2());
 var TagChipGroup = styled__default['default'].div(_templateObject14$2());
-var TagChip = styled__default['default'](antd.Tag)(_templateObject15$1());
-var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject16$1());
-var TagChipText = styled__default['default'].div(_templateObject17$1());
-var TagChipNum = styled__default['default'].div(_templateObject18$1());
+var Tag = styled__default['default'].div(_templateObject15$1());
+var TagChip = styled__default['default'](Tag)(_templateObject16$1());
+var SearchTagChip = styled__default['default'](Tag)(_templateObject17$1());
+var TagChipText = styled__default['default'].div(_templateObject18$1());
+var TagChipNum = styled__default['default'].div(_templateObject19$1());
 
-const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
+const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
 
-const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAp1JREFUaAXtmr1KBDEUhVdFRRARLUTBQrCwU1/AxsbWxkKsfAofwMJeBB/Cl7DZfQQVOwVBxR/EQlHRc5DAECbZm8nuzs2QC5f5SWbmfDfJJHN3W61sOQI5AoojMAltJ/BH+A38AD4Mb6RNgaoD/7Wc0CptBqp24LvwuUCFLljCs6XV2ToU3cNN67xgf0Oo0gfL+7F7q7M2FBlYs70SqOwGy3txTKuyEaj5ghvQ4pbd3GUSWI5pvshU2TjUFCGL+wsOpVJY1lNnocBJwzL6IcDJw4YANwJWCtwYWAlwo2C7Aa+gAqeW4pvb3mc5g5KM+V5aF6CwAYvHycGyVXzARTh7P0nYqsBciibVjQlqLLSFo2CHzFNr3BL4Q/j8S9Tbhr856vM+z44yNadDW9gey/Yxv7Kkn5a1BKHXwAwAv6dLkwhNzfdMA3izrPk0AH9CWD/G3XcZsJZzxxBij8WYY6aLfMmD2rknoIDQT/AYUGZOOG0xR1ZqGqYlWxhfYlWN3fin6sX5uhyBHIEcgaQisAa153AuyGOmijtcfwQfg6u1WSh7gMeA2tcSWq3tQZktOPaYLV27udbS/eh+87XTegQsouwdHtuq9vWeR9ZftAUJtz2Grp1KspbmL3iu9S0TaWfwZSGJ5HnCWw2+GmHbcLvb+o4Hr7JHT6wCy0AkaVVhkwQmbAfu67bXnvKkWlgCy2CsNgFYCst6S6kDh8CCNW3gUNikgavAJgtcFTZJ4BjY5ID5N71u8yzLGRSXce1dNk9LfxJ13bcv508dYg1AN1gjquwri+kidfYKRQbO3kphCcVPy+L3NNNFzJGpM1ceKwTWQDGJsA9nuog5MpV2CFUxLasSyidqFIWEZkuze3NMq/u/MTRlyxHIEfiPwB+7UGoOrQOerwAAAABJRU5ErkJggg==";
+const img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAp1JREFUaAXtmr1KBDEUhVdFRRARLUTBQrCwU1/AxsbWxkKsfAofwMJeBB/Cl7DZfQQVOwVBxR/EQlHRc5DAECbZm8nuzs2QC5f5SWbmfDfJJHN3W61sOQI5AoojMAltJ/BH+A38AD4Mb6RNgaoD/7Wc0CptBqp24LvwuUCFLljCs6XV2ToU3cNN67xgf0Oo0gfL+7F7q7M2FBlYs70SqOwGy3txTKuyEaj5ghvQ4pbd3GUSWI5pvshU2TjUFCGL+wsOpVJY1lNnocBJwzL6IcDJw4YANwJWCtwYWAlwo2C7Aa+gAqeW4pvb3mc5g5KM+V5aF6CwAYvHycGyVXzARTh7P0nYqsBciibVjQlqLLSFo2CHzFNr3BL4Q/j8S9Tbhr856vM+z44yNadDW9gey/Yxv7Kkn5a1BKHXwAwAv6dLkwhNzfdMA3izrPk0AH9CWD/G3XcZsJZzxxBij8WYY6aLfMmD2rknoIDQT/AYUGZOOG0xR1ZqGqYlWxhfYlWN3fin6sX5uhyBHIEcgaQisAa153AuyGOmijtcfwQfg6u1WSh7gMeA2tcSWq3tQZktOPaYLV27udbS/eh+87XTegQsouwdHtuq9vWeR9ZftAUJtz2Grp1KspbmL3iu9S0TaWfwZSGJ5HnCWw2+GmHbcLvb+o4Hr7JHT6wCy0AkaVVhkwQmbAfu67bXnvKkWlgCy2CsNgFYCst6S6kDh8CCNW3gUNikgavAJgtcFTZJ4BjY5ID5N71u8yzLGRSXce1dNk9LfxJ13bcv508dYg1AN1gjquwri+kidfYKRQbO3kphCcVPy+L3NNNFzJGpM1ceKwTWQDGJsA9nuog5MpV2CFUxLasSyidqFIWEZkuze3NMq/u/MTRlyxHIEfiPwB+7UGoOrQOerwAAAABJRU5ErkJggg==";
 
 var style = {
   cursor: 'pointer',
@@ -5489,10 +6397,10 @@ var HeaderButtons = function HeaderButtons() {
   var onChangeImg = function onChangeImg() {
     switch (NoteStore.layoutState) {
       case 'expand':
-        return img$2;
+        return img$3;
 
       default:
-        return img$1;
+        return img$2;
     }
   };
 
@@ -5523,13 +6431,13 @@ var HeaderButtons = function HeaderButtons() {
       onClick: handleLayoutState
     }), /*#__PURE__*/React__default['default'].createElement(Button, {
       style: style,
-      src: img,
+      src: img$1,
       onClick: handleCancelBtn
     })));
   });
 };
 
-const img$3 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$4 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var LNBHeader = function LNBHeader(_ref) {
   var createNewChapter = _ref.createNewChapter;
@@ -5646,7 +6554,7 @@ var LNBHeader = function LNBHeader(_ref) {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleCover, null, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
       show: NoteStore$1.layoutState === 'collapse' && ChapterStore.isTagSearching
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$3,
+      src: img$4,
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
       "data-btn": 'noteNewChapterBtn',
@@ -5672,9 +6580,9 @@ var LNBHeader = function LNBHeader(_ref) {
       style: {
         marginLeft: "0.69rem"
       },
-      src: img
+      src: img$1
     })) : null, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img,
+      src: img$1,
       style: ChapterStore.isSearching || ChapterStore.searchStr !== "" ? {
         display: ""
       } : {
@@ -5716,7 +6624,7 @@ function _templateObject8$4() {
 }
 
 function _templateObject7$4() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  margin-left: 1.69rem;\n  margin-right: 0.2rem;\n  height: 100%;\n  font-weight: 500;\n  max-width: calc(100% - 3.36rem);\n  align-items: center;\n  cursor: pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  margin-left: 1.69rem;\n  height: 100%;\n  font-weight: 500;\n  max-width: calc(100% - 3.36rem);\n  align-items: center;\n  cursor: pointer;\n"]);
 
   _templateObject7$4 = function _templateObject7() {
     return data;
@@ -5888,7 +6796,7 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
   }))));
 });
 
-const img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAABJxJREFUaAXtmslrFUEQxuMSFSUIelBBCXqIKIqIIoJbEAziGncTxbjFuB1cTuIlIHoRUdCLN0UPgjv4B6ioFwW9eBDcwGAgEhH3Nfp9TweKpnqWN90zk2DB96anpqa7ftPzerrnvYqK//b/CvSoK9ArI5o5aOcINBGqhD4LfRJl+uPsf0DcQ+gNVDhrRkZd0G8Puo46h0GFMZ+wwQV8BNp+RSDOAjaAbokL3DduYMI4wp6GzDGC39GTENsdBA00JH2y3BtxYVaLg2wvF7P1LAej2jIz6o/zhkAjoRroDhT0Lre3oFzMB6wGcgVOCXxfC/LtywqWHOchCfzYN5xZf5awbJvfVwn8wkzI574rWA5kh6A2qB06BvG7q9lxOCVwhxbkw+cKlrm1QhKC5ROQZofhlLEftSDXPpewzO05JCFY7uQBxQ7CJ2N/KTFOXa5hmVwS4L2Il8AsD2AlPswHLPNshUwI2y3NmZUZOxQ+5+YLlokmGbTWI94EHuWa1ids0lyXK8Bjk1YSFl8kWOY5HzJ7eHIYQJJjRYNl7rMhE3hmEihbbBFhmetUyASus0HE9fMqdikVp1n1xG07Km6ckld91ElRx+8qlRYBlnlXK7k18kCUhS2sJxgnc/G+ELpp+PPYZS6m8YVBpIUBvzLO7oN9vqEogs1TkrAtNJRQ3XUAbnNg+ArfAj08M+9qtPQTMnNbkjYD9uhtpeI8oW2w7chzcFpgnl8FaYNXHtA22G/IMfUjibCBEfoBZN5CWULbYJnTuSBRV1uO1m8hE5j7WUCHwTKHs5AzG42aXkMabODzCR0F6xSYv9k8jYD1CR0H1hkwRzz+ZhMABVtONfdAvgeyuLDOgC9YYLfDT/M5ettg+d4quPBym/o7rE3M2cAukgrzAW2D5aOnGZKgQTk18Eql4n0CVBYJfU+JL2cgC4PlHH6E0g6hUwPPUCq+Bl8lpJmLng6DXfSv0eHYBr0qt6mBOQl/plTuCzoOLJltwKd4MK3VogJ+b+SVZDkKOuntHRcWTVfsVPJhTvt50IUtRiUa9FX4XdzeSWCb0Kb29uU7/E5fz/qCTgLbACjbIyl4TCLEnXGdyStp3t5RPW27vY+iLm09y7spGKBQLNkKfGqxzGX33xA/n0tRrQbNX+KT3t7mheO+Bsu7S2uT8eacAC73Vo8qtQTSQmuwfNHOZ7l2cTh4ZWbL0JIGfRn+cnpag52Lur5AJiwHrUxh0V7JwqD5g5hmVXCegSQEl511kLRZ2OGrYBnHMmF3QLkZf8z6AZmJsadt0EyW8/RNEAdCrsikTcfOe8isk7BeRmPZeJwyR9ByoLW6p8D5DtJgW7QT8vJxoaFBX4I/rKdlvpOw0wlpsNtkYFHKq5BIudDjcW4HpME2FwVQy4Mzp6TQNTiH75M12K1aI0Xz2aaLF5GoeXuPga8N0mC3FA0sLJ81OKhNBSV0NWJeQt0eFgwlW4tPGzRhtbU2FwebS2d3048G5K1BazMowvLZ3O2tEQQatLyVCbux25MKgHUo26AJ2yRie0yR0FwkyJ7lI2xDjyFUQPgfKs6zn0A3oGlQLvYHb4hnJnRITEQAAAAASUVORK5CYII=";
+const img$5 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAABJxJREFUaAXtmslrFUEQxuMSFSUIelBBCXqIKIqIIoJbEAziGncTxbjFuB1cTuIlIHoRUdCLN0UPgjv4B6ioFwW9eBDcwGAgEhH3Nfp9TweKpnqWN90zk2DB96anpqa7ftPzerrnvYqK//b/CvSoK9ArI5o5aOcINBGqhD4LfRJl+uPsf0DcQ+gNVDhrRkZd0G8Puo46h0GFMZ+wwQV8BNp+RSDOAjaAbokL3DduYMI4wp6GzDGC39GTENsdBA00JH2y3BtxYVaLg2wvF7P1LAej2jIz6o/zhkAjoRroDhT0Lre3oFzMB6wGcgVOCXxfC/LtywqWHOchCfzYN5xZf5awbJvfVwn8wkzI574rWA5kh6A2qB06BvG7q9lxOCVwhxbkw+cKlrm1QhKC5ROQZofhlLEftSDXPpewzO05JCFY7uQBxQ7CJ2N/KTFOXa5hmVwS4L2Il8AsD2AlPswHLPNshUwI2y3NmZUZOxQ+5+YLlokmGbTWI94EHuWa1ids0lyXK8Bjk1YSFl8kWOY5HzJ7eHIYQJJjRYNl7rMhE3hmEihbbBFhmetUyASus0HE9fMqdikVp1n1xG07Km6ckld91ElRx+8qlRYBlnlXK7k18kCUhS2sJxgnc/G+ELpp+PPYZS6m8YVBpIUBvzLO7oN9vqEogs1TkrAtNJRQ3XUAbnNg+ArfAj08M+9qtPQTMnNbkjYD9uhtpeI8oW2w7chzcFpgnl8FaYNXHtA22G/IMfUjibCBEfoBZN5CWULbYJnTuSBRV1uO1m8hE5j7WUCHwTKHs5AzG42aXkMabODzCR0F6xSYv9k8jYD1CR0H1hkwRzz+ZhMABVtONfdAvgeyuLDOgC9YYLfDT/M5ettg+d4quPBym/o7rE3M2cAukgrzAW2D5aOnGZKgQTk18Eql4n0CVBYJfU+JL2cgC4PlHH6E0g6hUwPPUCq+Bl8lpJmLng6DXfSv0eHYBr0qt6mBOQl/plTuCzoOLJltwKd4MK3VogJ+b+SVZDkKOuntHRcWTVfsVPJhTvt50IUtRiUa9FX4XdzeSWCb0Kb29uU7/E5fz/qCTgLbACjbIyl4TCLEnXGdyStp3t5RPW27vY+iLm09y7spGKBQLNkKfGqxzGX33xA/n0tRrQbNX+KT3t7mheO+Bsu7S2uT8eacAC73Vo8qtQTSQmuwfNHOZ7l2cTh4ZWbL0JIGfRn+cnpag52Lur5AJiwHrUxh0V7JwqD5g5hmVXCegSQEl511kLRZ2OGrYBnHMmF3QLkZf8z6AZmJsadt0EyW8/RNEAdCrsikTcfOe8isk7BeRmPZeJwyR9ByoLW6p8D5DtJgW7QT8vJxoaFBX4I/rKdlvpOw0wlpsNtkYFHKq5BIudDjcW4HpME2FwVQy4Mzp6TQNTiH75M12K1aI0Xz2aaLF5GoeXuPga8N0mC3FA0sLJ81OKhNBSV0NWJeQt0eFgwlW4tPGzRhtbU2FwebS2d3048G5K1BazMowvLZ3O2tEQQatLyVCbux25MKgHUo26AJ2yRie0yR0FwkyJ7lI2xDjyFUQPgfKs6zn0A3oGlQLvYHb4hnJnRITEQAAAAASUVORK5CYII=";
 
 var LNBTag = /*#__PURE__*/React.memo(function () {
   var _useNoteStore = useNoteStore(),
@@ -5924,490 +6832,11 @@ var LNBTag = /*#__PURE__*/React.memo(function () {
       onClick: onClickTagMenuBtn
     }, /*#__PURE__*/React__default['default'].createElement(TagImg, {
       showTag: !NoteStore.showPage,
-      src: img$4,
+      src: img$5,
       alt: "tagImg"
     }), /*#__PURE__*/React__default['default'].createElement(TagTxt, null, "\uD0DC\uADF8")));
   });
 });
-
-const img$5 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
-
-/*
-  Link Dialog 관련
-*/
-
-var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
-  var title = header.querySelector('.tox-dialog__title');
-  title.style.margin = 'auto';
-  title.textContent = '링크 삽입';
-}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
-
-
-var renderErrorMark = function renderErrorMark(target) {
-  var img = document.createElement('img');
-  img.src = img$5;
-  img.classList.add('note-link-error');
-  var tooltip = document.createElement('div');
-  tooltip.classList.add('note-link-error-tooltip');
-  tooltip.textContent = '해당 URL은 유효하지 않습니다.';
-  target.appendChild(img);
-  target.appendChild(tooltip);
-  return [img, tooltip];
-};
-
-var renderValidation = function renderValidation(targetInput, errorMark, saveBtn) {
-  var _value = targetInput.value; // 가독성을 위해 중복 검사함
-  // 빈 str이거나 invalid
-
-  if (!checkUrlValidation(_value)) {
-    saveBtn.setAttribute('disabled', true);
-  } else saveBtn.removeAttribute('disabled'); // errorMark는 invalid할 때만
-
-
-  if (!isFilled(_value) || validUrl(_value)) {
-    errorMark.map(function (child) {
-      return child.classList.remove('note-show-element');
-    });
-    targetInput.classList.remove('note-link-input');
-  } else {
-    errorMark.map(function (child) {
-      return child.classList.add('note-show-element');
-    });
-    targetInput.classList.add('note-link-input');
-  }
-};
-
-var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
-  var formStr = {
-    url: "링크",
-    text: "텍스트"
-  }; // string 바꿔주기, renderValidationErrorMark
-
-  Array.from(form.childNodes).map(function (child, idx) {
-    var label$ = child.querySelector('.tox-form__group label');
-    var input$ = child.querySelector('input');
-    var content = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
-
-    label$.textContent = formStr[content];
-    /*
-      Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
-    */
-
-    if (content === "url") {
-      var _footer$querySelector;
-
-      var saveBtn = (_footer$querySelector = footer.querySelector('.tox-dialog__footer-end')) === null || _footer$querySelector === void 0 ? void 0 : _footer$querySelector.childNodes[1];
-      var errorMark = renderErrorMark(input$.parentElement); // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
-
-      renderValidation(input$, errorMark, saveBtn);
-
-      input$.oninput = function (e) {
-        renderValidation(input$, errorMark, saveBtn);
-      };
-    }
-  }); // 텍스트, 링크 순으로 바꿔주기
-
-  form.classList.add('link-dialog-reverse');
-};
-
-var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
-  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('note-link-footer');
-};
-
-var changeLinkDialog = function changeLinkDialog() {
-  try {
-    var dialog = document.querySelector('.tox-dialog');
-    var footer = dialog.querySelector('.tox-dialog__footer');
-    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
-    changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
-    changeLinkDialogFooter(footer);
-  } catch (err) {
-    throw Error(err);
-  }
-};
-/*
-  Link context Toolbar 관련
-  custimizing contextToolbar
-*/
-
-var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
-var changeButtonStyle = function changeButtonStyle(idx, count) {
-  var _toolbar$childNodes;
-
-  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
-  toolbar.classList.add('link-toolbar');
-  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
-
-  if (toolbar && target) {
-    var strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
-    target.appendChild(strNode);
-  } else if (count >= 50) return;else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
-  }
-};
-var openLink = function openLink(url, target) {
-  if (!PageStore.isReadMode()) return;
-
-  if (target !== '_blank') {
-    document.location.href = url;
-    return;
-  }
-
-  var link = document.createElement('a');
-  link.href = url;
-  link.target = target;
-  link.rel = 'noopener';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-var handleUpload = function handleUpload() {
-  if (EditorStore.uploadDTO) {
-    var _success = function _success(data) {
-      if (data.resultMsg === 'Success') {
-        if (EditorStore.uploadDTO.element) replaceTempFileId(EditorStore.uploadDTO.element, data.storageFileInfoList[0].file_id);
-        EditorStore.setUploadDTO([]);
-        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-          EditorStore.setFileList(dto.fileList);
-        });
-      } else if (data.resultMsg === 'Fail') {
-        EditorStore.uploadDTO.element.remove();
-      }
-    };
-
-    var _failure = function _failure(e) {
-      console.warn('error ---> ', e);
-    };
-
-    try {
-      EditorStore.uploadFile(EditorStore.uploadDTO.uploadMeta, EditorStore.uploadDTO.file, _success, _failure);
-    } catch (e) {
-      console.warn('error ---> ', e);
-    } finally {}
-  }
-};
-var driveSuccessCb = function driveSuccessCb(fileList) {
-  if (fileList) {
-    fileList.forEach(function (file) {
-      return EditorStore.addDriveFileList(file);
-    });
-    handleDriveCopy();
-    EditorStore.setIsAttatch(true);
-    EditorStore.setIsDrive(false);
-  }
-};
-var driveCancelCb = function driveCancelCb() {
-  EditorStore.setIsAttatch(true);
-  EditorStore.setIsDrive(false);
-  setTimeout(function () {
-    EditorStore.setIsAttatch(false);
-  }, 100);
-};
-var handleDriveCopy = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var copyArr;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            copyArr = [];
-
-            if (!EditorStore.driveFileList) {
-              _context.next = 5;
-              break;
-            }
-
-            copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
-              return EditorStore.storageFileDeepCopy(item.file_id, item.type);
-            });
-            _context.next = 5;
-            return Promise.all(copyArr).then(function (results) {
-              var resultArray = mobx.toJS(results).filter(function (result) {
-                return result !== undefined;
-              });
-              EditorStore.driveFileList = [];
-
-              if (resultArray.length > 0) {
-                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
-                  if (dto.resultMsg === 'Success') {
-                    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                      EditorStore.setFileList(dto.fileList);
-                    });
-                  }
-                });
-              }
-
-              EditorStore.setIsAttatch(false);
-            });
-
-          case 5:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function handleDriveCopy() {
-    return _ref.apply(this, arguments);
-  };
-}();
-var replaceTempFileId = function replaceTempFileId(node, fileId) {
-  if (!node) return;
-  node.setAttribute('id', fileId);
-  node.removeAttribute('temp-id');
-
-  if (node.getAttribute('src')) {
-    var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
-    node.setAttribute('src', targetSRC);
-  }
-
-  if (node.children[0] && node.children[0].children[0] && node.children[0].children[0].getAttribute('src')) {
-    var _targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
-
-    node.children[0].children[0].setAttribute('src', _targetSRC);
-  }
-};
-var handleFileDelete = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _context2.next = 2;
-            return EditorStore.tinymce.dom.doc.images;
-
-          case 2:
-            imgTarget = _context2.sent;
-            fileTarget = document.querySelectorAll('div #fileLayout [id]');
-            imgArray = _toConsumableArray(imgTarget);
-            fileArray = _toConsumableArray(fileTarget);
-            deleteArr = [];
-            imgArray.forEach(function (img) {
-              return EditorStore.tempFileList.push(img.getAttribute('id'));
-            });
-            fileArray.forEach(function (file) {
-              return EditorStore.tempFileList.push(file.getAttribute('id'));
-            });
-            if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(function (file) {
-              return !EditorStore.tempFileList.includes(file.file_id);
-            });
-
-            if (!EditorStore.deleteFileList) {
-              _context2.next = 21;
-              break;
-            }
-
-            deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
-              return EditorStore.deleteFile(item.file_id);
-            });
-            _context2.prev = 12;
-            _context2.next = 15;
-            return Promise.all(deleteArr).then(function () {
-              EditorStore.deleteFileList = [];
-              EditorStore.tempFileList = [];
-              PageStore.setContent(EditorStore.tinymce.getContent());
-            });
-
-          case 15:
-            _context2.next = 19;
-            break;
-
-          case 17:
-            _context2.prev = 17;
-            _context2.t0 = _context2["catch"](12);
-
-          case 19:
-            _context2.prev = 19;
-            return _context2.finish(19);
-
-          case 21:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, null, [[12, 17, 19, 21]]);
-  }));
-
-  return function handleFileDelete() {
-    return _ref2.apply(this, arguments);
-  };
-}();
-var downloadFile = function downloadFile(fileId) {
-  if (fileId) {
-    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
-    return;
-  }
-
-  var a = document.createElement("a");
-  document.body.appendChild(a);
-  a.style = "display: none";
-  a.href = EditorStore.tinymce.selection.getNode().src;
-  a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
-  a.click();
-  document.body.removeChild(a);
-};
-var makeExportElement = function makeExportElement(data, type) {
-  var fragment = document.createElement('div');
-  fragment.style.visibility = 'visible';
-  fragment.style.opacity = 0;
-  fragment.style.width = 'fit-content';
-  fragment.setAttribute('id', 'exportTarget');
-  var targetDIV = document.createElement('div');
-  targetDIV.setAttribute('id', 'exportTargetDiv');
-  targetDIV.setAttribute('class', 'export');
-  targetDIV.innerHTML = data;
-  fragment.appendChild(targetDIV);
-  document.body.appendChild(fragment);
-  exportDownloadPDF(type);
-};
-var exportDownloadPDF = function exportDownloadPDF(type) {
-  var element = document.getElementById('exportTargetDiv');
-  var opt = {
-    margin: 2,
-    filename: type === 'page' ? "".concat(PageStore.exportPageTitle, ".pdf") : "".concat(ChapterStore.exportChapterTitle, ".pdf"),
-    pagebreak: {
-      after: '.afterClass',
-      avoid: 'span'
-    },
-    image: {
-      type: 'jpeg',
-      quality: 0.98
-    },
-    jsPDF: {
-      unit: 'pt',
-      format: 'a4',
-      orientation: 'portrait'
-    }
-  };
-  html2pdf__default['default'](element, opt).then(function () {
-    document.getElementById('exportTarget').remove();
-  });
-};
-var exportChapterData = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var returnData;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            returnData = '';
-            _context3.next = 3;
-            return NoteRepository$1.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
-              var noteList = response.data.dto.noteList;
-
-              if (noteList.length > 0) {
-                noteList.forEach(function (page, idx) {
-                  returnData += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
-                });
-              } else return alert('하위에 속한 페이지가 없습니다.');
-
-              makeExportElement(returnData, 'chapter');
-            });
-
-          case 3:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3);
-  }));
-
-  return function exportChapterData() {
-    return _ref3.apply(this, arguments);
-  };
-}();
-var exportPageData = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var returnData;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            returnData = '';
-            _context4.next = 3;
-            return NoteRepository$1.getNoteInfoList(PageStore.exportPageId).then(function (response) {
-              var dto = response.data.dto;
-              PageStore.exportPageTitle = dto.note_title;
-              returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
-            });
-
-          case 3:
-            makeExportElement(returnData, 'page');
-
-          case 4:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4);
-  }));
-
-  return function exportPageData() {
-    return _ref4.apply(this, arguments);
-  };
-}();
-
-var handleClickLink = function handleClickLink(el) {
-  var href = el.getAttribute('href');
-  var target = el.getAttribute('target');
-  openLink(href, target);
-};
-
-var handleClickImg = function handleClickImg(el) {
-  if (!PageStore.isReadMode()) return;
-  var file = el.getAttribute('data-name').split('.');
-  EditorStore.setPreviewFileMeta({
-    userId: NoteRepository$1.USER_ID,
-    channelId: NoteRepository$1.chId,
-    roomId: NoteRepository$1.WS_ID,
-    fileId: el.id,
-    fileName: file[0],
-    fileExtension: file[1]
-  });
-  EditorStore.setIsPreview(true);
-};
-
-var handleEditorContentsListener = function handleEditorContentsListener() {
-  if (EditorStore.tinymce) {
-    var _EditorStore$tinymce$;
-
-    var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
-
-    if (targetList && targetList.length > 0) {
-      Array.from(targetList).forEach(function (el) {
-        if (el.getAttribute('hasListener')) return;
-        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
-        el.setAttribute('hasListener', true);
-      });
-    }
-  }
-};
-var handleFileSync = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.next = 2;
-            return handleFileDelete();
-
-          case 2:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  }));
-
-  return function handleFileSync() {
-    return _ref5.apply(this, arguments);
-  };
-}();
 
 var ContextMenu = function ContextMenu(_ref) {
   var noteType = _ref.noteType,
@@ -6466,22 +6895,10 @@ var ContextMenu = function ContextMenu(_ref) {
   };
 
   var shareComponent = function shareComponent() {
-    /*
-      룸을 체크할 수 있는 modal을 띄운다.
-      modal에서 체크된 roomIds를 받는다.
-      roomIds를 돌아가며 선택된 list를 보내준다.
-    */
-    // const targetRoomIds = shareModal.getRoomIds();
-    // const sharedRoomName = roomStore.getRoom(NoteRepository.WS_ID).name;
-    // const targetRoomIds = [NoteRepository.WS_ID, ];
-    // const sharedRoomName = roomStore.rooms[NoteRepository.WS_ID].name;
-    // targetRoomIds.forEach(targetRoomId => {
-    //   const targetChId = roomStore.getChannelIds({ roomId: targetRoomId })[NoteRepository.CH_TYPE];
-    //   if (noteType === 'chapter')
-    //     ChapterStore.createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, [chapter, ]);
-    //   else if (noteType === 'page')
-    //     PageStore.createNoteSharePage(targetRoomId, targetChId, sharedRoomName, [page, ]);
-    // });
+    NoteStore.setShareNoteType(noteType);
+    NoteStore.setShareContent(noteType === 'chapter' ? chapter : page);
+    NoteStore.setIsShared(true);
+    NoteStore.setModalInfo('shareRoom');
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
@@ -7386,7 +7803,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n    > .ant-tag-close-icon {\n      margin-left:auto !important;\n    }\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .antTag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -7414,7 +7831,7 @@ var ContentHeader = function ContentHeader(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
       show: NoteStore.layoutState === 'collapse'
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$3,
+      src: img$4,
       onClick: handleBackBtn
     })), alignment === "center" ? children : null, /*#__PURE__*/React__default['default'].createElement(RightAligned, null, alignment === "right" ? children : null, /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null))));
   });
@@ -7440,7 +7857,7 @@ var EditorHeader = function EditorHeader() {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (PageStore.isReadMode()) {
+              if (!PageStore.isReadMode()) {
                 _context.next = 4;
                 break;
               }
@@ -7570,8 +7987,48 @@ var EditorHeader = function EditorHeader() {
   });
 };
 
-function _templateObject25$1() {
+function _templateObject29$1() {
   var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  margin-top: 0.38rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
+
+  _templateObject29$1 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject28$1() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  width: 1.625rem;\n  font-size: 0.625rem;\n  padding-left: 0.4625rem;\n  color: #75757F;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  position: absolute;\n  top: 0;\n  right: 0;\n"]);
+
+  _templateObject28$1 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject27$1() {
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+
+  _templateObject27$1 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject26$1() {
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
+
+  _templateObject26$1 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject25$1() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
 
   _templateObject25$1 = function _templateObject25() {
     return data;
@@ -7581,7 +8038,7 @@ function _templateObject25$1() {
 }
 
 function _templateObject24$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  width: 1.625rem;\n  font-size: 0.625rem;\n  padding-left: 0.4625rem;\n  color: #75757F;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  position: absolute;\n  top: 0;\n  right: 0;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject24$1 = function _templateObject24() {
     return data;
@@ -7591,7 +8048,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 12px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
@@ -7601,7 +8058,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 10.55rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
@@ -7611,7 +8068,7 @@ function _templateObject22$1() {
 }
 
 function _templateObject21$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.6875rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n"]);
 
   _templateObject21$1 = function _templateObject21() {
     return data;
@@ -7621,7 +8078,7 @@ function _templateObject21$1() {
 }
 
 function _templateObject20$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n  ", ":hover & {\n    display:none;\n  }\n"]);
 
   _templateObject20$1 = function _templateObject20() {
     return data;
@@ -7630,10 +8087,10 @@ function _templateObject20$1() {
   return data;
 }
 
-function _templateObject19$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 10.55rem;\n  overflow: inherit;\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  height: 40px;\n  cursor : pointer;\n"]);
+function _templateObject19$2() {
+  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  top: -0.5rem !important;\n  position: relative !important;\n"]);
 
-  _templateObject19$1 = function _templateObject19() {
+  _templateObject19$2 = function _templateObject19() {
     return data;
   };
 
@@ -7641,7 +8098,7 @@ function _templateObject19$1() {
 }
 
 function _templateObject18$2() {
-  var data = _taggedTemplateLiteral(["\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject18$2 = function _templateObject18() {
     return data;
@@ -7651,7 +8108,7 @@ function _templateObject18$2() {
 }
 
 function _templateObject17$2() {
-  var data = _taggedTemplateLiteral(["\n  width:1.875rem;\n  height:1.875rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n"]);
 
   _templateObject17$2 = function _templateObject17() {
     return data;
@@ -7661,7 +8118,7 @@ function _templateObject17$2() {
 }
 
 function _templateObject16$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n  ", ":hover & {\n    display:none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  padding: 5px;\n  display: flex;\n  margin-left: 0px;\n"]);
 
   _templateObject16$2 = function _templateObject16() {
     return data;
@@ -7671,7 +8128,7 @@ function _templateObject16$2() {
 }
 
 function _templateObject15$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 1.875rem;\n  height: 1.875rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
 
   _templateObject15$2 = function _templateObject15() {
     return data;
@@ -7681,7 +8138,7 @@ function _templateObject15$2() {
 }
 
 function _templateObject14$3() {
-  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  padding: 5px;\n  display: flex;\n  margin-left: 0px;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
 
   _templateObject14$3 = function _templateObject14() {
     return data;
@@ -7691,7 +8148,7 @@ function _templateObject14$3() {
 }
 
 function _templateObject13$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  width: 13.75rem;\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 3.5rem;\n  margin-left: 0.5rem;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:hover{\n    background-color: #DCDDFF;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 3.5rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:hover{\n    background-color: #DCDDFF;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
   _templateObject13$3 = function _templateObject13() {
     return data;
@@ -7841,20 +8298,24 @@ var FoldBtn = styled__default['default'].div(_templateObject10$5(), function (pr
 });
 var FoldBtnImg = styled__default['default'].img(_templateObject11$3());
 var FileBodyLayout = styled__default['default'].div(_templateObject12$3());
-var FileBody = styled__default['default'].div(_templateObject13$3());
-var FileContent = styled__default['default'].div(_templateObject14$3());
-var FileDownloadIcon = styled__default['default'].div(_templateObject15$2());
-var FileExtensionIcon = styled__default['default'].div(_templateObject16$2(), FileBody);
-var FileDownloadBtn = styled__default['default'].img(_templateObject17$2());
-var FileExtensionBtn = styled__default['default'].img(_templateObject18$2());
-var FileData = styled__default['default'].div(_templateObject19$1());
-var FileDataName = styled__default['default'].div(_templateObject20$1());
-var FileName = styled__default['default'].div(_templateObject21$1());
-var FileDataTime = styled__default['default'].div(_templateObject22$1());
-var FileTime = styled__default['default'].div(_templateObject23$1());
-var FileClose = styled__default['default'].div(_templateObject24$1());
-var FileCloseBtn = styled__default['default'].img(_templateObject25$1());
-var editorContentCSS = " \n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
+var FileBody = styled__default['default'].div(_templateObject13$3(), function (props) {
+  return props.closable ? styled.css(_templateObject14$3()) : styled.css(_templateObject15$2());
+});
+var FileContent = styled__default['default'].div(_templateObject16$2());
+var FileDownloadIcon = styled__default['default'].div(_templateObject17$2());
+var FileErrorIcon = styled__default['default'].div(_templateObject18$2());
+var ProgressWrapper = styled__default['default'].div(_templateObject19$2());
+var FileExtensionIcon = styled__default['default'].div(_templateObject20$1(), FileBody);
+var FileDownloadBtn = styled__default['default'].img(_templateObject21$1());
+var FileExtensionBtn = styled__default['default'].img(_templateObject22$1());
+var FileData = styled__default['default'].div(_templateObject23$1());
+var FileDataName = styled__default['default'].div(_templateObject24$1());
+var FileName = styled__default['default'].div(_templateObject25$1());
+var FileDataTime = styled__default['default'].div(_templateObject26$1());
+var FileTime = styled__default['default'].div(_templateObject27$1());
+var FileClose = styled__default['default'].div(_templateObject28$1());
+var FileCloseBtn = styled__default['default'].img(_templateObject29$1());
+var editorContentCSS = " \n  body{\n    font-family : \"Noto Sans KR\",sans-serif !important;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
 
 const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/tag_add%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/tag_add' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M16%2c12 C16.5522848%2c12 17%2c12.4477153 17%2c13 L16.9996194%2c15 L19%2c15 C19.5522848%2c15 20%2c15.4477153 20%2c16 C20%2c16.5522848 19.5522848%2c17 19%2c17 L16.9996194%2c17 L17%2c19 C17%2c19.5522848 16.5522848%2c20 16%2c20 C15.4477153%2c20 15%2c19.5522848 15%2c19 L14.9996194%2c17 L13%2c17 C12.4477153%2c17 12%2c16.5522848 12%2c16 C12%2c15.4477153 12.4477153%2c15 13%2c15 L14.9996194%2c15 L15%2c13 C15%2c12.4477153 15.4477153%2c12 16%2c12 Z M8.34023349%2c1.00074646 L14.3094032%2c1.23974807 C15.0221643%2c1.26919481 15.6289873%2c1.87289763 15.6577193%2c2.58806415 L15.8973704%2c8.5532031 C15.9079389%2c8.89539977 15.7927278%2c9.20762807 15.5687793%2c9.43947123 L13.6616194%2c11.346 L9.53741848%2c15.4710789 C9.08530775%2c15.9231896 8.3387291%2c15.9245472 7.81438626%2c15.4959105 L7.70561696%2c15.3974858 L3.80461938%2c11.496 L3.02365047%2c12.2861419 L9.12199782%2c18.3939493 L10.9866194%2c16.474 L12.0926194%2c17.534 L10.0106081%2c19.6093089 C9.5775224%2c20.0686785 8.874178%2c20.0836069 8.38701228%2c19.6654142 L8.28610575%2c19.5691763 L1.91528974%2c13.1731645 C1.4614885%2c12.6931552 1.41548103%2c11.9467627 1.78862933%2c11.4492151 L1.87500948%2c11.3465943 L2.72861938%2c10.421 L1.49998163%2c9.19185043 C0.975025961%2c8.66689476 0.941984154%2c7.84445326 1.42638851%2c7.36004891 L7.44361108%2c1.34282634 C7.67684281%2c1.10959461 7.99493852%2c0.989308278 8.34023349%2c1.00074646 Z M8.4872346%2c2.49877551 L2.66190168%2c8.32410843 L8.57335896%2c14.2355657 L14.3986919%2c8.41023278 L14.1711831%2c2.72712965 L8.4872346%2c2.49877551 Z M11.4271541%2c4.00000003 C11.9794389%2c4.00000003 12.4271541%2c4.44771528 12.4271541%2c5.00000003 C12.4271541%2c5.55228478 11.9794389%2c6.00000003 11.4271541%2c6.00000003 C10.8748694%2c6.00000003 10.4271541%2c5.55228478 10.4271541%2c5.00000003 C10.4271541%2c4.44771528 10.8748694%2c4.00000003 11.4271541%2c4.00000003 Z' id='Combined-Shape' fill='rgb(117%2c 117%2c 127)'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
@@ -8078,6 +8539,7 @@ var TagListContainer = function TagListContainer() {
         onFocus: handleFocus,
         autoFocus: true
       }) : /*#__PURE__*/React__default['default'].createElement(antd.Tag, {
+        className: 'antTag',
         key: index,
         "data-idx": index,
         id: item.tag_id,
@@ -8110,8 +8572,7 @@ const img$h = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 var FileLayout = function FileLayout() {
   var _useNoteStore = useNoteStore(),
       EditorStore = _useNoteStore.EditorStore,
-      PageStore = _useNoteStore.PageStore,
-      NoteStore = _useNoteStore.NoteStore;
+      PageStore = _useNoteStore.PageStore;
 
   var _useState = React.useState(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -8232,16 +8693,65 @@ var FileLayout = function FileLayout() {
     EditorStore.setIsPreview(true);
   };
 
-  var handleFileRemove = function handleFileRemove(fileId, filename, index) {
-    // temp id
-    if (fileId.length === 8) {
-      EditorStore.fileLayoutList.splice(index, 1);
-      if (EditorStore.fileLayoutList.length === 0) EditorStore.setIsFile(false);
-    } else {
-      EditorStore.setDeleteFileConfig(fileId, filename, index);
-      NoteStore.setModalInfo('fileDelete');
-    }
-  };
+  var handleFileRemove = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileId, index, type) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!(type === 'temp' && EditorStore.tempFileLayoutList.length > 0)) {
+                _context.next = 6;
+                break;
+              }
+
+              EditorStore.tempFileLayoutList[index].deleted = true;
+              _context.next = 4;
+              return EditorStore.deleteFile(fileId).then(function (dto) {
+                if (dto.resultMsg === 'Success') {
+                  setTimeout(function () {
+                    EditorStore.tempFileLayoutList.splice(index, 1);
+                    EditorStore.isFileLength();
+                  }, 1000);
+                } else if (dto.resultMsg === 'Fail') {
+                  EditorStore.tempFileLayoutList[index].deleted = undefined;
+                }
+              });
+
+            case 4:
+              _context.next = 10;
+              break;
+
+            case 6:
+              if (!(type === 'uploaded' && EditorStore.fileLayoutList.length > 0)) {
+                _context.next = 10;
+                break;
+              }
+
+              EditorStore.fileLayoutList[index].deleted = true;
+              _context.next = 10;
+              return EditorStore.deleteFile(fileId).then(function (dto) {
+                if (dto.resultMsg === 'Success') {
+                  setTimeout(function () {
+                    EditorStore.fileLayoutList.splice(index, 1);
+                    EditorStore.isFileLength();
+                  }, 1000);
+                } else if (dto.resultMsg === 'Fail') {
+                  EditorStore.fileLayoutList[index].deleted = undefined;
+                }
+              });
+
+            case 10:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleFileRemove(_x, _x2, _x3) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
 
   var menu = /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
     style: {
@@ -8269,7 +8779,45 @@ var FileLayout = function FileLayout() {
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(FileBodyLayout, {
       id: "fileLayout"
-    }, EditorStore.fileLayoutList.map(function (item, index) {
+    }, EditorStore.tempFileLayoutList.map(function (item, index) {
+      return item.type === 'file' ? /*#__PURE__*/React__default['default'].createElement(FileBody, {
+        id: item.file_id ? item.file_id : item.user_context_2,
+        key: index,
+        onClick: handleFileBodyClick.bind(null, item.file_id),
+        className: index === EditorStore.selectFileIdx ? 'selected' : '',
+        onKeyDown: handleKeyDownFile,
+        tabIndex: index,
+        closable: !PageStore.isReadMode(),
+        onMouseEnter: handleMouseHover.bind(null, item.file_id),
+        onMouseLeave: handleMouseLeave
+      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
+        overlay: menu,
+        trigger: ['click'],
+        placement: "bottomCenter",
+        onClick: handleClickDropDown(item.file_id)
+      }, /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, hover && item.file_id === hoverFileId ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
+        src: img$b
+      }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
+        src: fileExtension(item.file_extension)
+      }))), item.error ? /*#__PURE__*/React__default['default'].createElement(FileErrorIcon, null, /*#__PURE__*/React__default['default'].createElement(icons.ExclamationCircleFilled, null)) : null, /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
+        onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
+      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+        style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
+          display: 'flex'
+        } : {
+          display: 'none'
+        }
+      }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
+        src: img$1,
+        onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')
+      }))), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
+        percent: item.progress * 100,
+        showInfo: false,
+        strokeWidth: '0.25rem',
+        trailColor: "#E3E4E9",
+        strokeColor: "#6C56E5"
+      }) : null)) : null;
+    }), EditorStore.fileLayoutList.map(function (item, index) {
       return /*#__PURE__*/React__default['default'].createElement(FileBody, {
         id: item.file_id ? item.file_id : item.user_context_2,
         key: index,
@@ -8277,6 +8825,7 @@ var FileLayout = function FileLayout() {
         className: index === EditorStore.selectFileIdx ? 'selected' : '',
         onKeyDown: handleKeyDownFile,
         tabIndex: index,
+        closable: !PageStore.isReadMode(),
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
         onMouseLeave: handleMouseLeave
       }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
@@ -8290,15 +8839,15 @@ var FileLayout = function FileLayout() {
         src: fileExtension(item.file_extension)
       }))), /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
-      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.file_size ? EditorStore.convertFileSize(item.file_size) : null))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
           display: 'none'
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img,
-        onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, item.file_name, index)
+        src: img$1,
+        onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'uploaded')
       }))));
     })));
   });
@@ -8358,7 +8907,7 @@ var EditorContainer = function EditorContainer() {
         fileName: fileName,
         fileExtension: fileExtension,
         fileSize: fileSize
-      }, fd, currentImg); // const tempArr = currentImg.getAttribute('src').split('/');
+      }, fd, 'image'); // const tempArr = currentImg.getAttribute('src').split('/');
       // const tempId = tempArr[tempArr.length - 1];
       // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
       // currentImg.setAttribute('temp-id', tempId);
@@ -8367,15 +8916,12 @@ var EditorContainer = function EditorContainer() {
         fileName: fileName,
         fileExtension: fileExtension,
         fileSize: fileSize
-      }, fd); // const tempId = Math.random().toString(36).substr(2, 8);
-      // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
+      }, fd, 'file'); // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
       // const currentFile = document.getElementById(tempId);
       // // 실제 업로드 data set
       // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
       // currentFile.setAttribute('temp-id', tempId);
     }
-
-    handleUpload();
   };
 
   var handleFileBlob = function handleFileBlob(type) {
@@ -8384,33 +8930,40 @@ var EditorContainer = function EditorContainer() {
     if (type === 'image') {
       input.setAttribute('type', 'file');
       input.setAttribute('accept', ['image/*', 'video/*']);
-    } else input.setAttribute('type', 'file');
+      input.setAttribute('multiple', true);
+    } else {
+      input.setAttribute('type', 'file');
+      input.setAttribute('multiple', true);
+    }
 
     input.onchange = function () {
-      var file = this.files[0];
-      var reader = new FileReader();
-      var isImage = EditorStore.readerIsImage(file.type);
+      var files = this.files;
+      EditorStore.setFileLength(files.length);
 
-      reader.onload = function () {
-        var id = 'blobid' + new Date().getTime();
-        var blobCache = EditorStore.tinymce.editorUpload.blobCache;
-        var base64 = reader.result.split(',')[1];
-        var blobInfo = blobCache.create(id, file, base64, file.name);
-        blobCache.add(blobInfo);
+      for (var i = 0; i < files.length; i++) {
+        (function (file) {
+          var reader = new FileReader(); // var isImage = EditorStore.readerIsImage(file.type);
 
-        if (isImage) {
-          var img = new Image();
-          img.setAttribute('src', reader.result);
-          img.setAttribute('data-name', file.name);
-          EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
-        }
+          reader.onload = function () {
+            var id = 'blobid' + new Date().getTime();
+            var blobCache = EditorStore.tinymce.editorUpload.blobCache;
+            var base64 = reader.result.split(',')[1];
+            var blobInfo = blobCache.create(id, file, base64, file.name);
+            blobCache.add(blobInfo); // if (isImage) {
+            //   var img = new Image();
+            //   img.setAttribute('src', reader.result);
+            //   img.setAttribute('data-name', file.name);
+            //   EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
+            // }
 
-        handleFileHandler(blobInfo, {
-          title: file.name
-        });
-      };
+            handleFileHandler(blobInfo, {
+              title: file.name
+            });
+          };
 
-      reader.readAsDataURL(file);
+          reader.readAsDataURL(file);
+        })(files[i]);
+      }
     };
 
     input.click();
@@ -8730,11 +9283,16 @@ var _useNoteStore$1 = useNoteStore(),
 
 
 var PageContainer = mobxReact.observer(function () {
-  var target = function target() {
-    if (ChapterStore$2.currentChapterId && PageStore$1.currentPageId) return /*#__PURE__*/React__default['default'].createElement(EditorContainer, null);else if (ChapterStore$2.currentChapterId && !PageStore$1.currentPageId) return /*#__PURE__*/React__default['default'].createElement(PageNotFound, null);else return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null);
-  };
+  var el = function () {
+    if (ChapterStore$2.currentChapterId) {
+      if (PageStore$1.currentPageId) return /*#__PURE__*/React__default['default'].createElement(EditorContainer, null);else return /*#__PURE__*/React__default['default'].createElement(PageNotFound, null); // chapter 하위 page가 없을 때
+    } // currentChapterId가 없다면 로딩이거나 태그메뉴 선택한 것
 
-  return target();
+
+    return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null);
+  }();
+
+  return el;
 });
 
 var TagKeyChildren$1 = function TagKeyChildren(_ref) {
@@ -8907,7 +9465,7 @@ var TagHeader = function TagHeader() {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
       }
     }), /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img,
+      src: img$1,
       style: cancelBtnVisibility,
       onClick: onClickCancelBtn
     })))));
@@ -8970,13 +9528,37 @@ var Modal = function Modal() {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore;
 
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      userStore = _useCoreStores.userStore,
+      roomStore = _useCoreStores.roomStore;
+
   var _NoteStore$modalInfo = NoteStore.modalInfo,
       type = _NoteStore$modalInfo.type,
       title = _NoteStore$modalInfo.title,
       subTitle = _NoteStore$modalInfo.subTitle,
       buttons = _NoteStore$modalInfo.buttons,
       sharedInfo = _NoteStore$modalInfo.sharedInfo;
-  var el = /*#__PURE__*/ReactDom__default['default'].createPortal( /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(CustomOverlay, null), /*#__PURE__*/React__default['default'].createElement(CustomModal, {
+  var el = /*#__PURE__*/ReactDom__default['default'].createPortal( /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(RoomShareModal, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitleContainer, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(Button, {
+    src: img$1
+  })), /*#__PURE__*/React__default['default'].createElement(teespaceCore.ItemSelector, {
+    isVisibleRoom: true,
+    onSelectChange: function onSelectChange(data) {
+      console.log(data);
+      NoteStore.setShareArrays(data);
+    }
+  }), /*#__PURE__*/React__default['default'].createElement(ButtonGroup, null, buttons && buttons.map(function (button) {
+    if (button.type === 'cancel') {
+      return /*#__PURE__*/React__default['default'].createElement(ModalCancelBtn, {
+        key: button.text,
+        onClick: button.onClick
+      }, button.text);
+    }
+
+    return /*#__PURE__*/React__default['default'].createElement(ModalNormalBtn, {
+      key: button.text,
+      onClick: button.onClick
+    }, button.text);
+  })))) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(CustomModal, {
     className: "NoteModal"
   }, /*#__PURE__*/React__default['default'].createElement(IconImg, {
     src: icon[type]
@@ -8996,7 +9578,7 @@ var Modal = function Modal() {
       key: button.text,
       onClick: button.onClick
     }, button.text);
-  })))), document.body);
+  }))))), document.body);
   return mobxReact.useObserver(function () {
     return NoteStore.showModal ? el : false;
   });
@@ -9045,35 +9627,62 @@ var NoteApp = function NoteApp(_ref) {
     return function () {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
-  }, []); // layoutState가 똑같은게 들어올 때는 타지 않음
+  }, []); // FirstNoteInfo 하는 때 : 확대 상태로 방 바뀌었을 때, 축소->확대 처음할 때
 
   React.useEffect(function () {
-    // collapse 아닐 때는 setTargetLayout(null) 넣어준다
-    if (layoutState === 'collapse') {
-      switch (NoteStore.layoutState) {
-        case '':
-          NoteStore.setTargetLayout('LNB');
-          break;
+    // channelId가 바뀔 때만 동작한다는 가정!
+    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              NoteStore.addWWMSHandler();
+              NoteStore.initVariables();
 
-        case 'collapse':
-          break;
-        // 확대
+              if (!channelId) {
+                _context.next = 8;
+                break;
+              }
 
-        default:
-          NoteStore.setTargetLayout('Content');
-          break;
-      }
-    }
+              _context.next = 5;
+              return ChapterStore.getNoteChapterList();
 
-    NoteStore.setLayoutState(layoutState);
-  }, [layoutState]);
-  React.useEffect(function () {
-    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, function () {
-      NoteStore.addWWMSHandler();
-      NoteStore.initVariables();
-    });
-    if (channelId) ChapterStore.fetchChapterList();else ChapterStore.setChapterList([]);
+            case 5:
+              if (layoutState === 'expand') ChapterStore.setFirstNoteInfo();else if (layoutState === 'collapse') NoteStore.setTargetLayout('LNB');
+              _context.next = 9;
+              break;
+
+            case 8:
+              ChapterStore.setChapterList([]);
+
+            case 9:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    })));
   }, [channelId]);
+  /* 
+    layoutState는 collapse, expand, close가 있다
+    layoutState : 새로운 state
+    NoteStore.layoutState : 기존 state
+    collapse 아닐 때는 setTargetLayout(null) 넣어준다
+    layoutState가 똑같은게 들어올 때는 타지 않음(NoteApp의 useEffect 로직)
+  */
+  // 한 번 클릭시 두 번씩 데이터가 들어와서 불완전하다
+
+  React.useEffect(function () {
+    if (layoutState !== NoteStore.layoutState) {
+      if (NoteStore.layoutState === 'collapse' && layoutState === 'expand' && !PageStore.currentPageId) {
+        ChapterStore.setFirstNoteInfo();
+      } else if (NoteStore.layoutState === 'expand' && layoutState === 'collapse') {
+        NoteStore.setTargetLayout('Content');
+      }
+
+      NoteStore.setLayoutState(layoutState);
+    }
+  }, [layoutState]);
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), renderCondition('LNB') && /*#__PURE__*/React__default['default'].createElement(LNB, {
       style: NoteStore.isContentExpanded ? {
