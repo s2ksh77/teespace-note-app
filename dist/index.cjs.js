@@ -1944,7 +1944,7 @@ var handleUpload = /*#__PURE__*/function () {
 
                       EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
                         if (dto.resultMsg === 'Success') {
-                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
+                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
                           EditorStore.tempFileLayoutList[i].progress = 0;
                         } else if (dto.resultMsg === 'Fail') {
                           EditorStore.failCount++;
@@ -1956,7 +1956,12 @@ var handleUpload = /*#__PURE__*/function () {
 
                         if (EditorStore.processLength == EditorStore.uploadLength) {
                           EditorStore.uploadDTO = [];
-                          if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');
+                          if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
+                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                              EditorStore.setFileList(dto.fileList);
+                              EditorStore.tempFileLayoutList = [];
+                            });
+                          }
                         }
                       });
                     }
@@ -2391,7 +2396,7 @@ var EditorStore = mobx.observable((_observable = {
 
             _this3.setTempFileList(tempMeta);
 
-            if (isImage) EditorStore.createDriveElement('image', file_id, file_name);
+            if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
             return _context7.abrupt("return", {
               id: file_id,
               type: type
