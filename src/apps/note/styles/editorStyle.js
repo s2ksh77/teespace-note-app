@@ -78,7 +78,7 @@ export const FoldBtnImg = styled.img`
 `;
 
 export const FileBodyLayout = styled.div`
-  width:100%;
+  width:auto;
   display : flex;
   align-items: center;
   height: 4.9rem;
@@ -86,7 +86,7 @@ export const FileBodyLayout = styled.div`
   border-bottom: 1px solid #dadada;
   overflow: hidden;
   box-sizing :border-box;
-  padding: 0rem 0.5rem;
+  margin: 0rem 0.5rem;
 `
 export const FileBody = styled.div`
   display: flex;
