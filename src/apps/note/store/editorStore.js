@@ -29,6 +29,7 @@ const EditorStore = observable({
   fileMetaList: [],
   fileList: [],
   fileLayoutList: [],
+  tempArray: [],
   tempFileLayoutList: [],
   driveFileList: [],
   fileName: "",
@@ -152,6 +153,12 @@ const EditorStore = observable({
       this.setFileArray(checkFile);
     };
   },
+  isFileLength() {
+    const temp = this.tempFileLayoutList.filter(file => file.type === 'file').length;
+    const uploaded = this.fileLayoutList.length;
+    const totalLength = temp + uploaded;
+    if (totalLength === 0) this.setIsFile(false);
+  },
   uploadFileIsImage(ext) {
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
     return ImageExt.includes(ext.toLowerCase());
@@ -220,46 +227,16 @@ const EditorStore = observable({
     this.uploadDTO.push(meta);
     if (this.uploadDTO.length === this.uploadLength) handleUpload();
   },
+  setTempFileList(target) {
+    this.tempArray.push(target);
+    if (this.tempArray.length === this.uploadLength) {
+      this.tempFileLayoutList = this.tempArray;
+      this.tempArray = [];
+    }
+    if (!this.isFile) this.setIsFile(true);
+  },
   setFileLength(length) {
     this.uploadLength = length;
-  },
-  setUploadFileMeta(type, tempId, config, file, element) {
-    const { fileName, fileExtension, fileSize } = config;
-    const uploadMeta = {
-      "dto":
-      {
-        "workspace_id": NoteRepository.WS_ID,
-        "channel_id": NoteRepository.chId,
-        "storageFileInfo": {
-          "user_id": NoteRepository.USER_ID,
-          "file_last_update_user_id": NoteRepository.USER_ID,
-          "file_id": '',
-          "file_name": fileName,
-          "file_extension": fileExtension,
-          "file_created_at": '',
-          "file_updated_at": '',
-          "file_size": fileSize,
-          "user_context_1": PageStore.currentPageId,
-          "user_context_2": '',
-          "user_context_3": ''
-        }
-      }
-    }
-    const uploadArr = {
-      KEY: tempId,
-      TYPE: type,
-      uploadMeta,
-      file,
-      element
-    }
-    this.setFileMetaList(uploadArr);
-  },
-  setFileMetaList(fileMeta) {
-    this.fileMetaList.push(fileMeta);
-    console.log(toJS(this.fileMetaList))
-  },
-  getFileMetaList() {
-    return this.fileMetaList;
   },
   // 하위 File Layout 에 Temp로 그리기 위한 용도
   getTempTimeFormat() {
@@ -272,28 +249,6 @@ const EditorStore = observable({
     let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return year + '-' + month + '-' + day + ' ' + time;
   },
-  setTempFileMeta(config) {
-    const { tempId, fileName, fileExtension, fileSize } = config;
-    const tempMeta = {
-      "user_id": NoteRepository.USER_ID,
-      "file_last_update_user_id": NoteRepository.USER_ID,
-      "file_id": '',
-      "file_name": fileName,
-      "file_extension": fileExtension,
-      "file_created_at": '',
-      "file_updated_at": this.getTempTimeFormat(),
-      "file_size": fileSize,
-      "user_context_1": '',
-      "user_context_2": tempId,
-      "user_context_3": ''
-    }
-    this.setTempFileList(tempMeta);
-  },
-  setTempFileList(target) {
-    this.tempFileLayoutList.push(target);
-    if (!this.isFile) this.setIsFile(true);
-  },
-
   convertFileSize(bytes) {
     if (bytes == 0) return '0 Bytes';
     let k = 1000, dm = 2,
