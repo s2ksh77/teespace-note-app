@@ -511,6 +511,7 @@ const PageStore = observable({
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore.setShowModal(false);
+    EditorStore.setIsAttatch(false);
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
     this.isNewPage = false;
