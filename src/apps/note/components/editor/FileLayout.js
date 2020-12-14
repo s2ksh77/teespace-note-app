@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn, FileErrorIcon, ProgressWrapper } from '../../styles/editorStyle';
 import useNoteStore from '../../store/useStore';
@@ -19,6 +19,7 @@ const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
+    const filebodyRef = useRef([]);
 
     const fileExtension = (extension) => {
         switch (extension) {
@@ -53,7 +54,9 @@ const FileLayout = () => {
     }
 
     const handleSelectFile = (e) => {
-        if (EditorStore.selectFileElement !== '') {
+        const { target } = e;
+        // file layout 외 영역 클릭시.. 다른 구현방법 생각해봐야될 듯
+        if (!filebodyRef.current.includes(target.closest('.noteFile'))) {
             EditorStore.setFileIndex('');
             EditorStore.setFileElement('');
             document.removeEventListener("click", handleSelectFile);
@@ -61,9 +64,10 @@ const FileLayout = () => {
     }
 
     const handleFileBodyClick = index => {
-        if (EditorStore.selectFileIdx === '') {
-            document.addEventListener("click", handleSelectFile);
-        }
+        EditorStore.setFileElement(filebodyRef.current[index]);
+        EditorStore.selectFileElement.focus();
+        EditorStore.selectFileElement.scrollIntoView(false);
+        if (EditorStore.selectFileIdx === '') document.addEventListener("click", handleSelectFile);
         if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);
         else {
             EditorStore.setFileIndex('');
@@ -115,7 +119,6 @@ const FileLayout = () => {
     }
 
     const handleFileRemove = async (fileId, index, type) => {
-        let filelength;
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
             EditorStore.tempFileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
@@ -216,9 +219,10 @@ const FileLayout = () => {
                 ))}
                 {EditorStore.fileLayoutList.map((item, index) => (
                     <FileBody id={item.file_id ? item.file_id : item.user_context_2}
+                        ref={el => filebodyRef.current[index] = el}
                         key={index}
                         onClick={handleFileBodyClick.bind(null, index)}
-                        className={index === EditorStore.selectFileIdx ? 'selected' : ''}
+                        className={index === EditorStore.selectFileIdx ? 'noteFile selected' : 'noteFile'}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}
