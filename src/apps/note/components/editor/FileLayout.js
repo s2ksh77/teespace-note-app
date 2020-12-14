@@ -12,7 +12,7 @@ import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 import video from '../../assets/movie.svg';
 import { Dropdown, Menu, Progress } from 'antd';
-import { downloadFile } from '../common/NoteFile';
+import { downloadFile, handleDriveSave } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const FileLayout = () => {
@@ -37,7 +37,7 @@ const FileLayout = () => {
         }
     }
     const handleFileDown = (key) => {
-        if (key === '0') alert('준비 중입니다.');
+        if (key === '0') handleDriveSave();
         if (key === '1') downloadFile(EditorStore.downloadFileId);
     }
     const onClickContextMenu = ({ key }) => {

@@ -9,6 +9,7 @@ import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 import { type } from 'ramda';
 import NoteStore from '../../store/noteStore';
+import { ComponentStore } from 'teespace-core';
 
 export const handleUpload = async () => {
     let uploadArr = [];
@@ -269,4 +270,9 @@ export const handleImageListener = async () => {
         const targetImageList = await EditorStore.tinymce.dom.doc.images;
         console.log(targetImageList);
     }
+}
+
+export const handleDriveSave = () => {
+    const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
+    console.log(DriveSaveModal)
 }
