@@ -1918,6 +1918,7 @@ var EditorStore = observable((_observable = {
   isDrive: false,
   isAttatch: false,
   isPreview: false,
+  isSaveDrive: false,
   previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
@@ -1935,6 +1936,9 @@ var EditorStore = observable((_observable = {
   tempArray: [],
   tempFileLayoutList: [],
   driveFileList: [],
+  saveFileId: '',
+  saveFileExt: '',
+  saveFileName: '',
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -1962,6 +1966,17 @@ var EditorStore = observable((_observable = {
   },
   setIsDrive: function setIsDrive(flag) {
     this.isDrive = flag;
+  },
+  setIsSaveDrive: function setIsSaveDrive(flag) {
+    this.isSaveDrive = flag;
+  },
+  setSaveDriveMeta: function setSaveDriveMeta() {
+    var saveMeta = {
+      fileId: this.saveFileId,
+      fileExt: this.saveFileExt,
+      fileName: this.saveFileName
+    };
+    this.saveDriveMeta = saveMeta;
   },
   setIsAttatch: function setIsAttatch(flag) {
     this.isAttatch = flag;
@@ -2063,6 +2078,10 @@ var EditorStore = observable((_observable = {
   return uploadFile;
 }()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
   this.downloadFileId = fileId;
+}), _defineProperty(_observable, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
+  this.saveFileId = fileId;
+  this.saveFileExt = fileExt;
+  this.saveFileName = fileName;
 }), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
   this.fileLayoutList.splice(this.deleteFileIndex, 1);
   if (this.fileLayoutList.length === 0) this.setIsFile(false);
@@ -3091,6 +3110,7 @@ var PageStore = observable((_observable$1 = {
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
+    EditorStore.setIsAttatch(false);
     (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.selection.setCursorLocation();
     (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
     this.isNewPage = false;
