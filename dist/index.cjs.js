@@ -3,10 +3,10 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var React = require('react');
+var reactRouterDom = require('react-router-dom');
 var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
-var html2pdf = require('html2pdf.js');
 var mobxReact = require('mobx-react');
 var styled = require('styled-components');
 var reactFontawesome = require('@fortawesome/react-fontawesome');
@@ -14,17 +14,17 @@ var freeSolidSvgIcons = require('@fortawesome/free-solid-svg-icons');
 var antd = require('antd');
 var reactDnd = require('react-dnd');
 var reactDndHtml5Backend = require('react-dnd-html5-backend');
+var html2pdf = require('html2pdf.js');
 require('antd/dist/antd.css');
 var tinymceReact = require('@tinymce/tinymce-react');
 var icons = require('@ant-design/icons');
-var teespaceDriveApp = require('teespace-drive-app');
 var ReactDom = require('react-dom');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
+var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
 var ReactDom__default = /*#__PURE__*/_interopDefaultLegacy(ReactDom);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -2079,512 +2079,6 @@ var TagStore = mobx.observable({
   }
 });
 
-const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
-
-/*
-  Link Dialog 관련
-*/
-
-var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
-  var title = header.querySelector('.tox-dialog__title');
-  title.style.margin = 'auto';
-  title.textContent = '링크 삽입';
-}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
-
-
-var renderErrorMark = function renderErrorMark(target) {
-  var img$1 = document.createElement('img');
-  img$1.src = img;
-  img$1.classList.add('note-link-error');
-  var tooltip = document.createElement('div');
-  tooltip.classList.add('note-link-error-tooltip');
-  tooltip.textContent = '해당 URL은 유효하지 않습니다.';
-  target.appendChild(img$1);
-  target.appendChild(tooltip);
-  return [img$1, tooltip];
-};
-
-var renderValidation = function renderValidation(targetInput, errorMark, saveBtn) {
-  var _value = targetInput.value; // 가독성을 위해 중복 검사함
-  // 빈 str이거나 invalid
-
-  if (!checkUrlValidation(_value)) {
-    saveBtn.setAttribute('disabled', true);
-  } else saveBtn.removeAttribute('disabled'); // errorMark는 invalid할 때만
-
-
-  if (!isFilled(_value) || validUrl(_value)) {
-    errorMark.map(function (child) {
-      return child.classList.remove('note-show-element');
-    });
-    targetInput.classList.remove('note-link-input');
-  } else {
-    errorMark.map(function (child) {
-      return child.classList.add('note-show-element');
-    });
-    targetInput.classList.add('note-link-input');
-  }
-};
-
-var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
-  var formStr = {
-    url: "링크",
-    text: "텍스트"
-  }; // string 바꿔주기, renderValidationErrorMark
-
-  Array.from(form.childNodes).map(function (child, idx) {
-    var label$ = child.querySelector('.tox-form__group label');
-    var input$ = child.querySelector('input');
-    var content = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
-
-    label$.textContent = formStr[content];
-    /*
-      Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
-    */
-
-    if (content === "url") {
-      var _footer$querySelector;
-
-      var saveBtn = (_footer$querySelector = footer.querySelector('.tox-dialog__footer-end')) === null || _footer$querySelector === void 0 ? void 0 : _footer$querySelector.childNodes[1];
-      var errorMark = renderErrorMark(input$.parentElement); // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
-
-      renderValidation(input$, errorMark, saveBtn);
-
-      input$.oninput = function (e) {
-        renderValidation(input$, errorMark, saveBtn);
-      };
-    }
-  }); // 텍스트, 링크 순으로 바꿔주기
-
-  form.classList.add('link-dialog-reverse');
-};
-
-var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
-  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('note-link-footer');
-};
-
-var changeLinkDialog = function changeLinkDialog() {
-  try {
-    var dialog = document.querySelector('.tox-dialog');
-    var footer = dialog.querySelector('.tox-dialog__footer');
-    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
-    changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
-    changeLinkDialogFooter(footer);
-  } catch (err) {
-    throw Error(err);
-  }
-};
-/*
-  Link context Toolbar 관련
-  custimizing contextToolbar
-*/
-
-var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
-var changeButtonStyle = function changeButtonStyle(idx, count) {
-  var _toolbar$childNodes;
-
-  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
-  toolbar.classList.add('link-toolbar');
-  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
-
-  if (toolbar && target) {
-    var strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
-    target.appendChild(strNode);
-  } else if (count >= 50) return;else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
-  }
-};
-var openLink = function openLink(url, target) {
-  if (!PageStore.isReadMode()) return;
-
-  if (target !== '_blank') {
-    document.location.href = url;
-    return;
-  }
-
-  var link = document.createElement('a');
-  link.href = url;
-  link.target = target;
-  link.rel = 'noopener';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-var handleUpload = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var uploadArr;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            uploadArr = [];
-
-            if (!EditorStore.uploadDTO) {
-              _context.next = 5;
-              break;
-            }
-
-            uploadArr = mobx.toJS(EditorStore.uploadDTO).map(function (item) {
-              return EditorStore.createUploadMeta(item.uploadMeta, item.type);
-            });
-            _context.next = 5;
-            return Promise.all(uploadArr).then(function (results) {
-              if (EditorStore.uploadDTO.length === results.length) {
-                var _loop = function _loop(i) {
-                  (function (result) {
-                    if (result.id !== undefined) {
-                      var handleUploadProgress = function handleUploadProgress(e) {
-                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
-                        EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
-                        EditorStore.tempFileLayoutList[i].file_id = result.id;
-                      };
-
-                      EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
-                        if (dto.resultMsg === 'Success') {
-                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name);
-                          EditorStore.tempFileLayoutList[i].progress = 0;
-                        } else if (dto.resultMsg === 'Fail') {
-                          EditorStore.failCount++;
-                          EditorStore.tempFileLayoutList[i].progress = 0;
-                          EditorStore.tempFileLayoutList[i].error = true;
-                        }
-
-                        EditorStore.processLength++;
-
-                        if (EditorStore.processLength == EditorStore.uploadLength) {
-                          EditorStore.uploadDTO = [];
-                          if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');
-                        }
-                      });
-                    }
-                  })(results[i]);
-                };
-
-                for (var i = 0; i < results.length; i++) {
-                  _loop(i);
-                }
-              }
-            });
-
-          case 5:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function handleUpload() {
-    return _ref.apply(this, arguments);
-  };
-}();
-var driveSuccessCb = function driveSuccessCb(fileList) {
-  if (fileList) {
-    fileList.forEach(function (file) {
-      return EditorStore.addDriveFileList(file);
-    });
-    handleDriveCopy();
-    EditorStore.setIsAttatch(true);
-    EditorStore.setIsDrive(false);
-  }
-};
-var driveCancelCb = function driveCancelCb() {
-  EditorStore.setIsAttatch(true);
-  EditorStore.setIsDrive(false);
-  setTimeout(function () {
-    EditorStore.setIsAttatch(false);
-  }, 100);
-};
-var handleDriveCopy = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var copyArr;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            copyArr = [];
-
-            if (!EditorStore.driveFileList) {
-              _context2.next = 5;
-              break;
-            }
-
-            copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
-              return EditorStore.storageFileDeepCopy(item.file_id, item.type);
-            });
-            _context2.next = 5;
-            return Promise.all(copyArr).then(function (results) {
-              var resultArray = mobx.toJS(results).filter(function (result) {
-                return result !== undefined;
-              });
-              EditorStore.driveFileList = [];
-
-              if (resultArray.length > 0) {
-                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
-                  if (dto.resultMsg === 'Success') {
-                    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                      EditorStore.setFileList(dto.fileList);
-                    });
-                  }
-                });
-              }
-
-              EditorStore.setIsAttatch(false);
-            });
-
-          case 5:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2);
-  }));
-
-  return function handleDriveCopy() {
-    return _ref2.apply(this, arguments);
-  };
-}();
-var handleFileDelete = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return EditorStore.tinymce.dom.doc.images;
-
-          case 2:
-            imgTarget = _context3.sent;
-            fileTarget = document.querySelectorAll('div #fileLayout [id]');
-            imgArray = _toConsumableArray(imgTarget);
-            fileArray = _toConsumableArray(fileTarget);
-            deleteArr = [];
-            imgArray.forEach(function (img) {
-              return EditorStore.tempFileList.push(img.getAttribute('id'));
-            });
-            fileArray.forEach(function (file) {
-              return EditorStore.tempFileList.push(file.getAttribute('id'));
-            });
-            if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(function (file) {
-              return !EditorStore.tempFileList.includes(file.file_id);
-            });
-
-            if (!EditorStore.deleteFileList) {
-              _context3.next = 21;
-              break;
-            }
-
-            deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
-              return EditorStore.deleteFile(item.file_id);
-            });
-            _context3.prev = 12;
-            _context3.next = 15;
-            return Promise.all(deleteArr).then(function () {
-              EditorStore.deleteFileList = [];
-              EditorStore.tempFileList = [];
-              PageStore.setContent(EditorStore.tinymce.getContent());
-            });
-
-          case 15:
-            _context3.next = 19;
-            break;
-
-          case 17:
-            _context3.prev = 17;
-            _context3.t0 = _context3["catch"](12);
-
-          case 19:
-            _context3.prev = 19;
-            return _context3.finish(19);
-
-          case 21:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, null, [[12, 17, 19, 21]]);
-  }));
-
-  return function handleFileDelete() {
-    return _ref3.apply(this, arguments);
-  };
-}();
-var downloadFile = function downloadFile(fileId) {
-  if (fileId) {
-    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
-    return;
-  }
-
-  var a = document.createElement("a");
-  document.body.appendChild(a);
-  a.style = "display: none";
-  a.href = EditorStore.tinymce.selection.getNode().src;
-  a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
-  a.click();
-  document.body.removeChild(a);
-};
-var makeExportElement = function makeExportElement(data, type) {
-  var fragment = document.createElement('div');
-  fragment.style.visibility = 'visible';
-  fragment.style.opacity = 0;
-  fragment.style.width = 'fit-content';
-  fragment.setAttribute('id', 'exportTarget');
-  var targetDIV = document.createElement('div');
-  targetDIV.setAttribute('id', 'exportTargetDiv');
-  targetDIV.setAttribute('class', 'export');
-  targetDIV.innerHTML = data;
-  fragment.appendChild(targetDIV);
-  document.body.appendChild(fragment);
-  exportDownloadPDF(type);
-};
-var exportDownloadPDF = function exportDownloadPDF(type) {
-  var element = document.getElementById('exportTargetDiv');
-  var opt = {
-    margin: 2,
-    filename: type === 'page' ? "".concat(PageStore.exportPageTitle, ".pdf") : "".concat(ChapterStore.exportChapterTitle, ".pdf"),
-    pagebreak: {
-      after: '.afterClass',
-      avoid: 'span'
-    },
-    image: {
-      type: 'jpeg',
-      quality: 0.98
-    },
-    jsPDF: {
-      unit: 'pt',
-      format: 'a4',
-      orientation: 'portrait'
-    }
-  };
-  html2pdf__default['default'](element, opt).then(function () {
-    document.getElementById('exportTarget').remove();
-  });
-};
-var exportChapterData = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var returnData;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            returnData = '';
-            _context4.next = 3;
-            return NoteRepository$1.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
-              var noteList = response.data.dto.noteList;
-
-              if (noteList.length > 0) {
-                noteList.forEach(function (page, idx) {
-                  returnData += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
-                });
-              } else return alert('하위에 속한 페이지가 없습니다.');
-
-              makeExportElement(returnData, 'chapter');
-            });
-
-          case 3:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4);
-  }));
-
-  return function exportChapterData() {
-    return _ref4.apply(this, arguments);
-  };
-}();
-var exportPageData = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var returnData;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            returnData = '';
-            _context5.next = 3;
-            return NoteRepository$1.getNoteInfoList(PageStore.exportPageId).then(function (response) {
-              var dto = response.data.dto;
-              PageStore.exportPageTitle = dto.note_title;
-              returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
-            });
-
-          case 3:
-            makeExportElement(returnData, 'page');
-
-          case 4:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  }));
-
-  return function exportPageData() {
-    return _ref5.apply(this, arguments);
-  };
-}();
-
-var handleClickLink = function handleClickLink(el) {
-  var href = el.getAttribute('href');
-  var target = el.getAttribute('target');
-  openLink(href, target);
-};
-
-var handleClickImg = function handleClickImg(el) {
-  if (!PageStore.isReadMode()) return;
-  var file = el.getAttribute('data-name').split('.');
-  EditorStore.setPreviewFileMeta({
-    userId: NoteRepository$1.USER_ID,
-    channelId: NoteRepository$1.chId,
-    roomId: NoteRepository$1.WS_ID,
-    fileId: el.id,
-    fileName: file[0],
-    fileExtension: file[1]
-  });
-  EditorStore.setIsPreview(true);
-};
-
-var handleEditorContentsListener = function handleEditorContentsListener() {
-  if (EditorStore.tinymce) {
-    var _EditorStore$tinymce$;
-
-    var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
-
-    if (targetList && targetList.length > 0) {
-      Array.from(targetList).forEach(function (el) {
-        if (el.getAttribute('hasListener')) return;
-        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
-        el.setAttribute('hasListener', true);
-      });
-    }
-  }
-};
-var handleFileSync = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.next = 2;
-            return handleFileDelete();
-
-          case 2:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6);
-  }));
-
-  return function handleFileSync() {
-    return _ref6.apply(this, arguments);
-  };
-}();
-
 var _observable;
 var EditorStore = mobx.observable((_observable = {
   contents: '',
@@ -2617,6 +2111,7 @@ var EditorStore = mobx.observable((_observable = {
   fileExtension: "",
   uploadLength: '',
   processLength: 0,
+  processCount: 0,
   failCount: 0,
   setContents: function setContents(content) {
     this.contents = content;
@@ -2888,14 +2383,11 @@ var EditorStore = mobx.observable((_observable = {
   this.setUploadDTO(uploadArr);
 }), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
   this.uploadDTO.push(meta);
-  if (this.uploadDTO.length === this.uploadLength) handleUpload();
 }), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
-  this.tempArray.push(target);
-
-  if (this.tempArray.length === this.uploadLength) {
-    this.tempFileLayoutList = this.tempArray;
-    this.tempArray = [];
-  }
+  if (this.processCount !== this.uploadLength) {
+    this.tempFileLayoutList.unshift(target);
+    this.processCount++;
+  } else this.processCount = 0;
 
   if (!this.isFile) this.setIsFile(true);
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
@@ -2956,7 +2448,7 @@ var EditorStore = mobx.observable((_observable = {
   var _this3 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    var _yield$NoteRepository5, dto, retrunFileId, returnFileName;
+    var _yield$NoteRepository5, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
 
     return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
@@ -2970,21 +2462,43 @@ var EditorStore = mobx.observable((_observable = {
             dto = _yield$NoteRepository5.data.dto;
 
             if (!(dto.resultMsg === 'Success')) {
-              _context7.next = 11;
+              _context7.next = 13;
               break;
             }
 
-            retrunFileId = dto.storageFileInfoList[0].file_id;
-            returnFileName = dto.storageFileInfoList[0].file_name;
+            _dto$storageFileInfoL = dto.storageFileInfoList[0], file_id = _dto$storageFileInfoL.file_id, file_name = _dto$storageFileInfoL.file_name, file_extension = _dto$storageFileInfoL.file_extension, file_updated_at = _dto$storageFileInfoL.file_updated_at, file_size = _dto$storageFileInfoL.file_size;
+            isImage = type === 'image' ? true : false;
+            tempMeta = {
+              "user_id": NoteRepository$1.USER_ID,
+              "file_last_update_user_id": NoteRepository$1.USER_ID,
+              "file_id": file_id,
+              "file_name": file_name,
+              "file_extension": file_extension,
+              "file_created_at": '',
+              "file_updated_at": file_updated_at,
+              "file_size": file_size,
+              "user_context_1": '',
+              "user_context_2": '',
+              "user_context_3": '',
+              "progress": 0,
+              "type": isImage ? 'image' : 'file',
+              "error": false
+            };
 
-            _this3.createDriveElement(type, retrunFileId, returnFileName);
+            _this3.setTempFileList(tempMeta);
 
-            return _context7.abrupt("return", retrunFileId);
+            if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
+            return _context7.abrupt("return", {
+              id: file_id,
+              type: type
+            });
 
-          case 11:
-            return _context7.abrupt("return");
+          case 13:
+            EditorStore.failCount++;
 
-          case 12:
+          case 14:
+
+          case 15:
           case "end":
             return _context7.stop();
         }
@@ -3591,6 +3105,7 @@ var PageStore = mobx.observable((_observable$1 = {
               // fetchNoteInfoList할 때 setCurrentPageId하기
               _this5.setCurrentPageId(dto.note_id);
 
+              ChapterStore.setCurrentChapterId(dto.parent_notebook);
               _this5.noteInfoList = dto;
               _this5.currentPageData = dto;
               _this5.isEdit = dto.is_edit;
@@ -3598,7 +3113,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 13:
+            case 14:
             case "end":
               return _context9.stop();
           }
@@ -3668,11 +3183,10 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce;
-
       _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setContent(_this9.currentPageData.note_content);
+      _this9.setContent(_this9.currentPageData.note_content);
+
       NoteStore$1.setShowModal(false);
     });
   },
@@ -3720,7 +3234,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce2, _EditorStore$tinymce3;
+    var _EditorStore$tinymce, _EditorStore$tinymce2;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -3748,8 +3262,8 @@ var PageStore = mobx.observable((_observable$1 = {
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
-    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
-    (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
+    (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.selection.setCursorLocation();
+    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
@@ -3852,6 +3366,8 @@ var PageStore = mobx.observable((_observable$1 = {
 var _observable$2;
 var ChapterStore = mobx.observable((_observable$2 = {
   chapterColor: "",
+  loadingPageInfo: false,
+  // 2panel(pageContainer용)
   chapterList: [],
   sortedChapterList: {
     roomChapterList: [],
@@ -3898,6 +3414,12 @@ var ChapterStore = mobx.observable((_observable$2 = {
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
+  getLoadingPageInfo: function getLoadingPageInfo() {
+    return this.loadingPageInfo;
+  },
+  setLoadingPageInfo: function setLoadingPageInfo(isLoading) {
+    this.loadingPageInfo = isLoading;
+  },
   getCurrentChapterId: function getCurrentChapterId() {
     return this.currentChapterId;
   },
@@ -4353,105 +3875,78 @@ var ChapterStore = mobx.observable((_observable$2 = {
     localChapterList[idx].children = localPageList;
   });
   return localChapterList;
-}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
+}), _defineProperty(_observable$2, "checkDefaultChapterColor", function checkDefaultChapterColor(notbookList) {
   var _this6 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    var _defaultChapter$;
+
+    var idx, defaultChapter, _yield$_this6$updateC, color;
+
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
-          case 0:
-            _context8.next = 2;
-            return _this6.getNoteChapterList();
-
-          case 2:
-            if (_this6.chapterList.length === 0) {
-              NoteStore$1.setShowPage(false);
-            } else {
-              NoteStore$1.setShowPage(true);
-
-              _this6.setFirstNoteInfo();
-            }
-
-          case 3:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8);
-  }))();
-}), _defineProperty(_observable$2, "checkDefaultChapterColor", function checkDefaultChapterColor(notbookList) {
-  var _this7 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-    var _defaultChapter$;
-
-    var idx, defaultChapter, _yield$_this7$updateC, color;
-
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
           case 0:
             idx = notbookList.findIndex(function (chapter) {
               return chapter.type === "default";
             });
 
             if (!(idx === -1)) {
-              _context9.next = 3;
+              _context8.next = 3;
               break;
             }
 
-            return _context9.abrupt("return", notbookList);
+            return _context8.abrupt("return", notbookList);
 
           case 3:
             defaultChapter = notbookList.splice(idx, 1);
 
             if (!(((_defaultChapter$ = defaultChapter[0]) === null || _defaultChapter$ === void 0 ? void 0 : _defaultChapter$.color) === null)) {
-              _context9.next = 10;
+              _context8.next = 10;
               break;
             }
 
-            _context9.next = 7;
-            return _this7.updateChapterColor(defaultChapter[0].id);
+            _context8.next = 7;
+            return _this6.updateChapterColor(defaultChapter[0].id);
 
           case 7:
-            _yield$_this7$updateC = _context9.sent;
-            color = _yield$_this7$updateC.color;
+            _yield$_this6$updateC = _context8.sent;
+            color = _yield$_this6$updateC.color;
             defaultChapter[0].color = color;
 
           case 10:
-            return _context9.abrupt("return", notbookList.concat(defaultChapter));
+            return _context8.abrupt("return", notbookList.concat(defaultChapter));
 
           case 11:
           case "end":
-            return _context9.stop();
+            return _context8.stop();
         }
       }
-    }, _callee9);
+    }, _callee8);
   }))();
 }), _defineProperty(_observable$2, "getNoteChapterList", function getNoteChapterList() {
-  var _this8 = this;
+  var _this7 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
     var notbookList, sharedList, tempChapterList;
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context10.next = 2;
-            return _this8.getChapterList();
+            _context9.next = 2;
+            return _this7.getChapterList();
 
           case 2:
-            notbookList = _context10.sent;
+            notbookList = _context9.sent;
 
-            _this8.createMap(notbookList);
+            _this7.createMap(notbookList);
 
-            sharedList = _this8.getSharedList(notbookList);
-            _this8.sharedCnt = sharedList.length;
+            sharedList = _this7.getSharedList(notbookList);
+            _this7.sharedCnt = sharedList.length;
             tempChapterList = [];
 
             if (localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())) {
-              _context10.next = 15;
+              _context9.next = 15;
               break;
             }
 
@@ -4459,35 +3954,35 @@ var ChapterStore = mobx.observable((_observable$2 = {
               return chapter.type === 'notebook' || chapter.type === 'default';
             }); // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
 
-            _context10.next = 11;
-            return _this8.checkDefaultChapterColor(tempChapterList);
+            _context9.next = 11;
+            return _this7.checkDefaultChapterColor(tempChapterList);
 
           case 11:
-            tempChapterList = _context10.sent;
+            tempChapterList = _context9.sent;
 
-            _this8.setLocalStorageItem(NoteStore$1.getChannelId(), tempChapterList);
+            _this7.setLocalStorageItem(NoteStore$1.getChannelId(), tempChapterList);
 
-            _context10.next = 17;
+            _context9.next = 17;
             break;
 
           case 15:
-            _this8.applyDifference(NoteStore$1.getChannelId(), notbookList);
+            _this7.applyDifference(NoteStore$1.getChannelId(), notbookList);
 
-            tempChapterList = _this8.getLocalStorageItem(NoteStore$1.getChannelId(), notbookList);
+            tempChapterList = _this7.getLocalStorageItem(NoteStore$1.getChannelId(), notbookList);
 
           case 17:
-            _this8.chapterList = tempChapterList.concat(sharedList); // component에서 render하기 좋도록 category 분류하기
+            _this7.chapterList = tempChapterList.concat(sharedList); // component에서 render하기 좋도록 category 분류하기
 
-            _this8.sortChapterList();
+            _this7.sortChapterList();
 
-            return _context10.abrupt("return", _this8.chapterList);
+            return _context9.abrupt("return", _this7.chapterList);
 
           case 20:
           case "end":
-            return _context10.stop();
+            return _context9.stop();
         }
       }
-    }, _callee10);
+    }, _callee9);
   }))();
 }), _defineProperty(_observable$2, "sortChapterList", function sortChapterList() {
   var _roomChapterList = [],
@@ -4502,61 +3997,61 @@ var ChapterStore = mobx.observable((_observable$2 = {
     sharedChapterList: _sharedChapterList
   });
 }), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
-  var _this9 = this;
+  var _this8 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
     var notbookList;
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
-            _context11.next = 2;
-            return _this9.createChapter(chapterTitle, chapterColor);
+            _context10.next = 2;
+            return _this8.createChapter(chapterTitle, chapterColor);
 
           case 2:
-            notbookList = _context11.sent;
+            notbookList = _context10.sent;
 
-            _this9.getNoteChapterList();
+            _this8.getNoteChapterList();
 
-            _this9.setCurrentChapterId(notbookList.id);
+            _this8.setCurrentChapterId(notbookList.id);
 
             PageStore.setCurrentPageId(notbookList.children[0].id);
             PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
-            _this9.setChapterTempUl(false);
+            _this8.setChapterTempUl(false);
 
-            _this9.setAllDeleted(false);
+            _this8.setAllDeleted(false);
 
           case 9:
           case "end":
-            return _context11.stop();
+            return _context10.stop();
         }
       }
-    }, _callee11);
+    }, _callee10);
   }))();
 }), _defineProperty(_observable$2, "deleteNoteChapter", function deleteNoteChapter() {
-  var _this10 = this;
+  var _this9 = this;
 
   this.deleteChapter(this.deleteChapterId).then(function () {
-    if (_this10.currentChapterId === _this10.deleteChapterId) {
-      _this10.setCurrentChapterId(_this10.nextSelectableChapterId);
+    if (_this9.currentChapterId === _this9.deleteChapterId) {
+      _this9.setCurrentChapterId(_this9.nextSelectableChapterId);
 
       PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
       PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
-      if (!_this10.nextSelectableChapterId) _this10.setAllDeleted(true);
+      if (!_this9.nextSelectableChapterId) _this9.setAllDeleted(true);
     }
 
-    _this10.getNoteChapterList();
+    _this9.getNoteChapterList();
 
-    if (_this10.allDeleted) NoteStore$1.setShowPage(false);
-    _this10.deleteChapterId = '';
+    if (_this9.allDeleted) NoteStore$1.setShowPage(false);
+    _this9.deleteChapterId = '';
     NoteStore$1.setShowModal(false);
   });
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
-  var _this11 = this;
+  var _this10 = this;
 
   this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function () {
-    return _this11.getNoteChapterList();
+    return _this10.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "moveChapter", function moveChapter(moveTargetChapterIdx) {
   if (this.moveChapterIdx !== moveTargetChapterIdx && this.moveChapterIdx + 1 !== moveTargetChapterIdx) {
@@ -4589,14 +4084,14 @@ var ChapterStore = mobx.observable((_observable$2 = {
   this.setSearchResult({});
   this.setSearchStr("");
 }), _defineProperty(_observable$2, "getChapterFirstPage", function getChapterFirstPage(targetId) {
-  var _this12 = this;
+  var _this11 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            _this12.getChapterList().then(function (chapterList) {
+            _this11.getChapterList().then(function (chapterList) {
               var targetChapter = chapterList.filter(function (chapter) {
                 return chapter.id === targetId;
               })[0];
@@ -4609,53 +4104,53 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
           case 1:
           case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11);
+  }))();
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+  var _this12 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _this12.setIsSearching(true); // 검색 결과 출력 종료까지임
+
+
+            _context12.next = 3;
+            return _this12.getSearchResult();
+
+          case 3:
+          case "end":
             return _context12.stop();
         }
       }
     }, _callee12);
   }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
   var _this13 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    var chapterList, resultChapterArr, resultPageArr;
     return regeneratorRuntime.wrap(function _callee13$(_context13) {
       while (1) {
         switch (_context13.prev = _context13.next) {
           case 0:
-            _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
-
+            _this13.setSearchResult({});
 
             _context13.next = 3;
-            return _this13.getSearchResult();
+            return _this13.getChapterList();
 
           case 3:
-          case "end":
-            return _context13.stop();
-        }
-      }
-    }, _callee13);
-  }))();
-}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
-  var _this14 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-    var chapterList, resultChapterArr, resultPageArr;
-    return regeneratorRuntime.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            _this14.setSearchResult({});
-
-            _context14.next = 3;
-            return _this14.getChapterList();
-
-          case 3:
-            chapterList = _context14.sent;
+            chapterList = _context13.sent;
             // searchResult 만들기
             resultChapterArr = [], resultPageArr = [];
             chapterList.map(function (chapter) {
               // chapter 저장
-              if (chapter.text.includes(_this14.searchStr)) {
+              if (chapter.text.includes(_this13.searchStr)) {
                 resultChapterArr.push({
                   id: chapter.id,
                   title: chapter.text,
@@ -4667,7 +4162,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
 
               chapter.children.map(function (page) {
-                if (page.text.includes(_this14.searchStr)) {
+                if (page.text.includes(_this13.searchStr)) {
                   resultPageArr.push({
                     chapterId: chapter.id,
                     chapterTitle: chapter.text,
@@ -4678,43 +4173,43 @@ var ChapterStore = mobx.observable((_observable$2 = {
               });
             });
 
-            _this14.setSearchResult({
+            _this13.setSearchResult({
               chapter: resultChapterArr,
               page: resultPageArr
             });
 
           case 7:
           case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13);
+  }))();
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+    var _yield$NoteRepository8, dto;
+
+    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
+
+          case 2:
+            _yield$NoteRepository8 = _context14.sent;
+            dto = _yield$NoteRepository8.data.dto;
+            return _context14.abrupt("return", dto);
+
+          case 5:
+          case "end":
             return _context14.stop();
         }
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-    var _yield$NoteRepository8, dto;
-
-    return regeneratorRuntime.wrap(function _callee15$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            _context15.next = 2;
-            return NoteRepository$1.createShareChapter(targetList);
-
-          case 2:
-            _yield$NoteRepository8 = _context15.sent;
-            dto = _yield$NoteRepository8.data.dto;
-            return _context15.abrupt("return", dto);
-
-          case 5:
-          case "end":
-            return _context15.stop();
-        }
-      }
-    }, _callee15);
-  }))();
 }), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
-  var _this15 = this;
+  var _this14 = this;
 
   if (!targetChapterList) return;
   var targetList = targetChapterList.map(function (chapter) {
@@ -4731,7 +4226,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     };
   });
   this.createShareChapter(targetList).then(function () {
-    return _this15.getNoteChapterList();
+    return _this14.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
   if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
@@ -4739,44 +4234,96 @@ var ChapterStore = mobx.observable((_observable$2 = {
   if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
   return null;
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
-  var _this16 = this;
+  var _this15 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
     var targetChapter, chapterId, pageId;
-    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+    return regeneratorRuntime.wrap(function _callee15$(_context15) {
       while (1) {
-        switch (_context16.prev = _context16.next) {
+        switch (_context15.prev = _context15.next) {
           case 0:
-            targetChapter = _this16.getFirstRenderedChapter();
+            targetChapter = _this15.getFirstRenderedChapter();
 
             if (targetChapter) {
-              _context16.next = 5;
+              _context15.next = 5;
               break;
             }
 
-            _this16.setCurrentChapterId('');
+            _this15.setCurrentChapterId('');
 
             PageStore.setCurrentPageId('');
-            return _context16.abrupt("return");
+            return _context15.abrupt("return");
 
           case 5:
             chapterId = targetChapter.id;
             pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-            _context16.next = 9;
+            _context15.next = 9;
             return PageStore.fetchCurrentPageData(pageId);
 
           case 9:
             // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
             // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-            _this16.setCurrentChapterId(chapterId);
+            _this15.setCurrentChapterId(chapterId);
 
           case 10:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15);
+  }))();
+}), _defineProperty(_observable$2, "fetchFirstNote", function fetchFirstNote() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            ChapterStore.setLoadingPageInfo(true);
+            _context16.next = 3;
+            return ChapterStore.setFirstNoteInfo();
+
+          case 3:
+            ChapterStore.setLoadingPageInfo(false);
+
+          case 4:
           case "end":
             return _context16.stop();
         }
       }
     }, _callee16);
+  }))();
+}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
+  var _this16 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _this16.setLoadingPageInfo(true);
+
+            _context17.next = 3;
+            return _this16.getNoteChapterList();
+
+          case 3:
+            if (!(_this16.chapterList.length > 0)) {
+              _context17.next = 6;
+              break;
+            }
+
+            _context17.next = 6;
+            return _this16.setFirstNoteInfo();
+
+          case 6:
+            _this16.setLoadingPageInfo(false);
+
+          case 7:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17);
   }))();
 }), _observable$2));
 
@@ -5159,6 +4706,7 @@ var handleWebsocket = function handleWebsocket(message) {
 };
 
 var NoteStore$1 = mobx.observable({
+  loadingNoteApp: true,
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
@@ -5181,11 +4729,11 @@ var NoteStore$1 = mobx.observable({
   shareContent: '',
   shareArrays: {},
   // { userArray, roomArray }
-  initVariables: function initVariables() {
-    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
-    ChapterStore.initSearchVar();
-    ChapterStore.setCurrentChapterId('');
-    PageStore.setCurrentPageId('');
+  getLoadingNoteApp: function getLoadingNoteApp() {
+    return this.loadingNoteApp;
+  },
+  setLoadingNoteApp: function setLoadingNoteApp(isLoading) {
+    this.loadingNoteApp = isLoading;
   },
   setWsId: function setWsId(wsId) {
     NoteRepository$1.setWsId(wsId);
@@ -5218,6 +4766,14 @@ var NoteStore$1 = mobx.observable({
     NoteStore$1.setUserName(userName);
     NoteStore$1.setUserId(userId);
     if (typeof callback === 'function') callback();
+  },
+  initVariables: function initVariables() {
+    // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
+    ChapterStore.initSearchVar();
+    ChapterStore.setCurrentChapterId('');
+    PageStore.setCurrentPageId('');
+    ChapterStore.setChapterList([]);
+    this.setShowPage(true);
   },
   addWWMSHandler: function addWWMSHandler() {
     if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', handleWebsocket);
@@ -5710,7 +5266,7 @@ var TagSearchForm = styled__default['default'].form(_templateObject13(), functio
 });
 var TagTitleSearchContainer = styled__default['default'].div(_templateObject14());
 
-const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
+const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
 function _templateObject40() {
   var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
@@ -6374,9 +5930,9 @@ var SearchTagChip = styled__default['default'](Tag)(_templateObject17$1());
 var TagChipText = styled__default['default'].div(_templateObject18$1());
 var TagChipNum = styled__default['default'].div(_templateObject19$1());
 
-const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
+const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
 
-const img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAp1JREFUaAXtmr1KBDEUhVdFRRARLUTBQrCwU1/AxsbWxkKsfAofwMJeBB/Cl7DZfQQVOwVBxR/EQlHRc5DAECbZm8nuzs2QC5f5SWbmfDfJJHN3W61sOQI5AoojMAltJ/BH+A38AD4Mb6RNgaoD/7Wc0CptBqp24LvwuUCFLljCs6XV2ToU3cNN67xgf0Oo0gfL+7F7q7M2FBlYs70SqOwGy3txTKuyEaj5ghvQ4pbd3GUSWI5pvshU2TjUFCGL+wsOpVJY1lNnocBJwzL6IcDJw4YANwJWCtwYWAlwo2C7Aa+gAqeW4pvb3mc5g5KM+V5aF6CwAYvHycGyVXzARTh7P0nYqsBciibVjQlqLLSFo2CHzFNr3BL4Q/j8S9Tbhr856vM+z44yNadDW9gey/Yxv7Kkn5a1BKHXwAwAv6dLkwhNzfdMA3izrPk0AH9CWD/G3XcZsJZzxxBij8WYY6aLfMmD2rknoIDQT/AYUGZOOG0xR1ZqGqYlWxhfYlWN3fin6sX5uhyBHIEcgaQisAa153AuyGOmijtcfwQfg6u1WSh7gMeA2tcSWq3tQZktOPaYLV27udbS/eh+87XTegQsouwdHtuq9vWeR9ZftAUJtz2Grp1KspbmL3iu9S0TaWfwZSGJ5HnCWw2+GmHbcLvb+o4Hr7JHT6wCy0AkaVVhkwQmbAfu67bXnvKkWlgCy2CsNgFYCst6S6kDh8CCNW3gUNikgavAJgtcFTZJ4BjY5ID5N71u8yzLGRSXce1dNk9LfxJ13bcv508dYg1AN1gjquwri+kidfYKRQbO3kphCcVPy+L3NNNFzJGpM1ceKwTWQDGJsA9nuog5MpV2CFUxLasSyidqFIWEZkuze3NMq/u/MTRlyxHIEfiPwB+7UGoOrQOerwAAAABJRU5ErkJggg==";
+const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAp1JREFUaAXtmr1KBDEUhVdFRRARLUTBQrCwU1/AxsbWxkKsfAofwMJeBB/Cl7DZfQQVOwVBxR/EQlHRc5DAECbZm8nuzs2QC5f5SWbmfDfJJHN3W61sOQI5AoojMAltJ/BH+A38AD4Mb6RNgaoD/7Wc0CptBqp24LvwuUCFLljCs6XV2ToU3cNN67xgf0Oo0gfL+7F7q7M2FBlYs70SqOwGy3txTKuyEaj5ghvQ4pbd3GUSWI5pvshU2TjUFCGL+wsOpVJY1lNnocBJwzL6IcDJw4YANwJWCtwYWAlwo2C7Aa+gAqeW4pvb3mc5g5KM+V5aF6CwAYvHycGyVXzARTh7P0nYqsBciibVjQlqLLSFo2CHzFNr3BL4Q/j8S9Tbhr856vM+z44yNadDW9gey/Yxv7Kkn5a1BKHXwAwAv6dLkwhNzfdMA3izrPk0AH9CWD/G3XcZsJZzxxBij8WYY6aLfMmD2rknoIDQT/AYUGZOOG0xR1ZqGqYlWxhfYlWN3fin6sX5uhyBHIEcgaQisAa153AuyGOmijtcfwQfg6u1WSh7gMeA2tcSWq3tQZktOPaYLV27udbS/eh+87XTegQsouwdHtuq9vWeR9ZftAUJtz2Grp1KspbmL3iu9S0TaWfwZSGJ5HnCWw2+GmHbcLvb+o4Hr7JHT6wCy0AkaVVhkwQmbAfu67bXnvKkWlgCy2CsNgFYCst6S6kDh8CCNW3gUNikgavAJgtcFTZJ4BjY5ID5N71u8yzLGRSXce1dNk9LfxJ13bcv508dYg1AN1gjquwri+kidfYKRQbO3kphCcVPy+L3NNNFzJGpM1ceKwTWQDGJsA9nuog5MpV2CFUxLasSyidqFIWEZkuze3NMq/u/MTRlyxHIEfiPwB+7UGoOrQOerwAAAABJRU5ErkJggg==";
 
 var style = {
   cursor: 'pointer',
@@ -6397,10 +5953,10 @@ var HeaderButtons = function HeaderButtons() {
   var onChangeImg = function onChangeImg() {
     switch (NoteStore.layoutState) {
       case 'expand':
-        return img$3;
+        return img$2;
 
       default:
-        return img$2;
+        return img$1;
     }
   };
 
@@ -6431,13 +5987,13 @@ var HeaderButtons = function HeaderButtons() {
       onClick: handleLayoutState
     }), /*#__PURE__*/React__default['default'].createElement(Button, {
       style: style,
-      src: img$1,
+      src: img,
       onClick: handleCancelBtn
     })));
   });
 };
 
-const img$4 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$3 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var LNBHeader = function LNBHeader(_ref) {
   var createNewChapter = _ref.createNewChapter;
@@ -6554,7 +6110,7 @@ var LNBHeader = function LNBHeader(_ref) {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleCover, null, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
       show: NoteStore$1.layoutState === 'collapse' && ChapterStore.isTagSearching
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$4,
+      src: img$3,
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
       "data-btn": 'noteNewChapterBtn',
@@ -6580,9 +6136,9 @@ var LNBHeader = function LNBHeader(_ref) {
       style: {
         marginLeft: "0.69rem"
       },
-      src: img$1
+      src: img
     })) : null, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$1,
+      src: img,
       style: ChapterStore.isSearching || ChapterStore.searchStr !== "" ? {
         display: ""
       } : {
@@ -6796,7 +6352,7 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
   }))));
 });
 
-const img$5 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAABJxJREFUaAXtmslrFUEQxuMSFSUIelBBCXqIKIqIIoJbEAziGncTxbjFuB1cTuIlIHoRUdCLN0UPgjv4B6ioFwW9eBDcwGAgEhH3Nfp9TweKpnqWN90zk2DB96anpqa7ftPzerrnvYqK//b/CvSoK9ArI5o5aOcINBGqhD4LfRJl+uPsf0DcQ+gNVDhrRkZd0G8Puo46h0GFMZ+wwQV8BNp+RSDOAjaAbokL3DduYMI4wp6GzDGC39GTENsdBA00JH2y3BtxYVaLg2wvF7P1LAej2jIz6o/zhkAjoRroDhT0Lre3oFzMB6wGcgVOCXxfC/LtywqWHOchCfzYN5xZf5awbJvfVwn8wkzI574rWA5kh6A2qB06BvG7q9lxOCVwhxbkw+cKlrm1QhKC5ROQZofhlLEftSDXPpewzO05JCFY7uQBxQ7CJ2N/KTFOXa5hmVwS4L2Il8AsD2AlPswHLPNshUwI2y3NmZUZOxQ+5+YLlokmGbTWI94EHuWa1ids0lyXK8Bjk1YSFl8kWOY5HzJ7eHIYQJJjRYNl7rMhE3hmEihbbBFhmetUyASus0HE9fMqdikVp1n1xG07Km6ckld91ElRx+8qlRYBlnlXK7k18kCUhS2sJxgnc/G+ELpp+PPYZS6m8YVBpIUBvzLO7oN9vqEogs1TkrAtNJRQ3XUAbnNg+ArfAj08M+9qtPQTMnNbkjYD9uhtpeI8oW2w7chzcFpgnl8FaYNXHtA22G/IMfUjibCBEfoBZN5CWULbYJnTuSBRV1uO1m8hE5j7WUCHwTKHs5AzG42aXkMabODzCR0F6xSYv9k8jYD1CR0H1hkwRzz+ZhMABVtONfdAvgeyuLDOgC9YYLfDT/M5ettg+d4quPBym/o7rE3M2cAukgrzAW2D5aOnGZKgQTk18Eql4n0CVBYJfU+JL2cgC4PlHH6E0g6hUwPPUCq+Bl8lpJmLng6DXfSv0eHYBr0qt6mBOQl/plTuCzoOLJltwKd4MK3VogJ+b+SVZDkKOuntHRcWTVfsVPJhTvt50IUtRiUa9FX4XdzeSWCb0Kb29uU7/E5fz/qCTgLbACjbIyl4TCLEnXGdyStp3t5RPW27vY+iLm09y7spGKBQLNkKfGqxzGX33xA/n0tRrQbNX+KT3t7mheO+Bsu7S2uT8eacAC73Vo8qtQTSQmuwfNHOZ7l2cTh4ZWbL0JIGfRn+cnpag52Lur5AJiwHrUxh0V7JwqD5g5hmVXCegSQEl511kLRZ2OGrYBnHMmF3QLkZf8z6AZmJsadt0EyW8/RNEAdCrsikTcfOe8isk7BeRmPZeJwyR9ByoLW6p8D5DtJgW7QT8vJxoaFBX4I/rKdlvpOw0wlpsNtkYFHKq5BIudDjcW4HpME2FwVQy4Mzp6TQNTiH75M12K1aI0Xz2aaLF5GoeXuPga8N0mC3FA0sLJ81OKhNBSV0NWJeQt0eFgwlW4tPGzRhtbU2FwebS2d3048G5K1BazMowvLZ3O2tEQQatLyVCbux25MKgHUo26AJ2yRie0yR0FwkyJ7lI2xDjyFUQPgfKs6zn0A3oGlQLvYHb4hnJnRITEQAAAAASUVORK5CYII=";
+const img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAABJxJREFUaAXtmslrFUEQxuMSFSUIelBBCXqIKIqIIoJbEAziGncTxbjFuB1cTuIlIHoRUdCLN0UPgjv4B6ioFwW9eBDcwGAgEhH3Nfp9TweKpnqWN90zk2DB96anpqa7ftPzerrnvYqK//b/CvSoK9ArI5o5aOcINBGqhD4LfRJl+uPsf0DcQ+gNVDhrRkZd0G8Puo46h0GFMZ+wwQV8BNp+RSDOAjaAbokL3DduYMI4wp6GzDGC39GTENsdBA00JH2y3BtxYVaLg2wvF7P1LAej2jIz6o/zhkAjoRroDhT0Lre3oFzMB6wGcgVOCXxfC/LtywqWHOchCfzYN5xZf5awbJvfVwn8wkzI574rWA5kh6A2qB06BvG7q9lxOCVwhxbkw+cKlrm1QhKC5ROQZofhlLEftSDXPpewzO05JCFY7uQBxQ7CJ2N/KTFOXa5hmVwS4L2Il8AsD2AlPswHLPNshUwI2y3NmZUZOxQ+5+YLlokmGbTWI94EHuWa1ids0lyXK8Bjk1YSFl8kWOY5HzJ7eHIYQJJjRYNl7rMhE3hmEihbbBFhmetUyASus0HE9fMqdikVp1n1xG07Km6ckld91ElRx+8qlRYBlnlXK7k18kCUhS2sJxgnc/G+ELpp+PPYZS6m8YVBpIUBvzLO7oN9vqEogs1TkrAtNJRQ3XUAbnNg+ArfAj08M+9qtPQTMnNbkjYD9uhtpeI8oW2w7chzcFpgnl8FaYNXHtA22G/IMfUjibCBEfoBZN5CWULbYJnTuSBRV1uO1m8hE5j7WUCHwTKHs5AzG42aXkMabODzCR0F6xSYv9k8jYD1CR0H1hkwRzz+ZhMABVtONfdAvgeyuLDOgC9YYLfDT/M5ettg+d4quPBym/o7rE3M2cAukgrzAW2D5aOnGZKgQTk18Eql4n0CVBYJfU+JL2cgC4PlHH6E0g6hUwPPUCq+Bl8lpJmLng6DXfSv0eHYBr0qt6mBOQl/plTuCzoOLJltwKd4MK3VogJ+b+SVZDkKOuntHRcWTVfsVPJhTvt50IUtRiUa9FX4XdzeSWCb0Kb29uU7/E5fz/qCTgLbACjbIyl4TCLEnXGdyStp3t5RPW27vY+iLm09y7spGKBQLNkKfGqxzGX33xA/n0tRrQbNX+KT3t7mheO+Bsu7S2uT8eacAC73Vo8qtQTSQmuwfNHOZ7l2cTh4ZWbL0JIGfRn+cnpag52Lur5AJiwHrUxh0V7JwqD5g5hmVXCegSQEl511kLRZ2OGrYBnHMmF3QLkZf8z6AZmJsadt0EyW8/RNEAdCrsikTcfOe8isk7BeRmPZeJwyR9ByoLW6p8D5DtJgW7QT8vJxoaFBX4I/rKdlvpOw0wlpsNtkYFHKq5BIudDjcW4HpME2FwVQy4Mzp6TQNTiH75M12K1aI0Xz2aaLF5GoeXuPga8N0mC3FA0sLJ81OKhNBSV0NWJeQt0eFgwlW4tPGzRhtbU2FwebS2d3048G5K1BazMowvLZ3O2tEQQatLyVCbux25MKgHUo26AJ2yRie0yR0FwkyJ7lI2xDjyFUQPgfKs6zn0A3oGlQLvYHb4hnJnRITEQAAAAASUVORK5CYII=";
 
 var LNBTag = /*#__PURE__*/React.memo(function () {
   var _useNoteStore = useNoteStore(),
@@ -6832,11 +6388,532 @@ var LNBTag = /*#__PURE__*/React.memo(function () {
       onClick: onClickTagMenuBtn
     }, /*#__PURE__*/React__default['default'].createElement(TagImg, {
       showTag: !NoteStore.showPage,
-      src: img$5,
+      src: img$4,
       alt: "tagImg"
     }), /*#__PURE__*/React__default['default'].createElement(TagTxt, null, "\uD0DC\uADF8")));
   });
 });
+
+const img$5 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+
+/*
+  Link Dialog 관련
+*/
+
+var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
+  var title = header.querySelector('.tox-dialog__title');
+  title.style.margin = 'auto';
+  title.textContent = '링크 삽입';
+}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
+
+
+var renderErrorMark = function renderErrorMark(target) {
+  var img = document.createElement('img');
+  img.src = img$5;
+  img.classList.add('note-link-error');
+  var tooltip = document.createElement('div');
+  tooltip.classList.add('note-link-error-tooltip');
+  tooltip.textContent = '해당 URL은 유효하지 않습니다.';
+  target.appendChild(img);
+  target.appendChild(tooltip);
+  return [img, tooltip];
+};
+
+var renderValidation = function renderValidation(targetInput, errorMark, saveBtn) {
+  var _value = targetInput.value; // 가독성을 위해 중복 검사함
+  // 빈 str이거나 invalid
+
+  if (!checkUrlValidation(_value)) {
+    saveBtn.setAttribute('disabled', true);
+  } else saveBtn.removeAttribute('disabled'); // errorMark는 invalid할 때만
+
+
+  if (!isFilled(_value) || validUrl(_value)) {
+    errorMark.map(function (child) {
+      return child.classList.remove('note-show-element');
+    });
+    targetInput.classList.remove('note-link-input');
+  } else {
+    errorMark.map(function (child) {
+      return child.classList.add('note-show-element');
+    });
+    targetInput.classList.add('note-link-input');
+  }
+};
+
+var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
+  var formStr = {
+    url: "링크",
+    text: "텍스트"
+  }; // string 바꿔주기, renderValidationErrorMark
+
+  Array.from(form.childNodes).map(function (child, idx) {
+    var label$ = child.querySelector('.tox-form__group label');
+    var input$ = child.querySelector('input');
+    var content = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
+
+    label$.textContent = formStr[content];
+    /*
+      Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
+    */
+
+    if (content === "url") {
+      var _footer$querySelector;
+
+      var saveBtn = (_footer$querySelector = footer.querySelector('.tox-dialog__footer-end')) === null || _footer$querySelector === void 0 ? void 0 : _footer$querySelector.childNodes[1];
+      var errorMark = renderErrorMark(input$.parentElement); // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
+
+      renderValidation(input$, errorMark, saveBtn);
+
+      input$.oninput = function (e) {
+        renderValidation(input$, errorMark, saveBtn);
+      };
+    }
+  }); // 텍스트, 링크 순으로 바꿔주기
+
+  form.classList.add('link-dialog-reverse');
+};
+
+var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
+  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
+  btnGroup.classList.add('note-link-footer');
+};
+
+var changeLinkDialog = function changeLinkDialog() {
+  try {
+    var dialog = document.querySelector('.tox-dialog');
+    var footer = dialog.querySelector('.tox-dialog__footer');
+    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
+    changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
+    changeLinkDialogFooter(footer);
+  } catch (err) {
+    throw Error(err);
+  }
+};
+/*
+  Link context Toolbar 관련
+  custimizing contextToolbar
+*/
+
+var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
+var changeButtonStyle = function changeButtonStyle(idx, count) {
+  var _toolbar$childNodes;
+
+  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
+  toolbar.classList.add('link-toolbar');
+  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
+
+  if (toolbar && target) {
+    var strNode = document.createElement('div');
+    strNode.textContent = linkToolbarStr[idx];
+    target.appendChild(strNode);
+  } else if (count >= 50) return;else {
+    setTimeout(changeButtonStyle, 50, idx, count + 1);
+  }
+};
+var openLink = function openLink(url, target) {
+  if (!PageStore.isReadMode()) return;
+
+  if (target !== '_blank') {
+    document.location.href = url;
+    return;
+  }
+
+  var link = document.createElement('a');
+  link.href = url;
+  link.target = target;
+  link.rel = 'noopener';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+var handleUpload = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var uploadArr;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            uploadArr = [];
+
+            if (!EditorStore.uploadDTO) {
+              _context.next = 5;
+              break;
+            }
+
+            uploadArr = mobx.toJS(EditorStore.uploadDTO).map(function (item) {
+              return EditorStore.createUploadMeta(item.uploadMeta, item.type);
+            });
+            _context.next = 5;
+            return Promise.all(uploadArr).then(function (results) {
+              if (EditorStore.uploadDTO.length === results.length) {
+                var _loop = function _loop(i) {
+                  (function (result) {
+                    if (result.id !== undefined) {
+                      var handleUploadProgress = function handleUploadProgress(e) {
+                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
+                        EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                        EditorStore.tempFileLayoutList[i].file_id = result.id;
+                      };
+
+                      EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
+                        if (dto.resultMsg === 'Success') {
+                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                        } else if (dto.resultMsg === 'Fail') {
+                          EditorStore.failCount++;
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                          EditorStore.tempFileLayoutList[i].error = true;
+                        }
+
+                        EditorStore.processLength++;
+
+                        if (EditorStore.processLength == EditorStore.uploadLength) {
+                          EditorStore.uploadDTO = [];
+                          if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
+                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                              EditorStore.setFileList(dto.fileList);
+                              EditorStore.tempFileLayoutList = [];
+                            });
+                          }
+                        }
+                      });
+                    }
+                  })(results[i]);
+                };
+
+                for (var i = 0; i < results.length; i++) {
+                  _loop(i);
+                }
+              }
+            });
+
+          case 5:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function handleUpload() {
+    return _ref.apply(this, arguments);
+  };
+}();
+var driveSuccessCb = function driveSuccessCb(fileList) {
+  if (fileList) {
+    EditorStore.setFileLength(fileList.length);
+    fileList.forEach(function (file) {
+      return EditorStore.addDriveFileList(file);
+    });
+    handleDriveCopy();
+    EditorStore.setIsAttatch(true);
+    EditorStore.setIsDrive(false);
+  }
+};
+var driveCancelCb = function driveCancelCb() {
+  EditorStore.setIsAttatch(true);
+  EditorStore.setIsDrive(false);
+  setTimeout(function () {
+    EditorStore.setIsAttatch(false);
+  }, 100);
+};
+var handleDriveCopy = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var copyArr, resultArray;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            copyArr = [];
+            resultArray = [];
+
+            if (!EditorStore.driveFileList) {
+              _context2.next = 6;
+              break;
+            }
+
+            copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
+              return EditorStore.storageFileDeepCopy(item.file_id, item.type);
+            });
+            _context2.next = 6;
+            return Promise.all(copyArr).then(function (results) {
+              if (EditorStore.driveFileList.length === results.length) {
+                for (var i = 0; i < results.length; i++) {
+                  (function (result) {
+                    if (result.id !== undefined) resultArray.push(result.id);
+                  })(results[i]);
+                }
+
+                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
+                  if (dto.resultMsg === 'Success') {
+                    EditorStore.driveFileList = [];
+                    if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
+                      PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                        EditorStore.setFileList(dto.fileList);
+                        EditorStore.tempFileLayoutList = [];
+                      });
+                      EditorStore.setIsAttatch(false);
+                    }
+                  }
+                });
+              }
+            });
+
+          case 6:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function handleDriveCopy() {
+    return _ref2.apply(this, arguments);
+  };
+}();
+var handleFileDelete = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return EditorStore.tinymce.dom.doc.images;
+
+          case 2:
+            imgTarget = _context3.sent;
+            fileTarget = document.querySelectorAll('div #fileLayout [id]');
+            imgArray = _toConsumableArray(imgTarget);
+            fileArray = _toConsumableArray(fileTarget);
+            deleteArr = [];
+            imgArray.forEach(function (img) {
+              return EditorStore.tempFileList.push(img.getAttribute('id'));
+            });
+            fileArray.forEach(function (file) {
+              return EditorStore.tempFileList.push(file.getAttribute('id'));
+            });
+            if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(function (file) {
+              return !EditorStore.tempFileList.includes(file.file_id);
+            });
+
+            if (!EditorStore.deleteFileList) {
+              _context3.next = 21;
+              break;
+            }
+
+            deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
+            });
+            _context3.prev = 12;
+            _context3.next = 15;
+            return Promise.all(deleteArr).then(function () {
+              EditorStore.deleteFileList = [];
+              EditorStore.tempFileList = [];
+              PageStore.setContent(EditorStore.tinymce.getContent());
+            });
+
+          case 15:
+            _context3.next = 19;
+            break;
+
+          case 17:
+            _context3.prev = 17;
+            _context3.t0 = _context3["catch"](12);
+
+          case 19:
+            _context3.prev = 19;
+            return _context3.finish(19);
+
+          case 21:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[12, 17, 19, 21]]);
+  }));
+
+  return function handleFileDelete() {
+    return _ref3.apply(this, arguments);
+  };
+}();
+var downloadFile = function downloadFile(fileId) {
+  if (fileId) {
+    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
+    return;
+  }
+
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = EditorStore.tinymce.selection.getNode().src;
+  a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
+  a.click();
+  document.body.removeChild(a);
+};
+var makeExportElement = function makeExportElement(data, type) {
+  var fragment = document.createElement('div');
+  fragment.style.visibility = 'visible';
+  fragment.style.opacity = 0;
+  fragment.style.width = 'fit-content';
+  fragment.setAttribute('id', 'exportTarget');
+  var targetDIV = document.createElement('div');
+  targetDIV.setAttribute('id', 'exportTargetDiv');
+  targetDIV.setAttribute('class', 'export');
+  targetDIV.innerHTML = data;
+  fragment.appendChild(targetDIV);
+  document.body.appendChild(fragment);
+  exportDownloadPDF(type);
+};
+var exportDownloadPDF = function exportDownloadPDF(type) {
+  var element = document.getElementById('exportTargetDiv');
+  var opt = {
+    margin: 2,
+    filename: type === 'page' ? "".concat(PageStore.exportPageTitle, ".pdf") : "".concat(ChapterStore.exportChapterTitle, ".pdf"),
+    pagebreak: {
+      after: '.afterClass',
+      avoid: 'span'
+    },
+    image: {
+      type: 'jpeg',
+      quality: 0.98
+    },
+    jsPDF: {
+      unit: 'pt',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
+  html2pdf__default['default'](element, opt).then(function () {
+    document.getElementById('exportTarget').remove();
+  });
+};
+var exportChapterData = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    var returnData;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            returnData = '';
+            _context4.next = 3;
+            return NoteRepository$1.getChapterChildren(ChapterStore.exportChapterId).then(function (response) {
+              var noteList = response.data.dto.noteList;
+
+              if (noteList.length > 0) {
+                noteList.forEach(function (page, idx) {
+                  returnData += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                });
+              } else return alert('하위에 속한 페이지가 없습니다.');
+
+              makeExportElement(returnData, 'chapter');
+            });
+
+          case 3:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function exportChapterData() {
+    return _ref4.apply(this, arguments);
+  };
+}();
+var exportPageData = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var returnData;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            returnData = '';
+            _context5.next = 3;
+            return NoteRepository$1.getNoteInfoList(PageStore.exportPageId).then(function (response) {
+              var dto = response.data.dto;
+              PageStore.exportPageTitle = dto.note_title;
+              returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            });
+
+          case 3:
+            makeExportElement(returnData, 'page');
+
+          case 4:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
+
+  return function exportPageData() {
+    return _ref5.apply(this, arguments);
+  };
+}();
+
+var handleClickLink = function handleClickLink(el) {
+  var href = el.getAttribute('href');
+  var target = el.getAttribute('target');
+  openLink(href, target);
+};
+
+var handleClickImg = function handleClickImg(el) {
+  if (!PageStore.isReadMode()) return;
+  var file = el.getAttribute('data-name').split('.');
+  EditorStore.setPreviewFileMeta({
+    userId: NoteRepository$1.USER_ID,
+    channelId: NoteRepository$1.chId,
+    roomId: NoteRepository$1.WS_ID,
+    fileId: el.id,
+    fileName: file[0],
+    fileExtension: file[1]
+  });
+  EditorStore.setIsPreview(true);
+};
+
+var handleEditorContentsListener = function handleEditorContentsListener() {
+  if (EditorStore.tinymce) {
+    var _EditorStore$tinymce$;
+
+    var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
+
+    if (targetList && targetList.length > 0) {
+      Array.from(targetList).forEach(function (el) {
+        if (el.getAttribute('hasListener')) return;
+        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+        el.setAttribute('hasListener', true);
+      });
+    }
+  }
+};
+var handleFileSync = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return handleFileDelete();
+
+          case 2:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+
+  return function handleFileSync() {
+    return _ref6.apply(this, arguments);
+  };
+}();
+var handleDriveSave = function handleDriveSave() {
+  var DriveSaveModal = teespaceCore.ComponentStore.get('Drive:DriveSaveModal');
+  console.log(DriveSaveModal);
+};
 
 var ContextMenu = function ContextMenu(_ref) {
   var noteType = _ref.noteType,
@@ -7415,7 +7492,6 @@ var Chapter = function Chapter(_ref) {
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
-    PageStore.setCurrentPageId(pageId);
     PageStore.fetchCurrentPageData(pageId);
   }, [chapter]);
 
@@ -7783,7 +7859,7 @@ function _templateObject4$6() {
 }
 
 function _templateObject3$6() {
-  var data = _taggedTemplateLiteral(["\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:", ";\n  flex-direction:column;\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n"]);
 
   _templateObject3$6 = function _templateObject3() {
     return data;
@@ -7793,7 +7869,7 @@ function _templateObject3$6() {
 }
 
 function _templateObject2$6() {
-  var data = _taggedTemplateLiteral(["\n  height: 100%;\n  border-right: 1px solid #e3e7eb;\n  flex: 1 1 21.06rem;\n  min-width: 21.06rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:", ";\n  height: 100%;\n  border-right: 1px solid #e3e7eb;\n  flex: 1 1 21.06rem;\n  min-width: 21.06rem;\n"]);
 
   _templateObject2$6 = function _templateObject2() {
     return data;
@@ -7812,8 +7888,12 @@ function _templateObject$6() {
   return data;
 }
 var GlobalStyle = styled.createGlobalStyle(_templateObject$6());
-var LNB = styled__default['default'].div(_templateObject2$6());
-var Content = styled__default['default'].div(_templateObject3$6());
+var LNB = styled__default['default'].div(_templateObject2$6(), function (props) {
+  return props.show ? "flex" : "none";
+});
+var Content = styled__default['default'].div(_templateObject3$6(), function (props) {
+  return props.show ? "flex" : "none";
+});
 var CenterContent = styled__default['default'].div(_templateObject4$6());
 
 var ContentHeader = function ContentHeader(_ref) {
@@ -7831,7 +7911,7 @@ var ContentHeader = function ContentHeader(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
       show: NoteStore.layoutState === 'collapse'
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$4,
+      src: img$3,
       onClick: handleBackBtn
     })), alignment === "center" ? children : null, /*#__PURE__*/React__default['default'].createElement(RightAligned, null, alignment === "right" ? children : null, /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null))));
   });
@@ -8158,7 +8238,7 @@ function _templateObject13$3() {
 }
 
 function _templateObject12$3() {
-  var data = _taggedTemplateLiteral(["\n  width:100%;\n  display : flex;\n  align-items: center;\n  height: 4.9rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.9rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  margin: 0rem 0.5rem;\n"]);
 
   _templateObject12$3 = function _templateObject12() {
     return data;
@@ -8584,6 +8664,8 @@ var FileLayout = function FileLayout() {
       hoverFileId = _useState4[0],
       setHoverFileId = _useState4[1];
 
+  var filebodyRef = React.useRef([]);
+
   var fileExtension = function fileExtension(extension) {
     switch (extension) {
       case 'txt':
@@ -8607,7 +8689,7 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileDown = function handleFileDown(key) {
-    if (key === '0') alert('준비 중입니다.');
+    if (key === '0') handleDriveSave();
     if (key === '1') downloadFile(EditorStore.downloadFileId);
   };
 
@@ -8627,7 +8709,9 @@ var FileLayout = function FileLayout() {
   };
 
   var handleSelectFile = function handleSelectFile(e) {
-    if (EditorStore.selectFileElement !== '') {
+    var target = e.target; // file layout 외 영역 클릭시.. 다른 구현방법 생각해봐야될 듯
+
+    if (!filebodyRef.current.includes(target.closest('.noteFile'))) {
       EditorStore.setFileIndex('');
       EditorStore.setFileElement('');
       document.removeEventListener("click", handleSelectFile);
@@ -8635,10 +8719,10 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileBodyClick = function handleFileBodyClick(index) {
-    if (EditorStore.selectFileIdx === '') {
-      document.addEventListener("click", handleSelectFile);
-    }
-
+    EditorStore.setFileElement(filebodyRef.current[index]);
+    EditorStore.selectFileElement.focus();
+    EditorStore.selectFileElement.scrollIntoView(false);
+    if (EditorStore.selectFileIdx === '') document.addEventListener("click", handleSelectFile);
     if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);else {
       EditorStore.setFileIndex('');
       EditorStore.setFileElement('');
@@ -8808,7 +8892,7 @@ var FileLayout = function FileLayout() {
           display: 'none'
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img$1,
+        src: img,
         onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')
       }))), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
         percent: item.progress * 100,
@@ -8820,9 +8904,12 @@ var FileLayout = function FileLayout() {
     }), EditorStore.fileLayoutList.map(function (item, index) {
       return /*#__PURE__*/React__default['default'].createElement(FileBody, {
         id: item.file_id ? item.file_id : item.user_context_2,
+        ref: function ref(el) {
+          return filebodyRef.current[index] = el;
+        },
         key: index,
         onClick: handleFileBodyClick.bind(null, index),
-        className: index === EditorStore.selectFileIdx ? 'selected' : '',
+        className: index === EditorStore.selectFileIdx ? 'noteFile selected' : 'noteFile',
         onKeyDown: handleKeyDownFile,
         tabIndex: index,
         closable: !PageStore.isReadMode(),
@@ -8846,7 +8933,7 @@ var FileLayout = function FileLayout() {
           display: 'none'
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img$1,
+        src: img,
         onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'uploaded')
       }))));
     })));
@@ -8871,6 +8958,8 @@ var EditorContainer = function EditorContainer() {
       PageStore = _useNoteStore.PageStore,
       EditorStore = _useNoteStore.EditorStore;
 
+  var DriveAttachModal = teespaceCore.ComponentStore.get('Drive:DriveAttachModal');
+  var FilePreview = teespaceCore.ComponentStore.get('Drive:FilePreview');
   var editorWrapperRef = React.useRef(null);
 
   var getEditorContent = function getEditorContent(content) {
@@ -8922,6 +9011,8 @@ var EditorContainer = function EditorContainer() {
       // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
       // currentFile.setAttribute('temp-id', tempId);
     }
+
+    if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
   };
 
   var handleFileBlob = function handleFileBlob(type) {
@@ -9174,7 +9265,7 @@ var EditorContainer = function EditorContainer() {
                 type: 'menuitem',
                 text: 'Drive에 저장',
                 onAction: function onAction() {
-                  alert('기능 구현 중입니다.');
+                  handleDriveSave();
                 }
               }, {
                 type: 'menuitem',
@@ -9227,11 +9318,11 @@ var EditorContainer = function EditorContainer() {
       apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
       plugins: "print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
       toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile media"
-    }), EditorStore.isFile ? /*#__PURE__*/React__default['default'].createElement(FileLayout, null) : null, /*#__PURE__*/React__default['default'].createElement(TagListContainer, null), /*#__PURE__*/React__default['default'].createElement(teespaceDriveApp.DriveAttachModal, {
+    }), EditorStore.isFile ? /*#__PURE__*/React__default['default'].createElement(FileLayout, null) : null, /*#__PURE__*/React__default['default'].createElement(TagListContainer, null), /*#__PURE__*/React__default['default'].createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
       cancelCallback: driveCancelCb
-    }), PageStore.isReadMode() && EditorStore.isPreview ? /*#__PURE__*/React__default['default'].createElement(teespaceDriveApp.FilePreview, {
+    }), PageStore.isReadMode() && EditorStore.isPreview ? /*#__PURE__*/React__default['default'].createElement(FilePreview, {
       visible: EditorStore.isPreview,
       fileMeta: EditorStore.previewFileMeta,
       handleClose: function handleClose() {
@@ -9258,11 +9349,15 @@ var LoadingImgContainer = function LoadingImgContainer() {
 
 const img$j = "data:image/png;base64,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";
 
-var PageNotFound = function PageNotFound() {
+var PageNotFound = function PageNotFound(_ref) {
+  var type = _ref.type;
+
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
-      ChapterStore = _useNoteStore.ChapterStore; // 뒤로 가기 버튼
+      ChapterStore = _useNoteStore.ChapterStore; // 다국어지원 대비?
 
+
+  var str = type === "page" ? "페이지" : "챕터"; // 뒤로 가기 버튼
 
   var handleLayoutBtn = function handleLayoutBtn() {
     NoteStore.setTargetLayout('LNB');
@@ -9271,7 +9366,7 @@ var PageNotFound = function PageNotFound() {
 
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
     handleBackBtn: handleLayoutBtn
-  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, "\uD398\uC774\uC9C0\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React__default['default'].createElement(NoneText, null, "\uC2DC\uC791\uD558\uB824\uBA74 \"\uC0C8 \uD398\uC774\uC9C0 \uCD94\uAC00\" \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
+  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, str, "\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React__default['default'].createElement(NoneText, null, "\uC2DC\uC791\uD558\uB824\uBA74 \"\uC0C8 ", str, " \uCD94\uAC00\" \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
     src: img$j,
     alt: "page_not_found"
   }))));
@@ -9284,12 +9379,17 @@ var _useNoteStore$1 = useNoteStore(),
 
 var PageContainer = mobxReact.observer(function () {
   var el = function () {
+    if (ChapterStore$2.loadingPageInfo) return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null);
+
     if (ChapterStore$2.currentChapterId) {
-      if (PageStore$1.currentPageId) return /*#__PURE__*/React__default['default'].createElement(EditorContainer, null);else return /*#__PURE__*/React__default['default'].createElement(PageNotFound, null); // chapter 하위 page가 없을 때
-    } // currentChapterId가 없다면 로딩이거나 태그메뉴 선택한 것
+      if (PageStore$1.currentPageId) return /*#__PURE__*/React__default['default'].createElement(EditorContainer, null);else return /*#__PURE__*/React__default['default'].createElement(PageNotFound, {
+        type: "page"
+      }); // chapter 하위 page가 없을 때
+    }
 
-
-    return /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null);
+    return /*#__PURE__*/React__default['default'].createElement(PageNotFound, {
+      type: "chapter"
+    });
   }();
 
   return el;
@@ -9465,7 +9565,7 @@ var TagHeader = function TagHeader() {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
       }
     }), /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$1,
+      src: img,
       style: cancelBtnVisibility,
       onClick: onClickCancelBtn
     })))));
@@ -9539,7 +9639,7 @@ var Modal = function Modal() {
       buttons = _NoteStore$modalInfo.buttons,
       sharedInfo = _NoteStore$modalInfo.sharedInfo;
   var el = /*#__PURE__*/ReactDom__default['default'].createPortal( /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(RoomShareModal, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitleContainer, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(Button, {
-    src: img$1
+    src: img
   })), /*#__PURE__*/React__default['default'].createElement(teespaceCore.ItemSelector, {
     isVisibleRoom: true,
     onSelectChange: function onSelectChange(data) {
@@ -9603,14 +9703,16 @@ var NoteApp = function NoteApp(_ref) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   };
 
+  var history = reactRouterDom.useHistory();
+
   var handleClickOutsideEditor = function handleClickOutsideEditor(e) {
     var _GlobalVariable$edito, _document$querySelect, _document$querySelect2, _EditorStore$tinymce;
 
     if (PageStore.isReadMode()) return;
     if (EditorStore.isDrive || EditorStore.isAttatch) return;
-    if (GlobalVariable.editorWrapper && (_GlobalVariable$edito = GlobalVariable.editorWrapper) !== null && _GlobalVariable$edito !== void 0 && _GlobalVariable$edito.contains(e.target)) return;
-    if (GlobalVariable.editorWrapper && (_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) !== null && _document$querySelect !== void 0 && _document$querySelect.contains(e.target)) return;
-    if ((_document$querySelect2 = document.querySelector('.tox-pop__dialog')) !== null && _document$querySelect2 !== void 0 && _document$querySelect2.contains(e.target)) return;
+    if (GlobalVariable.editorWrapper && ((_GlobalVariable$edito = GlobalVariable.editorWrapper) === null || _GlobalVariable$edito === void 0 ? void 0 : _GlobalVariable$edito.contains(e.target))) return;
+    if (GlobalVariable.editorWrapper && ((_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.contains(e.target))) return;
+    if ((_document$querySelect2 = document.querySelector('.tox-pop__dialog')) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.contains(e.target)) return;
     if (e.target.download) return;
     var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
 
@@ -9627,70 +9729,93 @@ var NoteApp = function NoteApp(_ref) {
     return function () {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
-  }, []); // FirstNoteInfo 하는 때 : 확대 상태로 방 바뀌었을 때, 축소->확대 처음할 때
-
-  React.useEffect(function () {
-    // channelId가 바뀔 때만 동작한다는 가정!
-    NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              NoteStore.addWWMSHandler();
-              NoteStore.initVariables();
-
-              if (!channelId) {
-                _context.next = 8;
-                break;
-              }
-
-              _context.next = 5;
-              return ChapterStore.getNoteChapterList();
-
-            case 5:
-              if (layoutState === 'expand') ChapterStore.setFirstNoteInfo();else if (layoutState === 'collapse') NoteStore.setTargetLayout('LNB');
-              _context.next = 9;
-              break;
-
-            case 8:
-              ChapterStore.setChapterList([]);
-
-            case 9:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    })));
-  }, [channelId]);
-  /* 
-    layoutState는 collapse, expand, close가 있다
-    layoutState : 새로운 state
-    NoteStore.layoutState : 기존 state
-    collapse 아닐 때는 setTargetLayout(null) 넣어준다
-    layoutState가 똑같은게 들어올 때는 타지 않음(NoteApp의 useEffect 로직)
+  }, []);
+  /*
+    1) collapse 아닐 때는 setTargetLayout(null) 넣어준다
+    2) fetch~는 로딩이미지 true -> false 로직이 있음
+    3)
+                                  다른 룸                                       같은 룸
+    확대   initVar, chapterList가져오기+firstnoteinfo가져오기      [축소 -> 확대, 선택된 페이지 없을 때] firstNoteInfo가져오기                 
+    축소   initVar, setTargetLayout(LNB)                          [확대 -> 축소 ] setTargetLayout(CONTENT) 
+    4) 노트앱 -> 다른 앱 -> 노트앱일 때, roomId, channelId가 기존과 같아 unmount 하기 전 roomid, channelId 초기화
   */
-  // 한 번 클릭시 두 번씩 데이터가 들어와서 불완전하다
 
   React.useEffect(function () {
-    if (layoutState !== NoteStore.layoutState) {
-      if (NoteStore.layoutState === 'collapse' && layoutState === 'expand' && !PageStore.currentPageId) {
-        ChapterStore.setFirstNoteInfo();
-      } else if (NoteStore.layoutState === 'expand' && layoutState === 'collapse') {
-        NoteStore.setTargetLayout('Content');
+    // setRoomId, setChannelId 전 id 비교!
+    // 룸과 채널은 1:1 대응, roomId만 체크한다
+    // 노트앱 -> 다른 앱 -> 노트앱일 때, 다른 앱 가기 전에 초기화해주었기 때문에 isOtherRoom === true
+    var isOtherRoom = NoteStore.workspaceId !== roomId;
+
+    if (isOtherRoom) {
+      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                NoteStore.addWWMSHandler(); // 깜빡임 방지위해 만든 변수
+
+                NoteStore.setLoadingNoteApp(false);
+                NoteStore.initVariables();
+
+                if (channelId) {
+                  _context.next = 5;
+                  break;
+                }
+
+                return _context.abrupt("return");
+
+              case 5:
+                if (layoutState === 'collapse') {
+                  // lnb는 따로 로딩 화면 X
+                  ChapterStore.getNoteChapterList();
+                  NoteStore.setTargetLayout('LNB');
+                } else {
+                  ChapterStore.fetchChapterList();
+                  NoteStore.setTargetLayout(null);
+                }
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      })));
+    } // 같은 룸에서 layoutState만 바뀔 대
+    else {
+        if (NoteStore.layoutState === 'collapse' && layoutState === 'expand') {
+          if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
+          NoteStore.setTargetLayout(null);
+        } else if (NoteStore.layoutState === 'expand' && layoutState === 'collapse') {
+          NoteStore.setTargetLayout('Content');
+        }
       }
 
-      NoteStore.setLayoutState(layoutState);
-    }
-  }, [layoutState]);
-  return mobxReact.useObserver(function () {
-    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), renderCondition('LNB') && /*#__PURE__*/React__default['default'].createElement(LNB, {
-      style: NoteStore.isContentExpanded ? {
-        display: 'none'
-      } : {
-        display: 'flex'
+    NoteStore.setLayoutState(layoutState);
+    return function () {
+      // 초기화해주기(다른 앱 갔다가 노트로 돌아오는 경우 데이터 다시 받아오게 하기)
+      if (!history.location.search.includes('note') || !history.location.pathname.includes(NoteStore.workspaceId)) {
+        NoteStore.setWsId('');
+        NoteStore.setChannelId(''); // 노트앱 확대 상태 -> 다른 앱(축소 상태가 된다) -> 노트앱(축소) 일 때 확대 상태 그렸다가 축소 상태를 그림(그 전에 targetLayout 바꿔도 깜빡임)
+        // loadingNoteApp을 넣어줌
+
+        NoteStore.setLoadingNoteApp(true);
       }
-    }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), renderCondition('Content') && /*#__PURE__*/React__default['default'].createElement(Content, null, /*#__PURE__*/React__default['default'].createElement(FoldBtn, {
+    };
+  }, [roomId, channelId, layoutState]);
+  /*
+    여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
+    노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
+    기존 룸의 LNB 보였다가 새로운 룸 LNB로 보이는 문제(깜빡임 발생)
+    store 변수 바꿔도 바꾼대로 바로 render되는게 아니라 효과가 없다..
+  */
+
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement("div", null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
+      show: !NoteStore.isContentExpanded && renderCondition('LNB')
+    }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), /*#__PURE__*/React__default['default'].createElement(Content, {
+      show: renderCondition('Content')
+    }, /*#__PURE__*/React__default['default'].createElement(FoldBtn, {
       isExpanded: NoteStore.isContentExpanded,
       show: NoteStore.showPage && NoteStore.layoutState !== "collapse",
       onClick: function onClick() {
@@ -9698,7 +9823,7 @@ var NoteApp = function NoteApp(_ref) {
       }
     }, /*#__PURE__*/React__default['default'].createElement(FoldBtnImg, {
       src: img$o
-    })), NoteStore.showPage ? /*#__PURE__*/React__default['default'].createElement(PageContainer, null) : /*#__PURE__*/React__default['default'].createElement(TagContainer, null)), /*#__PURE__*/React__default['default'].createElement(Modal, null));
+    })), NoteStore.showPage ? /*#__PURE__*/React__default['default'].createElement(PageContainer, null) : /*#__PURE__*/React__default['default'].createElement(TagContainer, null)), /*#__PURE__*/React__default['default'].createElement(Modal, null)));
   });
 };
 
