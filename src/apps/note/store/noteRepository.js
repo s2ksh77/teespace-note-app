@@ -239,18 +239,22 @@ class NoteRepository {
     }
   }
 
-  movePage(pageId, chapterId) {
-    return API.Put(`note-api/note?action=Update`, {
-      dto: {
-        WS_ID: this.WS_ID,
-        CH_TYPE: 'CHN0003',
-        note_id: pageId,
-        parent_notebook: chapterId,
-        user_name: this.USER_NAME,
-        USER_ID: this.USER_ID,
-        TYPE: 'MOVE',
-      }
-    })
+  async movePage(pageId, chapterId) {
+    try {
+      return await API.Put(`note-api/note?action=Update`, {
+        dto: {
+          WS_ID: this.WS_ID,
+          CH_TYPE: 'CHN0003',
+          note_id: pageId,
+          parent_notebook: chapterId,
+          user_name: this.USER_NAME,
+          USER_ID: this.USER_ID,
+          TYPE: 'MOVE',
+        }
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
   }
 
   async editStart(noteId, chapterId) {

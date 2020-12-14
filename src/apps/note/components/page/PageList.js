@@ -11,7 +11,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const [, drop] = useDrop({
     accept: 'page',
     drop: () => {
-      PageStore.movePage(chapter.id, chapterIdx, chapter.children, chapter.children.length);
+      PageStore.moveNotePage(chapter.id, chapterIdx, chapter.children.length);
     },
     hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx)
@@ -27,7 +27,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     PageStore.createNotePage();
   };
 
-  const handleSelectPage = useCallback(async (id, e) => {
+  const handleSelectPage = useCallback(async (id) => {
     NoteStore.setShowPage(true);
     ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.setCurrentPageId(id);
