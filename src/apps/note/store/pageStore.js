@@ -23,6 +23,8 @@ const PageStore = observable({
   renamePageId: '',
   renamePageText: '',
   isMovingPage: false,
+  moveInfoList: [],
+  isCtrlKeyDown: false,
   movePageId: '', // 이동을 원하는 page의 id
   movePageIdx: '', // 이동을 원하는 page의 index
   moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
@@ -159,6 +161,21 @@ const PageStore = observable({
   },
   setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
+  },
+  getMoveInfoList() {
+    return this.moveInfoList;
+  },
+  setMoveInfoList(moveInfoList) {
+    this.moveInfoList = moveInfoList;
+  },
+  appendMoveInfoList(moveInfo) {
+    this.moveInfoList.push(moveInfo);
+  },
+  removeMoveInfoList(idx) {
+    this.moveInfoList.splice(idx, 1);
+  },
+  setIsCtrlKeyDown(flag) {
+    this.isCtrlKeyDown = flag;
   },
   getMovePageId() {
     return this.movePageId;
@@ -326,67 +343,60 @@ const PageStore = observable({
     });
   },
 
-  clearMoveData() {
-    this.movePageId = '';
-    this.movePageIdx = '';
-    this.moveChapterId = '';
+  async movePage(movePageId, moveTargetChapterId) {
+    const {
+      data: { dto },
+    } = await NoteRepository.movePage(movePageId, moveTargetChapterId);
+    return dto;
   },
-  async movePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageList, moveTargetPageIdx) {
-    if (this.moveChapterId === moveTargetChapterId) { // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
-      if (this.movePageIdx !== moveTargetPageIdx
-        && this.movePageIdx + 1 !== moveTargetPageIdx) {
-        const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-        const copyOfPageList = moveTargetPageList.slice();
-        const target = moveTargetPageList[this.movePageIdx];
-        const targetInLocalStorage = item[moveTargetChapterIdx].children[this.movePageIdx];
 
-        // Update pageList & localStorage
-        if (this.movePageIdx < moveTargetPageIdx) {
-          copyOfPageList.splice(moveTargetPageIdx, 0, target);
-          copyOfPageList.splice(this.movePageIdx, 1);
-          item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-          item[moveTargetChapterIdx].children.splice(this.movePageIdx, 1);
-        }
-        else {
-          copyOfPageList.splice(this.movePageIdx, 1);
-          copyOfPageList.splice(moveTargetPageIdx, 0, target);
-          item[moveTargetChapterIdx].children.splice(this.movePageIdx, 1);
-          item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-        }
+  moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
+    const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
-        ChapterStore.changePageList(moveTargetChapterIdx, copyOfPageList);
-        localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+    // Step1. moveInfoList를 오름차순으로 정렬
+    const sortedMoveInfoList = this.moveInfoList.slice().sort((a, b) => {
+      if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+      return a.chapterIdx - b.chapterIdx;
+    });
 
-        this.setCurrentPageId(this.movePageId);
-        this.fetchCurrentPageData(this.movePageId);
-        ChapterStore.setCurrentChapterId(moveTargetChapterId);
-      }
+    // Step2. LocalStorage에서 삭제 / 서비스 호출
+    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
+      if (moveInfo.chapterId === moveTargetChapterId
+        && moveInfo.pageIdx < moveTargetPageIdx) return;
+      
+      item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
+      if (moveInfo.chapterId !== moveTargetChapterId)
+        this.movePage(moveInfo.pageId, moveTargetChapterId);
+    });
 
-      this.clearMoveData();
-    }
-    else { // 페이지를 다른 챕터로 이동하고자 하는 경우
-      await NoteRepository.movePage(this.movePageId, moveTargetChapterId).then(
-        (response) => {
-          if (response.status === 200) {
-            // 기존꺼 지우고
-            const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-            const children = item[this.moveChapterIdx].children.filter((pageId) => this.movePageId !== pageId);
-            item[this.moveChapterIdx].children = children;
+    // Step3. LocalStorage에 추가
+    const pageIds = sortedMoveInfoList.map(moveInfo => moveInfo.pageId);
+    item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, ...pageIds);
 
-            // 원하는 위치에 새로 추가
-            item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, this.movePageId);
+    // Step4. LocalStorage에서 삭제
+    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
+      if (moveInfo.chapterId !== moveTargetChapterId
+        || moveInfo.pageIdx >= moveTargetPageIdx) return;
+      
+      item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
+    });
 
-            localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+    // Step5. moveInfoList 업데이트
+    const startIdx = item[moveTargetChapterIdx].children.findIndex(pageId => pageId === sortedMoveInfoList[0].pageId);
+    this.moveInfoList = sortedMoveInfoList.map((moveInfo, idx) => {
+      return {
+        pageId: moveInfo.pageId,
+        pageIdx: startIdx + idx,
+        chapterId: moveTargetChapterId,
+        chapterIdx: moveTargetChapterIdx
+      };
+    });
 
-            ChapterStore.getNoteChapterList();
-            this.setCurrentPageId(this.movePageId);
-            this.fetchCurrentPageData(this.movePageId);
-            ChapterStore.setCurrentChapterId(moveTargetChapterId);
-            this.clearMoveData();
-          }
-        }
-      )
-    }
+    localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+    ChapterStore.getNoteChapterList();
+    this.setCurrentPageId(this.movePageId);
+    this.fetchCurrentPageData(this.movePageId);
+    ChapterStore.setCurrentChapterId(moveTargetChapterId);
   },
 
   modifiedDateFormatting(date) {
@@ -421,7 +431,14 @@ const PageStore = observable({
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
-    // fetchNoteInfoList할 때 setCurrentPageId하기
+    if (!this.currentPageId) {
+      this.setMoveInfoList([{
+        pageId: dto.note_id,
+        pageIdx: 0,
+        chapterId: dto.parent_notebook,
+        chapterIdx: 0
+      }]);
+    }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
     this.noteInfoList = dto;

@@ -14,15 +14,22 @@ import {
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, PageStore } = useNoteStore();
+  const moveInfo = {
+    pageId: page.id,
+    pageIdx: index,
+    chapterId: chapter.id,
+    chapterIdx: chapterIdx
+  };
 
   const [, drag, preview] = useDrag({
     item: { id: page.id, type: page.type === 'note' ? 'page' : 'shared' },
     begin: (monitor) => {
-      PageStore.setMovePageId(page.id);
-      PageStore.setMovePageIdx(index);
-      PageStore.setMoveChapterId(chapter.id);
-      PageStore.setMoveChapterIdx(chapterIdx);
+      if (!PageStore.moveInfoList.find(info => info.pageId === page.id)) {
+        PageStore.setMoveInfoList([moveInfo]);
+        PageStore.setIsCtrlKeyDown(false);
+      }
 
+      PageStore.setMovePageId(page.id);
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('page');
       NoteStore.setDraggedTitle(page.text);
@@ -42,7 +49,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const [, drop] = useDrop({
     accept: 'page',
     drop: () => {
-      PageStore.movePage(chapter.id, chapterIdx, chapter.children, index);
+      PageStore.moveNotePage(chapter.id, chapterIdx, index);
     },
     hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx)
@@ -57,8 +64,18 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   }, []);
 
   const handleSelectPage = useCallback((e) => {
-    onClick(page.id,e);
-  }, []);
+    if (e.ctrlKey) {
+      const idx = PageStore.moveInfoList.findIndex((info) => info.pageId === page.id);
+      if (idx === -1) PageStore.appendMoveInfoList(moveInfo);
+      else PageStore.removeMoveInfoList(idx);
+      PageStore.setIsCtrlKeyDown(true);
+      return;
+    }
+
+    PageStore.setMoveInfoList([moveInfo]);
+    PageStore.setIsCtrlKeyDown(false);
+    onClick(page.id);
+  }, [page]);
 
   const handlePageName = (e) => {
     const {
@@ -88,12 +105,16 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       id={page.id}
       className={
         'page-li' +
-        (NoteStore.showPage && (
-          NoteStore.isDragging
-            ? page.id === PageStore.movePageId
-            : page.id === PageStore.currentPageId)
-          ? ' selected'
-          : '')
+        (PageStore.isCtrlKeyDown
+          ? (PageStore.moveInfoList.find((info) => info.pageId === page.id)
+              ? ' selected'
+              : '')
+          : (NoteStore.showPage && (
+              NoteStore.isDragging
+                ? page.id === PageStore.movePageId
+                : page.id === PageStore.currentPageId)
+              ? ' selected'
+              : ''))
       }
       onClick={handleSelectPage}
     >

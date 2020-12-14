@@ -54,7 +54,7 @@ const Chapter = ({ chapter, index, isShared }) => {
   const [, dropChapter] = useDrop({
     accept: 'page',
     drop: () => {
-      PageStore.movePage(chapter.id, index, chapter.children, 0);
+      PageStore.moveNotePage(chapter.id, index, 0);
     },
     hover() {
       if (PageStore.dragEnterPageIdx !== 0)
@@ -94,6 +94,9 @@ const Chapter = ({ chapter, index, isShared }) => {
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
+    if (pageId) PageStore.setMoveInfoList([{ pageId: pageId, pageIdx: 0, chapterId: chapter.id, chapterIdx: index }]);
+    else PageStore.setMoveInfoList([]);
+    PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
   const handleFocus = (e) => e.target.select();
