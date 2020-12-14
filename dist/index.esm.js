@@ -1232,6 +1232,7 @@ var TagStore = observable({
   updateTagList: [],
   currentTagId: "",
   currentTagValue: "",
+  selectTagIdx: '',
   editTagIndex: "",
   editTagValue: "",
   // 처음 받아오는 데이터를 여기에 저장
@@ -1318,6 +1319,9 @@ var TagStore = observable({
   // tagTest
   getTagText: function getTagText(text) {
     this.tagText = text;
+  },
+  setSelectTagIndex: function setSelectTagIndex(index) {
+    this.selectTagIdx = index;
   },
   setTagText: function setTagText(text) {
     this.tagText = text;
@@ -1912,6 +1916,7 @@ var _observable;
 var EditorStore = observable((_observable = {
   contents: '',
   tinymce: null,
+  editor: null,
   uploadFile: "",
   imgElement: '',
   isFile: false,
@@ -1957,6 +1962,12 @@ var EditorStore = observable((_observable = {
   },
   getEditor: function getEditor() {
     return this.tinymce;
+  },
+  setEditorDOM: function setEditorDOM(el) {
+    this.editor = el;
+  },
+  getEditorDOM: function getEditorDOM() {
+    return this.editor;
   },
   setImgElement: function setImgElement(element) {
     this.imgElement = element;
