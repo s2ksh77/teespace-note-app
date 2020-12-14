@@ -75,6 +75,7 @@ const EditorContainer = () => {
       // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
       // currentFile.setAttribute('temp-id', tempId);
     }
+    if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
   };
 
   const handleFileBlob = (type) => {

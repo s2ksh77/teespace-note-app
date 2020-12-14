@@ -4,7 +4,6 @@ import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import NoteStore from './noteStore';
-import { handleUpload } from '../components/common/NoteFile';
 
 const EditorStore = observable({
   contents: '',
@@ -226,7 +225,6 @@ const EditorStore = observable({
   },
   setUploadDTO(meta) {
     this.uploadDTO.push(meta);
-    if (this.uploadDTO.length === this.uploadLength) handleUpload();
   },
   setTempFileList(target) {
     if (this.processCount !== this.uploadLength) {
