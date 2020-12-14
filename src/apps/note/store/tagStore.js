@@ -14,6 +14,7 @@ const TagStore = observable({
   updateTagList: [],
   currentTagId: "",
   currentTagValue: "",
+  selectTagIdx: '',
   editTagIndex: "",
   editTagValue: "",
   // 처음 받아오는 데이터를 여기에 저장
@@ -61,6 +62,9 @@ const TagStore = observable({
   // tagTest
   getTagText(text) {
     this.tagText = text;
+  },
+  setSelectTagIndex(index) {
+    this.selectTagIdx = index
   },
   setTagText(text) {
     this.tagText = text;

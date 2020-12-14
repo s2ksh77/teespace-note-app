@@ -18,7 +18,7 @@ import { isFilled, checkWhitespace } from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
-  const focusedTag = useRef(null);
+  const focusedTag = useRef([]);
   const tagList = useRef(null);
 
   const handleCloseBtn = (targetId, targetText) => {
@@ -107,25 +107,22 @@ const TagListContainer = () => {
 
   const handleClickOutside = (e) => {
     if (!e.target.closest(".ant-tag")) {
-      const prev = focusedTag.current;
-      changeFocusedTag(prev, null);
+      TagStore.setSelectTagIndex('')
     }
   }
 
   const handleClickTag = (idx, e) => {
     const prev = focusedTag.current;
-    changeFocusedTag(prev, idx);
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');
+    else changeFocusedTag(prev[idx], idx);
   }
 
   // idx : null 가능
-  const changeFocusedTag = (prev, idx) => {
-    if (prev === null && idx === null) return;
-    tagList.current.children[prev]?.classList.remove('noteFocusedTag');
-    focusedTag.current = idx;
+  const changeFocusedTag = (target, idx) => {
+    if (target === null && idx === null) return;
     if (idx === null) return;
-    const target = tagList.current.children[idx];
     if (target) {
-      target.classList.add('noteFocusedTag');
+      TagStore.setSelectTagIndex(idx);
       target.focus();
       target.scrollIntoView(false);
     }
@@ -136,14 +133,14 @@ const TagListContainer = () => {
     switch (e.keyCode) {
       // left
       case 37:
-        if (focusedTag.current > 0) {
-          changeFocusedTag(prev, prev - 1);
+        if (TagStore.selectTagIdx > 0) {
+          changeFocusedTag(prev[TagStore.selectTagIdx - 1], TagStore.selectTagIdx - 1);
         }
         break;
       // right
       case 39:
-        if (focusedTag.current < TagStore.notetagList.length - 1) {
-          changeFocusedTag(prev, prev + 1);
+        if (TagStore.selectTagIdx < TagStore.notetagList.length - 1) {
+          changeFocusedTag(prev[TagStore.selectTagIdx + 1], TagStore.selectTagIdx + 1);
         }
         break;
       default:
@@ -185,8 +182,9 @@ const TagListContainer = () => {
               />
             ) : (
                 <Tag
-                  className={'antTag'}
+                  ref={el => focusedTag.current[index] = el}
                   key={index}
+                  className={index === TagStore.selectTagIdx ? 'antTag noteFocusedTag' : 'antTag'}
                   data-idx={index}
                   id={item.tag_id}
                   closable={PageStore.isReadMode() ? false : true}

@@ -18,7 +18,7 @@ import { checkUrlValidation } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUpload, openSaveDrive } from '../common/NoteFile';
+import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUnselect, handleUpload, openSaveDrive } from '../common/NoteFile';
 import { ComponentStore } from 'teespace-core';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
@@ -125,8 +125,11 @@ const EditorContainer = () => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly');
-    } else {
+      EditorStore.editor?.addEventListener('click', handleUnselect);
+    }
+    else {
       EditorStore.tinymce?.setMode('design');
+      EditorStore.editor?.removeEventListener('click', handleUnselect);
     }
   }, [PageStore.isReadMode()]);
 
@@ -200,8 +203,7 @@ const EditorContainer = () => {
               });
               // Register some other event callbacks...
               editor.on('click', function (e) {
-                const focusedTags = [...document.querySelectorAll('.noteFocusedTag')];
-                focusedTags.forEach((tag) => tag.classList.remove('noteFocusedTag'));
+                handleUnselect();
               });
 
               editor.on('keydown', (e) => {
