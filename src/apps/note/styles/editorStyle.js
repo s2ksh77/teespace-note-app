@@ -249,6 +249,9 @@ export const FileCloseBtn = styled.img`
 `
 
 export const editorContentCSS = ` 
+  html,body{
+    height:calc(100% - 16px);
+  }
   body{
     font-family : "Noto Sans KR",sans-serif !important;
   }

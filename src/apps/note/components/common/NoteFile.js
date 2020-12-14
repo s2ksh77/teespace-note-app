@@ -10,6 +10,7 @@ import ChapterStore from '../../store/chapterStore';
 import { type } from 'ramda';
 import NoteStore from '../../store/noteStore';
 import { ComponentStore } from 'teespace-core';
+import TagStore from '../../store/tagStore';
 
 export const handleUpload = async () => {
     let uploadArr = [];
@@ -250,6 +251,8 @@ const handleClickImg = (el) => {
 export const handleEditorContentsListener = () => {
     if (EditorStore.tinymce) {
         const targetList = EditorStore.tinymce.getBody()?.querySelectorAll(['a', 'img']);
+        const targetBody = EditorStore.tinymce.getBody();
+        EditorStore.setEditorDOM(targetBody);
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
@@ -258,6 +261,16 @@ export const handleEditorContentsListener = () => {
                 el.setAttribute('hasListener', true);
             });
         }
+        targetBody.addEventListener('click', handleUnselect);
+    }
+}
+export const handleUnselect = () => {
+    if (EditorStore.selectFileElement !== '') {
+        EditorStore.setFileIndex('');
+        EditorStore.setFileElement('');
+    }
+    if (TagStore.selectTagIdx !== '') {
+        TagStore.setSelectTagIndex('')
     }
 }
 

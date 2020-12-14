@@ -8,6 +8,7 @@ import NoteStore from './noteStore';
 const EditorStore = observable({
   contents: '',
   tinymce: null,
+  editor: null,
   uploadFile: "",
   imgElement: '',
   isFile: false,
@@ -53,6 +54,12 @@ const EditorStore = observable({
   },
   getEditor() {
     return this.tinymce;
+  },
+  setEditorDOM(el) {
+    this.editor = el;
+  },
+  getEditorDOM() {
+    return this.editor
   },
   setImgElement(element) {
     this.imgElement = element;
