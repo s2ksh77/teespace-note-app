@@ -14,6 +14,7 @@ const EditorStore = observable({
   isDrive: false,
   isAttatch: false,
   isPreview: false,
+  isSaveDrive: false,
   previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
@@ -31,6 +32,9 @@ const EditorStore = observable({
   tempArray: [],
   tempFileLayoutList: [],
   driveFileList: [],
+  saveFileId: '',
+  saveFileExt: '',
+  saveFileName: '',
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -58,6 +62,17 @@ const EditorStore = observable({
   },
   setIsDrive(flag) {
     this.isDrive = flag;
+  },
+  setIsSaveDrive(flag) {
+    this.isSaveDrive = flag;
+  },
+  setSaveDriveMeta() {
+    const saveMeta = {
+      fileId: this.saveFileId,
+      fileExt: this.saveFileExt,
+      fileName: this.saveFileName,
+    }
+    this.saveDriveMeta = saveMeta;
   },
   setIsAttatch(flag) {
     this.isAttatch = flag;
@@ -100,6 +115,11 @@ const EditorStore = observable({
   //storagemanager 없어서 임시
   setDownLoadFileId(fileId) {
     this.downloadFileId = fileId
+  },
+  setSaveFileMeta(fileId, fileExt, fileName) {
+    this.saveFileId = fileId;
+    this.saveFileExt = fileExt;
+    this.saveFileName = fileName;
   },
   tempDeleteFile() {
     this.fileLayoutList.splice(this.deleteFileIndex, 1);

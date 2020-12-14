@@ -272,7 +272,16 @@ export const handleImageListener = async () => {
     }
 }
 
-export const handleDriveSave = () => {
-    const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
-    console.log(DriveSaveModal)
+export const openSaveDrive = () => {
+    EditorStore.setIsSaveDrive(true);
+    EditorStore.setSaveDriveMeta();
+}
+
+export const driveSaveSuccess = () => {
+    EditorStore.setIsSaveDrive(false);
+    EditorStore.setIsAttatch(true);
+}
+
+export const driveSaveCancel = () => {
+    EditorStore.setIsSaveDrive(false);
 }

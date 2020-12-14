@@ -12,7 +12,7 @@ import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 import video from '../../assets/movie.svg';
 import { Dropdown, Menu, Progress } from 'antd';
-import { downloadFile, handleDriveSave } from '../common/NoteFile';
+import { downloadFile, handleDriveSave, openSaveDrive, saveDrive } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const FileLayout = () => {
@@ -37,7 +37,7 @@ const FileLayout = () => {
         }
     }
     const handleFileDown = (key) => {
-        if (key === '0') handleDriveSave();
+        if (key === '0') openSaveDrive();
         if (key === '1') downloadFile(EditorStore.downloadFileId);
     }
     const onClickContextMenu = ({ key }) => {
@@ -160,9 +160,10 @@ const FileLayout = () => {
         }
     }, []);
 
-    const handleClickDropDown = (fileId) => (e) => {
+    const handleClickDropDown = (fileId, fileExt, fileName) => (e) => {
         e.stopPropagation();
         EditorStore.setDownLoadFileId(fileId);
+        EditorStore.setSaveFileMeta(fileId, fileExt, fileName);
     }
 
     return useObserver(() => (
@@ -229,7 +230,7 @@ const FileLayout = () => {
                         onMouseEnter={handleMouseHover.bind(null, item.file_id)}
                         onMouseLeave={handleMouseLeave}>
                         <FileContent>
-                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
+                            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id, item.file_extension, item.file_name)} >
                                 <FileDownloadIcon>
                                     {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
