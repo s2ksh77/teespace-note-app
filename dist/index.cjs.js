@@ -671,40 +671,23 @@ var NoteRepository = /*#__PURE__*/function () {
     }()
   }, {
     key: "movePage",
-    value: function movePage(pageId, chapterId) {
-      return teespaceCore.API.Put("note-api/note?action=Update", {
-        dto: {
-          WS_ID: this.WS_ID,
-          CH_TYPE: 'CHN0003',
-          note_id: pageId,
-          parent_notebook: chapterId,
-          user_name: this.USER_NAME,
-          USER_ID: this.USER_ID,
-          TYPE: 'MOVE'
-        }
-      });
-    }
-  }, {
-    key: "editStart",
     value: function () {
-      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(noteId, chapterId) {
+      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, chapterId) {
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
                 _context12.prev = 0;
                 _context12.next = 3;
-                return teespaceCore.API.post("note-api/note?action=Update", {
+                return teespaceCore.API.Put("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    user_name: this.USER_NAME,
-                    note_id: noteId,
-                    is_edit: this.USER_ID,
+                    note_id: pageId,
                     parent_notebook: chapterId,
-                    TYPE: 'EDIT_START'
+                    user_name: this.USER_NAME,
+                    USER_ID: this.USER_ID,
+                    TYPE: 'MOVE'
                   }
                 });
 
@@ -724,7 +707,53 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee12, this, [[0, 6]]);
       }));
 
-      function editStart(_x19, _x20) {
+      function movePage(_x19, _x20) {
+        return _movePage.apply(this, arguments);
+      }
+
+      return movePage;
+    }()
+  }, {
+    key: "editStart",
+    value: function () {
+      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                _context13.prev = 0;
+                _context13.next = 3;
+                return teespaceCore.API.post("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_id: noteId,
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId,
+                    TYPE: 'EDIT_START'
+                  }
+                });
+
+              case 3:
+                return _context13.abrupt("return", _context13.sent);
+
+              case 6:
+                _context13.prev = 6;
+                _context13.t0 = _context13["catch"](0);
+                throw Error(JSON.stringify(_context13.t0));
+
+              case 9:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this, [[0, 6]]);
+      }));
+
+      function editStart(_x21, _x22) {
         return _editStart.apply(this, arguments);
       }
 
@@ -733,37 +762,37 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "editDone",
     value: function () {
-      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(updateDto) {
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(updateDto) {
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context14.prev = _context14.next) {
               case 0:
                 updateDto.dto.WS_ID = this.WS_ID;
                 updateDto.dto.note_channel_id = this.chId;
                 updateDto.dto.USER_ID = this.USER_ID;
                 updateDto.dto.CH_TYPE = this.CH_TYPE;
                 updateDto.dto.user_name = this.USER_NAME;
-                _context13.prev = 5;
-                _context13.next = 8;
+                _context14.prev = 5;
+                _context14.next = 8;
                 return teespaceCore.API.post("note-api/note?action=Update", updateDto);
 
               case 8:
-                return _context13.abrupt("return", _context13.sent);
+                return _context14.abrupt("return", _context14.sent);
 
               case 11:
-                _context13.prev = 11;
-                _context13.t0 = _context13["catch"](5);
-                throw Error(JSON.stringify(_context13.t0));
+                _context14.prev = 11;
+                _context14.t0 = _context14["catch"](5);
+                throw Error(JSON.stringify(_context14.t0));
 
               case 14:
               case "end":
-                return _context13.stop();
+                return _context14.stop();
             }
           }
-        }, _callee13, this, [[5, 11]]);
+        }, _callee14, this, [[5, 11]]);
       }));
 
-      function editDone(_x21) {
+      function editDone(_x23) {
         return _editDone.apply(this, arguments);
       }
 
@@ -772,13 +801,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "nonEdit",
     value: function () {
-      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(noteId, chapterId, userName) {
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(noteId, chapterId, userName) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
-                _context14.prev = 0;
-                _context14.next = 3;
+                _context15.prev = 0;
+                _context15.next = 3;
                 return teespaceCore.API.post("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
@@ -790,44 +819,6 @@ var NoteRepository = /*#__PURE__*/function () {
                     parent_notebook: chapterId,
                     TYPE: 'NONEDIT',
                     user_name: userName
-                  }
-                });
-
-              case 3:
-                return _context14.abrupt("return", _context14.sent);
-
-              case 6:
-                _context14.prev = 6;
-                _context14.t0 = _context14["catch"](0);
-                throw Error(JSON.stringify(_context14.t0));
-
-              case 9:
-              case "end":
-                return _context14.stop();
-            }
-          }
-        }, _callee14, this, [[0, 6]]);
-      }));
-
-      function nonEdit(_x22, _x23, _x24) {
-        return _nonEdit.apply(this, arguments);
-      }
-
-      return nonEdit;
-    }()
-  }, {
-    key: "createTag",
-    value: function () {
-      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(targetList) {
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
-          while (1) {
-            switch (_context15.prev = _context15.next) {
-              case 0:
-                _context15.prev = 0;
-                _context15.next = 3;
-                return teespaceCore.API.post("note-api/tag", {
-                  dto: {
-                    tagList: targetList
                   }
                 });
 
@@ -844,26 +835,26 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context15.stop();
             }
           }
-        }, _callee15, null, [[0, 6]]);
+        }, _callee15, this, [[0, 6]]);
       }));
 
-      function createTag(_x25) {
-        return _createTag.apply(this, arguments);
+      function nonEdit(_x24, _x25, _x26) {
+        return _nonEdit.apply(this, arguments);
       }
 
-      return createTag;
+      return nonEdit;
     }()
   }, {
-    key: "deleteTag",
+    key: "createTag",
     value: function () {
-      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
+      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
         return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
                 _context16.prev = 0;
                 _context16.next = 3;
-                return teespaceCore.API.post("note-api/tag?action=Delete", {
+                return teespaceCore.API.post("note-api/tag", {
                   dto: {
                     tagList: targetList
                   }
@@ -885,23 +876,23 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee16, null, [[0, 6]]);
       }));
 
-      function deleteTag(_x26) {
-        return _deleteTag.apply(this, arguments);
+      function createTag(_x27) {
+        return _createTag.apply(this, arguments);
       }
 
-      return deleteTag;
+      return createTag;
     }()
   }, {
-    key: "updateTag",
+    key: "deleteTag",
     value: function () {
-      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
+      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
         return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
                 _context17.prev = 0;
                 _context17.next = 3;
-                return teespaceCore.API.post("note-api/tag?action=Update", {
+                return teespaceCore.API.post("note-api/tag?action=Delete", {
                   dto: {
                     tagList: targetList
                   }
@@ -923,7 +914,45 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee17, null, [[0, 6]]);
       }));
 
-      function updateTag(_x27) {
+      function deleteTag(_x28) {
+        return _deleteTag.apply(this, arguments);
+      }
+
+      return deleteTag;
+    }()
+  }, {
+    key: "updateTag",
+    value: function () {
+      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                _context18.prev = 0;
+                _context18.next = 3;
+                return teespaceCore.API.post("note-api/tag?action=Update", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context18.abrupt("return", _context18.sent);
+
+              case 6:
+                _context18.prev = 6;
+                _context18.t0 = _context18["catch"](0);
+                throw Error(JSON.stringify(_context18.t0));
+
+              case 9:
+              case "end":
+                return _context18.stop();
+            }
+          }
+        }, _callee18, null, [[0, 6]]);
+      }));
+
+      function updateTag(_x29) {
         return _updateTag.apply(this, arguments);
       }
 
@@ -932,15 +961,15 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "storageFileDeepCopy",
     value: function () {
-      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(fileId) {
+      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(fileId) {
         var targetSRC;
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context19.prev = _context19.next) {
               case 0:
                 targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
-                _context18.prev = 1;
-                _context18.next = 4;
+                _context19.prev = 1;
+                _context19.next = 4;
                 return teespaceCore.API.put(targetSRC, {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -953,22 +982,22 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 4:
-                return _context18.abrupt("return", _context18.sent);
+                return _context19.abrupt("return", _context19.sent);
 
               case 7:
-                _context18.prev = 7;
-                _context18.t0 = _context18["catch"](1);
-                throw Error(JSON.stringify(_context18.t0));
+                _context19.prev = 7;
+                _context19.t0 = _context19["catch"](1);
+                throw Error(JSON.stringify(_context19.t0));
 
               case 10:
               case "end":
-                return _context18.stop();
+                return _context19.stop();
             }
           }
-        }, _callee18, this, [[1, 7]]);
+        }, _callee19, this, [[1, 7]]);
       }));
 
-      function storageFileDeepCopy(_x28) {
+      function storageFileDeepCopy(_x30) {
         return _storageFileDeepCopy.apply(this, arguments);
       }
 
@@ -977,56 +1006,14 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createUploadMeta",
     value: function () {
-      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(dto) {
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
-          while (1) {
-            switch (_context19.prev = _context19.next) {
-              case 0:
-                _context19.prev = 0;
-                _context19.next = 3;
-                return teespaceCore.API.post("note-api/noteFile", dto);
-
-              case 3:
-                return _context19.abrupt("return", _context19.sent);
-
-              case 6:
-                _context19.prev = 6;
-                _context19.t0 = _context19["catch"](0);
-                throw Error(JSON.stringify(_context19.t0));
-
-              case 9:
-              case "end":
-                return _context19.stop();
-            }
-          }
-        }, _callee19, null, [[0, 6]]);
-      }));
-
-      function createUploadMeta(_x29) {
-        return _createUploadMeta.apply(this, arguments);
-      }
-
-      return createUploadMeta;
-    }()
-  }, {
-    key: "createUploadStorage",
-    value: function () {
-      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId, file, onUploadProgress) {
+      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(dto) {
         return regeneratorRuntime.wrap(function _callee20$(_context20) {
           while (1) {
             switch (_context20.prev = _context20.next) {
               case 0:
                 _context20.prev = 0;
                 _context20.next = 3;
-                return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
-                  headers: {
-                    'content-type': 'multipart/form-data'
-                  },
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  onUploadProgress: onUploadProgress
-                });
+                return teespaceCore.API.post("note-api/noteFile", dto);
 
               case 3:
                 return _context20.abrupt("return", _context20.sent);
@@ -1041,10 +1028,52 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context20.stop();
             }
           }
-        }, _callee20, this, [[0, 6]]);
+        }, _callee20, null, [[0, 6]]);
       }));
 
-      function createUploadStorage(_x30, _x31, _x32) {
+      function createUploadMeta(_x31) {
+        return _createUploadMeta.apply(this, arguments);
+      }
+
+      return createUploadMeta;
+    }()
+  }, {
+    key: "createUploadStorage",
+    value: function () {
+      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(fileId, file, onUploadProgress) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+          while (1) {
+            switch (_context21.prev = _context21.next) {
+              case 0:
+                _context21.prev = 0;
+                _context21.next = 3;
+                return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+                  headers: {
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress
+                });
+
+              case 3:
+                return _context21.abrupt("return", _context21.sent);
+
+              case 6:
+                _context21.prev = 6;
+                _context21.t0 = _context21["catch"](0);
+                throw Error(JSON.stringify(_context21.t0));
+
+              case 9:
+              case "end":
+                return _context21.stop();
+            }
+          }
+        }, _callee21, this, [[0, 6]]);
+      }));
+
+      function createUploadStorage(_x32, _x33, _x34) {
         return _createUploadStorage.apply(this, arguments);
       }
 
@@ -1053,13 +1082,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteFile",
     value: function () {
-      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(deleteFileId) {
-        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(deleteFileId) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
           while (1) {
-            switch (_context21.prev = _context21.next) {
+            switch (_context22.prev = _context22.next) {
               case 0:
-                _context21.prev = 0;
-                _context21.next = 3;
+                _context22.prev = 0;
+                _context22.next = 3;
                 return teespaceCore.API.put("note-api/noteFile?action=Delete", {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -1080,22 +1109,22 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 3:
-                return _context21.abrupt("return", _context21.sent);
+                return _context22.abrupt("return", _context22.sent);
 
               case 6:
-                _context21.prev = 6;
-                _context21.t0 = _context21["catch"](0);
-                throw Error(JSON.stringify(_context21.t0));
+                _context22.prev = 6;
+                _context22.t0 = _context22["catch"](0);
+                throw Error(JSON.stringify(_context22.t0));
 
               case 9:
               case "end":
-                return _context21.stop();
+                return _context22.stop();
             }
           }
-        }, _callee21, this, [[0, 6]]);
+        }, _callee22, this, [[0, 6]]);
       }));
 
-      function deleteFile(_x33) {
+      function deleteFile(_x35) {
         return _deleteFile.apply(this, arguments);
       }
 
@@ -1143,32 +1172,32 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getSearchList",
     value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(searchKey) {
-        return regeneratorRuntime.wrap(function _callee22$(_context22) {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(searchKey) {
+        return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
-            switch (_context22.prev = _context22.next) {
+            switch (_context23.prev = _context23.next) {
               case 0:
-                _context22.prev = 0;
-                _context22.next = 3;
+                _context23.prev = 0;
+                _context23.next = 3;
                 return teespaceCore.API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
 
               case 3:
-                return _context22.abrupt("return", _context22.sent);
+                return _context23.abrupt("return", _context23.sent);
 
               case 6:
-                _context22.prev = 6;
-                _context22.t0 = _context22["catch"](0);
-                throw Error(JSON.stringify(_context22.t0));
+                _context23.prev = 6;
+                _context23.t0 = _context23["catch"](0);
+                throw Error(JSON.stringify(_context23.t0));
 
               case 9:
               case "end":
-                return _context22.stop();
+                return _context23.stop();
             }
           }
-        }, _callee22, this, [[0, 6]]);
+        }, _callee23, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x34) {
+      function getSearchList(_x36) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -1177,12 +1206,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createFileMeta",
     value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(targetList) {
-        return regeneratorRuntime.wrap(function _callee23$(_context23) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(targetList) {
+        return regeneratorRuntime.wrap(function _callee24$(_context24) {
           while (1) {
-            switch (_context23.prev = _context23.next) {
+            switch (_context24.prev = _context24.next) {
               case 0:
-                _context23.next = 2;
+                _context24.next = 2;
                 return teespaceCore.API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -1190,17 +1219,17 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context23.abrupt("return", _context23.sent);
+                return _context24.abrupt("return", _context24.sent);
 
               case 3:
               case "end":
-                return _context23.stop();
+                return _context24.stop();
             }
           }
-        }, _callee23);
+        }, _callee24);
       }));
 
-      function createFileMeta(_x35) {
+      function createFileMeta(_x37) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -2400,6 +2429,8 @@ var PageStore = mobx.observable((_observable$1 = {
   renamePageId: '',
   renamePageText: '',
   isMovingPage: false,
+  moveInfoList: [],
+  isCtrlKeyDown: false,
   movePageId: '',
   // 이동을 원하는 page의 id
   movePageIdx: '',
@@ -2531,6 +2562,21 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   setIsMovingPage: function setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
+  },
+  getMoveInfoList: function getMoveInfoList() {
+    return this.moveInfoList;
+  },
+  setMoveInfoList: function setMoveInfoList(moveInfoList) {
+    this.moveInfoList = moveInfoList;
+  },
+  appendMoveInfoList: function appendMoveInfoList(moveInfo) {
+    this.moveInfoList.push(moveInfo);
+  },
+  removeMoveInfoList: function removeMoveInfoList(idx) {
+    this.moveInfoList.splice(idx, 1);
+  },
+  setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
+    this.isCtrlKeyDown = flag;
   },
   getMovePageId: function getMovePageId() {
     return this.movePageId;
@@ -2825,94 +2871,75 @@ var PageStore = mobx.observable((_observable$1 = {
       ChapterStore.getNoteChapterList();
     });
   },
-  clearMoveData: function clearMoveData() {
-    this.movePageId = '';
-    this.movePageIdx = '';
-    this.moveChapterId = '';
-  },
-  movePage: function movePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageList, moveTargetPageIdx) {
-    var _this4 = this;
-
+  movePage: function movePage(movePageId, moveTargetChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var item, copyOfPageList, target, targetInLocalStorage;
+      var _yield$NoteRepository8, dto;
+
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
-              if (!(_this4.moveChapterId === moveTargetChapterId)) {
-                _context8.next = 5;
-                break;
-              }
+              _context8.next = 2;
+              return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
-              // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
-              if (_this4.movePageIdx !== moveTargetPageIdx && _this4.movePageIdx + 1 !== moveTargetPageIdx) {
-                item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
-                copyOfPageList = moveTargetPageList.slice();
-                target = moveTargetPageList[_this4.movePageIdx];
-                targetInLocalStorage = item[moveTargetChapterIdx].children[_this4.movePageIdx]; // Update pageList & localStorage
-
-                if (_this4.movePageIdx < moveTargetPageIdx) {
-                  copyOfPageList.splice(moveTargetPageIdx, 0, target);
-                  copyOfPageList.splice(_this4.movePageIdx, 1);
-                  item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-                  item[moveTargetChapterIdx].children.splice(_this4.movePageIdx, 1);
-                } else {
-                  copyOfPageList.splice(_this4.movePageIdx, 1);
-                  copyOfPageList.splice(moveTargetPageIdx, 0, target);
-                  item[moveTargetChapterIdx].children.splice(_this4.movePageIdx, 1);
-                  item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-                }
-
-                ChapterStore.changePageList(moveTargetChapterIdx, copyOfPageList);
-                localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-
-                _this4.setCurrentPageId(_this4.movePageId);
-
-                _this4.fetchCurrentPageData(_this4.movePageId);
-
-                ChapterStore.setCurrentChapterId(moveTargetChapterId);
-              }
-
-              _this4.clearMoveData();
-
-              _context8.next = 7;
-              break;
+            case 2:
+              _yield$NoteRepository8 = _context8.sent;
+              dto = _yield$NoteRepository8.data.dto;
+              return _context8.abrupt("return", dto);
 
             case 5:
-              _context8.next = 7;
-              return NoteRepository$1.movePage(_this4.movePageId, moveTargetChapterId).then(function (response) {
-                if (response.status === 200) {
-                  // 기존꺼 지우고
-                  var _item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
-
-                  var children = _item[_this4.moveChapterIdx].children.filter(function (pageId) {
-                    return _this4.movePageId !== pageId;
-                  });
-
-                  _item[_this4.moveChapterIdx].children = children; // 원하는 위치에 새로 추가
-
-                  _item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, _this4.movePageId);
-
-                  localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(_item));
-                  ChapterStore.getNoteChapterList();
-
-                  _this4.setCurrentPageId(_this4.movePageId);
-
-                  _this4.fetchCurrentPageData(_this4.movePageId);
-
-                  ChapterStore.setCurrentChapterId(moveTargetChapterId);
-
-                  _this4.clearMoveData();
-                }
-              });
-
-            case 7:
             case "end":
               return _context8.stop();
           }
         }
       }, _callee8);
     }))();
+  },
+  moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
+    var _this4 = this,
+        _item$moveTargetChapt;
+
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
+
+    var sortedMoveInfoList = this.moveInfoList.slice().sort(function (a, b) {
+      if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+      return a.chapterIdx - b.chapterIdx;
+    }); // Step2. LocalStorage에서 삭제 / 서비스 호출
+
+    sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+      if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
+      item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
+      if (moveInfo.chapterId !== moveTargetChapterId) _this4.movePage(moveInfo.pageId, moveTargetChapterId);
+    }); // Step3. LocalStorage에 추가
+
+    var pageIds = sortedMoveInfoList.map(function (moveInfo) {
+      return moveInfo.pageId;
+    });
+
+    (_item$moveTargetChapt = item[moveTargetChapterIdx].children).splice.apply(_item$moveTargetChapt, [moveTargetPageIdx, 0].concat(_toConsumableArray(pageIds))); // Step4. LocalStorage에서 삭제
+
+
+    sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+      if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
+      item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
+    }); // Step5. moveInfoList 업데이트
+
+    var startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
+      return pageId === sortedMoveInfoList[0].pageId;
+    });
+    this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+      return {
+        pageId: moveInfo.pageId,
+        pageIdx: startIdx + idx,
+        chapterId: moveTargetChapterId,
+        chapterIdx: moveTargetChapterIdx
+      };
+    });
+    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
+    ChapterStore.getNoteChapterList();
+    this.setCurrentPageId(this.movePageId);
+    this.fetchCurrentPageData(this.movePageId);
+    ChapterStore.setCurrentChapterId(moveTargetChapterId);
   },
   modifiedDateFormatting: function modifiedDateFormatting(date) {
     var mDate = date.split(' ')[0];
@@ -2965,7 +2992,15 @@ var PageStore = mobx.observable((_observable$1 = {
               return _context9.abrupt("return");
 
             case 6:
-              // fetchNoteInfoList할 때 setCurrentPageId하기
+              if (!_this5.currentPageId) {
+                _this5.setMoveInfoList([{
+                  pageId: dto.note_id,
+                  pageIdx: 0,
+                  chapterId: dto.parent_notebook,
+                  chapterIdx: 0
+                }]);
+              }
+
               _this5.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
@@ -2976,7 +3011,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 14:
+            case 15:
             case "end":
               return _context9.stop();
           }
@@ -3187,7 +3222,7 @@ var PageStore = mobx.observable((_observable$1 = {
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    var _yield$NoteRepository8, noteList;
+    var _yield$NoteRepository9, noteList;
 
     return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
@@ -3197,8 +3232,8 @@ var PageStore = mobx.observable((_observable$1 = {
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository8 = _context12.sent;
-            noteList = _yield$NoteRepository8.data.dto.noteList;
+            _yield$NoteRepository9 = _context12.sent;
+            noteList = _yield$NoteRepository9.data.dto.noteList;
             return _context12.abrupt("return", noteList);
 
           case 5:
