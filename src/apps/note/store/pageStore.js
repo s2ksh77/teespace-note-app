@@ -467,7 +467,7 @@ const PageStore = observable({
       this.prevModifiedUserName).then(
         (dto) => {
           this.fetchNoteInfoList(dto.note_id);
-          EditorStore.tinymce?.setContent(this.currentPageData.note_content);
+          PageStore.setContent(this.currentPageData.note_content);
           NoteStore.setShowModal(false);
         }
       );
