@@ -350,7 +350,7 @@ const PageStore = observable({
     return dto;
   },
 
-  moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
+  async moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
     // Step1. moveInfoList를 오름차순으로 정렬
@@ -360,14 +360,14 @@ const PageStore = observable({
     });
 
     // Step2. LocalStorage에서 삭제 / 서비스 호출
-    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
+    await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
       if (moveInfo.chapterId === moveTargetChapterId
         && moveInfo.pageIdx < moveTargetPageIdx) return;
       
       item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
       if (moveInfo.chapterId !== moveTargetChapterId)
-        this.movePage(moveInfo.pageId, moveTargetChapterId);
-    });
+        return this.movePage(moveInfo.pageId, moveTargetChapterId);
+    }));
 
     // Step3. LocalStorage에 추가
     const pageIds = sortedMoveInfoList.map(moveInfo => moveInfo.pageId);
