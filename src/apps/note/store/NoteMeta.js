@@ -2,6 +2,7 @@ import NoteStore from './noteStore';
 import PageStore from './pageStore';
 import ChapterStore from './chapterStore';
 import EditorStore from './editorStore';
+import { notSaveFileDelete } from '../components/common/NoteFile';
 
 const NoteMeta = {
   openDialog(type) {
@@ -37,7 +38,21 @@ const NoteMeta = {
         break;
       case 'editCancel':
         eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
-        eventList.push(function (e) { e.stopPropagation(); if (PageStore.isNewPage) PageStore.handleNoneEdit(); else { PageStore.noteNoneEdit(PageStore.currentPageId); EditorStore.tinymce?.undoManager.clear(); } });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          if (PageStore.isNewPage) PageStore.handleNoneEdit();
+          else {
+            if (EditorStore.notSaveFileList.length > 0) {
+              notSaveFileDelete().then(() => {
+                PageStore.noteNoneEdit(PageStore.currentPageId);
+                EditorStore.tinymce?.undoManager.clear();
+              });
+            } else {
+              PageStore.noteNoneEdit(PageStore.currentPageId);
+              EditorStore.tinymce?.undoManager.clear();
+            }
+          }
+        });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':

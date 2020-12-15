@@ -32,6 +32,7 @@ const EditorStore = observable({
   fileLayoutList: [],
   tempArray: [],
   tempFileLayoutList: [],
+  notSaveFileList: [],
   driveFileList: [],
   saveFileId: '',
   saveFileExt: '',
