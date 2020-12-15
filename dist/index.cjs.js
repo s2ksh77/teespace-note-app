@@ -3267,8 +3267,10 @@ var PageStore = mobx.observable((_observable$1 = {
       }
     }, _callee13);
   }))();
-}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
+}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
+  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
@@ -4120,10 +4122,12 @@ var ChapterStore = mobx.observable((_observable$2 = {
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
+}), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChapterList) {
   var _this14 = this;
 
   if (!targetChapterList) return;
+  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetChapterList.map(function (chapter) {
     return {
       id: chapter.id,
@@ -4864,13 +4868,20 @@ var NoteStore$1 = mobx.observable({
       }, _callee);
     }))();
   },
+  getTargetChId: function getTargetChId(targetRoomId) {
+    return teespaceCore.RoomStore.getChannelIds({
+      roomId: targetRoomId
+    })[NoteRepository$1.CH_TYPE];
+  },
+  getSharedRoomName: function getSharedRoomName() {
+    return teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+  },
   shareNote: function shareNote() {
     var _this2 = this;
 
-    var sharedRoomName = teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
     this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
-        var friendId, res, targetChId;
+        var friendId, res;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -4886,12 +4897,9 @@ var NoteStore$1 = mobx.observable({
 
               case 3:
                 res = _context2.sent;
-                targetChId = teespaceCore.RoomStore.getChannelIds({
-                  roomId: res.roomId
-                })[NoteRepository$1.CH_TYPE];
-                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);
+                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, [_this2.shareContent]);
 
-              case 6:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -4904,10 +4912,7 @@ var NoteStore$1 = mobx.observable({
       };
     }());
     this.shareArrays.roomArray.forEach(function (room) {
-      var targetChId = teespaceCore.RoomStore.getChannelIds({
-        roomId: room.id
-      })[NoteRepository$1.CH_TYPE];
-      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [_this2.shareContent]);
+      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, [_this2.shareContent]);
     });
   },
   setLNBChapterCoverRef: function setLNBChapterCoverRef(ref) {
