@@ -594,9 +594,11 @@ const PageStore = observable({
     return noteList;
   },
 
-  createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
+  createNoteSharePage(targetRoomId, targetPageList) {
     if (!targetPageList) return;
 
+    const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const sharedRoomName = NoteStore.getSharedRoomName();
     const targetList = targetPageList.map(page => {
       return ({
         WS_ID: NoteRepository.WS_ID,

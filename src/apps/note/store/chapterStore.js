@@ -4,6 +4,7 @@ import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
 import { checkNotDuplicate } from '../components/common/validators';
 import { type } from "ramda";
+import { RoomStore } from 'teespace-core';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -543,9 +544,11 @@ const ChapterStore = observable({
     return dto;
   },
 
-  createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
+  createNoteShareChapter(targetRoomId, targetChapterList) {
     if (!targetChapterList) return;
-
+    
+    const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const sharedRoomName = NoteStore.getSharedRoomName();
     const targetList = targetChapterList.map(chapter => {
       return ({
         id: chapter.id,
