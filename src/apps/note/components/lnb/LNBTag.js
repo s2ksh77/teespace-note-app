@@ -9,7 +9,7 @@ const LNBTag = memo(() => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
-    accept: 'chapter',
+    accept: 'Item:Note:Chapter',
     drop: () => {
       ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },

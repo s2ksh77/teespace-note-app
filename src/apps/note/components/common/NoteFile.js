@@ -7,9 +7,7 @@ import EditorStore from '../../store/editorStore';
 import NoteRepository from '../../store/noteRepository';
 import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
-import { type } from 'ramda';
 import NoteStore from '../../store/noteStore';
-import { ComponentStore } from 'teespace-core';
 import TagStore from '../../store/tagStore';
 
 export const handleUpload = async () => {
@@ -49,6 +47,7 @@ export const handleUpload = async () => {
                                             EditorStore.setFileList(
                                                 dto.fileList,
                                             );
+                                            EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
                                             EditorStore.tempFileLayoutList = [];
                                         });
                                     }
@@ -276,6 +275,24 @@ export const handleUnselect = () => {
 
 export const handleFileSync = async () => {
     await handleFileDelete();
+}
+export const notSaveFileDelete = async () => {
+    let deleteArr = [];
+    if (EditorStore.notSaveFileList.length > 0) {
+        deleteArr = toJS(EditorStore.notSaveFileList).map(item => {
+            return EditorStore.deleteFile(item.file_id)
+        })
+        try {
+            await Promise.all(deleteArr).then(() => {
+                EditorStore.notSaveFileList = [];
+                if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+            })
+        } catch (e) {
+
+        } finally {
+
+        }
+    }
 }
 
 export const handleImageListener = async () => {

@@ -22,7 +22,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   };
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: page.type === 'note' ? 'page' : 'shared' },
+    item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Page' : 'Item:Note:SharedPage' },
     begin: (monitor) => {
       if (!PageStore.moveInfoList.find(info => info.pageId === page.id)) {
         PageStore.setMoveInfoList([moveInfo]);
@@ -47,7 +47,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   });
 
   const [, drop] = useDrop({
-    accept: 'page',
+    accept: 'Item:Note:Page',
     drop: () => {
       PageStore.moveNotePage(chapter.id, chapterIdx, index);
     },
