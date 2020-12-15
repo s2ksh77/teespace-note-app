@@ -2896,50 +2896,71 @@ var PageStore = mobx.observable((_observable$1 = {
     }))();
   },
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
-    var _this4 = this,
-        _item$moveTargetChapt;
+    var _this4 = this;
 
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _item$moveTargetChapt;
 
-    var sortedMoveInfoList = this.moveInfoList.slice().sort(function (a, b) {
-      if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
-      return a.chapterIdx - b.chapterIdx;
-    }); // Step2. LocalStorage에서 삭제 / 서비스 호출
+      var item, sortedMoveInfoList, pageIds, startIdx;
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
 
-    sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
-      if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
-      item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-      if (moveInfo.chapterId !== moveTargetChapterId) _this4.movePage(moveInfo.pageId, moveTargetChapterId);
-    }); // Step3. LocalStorage에 추가
+              sortedMoveInfoList = _this4.moveInfoList.slice().sort(function (a, b) {
+                if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+                return a.chapterIdx - b.chapterIdx;
+              }); // Step2. LocalStorage에서 삭제 / 서비스 호출
 
-    var pageIds = sortedMoveInfoList.map(function (moveInfo) {
-      return moveInfo.pageId;
-    });
+              _context9.next = 4;
+              return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
+                if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
+                item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
+                if (moveInfo.chapterId !== moveTargetChapterId) return _this4.movePage(moveInfo.pageId, moveTargetChapterId);
+              }));
 
-    (_item$moveTargetChapt = item[moveTargetChapterIdx].children).splice.apply(_item$moveTargetChapt, [moveTargetPageIdx, 0].concat(_toConsumableArray(pageIds))); // Step4. LocalStorage에서 삭제
+            case 4:
+              // Step3. LocalStorage에 추가
+              pageIds = sortedMoveInfoList.map(function (moveInfo) {
+                return moveInfo.pageId;
+              });
+
+              (_item$moveTargetChapt = item[moveTargetChapterIdx].children).splice.apply(_item$moveTargetChapt, [moveTargetPageIdx, 0].concat(_toConsumableArray(pageIds))); // Step4. LocalStorage에서 삭제
 
 
-    sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
-      if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
-      item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
-    }); // Step5. moveInfoList 업데이트
+              sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+                if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
+                item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
+              }); // Step5. moveInfoList 업데이트
 
-    var startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
-      return pageId === sortedMoveInfoList[0].pageId;
-    });
-    this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
-      return {
-        pageId: moveInfo.pageId,
-        pageIdx: startIdx + idx,
-        chapterId: moveTargetChapterId,
-        chapterIdx: moveTargetChapterIdx
-      };
-    });
-    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-    ChapterStore.getNoteChapterList();
-    this.setCurrentPageId(this.movePageId);
-    this.fetchCurrentPageData(this.movePageId);
-    ChapterStore.setCurrentChapterId(moveTargetChapterId);
+              startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
+                return pageId === sortedMoveInfoList[0].pageId;
+              });
+              _this4.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+                return {
+                  pageId: moveInfo.pageId,
+                  pageIdx: startIdx + idx,
+                  chapterId: moveTargetChapterId,
+                  chapterIdx: moveTargetChapterIdx
+                };
+              });
+              localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
+              ChapterStore.getNoteChapterList();
+
+              _this4.setCurrentPageId(_this4.movePageId);
+
+              _this4.fetchCurrentPageData(_this4.movePageId);
+
+              ChapterStore.setCurrentChapterId(moveTargetChapterId);
+
+            case 14:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }))();
   },
   modifiedDateFormatting: function modifiedDateFormatting(date) {
     var mDate = date.split(' ')[0];
@@ -2971,25 +2992,25 @@ var PageStore = mobx.observable((_observable$1 = {
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var dto;
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              _context9.next = 2;
+              _context10.next = 2;
               return _this5.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context9.sent;
+              dto = _context10.sent;
 
               if (isFilled(dto.note_id)) {
-                _context9.next = 6;
+                _context10.next = 6;
                 break;
               }
 
               if (_this5.currentPageId === noteId) _this5.currentPageId = '';
-              return _context9.abrupt("return");
+              return _context10.abrupt("return");
 
             case 6:
               if (!_this5.currentPageId) {
@@ -3013,34 +3034,34 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 15:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
         }
-      }, _callee9);
+      }, _callee10);
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (!pageId) {
-                _context10.next = 7;
+                _context11.next = 7;
                 break;
               }
 
-              _context10.next = 3;
+              _context11.next = 3;
               return _this6.fetchNoteInfoList(pageId);
 
             case 3:
-              _context10.next = 5;
+              _context11.next = 5;
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context10.next = 8;
+              _context11.next = 8;
               break;
 
             case 7:
@@ -3048,10 +3069,10 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 8:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -3091,13 +3112,13 @@ var PageStore = mobx.observable((_observable$1 = {
   handleNoneEdit: function handleNoneEdit() {
     var _this10 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (!_this10.isNewPage) {
-                _context11.next = 6;
+                _context12.next = 6;
                 break;
               }
 
@@ -3109,26 +3130,26 @@ var PageStore = mobx.observable((_observable$1 = {
 
               _this10.deleteNotePage();
 
-              _context11.next = 11;
+              _context12.next = 11;
               break;
 
             case 6:
               if (!_this10.otherEdit) {
-                _context11.next = 10;
+                _context12.next = 10;
                 break;
               }
 
-              return _context11.abrupt("return");
+              return _context12.abrupt("return");
 
             case 10:
               _this10.noteNoneEdit(_this10.currentPageId);
 
             case 11:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
         }
-      }, _callee11);
+      }, _callee12);
     }))();
   },
   handleSave: function handleSave() {
@@ -3221,27 +3242,27 @@ var PageStore = mobx.observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
     var _yield$NoteRepository9, noteList;
 
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context13.prev = _context13.next) {
           case 0:
-            _context12.next = 2;
+            _context13.next = 2;
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository9 = _context12.sent;
+            _yield$NoteRepository9 = _context13.sent;
             noteList = _yield$NoteRepository9.data.dto.noteList;
-            return _context12.abrupt("return", noteList);
+            return _context13.abrupt("return", noteList);
 
           case 5:
           case "end":
-            return _context12.stop();
+            return _context13.stop();
         }
       }
-    }, _callee12);
+    }, _callee13);
   }))();
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
   if (!targetPageList) return;
