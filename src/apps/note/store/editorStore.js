@@ -356,6 +356,24 @@ const EditorStore = observable({
       default:
         break;
     }
+  },
+  async notSaveFileDelete() {
+    let deleteArr = [];
+    if (EditorStore.notSaveFileList.length > 0) {
+      deleteArr = toJS(EditorStore.notSaveFileList).map(item => {
+        return EditorStore.deleteFile(item.file_id)
+      })
+      try {
+        await Promise.all(deleteArr).then(() => {
+          EditorStore.notSaveFileList = [];
+          if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+        })
+      } catch (e) {
+
+      } finally {
+
+      }
+    }
   }
 });
 
