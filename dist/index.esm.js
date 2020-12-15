@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, WWMS, UserStore, RoomStore, EventBus, ComponentStore, useCoreStores, ItemSelector } from 'teespace-core';
+import { API, WWMS, UserStore, RoomStore, EventBus, useCoreStores, ComponentStore, ItemSelector } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -789,40 +789,23 @@ var NoteRepository = /*#__PURE__*/function () {
     }()
   }, {
     key: "movePage",
-    value: function movePage(pageId, chapterId) {
-      return API.Put("note-api/note?action=Update", {
-        dto: {
-          WS_ID: this.WS_ID,
-          CH_TYPE: 'CHN0003',
-          note_id: pageId,
-          parent_notebook: chapterId,
-          user_name: this.USER_NAME,
-          USER_ID: this.USER_ID,
-          TYPE: 'MOVE'
-        }
-      });
-    }
-  }, {
-    key: "editStart",
     value: function () {
-      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(noteId, chapterId) {
+      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, chapterId) {
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
                 _context12.prev = 0;
                 _context12.next = 3;
-                return API.post("note-api/note?action=Update", {
+                return API.Put("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    user_name: this.USER_NAME,
-                    note_id: noteId,
-                    is_edit: this.USER_ID,
+                    note_id: pageId,
                     parent_notebook: chapterId,
-                    TYPE: 'EDIT_START'
+                    user_name: this.USER_NAME,
+                    USER_ID: this.USER_ID,
+                    TYPE: 'MOVE'
                   }
                 });
 
@@ -842,7 +825,53 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee12, this, [[0, 6]]);
       }));
 
-      function editStart(_x19, _x20) {
+      function movePage(_x19, _x20) {
+        return _movePage.apply(this, arguments);
+      }
+
+      return movePage;
+    }()
+  }, {
+    key: "editStart",
+    value: function () {
+      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                _context13.prev = 0;
+                _context13.next = 3;
+                return API.post("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_id: noteId,
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId,
+                    TYPE: 'EDIT_START'
+                  }
+                });
+
+              case 3:
+                return _context13.abrupt("return", _context13.sent);
+
+              case 6:
+                _context13.prev = 6;
+                _context13.t0 = _context13["catch"](0);
+                throw Error(JSON.stringify(_context13.t0));
+
+              case 9:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this, [[0, 6]]);
+      }));
+
+      function editStart(_x21, _x22) {
         return _editStart.apply(this, arguments);
       }
 
@@ -851,37 +880,37 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "editDone",
     value: function () {
-      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(updateDto) {
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(updateDto) {
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context14.prev = _context14.next) {
               case 0:
                 updateDto.dto.WS_ID = this.WS_ID;
                 updateDto.dto.note_channel_id = this.chId;
                 updateDto.dto.USER_ID = this.USER_ID;
                 updateDto.dto.CH_TYPE = this.CH_TYPE;
                 updateDto.dto.user_name = this.USER_NAME;
-                _context13.prev = 5;
-                _context13.next = 8;
+                _context14.prev = 5;
+                _context14.next = 8;
                 return API.post("note-api/note?action=Update", updateDto);
 
               case 8:
-                return _context13.abrupt("return", _context13.sent);
+                return _context14.abrupt("return", _context14.sent);
 
               case 11:
-                _context13.prev = 11;
-                _context13.t0 = _context13["catch"](5);
-                throw Error(JSON.stringify(_context13.t0));
+                _context14.prev = 11;
+                _context14.t0 = _context14["catch"](5);
+                throw Error(JSON.stringify(_context14.t0));
 
               case 14:
               case "end":
-                return _context13.stop();
+                return _context14.stop();
             }
           }
-        }, _callee13, this, [[5, 11]]);
+        }, _callee14, this, [[5, 11]]);
       }));
 
-      function editDone(_x21) {
+      function editDone(_x23) {
         return _editDone.apply(this, arguments);
       }
 
@@ -890,13 +919,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "nonEdit",
     value: function () {
-      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(noteId, chapterId, userName) {
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(noteId, chapterId, userName) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
-                _context14.prev = 0;
-                _context14.next = 3;
+                _context15.prev = 0;
+                _context15.next = 3;
                 return API.post("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
@@ -908,44 +937,6 @@ var NoteRepository = /*#__PURE__*/function () {
                     parent_notebook: chapterId,
                     TYPE: 'NONEDIT',
                     user_name: userName
-                  }
-                });
-
-              case 3:
-                return _context14.abrupt("return", _context14.sent);
-
-              case 6:
-                _context14.prev = 6;
-                _context14.t0 = _context14["catch"](0);
-                throw Error(JSON.stringify(_context14.t0));
-
-              case 9:
-              case "end":
-                return _context14.stop();
-            }
-          }
-        }, _callee14, this, [[0, 6]]);
-      }));
-
-      function nonEdit(_x22, _x23, _x24) {
-        return _nonEdit.apply(this, arguments);
-      }
-
-      return nonEdit;
-    }()
-  }, {
-    key: "createTag",
-    value: function () {
-      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(targetList) {
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
-          while (1) {
-            switch (_context15.prev = _context15.next) {
-              case 0:
-                _context15.prev = 0;
-                _context15.next = 3;
-                return API.post("note-api/tag", {
-                  dto: {
-                    tagList: targetList
                   }
                 });
 
@@ -962,26 +953,26 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context15.stop();
             }
           }
-        }, _callee15, null, [[0, 6]]);
+        }, _callee15, this, [[0, 6]]);
       }));
 
-      function createTag(_x25) {
-        return _createTag.apply(this, arguments);
+      function nonEdit(_x24, _x25, _x26) {
+        return _nonEdit.apply(this, arguments);
       }
 
-      return createTag;
+      return nonEdit;
     }()
   }, {
-    key: "deleteTag",
+    key: "createTag",
     value: function () {
-      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
+      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
         return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
                 _context16.prev = 0;
                 _context16.next = 3;
-                return API.post("note-api/tag?action=Delete", {
+                return API.post("note-api/tag", {
                   dto: {
                     tagList: targetList
                   }
@@ -1003,23 +994,23 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee16, null, [[0, 6]]);
       }));
 
-      function deleteTag(_x26) {
-        return _deleteTag.apply(this, arguments);
+      function createTag(_x27) {
+        return _createTag.apply(this, arguments);
       }
 
-      return deleteTag;
+      return createTag;
     }()
   }, {
-    key: "updateTag",
+    key: "deleteTag",
     value: function () {
-      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
+      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
         return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
                 _context17.prev = 0;
                 _context17.next = 3;
-                return API.post("note-api/tag?action=Update", {
+                return API.post("note-api/tag?action=Delete", {
                   dto: {
                     tagList: targetList
                   }
@@ -1041,7 +1032,45 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee17, null, [[0, 6]]);
       }));
 
-      function updateTag(_x27) {
+      function deleteTag(_x28) {
+        return _deleteTag.apply(this, arguments);
+      }
+
+      return deleteTag;
+    }()
+  }, {
+    key: "updateTag",
+    value: function () {
+      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                _context18.prev = 0;
+                _context18.next = 3;
+                return API.post("note-api/tag?action=Update", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context18.abrupt("return", _context18.sent);
+
+              case 6:
+                _context18.prev = 6;
+                _context18.t0 = _context18["catch"](0);
+                throw Error(JSON.stringify(_context18.t0));
+
+              case 9:
+              case "end":
+                return _context18.stop();
+            }
+          }
+        }, _callee18, null, [[0, 6]]);
+      }));
+
+      function updateTag(_x29) {
         return _updateTag.apply(this, arguments);
       }
 
@@ -1050,15 +1079,15 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "storageFileDeepCopy",
     value: function () {
-      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(fileId) {
+      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(fileId) {
         var targetSRC;
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context19.prev = _context19.next) {
               case 0:
                 targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
-                _context18.prev = 1;
-                _context18.next = 4;
+                _context19.prev = 1;
+                _context19.next = 4;
                 return API.put(targetSRC, {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -1071,22 +1100,22 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 4:
-                return _context18.abrupt("return", _context18.sent);
+                return _context19.abrupt("return", _context19.sent);
 
               case 7:
-                _context18.prev = 7;
-                _context18.t0 = _context18["catch"](1);
-                throw Error(JSON.stringify(_context18.t0));
+                _context19.prev = 7;
+                _context19.t0 = _context19["catch"](1);
+                throw Error(JSON.stringify(_context19.t0));
 
               case 10:
               case "end":
-                return _context18.stop();
+                return _context19.stop();
             }
           }
-        }, _callee18, this, [[1, 7]]);
+        }, _callee19, this, [[1, 7]]);
       }));
 
-      function storageFileDeepCopy(_x28) {
+      function storageFileDeepCopy(_x30) {
         return _storageFileDeepCopy.apply(this, arguments);
       }
 
@@ -1095,56 +1124,14 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createUploadMeta",
     value: function () {
-      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(dto) {
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
-          while (1) {
-            switch (_context19.prev = _context19.next) {
-              case 0:
-                _context19.prev = 0;
-                _context19.next = 3;
-                return API.post("note-api/noteFile", dto);
-
-              case 3:
-                return _context19.abrupt("return", _context19.sent);
-
-              case 6:
-                _context19.prev = 6;
-                _context19.t0 = _context19["catch"](0);
-                throw Error(JSON.stringify(_context19.t0));
-
-              case 9:
-              case "end":
-                return _context19.stop();
-            }
-          }
-        }, _callee19, null, [[0, 6]]);
-      }));
-
-      function createUploadMeta(_x29) {
-        return _createUploadMeta.apply(this, arguments);
-      }
-
-      return createUploadMeta;
-    }()
-  }, {
-    key: "createUploadStorage",
-    value: function () {
-      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId, file, onUploadProgress) {
+      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(dto) {
         return regeneratorRuntime.wrap(function _callee20$(_context20) {
           while (1) {
             switch (_context20.prev = _context20.next) {
               case 0:
                 _context20.prev = 0;
                 _context20.next = 3;
-                return API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
-                  headers: {
-                    'content-type': 'multipart/form-data'
-                  },
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  onUploadProgress: onUploadProgress
-                });
+                return API.post("note-api/noteFile", dto);
 
               case 3:
                 return _context20.abrupt("return", _context20.sent);
@@ -1159,10 +1146,52 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context20.stop();
             }
           }
-        }, _callee20, this, [[0, 6]]);
+        }, _callee20, null, [[0, 6]]);
       }));
 
-      function createUploadStorage(_x30, _x31, _x32) {
+      function createUploadMeta(_x31) {
+        return _createUploadMeta.apply(this, arguments);
+      }
+
+      return createUploadMeta;
+    }()
+  }, {
+    key: "createUploadStorage",
+    value: function () {
+      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(fileId, file, onUploadProgress) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+          while (1) {
+            switch (_context21.prev = _context21.next) {
+              case 0:
+                _context21.prev = 0;
+                _context21.next = 3;
+                return API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+                  headers: {
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress
+                });
+
+              case 3:
+                return _context21.abrupt("return", _context21.sent);
+
+              case 6:
+                _context21.prev = 6;
+                _context21.t0 = _context21["catch"](0);
+                throw Error(JSON.stringify(_context21.t0));
+
+              case 9:
+              case "end":
+                return _context21.stop();
+            }
+          }
+        }, _callee21, this, [[0, 6]]);
+      }));
+
+      function createUploadStorage(_x32, _x33, _x34) {
         return _createUploadStorage.apply(this, arguments);
       }
 
@@ -1171,13 +1200,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteFile",
     value: function () {
-      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(deleteFileId) {
-        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(deleteFileId) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
           while (1) {
-            switch (_context21.prev = _context21.next) {
+            switch (_context22.prev = _context22.next) {
               case 0:
-                _context21.prev = 0;
-                _context21.next = 3;
+                _context22.prev = 0;
+                _context22.next = 3;
                 return API.put("note-api/noteFile?action=Delete", {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -1198,22 +1227,22 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 3:
-                return _context21.abrupt("return", _context21.sent);
+                return _context22.abrupt("return", _context22.sent);
 
               case 6:
-                _context21.prev = 6;
-                _context21.t0 = _context21["catch"](0);
-                throw Error(JSON.stringify(_context21.t0));
+                _context22.prev = 6;
+                _context22.t0 = _context22["catch"](0);
+                throw Error(JSON.stringify(_context22.t0));
 
               case 9:
               case "end":
-                return _context21.stop();
+                return _context22.stop();
             }
           }
-        }, _callee21, this, [[0, 6]]);
+        }, _callee22, this, [[0, 6]]);
       }));
 
-      function deleteFile(_x33) {
+      function deleteFile(_x35) {
         return _deleteFile.apply(this, arguments);
       }
 
@@ -1261,32 +1290,32 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getSearchList",
     value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(searchKey) {
-        return regeneratorRuntime.wrap(function _callee22$(_context22) {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(searchKey) {
+        return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
-            switch (_context22.prev = _context22.next) {
+            switch (_context23.prev = _context23.next) {
               case 0:
-                _context22.prev = 0;
-                _context22.next = 3;
+                _context23.prev = 0;
+                _context23.next = 3;
                 return API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
 
               case 3:
-                return _context22.abrupt("return", _context22.sent);
+                return _context23.abrupt("return", _context23.sent);
 
               case 6:
-                _context22.prev = 6;
-                _context22.t0 = _context22["catch"](0);
-                throw Error(JSON.stringify(_context22.t0));
+                _context23.prev = 6;
+                _context23.t0 = _context23["catch"](0);
+                throw Error(JSON.stringify(_context23.t0));
 
               case 9:
               case "end":
-                return _context22.stop();
+                return _context23.stop();
             }
           }
-        }, _callee22, this, [[0, 6]]);
+        }, _callee23, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x34) {
+      function getSearchList(_x36) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -1295,12 +1324,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createFileMeta",
     value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(targetList) {
-        return regeneratorRuntime.wrap(function _callee23$(_context23) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(targetList) {
+        return regeneratorRuntime.wrap(function _callee24$(_context24) {
           while (1) {
-            switch (_context23.prev = _context23.next) {
+            switch (_context24.prev = _context24.next) {
               case 0:
-                _context23.next = 2;
+                _context24.next = 2;
                 return API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -1308,17 +1337,17 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context23.abrupt("return", _context23.sent);
+                return _context24.abrupt("return", _context24.sent);
 
               case 3:
               case "end":
-                return _context23.stop();
+                return _context24.stop();
             }
           }
-        }, _callee23);
+        }, _callee24);
       }));
 
-      function createFileMeta(_x35) {
+      function createFileMeta(_x37) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -1392,6 +1421,7 @@ var TagStore = observable({
   updateTagList: [],
   currentTagId: "",
   currentTagValue: "",
+  selectTagIdx: '',
   editTagIndex: "",
   editTagValue: "",
   // 처음 받아오는 데이터를 여기에 저장
@@ -1478,6 +1508,9 @@ var TagStore = observable({
   // tagTest
   getTagText: function getTagText(text) {
     this.tagText = text;
+  },
+  setSelectTagIndex: function setSelectTagIndex(index) {
+    this.selectTagIdx = index;
   },
   setTagText: function setTagText(text) {
     this.tagText = text;
@@ -2072,12 +2105,14 @@ var _observable;
 var EditorStore = observable((_observable = {
   contents: '',
   tinymce: null,
+  editor: null,
   uploadFile: "",
   imgElement: '',
   isFile: false,
   isDrive: false,
   isAttatch: false,
   isPreview: false,
+  isSaveDrive: false,
   previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
@@ -2094,7 +2129,11 @@ var EditorStore = observable((_observable = {
   fileLayoutList: [],
   tempArray: [],
   tempFileLayoutList: [],
+  notSaveFileList: [],
   driveFileList: [],
+  saveFileId: '',
+  saveFileExt: '',
+  saveFileName: '',
   fileName: "",
   fileSize: "",
   fileExtension: "",
@@ -2114,6 +2153,12 @@ var EditorStore = observable((_observable = {
   getEditor: function getEditor() {
     return this.tinymce;
   },
+  setEditorDOM: function setEditorDOM(el) {
+    this.editor = el;
+  },
+  getEditorDOM: function getEditorDOM() {
+    return this.editor;
+  },
   setImgElement: function setImgElement(element) {
     this.imgElement = element;
   },
@@ -2122,6 +2167,17 @@ var EditorStore = observable((_observable = {
   },
   setIsDrive: function setIsDrive(flag) {
     this.isDrive = flag;
+  },
+  setIsSaveDrive: function setIsSaveDrive(flag) {
+    this.isSaveDrive = flag;
+  },
+  setSaveDriveMeta: function setSaveDriveMeta() {
+    var saveMeta = {
+      fileId: this.saveFileId,
+      fileExt: this.saveFileExt,
+      fileName: this.saveFileName
+    };
+    this.saveDriveMeta = saveMeta;
   },
   setIsAttatch: function setIsAttatch(flag) {
     this.isAttatch = flag;
@@ -2223,6 +2279,10 @@ var EditorStore = observable((_observable = {
   return uploadFile;
 }()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
   this.downloadFileId = fileId;
+}), _defineProperty(_observable, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
+  this.saveFileId = fileId;
+  this.saveFileExt = fileExt;
+  this.saveFileName = fileName;
 }), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
   this.fileLayoutList.splice(this.deleteFileIndex, 1);
   if (this.fileLayoutList.length === 0) this.setIsFile(false);
@@ -2506,6 +2566,49 @@ var EditorStore = observable((_observable = {
       EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
       break;
   }
+}), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    var deleteArr;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            deleteArr = [];
+
+            if (!(EditorStore.notSaveFileList.length > 0)) {
+              _context8.next = 12;
+              break;
+            }
+
+            deleteArr = toJS(EditorStore.notSaveFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
+            });
+            _context8.prev = 3;
+            _context8.next = 6;
+            return Promise.all(deleteArr).then(function () {
+              EditorStore.notSaveFileList = [];
+              if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+            });
+
+          case 6:
+            _context8.next = 10;
+            break;
+
+          case 8:
+            _context8.prev = 8;
+            _context8.t0 = _context8["catch"](3);
+
+          case 10:
+            _context8.prev = 10;
+            return _context8.finish(10);
+
+          case 12:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, null, [[3, 8, 10, 12]]);
+  }))();
 }), _observable));
 
 var _observable$1;
@@ -2526,6 +2629,8 @@ var PageStore = observable((_observable$1 = {
   renamePageId: '',
   renamePageText: '',
   isMovingPage: false,
+  moveInfoList: [],
+  isCtrlKeyDown: false,
   movePageId: '',
   // 이동을 원하는 page의 id
   movePageIdx: '',
@@ -2657,6 +2762,21 @@ var PageStore = observable((_observable$1 = {
   },
   setIsMovingPage: function setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
+  },
+  getMoveInfoList: function getMoveInfoList() {
+    return this.moveInfoList;
+  },
+  setMoveInfoList: function setMoveInfoList(moveInfoList) {
+    this.moveInfoList = moveInfoList;
+  },
+  appendMoveInfoList: function appendMoveInfoList(moveInfo) {
+    this.moveInfoList.push(moveInfo);
+  },
+  removeMoveInfoList: function removeMoveInfoList(idx) {
+    this.moveInfoList.splice(idx, 1);
+  },
+  setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
+    this.isCtrlKeyDown = flag;
   },
   getMovePageId: function getMovePageId() {
     return this.movePageId;
@@ -2951,93 +3071,95 @@ var PageStore = observable((_observable$1 = {
       ChapterStore.getNoteChapterList();
     });
   },
-  clearMoveData: function clearMoveData() {
-    this.movePageId = '';
-    this.movePageIdx = '';
-    this.moveChapterId = '';
-  },
-  movePage: function movePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageList, moveTargetPageIdx) {
-    var _this4 = this;
-
+  movePage: function movePage(movePageId, moveTargetChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var item, copyOfPageList, target, targetInLocalStorage;
+      var _yield$NoteRepository8, dto;
+
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
-              if (!(_this4.moveChapterId === moveTargetChapterId)) {
-                _context8.next = 5;
-                break;
-              }
+              _context8.next = 2;
+              return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
-              // 같은 챕터 내에 있는 페이지를 이동하고자 하는 경우
-              if (_this4.movePageIdx !== moveTargetPageIdx && _this4.movePageIdx + 1 !== moveTargetPageIdx) {
-                item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
-                copyOfPageList = moveTargetPageList.slice();
-                target = moveTargetPageList[_this4.movePageIdx];
-                targetInLocalStorage = item[moveTargetChapterIdx].children[_this4.movePageIdx]; // Update pageList & localStorage
-
-                if (_this4.movePageIdx < moveTargetPageIdx) {
-                  copyOfPageList.splice(moveTargetPageIdx, 0, target);
-                  copyOfPageList.splice(_this4.movePageIdx, 1);
-                  item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-                  item[moveTargetChapterIdx].children.splice(_this4.movePageIdx, 1);
-                } else {
-                  copyOfPageList.splice(_this4.movePageIdx, 1);
-                  copyOfPageList.splice(moveTargetPageIdx, 0, target);
-                  item[moveTargetChapterIdx].children.splice(_this4.movePageIdx, 1);
-                  item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, targetInLocalStorage);
-                }
-
-                ChapterStore.changePageList(moveTargetChapterIdx, copyOfPageList);
-                localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-
-                _this4.setCurrentPageId(_this4.movePageId);
-
-                _this4.fetchCurrentPageData(_this4.movePageId);
-
-                ChapterStore.setCurrentChapterId(moveTargetChapterId);
-              }
-
-              _this4.clearMoveData();
-
-              _context8.next = 7;
-              break;
+            case 2:
+              _yield$NoteRepository8 = _context8.sent;
+              dto = _yield$NoteRepository8.data.dto;
+              return _context8.abrupt("return", dto);
 
             case 5:
-              _context8.next = 7;
-              return NoteRepository$1.movePage(_this4.movePageId, moveTargetChapterId).then(function (response) {
-                if (response.status === 200) {
-                  // 기존꺼 지우고
-                  var _item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
-
-                  var children = _item[_this4.moveChapterIdx].children.filter(function (pageId) {
-                    return _this4.movePageId !== pageId;
-                  });
-
-                  _item[_this4.moveChapterIdx].children = children; // 원하는 위치에 새로 추가
-
-                  _item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, _this4.movePageId);
-
-                  localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(_item));
-                  ChapterStore.getNoteChapterList();
-
-                  _this4.setCurrentPageId(_this4.movePageId);
-
-                  _this4.fetchCurrentPageData(_this4.movePageId);
-
-                  ChapterStore.setCurrentChapterId(moveTargetChapterId);
-
-                  _this4.clearMoveData();
-                }
-              });
-
-            case 7:
             case "end":
               return _context8.stop();
           }
         }
       }, _callee8);
+    }))();
+  },
+  moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _item$moveTargetChapt;
+
+      var item, sortedMoveInfoList, pageIds, startIdx;
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
+
+              sortedMoveInfoList = _this4.moveInfoList.slice().sort(function (a, b) {
+                if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+                return a.chapterIdx - b.chapterIdx;
+              }); // Step2. LocalStorage에서 삭제 / 서비스 호출
+
+              _context9.next = 4;
+              return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
+                if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
+                item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
+                if (moveInfo.chapterId !== moveTargetChapterId) return _this4.movePage(moveInfo.pageId, moveTargetChapterId);
+              }));
+
+            case 4:
+              // Step3. LocalStorage에 추가
+              pageIds = sortedMoveInfoList.map(function (moveInfo) {
+                return moveInfo.pageId;
+              });
+
+              (_item$moveTargetChapt = item[moveTargetChapterIdx].children).splice.apply(_item$moveTargetChapt, [moveTargetPageIdx, 0].concat(_toConsumableArray(pageIds))); // Step4. LocalStorage에서 삭제
+
+
+              sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+                if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
+                item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
+              }); // Step5. moveInfoList 업데이트
+
+              startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
+                return pageId === sortedMoveInfoList[0].pageId;
+              });
+              _this4.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+                return {
+                  pageId: moveInfo.pageId,
+                  pageIdx: startIdx + idx,
+                  chapterId: moveTargetChapterId,
+                  chapterIdx: moveTargetChapterIdx
+                };
+              });
+              localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
+              ChapterStore.getNoteChapterList();
+
+              _this4.setCurrentPageId(_this4.movePageId);
+
+              _this4.fetchCurrentPageData(_this4.movePageId);
+
+              ChapterStore.setCurrentChapterId(moveTargetChapterId);
+
+            case 14:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
     }))();
   },
   modifiedDateFormatting: function modifiedDateFormatting(date) {
@@ -3070,28 +3192,36 @@ var PageStore = observable((_observable$1 = {
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var dto;
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              _context9.next = 2;
+              _context10.next = 2;
               return _this5.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context9.sent;
+              dto = _context10.sent;
 
               if (isFilled(dto.note_id)) {
-                _context9.next = 6;
+                _context10.next = 6;
                 break;
               }
 
               if (_this5.currentPageId === noteId) _this5.currentPageId = '';
-              return _context9.abrupt("return");
+              return _context10.abrupt("return");
 
             case 6:
-              // fetchNoteInfoList할 때 setCurrentPageId하기
+              if (!_this5.currentPageId) {
+                _this5.setMoveInfoList([{
+                  pageId: dto.note_id,
+                  pageIdx: 0,
+                  chapterId: dto.parent_notebook,
+                  chapterIdx: 0
+                }]);
+              }
+
               _this5.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
@@ -3102,36 +3232,36 @@ var PageStore = observable((_observable$1 = {
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 14:
+            case 15:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
         }
-      }, _callee9);
+      }, _callee10);
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (!pageId) {
-                _context10.next = 7;
+                _context11.next = 7;
                 break;
               }
 
-              _context10.next = 3;
+              _context11.next = 3;
               return _this6.fetchNoteInfoList(pageId);
 
             case 3:
-              _context10.next = 5;
+              _context11.next = 5;
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context10.next = 8;
+              _context11.next = 8;
               break;
 
             case 7:
@@ -3139,10 +3269,10 @@ var PageStore = observable((_observable$1 = {
 
             case 8:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -3172,23 +3302,24 @@ var PageStore = observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
+      var _EditorStore$tinymce;
+
       _this9.fetchNoteInfoList(dto.note_id);
 
-      _this9.setContent(_this9.currentPageData.note_content);
-
+      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
   handleNoneEdit: function handleNoneEdit() {
     var _this10 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (!_this10.isNewPage) {
-                _context11.next = 6;
+                _context12.next = 6;
                 break;
               }
 
@@ -3200,30 +3331,30 @@ var PageStore = observable((_observable$1 = {
 
               _this10.deleteNotePage();
 
-              _context11.next = 11;
+              _context12.next = 11;
               break;
 
             case 6:
               if (!_this10.otherEdit) {
-                _context11.next = 10;
+                _context12.next = 10;
                 break;
               }
 
-              return _context11.abrupt("return");
+              return _context12.abrupt("return");
 
             case 10:
               _this10.noteNoneEdit(_this10.currentPageId);
 
             case 11:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
         }
-      }, _callee11);
+      }, _callee12);
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce, _EditorStore$tinymce2;
+    var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -3251,8 +3382,9 @@ var PageStore = observable((_observable$1 = {
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
-    (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.selection.setCursorLocation();
-    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+    EditorStore.setIsAttatch(false);
+    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
+    (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
@@ -3311,30 +3443,32 @@ var PageStore = observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    var _yield$NoteRepository8, noteList;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    var _yield$NoteRepository9, noteList;
 
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context13.prev = _context13.next) {
           case 0:
-            _context12.next = 2;
+            _context13.next = 2;
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository8 = _context12.sent;
-            noteList = _yield$NoteRepository8.data.dto.noteList;
-            return _context12.abrupt("return", noteList);
+            _yield$NoteRepository9 = _context13.sent;
+            noteList = _yield$NoteRepository9.data.dto.noteList;
+            return _context13.abrupt("return", noteList);
 
           case 5:
           case "end":
-            return _context12.stop();
+            return _context13.stop();
         }
       }
-    }, _callee12);
+    }, _callee13);
   }))();
-}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetChId, sharedRoomName, targetPageList) {
+}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
+  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
@@ -3392,7 +3526,6 @@ var ChapterStore = observable((_observable$2 = {
   nextSelectableChapterId: '',
   renameChapterId: '',
   renameChapterText: '',
-  allDeleted: false,
   isMovingChapter: false,
   moveChapterIdx: '',
   dragEnterChapterIdx: '',
@@ -3438,12 +3571,6 @@ var ChapterStore = observable((_observable$2 = {
   },
   setRenameChapterText: function setRenameChapterText(chapterText) {
     this.renameChapterText = chapterText;
-  },
-  getAllDeleted: function getAllDeleted() {
-    return this.allDeleted;
-  },
-  setAllDeleted: function setAllDeleted(allDeleted) {
-    this.allDeleted = allDeleted;
   },
   getIsMovingChapter: function getIsMovingChapter() {
     return this.isMovingChapter;
@@ -4009,9 +4136,7 @@ var ChapterStore = observable((_observable$2 = {
 
             _this8.setChapterTempUl(false);
 
-            _this8.setAllDeleted(false);
-
-          case 9:
+          case 8:
           case "end":
             return _context10.stop();
         }
@@ -4027,12 +4152,10 @@ var ChapterStore = observable((_observable$2 = {
 
       PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
       PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
-      if (!_this9.nextSelectableChapterId) _this9.setAllDeleted(true);
     }
 
     _this9.getNoteChapterList();
 
-    if (_this9.allDeleted) NoteStore$1.setShowPage(false);
     _this9.deleteChapterId = '';
     NoteStore$1.setShowModal(false);
   });
@@ -4197,10 +4320,12 @@ var ChapterStore = observable((_observable$2 = {
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChId, sharedRoomName, targetChapterList) {
+}), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChapterList) {
   var _this14 = this;
 
   if (!targetChapterList) return;
+  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetChapterList.map(function (chapter) {
     return {
       id: chapter.id,
@@ -4374,10 +4499,19 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
-            var _EditorStore$tinymce;
+            if (EditorStore.notSaveFileList.length > 0) {
+              EditorStore.notSaveFileDelete().then(function () {
+                var _EditorStore$tinymce;
 
-            PageStore.noteNoneEdit(PageStore.currentPageId);
-            (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+                PageStore.noteNoneEdit(PageStore.currentPageId);
+                (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+              });
+            } else {
+              var _EditorStore$tinymce2;
+
+              PageStore.noteNoneEdit(PageStore.currentPageId);
+              (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+            }
           }
         });
         eventList.push(function (e) {
@@ -4883,13 +5017,20 @@ var NoteStore$1 = observable({
       }, _callee);
     }))();
   },
+  getTargetChId: function getTargetChId(targetRoomId) {
+    return RoomStore.getChannelIds({
+      roomId: targetRoomId
+    })[NoteRepository$1.CH_TYPE];
+  },
+  getSharedRoomName: function getSharedRoomName() {
+    return RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+  },
   shareNote: function shareNote() {
     var _this2 = this;
 
-    var sharedRoomName = RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
     this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
-        var friendId, res, targetChId;
+        var friendId, res;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -4905,12 +5046,9 @@ var NoteStore$1 = observable({
 
               case 3:
                 res = _context2.sent;
-                targetChId = RoomStore.getChannelIds({
-                  roomId: res.roomId
-                })[NoteRepository$1.CH_TYPE];
-                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [_this2.shareContent]);
+                if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, [_this2.shareContent]);
 
-              case 6:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -4923,10 +5061,7 @@ var NoteStore$1 = observable({
       };
     }());
     this.shareArrays.roomArray.forEach(function (room) {
-      var targetChId = RoomStore.getChannelIds({
-        roomId: room.id
-      })[NoteRepository$1.CH_TYPE];
-      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [_this2.shareContent]);
+      if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, [_this2.shareContent]);
     });
   },
   setLNBChapterCoverRef: function setLNBChapterCoverRef(ref) {
@@ -6350,7 +6485,7 @@ var LNBTag = /*#__PURE__*/memo(function () {
       PageStore = _useNoteStore.PageStore;
 
   var _useDrop = useDrop({
-    accept: 'chapter',
+    accept: 'Item:Note:Chapter',
     drop: function drop() {
       ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },
@@ -6563,6 +6698,7 @@ var handleUpload = /*#__PURE__*/function () {
                           if (EditorStore.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
                             PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                               EditorStore.setFileList(dto.fileList);
+                              EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
                               EditorStore.tempFileLayoutList = [];
                             });
                           }
@@ -6868,6 +7004,8 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
     var _EditorStore$tinymce$;
 
     var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
+    var targetBody = EditorStore.tinymce.getBody();
+    EditorStore.setEditorDOM(targetBody);
 
     if (targetList && targetList.length > 0) {
       Array.from(targetList).forEach(function (el) {
@@ -6876,6 +7014,18 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
         el.setAttribute('hasListener', true);
       });
     }
+
+    targetBody.addEventListener('click', handleUnselect);
+  }
+};
+var handleUnselect = function handleUnselect() {
+  if (EditorStore.selectFileElement !== '') {
+    EditorStore.setFileIndex('');
+    EditorStore.setFileElement('');
+  }
+
+  if (TagStore.selectTagIdx !== '') {
+    TagStore.setSelectTagIndex('');
   }
 };
 var handleFileSync = /*#__PURE__*/function () {
@@ -6899,9 +7049,16 @@ var handleFileSync = /*#__PURE__*/function () {
     return _ref6.apply(this, arguments);
   };
 }();
-var handleDriveSave = function handleDriveSave() {
-  var DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
-  console.log(DriveSaveModal);
+var openSaveDrive = function openSaveDrive() {
+  EditorStore.setIsSaveDrive(true);
+  EditorStore.setSaveDriveMeta();
+};
+var driveSaveSuccess = function driveSaveSuccess() {
+  EditorStore.setIsSaveDrive(false);
+  EditorStore.setIsAttatch(true);
+};
+var driveSaveCancel = function driveSaveCancel() {
+  EditorStore.setIsSaveDrive(false);
 };
 
 var ContextMenu = function ContextMenu(_ref) {
@@ -7188,16 +7345,27 @@ var Page = function Page(_ref) {
       NoteStore = _useNoteStore.NoteStore,
       PageStore = _useNoteStore.PageStore;
 
+  var moveInfo = {
+    pageId: page.id,
+    pageIdx: index,
+    chapterId: chapter.id,
+    chapterIdx: chapterIdx
+  };
+
   var _useDrag = useDrag({
     item: {
       id: page.id,
-      type: page.type === 'note' ? 'page' : 'shared'
+      type: page.type === 'note' ? 'Item:Note:Page' : 'Item:Note:SharedPage'
     },
     begin: function begin(monitor) {
+      if (!PageStore.moveInfoList.find(function (info) {
+        return info.pageId === page.id;
+      })) {
+        PageStore.setMoveInfoList([moveInfo]);
+        PageStore.setIsCtrlKeyDown(false);
+      }
+
       PageStore.setMovePageId(page.id);
-      PageStore.setMovePageIdx(index);
-      PageStore.setMoveChapterId(chapter.id);
-      PageStore.setMoveChapterIdx(chapterIdx);
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('page');
       NoteStore.setDraggedTitle(page.text);
@@ -7217,9 +7385,9 @@ var Page = function Page(_ref) {
       preview = _useDrag2[2];
 
   var _useDrop = useDrop({
-    accept: 'page',
+    accept: 'Item:Note:Page',
     drop: function drop() {
-      PageStore.movePage(chapter.id, chapterIdx, chapter.children, index);
+      PageStore.moveNotePage(chapter.id, chapterIdx, index);
     },
     hover: function hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx) PageStore.setDragEnterChapterIdx(chapterIdx);
@@ -7235,8 +7403,19 @@ var Page = function Page(_ref) {
     });
   }, []);
   var handleSelectPage = useCallback(function (e) {
-    onClick(page.id, e);
-  }, []);
+    if (e.ctrlKey) {
+      var idx = PageStore.moveInfoList.findIndex(function (info) {
+        return info.pageId === page.id;
+      });
+      if (idx === -1) PageStore.appendMoveInfoList(moveInfo);else PageStore.removeMoveInfoList(idx);
+      PageStore.setIsCtrlKeyDown(true);
+      return;
+    }
+
+    PageStore.setMoveInfoList([moveInfo]);
+    PageStore.setIsCtrlKeyDown(false);
+    onClick(page.id);
+  }, [page]);
 
   var handlePageName = function handlePageName(e) {
     var value = e.target.value;
@@ -7263,7 +7442,9 @@ var Page = function Page(_ref) {
         return drag(drop(node));
       } : drag,
       id: page.id,
-      className: 'page-li' + (NoteStore.showPage && (NoteStore.isDragging ? page.id === PageStore.movePageId : page.id === PageStore.currentPageId) ? ' selected' : ''),
+      className: 'page-li' + (PageStore.isCtrlKeyDown ? PageStore.moveInfoList.find(function (info) {
+        return info.pageId === page.id;
+      }) ? ' selected' : '' : NoteStore.showPage && (NoteStore.isDragging ? page.id === PageStore.movePageId : page.id === PageStore.currentPageId) ? ' selected' : ''),
       onClick: handleSelectPage
     }, /*#__PURE__*/React.createElement(PageMargin, {
       style: page.id === PageStore.getRenamePageId() && PageStore.isRename ? {
@@ -7316,9 +7497,9 @@ var PageList = function PageList(_ref) {
       EditorStore = _useNoteStore.EditorStore;
 
   var _useDrop = useDrop({
-    accept: 'page',
+    accept: 'Item:Note:Page',
     drop: function drop() {
-      PageStore.movePage(chapter.id, chapterIdx, chapter.children, chapter.children.length);
+      PageStore.moveNotePage(chapter.id, chapterIdx, chapter.children.length);
     },
     hover: function hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx) PageStore.setDragEnterChapterIdx(chapterIdx);
@@ -7337,7 +7518,7 @@ var PageList = function PageList(_ref) {
   };
 
   var handleSelectPage = useCallback( /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id, e) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
       var _EditorStore$tinymce;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -7359,7 +7540,7 @@ var PageList = function PageList(_ref) {
       }, _callee);
     }));
 
-    return function (_x, _x2) {
+    return function (_x) {
       return _ref2.apply(this, arguments);
     };
   }(), []);
@@ -7405,7 +7586,7 @@ var Chapter = function Chapter(_ref) {
 
 
   var _useDrop = useDrop({
-    accept: 'chapter',
+    accept: 'Item:Note:Chapter',
     drop: function drop() {
       ChapterStore.moveChapter(index);
     },
@@ -7420,7 +7601,7 @@ var Chapter = function Chapter(_ref) {
   var _useDrag = useDrag({
     item: {
       id: chapter.id,
-      type: isShared ? 'shared' : 'chapter'
+      type: isShared ? 'Item:Note:SharedChapter' : 'Item:Note:Chapter'
     },
     begin: function begin(monitor) {
       ChapterStore.setMoveChapterIdx(index);
@@ -7443,9 +7624,9 @@ var Chapter = function Chapter(_ref) {
 
 
   var _useDrop3 = useDrop({
-    accept: 'page',
+    accept: 'Item:Note:Page',
     drop: function drop() {
-      PageStore.movePage(chapter.id, index, chapter.children, 0);
+      PageStore.moveNotePage(chapter.id, index, 0);
     },
     hover: function hover() {
       if (PageStore.dragEnterPageIdx !== 0) PageStore.setDragEnterPageIdx(0);
@@ -7482,6 +7663,13 @@ var Chapter = function Chapter(_ref) {
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
+    if (pageId) PageStore.setMoveInfoList([{
+      pageId: pageId,
+      pageIdx: 0,
+      chapterId: chapter.id,
+      chapterIdx: index
+    }]);else PageStore.setMoveInfoList([]);
+    PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
   var handleFocus = function handleFocus(e) {
@@ -8384,7 +8572,7 @@ var FileDataTime = styled.div(_templateObject26$1());
 var FileTime = styled.div(_templateObject27$1());
 var FileClose = styled.div(_templateObject28$1());
 var FileCloseBtn = styled.img(_templateObject29$1());
-var editorContentCSS = " \n  body{\n    font-family : \"Noto Sans KR\",sans-serif !important;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
+var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif !important;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
 
 const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/tag_add%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/tag_add' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M16%2c12 C16.5522848%2c12 17%2c12.4477153 17%2c13 L16.9996194%2c15 L19%2c15 C19.5522848%2c15 20%2c15.4477153 20%2c16 C20%2c16.5522848 19.5522848%2c17 19%2c17 L16.9996194%2c17 L17%2c19 C17%2c19.5522848 16.5522848%2c20 16%2c20 C15.4477153%2c20 15%2c19.5522848 15%2c19 L14.9996194%2c17 L13%2c17 C12.4477153%2c17 12%2c16.5522848 12%2c16 C12%2c15.4477153 12.4477153%2c15 13%2c15 L14.9996194%2c15 L15%2c13 C15%2c12.4477153 15.4477153%2c12 16%2c12 Z M8.34023349%2c1.00074646 L14.3094032%2c1.23974807 C15.0221643%2c1.26919481 15.6289873%2c1.87289763 15.6577193%2c2.58806415 L15.8973704%2c8.5532031 C15.9079389%2c8.89539977 15.7927278%2c9.20762807 15.5687793%2c9.43947123 L13.6616194%2c11.346 L9.53741848%2c15.4710789 C9.08530775%2c15.9231896 8.3387291%2c15.9245472 7.81438626%2c15.4959105 L7.70561696%2c15.3974858 L3.80461938%2c11.496 L3.02365047%2c12.2861419 L9.12199782%2c18.3939493 L10.9866194%2c16.474 L12.0926194%2c17.534 L10.0106081%2c19.6093089 C9.5775224%2c20.0686785 8.874178%2c20.0836069 8.38701228%2c19.6654142 L8.28610575%2c19.5691763 L1.91528974%2c13.1731645 C1.4614885%2c12.6931552 1.41548103%2c11.9467627 1.78862933%2c11.4492151 L1.87500948%2c11.3465943 L2.72861938%2c10.421 L1.49998163%2c9.19185043 C0.975025961%2c8.66689476 0.941984154%2c7.84445326 1.42638851%2c7.36004891 L7.44361108%2c1.34282634 C7.67684281%2c1.10959461 7.99493852%2c0.989308278 8.34023349%2c1.00074646 Z M8.4872346%2c2.49877551 L2.66190168%2c8.32410843 L8.57335896%2c14.2355657 L14.3986919%2c8.41023278 L14.1711831%2c2.72712965 L8.4872346%2c2.49877551 Z M11.4271541%2c4.00000003 C11.9794389%2c4.00000003 12.4271541%2c4.44771528 12.4271541%2c5.00000003 C12.4271541%2c5.55228478 11.9794389%2c6.00000003 11.4271541%2c6.00000003 C10.8748694%2c6.00000003 10.4271541%2c5.55228478 10.4271541%2c5.00000003 C10.4271541%2c4.44771528 10.8748694%2c4.00000003 11.4271541%2c4.00000003 Z' id='Combined-Shape' fill='rgb(117%2c 117%2c 127)'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
@@ -8448,7 +8636,7 @@ var TagListContainer = function TagListContainer() {
       TagStore = _useNoteStore.TagStore,
       PageStore = _useNoteStore.PageStore;
 
-  var focusedTag = useRef(null);
+  var focusedTag = useRef([]);
   var tagList = useRef(null);
 
   var handleCloseBtn = function handleCloseBtn(targetId, targetText) {
@@ -8531,28 +8719,22 @@ var TagListContainer = function TagListContainer() {
 
   var handleClickOutside = function handleClickOutside(e) {
     if (!e.target.closest(".ant-tag")) {
-      var prev = focusedTag.current;
-      changeFocusedTag(prev, null);
+      TagStore.setSelectTagIndex('');
     }
   };
 
   var handleClickTag = function handleClickTag(idx, e) {
     var prev = focusedTag.current;
-    changeFocusedTag(prev, idx);
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(prev[idx], idx);
   }; // idx : null 가능
 
 
-  var changeFocusedTag = function changeFocusedTag(prev, idx) {
-    var _tagList$current$chil;
-
-    if (prev === null && idx === null) return;
-    (_tagList$current$chil = tagList.current.children[prev]) === null || _tagList$current$chil === void 0 ? void 0 : _tagList$current$chil.classList.remove('noteFocusedTag');
-    focusedTag.current = idx;
+  var changeFocusedTag = function changeFocusedTag(target, idx) {
+    if (target === null && idx === null) return;
     if (idx === null) return;
-    var target = tagList.current.children[idx];
 
     if (target) {
-      target.classList.add('noteFocusedTag');
+      TagStore.setSelectTagIndex(idx);
       target.focus();
       target.scrollIntoView(false);
     }
@@ -8564,16 +8746,16 @@ var TagListContainer = function TagListContainer() {
     switch (e.keyCode) {
       // left
       case 37:
-        if (focusedTag.current > 0) {
-          changeFocusedTag(prev, prev - 1);
+        if (TagStore.selectTagIdx > 0) {
+          changeFocusedTag(prev[TagStore.selectTagIdx - 1], TagStore.selectTagIdx - 1);
         }
 
         break;
       // right
 
       case 39:
-        if (focusedTag.current < TagStore.notetagList.length - 1) {
-          changeFocusedTag(prev, prev + 1);
+        if (TagStore.selectTagIdx < TagStore.notetagList.length - 1) {
+          changeFocusedTag(prev[TagStore.selectTagIdx + 1], TagStore.selectTagIdx + 1);
         }
 
         break;
@@ -8608,8 +8790,11 @@ var TagListContainer = function TagListContainer() {
         onFocus: handleFocus,
         autoFocus: true
       }) : /*#__PURE__*/React.createElement(Tag$1, {
-        className: 'antTag',
+        ref: function ref(el) {
+          return focusedTag.current[index] = el;
+        },
         key: index,
+        className: index === TagStore.selectTagIdx ? 'antTag noteFocusedTag' : 'antTag',
         "data-idx": index,
         id: item.tag_id,
         closable: PageStore.isReadMode() ? false : true,
@@ -8678,7 +8863,7 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileDown = function handleFileDown(key) {
-    if (key === '0') handleDriveSave();
+    if (key === '0') openSaveDrive();
     if (key === '1') downloadFile(EditorStore.downloadFileId);
   };
 
@@ -8842,10 +9027,11 @@ var FileLayout = function FileLayout() {
     };
   }, []);
 
-  var handleClickDropDown = function handleClickDropDown(fileId) {
+  var handleClickDropDown = function handleClickDropDown(fileId, fileExt, fileName) {
     return function (e) {
       e.stopPropagation();
       EditorStore.setDownLoadFileId(fileId);
+      EditorStore.setSaveFileMeta(fileId, fileExt, fileName);
     };
   };
 
@@ -8908,7 +9094,7 @@ var FileLayout = function FileLayout() {
         overlay: menu,
         trigger: ['click'],
         placement: "bottomCenter",
-        onClick: handleClickDropDown(item.file_id)
+        onClick: handleClickDropDown(item.file_id, item.file_extension, item.file_name)
       }, /*#__PURE__*/React.createElement(FileDownloadIcon, null, hover && item.file_id === hoverFileId ? /*#__PURE__*/React.createElement(FileDownloadBtn, {
         src: img$b
       }) : /*#__PURE__*/React.createElement(FileExtensionBtn, {
@@ -8949,6 +9135,7 @@ var EditorContainer = function EditorContainer() {
 
   var DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   var FilePreview = ComponentStore.get('Drive:FilePreview');
+  var DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
   var editorWrapperRef = useRef(null);
 
   var getEditorContent = function getEditorContent(content) {
@@ -9052,13 +9239,15 @@ var EditorContainer = function EditorContainer() {
   useLayoutEffect(function () {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
-      var _EditorStore$tinymce;
+      var _EditorStore$tinymce, _EditorStore$editor;
 
       (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setMode('readonly');
+      (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
     } else {
-      var _EditorStore$tinymce2;
+      var _EditorStore$tinymce2, _EditorStore$editor2;
 
       (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.setMode('design');
+      (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
     }
   }, [PageStore.isReadMode()]);
 
@@ -9134,11 +9323,7 @@ var EditorContainer = function EditorContainer() {
           }); // Register some other event callbacks...
 
           editor.on('click', function (e) {
-            var focusedTags = _toConsumableArray(document.querySelectorAll('.noteFocusedTag'));
-
-            focusedTags.forEach(function (tag) {
-              return tag.classList.remove('noteFocusedTag');
-            });
+            handleUnselect();
           });
           editor.on('keydown', function (e) {
             var target = getAnchorElement();
@@ -9254,7 +9439,7 @@ var EditorContainer = function EditorContainer() {
                 type: 'menuitem',
                 text: 'Drive에 저장',
                 onAction: function onAction() {
-                  handleDriveSave();
+                  openSaveDrive();
                 }
               }, {
                 type: 'menuitem',
@@ -9317,7 +9502,12 @@ var EditorContainer = function EditorContainer() {
       handleClose: function handleClose() {
         return EditorStore.setIsPreview(false);
       }
-    }) : null));
+    }) : null, /*#__PURE__*/React.createElement(DriveSaveModal, {
+      visible: EditorStore.isSaveDrive,
+      successCallback: driveSaveSuccess,
+      cancelCallback: driveSaveCancel,
+      file: EditorStore.saveDriveMeta
+    })));
   });
 };
 
@@ -9698,7 +9888,7 @@ var NoteApp = function NoteApp(_ref) {
     var _GlobalVariable$edito, _document$querySelect, _document$querySelect2, _EditorStore$tinymce;
 
     if (PageStore.isReadMode()) return;
-    if (EditorStore.isDrive || EditorStore.isAttatch) return;
+    if (EditorStore.isDrive || EditorStore.isAttatch || EditorStore.isSaveDrive) return;
     if (GlobalVariable.editorWrapper && ((_GlobalVariable$edito = GlobalVariable.editorWrapper) === null || _GlobalVariable$edito === void 0 ? void 0 : _GlobalVariable$edito.contains(e.target))) return;
     if (GlobalVariable.editorWrapper && ((_document$querySelect = document.querySelector('.tox.tox-tinymce-aux')) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.contains(e.target))) return;
     if ((_document$querySelect2 = document.querySelector('.tox-pop__dialog')) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.contains(e.target)) return;

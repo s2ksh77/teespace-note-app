@@ -2,7 +2,6 @@ import NoteStore from './noteStore';
 import PageStore from './pageStore';
 import ChapterStore from './chapterStore';
 import EditorStore from './editorStore';
-import { notSaveFileDelete } from '../components/common/NoteFile';
 
 const NoteMeta = {
   openDialog(type) {
@@ -43,7 +42,7 @@ const NoteMeta = {
           if (PageStore.isNewPage) PageStore.handleNoneEdit();
           else {
             if (EditorStore.notSaveFileList.length > 0) {
-              notSaveFileDelete().then(() => {
+              EditorStore.notSaveFileDelete().then(() => {
                 PageStore.noteNoneEdit(PageStore.currentPageId);
                 EditorStore.tinymce?.undoManager.clear();
               });
