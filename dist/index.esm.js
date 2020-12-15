@@ -1,6 +1,7 @@
-import { observable } from 'mobx';
+import { observable, toJS } from 'mobx';
 import { API, WWMS, UserStore, RoomStore } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
+import 'html2pdf.js';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -1969,6 +1970,7 @@ var EditorStore = observable((_observable = {
   fileLayoutList: [],
   tempArray: [],
   tempFileLayoutList: [],
+  notSaveFileList: [],
   driveFileList: [],
   saveFileId: '',
   saveFileExt: '',
@@ -3098,10 +3100,11 @@ var PageStore = observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
+      var _EditorStore$tinymce;
+
       _this9.fetchNoteInfoList(dto.note_id);
 
-      _this9.setContent(_this9.currentPageData.note_content);
-
+      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
@@ -3149,7 +3152,7 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce, _EditorStore$tinymce2;
+    var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
     if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -3178,8 +3181,8 @@ var PageStore = observable((_observable$1 = {
     if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
     NoteStore$1.setShowModal(false);
     EditorStore.setIsAttatch(false);
-    (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.selection.setCursorLocation();
-    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+    (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
+    (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
@@ -4232,6 +4235,55 @@ var ChapterStore = observable((_observable$2 = {
   }))();
 }), _observable$2));
 
+var notSaveFileDelete = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    var deleteArr;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            deleteArr = [];
+
+            if (!(EditorStore.notSaveFileList.length > 0)) {
+              _context7.next = 12;
+              break;
+            }
+
+            deleteArr = toJS(EditorStore.notSaveFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
+            });
+            _context7.prev = 3;
+            _context7.next = 6;
+            return Promise.all(deleteArr).then(function () {
+              EditorStore.notSaveFileList = [];
+              if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+            });
+
+          case 6:
+            _context7.next = 10;
+            break;
+
+          case 8:
+            _context7.prev = 8;
+            _context7.t0 = _context7["catch"](3);
+
+          case 10:
+            _context7.prev = 10;
+            return _context7.finish(10);
+
+          case 12:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, null, [[3, 8, 10, 12]]);
+  }));
+
+  return function notSaveFileDelete() {
+    return _ref7.apply(this, arguments);
+  };
+}();
+
 var NoteMeta = {
   openDialog: function openDialog(type) {
     return this.setDialogConfig(this.setModalConfig(type), this.setEventConfig(type));
@@ -4290,10 +4342,19 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
-            var _EditorStore$tinymce;
+            if (EditorStore.notSaveFileList.length > 0) {
+              notSaveFileDelete().then(function () {
+                var _EditorStore$tinymce;
 
-            PageStore.noteNoneEdit(PageStore.currentPageId);
-            (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+                PageStore.noteNoneEdit(PageStore.currentPageId);
+                (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+              });
+            } else {
+              var _EditorStore$tinymce2;
+
+              PageStore.noteNoneEdit(PageStore.currentPageId);
+              (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+            }
           }
         });
         eventList.push(function (e) {
