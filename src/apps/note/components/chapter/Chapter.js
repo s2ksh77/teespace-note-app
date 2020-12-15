@@ -19,7 +19,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
-    accept: 'chapter',
+    accept: 'Item:Note:Chapter',
     drop: () => {
       ChapterStore.moveChapter(index);
     },
@@ -31,7 +31,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: isShared ? 'shared' : 'chapter' },
+    item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapter' : 'Item:Note:Chapter' },
     begin: (monitor) => {
       ChapterStore.setMoveChapterIdx(index);
 
@@ -52,7 +52,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
   const [, dropChapter] = useDrop({
-    accept: 'page',
+    accept: 'Item:Note:Page',
     drop: () => {
       PageStore.moveNotePage(chapter.id, index, 0);
     },
