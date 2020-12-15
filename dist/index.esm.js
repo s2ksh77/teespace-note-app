@@ -3319,7 +3319,6 @@ var ChapterStore = observable((_observable$2 = {
   nextSelectableChapterId: '',
   renameChapterId: '',
   renameChapterText: '',
-  allDeleted: false,
   isMovingChapter: false,
   moveChapterIdx: '',
   dragEnterChapterIdx: '',
@@ -3365,12 +3364,6 @@ var ChapterStore = observable((_observable$2 = {
   },
   setRenameChapterText: function setRenameChapterText(chapterText) {
     this.renameChapterText = chapterText;
-  },
-  getAllDeleted: function getAllDeleted() {
-    return this.allDeleted;
-  },
-  setAllDeleted: function setAllDeleted(allDeleted) {
-    this.allDeleted = allDeleted;
   },
   getIsMovingChapter: function getIsMovingChapter() {
     return this.isMovingChapter;
@@ -3936,9 +3929,7 @@ var ChapterStore = observable((_observable$2 = {
 
             _this8.setChapterTempUl(false);
 
-            _this8.setAllDeleted(false);
-
-          case 9:
+          case 8:
           case "end":
             return _context10.stop();
         }
@@ -3954,12 +3945,10 @@ var ChapterStore = observable((_observable$2 = {
 
       PageStore.setCurrentPageId(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
       PageStore.fetchCurrentPageData(PageStore.nextSelectablePageId ? PageStore.nextSelectablePageId : '');
-      if (!_this9.nextSelectableChapterId) _this9.setAllDeleted(true);
     }
 
     _this9.getNoteChapterList();
 
-    if (_this9.allDeleted) NoteStore$1.setShowPage(false);
     _this9.deleteChapterId = '';
     NoteStore$1.setShowModal(false);
   });
