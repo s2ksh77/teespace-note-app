@@ -159,13 +159,19 @@ const NoteStore = observable({
     this.setModalInfo('sharedInfo');
   },
 
-  shareNote() {
-    const sharedRoomName = (
+  getTargetChId(targetRoomId) {
+    return RoomStore.getChannelIds({ roomId: targetRoomId })[NoteRepository.CH_TYPE];
+  },
+
+  getSharedRoomName() {
+    return (
       RoomStore.getRoom(NoteRepository.WS_ID).name === '대화상대 없음'
         ? this.userName
         : RoomStore.getRoom(NoteRepository.WS_ID).name
     );
+  },
 
+  shareNote() {
     this.shareArrays.userArray.forEach(async user => {
       const friendId = user.friendId ? user.friendId : user.id;
       const res = await RoomStore.createRoom({
@@ -173,19 +179,17 @@ const NoteStore = observable({
         userList: [{ userId: friendId }]
       });
 
-      const targetChId = RoomStore.getChannelIds({ roomId: res.roomId })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(res.roomId, targetChId, sharedRoomName, [this.shareContent,]);
+        ChapterStore.createNoteShareChapter(res.roomId, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(res.roomId, targetChId, sharedRoomName, [this.shareContent,]);
+        PageStore.createNoteSharePage(res.roomId, [this.shareContent,]);
     })
 
     this.shareArrays.roomArray.forEach(room => {
-      const targetChId = RoomStore.getChannelIds({ roomId: room.id })[NoteRepository.CH_TYPE];
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(room.id, targetChId, sharedRoomName, [this.shareContent,]);
+        ChapterStore.createNoteShareChapter(room.id, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(room.id, targetChId, sharedRoomName, [this.shareContent,]);
+        PageStore.createNoteSharePage(room.id, [this.shareContent,]);
     })
   },
 
