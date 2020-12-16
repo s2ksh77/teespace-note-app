@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, WWMS, UserStore, RoomStore, EventBus, useCoreStores, ComponentStore, ItemSelector } from 'teespace-core';
+import { API, WWMS, UserStore, RoomStore, EventBus, useCoreStores, Message, ComponentStore, ItemSelector } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -1404,10 +1404,18 @@ var checkUrlValidation = function checkUrlValidation(inputValue) {
 var checkWhitespace = function checkWhitespace(value) {
   return value.trim().length > 0;
 }; // true : valid(중복X), false : invalid(중복)
+// chapter 생성
 
 var checkNotDuplicate = function checkNotDuplicate(targetArr, key, value) {
   return targetArr.find(function (item) {
     return item[key] === value;
+  }) ? false : true;
+}; // true : valid(중복X), false : invalid(중복)
+// 태그 생성 : 대소문자 구분 없이 동일 text 처리
+
+var checkNotDuplicateIgnoreCase = function checkNotDuplicateIgnoreCase(targetArr, key, value) {
+  return targetArr.find(function (item) {
+    return item[key].toUpperCase() === value.toUpperCase();
   }) ? false : true;
 };
 
@@ -2097,7 +2105,7 @@ var TagStore = observable({
     });
   },
   isValidTag: function isValidTag(text) {
-    return checkNotDuplicate(this.notetagList, 'text', text);
+    return checkNotDuplicateIgnoreCase(this.notetagList, 'text', text);
   }
 });
 
@@ -2620,6 +2628,7 @@ var PageStore = observable((_observable$1 = {
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
+  createPageId: '',
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -3015,7 +3024,7 @@ var PageStore = observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage('제목 없음', null, this.createParent).then(function (dto) {
+    this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
       _this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
 
@@ -3023,6 +3032,7 @@ var PageStore = observable((_observable$1 = {
 
       _this.noteTitle = '';
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      _this.createPageId = dto.note_id;
       _this.currentPageId = dto.note_id;
       _this.isNewPage = true;
       NoteStore$1.setTargetLayout('Content');
@@ -3051,6 +3061,7 @@ var PageStore = observable((_observable$1 = {
           if (currentChapter.children.length >= 1) {
             var pageId = currentChapter.children[0].id;
             _this2.isNewPage = false;
+            _this2.createPageId = '';
 
             _this2.setCurrentPageId(pageId);
 
@@ -3324,7 +3335,7 @@ var PageStore = observable((_observable$1 = {
               }
 
               _this10.setDeletePageList({
-                note_id: _this10.currentPageId
+                note_id: _this10.createPageId
               });
 
               _this10.deleteParentIdx = _this10.createParentIdx;
@@ -3356,14 +3367,14 @@ var PageStore = observable((_observable$1 = {
   handleSave: function handleSave() {
     var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
-    if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
+    if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
           this.setTitle(EditorStore.tempFileLayoutList[0].file_name);
         } else if (EditorStore.fileLayoutList.length > 0) {
           this.setTitle(EditorStore.fileLayoutList[0].file_name);
         }
-      } else this.setTitle('제목 없음');
+      } else this.setTitle('(제목 없음)');
     }
 
     var updateDTO = {
@@ -3409,7 +3420,7 @@ var PageStore = observable((_observable$1 = {
           if (tableTitle !== undefined) return tableTitle;
         }
 
-        if (i === contentList.length - 1) return '표';
+        if (i === contentList.length - 1) return '(표)';
       } else if (contentList[i].tagName === 'IMG') {
         if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
       } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
@@ -7029,24 +7040,24 @@ var handleUnselect = function handleUnselect() {
   }
 };
 var handleFileSync = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            _context6.next = 2;
+            _context7.next = 2;
             return handleFileDelete();
 
           case 2:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee7);
   }));
 
   return function handleFileSync() {
-    return _ref6.apply(this, arguments);
+    return _ref7.apply(this, arguments);
   };
 }();
 var openSaveDrive = function openSaveDrive() {
@@ -7060,6 +7071,9 @@ var driveSaveSuccess = function driveSaveSuccess() {
 var driveSaveCancel = function driveSaveCancel() {
   EditorStore.setIsSaveDrive(false);
 };
+
+var SubMenu = Menu.SubMenu,
+    Item = Menu.Item;
 
 var ContextMenu = function ContextMenu(_ref) {
   var noteType = _ref.noteType,
@@ -7151,7 +7165,8 @@ var ContextMenu = function ContextMenu(_ref) {
     var key = _ref2.key,
         domEvent = _ref2.domEvent;
     domEvent.stopPropagation();
-    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent();else infoComponent();
+    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent(); // else if (key === "4") exportTxtComponent();
+    else infoComponent();
   };
 
   var menu = /*#__PURE__*/React.createElement(Menu, {
@@ -7167,7 +7182,23 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "3"
   }, "\uB0B4\uBCF4\uB0B4\uAE30(.pdf)"), type === 'shared' ? /*#__PURE__*/React.createElement(Menu.Item, {
     key: "4"
-  }, "\uC815\uBCF4 \uBCF4\uAE30") : null);
+  }, "\uC815\uBCF4 \uBCF4\uAE30") : null); // txt로 내보내기 배포 때 주석 풀 예정
+  // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
+  // const menu = (
+  //   <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+  //     <Item key="0">이름 변경</Item>
+  //     <Item key="1">삭제</Item>
+  //     {/* <Menu.Item key="2">다른 룸으로 전달</Menu.Item> */}
+  //     <SubMenu title="내보내기">
+  //       <Item key="3">PDF 형식(.pdf)</Item>
+  //       <Item key="4">TXT 형식(.txt)</Item>
+  //     </SubMenu>
+  //     {type === 'shared'
+  //       ? <Item key="5">정보 보기</Item>
+  //       : null}
+  //   </Menu>
+  // );
+
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(ContextMenuCover, {
       className: "ellipsisBtn",
@@ -7766,18 +7797,16 @@ var LNBSearchResult = function LNBSearchResult() {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              ChapterStore.setCurrentChapterId(chapterId);
-              PageStore.setCurrentPageId(pageId);
               PageStore.fetchCurrentPageData(pageId);
               ChapterStore.initSearchVar();
-              _context.next = 6;
+              _context.next = 4;
               return ChapterStore.getNoteChapterList();
 
-            case 6:
+            case 4:
               NoteStore$1.setShowPage(true);
               ChapterStore.setScrollIntoViewId(chapterId);
 
-            case 8:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -7800,14 +7829,12 @@ var LNBSearchResult = function LNBSearchResult() {
               return _context2.abrupt("return");
 
             case 2:
-              ChapterStore.setCurrentChapterId(chapterId);
-              PageStore.setCurrentPageId(pageId);
               PageStore.fetchCurrentPageData(pageId); // ChapterStore.initSearchVar();
 
               NoteStore$1.setShowPage(true);
               if (NoteStore$1.layoutState === "collapse") NoteStore$1.setTargetLayout('Content');
 
-            case 7:
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -7994,6 +8021,8 @@ var LNBContainer = function LNBContainer() {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current); // ChapterStore.fetchChapterList();
   }, []);
   useEffect(function () {
+    if (ChapterStore.isSearching || ChapterStore.isTagSearching) return;
+
     if (ChapterStore.scrollIntoViewId) {
       document.getElementById(ChapterStore.scrollIntoViewId).scrollIntoView(true);
       ChapterStore.setScrollIntoViewId('');
@@ -8231,7 +8260,7 @@ var EditorHeader = function EditorHeader() {
     }, editBtnText), /*#__PURE__*/React.createElement(EditorTitle, {
       id: "editorTitle",
       maxLength: "200",
-      placeholder: "\uC81C\uBAA9 \uC5C6\uC74C",
+      placeholder: "(\uC81C\uBAA9 \uC5C6\uC74C)",
       value: PageStore.noteTitle,
       onChange: handleTitleInput,
       disabled: !PageStore.isReadMode() ? false : true,
@@ -8578,7 +8607,8 @@ const img$a = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 
 var AddTagForm = function AddTagForm(_ref) {
   var show = _ref.show,
-      toggleTagInput = _ref.toggleTagInput;
+      toggleTagInput = _ref.toggleTagInput,
+      setOpenModal = _ref.setOpenModal;
 
   var _useState = useState(''),
       _useState2 = _slicedToArray(_useState, 2),
@@ -8600,6 +8630,7 @@ var AddTagForm = function AddTagForm(_ref) {
         TagStore.setIsNewTag(false);
         TagStore.prependNoteTagList(value);
       } else {
+        setOpenModal(true);
         TagStore.setIsNewTag(false);
       }
     } // input창 초기화
@@ -8635,6 +8666,11 @@ var TagListContainer = function TagListContainer() {
   var _useNoteStore = useNoteStore(),
       TagStore = _useNoteStore.TagStore,
       PageStore = _useNoteStore.PageStore;
+
+  var _useState = useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      openModal = _useState2[0],
+      setOpenModal = _useState2[1];
 
   var focusedTag = useRef([]);
   var tagList = useRef(null);
@@ -8682,27 +8718,43 @@ var TagListContainer = function TagListContainer() {
     TagStore.setEditTagValue(value);
   };
 
+  var updateNoteTagList = function updateNoteTagList() {
+    TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;
+    TagStore.setUpdateNoteTagList(TagStore.currentTagId, TagStore.editTagValue);
+  };
+
   var handleModifyInput = function handleModifyInput() {
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
-      if (TagStore.currentTagValue === TagStore.editTagValue) TagStore.setEditTagIndex(-1);else if (!checkWhitespace(TagStore.editTagValue)) {
-        TagStore.setEditTagIndex(-1);
-      } else {
-        if (TagStore.isValidTag(TagStore.editTagValue)) {
-          TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;
-          TagStore.setUpdateNoteTagList(TagStore.currentTagId, TagStore.editTagValue);
-          TagStore.setEditTagIndex(-1);
-        } else TagStore.setEditTagIndex(-1);
-      }
+      if (TagStore.currentTagValue === TagStore.editTagValue) ; // 대소문자만 바꾼 경우
+      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
+          updateNoteTagList();
+        } // 공백만 있거나 아무것도 입력하지 않은 경우
+        // Modal없이 modify 취소
+        else if (!checkWhitespace(TagStore.editTagValue)) ; else {
+            if (TagStore.isValidTag(TagStore.editTagValue)) {
+              updateNoteTagList();
+            } else {
+              setOpenModal(true);
+            }
+          }
     } else {
       // 아이디 없는 애를 고칠 경우
-      if (TagStore.currentTagValue === TagStore.editTagValue) TagStore.setEditTagIndex(-1);else if (!checkWhitespace(TagStore.editTagValue)) {
-        TagStore.setEditTagIndex(-1);
-      } else {
-        TagStore.setEditCreateTag();
-        TagStore.setEditTagIndex(-1);
-      }
+      if (TagStore.currentTagValue === TagStore.editTagValue) ; // 대소문자만 바꾼 경우
+      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
+          TagStore.setEditCreateTag();
+        } // 공백만 있거나 아무것도 입력하지 않은 경우
+        // Modal없이 modify 취소
+        else if (!checkWhitespace(TagStore.editTagValue)) ; else {
+            if (TagStore.isValidTag(TagStore.editTagValue)) {
+              TagStore.setEditCreateTag();
+            } else {
+              setOpenModal(true);
+            }
+          }
     }
+
+    TagStore.setEditTagIndex(-1);
   };
 
   var handleModifyingKeyDown = function handleModifyingKeyDown(event) {
@@ -8762,6 +8814,11 @@ var TagListContainer = function TagListContainer() {
     }
   };
 
+  var handleClickModalBtn = function handleClickModalBtn(e) {
+    e.stopPropagation();
+    setOpenModal(false);
+  };
+
   useEffect(function () {
     document.addEventListener("click", handleClickOutside);
     return function () {
@@ -8769,14 +8826,25 @@ var TagListContainer = function TagListContainer() {
     };
   });
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, /*#__PURE__*/React.createElement(Tooltip, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, /*#__PURE__*/React.createElement(Message, {
+      visible: openModal,
+      title: "이미 있는 태그 이름입니다.",
+      type: "error",
+      btns: [{
+        type: 'solid',
+        shape: 'round',
+        text: '확인',
+        onClick: handleClickModalBtn
+      }]
+    }), /*#__PURE__*/React.createElement(Tooltip, {
       title: !PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"
     }, /*#__PURE__*/React.createElement(TagNewBtn, null, /*#__PURE__*/React.createElement(TagNewBtnIcon, {
       src: img$a,
       onClick: onClickNewTagBtn
     }))), /*#__PURE__*/React.createElement(AddTagForm, {
       show: TagStore.isNewTag,
-      toggleTagInput: toggleTagInput
+      toggleTagInput: toggleTagInput,
+      setOpenModal: setOpenModal
     }), /*#__PURE__*/React.createElement(TagList, {
       ref: tagList
     }, TagStore.notetagList.map(function (item, index) {
@@ -9360,16 +9428,16 @@ var EditorContainer = function EditorContainer() {
             fetch: function fetch(callback) {
               var items = [{
                 type: 'menuitem',
-                text: '내 로컬에서 첨부',
-                onAction: function onAction() {
-                  editor.editorUpload.uploadImages(handleFileBlob('file'));
-                }
-              }, {
-                type: 'menuitem',
-                text: 'Drive에서 첨부',
+                text: 'Drive 에서 첨부',
                 onAction: function onAction() {
                   // alert('기능 구현 중입니다.')
                   EditorStore.setIsDrive(true);
+                }
+              }, {
+                type: 'menuitem',
+                text: '내 PC 에서 첨부',
+                onAction: function onAction() {
+                  editor.editorUpload.uploadImages(handleFileBlob('file'));
                 }
               }];
               callback(items);
@@ -10108,4 +10176,7 @@ var IconWrapper = styled.div(_templateObject$8(), function (props) {
   return props.height;
 });
 
-export { NoteApp, NoteIcon, useNoteStore };
+var initApp = function initApp() {// ComponentStore.register('Note:ShareNoteMessage', ShareNoteMessage);
+};
+
+export { NoteApp, NoteIcon, initApp, useNoteStore };
