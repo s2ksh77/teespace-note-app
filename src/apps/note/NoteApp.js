@@ -106,16 +106,16 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
           <LNBContainer />
         </LNB>
-          <Content show={renderCondition('Content')}>
-            <FoldBtn
-              isExpanded={NoteStore.isContentExpanded}
-              show={(NoteStore.showPage && (NoteStore.layoutState !== "collapse"))}
-              onClick={() => NoteStore.toggleIsContentExpanded()}
-            >
-              <FoldBtnImg src={foldImg} />
-            </FoldBtn>
-            {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
-          </Content>
+        <Content show={renderCondition('Content')}>
+          <FoldBtn
+            isExpanded={NoteStore.isContentExpanded}
+            show={(NoteStore.showPage && (NoteStore.layoutState !== "collapse"))}
+            onClick={() => NoteStore.toggleIsContentExpanded()}
+          >
+            <FoldBtnImg src={foldImg} />
+          </FoldBtn>
+          {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
+        </Content>
         <Modal />
       </>
       }

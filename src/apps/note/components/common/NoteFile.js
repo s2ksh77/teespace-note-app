@@ -226,6 +226,43 @@ export const exportPageData = async () => {
     makeExportElement(returnData, 'page');
 }
 
+const downloadTxt = (title, data) => {
+  const link = document.createElement('a');
+  const mimeType = "text/plain;charset=utf-8";
+  link.setAttribute('download', title);
+  link.setAttribute('href', 'data:'+mimeType+';charset=utf-8,'+encodeURIComponent(data));
+  link.click();
+}
+
+export const exportPageAsTxt = async (noteId) => {
+  const frag = document.createElement('div');
+  frag.setAttribute('id', 'exportPageParent')
+  const area = document.createElement('textarea');
+  area.setAttribute('id', 'exportPageAsTxt');
+  document.body.appendChild(frag);
+  frag.appendChild(area);
+  
+  EditorStore.tinymce.editorManager.init({
+    // selector:'textarea#exportPageAsTxt',
+    target:area,
+  })
+  
+  const targetEditor = EditorStore.tinymce.editorManager.get('exportPageAsTxt');
+
+  if (!noteId) noteId = "649df293-bdbd-47fa-b2b4-78a53d782a5e";
+  // PageStore.exportPageId
+  const response = await NoteRepository.getNoteInfoList(noteId);
+  const {
+      data: { dto },
+  } = response;
+  // PageStore.exportPageTitle = dto.note_title
+  let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
+  targetEditor.setContent(returnData);
+  const exportText = targetEditor.getContent({format:"text"});
+  downloadTxt(dto.note_title, returnData);
+  document.getElementById('exportPageParent').remove();
+}
+
 const handleClickLink = (el) => {
     const href = el.getAttribute('href');
     const target = el.getAttribute('target');

@@ -14,6 +14,7 @@ const PageStore = observable({
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
+  createPageId: '',
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -303,6 +304,7 @@ const PageStore = observable({
       this.setIsEdit(dto.is_edit);
       this.noteTitle = '';
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
       this.isNewPage = true;
       NoteStore.setTargetLayout('Content');
@@ -327,6 +329,7 @@ const PageStore = observable({
           if (currentChapter.children.length >= 1) {
             const pageId = currentChapter.children[0].id
             this.isNewPage = false;
+            this.createPageId = '';
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           }
@@ -363,7 +366,7 @@ const PageStore = observable({
     await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
       if (moveInfo.chapterId === moveTargetChapterId
         && moveInfo.pageIdx < moveTargetPageIdx) return;
-      
+
       item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
       if (moveInfo.chapterId !== moveTargetChapterId)
         return this.movePage(moveInfo.pageId, moveTargetChapterId);
@@ -377,7 +380,7 @@ const PageStore = observable({
     sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
       if (moveInfo.chapterId !== moveTargetChapterId
         || moveInfo.pageIdx >= moveTargetPageIdx) return;
-      
+
       item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
     });
 
@@ -492,7 +495,7 @@ const PageStore = observable({
 
   async handleNoneEdit() {
     if (this.isNewPage) {
-      this.setDeletePageList({ note_id: this.currentPageId });
+      this.setDeletePageList({ note_id: this.createPageId });
       this.deleteParentIdx = this.createParentIdx;
       this.deleteNotePage();
     } else {
