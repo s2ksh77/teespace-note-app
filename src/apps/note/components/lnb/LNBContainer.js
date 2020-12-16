@@ -46,6 +46,7 @@ const LNBContainer = () => {
   }, []);
 
   useEffect(() => {
+    if (ChapterStore.isSearching || ChapterStore.isTagSearching) return;
     if (ChapterStore.scrollIntoViewId) {
       document.getElementById(ChapterStore.scrollIntoViewId).scrollIntoView(true);
       ChapterStore.setScrollIntoViewId('');
