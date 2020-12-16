@@ -254,17 +254,17 @@ const EditorContainer = () => {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: '내 로컬에서 첨부',
+                      text: 'Drive 에서 첨부',
                       onAction: function () {
-                        editor.editorUpload.uploadImages(handleFileBlob('file'))
+                        // alert('기능 구현 중입니다.')
+                        EditorStore.setIsDrive(true);
                       }
                     },
                     {
                       type: 'menuitem',
-                      text: 'Drive에서 첨부',
+                      text: '내 PC 에서 첨부',
                       onAction: function () {
-                        // alert('기능 구현 중입니다.')
-                        EditorStore.setIsDrive(true);
+                        editor.editorUpload.uploadImages(handleFileBlob('file'))
                       }
                     }
                   ];
