@@ -2,7 +2,7 @@ import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import ChapterStore from "./chapterStore";
 import PageStore from "./pageStore";
-import { checkNotDuplicate } from '../components/common/validators';
+import { checkNotDuplicateIgnoreCase } from '../components/common/validators';
 
 const TagStore = observable({
   // note에 딸린 tagList
@@ -414,7 +414,7 @@ const TagStore = observable({
     })
   },
   isValidTag(text) {
-    return checkNotDuplicate(this.notetagList, 'text', text);
+    return checkNotDuplicateIgnoreCase(this.notetagList, 'text', text);
   },
 });
 

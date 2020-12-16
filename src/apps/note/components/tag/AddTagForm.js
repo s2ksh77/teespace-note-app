@@ -4,7 +4,7 @@ import {checkWhitespace} from '../common/validators';
 import { useObserver } from 'mobx-react';
 import TagStore from '../../store/tagStore';
 
-const AddTagForm = ({show, toggleTagInput}) => {  
+const AddTagForm = ({show, toggleTagInput, setOpenModal}) => {  
   const [value, setValue] = useState('');
   if (!show) return null;  
   const handleTagInput = e => {
@@ -19,7 +19,8 @@ const AddTagForm = ({show, toggleTagInput}) => {
         TagStore.appendAddTagList(value);
         TagStore.setIsNewTag(false);
         TagStore.prependNoteTagList(value);
-      } else {
+      } else {        
+        setOpenModal(true);
         TagStore.setIsNewTag(false);
       }
     }

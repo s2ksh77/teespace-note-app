@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
+import {Message} from 'teespace-core';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
 import useNoteStore from '../../store/useStore';
@@ -18,6 +19,7 @@ import { isFilled, checkWhitespace } from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
+  const [ openModal, setOpenModal ] = useState(false);
   const focusedTag = useRef([]);
   const tagList = useRef(null);
 
@@ -61,35 +63,51 @@ const TagListContainer = () => {
     } = e;
     TagStore.setEditTagValue(value);
   };
+
+  const updateNoteTagList = () => {
+    TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;
+    TagStore.setUpdateNoteTagList(
+      TagStore.currentTagId,
+      TagStore.editTagValue
+    );
+  }
+
   const handleModifyInput = () => {
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
-      if (TagStore.currentTagValue === TagStore.editTagValue)
-        TagStore.setEditTagIndex(-1);
-      else if (!checkWhitespace(TagStore.editTagValue)) {
-        TagStore.setEditTagIndex(-1);
-      } else {
+      if (TagStore.currentTagValue === TagStore.editTagValue) {}
+      // 대소문자만 바꾼 경우
+      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
+        updateNoteTagList();
+      }
+      // 공백만 있거나 아무것도 입력하지 않은 경우
+      // Modal없이 modify 취소
+      else if (!checkWhitespace(TagStore.editTagValue)) {} 
+      else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
-          TagStore.notetagList[TagStore.editTagIndex].text =
-            TagStore.editTagValue;
-          TagStore.setUpdateNoteTagList(
-            TagStore.currentTagId,
-            TagStore.editTagValue
-          );
-          TagStore.setEditTagIndex(-1);
-        } else TagStore.setEditTagIndex(-1);
+          updateNoteTagList();
+        } else {
+          setOpenModal(true);
+        }
       }
     } else { // 아이디 없는 애를 고칠 경우
-      if (TagStore.currentTagValue === TagStore.editTagValue)
-        TagStore.setEditTagIndex(-1);
-      else if (!checkWhitespace(TagStore.editTagValue)) {
-        TagStore.setEditTagIndex(-1);
-      } else {
+      if (TagStore.currentTagValue === TagStore.editTagValue) {}
+      // 대소문자만 바꾼 경우
+      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
         TagStore.setEditCreateTag();
-        TagStore.setEditTagIndex(-1);
       }
-
-    }
+      // 공백만 있거나 아무것도 입력하지 않은 경우
+      // Modal없이 modify 취소
+      else if (!checkWhitespace(TagStore.editTagValue)) {} 
+      else {
+        if (TagStore.isValidTag(TagStore.editTagValue)) {
+          TagStore.setEditCreateTag();
+        } else {
+          setOpenModal(true);
+        }         
+      }
+    }    
+    TagStore.setEditTagIndex(-1)    
   };
 
   const handleModifyingKeyDown = (event) => {
@@ -148,6 +166,11 @@ const TagListContainer = () => {
     }
   }
 
+  const handleClickModalBtn = (e) => {
+    e.stopPropagation();
+    setOpenModal(false);
+  }
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
@@ -158,6 +181,17 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
+        <Message
+          visible={openModal}
+          title={"이미 있는 태그 이름입니다."}
+          type="error"
+          btns={[{
+            type : 'solid',
+            shape : 'round',
+            text : '확인',
+            onClick : handleClickModalBtn
+          }]}
+        />
         <Tooltip title={!PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
@@ -166,6 +200,7 @@ const TagListContainer = () => {
         <AddTagForm
           show={TagStore.isNewTag}
           toggleTagInput={toggleTagInput}
+          setOpenModal={setOpenModal}
         />
         <TagList ref={tagList}>
           {TagStore.notetagList.map((item, index) =>
