@@ -1248,10 +1248,18 @@ var NoteRepository$1 = new NoteRepository();
 var isFilled = function isFilled(value) {
   return !ramda.isNil(value) && !ramda.isEmpty(value) ? true : false;
 };
+// chapter 생성
 
 var checkNotDuplicate = function checkNotDuplicate(targetArr, key, value) {
   return targetArr.find(function (item) {
     return item[key] === value;
+  }) ? false : true;
+}; // true : valid(중복X), false : invalid(중복)
+// 태그 생성 : 대소문자 구분 없이 동일 text 처리
+
+var checkNotDuplicateIgnoreCase = function checkNotDuplicateIgnoreCase(targetArr, key, value) {
+  return targetArr.find(function (item) {
+    return item[key].toUpperCase() === value.toUpperCase();
   }) ? false : true;
 };
 
@@ -1941,7 +1949,7 @@ var TagStore = mobx.observable({
     });
   },
   isValidTag: function isValidTag(text) {
-    return checkNotDuplicate(this.notetagList, 'text', text);
+    return checkNotDuplicateIgnoreCase(this.notetagList, 'text', text);
   }
 });
 
