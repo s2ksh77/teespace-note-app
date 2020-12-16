@@ -73,7 +73,7 @@ const EditorHeader = () => {
           <EditorTitle
             id="editorTitle"
             maxLength="200"
-            placeholder='제목 없음'
+            placeholder='(제목 없음)'
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={!PageStore.isReadMode() ? false : true}
