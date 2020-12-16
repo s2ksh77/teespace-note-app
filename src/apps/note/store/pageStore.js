@@ -391,7 +391,8 @@ const PageStore = observable({
         pageId: moveInfo.pageId,
         pageIdx: startIdx + idx,
         chapterId: moveTargetChapterId,
-        chapterIdx: moveTargetChapterIdx
+        chapterIdx: moveTargetChapterIdx,
+        shareData: moveInfo.shareData,
       };
     });
 
@@ -439,7 +440,12 @@ const PageStore = observable({
         pageId: dto.note_id,
         pageIdx: 0,
         chapterId: dto.parent_notebook,
-        chapterIdx: 0
+        chapterIdx: 0,
+        shareData: {
+          id: dto.note_id,
+          text: dto.note_title,
+          date: dto.modified_date,
+        },
       }]);
     }
     this.setCurrentPageId(dto.note_id);

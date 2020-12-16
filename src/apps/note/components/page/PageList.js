@@ -9,7 +9,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
 
   const [, drop] = useDrop({
-    accept: 'Item:Note:Page',
+    accept: 'Item:Note:Pages',
     drop: () => {
       PageStore.moveNotePage(chapter.id, chapterIdx, chapter.children.length);
     },
