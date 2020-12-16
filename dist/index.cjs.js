@@ -2464,6 +2464,7 @@ var PageStore = mobx.observable((_observable$1 = {
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
+  createPageId: '',
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -2867,6 +2868,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
       _this.noteTitle = '';
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      _this.createPageId = dto.note_id;
       _this.currentPageId = dto.note_id;
       _this.isNewPage = true;
       NoteStore$1.setTargetLayout('Content');
@@ -2895,6 +2897,7 @@ var PageStore = mobx.observable((_observable$1 = {
           if (currentChapter.children.length >= 1) {
             var pageId = currentChapter.children[0].id;
             _this2.isNewPage = false;
+            _this2.createPageId = '';
 
             _this2.setCurrentPageId(pageId);
 
@@ -3168,7 +3171,7 @@ var PageStore = mobx.observable((_observable$1 = {
               }
 
               _this10.setDeletePageList({
-                note_id: _this10.currentPageId
+                note_id: _this10.createPageId
               });
 
               _this10.deleteParentIdx = _this10.createParentIdx;
