@@ -2855,7 +2855,7 @@ var PageStore = observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage('제목 없음', null, this.createParent).then(function (dto) {
+    this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
       _this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
 
@@ -3196,14 +3196,14 @@ var PageStore = observable((_observable$1 = {
   handleSave: function handleSave() {
     var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
-    if (this.noteTitle === '' || this.noteTitle === '제목 없음') {
+    if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
           this.setTitle(EditorStore.tempFileLayoutList[0].file_name);
         } else if (EditorStore.fileLayoutList.length > 0) {
           this.setTitle(EditorStore.fileLayoutList[0].file_name);
         }
-      } else this.setTitle('제목 없음');
+      } else this.setTitle('(제목 없음)');
     }
 
     var updateDTO = {
@@ -3249,7 +3249,7 @@ var PageStore = observable((_observable$1 = {
           if (tableTitle !== undefined) return tableTitle;
         }
 
-        if (i === contentList.length - 1) return '표';
+        if (i === contentList.length - 1) return '(표)';
       } else if (contentList[i].tagName === 'IMG') {
         if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
       } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
