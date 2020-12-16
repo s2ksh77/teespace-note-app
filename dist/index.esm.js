@@ -2993,7 +2993,8 @@ var PageStore = observable((_observable$1 = {
                   pageId: moveInfo.pageId,
                   pageIdx: startIdx + idx,
                   chapterId: moveTargetChapterId,
-                  chapterIdx: moveTargetChapterIdx
+                  chapterIdx: moveTargetChapterIdx,
+                  shareData: moveInfo.shareData
                 };
               });
               localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
@@ -3069,7 +3070,12 @@ var PageStore = observable((_observable$1 = {
                   pageId: dto.note_id,
                   pageIdx: 0,
                   chapterId: dto.parent_notebook,
-                  chapterIdx: 0
+                  chapterIdx: 0,
+                  shareData: {
+                    id: dto.note_id,
+                    text: dto.note_title,
+                    date: dto.modified_date
+                  }
                 }]);
               }
 
