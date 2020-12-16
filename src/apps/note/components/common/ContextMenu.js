@@ -8,9 +8,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
-import { exportChapterData, exportPageData } from "./NoteFile";
+import { exportChapterData, exportPageData, exportPageAsTxt } from "./NoteFile";
 import { useCoreStores } from 'teespace-core';
-import NoteRepository from '../../store/noteRepository';
+
+const {SubMenu, Item} = Menu;
 
 const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -80,6 +81,20 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     }
   }
 
+  const exportTxtComponent = () => {
+    switch (noteType) {
+      case 'chapter': 
+        // 기능 추가 예정       
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+        break;
+      case 'page':
+        exportPageAsTxt(page.id);
+        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+        break;
+      default: break;
+    }
+  }
+
   const infoComponent = () => {
     if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapter.id);
     else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, page.id);
@@ -93,6 +108,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     else if (key === "1") deleteComponent();
     else if (key === "2") shareComponent();
     else if (key === "3") exportComponent();
+    // else if (key === "4") exportTxtComponent();
     else infoComponent();
   };
 
@@ -107,6 +123,23 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
         : null}
     </Menu>
   );
+
+  // txt로 내보내기 배포 때 주석 풀 예정
+  // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
+  // const menu = (
+  //   <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+  //     <Item key="0">이름 변경</Item>
+  //     <Item key="1">삭제</Item>
+  //     {/* <Menu.Item key="2">다른 룸으로 전달</Menu.Item> */}
+  //     <SubMenu title="내보내기">
+  //       <Item key="3">PDF 형식(.pdf)</Item>
+  //       <Item key="4">TXT 형식(.txt)</Item>
+  //     </SubMenu>
+  //     {type === 'shared'
+  //       ? <Item key="5">정보 보기</Item>
+  //       : null}
+  //   </Menu>
+  // );
 
   return useObserver(() => (
     <ContextMenuCover
