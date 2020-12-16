@@ -18,11 +18,16 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     pageId: page.id,
     pageIdx: index,
     chapterId: chapter.id,
-    chapterIdx: chapterIdx
+    chapterIdx: chapterIdx,
+    shareData: {
+      id: page.id,
+      text: page.text,
+      date: page.modified_date,
+    },
   };
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Page' : 'Item:Note:SharedPage' },
+    item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages' },
     begin: (monitor) => {
       if (!PageStore.moveInfoList.find(info => info.pageId === page.id)) {
         PageStore.setMoveInfoList([moveInfo]);
@@ -34,8 +39,17 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       NoteStore.setDraggedType('page');
       NoteStore.setDraggedTitle(page.text);
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+
+      return {
+        type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
+        data: PageStore.moveInfoList.map(moveInfo => moveInfo.shareData),
+      };
     },
-    end: () => {
+    end: (item, monitor) => {
+      const res = monitor.getDropResult();
+      if (res.target === 'Platform:Room')
+        PageStore.createNoteSharePage(res.targetData.id, item.data);
+
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
 
@@ -47,7 +61,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   });
 
   const [, drop] = useDrop({
-    accept: 'Item:Note:Page',
+    accept: 'Item:Note:Pages',
     drop: () => {
       PageStore.moveNotePage(chapter.id, chapterIdx, index);
     },

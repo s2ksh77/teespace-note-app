@@ -52,7 +52,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
   const [, dropChapter] = useDrop({
-    accept: 'Item:Note:Page',
+    accept: 'Item:Note:Pages',
     drop: () => {
       PageStore.moveNotePage(chapter.id, index, 0);
     },
