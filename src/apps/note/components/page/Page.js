@@ -13,8 +13,13 @@ import {
 } from '../../styles/pageStyle';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
-  const { NoteStore, PageStore } = useNoteStore();
-  const moveInfo = {
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  
+  const chapterMoveInfo = {
+    chapterId: chapter.id,
+    chapterIdx: chapterIdx,
+  };
+  const pageMoveInfo = {
     pageId: page.id,
     pageIdx: index,
     chapterId: chapter.id,
@@ -30,7 +35,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages' },
     begin: (monitor) => {
       if (!PageStore.moveInfoList.find(info => info.pageId === page.id)) {
-        PageStore.setMoveInfoList([moveInfo]);
+        PageStore.setMoveInfoList([pageMoveInfo]);
         PageStore.setIsCtrlKeyDown(false);
       }
 
@@ -78,15 +83,18 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   }, []);
 
   const handleSelectPage = useCallback((e) => {
+    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setIsCtrlKeyDown(false);
+
     if (e.ctrlKey) {
       const idx = PageStore.moveInfoList.findIndex((info) => info.pageId === page.id);
-      if (idx === -1) PageStore.appendMoveInfoList(moveInfo);
+      if (idx === -1) PageStore.appendMoveInfoList(pageMoveInfo);
       else PageStore.removeMoveInfoList(idx);
       PageStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    PageStore.setMoveInfoList([moveInfo]);
+    PageStore.setMoveInfoList([pageMoveInfo]);
     PageStore.setIsCtrlKeyDown(false);
     onClick(page.id);
   }, [page]);

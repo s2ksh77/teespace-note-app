@@ -27,9 +27,6 @@ const PageStore = observable({
   moveInfoList: [],
   isCtrlKeyDown: false,
   movePageId: '', // 이동을 원하는 page의 id
-  movePageIdx: '', // 이동을 원하는 page의 index
-  moveChapterId: '', // 이동을 원하는 page가 속한 chapter의 id
-  moveChapterIdx: '',
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
@@ -183,24 +180,6 @@ const PageStore = observable({
   },
   setMovePageId(pageId) {
     this.movePageId = pageId;
-  },
-  getMovePageIdx() {
-    return this.movePageIdx;
-  },
-  setMovePageIdx(pageIdx) {
-    this.movePageIdx = pageIdx;
-  },
-  getMoveChapterId() {
-    return this.moveChapterId;
-  },
-  setMoveChapterId(chapterId) {
-    this.moveChapterId = chapterId;
-  },
-  getMoveChapterIdx() {
-    return this.moveChapterIdx;
-  },
-  setMoveChapterIdx(chapterIdx) {
-    this.moveChapterIdx = chapterIdx;
   },
   getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
@@ -434,19 +413,6 @@ const PageStore = observable({
     if (!isFilled(dto.note_id)) {
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
-    }
-    if (!this.currentPageId) {
-      this.setMoveInfoList([{
-        pageId: dto.note_id,
-        pageIdx: 0,
-        chapterId: dto.parent_notebook,
-        chapterIdx: 0,
-        shareData: {
-          id: dto.note_id,
-          text: dto.note_title,
-          date: dto.modified_date,
-        },
-      }]);
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);

@@ -21,6 +21,10 @@ const Chapter = ({ chapter, index, isShared }) => {
   // 중복체크 후 다시 입력받기 위해 ref 추가
   const titleInput = useRef(null);
   const { id, text:title, color } = chapter;
+  const chapterMoveInfo = {
+    chapterId: chapter.id,
+    chapterIdx: index,
+  };
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
@@ -38,7 +42,10 @@ const Chapter = ({ chapter, index, isShared }) => {
   const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapter' : 'Item:Note:Chapter' },
     begin: (monitor) => {
-      ChapterStore.setMoveChapterIdx(index);
+      if (!ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)) {
+        ChapterStore.setMoveInfoList([chapterMoveInfo]);
+        ChapterStore.setIsCtrlKeyDown(false);
+      }
 
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('chapter');
@@ -101,8 +108,19 @@ const Chapter = ({ chapter, index, isShared }) => {
     );
   };
 
-  const onClickChapterBtn = useCallback(() => {
+  const onClickChapterBtn = useCallback(e => {
     if (!PageStore.isReadMode()) return;
+
+    if (e.ctrlKey) {
+      const idx = ChapterStore.moveInfoList.findIndex((info) => info.chapterId === chapter.id);
+      if (idx === -1) ChapterStore.appendMoveInfoList(chapterMoveInfo);
+      else ChapterStore.removeMoveInfoList(idx);
+      ChapterStore.setIsCtrlKeyDown(true);
+      return;
+    }
+
+    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setIsCtrlKeyDown(false);
     ChapterStore.setCurrentChapterId(chapter.id);
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
