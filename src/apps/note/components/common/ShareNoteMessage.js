@@ -13,7 +13,8 @@ import hoverImg from '../../assets/TeeNote_hover.png';
 import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
 import {isFilled} from './validators';
-import {useCoreStores, Message, RoomStore} from 'teespace-core';
+import {Message, RoomStore, API } from 'teespace-core';
+import NoteRepository from '../../store/noteRepository';
 
 /*
   ToDo
@@ -30,11 +31,12 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
     3) 유효한 노트 id
     noteId = "010ddb34-ea14-4ff4-ae1d-61cfb2349625"
   */
-  noteId = "f73d1c57-2f40-4aa4-960e-212b70a894f3"
-
+  // 테스트용
+  // if (!noteId) noteId = "4bf33c23-eda8-4377-bca0-58b5ba5e808f"
+  if (!noteId) return null;
+  
   const history = useHistory();
   const {NoteStore, PageStore} = useNoteStore();
-  const { userStore } = useCoreStores();
 
   const [imgSrc, setImgSrc] = useState(noteImg);
   const [informDeleted, setInformDeleted] = useState(false);
@@ -47,31 +49,35 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
     setImgSrc(noteImg);
   }
 
-  const openNote = () => {
-    // 페이지 수정 중이었다면 modal 먼저 띄워야
-    if (!PageStore.isReadMode()) {
-      const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-      if (!isUndoActive) { PageStore.handleNoneEdit(); return; }
-      NoteStore.setModalInfo('editCancel');
-      return;
-    }
-    NoteStore.setShowPage(true);
-    NoteStore.setTargetLayout('Content');
-    PageStore.fetchCurrentPageData(noteId);
-  }
+  const handleClickMessage = async (e) => { 
+    // 해당 페이지 보고 있을 때(readMode, 수정 모드 모두) handleClickOutside editor 로직 타지 않도록
+    e.stopPropagation();
+    // 혹시나
+    if (!history) return;
 
-  const initNoteApp = () => {
-    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
-    NoteStore.init(roomId, targetChId, userStore.myProfile.id, userStore.myProfile.name);
-  }
-
-  const handleClickMessage = async () => { 
-    if (!history) return; // history가 없어서 바꿔야함 
     const isNoteApp = history.location.search === "?sub=note";
-    if (!isNoteApp) initNoteApp();
-    // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
-    const noteInfo = await PageStore.getNoteInfoList(noteId);
+    // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
+    // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
+    if (isNoteApp && NoteStore.targetLayout !== "LNB") {
+      if (PageStore.currentPageId === noteId) return; 
+      // 다른 페이지 수정중인 경우 Modal 띄우기   
+      if (!PageStore.isReadMode()) {
+        const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
+        if (!isUndoActive && !PageStore.isReadMode() && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
+        NoteStore.setModalInfo('editCancel');
+        return;
+      }
+    }
+
     
+    // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
+    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
+    const {
+      data: { dto:noteInfo },
+    } = await API.Get(
+      `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${targetChId}`,
+    );
+
     if (!noteInfo || !isFilled(noteInfo.note_id)) {
       // 아직 모달을 띄울 수 없음
       setInformDeleted(true);
@@ -79,20 +85,21 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
     }
 
     // 2. 노트앱 열기
-    if (!isNoteApp) {
+    // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
+    if (!isNoteApp) {      
       history.push({
         pathname: history.location.pathname,
         search: `?sub=note`
-      });      
-    }
-    openNote();
+      });
+      NoteStore.setNoteIdFromTalk(noteId);
+    } else NoteStore.openNote(noteId);
   }
 
   const handleClick = () => {
     setInformDeleted(false);
   }
 
-  return ReactDom.createPortal(
+  return (
     <>
       <Message
         visible={informDeleted}
@@ -118,8 +125,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
           <NoteDate>{noteDate}</NoteDate>
         </MessageNoteInfo>
       </MessageCover>
-    </>,
-    document.body,
+    </>
   )
 }
 

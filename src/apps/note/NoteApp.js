@@ -53,16 +53,21 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     // 룸과 채널은 1:1 대응, roomId만 체크한다
     // 노트앱 -> 다른 앱 -> 노트앱일 때, 다른 앱 가기 전에 초기화해주었기 때문에 isOtherRoom === true
     const isOtherRoom = NoteStore.workspaceId !== roomId;
-    
+
+    /* 
+      NoteStore.openNoteAfterInit : 다시 init해야하는 경우
+      ShareNoteMessage는 noteInfo 서비스콜 보내고 노트앱을 
+    */
     if (isOtherRoom) {
       NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, async () => {
         NoteStore.addWWMSHandler();
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);   
         NoteStore.initVariables();   
-
-        if (!channelId) return;
-        if (layoutState === 'collapse') {
+        
+        if (!channelId) return;    
+        else if (NoteStore.noteIdFromTalk) NoteStore.openNote(NoteStore.noteIdFromTalk);
+        else if (layoutState === 'collapse') {
           // lnb는 따로 로딩 화면 X
           ChapterStore.getNoteChapterList();
           NoteStore.setTargetLayout('LNB');
@@ -70,16 +75,8 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         else {ChapterStore.fetchChapterList();NoteStore.setTargetLayout(null);}
       })
     }
-    // 같은 룸에서 layoutState만 바뀔 대
-    else {
-      if (NoteStore.layoutState === 'collapse' && layoutState === 'expand') {
-        if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
-        NoteStore.setTargetLayout(null);
-      } else if (NoteStore.layoutState === 'expand' && layoutState === 'collapse'){
-        NoteStore.setTargetLayout('Content');
-      }
-    }
-    NoteStore.setLayoutState(layoutState); 
+    NoteStore.setLayoutState(layoutState);
+    
     return () => {
       // 초기화해주기(다른 앱 갔다가 노트로 돌아오는 경우 데이터 다시 받아오게 하기)
       if (!history.location.search.includes('note') || !history.location.pathname.includes(NoteStore.workspaceId) ) {

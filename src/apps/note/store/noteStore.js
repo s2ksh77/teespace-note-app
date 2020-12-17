@@ -2,12 +2,13 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
-import TagStore from './tagStore';
+import EditorStore from './editorStore';
 import NoteMeta from './NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
+  noteIdFromTalk:'',
   loadingNoteApp:true,
   workspaceId: '',
   notechannel_id: '',
@@ -29,6 +30,12 @@ const NoteStore = observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {}, // { userArray, roomArray }
+  getNoteIdFromTalk() {
+    return this.noteIdFromTalk;
+  },
+  setNoteIdFromTalk(noteId){
+    this.noteIdFromTalk = noteId;
+  },
   getLoadingNoteApp() {
     return this.loadingNoteApp;
   },
@@ -218,6 +225,14 @@ const NoteStore = observable({
     } = await NoteRepository.getSearchList(searchKey);
 
     return dto;
+  },
+  async openNote(noteId) {    
+    this.setLoadingNoteApp(true);
+    this.setShowPage(true);
+    this.setTargetLayout('Content');
+    await PageStore.fetchCurrentPageData(noteId);
+    this.setLoadingNoteApp(false);
+    this.setNoteIdFromTalk("");
   }
 });
 

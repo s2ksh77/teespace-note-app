@@ -10,7 +10,7 @@ import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
 const style = { cursor: 'pointer', marginLeft: '0.69rem' };
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
-  const { NoteStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   /**
    * EventBus.dispatch('onLayoutExpand')
    * EventBus.dispatch('onLayoutCollapse')
@@ -25,12 +25,16 @@ const HeaderButtons = () => {
     }
   };
   const handleLayoutState = () => {
+    // 같은 룸에서 layoutState만 바뀔 때
     switch (NoteStore.layoutState) {
       case 'expand':
         EventBus.dispatch('onLayoutCollapse');
+        NoteStore.setTargetLayout('Content');
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
+        if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
+        NoteStore.setTargetLayout(null);
         break;
     }
   };
