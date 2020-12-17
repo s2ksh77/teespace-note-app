@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useObserver } from 'mobx-react';
+import { Message } from 'teespace-core';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -16,6 +17,10 @@ import shareImg from '../../assets/ts_share@3x.png';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const [ openValidModal, setOpenValidModal ] = useState(false);
+  // 중복체크 후 다시 입력받기 위해 ref 추가
+  const titleInput = useRef(null);
+  const { id, text:title, color } = chapter;
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
@@ -75,8 +80,17 @@ const Chapter = ({ chapter, index, isShared }) => {
     ChapterStore.setRenameChapterText(value);
   };
 
-  const handleChapterTextInput = (isEscape, color) => {
-    if (!isEscape && ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
+  const handleChapterTextInput = (isEscape) => () => {
+    // escape면 원래대로 돌아가기
+    if (isEscape) {}
+    // 기존과 동일 이름인 경우 통과
+    else if (ChapterStore.renameChapterText === title) {}
+    // 기존에 이미 있는 이름이라면 다시 입력해야
+    else if (!ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
+      setOpenValidModal(true); return;
+    }
+    // 다 통과했으면 rename 가능
+    else {
       ChapterStore.renameNoteChapter(color);
     }
 
@@ -103,60 +117,81 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   const renderChapterIcon = () => {
     if (!isShared) {
-      return <ChapterColor color={chapter.color} chapterId={chapter.id} />;
+      return <ChapterColor color={color} chapterId={id} />;
     } else {
-      return <ChapterShareIcon selected={ChapterStore.getCurrentChapterId() === chapter.id} src={shareImg} />
+      return <ChapterShareIcon selected={ChapterStore.currentChapterId === id} src={shareImg} />
     }
   }
+
+  const handleModalBtnClick = () => {
+    setOpenValidModal(false);
+    if (titleInput.current) titleInput.current.focus();   
+  }
+
   return useObserver(() => (
-    <ChapterContainer
-      ref={!isShared ? drop : null}
-      className={
-        ChapterStore.dragEnterChapterIdx === index
-          && (!isShared)
-          ? 'borderTopLine'
-          : ''
-      }
-      id={chapter.id}
-      key={chapter.id}
-      itemType="chapter"
-    >
-      <ChapterCover
-        ref={
-          !isShared
-            ? (node) => drag(dropChapter(node))
-            : drag
-        }
-        onClick={onClickChapterBtn}
-      >
-        {renderChapterIcon()}
-        {ChapterStore.getRenameChapterId() === chapter.id ? (
-          <ChapterTextInput
-            maxLength="200"
-            placeholder='새 챕터'
-            value={ChapterStore.renameChapterText}
-            onClick={e => e.stopPropagation()}
-            onChange={handleChapterName}
-            onBlur={handleChapterTextInput.bind(null, false, chapter.color)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') handleChapterTextInput(false, chapter.color);
-              else if (e.key === 'Escape') handleChapterTextInput(true, chapter.color);
-            }}
-            onFocus={handleFocus}
-            autoFocus={true}
-          />
-        ) : (
-            <ChapterText
-              chapter={chapter}
-            />
-          )}
-      </ChapterCover>
-      <PageList
-        showNewPage={!isShared}
-        chapter={chapter}
-        chapterIdx={index}
+    <>
+      <Message
+        visible={openValidModal}
+        title={"중복된 이름이 있습니다."}
+        subtitle={"다른 이름을 입력하세요."}
+        type="error"
+        btns={[{
+          type : 'solid',
+          shape : 'round',
+          text : '확인',
+          onClick : handleModalBtnClick
+        }]}
       />
-    </ChapterContainer>
+      <ChapterContainer
+        ref={!isShared ? drop : null}
+        className={
+          ChapterStore.dragEnterChapterIdx === index
+            && (!isShared)
+            ? 'borderTopLine'
+            : ''
+        }
+        id={chapter.id}
+        key={chapter.id}
+        itemType="chapter"
+      >
+        <ChapterCover
+          ref={
+            !isShared
+              ? (node) => drag(dropChapter(node))
+              : drag
+          }
+          onClick={onClickChapterBtn}
+        >
+          {renderChapterIcon()}
+          {ChapterStore.getRenameChapterId() === id ? (
+            <ChapterTextInput
+              maxLength="200"
+              placeholder='새 챕터'
+              value={ChapterStore.renameChapterText}
+              onClick={e => e.stopPropagation()}
+              onChange={handleChapterName}
+              onBlur={handleChapterTextInput(false)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleChapterTextInput(false)();
+                else if (e.key === 'Escape') handleChapterTextInput(true)();
+              }}
+              onFocus={handleFocus}
+              autoFocus={true}
+              ref={titleInput}
+            />
+          ) : (
+              <ChapterText
+                chapter={chapter}
+              />
+            )}
+        </ChapterCover>
+        <PageList
+          showNewPage={!isShared}
+          chapter={chapter}
+          chapterIdx={index}
+        />
+      </ChapterContainer>
+    </>
   ));
 };
 
