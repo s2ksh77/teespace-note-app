@@ -3,8 +3,6 @@ import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
 import { checkNotDuplicate } from '../components/common/validators';
-import { type } from "ramda";
-import { RoomStore } from 'teespace-core';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -44,7 +42,6 @@ const ChapterStore = observable({
   isMovingChapter: false,
   moveInfoList: [],
   isCtrlKeyDown: false,
-  moveChapterIdx: '',
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
   pageMap: new Map(),
@@ -109,12 +106,6 @@ const ChapterStore = observable({
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
-  },
-  getMoveChapterIdx() {
-    return this.moveChapterIdx;
-  },
-  setMoveChapterIdx(chapterIdx) {
-    this.moveChapterIdx = chapterIdx;
   },
   getDragEnterChapterIdx() {
     return this.dragEnterChapterIdx;
