@@ -292,7 +292,7 @@ const TagStore = observable({
       let resultKeyTags = {};
       item.tag_indexdto.tagList.forEach((tag) => {
         let tagName = tag.text;
-        if (!tagName.toLowerCase().includes(str)) return;
+        if (!tagName.toUpperCase().includes(str.toUpperCase())) return;
         if (resultKeyTags.hasOwnProperty(tagName)) {
           resultKeyTags[tagName]["note_id"].push(tag.note_id);
         } else {
