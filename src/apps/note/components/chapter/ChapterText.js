@@ -34,9 +34,14 @@ const ChapterText = ({ chapter }) => {
     <>
       <ChapterTitle
         className={
-          !NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId
-            ? "selectedMenu"
-            : ""
+          (ChapterStore.isCtrlKeyDown
+            ? (ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)
+                ? 'selectedMenu'
+                : '')
+            : (!NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId
+                ? 'selectedMenu'
+                : '')
+          )
         }
       >
         <ChapterTextSpan>{chapter.text}</ChapterTextSpan>

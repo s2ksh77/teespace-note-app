@@ -435,19 +435,6 @@ const PageStore = observable({
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
-    if (!this.currentPageId) {
-      this.setMoveInfoList([{
-        pageId: dto.note_id,
-        pageIdx: 0,
-        chapterId: dto.parent_notebook,
-        chapterIdx: 0,
-        shareData: {
-          id: dto.note_id,
-          text: dto.note_title,
-          date: dto.modified_date,
-        },
-      }]);
-    }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
     this.noteInfoList = dto;
