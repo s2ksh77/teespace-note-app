@@ -74,7 +74,6 @@ export const handleWebsocket = (message) => {
                                 const firstChapter = ChapterStore.chapterList[0];
                                 ChapterStore.setCurrentChapterId(firstChapter.id);
                                 if (firstChapter.children && firstChapter.children.length > 0) {
-                                    PageStore.setCurrentPageId(firstChapter.children[0].id);
                                     PageStore.fetchCurrentPageData(firstChapter.children[0].id);
                                 } else PageStore.setCurrentPageId('');
                             } else NoteStore.setShowPage(false);

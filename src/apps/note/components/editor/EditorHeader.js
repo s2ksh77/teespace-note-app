@@ -16,12 +16,13 @@ import { handleFileSync } from '../common/NoteFile';
 import { useCoreStores } from 'teespace-core';
 
 const EditorHeader = () => {
-  const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore } = useCoreStores();
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
     if (PageStore.isReadMode()) {
+      ChapterStore.getNoteChapterList();
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
