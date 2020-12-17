@@ -2486,11 +2486,6 @@ var PageStore = mobx.observable((_observable$1 = {
   isCtrlKeyDown: false,
   movePageId: '',
   // 이동을 원하는 page의 id
-  movePageIdx: '',
-  // 이동을 원하는 page의 index
-  moveChapterId: '',
-  // 이동을 원하는 page가 속한 chapter의 id
-  moveChapterIdx: '',
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
@@ -2636,24 +2631,6 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   setMovePageId: function setMovePageId(pageId) {
     this.movePageId = pageId;
-  },
-  getMovePageIdx: function getMovePageIdx() {
-    return this.movePageIdx;
-  },
-  setMovePageIdx: function setMovePageIdx(pageIdx) {
-    this.movePageIdx = pageIdx;
-  },
-  getMoveChapterId: function getMoveChapterId() {
-    return this.moveChapterId;
-  },
-  setMoveChapterId: function setMoveChapterId(chapterId) {
-    this.moveChapterId = chapterId;
-  },
-  getMoveChapterIdx: function getMoveChapterIdx() {
-    return this.moveChapterIdx;
-  },
-  setMoveChapterIdx: function setMoveChapterIdx(chapterIdx) {
-    this.moveChapterIdx = chapterIdx;
   },
   getDragEnterPageIdx: function getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
@@ -3069,20 +3046,6 @@ var PageStore = mobx.observable((_observable$1 = {
               return _context10.abrupt("return");
 
             case 6:
-              if (!_this5.currentPageId) {
-                _this5.setMoveInfoList([{
-                  pageId: dto.note_id,
-                  pageIdx: 0,
-                  chapterId: dto.parent_notebook,
-                  chapterIdx: 0,
-                  shareData: {
-                    id: dto.note_id,
-                    text: dto.note_title,
-                    date: dto.modified_date
-                  }
-                }]);
-              }
-
               _this5.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
@@ -3093,7 +3056,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 15:
+            case 14:
             case "end":
               return _context10.stop();
           }
@@ -3388,7 +3351,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
   renameChapterId: '',
   renameChapterText: '',
   isMovingChapter: false,
-  moveChapterIdx: '',
+  moveInfoList: [],
+  isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
   pageMap: new Map(),
@@ -3439,11 +3403,20 @@ var ChapterStore = mobx.observable((_observable$2 = {
   setIsMovingChapter: function setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
-  getMoveChapterIdx: function getMoveChapterIdx() {
-    return this.moveChapterIdx;
+  getMoveInfoList: function getMoveInfoList() {
+    return this.moveInfoList;
   },
-  setMoveChapterIdx: function setMoveChapterIdx(chapterIdx) {
-    this.moveChapterIdx = chapterIdx;
+  setMoveInfoList: function setMoveInfoList(moveInfoList) {
+    this.moveInfoList = moveInfoList;
+  },
+  appendMoveInfoList: function appendMoveInfoList(moveInfo) {
+    this.moveInfoList.push(moveInfo);
+  },
+  removeMoveInfoList: function removeMoveInfoList(idx) {
+    this.moveInfoList.splice(idx, 1);
+  },
+  setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
+    this.isCtrlKeyDown = flag;
   },
   getDragEnterChapterIdx: function getDragEnterChapterIdx() {
     return this.dragEnterChapterIdx;
@@ -4027,29 +4000,37 @@ var ChapterStore = mobx.observable((_observable$2 = {
     return _this10.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "moveChapter", function moveChapter(moveTargetChapterIdx) {
-  if (this.moveChapterIdx !== moveTargetChapterIdx && this.moveChapterIdx + 1 !== moveTargetChapterIdx) {
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
-    var copyOfChapterList = this.chapterList.slice();
-    var target = this.chapterList[this.moveChapterIdx];
-    var targetInLocalStorage = item[this.moveChapterIdx];
+  var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
 
-    if (this.moveChapterIdx < moveTargetChapterIdx) {
-      copyOfChapterList.splice(moveTargetChapterIdx, 0, target);
-      copyOfChapterList.splice(this.moveChapterIdx, 1);
-      item.splice(moveTargetChapterIdx, 0, targetInLocalStorage);
-      item.splice(this.moveChapterIdx, 1);
-    } else {
-      copyOfChapterList.splice(this.moveChapterIdx, 1);
-      copyOfChapterList.splice(moveTargetChapterIdx, 0, target);
-      item.splice(this.moveChapterIdx, 1);
-      item.splice(moveTargetChapterIdx, 0, targetInLocalStorage);
-    }
+  var sortedMoveInfoList = this.moveInfoList.slice().sort(function (a, b) {
+    return a.chapterIdx - b.chapterIdx;
+  });
+  var chapters = sortedMoveInfoList.map(function (moveInfo) {
+    return item[moveInfo.chapterIdx];
+  }); // Step2. LocalStorage에서 삭제
 
-    this.chapterList = copyOfChapterList;
-    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-  }
+  sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+    if (moveInfo.chapterIdx < moveTargetChapterIdx) return;
+    item.splice(moveInfo.chapterIdx, 1);
+  }); // Step3. LocalStorage에 추가
 
-  this.moveChapterIdx = '';
+  item.splice.apply(item, [moveTargetChapterIdx, 0].concat(_toConsumableArray(chapters))); // Step4. LocalStorage에서 삭제
+
+  sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
+    if (moveInfo.chapterIdx >= moveTargetChapterIdx) return;
+    item.splice(moveInfo.chapterIdx, 1);
+  }); // Step5. moveInfoList 업데이트
+
+  var startIdx = item.findIndex(function (chapter) {
+    return chapter.id === sortedMoveInfoList[0].chapterId;
+  });
+  this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+    return {
+      chapterId: moveInfo.chapterId,
+      chapterIdx: startIdx + idx
+    };
+  });
+  localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
   this.getNoteChapterList();
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
   this.setIsSearching(false);
@@ -4208,6 +4189,26 @@ var ChapterStore = mobx.observable((_observable$2 = {
   if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
   if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
   return null;
+}), _defineProperty(_observable$2, "setFirstMoveInfoList", function setFirstMoveInfoList(targetChapter) {
+  this.setMoveInfoList([{
+    chapterId: targetChapter.id,
+    chapterIdx: 0
+  }]);
+
+  if (targetChapter.children.length > 0) {
+    var targetPage = targetChapter.children[0];
+    PageStore.setMoveInfoList([{
+      pageId: targetPage.id,
+      pageIdx: 0,
+      chapterId: targetChapter.id,
+      chapterIdx: 0,
+      shareData: {
+        id: targetPage.id,
+        text: targetPage.text,
+        date: targetPage.modified_date
+      }
+    }]);
+  }
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
   var _this15 = this;
 
@@ -4230,18 +4231,20 @@ var ChapterStore = mobx.observable((_observable$2 = {
             return _context15.abrupt("return");
 
           case 5:
+            _this15.setFirstMoveInfoList(targetChapter);
+
             chapterId = targetChapter.id;
             pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-            _context15.next = 9;
+            _context15.next = 10;
             return PageStore.fetchCurrentPageData(pageId);
 
-          case 9:
+          case 10:
             // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
             // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
             _this15.setCurrentChapterId(chapterId);
 
-          case 10:
+          case 11:
           case "end":
             return _context15.stop();
         }
