@@ -4677,7 +4677,6 @@ var handleWebsocket = function handleWebsocket(message) {
                 ChapterStore.setCurrentChapterId(firstChapter.id);
 
                 if (firstChapter.children && firstChapter.children.length > 0) {
-                  PageStore.setCurrentPageId(firstChapter.children[0].id);
                   PageStore.fetchCurrentPageData(firstChapter.children[0].id);
                 } else PageStore.setCurrentPageId('');
               } else NoteStore.setShowPage(false);
@@ -4690,6 +4689,7 @@ var handleWebsocket = function handleWebsocket(message) {
 };
 
 var NoteStore$1 = mobx.observable({
+  noteIdFromTalk: '',
   loadingNoteApp: true,
   workspaceId: '',
   notechannel_id: '',
@@ -4713,6 +4713,12 @@ var NoteStore$1 = mobx.observable({
   shareContent: '',
   shareArrays: {},
   // { userArray, roomArray }
+  getNoteIdFromTalk: function getNoteIdFromTalk() {
+    return this.noteIdFromTalk;
+  },
+  setNoteIdFromTalk: function setNoteIdFromTalk(noteId) {
+    this.noteIdFromTalk = noteId;
+  },
   getLoadingNoteApp: function getLoadingNoteApp() {
     return this.loadingNoteApp;
   },
@@ -4965,6 +4971,36 @@ var NoteStore$1 = mobx.observable({
           }
         }
       }, _callee3);
+    }))();
+  },
+  openNote: function openNote(noteId) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _this3.setLoadingNoteApp(true);
+
+              _this3.setShowPage(true);
+
+              _this3.setTargetLayout('Content');
+
+              _context4.next = 5;
+              return PageStore.fetchCurrentPageData(noteId);
+
+            case 5:
+              _this3.setLoadingNoteApp(false);
+
+              _this3.setNoteIdFromTalk("");
+
+            case 7:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
     }))();
   }
 });
