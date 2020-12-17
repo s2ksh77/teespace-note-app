@@ -1793,7 +1793,7 @@ var TagStore = observable({
       var resultKeyTags = {};
       item.tag_indexdto.tagList.forEach(function (tag) {
         var tagName = tag.text;
-        if (!tagName.toLowerCase().includes(str)) return;
+        if (!tagName.toUpperCase().includes(str.toUpperCase())) return;
 
         if (resultKeyTags.hasOwnProperty(tagName)) {
           resultKeyTags[tagName]["note_id"].push(tag.note_id);
