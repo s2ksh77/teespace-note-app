@@ -92,6 +92,7 @@ const PageStore = observable({
     return this.noteTitle;
   },
   setTitle(title) {
+    if (title.length > 256) title = title.substring(0, 256);
     this.noteTitle = title;
   },
 
