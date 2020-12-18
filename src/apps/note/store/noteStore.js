@@ -30,6 +30,8 @@ const NoteStore = observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {}, // { userArray, roomArray }
+  isVisibleToast: false,
+  toastText: '',
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -118,6 +120,12 @@ const NoteStore = observable({
   },
   setShareArrays(arrs) {
     this.shareArrays = arrs;
+  },
+  setIsVisibleToast(isVisible) {
+    this.isVisibleToast = isVisible;
+  },
+  setToastText(text) {
+    this.toastText = text;
   },
   setShowModal(showModal) {
     this.showModal = showModal;

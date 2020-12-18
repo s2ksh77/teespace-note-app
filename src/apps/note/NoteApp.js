@@ -8,7 +8,7 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import Modal from './components/common/Modal';
 import GlobalVariable from './GlobalVariable';
 
@@ -115,6 +115,11 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
           {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
         </Content>
         <Modal />
+        <Toast 
+          visible={NoteStore.isVisibleToast}
+          children={NoteStore.toastText}
+          onClose={() => NoteStore.setIsVisibleToast(false)}
+        />
       </>
       }
     </>

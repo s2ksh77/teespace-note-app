@@ -365,9 +365,13 @@ const PageStore = observable({
       item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
     });
 
-    // Step5. moveInfoList 업데이트
+    // Step5. 순서 이동 페이지 카운트 / moveInfoList 업데이트
+    let moveCntInSameChapter = 0;
+    let moveCntToAnotherChapter = 0;
     const startIdx = item[moveTargetChapterIdx].children.findIndex(pageId => pageId === sortedMoveInfoList[0].pageId);
     this.moveInfoList = sortedMoveInfoList.map((moveInfo, idx) => {
+      if (moveInfo.chapterIdx !== moveTargetChapterIdx) moveCntToAnotherChapter++;
+      else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
       return {
         pageId: moveInfo.pageId,
         pageIdx: startIdx + idx,
@@ -380,8 +384,16 @@ const PageStore = observable({
     localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
     ChapterStore.getNoteChapterList();
     this.setCurrentPageId(this.movePageId);
-    this.fetchCurrentPageData(this.movePageId);
     ChapterStore.setCurrentChapterId(moveTargetChapterId);
+    this.fetchCurrentPageData(this.movePageId).then(()=>{
+      if (moveCntInSameChapter + moveCntToAnotherChapter > 0) {
+        if (!moveCntToAnotherChapter)
+          NoteStore.setToastText(`${moveCntInSameChapter}개의 페이지가 이동하였습니다.`);
+        else
+          NoteStore.setToastText(`${moveCntInSameChapter + moveCntToAnotherChapter}개의 페이지를 ${ChapterStore.chapterList[moveTargetChapterIdx].text}으로 이동하였습니다.`);
+        NoteStore.setIsVisibleToast(true);
+      }
+    })
   },
 
   modifiedDateFormatting(date) {

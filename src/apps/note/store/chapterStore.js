@@ -478,9 +478,11 @@ const ChapterStore = observable({
       item.splice(moveInfo.chapterIdx, 1);
     });
 
-    // Step5. moveInfoList 업데이트
+    // Step5. 순서 이동 챕터 카운트 / moveInfoList 업데이트
+    let moveCnt = 0;
     const startIdx = item.findIndex(chapter => chapter.id === sortedMoveInfoList[0].chapterId);
     this.moveInfoList = sortedMoveInfoList.map((moveInfo, idx) => {
+      if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
       return {
         chapterId: moveInfo.chapterId,
         chapterIdx: startIdx + idx,
@@ -489,7 +491,12 @@ const ChapterStore = observable({
     });
 
     localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-    this.getNoteChapterList();
+    this.getNoteChapterList().then(() => {
+      if (moveCnt > 0) { 
+        NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
+        NoteStore.setIsVisibleToast(true);
+      }
+    });
   },
   /* 
     - search 관련
