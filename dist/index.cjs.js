@@ -4194,7 +4194,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
   this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
     return {
       chapterId: moveInfo.chapterId,
-      chapterIdx: startIdx + idx
+      chapterIdx: startIdx + idx,
+      shareData: moveInfo.shareData
     };
   });
   localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
@@ -4359,7 +4360,12 @@ var ChapterStore = mobx.observable((_observable$2 = {
 }), _defineProperty(_observable$2, "setFirstMoveInfoList", function setFirstMoveInfoList(targetChapter) {
   this.setMoveInfoList([{
     chapterId: targetChapter.id,
-    chapterIdx: 0
+    chapterIdx: 0,
+    shareData: {
+      id: targetChapter.id,
+      text: targetChapter.text,
+      date: targetChapter.modified_date
+    }
   }]);
 
   if (targetChapter.children.length > 0) {
@@ -6557,7 +6563,7 @@ var LNBTag = /*#__PURE__*/React.memo(function () {
       PageStore = _useNoteStore.PageStore;
 
   var _useDrop = reactDnd.useDrop({
-    accept: 'Item:Note:Chapter',
+    accept: 'Item:Note:Chapters',
     drop: function drop() {
       ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },
@@ -7442,7 +7448,12 @@ var Page = function Page(_ref) {
 
   var chapterMoveInfo = {
     chapterId: chapter.id,
-    chapterIdx: chapterIdx
+    chapterIdx: chapterIdx,
+    shareData: {
+      id: chapter.id,
+      text: chapter.text,
+      date: chapter.modified_date
+    }
   };
   var pageMoveInfo = {
     pageId: page.id,
@@ -7711,11 +7722,16 @@ var Chapter = function Chapter(_ref) {
       color = chapter.color;
   var chapterMoveInfo = {
     chapterId: chapter.id,
-    chapterIdx: index
+    chapterIdx: index,
+    shareData: {
+      id: chapter.id,
+      text: chapter.text,
+      date: chapter.modified_date
+    }
   }; // 챕터를 다른 챕터 영역에 drop했을 때
 
   var _useDrop = reactDnd.useDrop({
-    accept: 'Item:Note:Chapter',
+    accept: 'Item:Note:Chapters',
     drop: function drop() {
       ChapterStore.moveChapter(index);
     },
@@ -7730,7 +7746,7 @@ var Chapter = function Chapter(_ref) {
   var _useDrag = reactDnd.useDrag({
     item: {
       id: chapter.id,
-      type: isShared ? 'Item:Note:SharedChapter' : 'Item:Note:Chapter'
+      type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters'
     },
     begin: function begin(monitor) {
       if (!ChapterStore.moveInfoList.find(function (info) {
@@ -7744,8 +7760,16 @@ var Chapter = function Chapter(_ref) {
       NoteStore.setDraggedType('chapter');
       NoteStore.setDraggedTitle(chapter.text);
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+      return {
+        type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
+        data: ChapterStore.moveInfoList.map(function (moveInfo) {
+          return moveInfo.shareData;
+        })
+      };
     },
-    end: function end() {
+    end: function end(item, monitor) {
+      var res = monitor.getDropResult();
+      if (res.target === 'Platform:Room') ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
       ChapterStore.setDragEnterChapterIdx('');
       NoteStore.setIsDragging(false);
       NoteStore.setDraggedType('');
