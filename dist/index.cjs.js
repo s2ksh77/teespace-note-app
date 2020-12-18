@@ -7257,6 +7257,8 @@ var ContextMenu = function ContextMenu(_ref) {
   }, "\uC774\uB984 \uBCC0\uACBD"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "1"
   }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+    key: "2"
+  }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "3"
   }, "\uB0B4\uBCF4\uB0B4\uAE30(.pdf)"), type === 'shared' ? /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "4"
@@ -10069,7 +10071,11 @@ var Modal = function Modal() {
       buttons = _NoteStore$modalInfo.buttons,
       sharedInfo = _NoteStore$modalInfo.sharedInfo;
   var el = /*#__PURE__*/ReactDom__default['default'].createPortal( /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(RoomShareModal, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitleContainer, null, /*#__PURE__*/React__default['default'].createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(Button, {
-    src: img
+    src: img,
+    onClick: function onClick() {
+      NoteStore.setModalInfo(null);
+      NoteStore.setIsShared(false);
+    }
   })), /*#__PURE__*/React__default['default'].createElement(teespaceCore.ItemSelector, {
     isVisibleRoom: true,
     onSelectChange: function onSelectChange(data) {
