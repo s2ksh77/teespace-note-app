@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import {Message} from 'teespace-core';
+import { Message } from 'teespace-core';
 import { Tag } from 'antd';
 import 'antd/dist/antd.css';
 import useNoteStore from '../../store/useStore';
@@ -19,7 +19,7 @@ import { isFilled, checkWhitespace } from '../common/validators';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
-  const [ openModal, setOpenModal ] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const focusedTag = useRef([]);
   const tagList = useRef(null);
 
@@ -75,14 +75,14 @@ const TagListContainer = () => {
   const handleModifyInput = () => {
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
-      if (TagStore.currentTagValue === TagStore.editTagValue) {}
+      if (TagStore.currentTagValue === TagStore.editTagValue) { }
       // 대소문자만 바꾼 경우
       else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
         updateNoteTagList();
       }
       // 공백만 있거나 아무것도 입력하지 않은 경우
       // Modal없이 modify 취소
-      else if (!checkWhitespace(TagStore.editTagValue)) {} 
+      else if (!checkWhitespace(TagStore.editTagValue)) { }
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           updateNoteTagList();
@@ -91,23 +91,23 @@ const TagListContainer = () => {
         }
       }
     } else { // 아이디 없는 애를 고칠 경우
-      if (TagStore.currentTagValue === TagStore.editTagValue) {}
+      if (TagStore.currentTagValue === TagStore.editTagValue) { }
       // 대소문자만 바꾼 경우
       else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
         TagStore.setEditCreateTag();
       }
       // 공백만 있거나 아무것도 입력하지 않은 경우
       // Modal없이 modify 취소
-      else if (!checkWhitespace(TagStore.editTagValue)) {} 
+      else if (!checkWhitespace(TagStore.editTagValue)) { }
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.setEditCreateTag();
         } else {
           setOpenModal(true);
-        }         
+        }
       }
-    }    
-    TagStore.setEditTagIndex(-1)    
+    }
+    TagStore.setEditTagIndex(-1)
   };
 
   const handleModifyingKeyDown = (event) => {
@@ -186,10 +186,10 @@ const TagListContainer = () => {
           title={"이미 있는 태그 이름입니다."}
           type="error"
           btns={[{
-            type : 'solid',
-            shape : 'round',
-            text : '확인',
-            onClick : handleClickModalBtn
+            type: 'solid',
+            shape: 'round',
+            text: '확인',
+            onClick: handleClickModalBtn
           }]}
         />
         <Tooltip title={!PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
@@ -216,31 +216,33 @@ const TagListContainer = () => {
                 autoFocus={true}
               />
             ) : (
-                <Tag
-                  ref={el => focusedTag.current[index] = el}
-                  key={index}
-                  className={index === TagStore.selectTagIdx ? 'antTag noteFocusedTag' : 'antTag'}
-                  data-idx={index}
-                  id={item.tag_id}
-                  closable={PageStore.isReadMode() ? false : true}
-                  tabIndex="0"
-                  onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
-                  onClick={handleClickTag.bind(null, index)}
-                  onKeyDown={handleKeyDownTag.bind(null)}
-                >
-                  {!PageStore.isReadMode() ? <TagText
-                    onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
+                <Tooltip title={item.text.length > 5 ? item.text : null}>
+                  <Tag
+                    ref={el => focusedTag.current[index] = el}
+                    key={index}
+                    className={index === TagStore.selectTagIdx ? 'antTag noteFocusedTag' : 'antTag'}
+                    data-idx={index}
+                    id={item.tag_id}
+                    closable={PageStore.isReadMode() ? false : true}
+                    tabIndex="0"
+                    onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
+                    onClick={handleClickTag.bind(null, index)}
+                    onKeyDown={handleKeyDownTag.bind(null)}
                   >
-                    {item.text.length > 5
-                      ? `${item.text.slice(0, 5)}...`
-                      : item.text}
-                  </TagText>
-                    : <TagText>{item.text.length > 5
-                      ? `${item.text.slice(0, 5)}...`
-                      : item.text}
+                    {!PageStore.isReadMode() ? <TagText
+                      onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
+                    >
+                      {item.text.length > 5
+                        ? `${item.text.slice(0, 5)}...`
+                        : item.text}
                     </TagText>
-                  }
-                </Tag>
+                      : <TagText>{item.text.length > 5
+                        ? `${item.text.slice(0, 5)}...`
+                        : item.text}
+                      </TagText>
+                    }
+                  </Tag>
+                </Tooltip>
               )
           )}
         </TagList>
