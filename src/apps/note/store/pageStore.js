@@ -292,6 +292,7 @@ const PageStore = observable({
       EditorStore.setFileList(
         dto.fileList,
       );
+      EditorStore.tinymce?.undoManager.clear();
     });
   },
 
