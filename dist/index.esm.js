@@ -3360,7 +3360,12 @@ var PageStore = observable((_observable$1 = {
     if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
-    if (EditorStore$1.tempFileLayoutList.length > 0) EditorStore$1.tempFileLayoutList = [];
+
+    if (EditorStore$1.tempFileLayoutList.length > 0) {
+      EditorStore$1.processCount = 0;
+      EditorStore$1.tempFileLayoutList = [];
+    }
+
     NoteStore$1.setShowModal(false);
     EditorStore$1.setIsAttatch(false);
     (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
@@ -6766,6 +6771,7 @@ var handleUpload = /*#__PURE__*/function () {
                             PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                               EditorStore$1.setFileList(dto.fileList);
                               EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
+                              EditorStore$1.processCount = 0;
                               EditorStore$1.tempFileLayoutList = [];
                             });
                           }
@@ -6844,6 +6850,7 @@ var handleDriveCopy = /*#__PURE__*/function () {
                     if (EditorStore$1.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
                       PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                         EditorStore$1.setFileList(dto.fileList);
+                        EditorStore$1.processCount = 0;
                         EditorStore$1.tempFileLayoutList = [];
                       });
                       EditorStore$1.setIsAttatch(false);
