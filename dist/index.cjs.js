@@ -2630,6 +2630,13 @@ var EditorStore$1 = mobx.observable((_observable = {
   }))();
 }), _observable));
 
+var GlobalVariable = {
+  editorWrapper: null,
+  setEditorWrapper: function setEditorWrapper(ref) {
+    this.editorWrapper = ref;
+  }
+};
+
 var _observable$1;
 var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
@@ -3391,6 +3398,8 @@ var PageStore = mobx.observable((_observable$1 = {
 
     NoteStore$1.setShowModal(false);
     EditorStore$1.setIsAttatch(false);
+    var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+    if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.selection.setCursorLocation();
     (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.undoManager.clear();
     this.isNewPage = false;
@@ -9387,13 +9396,6 @@ var FileLayout = function FileLayout() {
       }))));
     })));
   });
-};
-
-var GlobalVariable = {
-  editorWrapper: null,
-  setEditorWrapper: function setEditorWrapper(ref) {
-    this.editorWrapper = ref;
-  }
 };
 
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
