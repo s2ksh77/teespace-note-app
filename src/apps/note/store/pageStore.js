@@ -501,7 +501,10 @@ const PageStore = observable({
     if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
-    if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+    if (EditorStore.tempFileLayoutList.length > 0) {
+      EditorStore.processCount = 0;
+      EditorStore.tempFileLayoutList = [];
+    }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
     EditorStore.tinymce?.selection.setCursorLocation();

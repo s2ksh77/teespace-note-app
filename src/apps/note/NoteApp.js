@@ -26,19 +26,20 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
     if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
     if (e.target.download) return;
-
+    const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+    if (floatingMenu !== null) floatingMenu.click();
     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
     if (!isUndoActive && !PageStore.isReadMode() && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
-  
+
   useEffect(() => {
     window.addEventListener('click', handleClickOutsideEditor);
     return () => {
       window.removeEventListener('click', handleClickOutsideEditor);
     };
   }, []);
-  
+
   /*
     1) collapse 아닐 때는 setTargetLayout(null) 넣어준다
     2) fetch~는 로딩이미지 true -> false 로직이 있음

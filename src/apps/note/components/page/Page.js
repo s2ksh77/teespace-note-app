@@ -18,6 +18,11 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const chapterMoveInfo = {
     chapterId: chapter.id,
     chapterIdx: chapterIdx,
+    shareData: {
+      id: chapter.id,
+      text: chapter.text,
+      date: chapter.modified_date,
+    },
   };
   const pageMoveInfo = {
     pageId: page.id,

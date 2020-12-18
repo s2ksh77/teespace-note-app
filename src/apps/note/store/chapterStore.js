@@ -484,6 +484,7 @@ const ChapterStore = observable({
       return {
         chapterId: moveInfo.chapterId,
         chapterIdx: startIdx + idx,
+        shareData: moveInfo.shareData,
       };
     });
 
@@ -593,6 +594,11 @@ const ChapterStore = observable({
     this.setMoveInfoList([{
       chapterId: targetChapter.id,
       chapterIdx: 0,
+      shareData: {
+        id: targetChapter.id,
+        text: targetChapter.text,
+        date: targetChapter.modified_date,
+      },
     }]);
 
     if (targetChapter.children.length > 0) {

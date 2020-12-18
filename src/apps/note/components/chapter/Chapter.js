@@ -24,11 +24,16 @@ const Chapter = ({ chapter, index, isShared }) => {
   const chapterMoveInfo = {
     chapterId: chapter.id,
     chapterIdx: index,
+    shareData: {
+      id: chapter.id,
+      text: chapter.text,
+      date: chapter.modified_date,
+    },
   };
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
-    accept: 'Item:Note:Chapter',
+    accept: 'Item:Note:Chapters',
     drop: () => {
       ChapterStore.moveChapter(index);
     },
@@ -40,7 +45,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapter' : 'Item:Note:Chapter' },
+    item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters' },
     begin: (monitor) => {
       if (!ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)) {
         ChapterStore.setMoveInfoList([chapterMoveInfo]);
@@ -51,8 +56,17 @@ const Chapter = ({ chapter, index, isShared }) => {
       NoteStore.setDraggedType('chapter');
       NoteStore.setDraggedTitle(chapter.text);
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+
+      return {
+        type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
+        data: ChapterStore.moveInfoList.map(moveInfo => moveInfo.shareData),
+      };
     },
-    end: () => {
+    end: (item, monitor) => {
+      const res = monitor.getDropResult();
+      if (res.target === 'Platform:Room')
+        ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
+
       ChapterStore.setDragEnterChapterIdx('');
 
       NoteStore.setIsDragging(false);
