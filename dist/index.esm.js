@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, WWMS, UserStore, RoomStore, EventBus, useCoreStores, Message, ComponentStore, ItemSelector } from 'teespace-core';
+import { API, WWMS, UserStore, RoomStore, EventBus, useCoreStores, Message, ComponentStore, ItemSelector, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -3093,7 +3093,7 @@ var PageStore = observable((_observable$1 = {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
       var _item$moveTargetChapt;
 
-      var item, sortedMoveInfoList, pageIds, startIdx;
+      var item, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
@@ -3124,12 +3124,15 @@ var PageStore = observable((_observable$1 = {
               sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
                 if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
                 item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
-              }); // Step5. moveInfoList 업데이트
+              }); // Step5. 순서 이동 페이지 카운트 / moveInfoList 업데이트
 
+              moveCntInSameChapter = 0;
+              moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
                 return pageId === sortedMoveInfoList[0].pageId;
               });
               _this4.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+                if (moveInfo.chapterIdx !== moveTargetChapterIdx) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
                 return {
                   pageId: moveInfo.pageId,
                   pageIdx: startIdx + idx,
@@ -3143,11 +3146,16 @@ var PageStore = observable((_observable$1 = {
 
               _this4.setCurrentPageId(_this4.movePageId);
 
-              _this4.fetchCurrentPageData(_this4.movePageId);
-
               ChapterStore.setCurrentChapterId(moveTargetChapterId);
 
-            case 14:
+              _this4.fetchCurrentPageData(_this4.movePageId).then(function () {
+                if (moveCntInSameChapter + moveCntToAnotherChapter > 0) {
+                  if (!moveCntToAnotherChapter) NoteStore$1.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));else NoteStore$1.setToastText("".concat(moveCntInSameChapter + moveCntToAnotherChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                  NoteStore$1.setIsVisibleToast(true);
+                }
+              });
+
+            case 16:
             case "end":
               return _context9.stop();
           }
@@ -4184,12 +4192,14 @@ var ChapterStore = observable((_observable$2 = {
   sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
     if (moveInfo.chapterIdx >= moveTargetChapterIdx) return;
     item.splice(moveInfo.chapterIdx, 1);
-  }); // Step5. moveInfoList 업데이트
+  }); // Step5. 순서 이동 챕터 카운트 / moveInfoList 업데이트
 
+  var moveCnt = 0;
   var startIdx = item.findIndex(function (chapter) {
     return chapter.id === sortedMoveInfoList[0].chapterId;
   });
   this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+    if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
     return {
       chapterId: moveInfo.chapterId,
       chapterIdx: startIdx + idx,
@@ -4197,7 +4207,12 @@ var ChapterStore = observable((_observable$2 = {
     };
   });
   localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-  this.getNoteChapterList();
+  this.getNoteChapterList().then(function () {
+    if (moveCnt > 0) {
+      NoteStore$1.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+      NoteStore$1.setIsVisibleToast(true);
+    }
+  });
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
   this.setIsSearching(false);
   this.setIsTagSearching(false);
@@ -4887,6 +4902,8 @@ var NoteStore$1 = observable({
   shareContent: '',
   shareArrays: {},
   // { userArray, roomArray }
+  isVisibleToast: false,
+  toastText: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -4976,6 +4993,12 @@ var NoteStore$1 = observable({
   },
   setShareArrays: function setShareArrays(arrs) {
     this.shareArrays = arrs;
+  },
+  setIsVisibleToast: function setIsVisibleToast(isVisible) {
+    this.isVisibleToast = isVisible;
+  },
+  setToastText: function setToastText(text) {
+    this.toastText = text;
   },
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
@@ -10246,7 +10269,13 @@ var NoteApp = function NoteApp(_ref) {
       }
     }, /*#__PURE__*/React.createElement(FoldBtnImg, {
       src: img$o
-    })), NoteStore.showPage ? /*#__PURE__*/React.createElement(PageContainer, null) : /*#__PURE__*/React.createElement(TagContainer, null)), /*#__PURE__*/React.createElement(Modal, null)));
+    })), NoteStore.showPage ? /*#__PURE__*/React.createElement(PageContainer, null) : /*#__PURE__*/React.createElement(TagContainer, null)), /*#__PURE__*/React.createElement(Modal, null), /*#__PURE__*/React.createElement(Toast, {
+      visible: NoteStore.isVisibleToast,
+      children: NoteStore.toastText,
+      onClose: function onClose() {
+        return NoteStore.setIsVisibleToast(false);
+      }
+    })));
   });
 };
 
