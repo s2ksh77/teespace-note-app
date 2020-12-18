@@ -5,6 +5,7 @@ import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
+import GlobalVariable from '../GlobalVariable';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -385,7 +386,7 @@ const PageStore = observable({
     ChapterStore.getNoteChapterList();
     this.setCurrentPageId(this.movePageId);
     ChapterStore.setCurrentChapterId(moveTargetChapterId);
-    this.fetchCurrentPageData(this.movePageId).then(()=>{
+    this.fetchCurrentPageData(this.movePageId).then(() => {
       if (moveCntInSameChapter + moveCntToAnotherChapter > 0) {
         if (!moveCntToAnotherChapter)
           NoteStore.setToastText(`${moveCntInSameChapter}개의 페이지가 이동하였습니다.`);
@@ -521,6 +522,8 @@ const PageStore = observable({
     }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
+    const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+    if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
     this.isNewPage = false;
