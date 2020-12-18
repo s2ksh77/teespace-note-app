@@ -2715,6 +2715,7 @@ var PageStore = mobx.observable((_observable$1 = {
     return this.noteTitle;
   },
   setTitle: function setTitle(title) {
+    if (title.length > 256) title = title.substring(0, 256);
     this.noteTitle = title;
   },
   getCurrentPageId: function getCurrentPageId() {
@@ -3013,6 +3014,8 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
+      var _EditorStore$tinymce;
+
       _this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
 
@@ -3027,6 +3030,7 @@ var PageStore = mobx.observable((_observable$1 = {
       NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore$1.setFileList(dto.fileList);
+      (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -3293,11 +3297,11 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce;
+      var _EditorStore$tinymce2;
 
       _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
@@ -3345,7 +3349,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce2, _EditorStore$tinymce3;
+    var _EditorStore$tinymce3, _EditorStore$tinymce4;
 
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
@@ -3379,8 +3383,8 @@ var PageStore = mobx.observable((_observable$1 = {
 
     NoteStore$1.setShowModal(false);
     EditorStore$1.setIsAttatch(false);
-    (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection.setCursorLocation();
-    (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
+    (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.selection.setCursorLocation();
+    (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
@@ -9032,7 +9036,9 @@ var TagListContainer = function TagListContainer() {
         onKeyDown: handleModifyingKeyDown,
         onFocus: handleFocus,
         autoFocus: true
-      }) : /*#__PURE__*/React__default['default'].createElement(antd.Tag, {
+      }) : /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+        title: item.text.length > 5 ? item.text : null
+      }, /*#__PURE__*/React__default['default'].createElement(antd.Tag, {
         ref: function ref(el) {
           return focusedTag.current[index] = el;
         },
@@ -9047,7 +9053,7 @@ var TagListContainer = function TagListContainer() {
         onKeyDown: handleKeyDownTag.bind(null)
       }, !PageStore.isReadMode() ? /*#__PURE__*/React__default['default'].createElement(TagText, {
         onDoubleClick: handleChangeTag(item.text, index, item.tag_id)
-      }, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text) : /*#__PURE__*/React__default['default'].createElement(TagText, null, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text));
+      }, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text) : /*#__PURE__*/React__default['default'].createElement(TagText, null, item.text.length > 5 ? "".concat(item.text.slice(0, 5), "...") : item.text)));
     }))));
   });
 };
@@ -9855,10 +9861,12 @@ var TagKeyChildren$1 = function TagKeyChildren(_ref) {
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(TagChipGroup, null, Object.keys(TagStore.sortedTagList[category][tagKey]).map(function (tagName) {
       var tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
-      return /*#__PURE__*/React__default['default'].createElement(TagChip, {
+      return /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+        title: tagName.length > 5 ? tagName : null
+      }, /*#__PURE__*/React__default['default'].createElement(TagChip, {
         onClick: onClickTagBtn(tagInfo.id, tagName),
         key: tagInfo.id
-      }, /*#__PURE__*/React__default['default'].createElement(TagChipText, null, tagName), /*#__PURE__*/React__default['default'].createElement(TagChipNum, null, tagInfo.note_id.length));
+      }, /*#__PURE__*/React__default['default'].createElement(TagChipText, null, tagName), /*#__PURE__*/React__default['default'].createElement(TagChipNum, null, tagInfo.note_id.length)));
     })));
   });
 };
