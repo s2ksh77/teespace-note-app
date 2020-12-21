@@ -4908,6 +4908,7 @@ var NoteStore$1 = mobx.observable({
   // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
   targetLayout: null,
+  isHoveredFoldBtnLine: false,
   isContentExpanded: false,
   showModal: false,
   modalInfo: {},
@@ -4998,6 +4999,9 @@ var NoteStore$1 = mobx.observable({
   // lnb, content 중 하나
   setTargetLayout: function setTargetLayout(target) {
     this.targetLayout = target;
+  },
+  setIsHoveredFoldBtnLine: function setIsHoveredFoldBtnLine(isHovered) {
+    this.isHoveredFoldBtnLine = isHovered;
   },
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
@@ -7491,6 +7495,11 @@ var Page = function Page(_ref) {
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore;
 
+  var _useState = React.useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isEllipsisActive = _useState2[0],
+      setIsEllipsisActive = _useState2[1];
+
   var chapterMoveInfo = {
     chapterId: chapter.id,
     chapterIdx: chapterIdx,
@@ -7603,6 +7612,10 @@ var Page = function Page(_ref) {
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
+  var handleTooltip = function handleTooltip(e) {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
+  };
+
   var handleFocus = function handleFocus(e) {
     return e.target.select();
   };
@@ -7645,7 +7658,12 @@ var Page = function Page(_ref) {
       autoFocus: true
     })) : /*#__PURE__*/React__default['default'].createElement(PageTextCover, {
       className: PageStore.dragEnterChapterIdx === chapterIdx ? PageStore.dragEnterPageIdx === index && page.type === 'note' ? 'borderTopLine' : '' : ''
-    }, /*#__PURE__*/React__default['default'].createElement(PageText, null, page.text), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+    }, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+      placement: "bottomLeft",
+      title: isEllipsisActive ? page.text : null
+    }, /*#__PURE__*/React__default['default'].createElement(PageText, {
+      onMouseOver: handleTooltip
+    }, page.text)), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
       noteType: 'page',
       chapter: chapter,
       chapterIdx: chapterIdx,
@@ -8296,7 +8314,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .antTag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .antTag{\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding:0 0.63rem !important;\n    margin-bottom: 0.4375rem;\n    margin-top: 0.4375rem;\n    margin-right: 0.38rem;\n    color: #333333;\n    font-size: 0.875rem;\n    font-weight: 400;\n    border: 0.0625rem solid #1EA8DF;\n    border-radius: 1.563rem;\n    min-width: 4.5rem;\n    max-width: 9.31rem;\n    height: 1.88rem;\n    z-index: 1;\n    float: left;\n    cursor: pointer;\n    user-select: none;\n    outline: none !important;\n    background-color: rgba(30,168,223,0.20);\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .draggedChapter{\n    display: none;\n    align-items: center;\n    position: absolute;\n    width: auto;\n    height: auto;\n    border: 0.0625rem solid #dadada;\n    border-radius: 0.5rem;\n    margin-top: 1rem;\n    margin-left: 2.5rem;\n    padding: 0.5rem;\n    padding-left: 1.5rem;\n    font-size: 0.81rem;\n    background-color: rgba(255,255,255,0.50);\n    z-index:20;\n  }\n  .draggedPage{\n    display: none;\n    align-items: center;\n    position: absolute;\n    padding-left: 3.125rem;\n    font-size: 0.81rem;\n    background-color: rgba(30,168,223,0.20);\n    z-index:20;\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -10262,6 +10280,11 @@ var NoteApp = function NoteApp(_ref) {
       }
     };
   }, [roomId, channelId, layoutState]);
+
+  var handleFoldBtn = function handleFoldBtn(e) {
+    var targetX = e.currentTarget.getBoundingClientRect().x;
+    if (Math.abs(targetX - e.clientX) <= 5) NoteStore.setIsHoveredFoldBtnLine(true);else NoteStore.setIsHoveredFoldBtnLine(false);
+  };
   /*
     여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
     노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
@@ -10269,14 +10292,20 @@ var NoteApp = function NoteApp(_ref) {
     store 변수 바꿔도 바꾼대로 바로 render되는게 아니라 효과가 없다..
   */
 
+
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement("div", null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
       show: !NoteStore.isContentExpanded && renderCondition('LNB')
     }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), /*#__PURE__*/React__default['default'].createElement(Content, {
-      show: renderCondition('Content')
+      show: renderCondition('Content'),
+      onMouseOver: handleFoldBtn,
+      onMouseOut: handleFoldBtn
     }, /*#__PURE__*/React__default['default'].createElement(FoldBtn, {
       isExpanded: NoteStore.isContentExpanded,
-      show: NoteStore.showPage && NoteStore.layoutState !== "collapse",
+      show: NoteStore.showPage && NoteStore.layoutState !== "collapse" && NoteStore.isHoveredFoldBtnLine,
+      onMouseMove: function onMouseMove() {
+        return NoteStore.setIsHoveredFoldBtnLine(true);
+      },
       onClick: function onClick() {
         return NoteStore.toggleIsContentExpanded();
       }
