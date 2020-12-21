@@ -4741,6 +4741,7 @@ var NoteStore$1 = mobx.observable({
   // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
   targetLayout: null,
+  isHoveredFoldBtnLine: false,
   isContentExpanded: false,
   showModal: false,
   modalInfo: {},
@@ -4831,6 +4832,9 @@ var NoteStore$1 = mobx.observable({
   // lnb, content 중 하나
   setTargetLayout: function setTargetLayout(target) {
     this.targetLayout = target;
+  },
+  setIsHoveredFoldBtnLine: function setIsHoveredFoldBtnLine(isHovered) {
+    this.isHoveredFoldBtnLine = isHovered;
   },
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
