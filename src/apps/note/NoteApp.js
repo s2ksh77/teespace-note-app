@@ -90,6 +90,14 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     }
   }, [roomId, channelId, layoutState]);
 
+  const handleFoldBtn = e => {
+    const targetX = e.currentTarget.getBoundingClientRect().x;
+    if (Math.abs(targetX - e.clientX) <= 5)
+      NoteStore.setIsHoveredFoldBtnLine(true);
+    else
+      NoteStore.setIsHoveredFoldBtnLine(false);
+  };
+
   /*
     여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
     노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
@@ -104,10 +112,18 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
           <LNBContainer />
         </LNB>
-        <Content show={renderCondition('Content')}>
+        <Content 
+          show={renderCondition('Content')}
+          onMouseOver={handleFoldBtn}
+          onMouseOut={handleFoldBtn}
+        >
           <FoldBtn
             isExpanded={NoteStore.isContentExpanded}
-            show={(NoteStore.showPage && (NoteStore.layoutState !== "collapse"))}
+            show={(
+              NoteStore.showPage 
+              && NoteStore.layoutState !== "collapse"
+              && NoteStore.isHoveredFoldBtnLine)}
+            onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
             onClick={() => NoteStore.toggleIsContentExpanded()}
           >
             <FoldBtnImg src={foldImg} />
