@@ -54,6 +54,9 @@ export const GlobalStyle = createGlobalStyle`
     outline: none !important;
     background-color: rgba(30,168,223,0.20);
   }
+  .ant-tooltip-inner {
+    width: fit-content;
+  }
   .mce-tinymce iframe{
     flex: 1;
   }

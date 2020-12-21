@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { Observer, useObserver } from 'mobx-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -11,10 +11,12 @@ import {
   PageText,
   PageTextInput,
 } from '../../styles/pageStyle';
+import { Tooltip } from 'antd';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+
   const chapterMoveInfo = {
     chapterId: chapter.id,
     chapterIdx: chapterIdx,
@@ -124,6 +126,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     );
   };
 
+  const handleTooltip = e => {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+  };
+
   const handleFocus = (e) => e.target.select();
 
   return useObserver(() => (
@@ -186,7 +192,12 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
                 : ''
             }
           >
-            <PageText>{page.text}</PageText>
+            <Tooltip 
+              placement='bottomLeft'
+              title={isEllipsisActive ? page.text : null}
+            >
+              <PageText onMouseOver={handleTooltip}>{page.text}</PageText>
+            </Tooltip>
             <ContextMenu
               noteType={'page'}
               chapter={chapter}
