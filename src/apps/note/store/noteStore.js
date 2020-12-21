@@ -17,6 +17,7 @@ const NoteStore = observable({
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
   targetLayout: null,
+  isHoveredFoldBtnLine: false,
   isContentExpanded: false,
   showModal: false,
   modalInfo: {},
@@ -105,6 +106,9 @@ const NoteStore = observable({
   // lnb, content 중 하나
   setTargetLayout(target) {
     this.targetLayout = target;
+  },
+  setIsHoveredFoldBtnLine(isHovered) {
+    this.isHoveredFoldBtnLine = isHovered;
   },
   toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
