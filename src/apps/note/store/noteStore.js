@@ -169,8 +169,8 @@ const NoteStore = observable({
       sharedUserName: sharedUser.name,
       sharedDate: (
         !noteInfo.created_date
-          ? PageStore.modifiedDateFormatting(noteInfo.shared_date)
-          : PageStore.modifiedDateFormatting(noteInfo.created_date)
+          ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true)
+          : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
       )
     };
 
@@ -183,7 +183,7 @@ const NoteStore = observable({
 
   getSharedRoomName() {
     return (
-      RoomStore.getRoom(NoteRepository.WS_ID).name === '대화상대 없음'
+      RoomStore.getRoom(NoteRepository.WS_ID).isMyRoom
         ? this.userName
         : RoomStore.getRoom(NoteRepository.WS_ID).name
     );

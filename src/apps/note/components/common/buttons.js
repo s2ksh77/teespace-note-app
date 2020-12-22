@@ -10,7 +10,7 @@ import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
 const style = { cursor: 'pointer', marginLeft: '0.69rem' };
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   /**
    * EventBus.dispatch('onLayoutExpand')
    * EventBus.dispatch('onLayoutCollapse')
@@ -41,7 +41,8 @@ const HeaderButtons = () => {
 
   const handleCancelBtn = e => {
     if (!PageStore.isReadMode()) {
-      NoteStore.setModalInfo('editCancel');
+      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) {PageStore.handleNoneEdit(); return;}
+      NoteStore.setModalInfo('editCancel'); return;
     }
     EventBus.dispatch('onLayoutClose');
   };
