@@ -398,7 +398,7 @@ const PageStore = observable({
     })
   },
 
-  modifiedDateFormatting(date) {
+  modifiedDateFormatting(date, isSharedInfo) {
     const mDate = date.split(' ')[0];
     const mTime = date.split(' ')[1];
     const mYear = parseInt(mDate.split('.')[0]);
@@ -414,7 +414,8 @@ const PageStore = observable({
     const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
 
     if (date === this.currentPageData.modified_date
-      && mYear === curDate.getFullYear()) { // 같은 해
+      && mYear === curDate.getFullYear()
+      && !isSharedInfo) { // 같은 해
       if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
       else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
     }

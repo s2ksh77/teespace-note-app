@@ -169,8 +169,8 @@ const NoteStore = observable({
       sharedUserName: sharedUser.name,
       sharedDate: (
         !noteInfo.created_date
-          ? PageStore.modifiedDateFormatting(noteInfo.shared_date)
-          : PageStore.modifiedDateFormatting(noteInfo.created_date)
+          ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true)
+          : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
       )
     };
 
