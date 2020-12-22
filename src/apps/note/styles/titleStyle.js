@@ -156,7 +156,6 @@ export const LnbTitleSearchInput = styled.input`
   font-size: 0.81rem !important;
   border: 0rem;
   overflow: hidden;
-  border-radius: 25px;
   outline: none;
 `;
 
