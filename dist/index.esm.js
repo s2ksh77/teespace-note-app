@@ -6193,6 +6193,7 @@ var HeaderButtons = function HeaderButtons() {
   var handleCancelBtn = function handleCancelBtn(e) {
     if (!PageStore.isReadMode()) {
       NoteStore.setModalInfo('editCancel');
+      return;
     }
 
     EventBus.dispatch('onLayoutClose');
