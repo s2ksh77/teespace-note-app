@@ -8,8 +8,8 @@ import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
-  noteIdFromTalk:'',
-  loadingNoteApp:true,
+  noteIdFromTalk: '',
+  loadingNoteApp: true,
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
@@ -36,7 +36,7 @@ const NoteStore = observable({
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
-  setNoteIdFromTalk(noteId){
+  setNoteIdFromTalk(noteId) {
     this.noteIdFromTalk = noteId;
   },
   getLoadingNoteApp() {
@@ -142,7 +142,6 @@ const NoteStore = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
-      case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
       case 'shareRoom':
@@ -238,7 +237,7 @@ const NoteStore = observable({
 
     return dto;
   },
-  async openNote(noteId) {    
+  async openNote(noteId) {
     this.setLoadingNoteApp(true);
     this.setShowPage(true);
     this.setTargetLayout('Content');
