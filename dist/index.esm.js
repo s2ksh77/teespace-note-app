@@ -3171,7 +3171,7 @@ var PageStore = observable((_observable$1 = {
       }, _callee9);
     }))();
   },
-  modifiedDateFormatting: function modifiedDateFormatting(date) {
+  modifiedDateFormatting: function modifiedDateFormatting(date, isSharedInfo) {
     var mDate = date.split(' ')[0];
     var mTime = date.split(' ')[1];
     var mYear = parseInt(mDate.split('.')[0]);
@@ -3189,7 +3189,7 @@ var PageStore = observable((_observable$1 = {
     if (mHour > 12) mHour = mHour - 12;
     var basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
 
-    if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear()) {
+    if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear() && !isSharedInfo) {
       // 같은 해
       if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
       else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
@@ -5063,7 +5063,7 @@ var NoteStore$1 = observable({
               _this.sharedInfo = {
                 sharedRoomName: noteInfo.shared_room_name,
                 sharedUserName: sharedUser.name,
-                sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date) : PageStore.modifiedDateFormatting(noteInfo.created_date)
+                sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
 
               _this.setModalInfo('sharedInfo');
@@ -5082,7 +5082,7 @@ var NoteStore$1 = observable({
     })[NoteRepository$1.CH_TYPE];
   },
   getSharedRoomName: function getSharedRoomName() {
-    return RoomStore.getRoom(NoteRepository$1.WS_ID).name === '대화상대 없음' ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
+    return RoomStore.getRoom(NoteRepository$1.WS_ID).isMyRoom ? this.userName : RoomStore.getRoom(NoteRepository$1.WS_ID).name;
   },
   shareNote: function shareNote() {
     var _this2 = this;
