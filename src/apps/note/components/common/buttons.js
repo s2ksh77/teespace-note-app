@@ -41,7 +41,7 @@ const HeaderButtons = () => {
 
   const handleCancelBtn = e => {
     if (!PageStore.isReadMode()) {
-      NoteStore.setModalInfo('editCancel');
+      NoteStore.setModalInfo('editCancel'); return;
     }
     EventBus.dispatch('onLayoutClose');
   };
