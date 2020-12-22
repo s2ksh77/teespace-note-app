@@ -1,5 +1,5 @@
 import { observable, toJS } from 'mobx';
-import { API, WWMS, UserStore, RoomStore } from 'teespace-core';
+import { API, WWMS, RoomStore, UserStore } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -3315,7 +3315,6 @@ var PageStore = observable((_observable$1 = {
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
   var targetChId = NoteStore$1.getTargetChId(targetRoomId);
-  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
@@ -3323,7 +3322,7 @@ var PageStore = observable((_observable$1 = {
       note_channel_id: NoteRepository$1.chId,
       USER_ID: NoteRepository$1.USER_ID,
       shared_user_id: NoteRepository$1.USER_ID,
-      shared_room_name: sharedRoomName,
+      shared_room_name: NoteRepository$1.WS_ID,
       target_workspace_id: targetRoomId,
       target_channel_id: targetChId
     };
@@ -4198,7 +4197,6 @@ var ChapterStore = observable((_observable$2 = {
 
   if (!targetChapterList) return;
   var targetChId = NoteStore$1.getTargetChId(targetRoomId);
-  var sharedRoomName = NoteStore$1.getSharedRoomName();
   var targetList = targetChapterList.map(function (chapter) {
     return {
       id: chapter.id,
@@ -4207,7 +4205,7 @@ var ChapterStore = observable((_observable$2 = {
       text: chapter.text,
       USER_ID: NoteRepository$1.USER_ID,
       shared_user_id: NoteRepository$1.USER_ID,
-      shared_room_name: sharedRoomName,
+      shared_room_name: NoteRepository$1.WS_ID,
       target_workspace_id: targetRoomId,
       target_channel_id: targetChId
     };
@@ -4866,7 +4864,7 @@ var NoteStore$1 = observable({
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var noteInfo, sharedUser;
+      var noteInfo, sharedRoom, sharedUser;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -4893,22 +4891,23 @@ var NoteStore$1 = observable({
 
             case 9:
               noteInfo = _context.t0;
-              _context.next = 12;
+              sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
+              _context.next = 13;
               return UserStore.getProfile({
                 userId: noteInfo.shared_user_id
               });
 
-            case 12:
+            case 13:
               sharedUser = _context.sent;
               _this.sharedInfo = {
-                sharedRoomName: noteInfo.shared_room_name,
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : noteInfo.shared_room_name,
                 sharedUserName: sharedUser.name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
 
               _this.setModalInfo('sharedInfo');
 
-            case 15:
+            case 16:
             case "end":
               return _context.stop();
           }
