@@ -4441,17 +4441,6 @@ var NoteMeta = {
         });
         break;
 
-      case 'imageDelete':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          EditorStore.deleteImage();
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-        });
-        break;
-
       case 'sharedInfo':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -4493,15 +4482,6 @@ var NoteMeta = {
     switch (type) {
       case 'delete':
       case 'fileDelete':
-      case 'imageDelete':
-        return [{
-          type: 'delete',
-          text: '삭제'
-        }, {
-          type: 'cancel',
-          text: '취소'
-        }];
-
       case 'editingPage':
       case 'confirm':
       case 'titleDuplicate':
@@ -4588,12 +4568,6 @@ var NoteMeta = {
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
-        break;
-
-      case 'imageDelete':
-        dialogType.title = "\uC120\uD0DD\uD55C ".concat(EditorStore.tinymce.selection.getNode().getAttribute('data-name'), " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
-        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
-        dialogType.buttonConfig = this.setButtonConfig('imageDelete');
         break;
 
       case 'editingPage':
@@ -4865,7 +4839,6 @@ var NoteStore$1 = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
-      case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
       case 'shareRoom':
