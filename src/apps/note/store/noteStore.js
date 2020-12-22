@@ -183,7 +183,7 @@ const NoteStore = observable({
 
   getSharedRoomName() {
     return (
-      RoomStore.getRoom(NoteRepository.WS_ID).name === '대화상대 없음'
+      RoomStore.getRoom(NoteRepository.WS_ID).isMyRoom
         ? this.userName
         : RoomStore.getRoom(NoteRepository.WS_ID).name
     );
