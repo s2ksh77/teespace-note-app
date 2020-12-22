@@ -375,7 +375,7 @@ const EditorContainer = () => {
             anchor_top: false, // link 입력중 dropdown으로 <top> 안뜨게 해
             anchor_bottom: false,
             extended_valid_elements: 'a[href|target=_blank]',
-            quickbars_insert_toolbar: 'insertImage table',
+            quickbars_insert_toolbar: false,
             quickbars_image_toolbar: false,
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: 'ko_KR',
