@@ -573,7 +573,6 @@ const ChapterStore = observable({
     if (!targetChapterList) return;
     
     const targetChId = NoteStore.getTargetChId(targetRoomId);
-    const sharedRoomName = NoteStore.getSharedRoomName();
     const targetList = targetChapterList.map(chapter => {
       return ({
         id: chapter.id,
@@ -582,7 +581,7 @@ const ChapterStore = observable({
         text: chapter.text,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
-        shared_room_name: sharedRoomName,
+        shared_room_name: NoteRepository.WS_ID,
         target_workspace_id: targetRoomId,
         target_channel_id: targetChId
       });
