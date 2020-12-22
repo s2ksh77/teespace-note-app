@@ -3021,7 +3021,7 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
-      var _EditorStore$tinymce;
+      var _EditorStore$tinymce, _EditorStore$tinymce2;
 
       _this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
@@ -3038,6 +3038,7 @@ var PageStore = mobx.observable((_observable$1 = {
       TagStore.setNoteTagList(dto.tagList);
       EditorStore$1.setFileList(dto.fileList);
       (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+      (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -3312,11 +3313,11 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce2;
+      var _EditorStore$tinymce3;
 
       _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
@@ -3364,7 +3365,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce3, _EditorStore$tinymce4;
+    var _EditorStore$tinymce4, _EditorStore$tinymce5;
 
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
@@ -3400,8 +3401,8 @@ var PageStore = mobx.observable((_observable$1 = {
     EditorStore$1.setIsAttatch(false);
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.selection.setCursorLocation();
-    (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.undoManager.clear();
+    (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.selection.setCursorLocation();
+    (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
@@ -4611,17 +4612,6 @@ var NoteMeta = {
         });
         break;
 
-      case 'imageDelete':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          EditorStore$1.deleteImage();
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-        });
-        break;
-
       case 'sharedInfo':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -4663,7 +4653,6 @@ var NoteMeta = {
     switch (type) {
       case 'delete':
       case 'fileDelete':
-      case 'imageDelete':
         return [{
           type: 'delete',
           text: '삭제'
@@ -4758,12 +4747,6 @@ var NoteMeta = {
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
-        break;
-
-      case 'imageDelete':
-        dialogType.title = "\uC120\uD0DD\uD55C ".concat(EditorStore$1.tinymce.selection.getNode().getAttribute('data-name'), " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
-        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
-        dialogType.buttonConfig = this.setButtonConfig('imageDelete');
         break;
 
       case 'editingPage':
@@ -5035,7 +5018,6 @@ var NoteStore$1 = mobx.observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
-      case 'imageDelete':
       case 'sharedInfo':
       case 'editingPage':
       case 'shareRoom':
@@ -7288,7 +7270,7 @@ var ContextMenu = function ContextMenu(_ref) {
       borderRadius: 5
     },
     onClick: onClickContextMenu
-  }, /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+  }, type === 'shared_page' ? null : /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "0"
   }, "\uC774\uB984 \uBCC0\uACBD"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "1"
@@ -9584,6 +9566,7 @@ var EditorContainer = function EditorContainer() {
           setNoteEditor(editor); // fired when a dialog has been opend
 
           editor.on('init', function () {
+            editor.focus();
             handleEditorContentsListener();
           });
           editor.on('PostProcess', function () {
@@ -9750,7 +9733,7 @@ var EditorContainer = function EditorContainer() {
             icon: 'remove',
             tooltip: '삭제',
             onAction: function onAction() {
-              NoteStore$1.setModalInfo('imageDelete');
+              EditorStore.deleteImage();
             }
           });
         },
@@ -9770,7 +9753,7 @@ var EditorContainer = function EditorContainer() {
         // link 입력중 dropdown으로 <top> 안뜨게 해
         anchor_bottom: false,
         extended_valid_elements: 'a[href|target=_blank]',
-        quickbars_insert_toolbar: 'insertImage table',
+        quickbars_insert_toolbar: false,
         quickbars_image_toolbar: false,
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
         language: 'ko_KR',

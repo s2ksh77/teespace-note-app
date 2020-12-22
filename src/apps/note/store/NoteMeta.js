@@ -83,6 +83,7 @@ const NoteMeta = {
     switch (type) {
       case 'delete':
       case 'fileDelete':
+        return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'editingPage':
       case 'confirm':
       case 'titleDuplicate':
