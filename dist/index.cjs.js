@@ -5352,7 +5352,7 @@ function _templateObject13() {
 }
 
 function _templateObject12() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  border: 0rem;\n  overflow: hidden;\n  border-radius: 25px;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n"]);
 
   _templateObject12 = function _templateObject12() {
     return data;
