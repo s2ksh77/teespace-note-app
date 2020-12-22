@@ -62,10 +62,6 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
-      case 'imageDelete':
-        eventList.push(function (e) { e.stopPropagation(); EditorStore.deleteImage(); })
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
-        break;
       case 'sharedInfo':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
@@ -87,8 +83,6 @@ const NoteMeta = {
     switch (type) {
       case 'delete':
       case 'fileDelete':
-      case 'imageDelete':
-        return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'editingPage':
       case 'confirm':
       case 'titleDuplicate':
@@ -145,11 +139,6 @@ const NoteMeta = {
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
         dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
-        break;
-      case 'imageDelete':
-        dialogType.title = `선택한 ${EditorStore.tinymce.selection.getNode().getAttribute('data-name')} 을 삭제하시겠습니까?`;
-        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
-        dialogType.buttonConfig = this.setButtonConfig('imageDelete');
         break;
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';

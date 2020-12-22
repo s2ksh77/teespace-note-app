@@ -355,7 +355,7 @@ const EditorContainer = () => {
                 icon: 'remove',
                 tooltip: '삭제',
                 onAction: function () {
-                  NoteStore.setModalInfo('imageDelete');
+                  EditorStore.deleteImage();
                 },
               });
             },
