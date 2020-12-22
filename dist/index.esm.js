@@ -7323,6 +7323,11 @@ var ChapterText = function ChapterText(_ref) {
       isFold = _useState2[0],
       setFold = _useState2[1];
 
+  var _useState3 = useState(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isEllipsisActive = _useState4[0],
+      setIsEllipsisActive = _useState4[1];
+
   var handleFoldClick = function handleFoldClick(e) {
     var icon = e.currentTarget.dataset.icon;
     var targetUl = e.currentTarget.closest("ul");
@@ -7336,12 +7341,21 @@ var ChapterText = function ChapterText(_ref) {
     }
   };
 
+  var handleTooltip = function handleTooltip(e) {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
+  };
+
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ChapterTitle, {
       className: ChapterStore.isCtrlKeyDown ? ChapterStore.moveInfoList.find(function (info) {
         return info.chapterId === chapter.id;
       }) ? 'selectedMenu' : '' : !NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId ? 'selectedMenu' : ''
-    }, /*#__PURE__*/React.createElement(ChapterTextSpan, null, chapter.text), /*#__PURE__*/React.createElement(ContextMenu, {
+    }, /*#__PURE__*/React.createElement(Tooltip, {
+      title: isEllipsisActive ? chapter.text : null,
+      placement: "bottomLeft"
+    }, /*#__PURE__*/React.createElement(ChapterTextSpan, {
+      onMouseOver: handleTooltip
+    }, chapter.text)), /*#__PURE__*/React.createElement(ContextMenu, {
       noteType: "chapter",
       chapter: chapter,
       nextSelectableChapterId: ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 ? ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id : "",
