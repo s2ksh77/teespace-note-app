@@ -173,6 +173,7 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // fired when a dialog has been opend
               editor.on('init', () => {
+                editor.focus();
                 handleEditorContentsListener();
               })
               editor.on('PostProcess', () => {

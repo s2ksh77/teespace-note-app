@@ -294,8 +294,8 @@ const PageStore = observable({
       EditorStore.setFileList(
         dto.fileList,
       );
-      EditorStore.tinymce?.undoManager.clear();
-      EditorStore.tinymce?.focus();
+      EditorStore.tinymce?.undoManager.clear();     
+      EditorStore.tinymce?.focus();      
     });
   },
 
