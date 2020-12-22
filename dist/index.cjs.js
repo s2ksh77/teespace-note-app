@@ -6167,7 +6167,8 @@ var HeaderButtons = function HeaderButtons() {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       ChapterStore = _useNoteStore.ChapterStore,
-      PageStore = _useNoteStore.PageStore;
+      PageStore = _useNoteStore.PageStore,
+      EditorStore = _useNoteStore.EditorStore;
   /**
    * EventBus.dispatch('onLayoutExpand')
    * EventBus.dispatch('onLayoutCollapse')
@@ -6203,6 +6204,11 @@ var HeaderButtons = function HeaderButtons() {
 
   var handleCancelBtn = function handleCancelBtn(e) {
     if (!PageStore.isReadMode()) {
+      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) {
+        PageStore.handleNoneEdit();
+        return;
+      }
+
       NoteStore.setModalInfo('editCancel');
       return;
     }
