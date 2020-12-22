@@ -81,7 +81,7 @@ const EditorHeader = () => {
             autoComplete="off"
           />
         </EditorHeaderContainer1>
-        <EditorHeaderContainer2 show={NoteStore.layoutState !== "collapse"}>
+        <EditorHeaderContainer2>
           {!PageStore.isReadMode() || PageStore.otherEdit && <EditingImg src={editingImg} />}
           <ModifiedUser>
             {!PageStore.isReadMode()

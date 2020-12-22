@@ -12,11 +12,13 @@ import {
   faAngleDown,
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from "antd";
 
 const ChapterText = ({ chapter }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
 
   const [isFold, setFold] = useState(false);
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const handleFoldClick = (e) => {
     const {
       dataset: { icon },
@@ -30,21 +32,27 @@ const ChapterText = ({ chapter }) => {
       targetUl.classList.remove("folded");
     }
   };
+  const handleTooltip = e => {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+  };
+
   return useObserver(() => (
     <>
       <ChapterTitle
         className={
           (ChapterStore.isCtrlKeyDown
             ? (ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)
-                ? 'selectedMenu'
-                : '')
+              ? 'selectedMenu'
+              : '')
             : (!NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId
-                ? 'selectedMenu'
-                : '')
+              ? 'selectedMenu'
+              : '')
           )
         }
       >
-        <ChapterTextSpan>{chapter.text}</ChapterTextSpan>
+        <Tooltip title={isEllipsisActive ? chapter.text : null} placement='bottomLeft'>
+          <ChapterTextSpan onMouseOver={handleTooltip}>{chapter.text}</ChapterTextSpan>
+        </Tooltip>
         <ContextMenu
           noteType={"chapter"}
           chapter={chapter}
@@ -64,7 +72,7 @@ const ChapterText = ({ chapter }) => {
       <ChapterFolderBtn>
         <FontAwesomeIcon
           icon={isFold ? faAngleDown : faAngleUp}
-          style={{color:'#75757F'}}
+          style={{ color: '#75757F' }}
           size={"lg"}
           onClick={handleFoldClick}
         />
