@@ -595,7 +595,6 @@ const PageStore = observable({
     if (!targetPageList) return;
 
     const targetChId = NoteStore.getTargetChId(targetRoomId);
-    const sharedRoomName = NoteStore.getSharedRoomName();
     const targetList = targetPageList.map(page => {
       return ({
         WS_ID: NoteRepository.WS_ID,
@@ -603,7 +602,7 @@ const PageStore = observable({
         note_channel_id: NoteRepository.chId,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
-        shared_room_name: sharedRoomName,
+        shared_room_name: NoteRepository.WS_ID,
         target_workspace_id: targetRoomId,
         target_channel_id: targetChId
       });
