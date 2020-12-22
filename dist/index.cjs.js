@@ -5432,7 +5432,7 @@ function _templateObject5$1() {
 }
 
 function _templateObject4$1() {
-  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  flex: auto;\n  flex-shrink:0;\n  position: relative;\n  justify-content:flex-end;\n  align-items: center;\n  width: 20%;  \n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  flex-shrink:0;\n  position: relative;\n  justify-content:flex-end;\n  align-items: center;\n  width: auto;  \n"]);
 
   _templateObject4$1 = function _templateObject4() {
     return data;
@@ -5442,7 +5442,7 @@ function _templateObject4$1() {
 }
 
 function _templateObject3$1() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height:100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.75rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height:100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
 
   _templateObject3$1 = function _templateObject3() {
     return data;
@@ -5474,9 +5474,7 @@ function _templateObject$1() {
 var EditorHeaderContainer1 = styled__default['default'].div(_templateObject$1());
 var EditBtn = styled__default['default'].button(_templateObject2$1());
 var EditorTitle = styled__default['default'].input(_templateObject3$1());
-var EditorHeaderContainer2 = styled__default['default'].div(_templateObject4$1(), function (props) {
-  return props.show ? "flex" : "none";
-});
+var EditorHeaderContainer2 = styled__default['default'].div(_templateObject4$1());
 var EditingImg = styled__default['default'].img(_templateObject5$1());
 var ModifiedUser = styled__default['default'].span(_templateObject6$1());
 var ModifiedTime = styled__default['default'].span(_templateObject7$1());
@@ -8485,9 +8483,7 @@ var EditorHeader = function EditorHeader() {
       onChange: handleTitleInput,
       disabled: !PageStore.isReadMode() ? false : true,
       autoComplete: "off"
-    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, {
-      show: NoteStore.layoutState !== "collapse"
-    }, !PageStore.isReadMode() || PageStore.otherEdit && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, !PageStore.isReadMode() || PageStore.otherEdit && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$9
     }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? PageStore.prevModifiedUserName : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate))));
   });

@@ -42,7 +42,7 @@ export const EditorTitle = styled.input`
   text-overflow: ellipsis;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 0.1875rem 0.75rem;
+  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;
   background-image: none;
   border-radius: 0.125rem;
   color: inherit;
@@ -54,13 +54,13 @@ export const EditorTitle = styled.input`
 `;
 
 export const EditorHeaderContainer2 = styled.div`
-  display: ${(props) => props.show ? "flex" : "none"};
+  display: flex;
   flex: auto;
   flex-shrink:0;
   position: relative;
   justify-content:flex-end;
   align-items: center;
-  width: 20%;  
+  width: auto;  
 `;
 
 export const EditingImg = styled.img`
