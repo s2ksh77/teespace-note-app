@@ -192,6 +192,7 @@ const Chapter = ({ chapter, index, isShared }) => {
         itemType="chapter"
       >
         <ChapterCover
+          className={'chapter-div'}
           ref={
             !isShared
               ? (node) => drag(dropChapter(node))
