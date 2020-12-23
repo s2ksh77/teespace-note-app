@@ -7,6 +7,9 @@ export const GlobalStyle = createGlobalStyle`
   .readModeIcon{
      margin-left: 1.19rem;
   }
+  .fileSelected{
+    border: 1px solid #513EC7 !important;
+  }
   .selected{
     background-color: rgba(30,168,223,0.20);
   }
