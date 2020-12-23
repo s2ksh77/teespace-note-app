@@ -31,29 +31,6 @@ export const GlobalStyle = createGlobalStyle`
   .ant-collapse-item {
     border:0 !important;
   }
-  .antTag{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding:0 0.63rem !important;
-    margin-bottom: 0.4375rem;
-    margin-top: 0.4375rem;
-    margin-right: 0.38rem;
-    color: #333333;
-    font-size: 0.875rem;
-    font-weight: 400;
-    border: 0.0625rem solid #1EA8DF;
-    border-radius: 1.563rem;
-    min-width: 4.5rem;
-    max-width: 9.31rem;
-    height: 1.88rem;
-    z-index: 1;
-    float: left;
-    cursor: pointer;
-    user-select: none;
-    outline: none !important;
-    background-color: rgba(30,168,223,0.20);
-  }
   .ant-tooltip-inner {
     width: fit-content;
   }
@@ -242,14 +219,14 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const LNB = styled.div`
-  display:${props=>props.show ? "flex" : "none"};
+  display:${props => props.show ? "flex" : "none"};
   height: 100%;
   border-right: 1px solid #e3e7eb;
   flex: 1 1 21.06rem;
   min-width: 21.06rem;
 `;
 export const Content = styled.div`
-  display:${props=>props.show ? "flex" : "none"};
+  display:${props => props.show ? "flex" : "none"};
   flex-direction:column;
   flex: 2 2 42rem;
   height: 100%;
