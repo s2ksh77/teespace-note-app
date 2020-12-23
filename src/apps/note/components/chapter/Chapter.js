@@ -14,6 +14,7 @@ import {
   ChapterShareIcon
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/ts_share@3x.png';
+import sharedPageImg from '../../assets/page_share.svg';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -150,8 +151,12 @@ const Chapter = ({ chapter, index, isShared }) => {
   const renderChapterIcon = () => {
     if (!isShared) {
       return <ChapterColor color={color} chapterId={id} />;
-    } else {
-      return <ChapterShareIcon selected={ChapterStore.currentChapterId === id} src={shareImg} />
+    }
+    else {
+      if (chapter.type === 'shared_page')
+        return <ChapterShareIcon selected={ChapterStore.currentChapterId === id} src={sharedPageImg} />
+      else
+        return <ChapterShareIcon selected={ChapterStore.currentChapterId === id} src={shareImg} />
     }
   }
 
