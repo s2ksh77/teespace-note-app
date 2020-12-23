@@ -95,6 +95,10 @@ const EditorContainer = () => {
     input.onchange = function () {
       var files = this.files;
       EditorStore.setFileLength(files.length);
+      if (EditorStore.uploadLength > 30) {
+        NoteStore.setModalInfo('failUpload');
+        return;
+      }
       for (let i = 0; i < files.length; i++) {
         (function (file) {
           var reader = new FileReader();
@@ -381,16 +385,16 @@ const EditorContainer = () => {
             language: 'ko_KR',
             toolbar_drawer: false,
             paste_data_images: true, // add images by drag and drop
-            paste_postprocess:function(plugin, args) {
+            paste_postprocess: function (plugin, args) {
               const target = args.node.textContent;
               if (checkUrlValidation(target)) {
                 let temp = document.createElement('a');
-                temp.href= target;
+                temp.href = target;
                 temp.setAttribute('data-mce-href', target);
                 temp.textContent = target;
                 args.node.textContent = '';
                 args.node.appendChild(temp);
-              }         
+              }
             },
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
