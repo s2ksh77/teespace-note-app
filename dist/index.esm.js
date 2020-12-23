@@ -3101,13 +3101,15 @@ var PageStore = observable((_observable$1 = {
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context11.next = 8;
+              _context11.next = 9;
               break;
 
             case 7:
               _this6.setIsEdit('');
 
-            case 8:
+              _this6.setCurrentPageId('');
+
+            case 9:
             case "end":
               return _context11.stop();
           }
