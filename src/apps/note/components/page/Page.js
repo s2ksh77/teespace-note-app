@@ -46,10 +46,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.setIsCtrlKeyDown(false);
       }
 
-      PageStore.setMovePageId(page.id);
+      PageStore.setMovePageId(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].pageId);
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('page');
-      NoteStore.setDraggedTitle(page.text);
+      NoteStore.setDraggedTitle(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].shareData.text);
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
 
       return {

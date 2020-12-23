@@ -54,7 +54,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
       NoteStore.setIsDragging(true);
       NoteStore.setDraggedType('chapter');
-      NoteStore.setDraggedTitle(chapter.text);
+      NoteStore.setDraggedTitle(ChapterStore.moveInfoList[ChapterStore.moveInfoList.length - 1].shareData.text);
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
 
       return {
