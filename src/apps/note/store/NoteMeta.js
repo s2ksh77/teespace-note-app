@@ -56,6 +56,7 @@ const NoteMeta = {
         break;
       case 'confirm':
       case 'titleDuplicate':
+      case 'failUpload':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'fileDelete':
@@ -89,6 +90,7 @@ const NoteMeta = {
       case 'titleDuplicate':
       case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
+      case 'failUpload':
         return [{ type: 'confirm', text: '확인' }];
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
@@ -167,6 +169,10 @@ const NoteMeta = {
         dialogType.subtitle = `(${EditorStore.uploadLength}개 항목 중 ${EditorStore.failCount}개 실패)`;
         dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
         break;
+      case 'failUpload':
+        dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('failUpload');
       default:
         break;
     }

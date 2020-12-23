@@ -146,6 +146,7 @@ const NoteStore = observable({
       case 'editingPage':
       case 'shareRoom':
       case 'multiFileSomeFail':
+      case 'failUpload':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -169,8 +170,8 @@ const NoteStore = observable({
       sharedRoomName: (
         sharedRoom
           ? (sharedRoom.isMyRoom
-              ? this.userName
-              : sharedRoom.name)
+            ? this.userName
+            : sharedRoom.name)
           : noteInfo.shared_room_name
       ),
       sharedUserName: sharedUser.name,
