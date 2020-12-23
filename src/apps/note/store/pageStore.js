@@ -447,7 +447,10 @@ const PageStore = observable({
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
       await TagStore.fetchNoteTagList(pageId); // tagList
-    } else this.setIsEdit('');
+    } else {
+      this.setIsEdit('');
+      this.setCurrentPageId('');
+    }
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
