@@ -173,7 +173,7 @@ const FileLayout = () => {
                     item.type === 'file' ? <FileBody id={item.file_id ? item.file_id : item.user_context_2}
                         key={index}
                         onClick={handleFileBodyClick.bind(null, item.file_id)}
-                        className={index === EditorStore.selectFileIdx ? 'selected' : ''}
+                        className={index === EditorStore.selectFileIdx ? 'fileSelected' : ''}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}
@@ -223,15 +223,15 @@ const FileLayout = () => {
                         ref={el => filebodyRef.current[index] = el}
                         key={index}
                         onClick={handleFileBodyClick.bind(null, index)}
-                        className={index === EditorStore.selectFileIdx ? 'noteFile selected' : 'noteFile'}
+                        className={index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile'}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
-                        closable={!PageStore.isReadMode()}
-                        onMouseEnter={handleMouseHover.bind(null, item.file_id)}
-                        onMouseLeave={handleMouseLeave}>
+                        closable={!PageStore.isReadMode()}>
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id, item.file_extension, item.file_name)} >
-                                <FileDownloadIcon>
+                                <FileDownloadIcon
+                                    onMouseEnter={handleMouseHover.bind(null, item.file_id)}
+                                    onMouseLeave={handleMouseLeave}>
                                     {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>

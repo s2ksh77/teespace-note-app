@@ -113,9 +113,6 @@ export const FileBody = styled.div`
   &:first-child{
     margin-left: 0rem;
   }
-  &:hover{
-    background-color: #DCDDFF;
-  }
   &:focus {
     outline: 0;
   }
@@ -133,9 +130,13 @@ export const FileDownloadIcon = styled.div`
   cursor: pointer;
   margin-right: 0.38rem;
   margin-right: 0.375rem;
-  margin-top: 0;
+  margin-top: 5px;
   width: 30px;
-  height: 40px;
+  height: 30px;
+  &:hover{
+    background-color : #C4C6FF;
+    border-radius: 15px;
+  }
 `
 export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
@@ -162,7 +163,7 @@ export const FileExtensionIcon = styled.div`
   margin-top: 0;
   width: 30px;
   height: 40px;
-  ${FileBody}:hover & {
+  ${FileDownloadIcon}:hover & {
     display:none;
   }
 `
