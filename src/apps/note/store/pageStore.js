@@ -329,6 +329,31 @@ const PageStore = observable({
     });
   },
 
+  createMoveInfo(pageData) {
+    const pageId = pageData.note_id;
+    const chapterId = pageData.parent_notebook;
+    const chapterIdx = ChapterStore.chapterList.findIndex(chapter => chapter.id === chapterId);
+    return {
+      pageId: pageId,
+      pageIdx: ChapterStore.chapterList[chapterIdx].children.findIndex(page => page.id === pageId),
+      chapterId: chapterId,
+      chapterIdx: chapterIdx,
+      shareData: {
+        id: pageId,
+        text: pageData.note_title,
+        date: pageData.modified_date,
+      },
+    }
+  },
+
+  handleClickOutside() {
+    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.pageId === this.currentPageId);
+    if (!currentMoveInfo)
+      currentMoveInfo = this.createMoveInfo(this.currentPageData);
+    this.setIsCtrlKeyDown(false);
+    this.setMoveInfoList([currentMoveInfo]);
+  },
+
   async movePage(movePageId, moveTargetChapterId) {
     const {
       data: { dto },

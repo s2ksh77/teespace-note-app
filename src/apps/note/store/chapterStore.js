@@ -453,6 +453,27 @@ const ChapterStore = observable({
     this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(() => this.getNoteChapterList());
   },
 
+  createMoveInfo(chapterId) {
+    const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
+    return {
+      chapterId: chapterId,
+      chapterIdx: chapterIdx,
+      shareData: {
+        id: chapterId,
+        text: this.chapterList[chapterIdx].text,
+        date: this.chapterList[chapterIdx].modified_date,
+      },
+    };
+  },
+
+  handleClickOutside() {
+    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.chapterId === this.currentChapterId);
+    if (!currentMoveInfo)
+      currentMoveInfo = this.createMoveInfo(this.currentChapterId);
+    this.setIsCtrlKeyDown(false);
+    this.setMoveInfoList([currentMoveInfo]);
+  },
+
   moveChapter(moveTargetChapterIdx) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 

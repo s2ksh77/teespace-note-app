@@ -310,6 +310,12 @@ export const handleUnselect = () => {
     if (TagStore.selectTagIdx !== '') {
         TagStore.setSelectTagIndex('')
     }
+    if (PageStore.moveInfoList.length > 1) {
+        PageStore.handleClickOutside();
+    }
+    if (ChapterStore.moveInfoList.length > 1) {
+        ChapterStore.handleClickOutside();
+    }
 }
 
 export const handleFileSync = async () => {
