@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Prompt, useHistory } from 'react-router-dom';
 import LNBContainer from './components/lnb/LNBContainer';
 import useNoteStore from './store/useStore';
 import { GlobalStyle, LNB, Content } from './GlobalStyles';
@@ -18,27 +18,6 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { userStore, authStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
-
-  const handleClickOutsideEditor = (e) => {
-    if (PageStore.isReadMode()) return;
-    if (EditorStore.isDrive || EditorStore.isAttatch || EditorStore.isSaveDrive) return;
-    if (GlobalVariable.editorWrapper && GlobalVariable.editorWrapper?.contains(e.target)) return;
-    if (GlobalVariable.editorWrapper && document.querySelector('.tox.tox-tinymce-aux')?.contains(e.target)) return;
-    if (document.querySelector('.tox-pop__dialog')?.contains(e.target)) return;
-    if (e.target.download) return;
-    const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
-    if (floatingMenu !== null) floatingMenu.click();
-    const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-    if (!isUndoActive && !PageStore.isReadMode() && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
-    NoteStore.setModalInfo('editCancel');
-  }
-
-  useEffect(() => {
-    window.addEventListener('click', handleClickOutsideEditor);
-    return () => {
-      window.removeEventListener('click', handleClickOutsideEditor);
-    };
-  }, []);
 
   /*
     1) collapse 아닐 때는 setTargetLayout(null) 넣어준다
@@ -63,24 +42,24 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, async () => {
         NoteStore.addWWMSHandler();
         // 깜빡임 방지위해 만든 변수
-        NoteStore.setLoadingNoteApp(false);   
-        NoteStore.initVariables();   
-        
-        if (!channelId) return;    
+        NoteStore.setLoadingNoteApp(false);
+        NoteStore.initVariables();
+
+        if (!channelId) return;
         else if (NoteStore.noteIdFromTalk) NoteStore.openNote(NoteStore.noteIdFromTalk);
         else if (layoutState === 'collapse') {
           // lnb는 따로 로딩 화면 X
           ChapterStore.getNoteChapterList();
           NoteStore.setTargetLayout('LNB');
         }
-        else {ChapterStore.fetchChapterList();NoteStore.setTargetLayout(null);}
+        else { ChapterStore.fetchChapterList(); NoteStore.setTargetLayout(null); }
       })
     }
     NoteStore.setLayoutState(layoutState);
-    
+
     return () => {
       // 초기화해주기(다른 앱 갔다가 노트로 돌아오는 경우 데이터 다시 받아오게 하기)
-      if (!history.location.search.includes('note') || !history.location.pathname.includes(NoteStore.workspaceId) ) {
+      if (!history.location.search.includes('note') || !history.location.pathname.includes(NoteStore.workspaceId)) {
         NoteStore.setWsId('');
         NoteStore.setChannelId('');
         // 노트앱 확대 상태 -> 다른 앱(축소 상태가 된다) -> 노트앱(축소) 일 때 확대 상태 그렸다가 축소 상태를 그림(그 전에 targetLayout 바꿔도 깜빡임)
@@ -98,6 +77,19 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       NoteStore.setIsHoveredFoldBtnLine(false);
   };
 
+  const handleBlockedNavigation = (location) => {
+    const { search: targetApp, pathname } = location;
+    if (!PageStore.isReadMode()) {
+      const locationRoomId = pathname.split('/')[2];
+      const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
+      if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return false; }
+      else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
+      else {
+        NoteStore.setModalInfo('editCancel');
+        return false;
+      }
+    } else return true;
+  }
   /*
     여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
     노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
@@ -107,36 +99,39 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      {NoteStore.loadingNoteApp ? <div></div> : 
-      <>
-        <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
-          <LNBContainer />
-        </LNB>
-        <Content 
-          show={renderCondition('Content')}
-          onMouseOver={handleFoldBtn}
-          onMouseOut={handleFoldBtn}
-        >
-          <FoldBtn
-            isExpanded={NoteStore.isContentExpanded}
-            show={(
-              NoteStore.showPage 
-              && NoteStore.layoutState !== "collapse"
-              && NoteStore.isHoveredFoldBtnLine)}
-            onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
-            onClick={() => NoteStore.toggleIsContentExpanded()}
+      {NoteStore.loadingNoteApp ? <div></div> :
+        <>
+          <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
+            <LNBContainer />
+          </LNB>
+          <Content
+            show={renderCondition('Content')}
+            onMouseOver={handleFoldBtn}
+            onMouseOut={handleFoldBtn}
           >
-            <FoldBtnImg src={foldImg} />
-          </FoldBtn>
-          {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
-        </Content>
-        <Modal />
-        <Toast 
-          visible={NoteStore.isVisibleToast}
-          children={NoteStore.toastText}
-          onClose={() => NoteStore.setIsVisibleToast(false)}
-        />
-      </>
+            <FoldBtn
+              isExpanded={NoteStore.isContentExpanded}
+              show={(
+                NoteStore.showPage
+                && NoteStore.layoutState !== "collapse"
+                && NoteStore.isHoveredFoldBtnLine)}
+              onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
+              onClick={() => NoteStore.toggleIsContentExpanded()}
+            >
+              <FoldBtnImg src={foldImg} />
+            </FoldBtn>
+            {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
+          </Content>
+          <Prompt
+            message={handleBlockedNavigation}
+          />
+          <Modal />
+          <Toast
+            visible={NoteStore.isVisibleToast}
+            children={NoteStore.toastText}
+            onClose={() => NoteStore.setIsVisibleToast(false)}
+          />
+        </>
       }
     </>
   ));

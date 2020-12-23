@@ -4,6 +4,7 @@ import { useObserver } from "mobx-react";
 import {
   LNBCover,
   LNBChapterCover,
+  LNBEditModeCover,
 } from "../../styles/lnbStyle";
 import LNBHeader from "./LNBHeader";
 import LNBNewChapterForm from './LNBNewChapterForm';
@@ -15,7 +16,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 const LNBContainer = () => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
 
   const createNewChapter = async () => {
@@ -39,7 +40,11 @@ const LNBContainer = () => {
       NoteStore.setModalInfo('titleDuplicate');
     }
   };
-
+  const handleEditMode = () => {
+    const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
+    if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
+    NoteStore.setModalInfo('editCancel');
+  }
   useEffect(() => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
     // ChapterStore.fetchChapterList();
@@ -56,6 +61,7 @@ const LNBContainer = () => {
   return useObserver(() => (
     <>
       <LNBCover>
+        <LNBEditModeCover mode={PageStore.isReadMode()} onClick={!PageStore.isReadMode() ? handleEditMode : null} />
         <LNBHeader createNewChapter={createNewChapter} />
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
@@ -67,13 +73,13 @@ const LNBContainer = () => {
                   ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
                   : null
                 : null}
-              {ChapterStore.sortedChapterList.roomChapterList.length > 0 ? 
+              {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />
-              {ChapterStore.sortedChapterList.sharedPageList.length > 0 ? 
+              {ChapterStore.sortedChapterList.sharedPageList.length > 0 ?
                 <ChapterList type={"sharedPageList"} isShared={true} /> : null}
-              {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ? 
-                <ChapterList type={"sharedChapterList"} isShared={true} /> : null}                
+              {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ?
+                <ChapterList type={"sharedChapterList"} isShared={true} /> : null}
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>

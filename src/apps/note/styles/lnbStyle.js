@@ -5,7 +5,15 @@ export const LNBCover = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  position: relative;
 `;
+export const LNBEditModeCover = styled.div`
+  display: ${props => props.mode ? "none" : "flex"};
+  width: inherit;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+`
 
 export const LNBChapterCover = styled.div`
   overflow-y: auto;
