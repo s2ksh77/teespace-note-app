@@ -21,7 +21,7 @@ export const EditorContainerWrapper = styled.div`
   `}
   ${props => (props.isFile === "true" && props.mode === "true") && css`
     .tox-tinymce{
-      height: calc(100% - 13.8rem) !important;
+      height: calc(100% - 13rem) !important;
     }
   `}
   ${props => (props.isFile === "false" && props.mode === "false") && css`
@@ -31,7 +31,7 @@ export const EditorContainerWrapper = styled.div`
   `}
   ${props => (props.isFile === "true" && props.mode === "false") && css`
     .tox-tinymce{
-      height: calc(100% - 11rem) !important;
+      height: calc(100% - 10.2rem) !important;
     }
   `}
 `;
@@ -81,12 +81,12 @@ export const FileBodyLayout = styled.div`
   width:auto;
   display : flex;
   align-items: center;
-  height: 4.9rem;
+  height: 4.19rem;
   border-top: 0px solid #dadada;
   border-bottom: 1px solid #dadada;
   overflow: hidden;
   box-sizing :border-box;
-  margin: 0rem 0.5rem;
+  padding: 0rem 0.5rem;
 `
 export const FileBody = styled.div`
   display: flex;
@@ -106,7 +106,7 @@ export const FileBody = styled.div`
   }
   box-sizing: border-box; 
   border : 1px solid #dadada;
-  height: 3.5rem;
+  height: 2.63rem;
   margin-left: 0.5rem;
   flex-direction : row;
   flex-wrap : wrap;
@@ -122,7 +122,6 @@ export const FileBody = styled.div`
 `
 export const FileContent = styled.div`
   min-width: calc(100% - 1.325rem);
-  padding: 5px;
   display: flex;
   margin-left: 0px;
 `
@@ -135,8 +134,8 @@ export const FileDownloadIcon = styled.div`
   margin-right: 0.38rem;
   margin-right: 0.375rem;
   margin-top: 0;
-  width: 1.875rem;
-  height: 1.875rem;
+  width: 30px;
+  height: 40px;
 `
 export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
@@ -159,11 +158,10 @@ export const FileExtensionIcon = styled.div`
   justify-content: center;
   position: relative;
   cursor: pointer;
-  margin-right: 0.38rem;
   margin-right: 0.375rem;
   margin-top: 0;
-  width: 1.875rem;
-  height: 1.875rem;
+  width: 30px;
+  height: 40px;
   ${FileBody}:hover & {
     display:none;
   }
@@ -225,26 +223,22 @@ export const FileTime = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color:#888D96;
 `
 
 export const FileClose = styled.div`
   display: flex;
   height: 100%;
-  width: 1.625rem;
-  font-size: 0.625rem;
   padding-left: 0.4625rem;
-  color: #75757F;
+  color: #000000;
   cursor: pointer;
   border-radius: 0.5rem;
-  position: absolute;
-  top: 0;
-  right: 0;
+  align-items: center;
 `
 
 export const FileCloseBtn = styled.img`
-  width: 1rem;
-  height: 1rem;
-  margin-top: 0.38rem;
+  width: 0.56rem;
+  height: 0.56rem;
   filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
 `
 

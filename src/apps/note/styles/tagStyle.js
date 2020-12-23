@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Collapse } from 'antd';
+import { Collapse, Tag } from 'antd';
 
 export const EditorTagCover = styled.div`
   white-space: nowrap;
@@ -38,6 +38,7 @@ export const TagText = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  height:23px;
 `;
 
 export const TagNewBtnIcon = styled.img`
@@ -94,7 +95,7 @@ export const TagImg = styled.img`
   margin-left:0.33rem;
   filter: ${props =>
     props.showTag ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)' :
-    'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)'};
+      'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)'};
 `;
 
 export const TagTxt = styled.div`
@@ -123,21 +124,23 @@ export const TagChipGroup = styled.div`
   flex-wrap:wrap;
 `;
 
-export const Tag = styled.div`
+export const TagChip = styled(Tag)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding:0 0.63rem !important;
+  padding:0 0.63rem;
   margin-bottom: 0.4375rem;
   margin-top: 0.4375rem;
   margin-right: 0.38rem;
-  color: #333333;
-  font-size: 0.875rem;
+  color: #000000;
+  font-size: 0.81rem;
   font-weight: 400;
   border: 0.0625rem solid #1EA8DF;
   border-radius: 1.563rem;
-  min-width: 4.5rem;
-  max-width: 9.31rem;
+  min-width: 50px;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  overflow:hidden;
   height: 1.88rem;
   z-index: 1;
   float: left;
@@ -145,9 +148,9 @@ export const Tag = styled.div`
   user-select: none;
   outline: none !important;
   background-color: rgba(30,168,223,0.20);
-`;
-
-export const TagChip = styled(Tag)`
+  background: rgba(30,168,223,0.20);
+  border: 1px solid #1EA8DF;
+  border-radius: 25px;
   padding: 0 0.63rem;
 `;
 

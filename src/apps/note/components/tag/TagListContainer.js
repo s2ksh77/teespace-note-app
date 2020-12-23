@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { Message } from 'teespace-core';
-import { Tag } from 'antd';
 import 'antd/dist/antd.css';
 import useNoteStore from '../../store/useStore';
 import {
+  TagChip,
   TagNewBtn,
   TagNewBtnIcon,
   TagList,
@@ -20,6 +20,7 @@ import { isFilled, checkWhitespace } from '../common/validators';
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
   const [openModal, setOpenModal] = useState(false);
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const focusedTag = useRef([]);
   const tagList = useRef(null);
 
@@ -170,6 +171,9 @@ const TagListContainer = () => {
     e.stopPropagation();
     setOpenModal(false);
   }
+  const handleTooltip = (e) => {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+  }
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
@@ -216,33 +220,35 @@ const TagListContainer = () => {
                 autoFocus={true}
               />
             ) : (
-                <Tooltip title={item.text.length > 5 ? item.text : null}>
-                  <Tag
-                    ref={el => focusedTag.current[index] = el}
-                    key={index}
-                    className={index === TagStore.selectTagIdx ? 'antTag noteFocusedTag' : 'antTag'}
-                    data-idx={index}
-                    id={item.tag_id}
-                    closable={PageStore.isReadMode() ? false : true}
-                    tabIndex="0"
-                    onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
-                    onClick={handleClickTag.bind(null, index)}
-                    onKeyDown={handleKeyDownTag.bind(null)}
-                  >
-                    {!PageStore.isReadMode() ? <TagText
-                      onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
-                    >
-                      {item.text.length > 5
-                        ? `${item.text.slice(0, 5)}...`
-                        : item.text}
-                    </TagText>
-                      : <TagText>{item.text.length > 5
-                        ? `${item.text.slice(0, 5)}...`
-                        : item.text}
+                <TagChip
+                  ref={el => focusedTag.current[index] = el}
+                  key={index}
+                  className={index === TagStore.selectTagIdx ? 'noteFocusedTag' : ''}
+                  data-idx={index}
+                  id={item.tag_id}
+                  closable={PageStore.isReadMode() ? false : true}
+                  tabIndex="0"
+                  onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
+                  onClick={handleClickTag.bind(null, index)}
+                  onKeyDown={handleKeyDownTag.bind(null)}
+                >
+
+                  {!PageStore.isReadMode() ?
+                    <Tooltip title={isEllipsisActive ? item.text : null}>
+                      <TagText
+                        onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
+                        onMouseOver={handleTooltip}
+                      >
+                        {item.text}
                       </TagText>
-                    }
-                  </Tag>
-                </Tooltip>
+                    </Tooltip>
+                    :
+                    <Tooltip title={isEllipsisActive ? item.text : null}>
+                      <TagText onMouseOver={handleTooltip}>{item.text}
+                      </TagText>
+                    </Tooltip>
+                  }
+                </TagChip>
               )
           )}
         </TagList>

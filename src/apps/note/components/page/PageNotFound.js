@@ -1,5 +1,5 @@
 import React from 'react';
-import noPageImage from '../../assets/no_file.png';
+import noPageImage from '../../assets/no_file.svg';
 import ContentHeader from '../common/ContentHeader';
 import useNoteStore from '../../store/useStore';
 import {
@@ -11,10 +11,10 @@ import {
 } from '../../styles/commonStyle';
 
 // 페이지가 존재하지 않습니다
-const PageNotFound = ({type}) => { 
+const PageNotFound = ({ type }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
   // 다국어지원 대비?
-  const str = (type==="page") ? "페이지" : "챕터";
+  const str = (type === "page") ? "페이지" : "챕터";
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = () => {
@@ -32,7 +32,7 @@ const PageNotFound = ({type}) => {
           </NoneText>
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>
-      </ContentBodyCover>      
+      </ContentBodyCover>
     </>
   );
 };
