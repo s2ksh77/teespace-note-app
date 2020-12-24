@@ -11,6 +11,7 @@ import foldImg from './assets/arrow_left.svg';
 import { useCoreStores, Toast } from 'teespace-core';
 import Modal from './components/common/Modal';
 import GlobalVariable from './GlobalVariable';
+import DragPreview from "./components/common/DragPreview";
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
@@ -131,6 +132,11 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             children={NoteStore.toastText}
             onClose={() => NoteStore.setIsVisibleToast(false)}
           />
+          {NoteStore.isDragging
+            ? NoteStore.draggedType && NoteStore.draggedTitle
+              ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
+              : null
+            : null}
         </>
       }
     </>
