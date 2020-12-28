@@ -60,7 +60,7 @@ const LNBContainer = () => {
   return useObserver(() => (
     <>
       <LNBCover>
-        <LNBEditModeCover mode={PageStore.isReadMode()} onClick={!PageStore.isReadMode() ? handleEditMode : null} />
+        <LNBEditModeCover mode={PageStore.isReadMode().toString()} onClick={!PageStore.isReadMode() ? handleEditMode : null} />
         <LNBHeader createNewChapter={createNewChapter} />
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
