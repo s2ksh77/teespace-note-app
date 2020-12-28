@@ -483,8 +483,8 @@ const PageStore = observable({
     this.prevModifiedUserName = this.currentPageData.user_name;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
-      EditorStore.tinymce.focus();
-      EditorStore.tinymce.selection.setCursorLocation();
+      EditorStore.tinymce?.focus();
+      EditorStore.tinymce?.selection.setCursorLocation();
     });
   },
 

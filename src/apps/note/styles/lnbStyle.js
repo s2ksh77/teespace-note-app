@@ -8,7 +8,7 @@ export const LNBCover = styled.div`
   position: relative;
 `;
 export const LNBEditModeCover = styled.div`
-  display: ${props => props.mode ? "none" : "flex"};
+  display: ${props => props.mode === "true" ? "none" : "flex"};
   width: inherit;
   height: 100%;
   position: absolute;
