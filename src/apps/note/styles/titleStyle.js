@@ -134,7 +134,7 @@ export const LnbTitleSearchContainer = styled.form`
   box-sizing: border-box;
   margin: auto 0;
   flex:1;
-  min-width:12rem;
+  min-width:10.6rem;
 `;
 
 export const LnbTitleSearchIcon = styled.button`
