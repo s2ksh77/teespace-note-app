@@ -8541,7 +8541,7 @@ var EditorHeader = function EditorHeader() {
       onChange: handleTitleInput,
       disabled: !PageStore.isReadMode() ? false : true,
       autoComplete: "off"
-    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, !PageStore.isReadMode() || PageStore.otherEdit && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$9
     }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? PageStore.prevModifiedUserName : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate))));
   });

@@ -82,7 +82,7 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {!PageStore.isReadMode() || PageStore.otherEdit && <EditingImg src={editingImg} />}
+          {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={editingImg} />}
           <ModifiedUser>
             {!PageStore.isReadMode()
               ? PageStore.prevModifiedUserName
