@@ -248,7 +248,7 @@ export const editorContentCSS = `
     height:calc(100% - 16px);
   }
   body{
-    font-family : "Noto Sans KR",sans-serif !important;
+    font-family : "Noto Sans KR",sans-serif;
   }
   a, img {
     cursor:pointer;
