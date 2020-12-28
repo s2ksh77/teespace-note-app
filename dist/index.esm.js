@@ -3238,6 +3238,9 @@ var PageStore = observable((_observable$1 = {
       } else this.setTitle('(제목 없음)');
     }
 
+    this.noteTitle = [].filter.call(this.noteTitle, function (c) {
+      return c.charCodeAt(0) !== 65279;
+    }).join('');
     var updateDTO = {
       dto: {
         note_id: this.currentPageData.note_id,
