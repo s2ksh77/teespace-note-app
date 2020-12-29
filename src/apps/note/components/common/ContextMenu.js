@@ -112,6 +112,10 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     else infoComponent();
   };
 
+  const handleSubMenuClick = ({domEvent}) => {
+    domEvent.stopPropagation();
+  }
+
   // txt로 내보내기 배포 때 주석 풀 예정
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
@@ -120,8 +124,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
         ? null :
       <Item key="0">이름 변경</Item>}
       <Item key="1">삭제</Item>
-      <Menu.Item key="2">다른 룸으로 전달</Menu.Item>
-      <SubMenu title="내보내기">
+      <Item key="2">다른 룸으로 전달</Item>
+      <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
         <Item key="3">PDF 형식(.pdf)</Item>
         <Item key="4">TXT 형식(.txt)</Item>
       </SubMenu>

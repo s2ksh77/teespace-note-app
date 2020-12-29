@@ -15,8 +15,8 @@ import TempEditor from './components/editor/TempEditor';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
-  const { NoteStore, PageStore, EditorStore, ChapterStore } = useNoteStore();
-  const { userStore, authStore } = useCoreStores();
+  const { NoteStore, ChapterStore } = useNoteStore();
+  const { userStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
 
@@ -78,25 +78,6 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       NoteStore.setIsHoveredFoldBtnLine(false);
   };
 
-  const handleBlockedNavigation = (location) => {
-    const { search: targetApp, pathname } = location;
-    if (!PageStore.isReadMode()) {
-      const locationRoomId = pathname.split('/')[2];
-      const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-      if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return false; }
-      else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
-      else {
-        NoteStore.setModalInfo('editCancel');
-        return false;
-      }
-    } else return true;
-  }
-  /*
-    여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
-    노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
-    기존 룸의 LNB 보였다가 새로운 룸 LNB로 보이는 문제(깜빡임 발생)
-    store 변수 바꿔도 바꾼대로 바로 render되는게 아니라 효과가 없다..
-  */
   return useObserver(() => (
     <>
       <GlobalStyle />
@@ -123,9 +104,6 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             </FoldBtn>
             {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
           </Content>
-          <Prompt
-            message={handleBlockedNavigation}
-          />
           <Modal />
           <Toast
             visible={NoteStore.isVisibleToast}
