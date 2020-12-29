@@ -9,6 +9,7 @@ import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 import NoteStore from '../../store/noteStore';
 import TagStore from '../../store/tagStore';
+// import { defineBoundAction } from 'mobx/lib/internal';
 
 export const handleUpload = async () => {
     let uploadArr = [];
@@ -235,34 +236,59 @@ const downloadTxt = (title, data) => {
     link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
     link.click();
 }
+// txt로 내보내기 전에 setContent해줄 tempEditor init
+export const createTempEditor = () => {
+  const frag = document.createElement('div');
+  frag.setAttribute('id', 'exportTxtParent')
+  const area = document.createElement('textarea');
+  area.setAttribute('id', 'exportTxt');
+  document.body.appendChild(frag);
+  frag.appendChild(area);
 
-export const exportPageAsTxt = async (noteId) => {
-    const frag = document.createElement('div');
-    frag.setAttribute('id', 'exportPageParent')
-    const area = document.createElement('textarea');
-    area.setAttribute('id', 'exportPageAsTxt');
-    document.body.appendChild(frag);
-    frag.appendChild(area);
+  EditorStore.tempTinymce.editorManager.init({
+      target: area,
+      setup: function(editor) {
+        EditorStore.setTempTinymce(editor);
+      }
+  })
+  const targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
+  return targetEditor;
+}
 
-    EditorStore.tinymce.editorManager.init({
-        // selector:'textarea#exportPageAsTxt',
-        target: area,
+export const getTxtFormat = (title, contents) => {
+  const targetEditor = createTempEditor();
+  targetEditor.setContent(contents);
+  let exportText = targetEditor.getContent({ format: "text" });
+  exportText = exportText.replace(/\n\n/g, '\n');
+  downloadTxt(title, exportText);
+  EditorStore.tempTinymce.remove('#exportTxt')
+  document.getElementById('exportTxtParent').remove();
+}
+
+export const exportPageAsTxt = async (noteId) => {    
+  const response = await NoteRepository.getNoteInfoList(noteId);
+  const {
+      data: { dto },
+  } = response;
+  // PageStore.exportPageTitle = dto.note_title
+  let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br />${dto.note_content}`;
+  
+  getTxtFormat(dto.note_title, returnData);
+}
+
+export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
+  let returnData = '';
+  const {data:{dto:{noteList}}} = await NoteRepository.getChapterChildren(chapterId);
+  if (noteList.length > 0) {
+    noteList.forEach((page, idx) => {
+      returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span>
+      <br />
+      ${page.note_content}
+      ${(idx === (noteList.length-1)) ? '' : '<br />'}`
     })
-
-    const targetEditor = EditorStore.tinymce.editorManager.get('exportPageAsTxt');
-
-    if (!noteId) noteId = "649df293-bdbd-47fa-b2b4-78a53d782a5e";
-    // PageStore.exportPageId
-    const response = await NoteRepository.getNoteInfoList(noteId);
-    const {
-        data: { dto },
-    } = response;
-    // PageStore.exportPageTitle = dto.note_title
-    let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
-    targetEditor.setContent(returnData);
-    const exportText = targetEditor.getContent({ format: "text" });
-    downloadTxt(dto.note_title, returnData);
-    document.getElementById('exportPageParent').remove();
+  } else return alert('하위에 속한 페이지가 없습니다.');
+  
+  getTxtFormat(chapterTitle, returnData);
 }
 
 const handleClickLink = (el) => {

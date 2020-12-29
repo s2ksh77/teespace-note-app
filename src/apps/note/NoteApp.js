@@ -10,8 +10,8 @@ import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_left.svg';
 import { useCoreStores, Toast } from 'teespace-core';
 import Modal from './components/common/Modal';
-import GlobalVariable from './GlobalVariable';
 import DragPreview from "./components/common/DragPreview";
+import TempEditor from './components/editor/TempEditor';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
@@ -137,6 +137,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
               ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
               : null
             : null}
+          <TempEditor />
         </>
       }
     </>
