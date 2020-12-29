@@ -14,25 +14,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "antd";
 
-const ChapterText = ({ chapter }) => {
+const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
-
-  const [isFold, setFold] = useState(false);
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
-  const handleFoldClick = (e) => {
-    e.stopPropagation();
-    const {
-      dataset: { icon },
-    } = e.currentTarget;
-    const targetUl = e.currentTarget.closest("ul");
-    if (icon === "angle-up") {
-      setFold(true);
-      targetUl.classList.add("folded");
-    } else {
-      setFold(false);
-      targetUl.classList.remove("folded");
-    }
-  };
+
   const handleTooltip = e => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
   };
@@ -72,10 +57,10 @@ const ChapterText = ({ chapter }) => {
       </ChapterTitle>
       <ChapterFolderBtn>
         <FontAwesomeIcon
-          icon={isFold ? faAngleDown : faAngleUp}
+          icon={isFolded ? faAngleDown : faAngleUp}
           style={{ color: '#75757F' }}
           size={"lg"}
-          onClick={handleFoldClick}
+          onClick={handleFoldBtnClick}
         />
       </ChapterFolderBtn>
     </>
