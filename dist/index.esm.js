@@ -10481,8 +10481,7 @@ var NoteApp = function NoteApp(_ref) {
       ChapterStore = _useNoteStore.ChapterStore;
 
   var _useCoreStores = useCoreStores(),
-      userStore = _useCoreStores.userStore,
-      authStore = _useCoreStores.authStore;
+      userStore = _useCoreStores.userStore;
 
   var renderCondition = function renderCondition(target) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -10563,13 +10562,6 @@ var NoteApp = function NoteApp(_ref) {
     var targetX = e.currentTarget.getBoundingClientRect().x;
     if (Math.abs(targetX - e.clientX) <= 5) NoteStore.setIsHoveredFoldBtnLine(true);else NoteStore.setIsHoveredFoldBtnLine(false);
   };
-  /*
-    여기가 정확히 언제 그려지는지 모르겠다... store 변수를 바꾸었을 때!
-    노트앱의 페이지나 태그 화면 축소모드로 보다가 -> 룸 바꿨을 때,
-    기존 룸의 LNB 보였다가 새로운 룸 LNB로 보이는 문제(깜빡임 발생)
-    store 변수 바꿔도 바꾼대로 바로 render되는게 아니라 효과가 없다..
-  */
-
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React.createElement("div", null) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNB, {
