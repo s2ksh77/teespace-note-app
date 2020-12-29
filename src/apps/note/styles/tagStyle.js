@@ -154,7 +154,7 @@ export const TagChip = styled(Tag)`
   padding: 0 0.63rem;
 `;
 
-export const SearchTagChip = styled(Tag)`
+export const SearchTagChip = styled(TagChip)`
   position: absolute;
   left: 1.88rem;
   max-width: calc(100% - 1.88rem) !important;
