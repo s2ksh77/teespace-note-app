@@ -6246,7 +6246,7 @@ var TagKeyChildren = styled__default['default'].div(_templateObject12$2());
 var TagKeyContainer = styled__default['default'].div(_templateObject13$2());
 var TagChipGroup = styled__default['default'].div(_templateObject14$2());
 var TagChip = styled__default['default'](antd.Tag)(_templateObject15$1());
-var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject16$1());
+var SearchTagChip = styled__default['default'](TagChip)(_templateObject16$1());
 var TagChipText = styled__default['default'].div(_templateObject17$1());
 var TagChipNum = styled__default['default'].div(_templateObject18$1());
 
@@ -7500,6 +7500,11 @@ var ContextMenu = function ContextMenu(_ref) {
         domEvent = _ref2.domEvent;
     domEvent.stopPropagation();
     if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent();else if (key === "4") exportTxtComponent();else infoComponent();
+  };
+
+  var handleSubMenuClick = function handleSubMenuClick(_ref3) {
+    var domEvent = _ref3.domEvent;
+    domEvent.stopPropagation();
   }; // txt로 내보내기 배포 때 주석 풀 예정
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
 
@@ -7513,10 +7518,11 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "0"
   }, "\uC774\uB984 \uBCC0\uACBD"), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "1"
-  }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+  }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "2"
   }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
-    title: "\uB0B4\uBCF4\uB0B4\uAE30"
+    title: "\uB0B4\uBCF4\uB0B4\uAE30",
+    onTitleClick: handleSubMenuClick
   }, /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "3"
   }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React__default['default'].createElement(Item, {
