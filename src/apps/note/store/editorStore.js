@@ -6,6 +6,7 @@ import PageStore from './pageStore';
 import NoteStore from './noteStore';
 
 const EditorStore = observable({
+  tempTinymce:null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -44,6 +45,12 @@ const EditorStore = observable({
   processLength: 0,
   processCount: 0,
   failCount: 0,
+  getTempTinymce() {
+    return this.tempTinymce
+  },
+  setTempTinymce(editor) {
+    this.tempTinymce = editor;
+  },
   setContents(content) {
     this.contents = content;
   },
