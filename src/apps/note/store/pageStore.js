@@ -306,17 +306,26 @@ const PageStore = observable({
         this.fetchCurrentPageData(this.nextSelectablePageId)
       }
       if (this.isNewPage) {
-        ChapterStore.getNoteChapterList().then(chapterList => {
-          const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
-          ChapterStore.setCurrentChapterId(this.createParent);
-          if (currentChapter.children.length >= 1) {
-            const pageId = currentChapter.children[0].id
-            this.isNewPage = false;
-            this.createPageId = '';
-            this.setCurrentPageId(pageId);
-            this.fetchCurrentPageData(pageId);
-          }
-        })
+        if (NoteStore.layoutState === "collapse") {
+          NoteStore.setTargetLayout('LNB');
+          this.isNewPage = false;
+          this.createPageId = '';
+          this.setCurrentPageId('');
+          ChapterStore.setCurrentChapterId('');
+          ChapterStore.getNoteChapterList();
+        } else {
+          ChapterStore.getNoteChapterList().then(chapterList => {
+            const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
+            ChapterStore.setCurrentChapterId(this.createParent);
+            if (currentChapter.children.length >= 1) {
+              const pageId = currentChapter.children[0].id
+              this.isNewPage = false;
+              this.createPageId = '';
+              this.setCurrentPageId(pageId);
+              this.fetchCurrentPageData(pageId);
+            }
+          })
+        }
       } else ChapterStore.getNoteChapterList();
       NoteStore.setShowModal(false);
     });
