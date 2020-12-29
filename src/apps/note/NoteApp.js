@@ -123,9 +123,6 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             </FoldBtn>
             {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
           </Content>
-          <Prompt
-            message={handleBlockedNavigation}
-          />
           <Modal />
           <Toast
             visible={NoteStore.isVisibleToast}
