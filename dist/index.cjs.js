@@ -7339,9 +7339,7 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
     targetBody.addEventListener('click', handleUnselect);
   }
 };
-var handleUnselect = function handleUnselect(e) {
-  console.log(e);
-
+var handleUnselect = function handleUnselect() {
   if (EditorStore$1.selectFileElement !== '') {
     EditorStore$1.setFileIndex('');
     EditorStore$1.setFileElement('');
@@ -7500,6 +7498,11 @@ var ContextMenu = function ContextMenu(_ref) {
         domEvent = _ref2.domEvent;
     domEvent.stopPropagation();
     if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent();else if (key === "4") exportTxtComponent();else infoComponent();
+  };
+
+  var handleSubMenuClick = function handleSubMenuClick(_ref3) {
+    var domEvent = _ref3.domEvent;
+    domEvent.stopPropagation();
   }; // txt로 내보내기 배포 때 주석 풀 예정
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
 
@@ -7513,10 +7516,11 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "0"
   }, "\uC774\uB984 \uBCC0\uACBD"), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "1"
-  }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+  }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "2"
   }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
-    title: "\uB0B4\uBCF4\uB0B4\uAE30"
+    title: "\uB0B4\uBCF4\uB0B4\uAE30",
+    onTitleClick: handleSubMenuClick
   }, /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "3"
   }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React__default['default'].createElement(Item, {
@@ -7545,7 +7549,9 @@ var ContextMenu = function ContextMenu(_ref) {
 };
 
 var ChapterText = function ChapterText(_ref) {
-  var chapter = _ref.chapter;
+  var chapter = _ref.chapter,
+      handleFoldBtnClick = _ref.handleFoldBtnClick,
+      isFolded = _ref.isFolded;
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
@@ -7553,27 +7559,8 @@ var ChapterText = function ChapterText(_ref) {
 
   var _useState = React.useState(false),
       _useState2 = _slicedToArray(_useState, 2),
-      isFold = _useState2[0],
-      setFold = _useState2[1];
-
-  var _useState3 = React.useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      isEllipsisActive = _useState4[0],
-      setIsEllipsisActive = _useState4[1];
-
-  var handleFoldClick = function handleFoldClick(e) {
-    e.stopPropagation();
-    var icon = e.currentTarget.dataset.icon;
-    var targetUl = e.currentTarget.closest("ul");
-
-    if (icon === "angle-up") {
-      setFold(true);
-      targetUl.classList.add("folded");
-    } else {
-      setFold(false);
-      targetUl.classList.remove("folded");
-    }
-  };
+      isEllipsisActive = _useState2[0],
+      setIsEllipsisActive = _useState2[1];
 
   var handleTooltip = function handleTooltip(e) {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
@@ -7596,12 +7583,12 @@ var ChapterText = function ChapterText(_ref) {
       nextSelectablePageId: ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id : "",
       type: chapter.type
     })), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, null, /*#__PURE__*/React__default['default'].createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: isFold ? freeSolidSvgIcons.faAngleDown : freeSolidSvgIcons.faAngleUp,
+      icon: isFolded ? freeSolidSvgIcons.faAngleDown : freeSolidSvgIcons.faAngleUp,
       style: {
         color: '#75757F'
       },
       size: "lg",
-      onClick: handleFoldClick
+      onClick: handleFoldBtnClick
     })));
   });
 };
@@ -8002,7 +7989,12 @@ var Chapter = function Chapter(_ref) {
   var _useState = React.useState(false),
       _useState2 = _slicedToArray(_useState, 2),
       openValidModal = _useState2[0],
-      setOpenValidModal = _useState2[1]; // 중복체크 후 다시 입력받기 위해 ref 추가
+      setOpenValidModal = _useState2[1];
+
+  var _useState3 = React.useState(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isFolded = _useState4[0],
+      setIsFolded = _useState4[1]; // 중복체크 후 다시 입력받기 위해 ref 추가
 
 
   var titleInput = React.useRef(null);
@@ -8167,6 +8159,12 @@ var Chapter = function Chapter(_ref) {
     if (titleInput.current) titleInput.current.focus();
   };
 
+  var handleFoldBtnClick = function handleFoldBtnClick(e) {
+    e.stopPropagation();
+    var icon = e.currentTarget.dataset.icon;
+    if (icon === "angle-up") setIsFolded(true);else setIsFolded(false);
+  };
+
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(teespaceCore.Message, {
       visible: openValidModal,
@@ -8181,7 +8179,7 @@ var Chapter = function Chapter(_ref) {
       }]
     }), /*#__PURE__*/React__default['default'].createElement(ChapterContainer, {
       ref: !isShared ? drop : null,
-      className: ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : '',
+      className: (isFolded ? 'folded ' : '') + (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : ''),
       id: chapter.id,
       key: chapter.id,
       itemType: "chapter"
@@ -8207,7 +8205,9 @@ var Chapter = function Chapter(_ref) {
       autoFocus: true,
       ref: titleInput
     }) : /*#__PURE__*/React__default['default'].createElement(ChapterText, {
-      chapter: chapter
+      chapter: chapter,
+      handleFoldBtnClick: handleFoldBtnClick,
+      isFolded: isFolded
     })), /*#__PURE__*/React__default['default'].createElement(PageList, {
       showNewPage: !isShared,
       chapter: chapter,

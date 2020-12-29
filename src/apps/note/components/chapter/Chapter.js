@@ -18,7 +18,9 @@ import sharedPageImg from '../../assets/page_share.svg';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const [ openValidModal, setOpenValidModal ] = useState(false);
+  const [openValidModal, setOpenValidModal] = useState(false);
+  const [isFolded, setIsFolded] = useState(false);
+
   // 중복체크 후 다시 입력받기 위해 ref 추가
   const titleInput = useRef(null);
   const { id, text:title, color } = chapter;
@@ -165,6 +167,17 @@ const Chapter = ({ chapter, index, isShared }) => {
     if (titleInput.current) titleInput.current.focus();   
   }
 
+  const handleFoldBtnClick = (e) => {
+    e.stopPropagation();
+    
+    const {
+      dataset: { icon },
+    } = e.currentTarget;
+    
+    if (icon === "angle-up") setIsFolded(true);
+    else setIsFolded(false);
+  };
+
   return useObserver(() => (
     <>
       <Message
@@ -182,10 +195,13 @@ const Chapter = ({ chapter, index, isShared }) => {
       <ChapterContainer
         ref={!isShared ? drop : null}
         className={
-          ChapterStore.dragEnterChapterIdx === index
+          (isFolded
+            ? 'folded '
+            : '')
+          + (ChapterStore.dragEnterChapterIdx === index
             && (!isShared)
             ? 'borderTopLine'
-            : ''
+            : '')
         }
         id={chapter.id}
         key={chapter.id}
@@ -220,6 +236,8 @@ const Chapter = ({ chapter, index, isShared }) => {
           ) : (
               <ChapterText
                 chapter={chapter}
+                handleFoldBtnClick={handleFoldBtnClick}
+                isFolded={isFolded}
               />
             )}
         </ChapterCover>
