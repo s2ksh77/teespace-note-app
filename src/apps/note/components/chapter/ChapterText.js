@@ -20,6 +20,7 @@ const ChapterText = ({ chapter }) => {
   const [isFold, setFold] = useState(false);
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const handleFoldClick = (e) => {
+    e.stopPropagation();
     const {
       dataset: { icon },
     } = e.currentTarget;
