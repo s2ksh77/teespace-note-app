@@ -61,7 +61,7 @@ export const Color = styled.span`
 
 export const ChapterTextInput = styled.input`
   display: flex;
-  margin-left: 1.05rem;
+  margin-left:1.69rem;
   margin-right: 0.2rem;
   min-width: calc(100% - 1.5rem);
   height: 100%;
