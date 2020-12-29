@@ -7339,7 +7339,9 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
     targetBody.addEventListener('click', handleUnselect);
   }
 };
-var handleUnselect = function handleUnselect() {
+var handleUnselect = function handleUnselect(e) {
+  console.log(e);
+
   if (EditorStore$1.selectFileElement !== '') {
     EditorStore$1.setFileIndex('');
     EditorStore$1.setFileElement('');
