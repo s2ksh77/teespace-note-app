@@ -1955,6 +1955,7 @@ var TagStore = mobx.observable({
 
 var _observable;
 var EditorStore = mobx.observable((_observable = {
+  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -1993,6 +1994,12 @@ var EditorStore = mobx.observable((_observable = {
   processLength: 0,
   processCount: 0,
   failCount: 0,
+  getTempTinymce: function getTempTinymce() {
+    return this.tempTinymce;
+  },
+  setTempTinymce: function setTempTinymce(editor) {
+    this.tempTinymce = editor;
+  },
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -2464,6 +2471,7 @@ var EditorStore = mobx.observable((_observable = {
 }), _observable));
 
 var GlobalVariable = {
+  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
   editorWrapper: null,
   setEditorWrapper: function setEditorWrapper(ref) {
     this.editorWrapper = ref;
@@ -2885,22 +2893,33 @@ var PageStore = mobx.observable((_observable$1 = {
       }
 
       if (_this2.isNewPage) {
-        ChapterStore.getNoteChapterList().then(function (chapterList) {
-          var currentChapter = chapterList.filter(function (chapter) {
-            return chapter.id === _this2.createParent;
-          })[0];
-          ChapterStore.setCurrentChapterId(_this2.createParent);
+        if (NoteStore$1.layoutState === "collapse") {
+          NoteStore$1.setTargetLayout('LNB');
+          _this2.isNewPage = false;
+          _this2.createPageId = '';
 
-          if (currentChapter.children.length >= 1) {
-            var pageId = currentChapter.children[0].id;
-            _this2.isNewPage = false;
-            _this2.createPageId = '';
+          _this2.setCurrentPageId('');
 
-            _this2.setCurrentPageId(pageId);
+          ChapterStore.setCurrentChapterId('');
+          ChapterStore.getNoteChapterList();
+        } else {
+          ChapterStore.getNoteChapterList().then(function (chapterList) {
+            var currentChapter = chapterList.filter(function (chapter) {
+              return chapter.id === _this2.createParent;
+            })[0];
+            ChapterStore.setCurrentChapterId(_this2.createParent);
 
-            _this2.fetchCurrentPageData(pageId);
-          }
-        });
+            if (currentChapter.children.length >= 1) {
+              var pageId = currentChapter.children[0].id;
+              _this2.isNewPage = false;
+              _this2.createPageId = '';
+
+              _this2.setCurrentPageId(pageId);
+
+              _this2.fetchCurrentPageData(pageId);
+            }
+          });
+        }
       } else ChapterStore.getNoteChapterList();
 
       NoteStore$1.setShowModal(false);
