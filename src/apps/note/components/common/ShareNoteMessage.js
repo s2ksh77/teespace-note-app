@@ -8,8 +8,8 @@ import {
   NoteTitle,
   NoteDate
 } from '../../styles/commonStyle';
-import noteImg from '../../assets/note_TeeNote.png';
-import hoverImg from '../../assets/TeeNote_hover.png';
+import noteImg from '../../assets/Note.png';
+// import hoverImg from '../../assets/TeeNote_hover.png';
 import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
 import {isFilled} from './validators';
@@ -37,17 +37,17 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
   
   const history = useHistory();
   const {NoteStore, PageStore} = useNoteStore();
-
-  const [imgSrc, setImgSrc] = useState(noteImg);
   const [informDeleted, setInformDeleted] = useState(false);
 
-  const handleMouseOver = () => {
-    setImgSrc(hoverImg);
-  }
+  // const [imgSrc, setImgSrc] = useState(noteImg);
+  // hover 효과 사라짐(혹시 몰라 남겨둠)
+  // const handleMouseOver = () => {
+  //   setImgSrc(hoverImg);
+  // }
 
-  const handleMouseOut = () => {
-    setImgSrc(noteImg);
-  }
+  // const handleMouseOut = () => {
+  //   setImgSrc(noteImg);
+  // }
 
   const handleClickMessage = async (e) => { 
     // 해당 페이지 보고 있을 때(readMode, 수정 모드 모두) handleClickOutside editor 로직 타지 않도록
@@ -114,9 +114,9 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
       />
       <MessageCover id="shareNoteMessage" onClick={handleClickMessage}>
         <MessageNoteImg 
-          src={imgSrc}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
+          src={noteImg}
+          // onMouseOver={handleMouseOver}
+          // onMouseOut={handleMouseOut}
         />
         <MessageNoteInfo>
           <NoteTitleCover>
