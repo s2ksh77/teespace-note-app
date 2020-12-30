@@ -27,9 +27,14 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 21px !important;
     background-color: #EFEFF2;
     border: 0 !important;
+    color:#313131;
+    font-size:0.8125rem;
   }
   .ant-collapse-content {
     border:0 !important;
+  }
+  .ant-collapse-content-box {
+    padding: 0.69rem 2.51rem !important;
   }
   .ant-collapse-item {
     border:0 !important;
@@ -219,6 +224,14 @@ export const GlobalStyle = createGlobalStyle`
   .afterClass{
     page-break-after:always;
   }
+  .ant-dropdown-menu-submenu-title {
+    padding: 0.1875rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    color: #000;
+    border-radius: 0.8125rem;
+  }
+
 `;
 
 export const LNB = styled.div`
