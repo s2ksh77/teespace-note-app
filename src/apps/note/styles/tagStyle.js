@@ -116,6 +116,7 @@ export const TagKeyChildren = styled.div`
 
 export const TagKeyContainer = styled.div`
   width: 100%;
+  font-size:0.8125rem;
 `;
 
 export const TagChipGroup = styled.div`
@@ -180,7 +181,6 @@ export const TagChipText = styled.div`
 export const TagChipNum = styled.div`
   font-size: 0.75rem;
   margin-left: auto;
-  font-weight: bold;
-  align-self: center;
   color: #008cc8;
+  padding-left:0.4rem;
 `;

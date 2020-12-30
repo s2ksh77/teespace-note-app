@@ -27,9 +27,14 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 21px !important;
     background-color: #EFEFF2;
     border: 0 !important;
+    color:#313131;
+    font-size:0.8125rem;
   }
   .ant-collapse-content {
     border:0 !important;
+  }
+  .ant-collapse-content-box {
+    padding: 0.69rem 2.51rem !important;
   }
   .ant-collapse-item {
     border:0 !important;
