@@ -278,6 +278,13 @@ const PageStore = observable({
     return returnData;
   },
 
+  initializeBoxColor() {
+    document.getElementById('tox-icon-text-color__color').removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color').removeAttribute('stroke');
+    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('fill');
+    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('stroke');
+  },
+
   createNotePage() {
     this.createPage('(제목 없음)', null, this.createParent).then(dto => {
       this.currentPageData = dto;
@@ -295,7 +302,8 @@ const PageStore = observable({
         dto.fileList,
       );
       EditorStore.tinymce?.undoManager.clear();     
-      EditorStore.tinymce?.focus();      
+      EditorStore.tinymce?.focus();
+      this.initializeBoxColor();
     });
   },
 
@@ -494,6 +502,7 @@ const PageStore = observable({
       this.fetchNoteInfoList(dto.note_id);
       EditorStore.tinymce?.focus();
       EditorStore.tinymce?.selection.setCursorLocation();
+      this.initializeBoxColor();
     });
   },
 
