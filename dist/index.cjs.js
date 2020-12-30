@@ -2858,6 +2858,12 @@ var PageStore = mobx.observable((_observable$1 = {
       }, _callee7);
     }))();
   },
+  initializeBoxColor: function initializeBoxColor() {
+    document.getElementById('tox-icon-text-color__color').removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color').removeAttribute('stroke');
+    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('fill');
+    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('stroke');
+  },
   createNotePage: function createNotePage() {
     var _this = this;
 
@@ -2880,6 +2886,8 @@ var PageStore = mobx.observable((_observable$1 = {
       EditorStore.setFileList(dto.fileList);
       (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
       (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
+
+      _this.initializeBoxColor();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -3182,6 +3190,8 @@ var PageStore = mobx.observable((_observable$1 = {
 
       (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.focus();
       (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.selection.setCursorLocation();
+
+      _this8.initializeBoxColor();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
