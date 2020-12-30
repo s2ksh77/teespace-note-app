@@ -224,6 +224,14 @@ export const GlobalStyle = createGlobalStyle`
   .afterClass{
     page-break-after:always;
   }
+  .ant-dropdown-menu-submenu-title {
+    padding: 0.1875rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    color: #000;
+    border-radius: 0.8125rem;
+  }
+
 `;
 
 export const LNB = styled.div`
