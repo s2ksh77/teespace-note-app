@@ -215,6 +215,7 @@ export const RoomShareTitleContainer = styled.div`
 export const RoomShareTitle = styled.div`
   flex: 1;
   text-align: center;
+  font-weight: bold;
 `
 
 export const CustomModal = styled.div`

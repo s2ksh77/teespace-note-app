@@ -43,9 +43,13 @@ const Modal = () => {
           <RoomShareModal>
             <RoomShareTitleContainer>
               <RoomShareTitle>다른 룸으로 전달</RoomShareTitle>
-              <Button src={cancelImg} onClick={() => {
-                NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
-              }}></Button>
+              <ModalHeaderBtn 
+                style={{ right: '1.25rem' }}
+                src={cancelImg} 
+                onClick={() => {
+                  NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
+                }}
+              />
             </RoomShareTitleContainer>
             <ItemSelector
               isVisibleRoom={true}

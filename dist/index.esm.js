@@ -5598,8 +5598,48 @@ var TagTitleSearchContainer = styled.div(_templateObject14());
 
 const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
-function _templateObject40() {
+function _templateObject44() {
   var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
+
+  _templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject43() {
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+
+  _templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject41() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject40() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #C6CED6;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
 
   _templateObject40 = function _templateObject40() {
     return data;
@@ -5609,7 +5649,7 @@ function _templateObject40() {
 }
 
 function _templateObject39() {
-  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #6C56E5;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
 
   _templateObject39 = function _templateObject39() {
     return data;
@@ -5619,7 +5659,7 @@ function _templateObject39() {
 }
 
 function _templateObject38() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
 
   _templateObject38 = function _templateObject38() {
     return data;
@@ -5629,7 +5669,7 @@ function _templateObject38() {
 }
 
 function _templateObject37() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
 
   _templateObject37 = function _templateObject37() {
     return data;
@@ -5639,7 +5679,7 @@ function _templateObject37() {
 }
 
 function _templateObject36() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #C6CED6;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
 
   _templateObject36 = function _templateObject36() {
     return data;
@@ -5649,7 +5689,7 @@ function _templateObject36() {
 }
 
 function _templateObject35() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 1rem;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #6C56E5;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #DCDDFF;\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-bottom: 0.75rem;\n"]);
 
   _templateObject35 = function _templateObject35() {
     return data;
@@ -5659,7 +5699,7 @@ function _templateObject35() {
 }
 
 function _templateObject34() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  margin-top: 0.5rem;\n  margin-bottom: 0rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 17.5rem;\n  height: 8rem;\n  font-size: 0.94rem;\n  padding-top: 1.18rem;\n"]);
 
   _templateObject34 = function _templateObject34() {
     return data;
@@ -5669,7 +5709,7 @@ function _templateObject34() {
 }
 
 function _templateObject33() {
-  var data = _taggedTemplateLiteral(["\n  width: 12rem;  \n  float: right;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: 1rem;\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n"]);
 
   _templateObject33 = function _templateObject33() {
     return data;
@@ -5679,7 +5719,7 @@ function _templateObject33() {
 }
 
 function _templateObject32() {
-  var data = _taggedTemplateLiteral(["\n  float: left;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;  \n  width: 100%;\n  height: 2.69rem;\n  align-items: center;\n  font-size: 0.88rem;\n  font-weight: bold;\n  border-bottom: 0.06rem solid #dddddd;\n"]);
 
   _templateObject32 = function _templateObject32() {
     return data;
@@ -5689,7 +5729,7 @@ function _templateObject32() {
 }
 
 function _templateObject31() {
-  var data = _taggedTemplateLiteral(["\n  width: 17.5rem;\n  font-size: 0.81rem;\n  color: #777777;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width: 24.38rem;\n  height: 13.75rem;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  box-sizing: border-box;\n  z-index: 1000;\n"]);
 
   _templateObject31 = function _templateObject31() {
     return data;
@@ -5739,7 +5779,7 @@ function _templateObject27() {
 }
 
 function _templateObject26() {
-  var data = _taggedTemplateLiteral(["\n  flex: 1;\n  text-align: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: 1;\n  text-align: center;\n  font-weight: bold;\n"]);
 
   _templateObject26 = function _templateObject26() {
     return data;
@@ -6034,16 +6074,20 @@ var CustomModal = styled.div(_templateObject27());
 var IconImg = styled.img(_templateObject28());
 var ModalTitle = styled.div(_templateObject29());
 var ModalSubTitle = styled.div(_templateObject30());
-var ModalSharedInfoCover = styled.div(_templateObject31());
-var ModalSharedInfoTitle = styled.span(_templateObject32());
-var ModalSharedInfoContent = styled.span(_templateObject33());
-var ButtonGroup = styled.div(_templateObject34());
-var ModalNormalBtn = styled.div(_templateObject35());
-var ModalCancelBtn = styled.div(_templateObject36());
-var SearchLoadingContainer = styled.div(_templateObject37());
-var SearchLoadingTxt = styled.div(_templateObject38());
-var SearchLoadingImg = styled.img(_templateObject39());
-var RightAligned = styled.div(_templateObject40());
+var ShraedInfoModal = styled.div(_templateObject31());
+var ModalSharedInfoHeader = styled.div(_templateObject32());
+var ModalHeaderBtn = styled.img(_templateObject33());
+var ModalSharedInfoContainer = styled.div(_templateObject34());
+var ModalSharedInfoCover = styled.div(_templateObject35());
+var ModalSharedInfoTitle = styled.span(_templateObject36());
+var ModalSharedInfoContent = styled.span(_templateObject37());
+var ButtonGroup = styled.div(_templateObject38());
+var ModalNormalBtn = styled.div(_templateObject39());
+var ModalCancelBtn = styled.div(_templateObject40());
+var SearchLoadingContainer = styled.div(_templateObject41());
+var SearchLoadingTxt = styled.div(_templateObject42());
+var SearchLoadingImg = styled.img(_templateObject43());
+var RightAligned = styled.div(_templateObject44());
 
 function _templateObject18$1() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  margin-left: auto;\n  color: #008cc8;\n  padding-left:0.4rem;\n"]);
@@ -10373,7 +10417,10 @@ var Modal = function Modal() {
       subTitle = _NoteStore$modalInfo.subTitle,
       buttons = _NoteStore$modalInfo.buttons,
       sharedInfo = _NoteStore$modalInfo.sharedInfo;
-  var el = /*#__PURE__*/ReactDom.createPortal( /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(RoomShareModal, null, /*#__PURE__*/React.createElement(RoomShareTitleContainer, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React.createElement(Button, {
+  var el = /*#__PURE__*/ReactDom.createPortal( /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(RoomShareModal, null, /*#__PURE__*/React.createElement(RoomShareTitleContainer, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React.createElement(ModalHeaderBtn, {
+    style: {
+      right: '1.25rem'
+    },
     src: img,
     onClick: function onClick() {
       NoteStore.setModalInfo(null);
@@ -10397,15 +10444,27 @@ var Modal = function Modal() {
       key: button.text,
       onClick: button.onClick
     }, button.text);
-  })))) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(CustomModal, {
+  })))) : /*#__PURE__*/React.createElement(React.Fragment, null, sharedInfo ? /*#__PURE__*/React.createElement(ShraedInfoModal, {
     className: "NoteModal"
-  }, /*#__PURE__*/React.createElement(IconImg, {
-    src: icon[type]
-  }), /*#__PURE__*/React.createElement(ModalTitle, null, title), subTitle && /*#__PURE__*/React.createElement(ModalSubTitle, null, subTitle), sharedInfo && sharedInfo.map(function (info) {
+  }, /*#__PURE__*/React.createElement(ModalSharedInfoHeader, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uC815\uBCF4 \uBCF4\uAE30"), /*#__PURE__*/React.createElement(ModalHeaderBtn, {
+    src: img,
+    onClick: function onClick() {
+      return NoteStore.setModalInfo(null);
+    }
+  })), /*#__PURE__*/React.createElement(ModalSharedInfoContainer, null, sharedInfo.map(function (info) {
     return /*#__PURE__*/React.createElement(ModalSharedInfoCover, {
       key: info.title
     }, /*#__PURE__*/React.createElement(ModalSharedInfoTitle, null, info.title), /*#__PURE__*/React.createElement(ModalSharedInfoContent, null, info.content));
-  }), /*#__PURE__*/React.createElement(ButtonGroup, null, buttons && buttons.map(function (button) {
+  })), /*#__PURE__*/React.createElement(ButtonGroup, null, buttons && buttons.map(function (button) {
+    return /*#__PURE__*/React.createElement(ModalNormalBtn, {
+      key: button.text,
+      onClick: button.onClick
+    }, button.text);
+  }))) : /*#__PURE__*/React.createElement(CustomModal, {
+    className: "NoteModal"
+  }, /*#__PURE__*/React.createElement(IconImg, {
+    src: icon[type]
+  }), /*#__PURE__*/React.createElement(ModalTitle, null, title), subTitle && /*#__PURE__*/React.createElement(ModalSubTitle, null, subTitle), /*#__PURE__*/React.createElement(ButtonGroup, null, buttons && buttons.map(function (button) {
     if (button.type === 'cancel') {
       return /*#__PURE__*/React.createElement(ModalCancelBtn, {
         key: button.text,
