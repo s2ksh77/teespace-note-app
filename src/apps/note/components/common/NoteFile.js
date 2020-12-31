@@ -238,57 +238,57 @@ const downloadTxt = (title, data) => {
 }
 // txt로 내보내기 전에 setContent해줄 tempEditor init
 export const createTempEditor = () => {
-  const frag = document.createElement('div');
-  frag.setAttribute('id', 'exportTxtParent')
-  const area = document.createElement('textarea');
-  area.setAttribute('id', 'exportTxt');
-  document.body.appendChild(frag);
-  frag.appendChild(area);
+    const frag = document.createElement('div');
+    frag.setAttribute('id', 'exportTxtParent')
+    const area = document.createElement('textarea');
+    area.setAttribute('id', 'exportTxt');
+    document.body.appendChild(frag);
+    frag.appendChild(area);
 
-  EditorStore.tempTinymce.editorManager.init({
-      target: area,
-      setup: function(editor) {
-        EditorStore.setTempTinymce(editor);
-      }
-  })
-  const targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
-  return targetEditor;
+    EditorStore.tempTinymce.editorManager.init({
+        target: area,
+        setup: function (editor) {
+            EditorStore.setTempTinymce(editor);
+        }
+    })
+    const targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
+    return targetEditor;
 }
 
 export const getTxtFormat = (title, contents) => {
-  const targetEditor = createTempEditor();
-  targetEditor.setContent(contents);
-  let exportText = targetEditor.getContent({ format: "text" });
-  exportText = exportText.replace(/\n\n/g, '\n');
-  downloadTxt(title, exportText);
-  EditorStore.tempTinymce.remove('#exportTxt')
-  document.getElementById('exportTxtParent').remove();
+    const targetEditor = createTempEditor();
+    targetEditor.setContent(contents);
+    let exportText = targetEditor.getContent({ format: "text" });
+    exportText = exportText.replace(/\n\n/g, '\n');
+    downloadTxt(title, exportText);
+    EditorStore.tempTinymce.remove('#exportTxt')
+    document.getElementById('exportTxtParent').remove();
 }
 
-export const exportPageAsTxt = async (noteId) => {    
-  const response = await NoteRepository.getNoteInfoList(noteId);
-  const {
-      data: { dto },
-  } = response;
-  // PageStore.exportPageTitle = dto.note_title
-  let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br />${dto.note_content}`;
-  
-  getTxtFormat(dto.note_title, returnData);
+export const exportPageAsTxt = async (noteId) => {
+    const response = await NoteRepository.getNoteInfoList(noteId);
+    const {
+        data: { dto },
+    } = response;
+    // PageStore.exportPageTitle = dto.note_title
+    let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br />${dto.note_content}`;
+
+    getTxtFormat(dto.note_title, returnData);
 }
 
 export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
-  let returnData = '';
-  const {data:{dto:{noteList}}} = await NoteRepository.getChapterChildren(chapterId);
-  if (noteList.length > 0) {
-    noteList.forEach((page, idx) => {
-      returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span>
+    let returnData = '';
+    const { data: { dto: { noteList } } } = await NoteRepository.getChapterChildren(chapterId);
+    if (noteList.length > 0) {
+        noteList.forEach((page, idx) => {
+            returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span>
       <br />
       ${page.note_content}
-      ${(idx === (noteList.length-1)) ? '' : '<br />'}`
-    })
-  } else return alert('하위에 속한 페이지가 없습니다.');
-  
-  getTxtFormat(chapterTitle, returnData);
+      ${(idx === (noteList.length - 1)) ? '' : '<br />'}`
+        })
+    } else return alert('하위에 속한 페이지가 없습니다.');
+
+    getTxtFormat(chapterTitle, returnData);
 }
 
 const handleClickLink = (el) => {
@@ -342,6 +342,14 @@ export const handleUnselect = () => {
     if (ChapterStore.moveInfoList.length > 1) {
         ChapterStore.handleClickOutside();
     }
+    //ref 귀찮 - 임시 구현
+    const contextMenuList = document.querySelectorAll('div.ant-dropdown');
+    [...contextMenuList].forEach(el => {
+        if (!el.classList.contains('ant-dropdown-hidden')) {
+            el.classList.add('ant-dropdown-hidden');
+            NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+        }
+    })
 }
 
 export const handleFileSync = async () => {
