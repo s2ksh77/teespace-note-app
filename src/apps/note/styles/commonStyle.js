@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Dropdown, Modal } from 'antd';
+import { Dropdown } from 'antd';
 
 export const HeaderButtonContainer = styled.div`
   display: flex;

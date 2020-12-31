@@ -84,7 +84,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
   const exportTxtComponent = () => {
     switch (noteType) {
       case 'chapter':
-        exportChapterAsTxt(chapter.text, chapter.id);     
+        exportChapterAsTxt(chapter.text, chapter.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
@@ -112,7 +112,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     else infoComponent();
   };
 
-  const handleSubMenuClick = ({domEvent}) => {
+  const handleSubMenuClick = ({ domEvent }) => {
     domEvent.stopPropagation();
   }
 
@@ -122,7 +122,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       {type === 'shared_page'
         ? null :
-      <Item key="0">이름 변경</Item>}
+        <Item key="0">이름 변경</Item>}
       <Item key="1">삭제</Item>
       <Item key="2">다른 룸으로 전달</Item>
       <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>

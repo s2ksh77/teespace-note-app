@@ -231,7 +231,13 @@ export const GlobalStyle = createGlobalStyle`
     color: #000;
     border-radius: 0.8125rem;
   }
-
+  .ant-dropdown-menu-submenu-popup ul{
+    margin: 0;
+  }
+  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {
+    padding: 0;
+    border: 0px solid #e0e0e0;
+  }
 `;
 
 export const LNB = styled.div`
