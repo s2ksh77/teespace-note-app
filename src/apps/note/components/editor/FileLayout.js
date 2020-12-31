@@ -11,7 +11,7 @@ import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
 import docs from '../../assets/drive_toword.svg';
 import video from '../../assets/movie.svg';
-import { Dropdown, Menu, Progress } from 'antd';
+import { Dropdown, Menu, Progress, Tooltip } from 'antd';
 import { downloadFile, handleDriveSave, openSaveDrive, saveDrive } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
@@ -20,6 +20,11 @@ const FileLayout = () => {
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
     const filebodyRef = useRef([]);
+    const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+
+    const handleTooltip = e => {
+        setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+    };
 
     const fileExtension = (extension) => {
         switch (extension) {
@@ -238,15 +243,18 @@ const FileLayout = () => {
 
                             <FileData>
                                 <FileDataName>
-                                    <FileName
-                                        onClick={
-                                            PageStore.isReadMode()
-                                                ? onClickFileName.bind(null, item)
-                                                : null
-                                        }
-                                    >
-                                        {item.file_name + '.' + item.file_extension}
-                                    </FileName>
+                                    <Tooltip title={isEllipsisActive ? item.file_name + '.' + item.file_extension : null} placement='top'>
+                                        <FileName
+                                            onClick={
+                                                PageStore.isReadMode()
+                                                    ? onClickFileName.bind(null, item)
+                                                    : null
+                                            }
+                                            onMouseOver={handleTooltip}
+                                        >
+                                            {item.file_name + '.' + item.file_extension}
+                                        </FileName>
+                                    </Tooltip>
                                 </FileDataName>
                                 <FileDataTime>
                                     <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'}</FileTime>

@@ -9354,6 +9354,15 @@ var FileLayout = function FileLayout() {
 
   var filebodyRef = React.useRef([]);
 
+  var _useState5 = React.useState(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      isEllipsisActive = _useState6[0],
+      setIsEllipsisActive = _useState6[1];
+
+  var handleTooltip = function handleTooltip(e) {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
+  };
+
   var fileExtension = function fileExtension(extension) {
     switch (extension) {
       case 'txt':
@@ -9614,9 +9623,13 @@ var FileLayout = function FileLayout() {
         src: img$b
       }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
-      }))), /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
-        onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
-      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }))), /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+        title: isEllipsisActive ? item.file_name + '.' + item.file_extension : null,
+        placement: "top"
+      }, /*#__PURE__*/React__default['default'].createElement(FileName, {
+        onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null,
+        onMouseOver: handleTooltip
+      }, item.file_name + '.' + item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
