@@ -6,8 +6,13 @@ import {
   RoomShareTitleContainer,
   RoomShareTitle,
   CustomOverlay,
+  ModalTitleContainer,
   ModalTitle,
   ModalSubTitle,
+  ShraedInfoModal,
+  ModalSharedInfoHeader,
+  ModalHeaderBtn,
+  ModalSharedInfoContainer,
   ModalSharedInfoCover,
   ModalSharedInfoTitle,
   ModalSharedInfoContent,
@@ -39,9 +44,13 @@ const Modal = () => {
           <RoomShareModal>
             <RoomShareTitleContainer>
               <RoomShareTitle>다른 룸으로 전달</RoomShareTitle>
-              <Button src={cancelImg} onClick={() => {
-                NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
-              }}></Button>
+              <ModalHeaderBtn 
+                style={{ right: '1.25rem' }}
+                src={cancelImg} 
+                onClick={() => {
+                  NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
+                }}
+              />
             </RoomShareTitleContainer>
             <ItemSelector
               isVisibleRoom={true}
@@ -70,35 +79,62 @@ const Modal = () => {
         </>
       ) : (
           <>
-            <CustomModal className="NoteModal" >
-              <IconImg src={icon[type]} />
-              <ModalTitle>{title}</ModalTitle>
-              {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
-              {sharedInfo && sharedInfo.map(info => {
-                return (
-                  <ModalSharedInfoCover key={info.title}>
-                    <ModalSharedInfoTitle>{info.title}</ModalSharedInfoTitle>
-                    <ModalSharedInfoContent>{info.content}</ModalSharedInfoContent>
-                  </ModalSharedInfoCover>
-                )
-              })}
-              <ButtonGroup>
-                {buttons && buttons.map(button => {
-                  if (button.type === 'cancel') {
-                    return (
-                      <ModalCancelBtn key={button.text} onClick={button.onClick}>
-                        {button.text}
-                      </ModalCancelBtn>
-                    );
-                  }
-                  return (
-                    <ModalNormalBtn key={button.text} onClick={button.onClick}>
-                      {button.text}
-                    </ModalNormalBtn>
-                  );
-                })}
-              </ButtonGroup>
-            </CustomModal>
+            {sharedInfo
+              ? (
+                <ShraedInfoModal className="NoteModal">
+                  <ModalSharedInfoHeader>
+                    <RoomShareTitle>정보 보기</RoomShareTitle>
+                    <ModalHeaderBtn 
+                      src={cancelImg} 
+                      onClick={() => NoteStore.setModalInfo(null)}
+                    />
+                  </ModalSharedInfoHeader>
+                  <ModalSharedInfoContainer>
+                    {sharedInfo.map(info => {
+                      return (
+                        <ModalSharedInfoCover key={info.title}>
+                          <ModalSharedInfoTitle>{info.title}</ModalSharedInfoTitle>
+                          <ModalSharedInfoContent>{info.content}</ModalSharedInfoContent>
+                        </ModalSharedInfoCover>
+                      )
+                    })}
+                  </ModalSharedInfoContainer>
+                  <ButtonGroup>
+                    {buttons && buttons.map(button => {
+                      return (
+                        <ModalNormalBtn key={button.text} onClick={button.onClick}>
+                          {button.text}
+                        </ModalNormalBtn>
+                      );
+                    })}
+                  </ButtonGroup>
+                </ShraedInfoModal>
+              )
+              : (
+                <CustomModal className="NoteModal" >
+                  <IconImg src={icon[type]} />
+                  <ModalTitleContainer>
+                    <ModalTitle>{title}</ModalTitle>
+                    {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
+                  </ModalTitleContainer>
+                  <ButtonGroup>
+                    {buttons && buttons.map(button => {
+                      if (button.type === 'cancel') {
+                        return (
+                          <ModalCancelBtn key={button.text} onClick={button.onClick}>
+                            {button.text}
+                          </ModalCancelBtn>
+                        );
+                      }
+                      return (
+                        <ModalNormalBtn key={button.text} onClick={button.onClick}>
+                          {button.text}
+                        </ModalNormalBtn>
+                      );
+                    })}
+                  </ButtonGroup>
+                </CustomModal>
+              )}
           </>
         )
       }

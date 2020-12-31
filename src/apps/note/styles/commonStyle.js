@@ -215,6 +215,7 @@ export const RoomShareTitleContainer = styled.div`
 export const RoomShareTitle = styled.div`
   flex: 1;
   text-align: center;
+  font-weight: bold;
 `
 
 export const CustomModal = styled.div`
@@ -225,7 +226,6 @@ export const CustomModal = styled.div`
   height:11.88rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   transform: translate(-50%,-50%);
   background-color: #FFF;
@@ -241,29 +241,76 @@ export const IconImg = styled.img`
   margin: 0.88rem auto 0.94rem auto;
 `;
 
+export const ModalTitleContainer = styled.div`
+  height: 4.44rem;
+`;
+
 export const ModalTitle = styled.div`
-  font-size: 1rem;
+  text-align: center;
+  font-size: 0.94rem;
+  font-weight: bold;
 `;
 
 export const ModalSubTitle = styled.div`
-  height: 0.813rem;
-  color: #777777;
-`;
-
-export const ModalSharedInfoCover = styled.div`
-  width: 17.5rem;
   font-size: 0.81rem;
   color: #777777;
 `;
 
+export const ShraedInfoModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 24.38rem;
+  height: 13.75rem;
+  align-items: center;
+  transform: translate(-50%,-50%);
+  background-color: #FFF;
+  box-sizing: border-box;
+  z-index: 1000;
+`;
+
+export const ModalSharedInfoHeader = styled.div`
+  display: flex;  
+  width: 100%;
+  height: 2.69rem;
+  align-items: center;
+  font-size: 0.88rem;
+  font-weight: bold;
+  border-bottom: 0.06rem solid #dddddd;
+`;
+
+export const ModalHeaderBtn = styled.img`
+  position: absolute;
+  right: 1rem;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+`;
+
+export const ModalSharedInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 17.5rem;
+  height: 8rem;
+  font-size: 0.94rem;
+  padding-top: 1.18rem;
+`;
+
+export const ModalSharedInfoCover = styled.div`
+  margin-bottom: 0.75rem;
+`;
+
 export const ModalSharedInfoTitle = styled.span`
+  width: 7rem;
   float: left;
+  color: #000000;
   font-weight: bold;
 `;
 
 export const ModalSharedInfoContent = styled.span`
-  width: 12rem;  
-  float: right;
+  color: #777777;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -272,8 +319,6 @@ export const ModalSharedInfoContent = styled.span`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  margin-top: 0.5rem;
-  margin-bottom: 0rem;
 `;
 export const ModalNormalBtn = styled.div`
   display: flex;
