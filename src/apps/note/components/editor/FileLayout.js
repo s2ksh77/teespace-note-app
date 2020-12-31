@@ -19,6 +19,7 @@ const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
+    const [hoverFileIdx, setHoverFileIdx] = useState(null);
     const filebodyRef = useRef([]);
     const [isEllipsisActive, setIsEllipsisActive] = useState(false);
 
@@ -51,10 +52,16 @@ const FileLayout = () => {
 
     const handleMouseHover = (fileId) => {
         setHoverFileId(fileId);
-        setHover(true);
     }
     const handleMouseLeave = () => {
         setHoverFileId(null);
+    }
+    const handleHoverIcon = (idx) => {
+        setHoverFileIdx(idx);
+        setHover(true);
+    }
+    const handleLeaveIcon = () => {
+        setHoverFileIdx(null);
         setHover(false);
     }
 
@@ -229,18 +236,19 @@ const FileLayout = () => {
                         key={index}
                         onClick={handleFileBodyClick.bind(null, index)}
                         className={index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile'}
+                        onMouseEnter={handleMouseHover.bind(null, item.file_id)}
+                        onMouseLeave={handleMouseLeave}
                         onKeyDown={handleKeyDownFile}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}>
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id, item.file_extension, item.file_name)} >
                                 <FileDownloadIcon
-                                    onMouseEnter={handleMouseHover.bind(null, item.file_id)}
-                                    onMouseLeave={handleMouseLeave}>
-                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                    onMouseEnter={handleHoverIcon.bind(null, index)}
+                                    onMouseLeave={handleLeaveIcon}>
+                                    {hover && index === hoverFileIdx ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
-
                             <FileData>
                                 <FileDataName>
                                     <Tooltip title={isEllipsisActive ? item.file_name + '.' + item.file_extension : null} placement='top'>

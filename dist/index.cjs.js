@@ -9352,12 +9352,17 @@ var FileLayout = function FileLayout() {
       hoverFileId = _useState4[0],
       setHoverFileId = _useState4[1];
 
+  var _useState5 = React.useState(null),
+      _useState6 = _slicedToArray(_useState5, 2),
+      hoverFileIdx = _useState6[0],
+      setHoverFileIdx = _useState6[1];
+
   var filebodyRef = React.useRef([]);
 
-  var _useState5 = React.useState(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      isEllipsisActive = _useState6[0],
-      setIsEllipsisActive = _useState6[1];
+  var _useState7 = React.useState(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      isEllipsisActive = _useState8[0],
+      setIsEllipsisActive = _useState8[1];
 
   var handleTooltip = function handleTooltip(e) {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
@@ -9397,11 +9402,19 @@ var FileLayout = function FileLayout() {
 
   var handleMouseHover = function handleMouseHover(fileId) {
     setHoverFileId(fileId);
-    setHover(true);
   };
 
   var handleMouseLeave = function handleMouseLeave() {
     setHoverFileId(null);
+  };
+
+  var handleHoverIcon = function handleHoverIcon(idx) {
+    setHoverFileIdx(idx);
+    setHover(true);
+  };
+
+  var handleLeaveIcon = function handleLeaveIcon() {
+    setHoverFileIdx(null);
     setHover(false);
   };
 
@@ -9608,6 +9621,8 @@ var FileLayout = function FileLayout() {
         key: index,
         onClick: handleFileBodyClick.bind(null, index),
         className: index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile',
+        onMouseEnter: handleMouseHover.bind(null, item.file_id),
+        onMouseLeave: handleMouseLeave,
         onKeyDown: handleKeyDownFile,
         tabIndex: index,
         closable: !PageStore.isReadMode()
@@ -9617,9 +9632,9 @@ var FileLayout = function FileLayout() {
         placement: "bottomCenter",
         onClick: handleClickDropDown(item.file_id, item.file_extension, item.file_name)
       }, /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, {
-        onMouseEnter: handleMouseHover.bind(null, item.file_id),
-        onMouseLeave: handleMouseLeave
-      }, hover && item.file_id === hoverFileId ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
+        onMouseEnter: handleHoverIcon.bind(null, index),
+        onMouseLeave: handleLeaveIcon
+      }, hover && index === hoverFileIdx ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
         src: img$b
       }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
