@@ -6,6 +6,7 @@ import {
   RoomShareTitleContainer,
   RoomShareTitle,
   CustomOverlay,
+  ModalTitleContainer,
   ModalTitle,
   ModalSubTitle,
   ShraedInfoModal,
@@ -112,8 +113,10 @@ const Modal = () => {
               : (
                 <CustomModal className="NoteModal" >
                   <IconImg src={icon[type]} />
-                  <ModalTitle>{title}</ModalTitle>
-                  {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
+                  <ModalTitleContainer>
+                    <ModalTitle>{title}</ModalTitle>
+                    {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
+                  </ModalTitleContainer>
                   <ButtonGroup>
                     {buttons && buttons.map(button => {
                       if (button.type === 'cancel') {

@@ -226,7 +226,6 @@ export const CustomModal = styled.div`
   height:11.88rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   transform: translate(-50%,-50%);
   background-color: #FFF;
@@ -242,12 +241,18 @@ export const IconImg = styled.img`
   margin: 0.88rem auto 0.94rem auto;
 `;
 
+export const ModalTitleContainer = styled.div`
+  height: 4.44rem;
+`;
+
 export const ModalTitle = styled.div`
-  font-size: 1rem;
+  text-align: center;
+  font-size: 0.94rem;
+  font-weight: bold;
 `;
 
 export const ModalSubTitle = styled.div`
-  height: 0.813rem;
+  font-size: 0.81rem;
   color: #777777;
 `;
 
