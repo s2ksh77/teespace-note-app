@@ -8,6 +8,10 @@ import {
   CustomOverlay,
   ModalTitle,
   ModalSubTitle,
+  ShraedInfoModal,
+  ModalSharedInfoHeader,
+  ModalHeaderBtn,
+  ModalSharedInfoContainer,
   ModalSharedInfoCover,
   ModalSharedInfoTitle,
   ModalSharedInfoContent,
@@ -70,35 +74,60 @@ const Modal = () => {
         </>
       ) : (
           <>
-            <CustomModal className="NoteModal" >
-              <IconImg src={icon[type]} />
-              <ModalTitle>{title}</ModalTitle>
-              {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
-              {sharedInfo && sharedInfo.map(info => {
-                return (
-                  <ModalSharedInfoCover key={info.title}>
-                    <ModalSharedInfoTitle>{info.title}</ModalSharedInfoTitle>
-                    <ModalSharedInfoContent>{info.content}</ModalSharedInfoContent>
-                  </ModalSharedInfoCover>
-                )
-              })}
-              <ButtonGroup>
-                {buttons && buttons.map(button => {
-                  if (button.type === 'cancel') {
-                    return (
-                      <ModalCancelBtn key={button.text} onClick={button.onClick}>
-                        {button.text}
-                      </ModalCancelBtn>
-                    );
-                  }
-                  return (
-                    <ModalNormalBtn key={button.text} onClick={button.onClick}>
-                      {button.text}
-                    </ModalNormalBtn>
-                  );
-                })}
-              </ButtonGroup>
-            </CustomModal>
+            {sharedInfo
+              ? (
+                <ShraedInfoModal className="NoteModal">
+                  <ModalSharedInfoHeader>
+                    <RoomShareTitle>정보 보기</RoomShareTitle>
+                    <ModalHeaderBtn 
+                      src={cancelImg} 
+                      onClick={() => NoteStore.setModalInfo(null)}
+                    />
+                  </ModalSharedInfoHeader>
+                  <ModalSharedInfoContainer>
+                    {sharedInfo.map(info => {
+                      return (
+                        <ModalSharedInfoCover key={info.title}>
+                          <ModalSharedInfoTitle>{info.title}</ModalSharedInfoTitle>
+                          <ModalSharedInfoContent>{info.content}</ModalSharedInfoContent>
+                        </ModalSharedInfoCover>
+                      )
+                    })}
+                  </ModalSharedInfoContainer>
+                  <ButtonGroup>
+                    {buttons && buttons.map(button => {
+                      return (
+                        <ModalNormalBtn key={button.text} onClick={button.onClick}>
+                          {button.text}
+                        </ModalNormalBtn>
+                      );
+                    })}
+                  </ButtonGroup>
+                </ShraedInfoModal>
+              )
+              : (
+                <CustomModal className="NoteModal" >
+                  <IconImg src={icon[type]} />
+                  <ModalTitle>{title}</ModalTitle>
+                  {subTitle && <ModalSubTitle>{subTitle}</ModalSubTitle>}
+                  <ButtonGroup>
+                    {buttons && buttons.map(button => {
+                      if (button.type === 'cancel') {
+                        return (
+                          <ModalCancelBtn key={button.text} onClick={button.onClick}>
+                            {button.text}
+                          </ModalCancelBtn>
+                        );
+                      }
+                      return (
+                        <ModalNormalBtn key={button.text} onClick={button.onClick}>
+                          {button.text}
+                        </ModalNormalBtn>
+                      );
+                    })}
+                  </ButtonGroup>
+                </CustomModal>
+              )}
           </>
         )
       }
