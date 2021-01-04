@@ -230,11 +230,11 @@ export const exportPageData = async () => {
 }
 
 const downloadTxt = (title, data) => {
-    const link = document.createElement('a');
-    const mimeType = "text/plain;charset=utf-8";
-    link.setAttribute('download', title);
-    link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
-    link.click();
+  const link = document.createElement('a');
+  const mimeType = "text/plain;charset=utf-8";
+  link.setAttribute('download', `${title}.txt`);
+  link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
+  link.click();
 }
 // txt로 내보내기 전에 setContent해줄 tempEditor init
 export const createTempEditor = () => {
