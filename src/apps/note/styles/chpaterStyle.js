@@ -57,6 +57,7 @@ export const Color = styled.span`
   margin: 0.31rem 0;
   color: ${(props) => props.color};
   background: ${(props) => props.background};
+  min-width: 0.25rem;
 `;
 
 export const ChapterTextInput = styled.input`

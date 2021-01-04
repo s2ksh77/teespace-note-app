@@ -2,7 +2,7 @@ import {isNil, isEmpty} from 'ramda';
 
 // evernote도 http://ksdjflaskd.sdflksjdlfk 링크 처리함
 const urlRegex = new RegExp(
-  /(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/i
+  /^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/im
 );
 // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
 // 혹시 나중에 안되는거 있으면 이거 테스트해보기
