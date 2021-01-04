@@ -595,8 +595,13 @@ const PageStore = observable({
       // forEach 는 항상 return 값 undefined
       for (let i = 0; i < contentList.length; i++) {
         if (contentList[i].tagName === 'P') {
+          if (contentList[i].textContent) {
+            const temp = this._findFirstTextContent(contentList[i].children);
+            if (temp) return temp;
+          }
           if (contentList[i].getElementsByTagName('img').length > 0) {
-            return contentList[i].getElementsByTagName('img')[0].dataset.name;
+            const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
+            return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
           } else if (!!contentList[i].textContent) return contentList[i].textContent;
         } else if (contentList[i].tagName === 'TABLE') {
           const tdList = contentList[i].getElementsByTagName('td');
@@ -636,7 +641,17 @@ const PageStore = observable({
       }
     }
   },
-
+  _findFirstTextContent(htmlCollection) {
+    try {
+      for (let item of Array.from(htmlCollection)) {
+        // depth가 더 있으면 들어간다
+        if (item.children.length) return this._findFirstTextContent(item.children);
+        // dataset.name 없으면 src 출력
+        if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+        if (item.textContent) return item.textContent.slice(0,200);
+      }
+    } catch(err) {return null};    
+  },
   async createSharePage(targetList) {
     const {
       data: { dto: { noteList } }
