@@ -287,7 +287,6 @@ const PageStore = observable({
 
   createNotePage() {
     this.createPage('(제목 없음)', null, this.createParent).then(dto => {
-      this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
       this.setIsEdit(dto.is_edit);
       this.noteTitle = '';
@@ -295,13 +294,18 @@ const PageStore = observable({
       this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
       this.isNewPage = true;
+      this.getNoteInfoList(dto.note_id).then(data => {
+        this.currentPageData = data;
+        this.prevModifiedUserName = this.currentPageData.user_name;
+        this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false)
+      })
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(
         dto.fileList,
       );
-      EditorStore.tinymce?.undoManager.clear();     
+      EditorStore.tinymce?.undoManager.clear();
       EditorStore.tinymce?.focus();
       this.initializeBoxColor();
     });
