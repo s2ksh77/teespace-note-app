@@ -56,6 +56,7 @@ export const ChapterSearchResultColor = styled.div`
   height: 2.19rem;
   align-self: center;
   border-radius: 0.13rem;
+  min-width: 0.25rem;
 `;
 export const ChapterSearchResultTitle = styled.div`
   padding-left: 1.19rem;

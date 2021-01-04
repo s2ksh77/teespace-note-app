@@ -5370,7 +5370,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n  background-color:", ";\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color:", ";\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem;\n  min-width: 0.25rem;\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -6592,7 +6592,7 @@ function _templateObject6$4() {
 }
 
 function _templateObject5$4() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem / 0.13rem;\n  margin: 0.31rem 0;\n  color: ", ";\n  background: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem / 0.13rem;\n  margin: 0.31rem 0;\n  color: ", ";\n  background: ", ";\n  min-width: 0.25rem;\n"]);
 
   _templateObject5$4 = function _templateObject5() {
     return data;
