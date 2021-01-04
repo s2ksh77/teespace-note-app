@@ -23,7 +23,7 @@ const LNBSearchResult = () => {
 
   const onClickPageBtn = (chapterId, pageId) => async () => {
     if (!PageStore.isReadMode()) return;
-    PageStore.fetchCurrentPageData(pageId);
+    await PageStore.fetchCurrentPageData(pageId);
     // ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');

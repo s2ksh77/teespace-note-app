@@ -1371,7 +1371,7 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
-var urlRegex = new RegExp(/(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/i); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
+var urlRegex = new RegExp(/^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/im); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
 // 혹시 나중에 안되는거 있으면 이거 테스트해보기
 // const urlRegex2 = new RegExp(
 //   /^https?:\/\/([^/]+)\/(.*)$/i
@@ -8385,12 +8385,15 @@ var LNBSearchResult = function LNBSearchResult() {
               return _context2.abrupt("return");
 
             case 2:
-              PageStore.fetchCurrentPageData(pageId); // ChapterStore.initSearchVar();
+              _context2.next = 4;
+              return PageStore.fetchCurrentPageData(pageId);
 
+            case 4:
+              // ChapterStore.initSearchVar();
               NoteStore$1.setShowPage(true);
               if (NoteStore$1.layoutState === "collapse") NoteStore$1.setTargetLayout('Content');
 
-            case 5:
+            case 6:
             case "end":
               return _context2.stop();
           }
