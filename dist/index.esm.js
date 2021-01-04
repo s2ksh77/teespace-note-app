@@ -3316,8 +3316,15 @@ var PageStore = observable((_observable$1 = {
     // forEach 는 항상 return 값 undefined
     for (var i = 0; i < contentList.length; i++) {
       if (contentList[i].tagName === 'P') {
+        if (contentList[i].textContent) {
+          var temp = this._findFirstTextContent(contentList[i].children);
+
+          if (temp) return temp;
+        }
+
         if (contentList[i].getElementsByTagName('img').length > 0) {
-          return contentList[i].getElementsByTagName('img')[0].dataset.name;
+          var imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
+          return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
         } else if (!!contentList[i].textContent) return contentList[i].textContent;
       } else if (contentList[i].tagName === 'TABLE') {
         var tdList = contentList[i].getElementsByTagName('td');
@@ -3360,6 +3367,19 @@ var PageStore = observable((_observable$1 = {
         }
       }
     }
+  }
+}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(htmlCollection) {
+  try {
+    for (var _i = 0, _Array$from = Array.from(htmlCollection); _i < _Array$from.length; _i++) {
+      var item = _Array$from[_i];
+      // depth가 더 있으면 들어간다
+      if (item.children.length) return this._findFirstTextContent(item.children); // dataset.name 없으면 src 출력
+
+      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+      if (item.textContent) return item.textContent.slice(0, 200);
+    }
+  } catch (err) {
+    return null;
   }
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
