@@ -1360,7 +1360,7 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
-var urlRegex = new RegExp(/(http(s)?:\/\/|www.)([a-z0-9\w]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/i); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
+var urlRegex = new RegExp(/(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}|(\w{3,}\@[\w\.]{1,})/i); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
 // 혹시 나중에 안되는거 있으면 이거 테스트해보기
 // const urlRegex2 = new RegExp(
 //   /^https?:\/\/([^/]+)\/(.*)$/i
@@ -1371,7 +1371,7 @@ var urlRegex = new RegExp(/(http(s)?:\/\/|www.)([a-z0-9\w]+\.)+([a-z0-9]{0,})(?:
 // evernote에서 google.com/index.html : google.com까지만 링크처리
 // localhost:3000/~ : 링크 처리 안 됨
 
-var urlRegex3 = new RegExp(/[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+(.com|.net|.kr|.org|.biz)/i); // 유효하면 true
+var urlRegex3 = new RegExp(/[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+$(.com|.net|.kr|.org|.biz)$/im); // 유효하면 true
 
 var composeValidators = function composeValidators() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -3037,7 +3037,6 @@ var PageStore = observable((_observable$1 = {
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce2;
 
-      _this.currentPageData = dto;
       ChapterStore.getNoteChapterList();
 
       _this.setIsEdit(dto.is_edit);
@@ -3047,6 +3046,13 @@ var PageStore = observable((_observable$1 = {
       _this.createPageId = dto.note_id;
       _this.currentPageId = dto.note_id;
       _this.isNewPage = true;
+
+      _this.getNoteInfoList(dto.note_id).then(function (data) {
+        _this.currentPageData = data;
+        _this.prevModifiedUserName = _this.currentPageData.user_name;
+        _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
+      });
+
       NoteStore$1.setTargetLayout('Content');
       NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
@@ -10418,16 +10424,18 @@ var Modal = function Modal() {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore;
 
-  var _useCoreStores = useCoreStores(),
-      userStore = _useCoreStores.userStore,
-      roomStore = _useCoreStores.roomStore;
-
   var _NoteStore$modalInfo = NoteStore.modalInfo,
       type = _NoteStore$modalInfo.type,
       title = _NoteStore$modalInfo.title,
       subTitle = _NoteStore$modalInfo.subTitle,
       buttons = _NoteStore$modalInfo.buttons,
       sharedInfo = _NoteStore$modalInfo.sharedInfo;
+
+  var _useState = useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      shareArraysCnt = _useState2[0],
+      setShareArraysCnt = _useState2[1];
+
   var el = /*#__PURE__*/ReactDom.createPortal( /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(CustomOverlay, null), NoteStore.isShared ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(RoomShareModal, null, /*#__PURE__*/React.createElement(RoomShareTitleContainer, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React.createElement(ModalHeaderBtn, {
     style: {
       right: '1.25rem'
@@ -10440,10 +10448,14 @@ var Modal = function Modal() {
   })), /*#__PURE__*/React.createElement(ItemSelector, {
     isVisibleRoom: true,
     onSelectChange: function onSelectChange(data) {
-      console.log(data);
       NoteStore.setShareArrays(data);
+      setShareArraysCnt(data.userArray.length + data.roomArray.length);
     }
-  }), /*#__PURE__*/React.createElement(ButtonGroup, null, buttons && buttons.map(function (button) {
+  }), /*#__PURE__*/React.createElement(ButtonGroup, {
+    style: {
+      marginTop: '1.25rem'
+    }
+  }, buttons && buttons.map(function (button) {
     if (button.type === 'cancel') {
       return /*#__PURE__*/React.createElement(ModalCancelBtn, {
         key: button.text,
@@ -10454,7 +10466,7 @@ var Modal = function Modal() {
     return /*#__PURE__*/React.createElement(ModalNormalBtn, {
       key: button.text,
       onClick: button.onClick
-    }, button.text);
+    }, button.text, shareArraysCnt > 0 && " ".concat(shareArraysCnt));
   })))) : /*#__PURE__*/React.createElement(React.Fragment, null, sharedInfo ? /*#__PURE__*/React.createElement(ShraedInfoModal, {
     className: "NoteModal"
   }, /*#__PURE__*/React.createElement(ModalSharedInfoHeader, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uC815\uBCF4 \uBCF4\uAE30"), /*#__PURE__*/React.createElement(ModalHeaderBtn, {
