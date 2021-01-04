@@ -17,7 +17,7 @@ const urlRegex = new RegExp(
 // evernote에서 google.com/index.html : google.com까지만 링크처리
 // localhost:3000/~ : 링크 처리 안 됨
 const urlRegex3 = new RegExp(
-  /[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+(.com|.net|.kr|.org|.biz)/i
+  /[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+$(.com|.net|.kr|.org|.biz)$/im
 );
 
 // 유효하면 true
