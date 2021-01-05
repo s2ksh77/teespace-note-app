@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, WWMS, RoomStore, UserStore, EventBus, useCoreStores, Message, ComponentStore, ItemSelector, Toast } from 'teespace-core';
+import { API, WWMS, RoomStore, UserStore, EventBus, Message, ComponentStore, useCoreStores, ItemSelector, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -281,6 +281,7 @@ var NoteRepository = /*#__PURE__*/function () {
     this.USER_ID = '';
     this.chId = '';
     this.USER_NAME = '';
+    this.USER_EMAIL = '';
     this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
   }
 
@@ -303,6 +304,11 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "setUserName",
     value: function setUserName(targetUserName) {
       this.USER_NAME = targetUserName;
+    }
+  }, {
+    key: "setUserEmail",
+    value: function setUserEmail(targetUserEmail) {
+      this.USER_EMAIL = targetUserEmail;
     }
   }, {
     key: "getChannelId",
@@ -5005,6 +5011,8 @@ var NoteStore$1 = observable({
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
+  userName: '',
+  userEmail: '',
   noteFileList: [],
   showPage: true,
   // editor 보고 있는지 태그 보고 있는지
@@ -5025,6 +5033,8 @@ var NoteStore$1 = observable({
   shareContent: '',
   shareArrays: {},
   // { userArray, roomArray }
+  isMailShare: false,
+  mailShareFileObjs: [],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -5061,14 +5071,19 @@ var NoteStore$1 = observable({
     NoteRepository$1.setUserName(userName);
     this.userName = userName;
   },
+  setUserEmail: function setUserEmail(userEmail) {
+    NoteRepository$1.setUserEmail(userEmail);
+    this.userEmail = userEmail;
+  },
   getUserId: function getUserId() {
     return this.user_id;
   },
-  init: function init(roomId, channelId, userId, userName, callback) {
+  init: function init(roomId, channelId, userId, userName, userEmail, callback) {
     NoteStore$1.setWsId(roomId);
     NoteStore$1.setChannelId(channelId);
-    NoteStore$1.setUserName(userName);
     NoteStore$1.setUserId(userId);
+    NoteStore$1.setUserName(userName);
+    NoteStore$1.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables: function initVariables() {
@@ -5123,6 +5138,12 @@ var NoteStore$1 = observable({
   },
   setShareArrays: function setShareArrays(arrs) {
     this.shareArrays = arrs;
+  },
+  setIsMailShare: function setIsMailShare(isMailShare) {
+    this.isMailShare = isMailShare;
+  },
+  setMailShareFileObjs: function setMailShareFileObjs(fileObjs) {
+    this.mailShareFileObjs = fileObjs;
   },
   setIsVisibleToast: function setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;
@@ -7206,9 +7227,24 @@ var exportDownloadPDF = function exportDownloadPDF(type) {
       orientation: 'portrait'
     }
   };
-  html2pdf(element, opt).then(function () {
-    document.getElementById('exportTarget').remove();
-  });
+
+  if (!NoteStore$1.isMailShare) {
+    html2pdf(element, opt).then(function () {
+      document.getElementById('exportTarget').remove();
+    });
+  } else {
+    html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then(function (blob) {
+      var pdf = new File([blob], opt.filename, {
+        type: blob.type
+      });
+      var fileObjs = [{
+        originFileObj: pdf,
+        name: opt.filename
+      }];
+      NoteStore$1.setMailShareFileObjs(fileObjs);
+      document.getElementById('exportTarget').remove();
+    });
+  }
 };
 var exportChapterData = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
@@ -7502,9 +7538,6 @@ var ContextMenu = function ContextMenu(_ref) {
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore;
 
-  var _useCoreStores = useCoreStores(),
-      roomStore = _useCoreStores.roomStore;
-
   var renameComponent = function renameComponent() {
     // 이름을 변경한다.
     switch (noteType) {
@@ -7552,6 +7585,11 @@ var ContextMenu = function ContextMenu(_ref) {
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
+  var mailShareComponent = function mailShareComponent() {
+    NoteStore.setIsMailShare(true);
+    exportComponent();
+  };
+
   var exportComponent = function exportComponent() {
     switch (noteType) {
       case 'chapter':
@@ -7592,7 +7630,7 @@ var ContextMenu = function ContextMenu(_ref) {
     var key = _ref2.key,
         domEvent = _ref2.domEvent;
     domEvent.stopPropagation();
-    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent();else if (key === "4") exportTxtComponent();else infoComponent();
+    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") mailShareComponent();else if (key === "4") exportComponent();else if (key === "5") exportTxtComponent();else infoComponent();
   };
 
   var handleSubMenuClick = function handleSubMenuClick(_ref3) {
@@ -7617,11 +7655,11 @@ var ContextMenu = function ContextMenu(_ref) {
     title: "\uB0B4\uBCF4\uB0B4\uAE30",
     onTitleClick: handleSubMenuClick
   }, /*#__PURE__*/React.createElement(Item, {
-    key: "3"
-  }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React.createElement(Item, {
     key: "4"
-  }, "TXT \uD615\uC2DD(.txt)")), type === 'shared' ? /*#__PURE__*/React.createElement(Item, {
+  }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React.createElement(Item, {
     key: "5"
+  }, "TXT \uD615\uC2DD(.txt)")), type === 'shared' ? /*#__PURE__*/React.createElement(Item, {
+    key: "6"
   }, "\uC815\uBCF4 \uBCF4\uAE30") : null);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(ContextMenuCover, {
@@ -8445,6 +8483,7 @@ var LNBContainer = function LNBContainer() {
       EditorStore = _useNoteStore.EditorStore;
 
   var LNBRef = useRef(null);
+  var MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
   var createNewChapter = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -8558,7 +8597,18 @@ var LNBContainer = function LNBContainer() {
     }) : null, ChapterStore.sortedChapterList.sharedChapterList.length > 0 ? /*#__PURE__*/React.createElement(ChapterList, {
       type: "sharedChapterList",
       isShared: true
-    }) : null))));
+    }) : null)), /*#__PURE__*/React.createElement(MailWriteModal, {
+      uploadFiles: NoteStore.mailShareFileObjs,
+      sender: {
+        mailAddr: NoteStore.userEmail,
+        accountId: NoteStore.user_id
+      },
+      onClose: function onClose() {
+        NoteStore.setMailShareFileObjs([]);
+        NoteStore.setIsMailShare(false);
+      },
+      visible: NoteStore.mailShareFileObjs.length > 0 ? true : false
+    })));
   });
 };
 
@@ -10667,7 +10717,7 @@ var NoteApp = function NoteApp(_ref) {
     */
 
     if (isOtherRoom) {
-      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, userStore.myProfile.email, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {

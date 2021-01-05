@@ -199,9 +199,20 @@ export const exportDownloadPDF = (type) => {
         image: { type: 'jpeg', quality: 0.98 },
         jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
-    html2pdf(element, opt).then(() => {
-        document.getElementById('exportTarget').remove();
-    });
+
+    if (!NoteStore.isMailShare) {
+        html2pdf(element, opt).then(() => {
+            document.getElementById('exportTarget').remove();
+        });
+    }
+    else {
+        html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then((blob) => {
+            const pdf = new File([blob], opt.filename, { type: blob.type });
+            const fileObjs = [{ originFileObj: pdf, name: opt.filename }, ];
+            NoteStore.setMailShareFileObjs(fileObjs);
+            document.getElementById('exportTarget').remove();
+        });
+    }
 }
 export const exportChapterData = async () => {
     let returnData = '';
