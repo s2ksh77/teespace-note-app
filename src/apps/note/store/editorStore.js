@@ -83,9 +83,9 @@ const EditorStore = observable({
   },
   setSaveDriveMeta() {
     const saveMeta = {
-      fileId: this.saveFileId,
-      fileExt: this.saveFileExt,
-      fileName: this.saveFileName,
+      file_id: this.saveFileId,
+      file_extension: this.saveFileExt,
+      file_name: this.saveFileName,
     }
     this.saveDriveMeta = saveMeta;
   },
