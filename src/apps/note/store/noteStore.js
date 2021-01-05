@@ -110,6 +110,10 @@ const NoteStore = observable({
   setIsHoveredFoldBtnLine(isHovered) {
     this.isHoveredFoldBtnLine = isHovered;
   },
+  // [ims 249594] 에디터 full 화면 -> 축소 버튼 누르면, 현재 상태 체크하지 않고 무조건 false로 바꾸기
+  setIsContentExpanded(isContentExpanded) {
+    this.isContentExpanded = isContentExpanded;
+  },
   toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
   },
