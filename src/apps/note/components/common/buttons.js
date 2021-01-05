@@ -30,6 +30,7 @@ const HeaderButtons = () => {
       case 'expand':
         EventBus.dispatch('onLayoutCollapse');
         NoteStore.setTargetLayout('Content');
+        NoteStore.setIsContentExpanded(false);
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
