@@ -338,7 +338,11 @@ const PageStore = observable({
             }
           })
         }
-      } else ChapterStore.getNoteChapterList();
+      } else {
+        ChapterStore.getNoteChapterList().then(() => {
+          if (this.deletePageList[0].type === 'shared' && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length === 0) ChapterStore.fetchFirstNote();
+        });
+      }
       NoteStore.setShowModal(false);
     });
   },
@@ -671,9 +675,9 @@ const PageStore = observable({
         // dataset.name 없으면 src 출력
         if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
         if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
-        if (item.textContent) return item.textContent.slice(0,200);
+        if (item.textContent) return item.textContent.slice(0, 200);
       }
-    } catch(err) {return null};    
+    } catch (err) { return null };
   },
   async createSharePage(targetList) {
     const {
