@@ -26,7 +26,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
         {Object.keys(TagStore.sortedTagList[category][tagKey]).map(tagName => {
           const tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
           return (
-            <Tooltip title={isEllipsisActive ? tagName : null}>
+            <Tooltip key={tagInfo.id} title={isEllipsisActive ? tagName : null}>
               <TagChip
                 onClick={onClickTagBtn(tagInfo.id, tagName)}
                 key={tagInfo.id}
