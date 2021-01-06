@@ -9,10 +9,13 @@ const TagKeyChildren = ({ category, tagKey }) => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const onClickTagBtn = (tagId, tagName) => async () => {
-    // 임시 (태그칩 모양으로 넣어야함)
-    await TagStore.setTagNoteSearchResult(tagId);
-    ChapterStore.setSearchingTagName(tagName);
     ChapterStore.setIsTagSearching(true);
+    // lnb search창에 검색 시도(클릭)한 태그이름 나오고 검색 실행중 화면 보이기
+    ChapterStore.setSearchingTagName(tagName);
+    // isTagSearching이고 isLoadingSearchResult일 때 검색 실행중 화면이 보인다
+    ChapterStore.setIsLoadingSearchResult(true);
+    await TagStore.setTagNoteSearchResult(tagId);
+    ChapterStore.setIsLoadingSearchResult(false);
     if (NoteStore.layoutState === 'collapse') {
       NoteStore.setTargetLayout('LNB');
     }

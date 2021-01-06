@@ -14,6 +14,7 @@ import LNBSearchResult from './LNBSearchResult';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { ComponentStore } from 'teespace-core';
+import SearchingImg from '../common/SearchingImg';
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -67,7 +68,7 @@ const LNBContainer = () => {
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching)
-            ? <LNBSearchResult />
+            ? (ChapterStore.isLoadingSearchResult ? <SearchingImg /> : <LNBSearchResult />)
             : <DndProvider backend={HTML5Backend}>
               {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
