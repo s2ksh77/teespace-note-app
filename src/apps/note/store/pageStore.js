@@ -548,9 +548,11 @@ const PageStore = observable({
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
       else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore.tempFileLayoutList[0].file_name + '.' + EditorStore.tempFileLayoutList[0].file_extension);
+          this.setTitle(EditorStore.tempFileLayoutList[0].file_name
+            + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore.fileLayoutList[0].file_name + '.' + EditorStore.fileLayoutList[0].file_extension);
+          this.setTitle(EditorStore.fileLayoutList[0].file_name
+            + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
       } else this.setTitle('(제목 없음)');
     }

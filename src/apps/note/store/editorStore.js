@@ -175,7 +175,7 @@ const EditorStore = observable({
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
     let checkFile
     if (this.fileList) {
-      checkFile = this.fileList.filter(file => !ImageExt.includes(file.file_extension.toLowerCase()))
+      checkFile = this.fileList.filter(file => !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase()))
     }
     if (checkFile === undefined) {
       this.setIsFile(false);

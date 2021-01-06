@@ -207,7 +207,8 @@ const FileLayout = () => {
                                                 : null
                                         }
                                     >
-                                        {item.file_name + '.' + item.file_extension}
+                                        {item.file_name}
+                                        {item.fileExtension && `.${item.file_extension}`}
                                     </FileName>
                                 </FileDataName>
                                 <FileDataTime>
@@ -251,7 +252,12 @@ const FileLayout = () => {
                             </Dropdown>
                             <FileData>
                                 <FileDataName>
-                                    <Tooltip title={isEllipsisActive ? item.file_name + '.' + item.file_extension : null} placement='top'>
+                                    <Tooltip 
+                                        title={isEllipsisActive
+                                            ? item.file_name + (item.fileExtension ? `.${item.file_extension}` : '')
+                                            : null}
+                                        placement='top'
+                                    >
                                         <FileName
                                             onClick={
                                                 PageStore.isReadMode()
@@ -260,7 +266,8 @@ const FileLayout = () => {
                                             }
                                             onMouseOver={handleTooltip}
                                         >
-                                            {item.file_name + '.' + item.file_extension}
+                                            {item.file_name}
+                                            {item.fileExtension && `.${item.file_extension}`}
                                         </FileName>
                                     </Tooltip>
                                 </FileDataName>

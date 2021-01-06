@@ -57,7 +57,7 @@ const EditorContainer = () => {
       fileName = fileName.substring(0, dotIndex);
     }
 
-    isImage = EditorStore.uploadFileIsImage(fileExtension);
+    isImage = fileExtension && EditorStore.uploadFileIsImage(fileExtension);
     const fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob());
