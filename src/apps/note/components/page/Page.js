@@ -59,9 +59,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     },
     end: (item, monitor) => {
       const res = monitor.getDropResult();
-      if (res.target === 'Platform:Room')
+      if (res && res.target === 'Platform:Room')
         PageStore.createNoteSharePage(res.targetData.id, item.data);
 
+      PageStore.setMovePageId('');
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
 
