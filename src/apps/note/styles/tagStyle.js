@@ -35,6 +35,7 @@ export const TagList = styled.div`
 export const TagText = styled.span`
   width: 100%;
   display: block;
+  max-width:15.69rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -125,7 +126,10 @@ export const TagChipGroup = styled.div`
   flex-wrap:wrap;
 `;
 
+// * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+// max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 export const TagChip = styled(Tag)`
+  min-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,8 +142,6 @@ export const TagChip = styled(Tag)`
   font-weight: 400;
   border: 0.0625rem solid #1EA8DF;
   border-radius: 1.563rem;
-  min-width: 50px;
-  max-width: 300px;
   text-overflow: ellipsis;
   overflow:hidden;
   height: 1.88rem;
@@ -155,27 +157,31 @@ export const TagChip = styled(Tag)`
   padding: 0 0.63rem;
 `;
 
-export const SearchTagChip = styled(TagChip)`
-  position: absolute;
-  left: 1.88rem;
-  max-width: calc(100% - 1.88rem) !important;
+export const SearchTagChip = styled(Tag)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:0 0.63rem;
+  height: calc(100% - 0.26rem);
   width: fit-content;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 0.63rem;
+  max-width: calc(100% - 1.88rem) !important;
+  color: #000000;
+  font-size: 0.81rem;
+  cursor: pointer;
+  user-select: none;
+  outline: none !important;
+  background-color: rgba(30,168,223,0.20);
+  background: rgba(30,168,223,0.20);
+  border: 1px solid #1EA8DF;
+  border-radius: 25px;
 `;
 
+// line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
 export const TagChipText = styled.div`
-  display: block;
-  align-items: center;
-  font-size: 0.8125rem;
-  font-weight: normal;
-  color: #000000;
-  margin: 0rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height:normal;
 `;
 
 export const TagChipNum = styled.div`

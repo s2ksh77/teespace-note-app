@@ -13,6 +13,8 @@ const NoteStore = observable({
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
+  userName: '',
+  userEmail: '',
   noteFileList: [],
   showPage: true, // editor 보고 있는지 태그 보고 있는지
   layoutState: '',
@@ -31,6 +33,8 @@ const NoteStore = observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {}, // { userArray, roomArray }
+  isMailShare: false,
+  mailShareFileObjs: [],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk() {
@@ -67,14 +71,19 @@ const NoteStore = observable({
     NoteRepository.setUserName(userName);
     this.userName = userName;
   },
+  setUserEmail(userEmail) {
+    NoteRepository.setUserEmail(userEmail);
+    this.userEmail = userEmail;
+  },
   getUserId() {
     return this.user_id;
   },
-  init(roomId, channelId, userId, userName, callback) {
+  init(roomId, channelId, userId, userName, userEmail, callback) {
     NoteStore.setWsId(roomId);
     NoteStore.setChannelId(channelId);
-    NoteStore.setUserName(userName);
     NoteStore.setUserId(userId);
+    NoteStore.setUserName(userName);
+    NoteStore.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables() {
@@ -128,6 +137,12 @@ const NoteStore = observable({
   },
   setShareArrays(arrs) {
     this.shareArrays = arrs;
+  },
+  setIsMailShare(isMailShare) {
+    this.isMailShare = isMailShare;
+  },
+  setMailShareFileObjs(fileObjs) {
+    this.mailShareFileObjs = fileObjs;
   },
   setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;

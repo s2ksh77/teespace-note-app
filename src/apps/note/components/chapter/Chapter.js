@@ -67,7 +67,7 @@ const Chapter = ({ chapter, index, isShared }) => {
     },
     end: (item, monitor) => {
       const res = monitor.getDropResult();
-      if (res.target === 'Platform:Room')
+      if (res && res.target === 'Platform:Room')
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
 
       ChapterStore.setDragEnterChapterIdx('');

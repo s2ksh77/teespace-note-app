@@ -40,7 +40,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       ShareNoteMessage는 noteInfo 서비스콜 보내고 노트앱을 
     */
     if (isOtherRoom) {
-      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, async () => {
+      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, userStore.myProfile.email, async () => {
         NoteStore.addWWMSHandler();
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);

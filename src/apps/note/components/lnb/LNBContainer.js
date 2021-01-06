@@ -13,10 +13,13 @@ import ChapterList from './ChapterList';
 import LNBSearchResult from './LNBSearchResult';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { ComponentStore } from 'teespace-core';
+import SearchingImg from '../common/SearchingImg';
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
+  const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
   const createNewChapter = async () => {
     // dialog 클릭시 blur이벤트 동작
@@ -65,17 +68,26 @@ const LNBContainer = () => {
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm show={ChapterStore.isNewChapter} createNewChapter={createNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching)
-            ? <LNBSearchResult />
+            ? (ChapterStore.isLoadingSearchResult ? <SearchingImg /> : <LNBSearchResult />)
             : <DndProvider backend={HTML5Backend}>
               {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />
-              {ChapterStore.sortedChapterList.sharedPageList.length > 0 ?
+              {ChapterStore.sortedChapterList.sharedPageList.length > 0 && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length > 0 ?
                 <ChapterList type={"sharedPageList"} isShared={true} /> : null}
               {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ?
                 <ChapterList type={"sharedChapterList"} isShared={true} /> : null}
             </DndProvider>}
         </LNBChapterCover>
+        <MailWriteModal
+          uploadFiles={NoteStore.mailShareFileObjs}
+          sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
+          onClose={() => {
+            NoteStore.setMailShareFileObjs([]);
+            NoteStore.setIsMailShare(false);
+          }}
+          visible={NoteStore.mailShareFileObjs.length > 0 ? true : false}
+        />
       </LNBCover>
     </>
   ));

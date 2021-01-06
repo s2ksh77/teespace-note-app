@@ -9,13 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 import { exportChapterData, exportPageData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
-import { useCoreStores } from 'teespace-core';
 
 const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const { roomStore } = useCoreStores();
 
   const renameComponent = () => {
     // 이름을 변경한다.
@@ -46,7 +44,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
-        PageStore.setDeletePageList({ note_id: page.id });
+        PageStore.setDeletePageList({ note_id: page.id, type: page.type });
         PageStore.setDeleteParentIdx(chapterIdx);
         NoteStore.setModalInfo('page');
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
@@ -62,6 +60,11 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     NoteStore.setIsShared(true);
     NoteStore.setModalInfo('shareRoom');
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+  };
+
+  const mailShareComponent = () => {
+    NoteStore.setIsMailShare(true);
+    exportComponent();
   };
 
   const exportComponent = () => {
@@ -107,8 +110,9 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     if (key === "0") renameComponent();
     else if (key === "1") deleteComponent();
     else if (key === "2") shareComponent();
-    else if (key === "3") exportComponent();
-    else if (key === "4") exportTxtComponent();
+    else if (key === "3") mailShareComponent();
+    else if (key === "4") exportComponent();
+    else if (key === "5") exportTxtComponent();
     else infoComponent();
   };
 
@@ -125,12 +129,13 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
         <Item key="0">이름 변경</Item>}
       <Item key="1">삭제</Item>
       <Item key="2">다른 룸으로 전달</Item>
+      {/* <Item key="3">Mail로 전달</Item> */}
       <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
-        <Item key="3">PDF 형식(.pdf)</Item>
-        <Item key="4">TXT 형식(.txt)</Item>
+        <Item key="4">PDF 형식(.pdf)</Item>
+        <Item key="5">TXT 형식(.txt)</Item>
       </SubMenu>
       {type === 'shared'
-        ? <Item key="5">정보 보기</Item>
+        ? <Item key="6">정보 보기</Item>
         : null}
     </Menu>
   );

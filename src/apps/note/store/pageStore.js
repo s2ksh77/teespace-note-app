@@ -338,7 +338,11 @@ const PageStore = observable({
             }
           })
         }
-      } else ChapterStore.getNoteChapterList();
+      } else {
+        ChapterStore.getNoteChapterList().then(() => {
+          if (this.deletePageList[0].type === 'shared' && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length === 0) ChapterStore.fetchFirstNote();
+        });
+      }
       NoteStore.setShowModal(false);
     });
   },
@@ -548,9 +552,11 @@ const PageStore = observable({
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
       else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore.tempFileLayoutList[0].file_name + '.' + EditorStore.tempFileLayoutList[0].file_extension);
+          this.setTitle(EditorStore.tempFileLayoutList[0].file_name
+            + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore.fileLayoutList[0].file_name + '.' + EditorStore.fileLayoutList[0].file_extension);
+          this.setTitle(EditorStore.fileLayoutList[0].file_name
+            + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
       } else this.setTitle('(제목 없음)');
     }
@@ -616,6 +622,15 @@ const PageStore = observable({
           if (!!contentList[i].textContent) return contentList[i].textContent;
         } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
           if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
+        } 
+        // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
+        // 그냥 <pre> 태그만 있는 경우도 있음
+        else if (contentList[i].textContent) {
+          let temp = '';
+          if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i])
+          else temp = this._findFirstTextContent(contentList[i].children);
+
+          if (temp) return temp;
         }
       }
     }
@@ -641,16 +656,28 @@ const PageStore = observable({
       }
     }
   },
+  // el = pre tag, pre tag 안에 textContent있을 때 함수
+  _getTitleFromPreTag(el) {
+    const lineBreakIdx = el.textContent.indexOf('\n');
+    // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
+    if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx);
+    // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
+    else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.children);
+  },
   _findFirstTextContent(htmlCollection) {
     try {
       for (let item of Array.from(htmlCollection)) {
+        if (item.tagName === 'BR') continue;
+        // todo : error 없으려나 테스트 필요
+        if (item.tagName === 'SPAN' && item.textContent) return item.textContent;
         // depth가 더 있으면 들어간다
         if (item.children.length) return this._findFirstTextContent(item.children);
         // dataset.name 없으면 src 출력
         if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-        if (item.textContent) return item.textContent.slice(0,200);
+        if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
+        if (item.textContent) return item.textContent.slice(0, 200);
       }
-    } catch(err) {return null};    
+    } catch (err) { return null };
   },
   async createSharePage(targetList) {
     const {

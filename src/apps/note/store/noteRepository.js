@@ -12,6 +12,7 @@ class NoteRepository {
   USER_ID = '';
   chId = '';
   USER_NAME = '';
+  USER_EMAIL = '';
 
   // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
 
@@ -37,6 +38,10 @@ class NoteRepository {
 
   setUserName(targetUserName) {
     this.USER_NAME = targetUserName;
+  }
+
+  setUserEmail(targetUserEmail) {
+    this.USER_EMAIL = targetUserEmail;
   }
 
   getChannelId() {

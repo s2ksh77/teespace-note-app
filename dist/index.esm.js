@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, WWMS, RoomStore, UserStore, EventBus, useCoreStores, Message, ComponentStore, ItemSelector, Toast } from 'teespace-core';
+import { API, WWMS, RoomStore, UserStore, EventBus, Message, ComponentStore, useCoreStores, ItemSelector, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -281,6 +281,7 @@ var NoteRepository = /*#__PURE__*/function () {
     this.USER_ID = '';
     this.chId = '';
     this.USER_NAME = '';
+    this.USER_EMAIL = '';
     this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
   }
 
@@ -303,6 +304,11 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "setUserName",
     value: function setUserName(targetUserName) {
       this.USER_NAME = targetUserName;
+    }
+  }, {
+    key: "setUserEmail",
+    value: function setUserEmail(targetUserEmail) {
+      this.USER_EMAIL = targetUserEmail;
     }
   }, {
     key: "getChannelId",
@@ -2376,7 +2382,7 @@ var EditorStore$1 = observable((_observable = {
 
   if (this.fileList) {
     checkFile = this.fileList.filter(function (file) {
-      return !ImageExt.includes(file.file_extension.toLowerCase());
+      return !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase());
     });
   }
 
@@ -3439,9 +3445,9 @@ var PageStore = observable((_observable$1 = {
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
         if (EditorStore$1.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.tempFileLayoutList[0].file_name + '.' + EditorStore$1.tempFileLayoutList[0].file_extension);
+          this.setTitle(EditorStore$1.tempFileLayoutList[0].file_name + (EditorStore$1.tempFileLayoutList[0].file_extension ? '.' + EditorStore$1.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore$1.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.fileLayoutList[0].file_name + '.' + EditorStore$1.fileLayoutList[0].file_extension);
+          this.setTitle(EditorStore$1.fileLayoutList[0].file_name + (EditorStore$1.fileLayoutList[0].file_extension ? '.' + EditorStore$1.fileLayoutList[0].file_extension : ''));
         }
       } else this.setTitle('(제목 없음)');
     }
@@ -3513,7 +3519,13 @@ var PageStore = observable((_observable$1 = {
         if (!!contentList[i].textContent) return contentList[i].textContent;
       } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
         if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-      }
+      } // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
+      // 그냥 <pre> 태그만 있는 경우도 있음
+      else if (contentList[i].textContent) {
+          var _temp = '';
+          if (contentList[i].tagName === 'PRE') _temp = this._getTitleFromPreTag(contentList[i]);else _temp = this._findFirstTextContent(contentList[i].children);
+          if (_temp) return _temp;
+        }
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(td) {
@@ -3539,14 +3551,23 @@ var PageStore = observable((_observable$1 = {
       }
     }
   }
+}), _defineProperty(_observable$1, "_getTitleFromPreTag", function _getTitleFromPreTag(el) {
+  var lineBreakIdx = el.textContent.indexOf('\n'); // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
+
+  if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx); // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
+  else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.children);
 }), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(htmlCollection) {
   try {
     for (var _i = 0, _Array$from = Array.from(htmlCollection); _i < _Array$from.length; _i++) {
       var item = _Array$from[_i];
-      // depth가 더 있으면 들어간다
+      if (item.tagName === 'BR') continue; // todo : error 없으려나 테스트 필요
+
+      if (item.tagName === 'SPAN' && item.textContent) return item.textContent; // depth가 더 있으면 들어간다
+
       if (item.children.length) return this._findFirstTextContent(item.children); // dataset.name 없으면 src 출력
 
       if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+      if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
       if (item.textContent) return item.textContent.slice(0, 200);
     }
   } catch (err) {
@@ -5005,6 +5026,8 @@ var NoteStore$1 = observable({
   workspaceId: '',
   notechannel_id: '',
   user_id: '',
+  userName: '',
+  userEmail: '',
   noteFileList: [],
   showPage: true,
   // editor 보고 있는지 태그 보고 있는지
@@ -5025,6 +5048,8 @@ var NoteStore$1 = observable({
   shareContent: '',
   shareArrays: {},
   // { userArray, roomArray }
+  isMailShare: false,
+  mailShareFileObjs: [],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -5061,14 +5086,19 @@ var NoteStore$1 = observable({
     NoteRepository$1.setUserName(userName);
     this.userName = userName;
   },
+  setUserEmail: function setUserEmail(userEmail) {
+    NoteRepository$1.setUserEmail(userEmail);
+    this.userEmail = userEmail;
+  },
   getUserId: function getUserId() {
     return this.user_id;
   },
-  init: function init(roomId, channelId, userId, userName, callback) {
+  init: function init(roomId, channelId, userId, userName, userEmail, callback) {
     NoteStore$1.setWsId(roomId);
     NoteStore$1.setChannelId(channelId);
-    NoteStore$1.setUserName(userName);
     NoteStore$1.setUserId(userId);
+    NoteStore$1.setUserName(userName);
+    NoteStore$1.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables: function initVariables() {
@@ -5123,6 +5153,12 @@ var NoteStore$1 = observable({
   },
   setShareArrays: function setShareArrays(arrs) {
     this.shareArrays = arrs;
+  },
+  setIsMailShare: function setIsMailShare(isMailShare) {
+    this.isMailShare = isMailShare;
+  },
+  setMailShareFileObjs: function setMailShareFileObjs(fileObjs) {
+    this.mailShareFileObjs = fileObjs;
   },
   setIsVisibleToast: function setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;
@@ -6141,7 +6177,7 @@ function _templateObject18$1() {
 }
 
 function _templateObject17$1() {
-  var data = _taggedTemplateLiteral(["\n  display: block;\n  align-items: center;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  height:100%;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject17$1 = function _templateObject17() {
     return data;
@@ -6151,7 +6187,7 @@ function _templateObject17$1() {
 }
 
 function _templateObject16$1() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n  height: calc(100% - 0.26rem);\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -6161,7 +6197,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #000000;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  min-width: 50px;\n  max-width: 300px;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #000000;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n"]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -6271,7 +6307,7 @@ function _templateObject5$3() {
 }
 
 function _templateObject4$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  max-width:15.69rem;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
 
   _templateObject4$3 = function _templateObject4() {
     return data;
@@ -6328,9 +6364,12 @@ var Panel = Collapse.Panel;
 var StyledCollapse = styled(Collapse)(_templateObject11$3());
 var TagKeyChildren = styled.div(_templateObject12$2());
 var TagKeyContainer = styled.div(_templateObject13$2());
-var TagChipGroup = styled.div(_templateObject14$2());
+var TagChipGroup = styled.div(_templateObject14$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+// max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
+
 var TagChip = styled(Tag)(_templateObject15$1());
-var SearchTagChip = styled(TagChip)(_templateObject16$1());
+var SearchTagChip = styled(TagChip)(_templateObject16$1()); // height 100% 추가 : y 아랫부분이 짤려서
+
 var TagChipText = styled.div(_templateObject17$1());
 var TagChipNum = styled.div(_templateObject18$1());
 
@@ -7206,9 +7245,24 @@ var exportDownloadPDF = function exportDownloadPDF(type) {
       orientation: 'portrait'
     }
   };
-  html2pdf(element, opt).then(function () {
-    document.getElementById('exportTarget').remove();
-  });
+
+  if (!NoteStore$1.isMailShare) {
+    html2pdf(element, opt).then(function () {
+      document.getElementById('exportTarget').remove();
+    });
+  } else {
+    html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then(function (blob) {
+      var pdf = new File([blob], opt.filename, {
+        type: blob.type
+      });
+      var fileObjs = [{
+        originFileObj: pdf,
+        name: opt.filename
+      }];
+      NoteStore$1.setMailShareFileObjs(fileObjs);
+      document.getElementById('exportTarget').remove();
+    });
+  }
 };
 var exportChapterData = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
@@ -7502,9 +7556,6 @@ var ContextMenu = function ContextMenu(_ref) {
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore;
 
-  var _useCoreStores = useCoreStores(),
-      roomStore = _useCoreStores.roomStore;
-
   var renameComponent = function renameComponent() {
     // 이름을 변경한다.
     switch (noteType) {
@@ -7552,6 +7603,11 @@ var ContextMenu = function ContextMenu(_ref) {
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
+  var mailShareComponent = function mailShareComponent() {
+    NoteStore.setIsMailShare(true);
+    exportComponent();
+  };
+
   var exportComponent = function exportComponent() {
     switch (noteType) {
       case 'chapter':
@@ -7592,7 +7648,7 @@ var ContextMenu = function ContextMenu(_ref) {
     var key = _ref2.key,
         domEvent = _ref2.domEvent;
     domEvent.stopPropagation();
-    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent();else if (key === "4") exportTxtComponent();else infoComponent();
+    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") mailShareComponent();else if (key === "4") exportComponent();else if (key === "5") exportTxtComponent();else infoComponent();
   };
 
   var handleSubMenuClick = function handleSubMenuClick(_ref3) {
@@ -7617,11 +7673,11 @@ var ContextMenu = function ContextMenu(_ref) {
     title: "\uB0B4\uBCF4\uB0B4\uAE30",
     onTitleClick: handleSubMenuClick
   }, /*#__PURE__*/React.createElement(Item, {
-    key: "3"
-  }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React.createElement(Item, {
     key: "4"
-  }, "TXT \uD615\uC2DD(.txt)")), type === 'shared' ? /*#__PURE__*/React.createElement(Item, {
+  }, "PDF \uD615\uC2DD(.pdf)"), /*#__PURE__*/React.createElement(Item, {
     key: "5"
+  }, "TXT \uD615\uC2DD(.txt)")), type === 'shared' ? /*#__PURE__*/React.createElement(Item, {
+    key: "6"
   }, "\uC815\uBCF4 \uBCF4\uAE30") : null);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(ContextMenuCover, {
@@ -8445,6 +8501,7 @@ var LNBContainer = function LNBContainer() {
       EditorStore = _useNoteStore.EditorStore;
 
   var LNBRef = useRef(null);
+  var MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
   var createNewChapter = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -8558,7 +8615,18 @@ var LNBContainer = function LNBContainer() {
     }) : null, ChapterStore.sortedChapterList.sharedChapterList.length > 0 ? /*#__PURE__*/React.createElement(ChapterList, {
       type: "sharedChapterList",
       isShared: true
-    }) : null))));
+    }) : null)), /*#__PURE__*/React.createElement(MailWriteModal, {
+      uploadFiles: NoteStore.mailShareFileObjs,
+      sender: {
+        mailAddr: NoteStore.userEmail,
+        accountId: NoteStore.user_id
+      },
+      onClose: function onClose() {
+        NoteStore.setMailShareFileObjs([]);
+        NoteStore.setIsMailShare(false);
+      },
+      visible: NoteStore.mailShareFileObjs.length > 0 ? true : false
+    })));
   });
 };
 
@@ -9155,6 +9223,7 @@ var AddTagForm = function AddTagForm(_ref) {
 
       case "Escape":
         toggleTagInput();
+        setValue("");
         break;
     }
   }; // return useObserver(()=>(
@@ -9186,7 +9255,7 @@ var TagListContainer = function TagListContainer() {
       setIsEllipsisActive = _useState4[1];
 
   var focusedTag = useRef([]);
-  var tagList = useRef(null);
+  var tagList = useRef(null); // scroll 때문에 필요
 
   var handleCloseBtn = function handleCloseBtn(targetId, targetText) {
     if (targetId) {
@@ -9202,7 +9271,8 @@ var TagListContainer = function TagListContainer() {
       TagStore.setNoteTagList(exceptTag);
       TagStore.removeAddTagList(targetText);
     }
-  };
+  }; // AddTagForm 보여줄지말지
+
 
   var toggleTagInput = function toggleTagInput() {
     if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
@@ -9210,8 +9280,10 @@ var TagListContainer = function TagListContainer() {
 
   var onClickNewTagBtn = function onClickNewTagBtn() {
     toggleTagInput();
-    var target = tagList.current.children[0];
-    if (target) target.scrollIntoView(false);
+    tagList.current.scrollTo({
+      left: 0,
+      behavior: 'smooth'
+    });
   };
 
   var handleFocus = function handleFocus(e) {
@@ -9222,7 +9294,7 @@ var TagListContainer = function TagListContainer() {
     return function () {
       TagStore.setCurrentTagData(id, text);
       TagStore.setEditTagValue(text);
-      TagStore.setEditTagIndex(index);
+      TagStore.setEditTagIndex(index); // input창을 보여줄지 말지
     };
   };
 
@@ -9277,7 +9349,12 @@ var TagListContainer = function TagListContainer() {
         break;
 
       case "Escape":
-        TagStore.setIsNewTag(false);
+        TagStore.setIsNewTag(false); // todo : 필요한건지 체크
+
+        TagStore.setCurrentTagData("", "");
+        TagStore.setEditTagValue("");
+        TagStore.setEditTagIndex(""); // input 태그 보여줄지 tagchip 보여줄지 결정
+
         break;
     }
   };
@@ -9286,12 +9363,13 @@ var TagListContainer = function TagListContainer() {
     if (!e.target.closest(".ant-tag")) {
       TagStore.setSelectTagIndex('');
     }
-  };
+  }; // focusedTag.current에 idx 키에 element가 있다
+
 
   var handleClickTag = function handleClickTag(idx, e) {
-    var prev = focusedTag.current;
-    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(prev[idx], idx);
-  }; // idx : null 가능
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(focusedTag.current[idx], idx);
+  }; // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
+  // idx : null 가능
 
 
   var changeFocusedTag = function changeFocusedTag(target, idx) {
@@ -9674,7 +9752,7 @@ var FileLayout = function FileLayout() {
         src: fileExtension(item.file_extension)
       }))), item.error ? /*#__PURE__*/React.createElement(FileErrorIcon, null, /*#__PURE__*/React.createElement(ExclamationCircleFilled, null)) : null, /*#__PURE__*/React.createElement(FileData, null, /*#__PURE__*/React.createElement(FileDataName, null, /*#__PURE__*/React.createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
-      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
+      }, item.file_name, item.fileExtension && ".".concat(item.file_extension))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -9717,12 +9795,12 @@ var FileLayout = function FileLayout() {
       }) : /*#__PURE__*/React.createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
       }))), /*#__PURE__*/React.createElement(FileData, null, /*#__PURE__*/React.createElement(FileDataName, null, /*#__PURE__*/React.createElement(Tooltip, {
-        title: isEllipsisActive ? item.file_name + '.' + item.file_extension : null,
+        title: isEllipsisActive ? item.file_name + (item.fileExtension ? ".".concat(item.file_extension) : '') : null,
         placement: "top"
       }, /*#__PURE__*/React.createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null,
         onMouseOver: handleTooltip
-      }, item.file_name + '.' + item.file_extension))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
+      }, item.file_name, item.fileExtension && ".".concat(item.file_extension)))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -9776,7 +9854,7 @@ var EditorContainer = function EditorContainer() {
       fileName = fileName.substring(0, dotIndex);
     }
 
-    isImage = EditorStore.uploadFileIsImage(fileExtension);
+    isImage = fileExtension && EditorStore.uploadFileIsImage(fileExtension);
     var fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());else fd.append('file', blobInfo.blob());
 
@@ -10667,7 +10745,7 @@ var NoteApp = function NoteApp(_ref) {
     */
 
     if (isOtherRoom) {
-      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, userStore.myProfile.email, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
