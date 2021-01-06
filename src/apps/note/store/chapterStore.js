@@ -30,6 +30,8 @@ const ChapterStore = observable({
     10: "#E780FF",
     11: "#FF7BA8",
   },
+  // 검색 실행 화면 필요
+  isLoadingSearchResult:false,
   isSearching: false,
   isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
   searchingTagName: '',
@@ -170,6 +172,12 @@ const ChapterStore = observable({
   getChapterName(chapterId) {
     const { value } = NoteRepository.getChapterText(chapterId);
     return value;
+  },
+  getIsLoadingSearchResult() {
+    return this.isLoadingSearching;
+  },
+  setIsLoadingSearchResult(isLoadingSearchResult) {
+    this.isLoadingSearchResult = isLoadingSearchResult;
   },
   getIsSearching() {
     return this.isSearching;
@@ -525,6 +533,7 @@ const ChapterStore = observable({
     - 검색 후 방 바뀌었을 때 변수 init이 안됨
   */
   initSearchVar() {
+    this.setIsLoadingSearchResult(false);
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
@@ -547,7 +556,9 @@ const ChapterStore = observable({
   */
   async fetchSearchResult() {
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
+    this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
     await this.getSearchResult();
+    this.setIsLoadingSearchResult(false);
   },
   async getSearchResult() {
     this.setSearchResult({});
