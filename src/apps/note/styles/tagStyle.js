@@ -35,6 +35,7 @@ export const TagList = styled.div`
 export const TagText = styled.span`
   width: 100%;
   display: block;
+  max-width:15.69rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -125,7 +126,10 @@ export const TagChipGroup = styled.div`
   flex-wrap:wrap;
 `;
 
+// * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+// max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 export const TagChip = styled(Tag)`
+  min-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,8 +142,6 @@ export const TagChip = styled(Tag)`
   font-weight: 400;
   border: 0.0625rem solid #1EA8DF;
   border-radius: 1.563rem;
-  min-width: 50px;
-  max-width: 300px;
   text-overflow: ellipsis;
   overflow:hidden;
   height: 1.88rem;
@@ -164,11 +166,14 @@ export const SearchTagChip = styled(TagChip)`
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 0.63rem;
+  height: calc(100% - 0.26rem);
 `;
 
+// height 100% 추가 : y 아랫부분이 짤려서
 export const TagChipText = styled.div`
-  display: block;
+  display: inline-flex;
   align-items: center;
+  height:100%;
   font-size: 0.8125rem;
   font-weight: normal;
   color: #000000;

@@ -22,7 +22,7 @@ const TagListContainer = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const focusedTag = useRef([]);
-  const tagList = useRef(null);
+  const tagList = useRef(null) // scroll 때문에 필요
 
   const handleCloseBtn = (targetId, targetText) => {
     if (targetId) {
@@ -40,6 +40,7 @@ const TagListContainer = () => {
     }
   };
 
+  // AddTagForm 보여줄지말지
   const toggleTagInput = () => {
     if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);
     else TagStore.setIsNewTag(false);
@@ -47,8 +48,7 @@ const TagListContainer = () => {
 
   const onClickNewTagBtn = () => {
     toggleTagInput();
-    let target = tagList.current.children[0]
-    if (target) target.scrollIntoView(false);
+    tagList.current.scrollTo({left:0, behavior:'smooth'});
   }
 
   const handleFocus = (e) => e.target.select();
@@ -56,7 +56,7 @@ const TagListContainer = () => {
   const handleChangeTag = (text, index, id) => () => {
     TagStore.setCurrentTagData(id, text);
     TagStore.setEditTagValue(text);
-    TagStore.setEditTagIndex(index);
+    TagStore.setEditTagIndex(index); // input창을 보여줄지 말지
   };
   const handleChangeName = e => {
     const {
@@ -117,7 +117,10 @@ const TagListContainer = () => {
         handleModifyInput();
         break;
       case "Escape":
-        TagStore.setIsNewTag(false);
+        TagStore.setIsNewTag(false); // todo : 필요한건지 체크
+        TagStore.setCurrentTagData("", "");
+        TagStore.setEditTagValue("");
+        TagStore.setEditTagIndex(""); // input 태그 보여줄지 tagchip 보여줄지 결정
         break;
       default:
         break;
@@ -130,12 +133,13 @@ const TagListContainer = () => {
     }
   }
 
+  // focusedTag.current에 idx 키에 element가 있다
   const handleClickTag = (idx, e) => {
-    const prev = focusedTag.current;
     if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');
-    else changeFocusedTag(prev[idx], idx);
+    else changeFocusedTag(focusedTag.current[idx], idx);
   }
 
+  // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
   // idx : null 가능
   const changeFocusedTag = (target, idx) => {
     if (target === null && idx === null) return;
