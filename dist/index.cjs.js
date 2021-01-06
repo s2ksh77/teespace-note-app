@@ -2940,7 +2940,13 @@ var PageStore = mobx.observable((_observable$1 = {
             }
           });
         }
-      } else ChapterStore.getNoteChapterList();
+      } else {
+        ChapterStore.getNoteChapterList().then(function () {
+          var _ChapterStore$sortedC;
+
+          if (_this2.deletePageList[0].type === 'shared' && ((_ChapterStore$sortedC = ChapterStore.sortedChapterList.sharedPageList[0]) === null || _ChapterStore$sortedC === void 0 ? void 0 : _ChapterStore$sortedC.children.length) === 0) ChapterStore.fetchFirstNote();
+        });
+      }
 
       NoteStore$1.setShowModal(false);
     });
