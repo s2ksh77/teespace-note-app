@@ -166,11 +166,14 @@ export const SearchTagChip = styled(TagChip)`
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 0.63rem;
+  height: calc(100% - 0.26rem);
 `;
 
+// height 100% 추가 : y 아랫부분이 짤려서
 export const TagChipText = styled.div`
-  display: block;
+  display: inline-flex;
   align-items: center;
+  height:100%;
   font-size: 0.8125rem;
   font-weight: normal;
   color: #000000;
