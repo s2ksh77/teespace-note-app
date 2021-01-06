@@ -79,18 +79,18 @@ const LNBHeader = ({ createNewChapter }) => {
           <LnbTitleSearchIcon type="submit">
             <FontAwesomeIcon icon={faSearch} size={"1x"} />
           </LnbTitleSearchIcon>
-          <LnbTitleSearchInput
-            ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
-            placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
-            disabled={ChapterStore.isTagSearching ? true : false}
-            onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
-          />
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
               <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
             </SearchTagChip>
-          ) : null}
+          ) : 
+            <LnbTitleSearchInput
+              ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
+              placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
+              disabled={ChapterStore.isTagSearching ? true : false}
+              onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
+            />}
           <Button src={cancelImg}
             style={(ChapterStore.isSearching || ChapterStore.searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
         </LnbTitleSearchContainer>

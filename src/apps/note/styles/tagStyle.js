@@ -157,30 +157,31 @@ export const TagChip = styled(Tag)`
   padding: 0 0.63rem;
 `;
 
-export const SearchTagChip = styled(TagChip)`
-  position: absolute;
-  left: 1.88rem;
-  max-width: calc(100% - 1.88rem) !important;
-  width: fit-content;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 0.63rem;
+export const SearchTagChip = styled(Tag)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:0 0.63rem;
   height: calc(100% - 0.26rem);
+  width: fit-content;
+  max-width: calc(100% - 1.88rem) !important;
+  color: #000000;
+  font-size: 0.81rem;
+  cursor: pointer;
+  user-select: none;
+  outline: none !important;
+  background-color: rgba(30,168,223,0.20);
+  background: rgba(30,168,223,0.20);
+  border: 1px solid #1EA8DF;
+  border-radius: 25px;
 `;
 
-// height 100% 추가 : y 아랫부분이 짤려서
+// line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
 export const TagChipText = styled.div`
-  display: inline-flex;
-  align-items: center;
-  height:100%;
-  font-size: 0.8125rem;
-  font-weight: normal;
-  color: #000000;
-  margin: 0rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height:normal;
 `;
 
 export const TagChipNum = styled.div`
