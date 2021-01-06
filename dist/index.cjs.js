@@ -2393,7 +2393,7 @@ var EditorStore$1 = mobx.observable((_observable = {
 
   if (this.fileList) {
     checkFile = this.fileList.filter(function (file) {
-      return !ImageExt.includes(file.file_extension.toLowerCase());
+      return !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase());
     });
   }
 
@@ -3456,9 +3456,9 @@ var PageStore = mobx.observable((_observable$1 = {
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
         if (EditorStore$1.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.tempFileLayoutList[0].file_name + '.' + EditorStore$1.tempFileLayoutList[0].file_extension);
+          this.setTitle(EditorStore$1.tempFileLayoutList[0].file_name + (EditorStore$1.tempFileLayoutList[0].file_extension ? '.' + EditorStore$1.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore$1.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.fileLayoutList[0].file_name + '.' + EditorStore$1.fileLayoutList[0].file_extension);
+          this.setTitle(EditorStore$1.fileLayoutList[0].file_name + (EditorStore$1.fileLayoutList[0].file_extension ? '.' + EditorStore$1.fileLayoutList[0].file_extension : ''));
         }
       } else this.setTitle('(제목 없음)');
     }
@@ -3530,7 +3530,13 @@ var PageStore = mobx.observable((_observable$1 = {
         if (!!contentList[i].textContent) return contentList[i].textContent;
       } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
         if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-      }
+      } // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
+      // 그냥 <pre> 태그만 있는 경우도 있음
+      else if (contentList[i].textContent) {
+          var _temp = '';
+          if (contentList[i].tagName === 'PRE') _temp = this._getTitleFromPreTag(contentList[i]);else _temp = this._findFirstTextContent(contentList[i].children);
+          if (_temp) return _temp;
+        }
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(td) {
@@ -3556,14 +3562,23 @@ var PageStore = mobx.observable((_observable$1 = {
       }
     }
   }
+}), _defineProperty(_observable$1, "_getTitleFromPreTag", function _getTitleFromPreTag(el) {
+  var lineBreakIdx = el.textContent.indexOf('\n'); // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
+
+  if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx); // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
+  else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.children);
 }), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(htmlCollection) {
   try {
     for (var _i = 0, _Array$from = Array.from(htmlCollection); _i < _Array$from.length; _i++) {
       var item = _Array$from[_i];
-      // depth가 더 있으면 들어간다
+      if (item.tagName === 'BR') continue; // todo : error 없으려나 테스트 필요
+
+      if (item.tagName === 'SPAN' && item.textContent) return item.textContent; // depth가 더 있으면 들어간다
+
       if (item.children.length) return this._findFirstTextContent(item.children); // dataset.name 없으면 src 출력
 
       if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+      if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
       if (item.textContent) return item.textContent.slice(0, 200);
     }
   } catch (err) {
@@ -6173,7 +6188,7 @@ function _templateObject18$1() {
 }
 
 function _templateObject17$1() {
-  var data = _taggedTemplateLiteral(["\n  display: block;\n  align-items: center;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  height:100%;\n  font-size: 0.8125rem;\n  font-weight: normal;\n  color: #000000;\n  margin: 0rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject17$1 = function _templateObject17() {
     return data;
@@ -6183,7 +6198,7 @@ function _templateObject17$1() {
 }
 
 function _templateObject16$1() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  left: 1.88rem;\n  max-width: calc(100% - 1.88rem) !important;\n  width: fit-content;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  padding: 0 0.63rem;\n  height: calc(100% - 0.26rem);\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -6193,7 +6208,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #000000;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  min-width: 50px;\n  max-width: 300px;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #000000;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n"]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -6303,7 +6318,7 @@ function _templateObject5$3() {
 }
 
 function _templateObject4$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  max-width:15.69rem;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
 
   _templateObject4$3 = function _templateObject4() {
     return data;
@@ -6360,9 +6375,12 @@ var Panel = antd.Collapse.Panel;
 var StyledCollapse = styled__default['default'](antd.Collapse)(_templateObject11$3());
 var TagKeyChildren = styled__default['default'].div(_templateObject12$2());
 var TagKeyContainer = styled__default['default'].div(_templateObject13$2());
-var TagChipGroup = styled__default['default'].div(_templateObject14$2());
+var TagChipGroup = styled__default['default'].div(_templateObject14$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+// max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
+
 var TagChip = styled__default['default'](antd.Tag)(_templateObject15$1());
-var SearchTagChip = styled__default['default'](TagChip)(_templateObject16$1());
+var SearchTagChip = styled__default['default'](TagChip)(_templateObject16$1()); // height 100% 추가 : y 아랫부분이 짤려서
+
 var TagChipText = styled__default['default'].div(_templateObject17$1());
 var TagChipNum = styled__default['default'].div(_templateObject18$1());
 
@@ -9216,6 +9234,7 @@ var AddTagForm = function AddTagForm(_ref) {
 
       case "Escape":
         toggleTagInput();
+        setValue("");
         break;
     }
   }; // return useObserver(()=>(
@@ -9247,7 +9266,7 @@ var TagListContainer = function TagListContainer() {
       setIsEllipsisActive = _useState4[1];
 
   var focusedTag = React.useRef([]);
-  var tagList = React.useRef(null);
+  var tagList = React.useRef(null); // scroll 때문에 필요
 
   var handleCloseBtn = function handleCloseBtn(targetId, targetText) {
     if (targetId) {
@@ -9263,7 +9282,8 @@ var TagListContainer = function TagListContainer() {
       TagStore.setNoteTagList(exceptTag);
       TagStore.removeAddTagList(targetText);
     }
-  };
+  }; // AddTagForm 보여줄지말지
+
 
   var toggleTagInput = function toggleTagInput() {
     if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
@@ -9271,8 +9291,10 @@ var TagListContainer = function TagListContainer() {
 
   var onClickNewTagBtn = function onClickNewTagBtn() {
     toggleTagInput();
-    var target = tagList.current.children[0];
-    if (target) target.scrollIntoView(false);
+    tagList.current.scrollTo({
+      left: 0,
+      behavior: 'smooth'
+    });
   };
 
   var handleFocus = function handleFocus(e) {
@@ -9283,7 +9305,7 @@ var TagListContainer = function TagListContainer() {
     return function () {
       TagStore.setCurrentTagData(id, text);
       TagStore.setEditTagValue(text);
-      TagStore.setEditTagIndex(index);
+      TagStore.setEditTagIndex(index); // input창을 보여줄지 말지
     };
   };
 
@@ -9338,7 +9360,12 @@ var TagListContainer = function TagListContainer() {
         break;
 
       case "Escape":
-        TagStore.setIsNewTag(false);
+        TagStore.setIsNewTag(false); // todo : 필요한건지 체크
+
+        TagStore.setCurrentTagData("", "");
+        TagStore.setEditTagValue("");
+        TagStore.setEditTagIndex(""); // input 태그 보여줄지 tagchip 보여줄지 결정
+
         break;
     }
   };
@@ -9347,12 +9374,13 @@ var TagListContainer = function TagListContainer() {
     if (!e.target.closest(".ant-tag")) {
       TagStore.setSelectTagIndex('');
     }
-  };
+  }; // focusedTag.current에 idx 키에 element가 있다
+
 
   var handleClickTag = function handleClickTag(idx, e) {
-    var prev = focusedTag.current;
-    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(prev[idx], idx);
-  }; // idx : null 가능
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(focusedTag.current[idx], idx);
+  }; // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
+  // idx : null 가능
 
 
   var changeFocusedTag = function changeFocusedTag(target, idx) {
@@ -9735,7 +9763,7 @@ var FileLayout = function FileLayout() {
         src: fileExtension(item.file_extension)
       }))), item.error ? /*#__PURE__*/React__default['default'].createElement(FileErrorIcon, null, /*#__PURE__*/React__default['default'].createElement(icons.ExclamationCircleFilled, null)) : null, /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
-      }, item.file_name + '.' + item.file_extension)), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }, item.file_name, item.fileExtension && ".".concat(item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -9778,12 +9806,12 @@ var FileLayout = function FileLayout() {
       }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
       }))), /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
-        title: isEllipsisActive ? item.file_name + '.' + item.file_extension : null,
+        title: isEllipsisActive ? item.file_name + (item.fileExtension ? ".".concat(item.file_extension) : '') : null,
         placement: "top"
       }, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null,
         onMouseOver: handleTooltip
-      }, item.file_name + '.' + item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }, item.file_name, item.fileExtension && ".".concat(item.file_extension)))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -9837,7 +9865,7 @@ var EditorContainer = function EditorContainer() {
       fileName = fileName.substring(0, dotIndex);
     }
 
-    isImage = EditorStore.uploadFileIsImage(fileExtension);
+    isImage = fileExtension && EditorStore.uploadFileIsImage(fileExtension);
     var fd = new FormData();
     if (isImage) fd.append('image', blobInfo.blob());else fd.append('file', blobInfo.blob());
 
