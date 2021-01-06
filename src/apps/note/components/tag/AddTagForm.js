@@ -35,6 +35,7 @@ const AddTagForm = ({show, toggleTagInput, setOpenModal}) => {
         break;
       case "Escape":
         toggleTagInput();
+        setValue("");
         break;
       default:
         break;
