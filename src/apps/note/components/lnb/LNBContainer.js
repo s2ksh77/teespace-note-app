@@ -72,7 +72,7 @@ const LNBContainer = () => {
               {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />
-              {ChapterStore.sortedChapterList.sharedPageList.length > 0 ?
+              {ChapterStore.sortedChapterList.sharedPageList.length > 0 && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length > 0 ?
                 <ChapterList type={"sharedPageList"} isShared={true} /> : null}
               {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ?
                 <ChapterList type={"sharedChapterList"} isShared={true} /> : null}
