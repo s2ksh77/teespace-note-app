@@ -3473,6 +3473,8 @@ var ChapterStore = observable((_observable$2 = {
     10: "#E780FF",
     11: "#FF7BA8"
   },
+  // 검색 실행 화면 필요
+  isLoadingSearchResult: false,
   isSearching: false,
   isTagSearching: false,
   //tag chip 클릭해서 tag chip 띄울 때 씀
@@ -3620,6 +3622,12 @@ var ChapterStore = observable((_observable$2 = {
         value = _NoteRepository$getCh2.value;
 
     return value;
+  },
+  getIsLoadingSearchResult: function getIsLoadingSearchResult() {
+    return this.isLoadingSearching;
+  },
+  setIsLoadingSearchResult: function setIsLoadingSearchResult(isLoadingSearchResult) {
+    this.isLoadingSearchResult = isLoadingSearchResult;
   },
   getIsSearching: function getIsSearching() {
     return this.isSearching;
@@ -4198,6 +4206,7 @@ var ChapterStore = observable((_observable$2 = {
     }
   });
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
+  this.setIsLoadingSearchResult(false);
   this.setIsSearching(false);
   this.setIsTagSearching(false);
   this.setSearchResult({});
@@ -4239,10 +4248,16 @@ var ChapterStore = observable((_observable$2 = {
             _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
 
 
-            _context12.next = 3;
+            _this13.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+
+
+            _context12.next = 4;
             return _this13.getSearchResult();
 
-          case 3:
+          case 4:
+            _this13.setIsLoadingSearchResult(false);
+
+          case 5:
           case "end":
             return _context12.stop();
         }
