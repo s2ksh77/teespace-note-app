@@ -130,12 +130,11 @@ export const FileDownloadIcon = styled.div`
   cursor: pointer;
   margin-right: 0.38rem;
   margin-right: 0.375rem;
-  margin-top: 5px;
-  width: 30px;
-  height: 30px;
+  width: 1.88rem;
+  height: 1.88rem;
   &:hover{
     background-color : #C4C6FF;
-    border-radius: 15px;
+    border-radius: 25px;
   }
 `
 export const FileErrorIcon = styled.div`
@@ -169,6 +168,7 @@ export const FileExtensionIcon = styled.div`
 `
 
 export const FileDownloadBtn = styled.img`
+  filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 `
 export const FileExtensionBtn = styled.img`
 `
@@ -176,11 +176,12 @@ export const FileExtensionBtn = styled.img`
 export const FileData = styled.div`
   height: auto;
   line-height: 0.9375rem;
-  max-width: 9.55rem;
+  min-width: ${(props) => props.mode === "true" ? "" : "9.5rem"};
   overflow: inherit;
   display: inline-block;
   height: 40px;
   cursor : pointer;
+  flex: 1;
 `
 
 export const FileDataName = styled.div`
