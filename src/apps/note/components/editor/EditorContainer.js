@@ -175,7 +175,7 @@ const EditorContainer = () => {
             height: 'calc(100% - 8.8rem)',
             setup: function (editor) {
               setNoteEditor(editor);
-              // fired when a dialog has been opend
+              // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
                 editor.focus();
                 handleEditorContentsListener();
@@ -183,6 +183,7 @@ const EditorContainer = () => {
               editor.on('PostProcess', () => {
                 handleEditorContentsListener();
               })
+              // fired when a dialog has been opend
               editor.on('OpenWindow', (e) => {
                 try {
                   // link dialog 열렸을 때
