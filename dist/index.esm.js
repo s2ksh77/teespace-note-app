@@ -3190,32 +3190,36 @@ var PageStore = observable((_observable$1 = {
       }, _callee8);
     }))();
   },
+  getSortedMoveInfoList: function getSortedMoveInfoList() {
+    return this.moveInfoList.slice().sort(function (a, b) {
+      if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+      return a.chapterIdx - b.chapterIdx;
+    });
+  },
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
       var _item$moveTargetChapt;
 
-      var item, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx;
+      var item, movePageId, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
+              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
+              movePageId = _this5.movePageId; // Step1. moveInfoList를 오름차순으로 정렬
 
-              sortedMoveInfoList = _this5.moveInfoList.slice().sort(function (a, b) {
-                if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
-                return a.chapterIdx - b.chapterIdx;
-              }); // Step2. LocalStorage에서 삭제 / 서비스 호출
+              sortedMoveInfoList = _this5.getSortedMoveInfoList(); // Step2. LocalStorage에서 삭제 / 서비스 호출
 
-              _context9.next = 4;
+              _context9.next = 5;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
                 if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
                 item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
                 if (moveInfo.chapterId !== moveTargetChapterId) return _this5.movePage(moveInfo.pageId, moveTargetChapterId);
               }));
 
-            case 4:
+            case 5:
               // Step3. LocalStorage에 추가
               pageIds = sortedMoveInfoList.map(function (moveInfo) {
                 return moveInfo.pageId;
@@ -3245,20 +3249,20 @@ var PageStore = observable((_observable$1 = {
                 };
               });
               localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-              ChapterStore.getNoteChapterList();
 
-              _this5.setCurrentPageId(_this5.movePageId);
+              _this5.setCurrentPageId(movePageId);
 
               ChapterStore.setCurrentChapterId(moveTargetChapterId);
+              ChapterStore.getNoteChapterList();
 
-              _this5.fetchCurrentPageData(_this5.movePageId).then(function () {
+              _this5.fetchCurrentPageData(movePageId).then(function () {
                 if (moveCntInSameChapter + moveCntToAnotherChapter > 0) {
                   if (!moveCntToAnotherChapter) NoteStore$1.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));else NoteStore$1.setToastText("".concat(moveCntInSameChapter + moveCntToAnotherChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
                   NoteStore$1.setIsVisibleToast(true);
                 }
               });
 
-            case 16:
+            case 17:
             case "end":
               return _context9.stop();
           }
@@ -4343,6 +4347,12 @@ var ChapterStore = observable((_observable$2 = {
   };
 }), _defineProperty(_observable$2, "handleClickOutside", function handleClickOutside() {
   var _this11 = this;
+
+  if (!this.currentChapterId) {
+    this.setIsCtrlKeyDown(false);
+    this.setMoveInfoList([]);
+    return;
+  }
 
   var currentMoveInfo = this.moveInfoList.find(function (moveInfo) {
     return moveInfo.chapterId === _this11.currentChapterId;
@@ -9986,8 +9996,6 @@ var EditorContainer = function EditorContainer() {
           return;
         }
       }
-
-      console.log(files);
 
       for (var _i = 0; _i < files.length; _i++) {
         (function (file) {
