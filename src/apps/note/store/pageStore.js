@@ -298,6 +298,14 @@ const PageStore = observable({
         this.currentPageData = data;
         this.prevModifiedUserName = this.currentPageData.user_name;
         this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false)
+        /* 
+          ims 249802 : 태그탭 클릭 후 [새 페이지 추가] 버튼을 누르면 실행 취소 버튼이 활성화되어 있는 이슈
+          createNotePage에서 showPage(true)로 Editor setup이 동작하는데, 아직 새 노트 info를 받아오지 못한 상태라 
+          setup 안의 setNoteEditor에서 예전 노트 내용으로 setContent가 이루어진다
+          이후 init을 타고,
+          후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
+        */
+       EditorStore.tinymce.undoManager.clear();
       })
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
