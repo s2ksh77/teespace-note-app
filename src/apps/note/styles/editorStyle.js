@@ -176,6 +176,7 @@ export const FileExtensionBtn = styled.img`
 export const FileData = styled.div`
   height: auto;
   line-height: 0.9375rem;
+  max-width: 9.55rem;
   min-width: ${(props) => props.mode === "true" ? "" : "9.5rem"};
   overflow: inherit;
   display: inline-block;

@@ -8952,7 +8952,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
