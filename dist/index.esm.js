@@ -4757,6 +4757,7 @@ var NoteMeta = {
       case 'confirm':
       case 'titleDuplicate':
       case 'failUpload':
+      case 'sizefailUpload':
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore$1.setModalInfo(null);
@@ -4831,6 +4832,7 @@ var NoteMeta = {
       case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
       case 'failUpload':
+      case 'sizefailUpload':
         return [{
           type: 'confirm',
           text: '확인'
@@ -4948,6 +4950,12 @@ var NoteMeta = {
         dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
         dialogType.subtitle = "(".concat(EditorStore$1.uploadLength, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(EditorStore$1.failCount, "\uAC1C \uC2E4\uD328)");
         dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
+        break;
+
+      case 'sizefailUpload':
+        dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('sizefailUpload');
         break;
 
       case 'failUpload':
@@ -5212,6 +5220,7 @@ var NoteStore$1 = observable({
       case 'shareRoom':
       case 'multiFileSomeFail':
       case 'failUpload':
+      case 'sizefailUpload':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
@@ -9957,6 +9966,9 @@ var EditorContainer = function EditorContainer() {
 
     input.onchange = function () {
       var files = this.files;
+      var uploadsize = 0;
+      var totalsize = 20000000000; // 20GB
+
       EditorStore.setFileLength(files.length);
 
       if (EditorStore.uploadLength > 30) {
@@ -9964,7 +9976,20 @@ var EditorContainer = function EditorContainer() {
         return;
       }
 
-      for (var i = 0; i < files.length; i++) {
+      if (files) {
+        for (var i = 0; i < files.length; i++) {
+          uploadsize += files[i].size;
+        }
+
+        if (uploadsize > totalsize) {
+          NoteStore$1.setModalInfo('sizefailUpload');
+          return;
+        }
+      }
+
+      console.log(files);
+
+      for (var _i = 0; _i < files.length; _i++) {
         (function (file) {
           var reader = new FileReader(); // var isImage = EditorStore.readerIsImage(file.type);
 
@@ -9986,7 +10011,7 @@ var EditorContainer = function EditorContainer() {
           };
 
           reader.readAsDataURL(file);
-        })(files[i]);
+        })(files[_i]);
       }
     };
 

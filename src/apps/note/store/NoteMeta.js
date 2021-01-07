@@ -57,6 +57,7 @@ const NoteMeta = {
       case 'confirm':
       case 'titleDuplicate':
       case 'failUpload':
+      case 'sizefailUpload':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'fileDelete':
@@ -91,6 +92,7 @@ const NoteMeta = {
       case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
       case 'failUpload':
+      case 'sizefailUpload':
         return [{ type: 'confirm', text: '확인' }];
       case 'editCancel':
         return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
@@ -168,6 +170,11 @@ const NoteMeta = {
         dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
         dialogType.subtitle = `(${EditorStore.uploadLength}개 항목 중 ${EditorStore.failCount}개 실패)`;
         dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
+        break;
+      case 'sizefailUpload':
+        dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
+        dialogType.subtitle = '';
+        dialogType.buttonConfig = this.setButtonConfig('sizefailUpload');
         break;
       case 'failUpload':
         dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
