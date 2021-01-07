@@ -94,10 +94,21 @@ const EditorContainer = () => {
     }
     input.onchange = function () {
       var files = this.files;
+      var uploadsize = 0;
+      var totalsize = 20000000000; // 20GB
       EditorStore.setFileLength(files.length);
       if (EditorStore.uploadLength > 30) {
         NoteStore.setModalInfo('failUpload');
         return;
+      }
+      if (files) {
+        for (let i = 0; i < files.length; i++) {
+          uploadsize += files[i].size
+        }
+        if (uploadsize > totalsize) {
+          NoteStore.setModalInfo('sizefailUpload');
+          return;
+        }
       }
       for (let i = 0; i < files.length; i++) {
         (function (file) {

@@ -166,6 +166,7 @@ const NoteStore = observable({
       case 'shareRoom':
       case 'multiFileSomeFail':
       case 'failUpload':
+      case 'sizefailUpload':
         this.modalInfo = NoteMeta.openDialog(modalType);
         this.setShowModal(true);
         break;
