@@ -143,6 +143,7 @@ const FileLayout = () => {
 
                 } else if (dto.resultMsg === 'Fail') {
                     EditorStore.tempFileLayoutList[index].deleted = undefined;
+                    EditorStore.tempFileLayoutList.splice(index, 1);
                 }
             });
         } else if (type === 'uploaded' && EditorStore.fileLayoutList.length > 0) {
@@ -155,6 +156,7 @@ const FileLayout = () => {
                     }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                     EditorStore.fileLayoutList[index].deleted = undefined;
+                    EditorStore.fileLayoutList.splice(index, 1);
                 }
             });
         }

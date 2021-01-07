@@ -9709,6 +9709,7 @@ var FileLayout = function FileLayout() {
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.tempFileLayoutList[index].deleted = undefined;
+                  EditorStore.tempFileLayoutList.splice(index, 1);
                 }
               });
 
@@ -9732,6 +9733,7 @@ var FileLayout = function FileLayout() {
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.fileLayoutList[index].deleted = undefined;
+                  EditorStore.fileLayoutList.splice(index, 1);
                 }
               });
 
