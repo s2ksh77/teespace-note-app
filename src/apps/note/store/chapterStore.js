@@ -475,6 +475,11 @@ const ChapterStore = observable({
   },
 
   handleClickOutside() {
+    if (!this.currentChapterId) {
+      this.setIsCtrlKeyDown(false);
+      this.setMoveInfoList([]);
+      return;
+    }
     let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.chapterId === this.currentChapterId);
     if (!currentMoveInfo)
       currentMoveInfo = this.createMoveInfo(this.currentChapterId);
@@ -669,7 +674,7 @@ const ChapterStore = observable({
     await PageStore.fetchCurrentPageData(pageId);
     // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
     // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-    this.setCurrentChapterId(chapterId);    
+    this.setCurrentChapterId(chapterId);
   },
   /*
     loading true->false가 들어간 함수
