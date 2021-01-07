@@ -96,11 +96,11 @@ export const GlobalStyle = createGlobalStyle`
     background-color: rgba(255,255,255,0.50);
     z-index:20;
   }
-  .draggedPage{
+  .draggedPageContainer{
     display: none;
-    align-items: center;
+    flex-direction: column;
     position: absolute;
-    padding-left: 3.125rem;
+    align-items: center;
     font-size: 0.81rem;
     background-color: rgba(30,168,223,0.20);
     z-index:20;
