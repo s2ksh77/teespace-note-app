@@ -8963,7 +8963,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
@@ -8983,7 +8983,7 @@ function _templateObject22$1() {
 }
 
 function _templateObject21$1() {
-  var data = _taggedTemplateLiteral(["\n"]);
+  var data = _taggedTemplateLiteral(["\n  filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);\n"]);
 
   _templateObject21$1 = function _templateObject21() {
     return data;
@@ -9023,7 +9023,7 @@ function _templateObject18$2() {
 }
 
 function _templateObject17$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  margin-top: 5px;\n  width: 30px;\n  height: 30px;\n  &:hover{\n    background-color : #C4C6FF;\n    border-radius: 15px;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n  &:hover{\n    background-color : #C4C6FF;\n    border-radius: 25px;\n  }\n"]);
 
   _templateObject17$2 = function _templateObject17() {
     return data;
@@ -9223,7 +9223,9 @@ var ProgressWrapper = styled__default['default'].div(_templateObject19$1());
 var FileExtensionIcon = styled__default['default'].div(_templateObject20$1(), FileDownloadIcon);
 var FileDownloadBtn = styled__default['default'].img(_templateObject21$1());
 var FileExtensionBtn = styled__default['default'].img(_templateObject22$1());
-var FileData = styled__default['default'].div(_templateObject23$1());
+var FileData = styled__default['default'].div(_templateObject23$1(), function (props) {
+  return props.mode === "true" ? "" : "9.5rem";
+});
 var FileDataName = styled__default['default'].div(_templateObject24$1());
 var FileName = styled__default['default'].div(_templateObject25$1());
 var FileDataTime = styled__default['default'].div(_templateObject26$1());
@@ -9615,6 +9617,7 @@ var FileLayout = function FileLayout() {
 
   var handleMouseLeave = function handleMouseLeave() {
     setHoverFileId(null);
+    setHover(false);
   };
 
   var handleHoverIcon = function handleHoverIcon(idx) {
@@ -9800,9 +9803,17 @@ var FileLayout = function FileLayout() {
         placement: "bottomCenter",
         onClick: handleClickDropDown(item.file_id)
       }, /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, hover && item.file_id === hoverFileId ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
-        src: img$c
+        src: img$c,
+        style: {
+          width: "1.25rem",
+          height: "1.25rem"
+        }
       }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
-        src: fileExtension(item.file_extension)
+        src: fileExtension(item.file_extension),
+        style: {
+          width: "1.875rem",
+          height: "1.875rem"
+        }
       }))), item.error ? /*#__PURE__*/React__default['default'].createElement(FileErrorIcon, null, /*#__PURE__*/React__default['default'].createElement(icons.ExclamationCircleFilled, null)) : null, /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
       }, item.file_name, item.fileExtension && ".".concat(item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
@@ -9844,10 +9855,20 @@ var FileLayout = function FileLayout() {
         onMouseEnter: handleHoverIcon.bind(null, index),
         onMouseLeave: handleLeaveIcon
       }, hover && index === hoverFileIdx ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
-        src: img$c
+        src: img$c,
+        style: {
+          width: "1.25rem",
+          height: "1.25rem"
+        }
       }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
-        src: fileExtension(item.file_extension)
-      }))), /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+        src: fileExtension(item.file_extension),
+        style: {
+          width: "1.875rem",
+          height: "1.875rem"
+        }
+      }))), /*#__PURE__*/React__default['default'].createElement(FileData, {
+        mode: PageStore.isReadMode().toString()
+      }, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
         title: isEllipsisActive ? item.file_name + (item.fileExtension ? ".".concat(item.file_extension) : '') : null,
         placement: "top"
       }, /*#__PURE__*/React__default['default'].createElement(FileName, {

@@ -55,6 +55,7 @@ const FileLayout = () => {
     }
     const handleMouseLeave = () => {
         setHoverFileId(null);
+        setHover(false);
     }
     const handleHoverIcon = (idx) => {
         setHoverFileIdx(idx);
@@ -194,7 +195,7 @@ const FileLayout = () => {
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
                                 <FileDownloadIcon>
-                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} style={{ width: "1.25rem", height: "1.25rem" }} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} style={{ width: "1.875rem", height: "1.875rem" }} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
                             {item.error ? <FileErrorIcon><ExclamationCircleFilled /></FileErrorIcon> : null}
@@ -247,12 +248,12 @@ const FileLayout = () => {
                                 <FileDownloadIcon
                                     onMouseEnter={handleHoverIcon.bind(null, index)}
                                     onMouseLeave={handleLeaveIcon}>
-                                    {hover && index === hoverFileIdx ? (<FileDownloadBtn src={downloadBtn} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                    {hover && index === hoverFileIdx ? (<FileDownloadBtn src={downloadBtn} style={{ width: "1.25rem", height: "1.25rem" }} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} style={{ width: "1.875rem", height: "1.875rem" }} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
-                            <FileData>
+                            <FileData mode={PageStore.isReadMode().toString()}>
                                 <FileDataName>
-                                    <Tooltip 
+                                    <Tooltip
                                         title={isEllipsisActive
                                             ? item.file_name + (item.fileExtension ? `.${item.file_extension}` : '')
                                             : null}
