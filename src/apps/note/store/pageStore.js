@@ -394,14 +394,19 @@ const PageStore = observable({
     return dto;
   },
 
-  async moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
-    const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-
-    // Step1. moveInfoList를 오름차순으로 정렬
-    const sortedMoveInfoList = this.moveInfoList.slice().sort((a, b) => {
+  getSortedMoveInfoList() {
+    return this.moveInfoList.slice().sort((a, b) => {
       if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
       return a.chapterIdx - b.chapterIdx;
     });
+  },
+
+  async moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
+    const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+    const movePageId = this.movePageId;
+
+    // Step1. moveInfoList를 오름차순으로 정렬
+    const sortedMoveInfoList = this.getSortedMoveInfoList();
 
     // Step2. LocalStorage에서 삭제 / 서비스 호출
     await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
@@ -442,10 +447,10 @@ const PageStore = observable({
     });
 
     localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-    ChapterStore.getNoteChapterList();
-    this.setCurrentPageId(this.movePageId);
+    this.setCurrentPageId(movePageId);
     ChapterStore.setCurrentChapterId(moveTargetChapterId);
-    this.fetchCurrentPageData(this.movePageId).then(() => {
+    ChapterStore.getNoteChapterList();
+    this.fetchCurrentPageData(movePageId).then(() => {
       if (moveCntInSameChapter + moveCntToAnotherChapter > 0) {
         if (!moveCntToAnotherChapter)
           NoteStore.setToastText(`${moveCntInSameChapter}개의 페이지가 이동하였습니다.`);
