@@ -6634,13 +6634,8 @@ var LNBHeader = function LNBHeader(_ref) {
       onKeyDown: function onKeyDown(e) {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
       }
-    }), /*#__PURE__*/React__default['default'].createElement(Button, {
+    }), !ChapterStore.isSearching && ChapterStore.searchStr === "" || ChapterStore.isTagSearching ? null : /*#__PURE__*/React__default['default'].createElement(Button, {
       src: img,
-      style: ChapterStore.isSearching || ChapterStore.searchStr !== "" ? {
-        display: ""
-      } : {
-        display: "none"
-      },
       onClick: onClickCancelBtn
     })), NoteStore$1.layoutState === 'collapse' && /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null)));
   });
