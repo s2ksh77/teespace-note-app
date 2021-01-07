@@ -15,7 +15,7 @@ import TempEditor from './components/editor/TempEditor';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
@@ -112,7 +112,10 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
           />
           {NoteStore.isDragging
             ? NoteStore.draggedType && NoteStore.draggedTitle
-              ? <DragPreview type={NoteStore.draggedType} title={NoteStore.draggedTitle} />
+              ? <DragPreview 
+                type={NoteStore.draggedType} 
+                title={NoteStore.draggedTitle}
+                titles={PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text)} />
               : null
             : null}
           <TempEditor />

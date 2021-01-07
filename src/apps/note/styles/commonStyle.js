@@ -380,3 +380,17 @@ export const RightAligned = styled.div`
   display:flex;
   margin-left:auto;
 `;
+
+export const DraggedComponent = styled.div`
+  display: flex;
+  height: 2.81rem;
+  align-items: center;
+  padding-left: 3.125rem;
+`;
+
+export const DraggedComponentTitle = styled.span`
+  padding-right: 1.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  whiteSpace: nowrap;
+`;

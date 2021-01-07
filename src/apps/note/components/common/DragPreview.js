@@ -4,6 +4,10 @@ import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
 import takaImg from '../../assets/file_move_taka.png';
 import NoteStore from '../../store/noteStore';
+import {
+  DraggedComponent,
+  DraggedComponentTitle,
+} from "../../styles/commonStyle";
 
 let subscribedToOffsetChange = false;
 let dragPreviewRef = null;
@@ -22,9 +26,10 @@ const onOffsetChange = (monitor) => () => {
   dragPreviewRef.style['-webkit-transform'] = transform;
 };
 
-const DragPreview = ({ type, title }) => {
+const DragPreview = ({ type, title, titles }) => {
   const { PageStore } = useNoteStore();
   const previewRef = useRef(null);
+  const element = document.getElementById(PageStore.movePageId);
 
   useEffect(() => {
     dragPreviewRef = previewRef.current;
@@ -38,17 +43,6 @@ const DragPreview = ({ type, title }) => {
       dragPreviewRef.style['top'] = (offset.y - 41) + 'px';
       dragPreviewRef.style['left'] = (offset.x - 346) + 'px';
     }
-
-    switch (type) {
-      case 'page':
-        const element = document.getElementById(PageStore.movePageId);
-        dragPreviewRef.style['width'] = element.offsetWidth + 'px';
-        dragPreviewRef.style['height'] = element.offsetHeight + 'px';
-        break;
-      default:
-        break;
-    }
-
   }, [previewRef]);
 
   return useObserver(() => (
@@ -57,7 +51,7 @@ const DragPreview = ({ type, title }) => {
       className={
         type === 'chapter'
           ? 'draggedChapter'
-          : 'draggedPage'
+          : 'draggedPageContainer'
       }
     >
       {type === 'chapter'
@@ -68,13 +62,20 @@ const DragPreview = ({ type, title }) => {
         : null}
       {type === 'chapter'
         ? title
-        : <span 
-          style={{ 
-            paddingRight: '1.75rem', overflow: 'hidden', 
-            textOverflow: 'ellipsis', whiteSpace: 'nowrap'
-          }}>
-            {title}
-        </span>
+        : (
+          titles.map((title, idx) => {
+            return (
+              <DraggedComponent 
+                key={idx}
+                style={{ 
+                  width: `${element.offsetWidth}px`,
+                }}
+              >
+                <DraggedComponentTitle>{title}</DraggedComponentTitle>
+              </DraggedComponent>
+            )
+          })
+        )
       }
     </div>
   ));
