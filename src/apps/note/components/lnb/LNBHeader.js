@@ -91,8 +91,8 @@ const LNBHeader = ({ createNewChapter }) => {
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}
-          <Button src={cancelImg}
-            style={(ChapterStore.isSearching || ChapterStore.searchStr !== "") ? { display: "" } : { display: "none" }} onClick={onClickCancelBtn} />
+          {((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)
+          ? null :  <Button src={cancelImg} onClick={onClickCancelBtn} /> }          
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
