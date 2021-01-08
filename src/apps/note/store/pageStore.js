@@ -305,7 +305,7 @@ const PageStore = observable({
           이후 init을 타고,
           후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
         */
-       EditorStore.tinymce.undoManager.clear();
+        EditorStore.tinymce.undoManager.clear();
       })
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
@@ -588,6 +588,7 @@ const PageStore = observable({
         note_id: this.currentPageData.note_id,
         note_title: this.noteTitle,
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
+        text_content: EditorStore.tinymce.getContent({ format: "text" }),
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: '',
         TYPE: 'EDIT_DONE',
@@ -642,7 +643,7 @@ const PageStore = observable({
           if (!!contentList[i].textContent) return contentList[i].textContent;
         } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
           if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-        } 
+        }
         // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
         // 그냥 <pre> 태그만 있는 경우도 있음
         else if (contentList[i].textContent) {

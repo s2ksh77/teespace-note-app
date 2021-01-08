@@ -6,7 +6,7 @@ import { checkNotDuplicate } from '../components/common/validators';
 
 const ChapterStore = observable({
   chapterColor: "",
-  loadingPageInfo:false, // 2panel(pageContainer용)
+  loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
   sortedChapterList: {
     roomChapterList: [],
@@ -31,7 +31,7 @@ const ChapterStore = observable({
     11: "#FF7BA8",
   },
   // 검색 실행 화면 필요
-  isLoadingSearchResult:false,
+  isLoadingSearchResult: false,
   isSearching: false,
   isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
   searchingTagName: '',
@@ -277,6 +277,12 @@ const ChapterStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.getChapterInfoList(chapterId);
+    return dto;
+  },
+  async getSearchList() {
+    const {
+      data: { dto },
+    } = await NoteRepository.getSearchList(ChapterStore.searchStr);
     return dto;
   },
 
@@ -571,6 +577,9 @@ const ChapterStore = observable({
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
     this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
     await this.getSearchResult();
+    this.getSearchList().then(dto => {
+      console.log(dto)
+    })
     this.setIsLoadingSearchResult(false);
   },
   async getSearchResult() {
@@ -616,7 +625,7 @@ const ChapterStore = observable({
 
   createNoteShareChapter(targetRoomId, targetChapterList) {
     if (!targetChapterList) return;
-    
+
     const targetChId = NoteStore.getTargetChId(targetRoomId);
     const targetList = targetChapterList.map(chapter => {
       return ({
