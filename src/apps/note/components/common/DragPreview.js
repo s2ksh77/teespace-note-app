@@ -5,6 +5,7 @@ import { DragLayer } from "react-dnd";
 import takaImg from '../../assets/file_move_taka.png';
 import NoteStore from '../../store/noteStore';
 import {
+  DraggedComponentContainer,
   DraggedComponent,
   DraggedComponentTitle,
 } from "../../styles/commonStyle";
@@ -26,10 +27,9 @@ const onOffsetChange = (monitor) => () => {
   dragPreviewRef.style['-webkit-transform'] = transform;
 };
 
-const DragPreview = ({ type, title, titles }) => {
-  const { PageStore } = useNoteStore();
+const DragPreview = ({ id, titles }) => {
   const previewRef = useRef(null);
-  const element = document.getElementById(PageStore.movePageId);
+  const element = document.getElementById(id);
 
   useEffect(() => {
     dragPreviewRef = previewRef.current;
@@ -46,38 +46,20 @@ const DragPreview = ({ type, title, titles }) => {
   }, [previewRef]);
 
   return useObserver(() => (
-    <div
-      ref={previewRef}
-      className={
-        type === 'chapter'
-          ? 'draggedChapter'
-          : 'draggedPageContainer'
-      }
-    >
-      {type === 'chapter'
-        ? <img
-          src={takaImg}
-          style={{ position: 'absolute', top: '-1.5rem', left: '-2.5rem' }}
-        />
-        : null}
-      {type === 'chapter'
-        ? title
-        : (
-          titles.map((title, idx) => {
-            return (
-              <DraggedComponent 
-                key={idx}
-                style={{ 
-                  width: `${element.offsetWidth}px`,
-                }}
-              >
-                <DraggedComponentTitle>{title}</DraggedComponentTitle>
-              </DraggedComponent>
-            )
-          })
+    <DraggedComponentContainer ref={previewRef}>
+      {titles.map((title, idx) => {
+        return (
+          <DraggedComponent 
+            key={idx}
+            style={{ 
+              width: `${element.offsetWidth}px`,
+            }}
+          >
+            <DraggedComponentTitle>{title}</DraggedComponentTitle>
+          </DraggedComponent>
         )
-      }
-    </div>
+      })}
+    </DraggedComponentContainer>
   ));
 };
 

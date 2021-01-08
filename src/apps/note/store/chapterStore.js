@@ -487,13 +487,17 @@ const ChapterStore = observable({
     this.setMoveInfoList([currentMoveInfo]);
   },
 
+  getSortedMoveInfoList() {
+    return this.moveInfoList.slice().sort((a, b) => {
+      return a.chapterIdx - b.chapterIdx;
+    });
+  },
+
   moveChapter(moveTargetChapterIdx) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
     // Step1. moveInfoList를 오름차순으로 정렬
-    const sortedMoveInfoList = this.moveInfoList.slice().sort((a, b) => {
-      return a.chapterIdx - b.chapterIdx;
-    });
+    const sortedMoveInfoList = this.getSortedMoveInfoList();
 
     const chapters = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx]);
 

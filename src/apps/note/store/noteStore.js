@@ -25,8 +25,8 @@ const NoteStore = observable({
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
-  draggedType: '',
-  draggedTitle: '',
+  draggedComponentId: '',
+  drageedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
@@ -245,11 +245,11 @@ const NoteStore = observable({
   setIsDragging(isDragging) {
     this.isDragging = isDragging;
   },
-  setDraggedType(type) {
-    this.draggedType = type;
+  setDraggedComponentId(id) {
+    this.draggedComponentId = id;
   },
-  setDraggedTitle(title) {
-    this.draggedTitle = title;
+  setDrageedComponentTitles(titles) {
+    this.drageedComponentTitles = titles;
   },
   setDraggedOffset(offset) {
     this.draggedOffset = offset;

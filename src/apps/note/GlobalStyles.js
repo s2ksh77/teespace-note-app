@@ -80,31 +80,6 @@ export const GlobalStyle = createGlobalStyle`
       transform: translate(-0.43rem, 2.38rem);
     }
   }
-  .draggedChapter{
-    display: none;
-    align-items: center;
-    position: absolute;
-    width: auto;
-    height: auto;
-    border: 0.0625rem solid #dadada;
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-    margin-left: 2.5rem;
-    padding: 0.5rem;
-    padding-left: 1.5rem;
-    font-size: 0.81rem;
-    background-color: rgba(255,255,255,0.50);
-    z-index:20;
-  }
-  .draggedPageContainer{
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    align-items: center;
-    font-size: 0.81rem;
-    background-color: rgba(30,168,223,0.20);
-    z-index:20;
-  }
   .tagBorderTopLine{
     border-top: 0.13rem solid #FB3A3A;
     &::before {

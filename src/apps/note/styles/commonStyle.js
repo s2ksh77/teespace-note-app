@@ -381,6 +381,16 @@ export const RightAligned = styled.div`
   margin-left:auto;
 `;
 
+export const DraggedComponentContainer = styled.div`
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+  font-size: 0.81rem;
+  background-color: rgba(30,168,223,0.20);
+  z-index:20;
+`;
+
 export const DraggedComponent = styled.div`
   display: flex;
   height: 2.81rem;
