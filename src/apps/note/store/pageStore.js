@@ -452,7 +452,7 @@ const PageStore = observable({
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
       await ChapterStore.getNoteChapterList();
-      if (ChapterStore.currentChapterId) await this.fetchCurrentPageData(this.movePageId);
+      if (ChapterStore.currentChapterId) await this.fetchCurrentPageData(this.moveInfoList[0]?.pageId);
       else this.handleClickOutside();
 
       if (!moveCntToAnotherChapter) {
