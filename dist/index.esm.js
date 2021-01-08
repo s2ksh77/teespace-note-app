@@ -2988,11 +2988,17 @@ var PageStore = observable((_observable$1 = {
   handleClickOutside: function handleClickOutside() {
     var _this4 = this;
 
+    this.setIsCtrlKeyDown(false);
+
+    if (!this.currentPageId) {
+      this.setMoveInfoList([]);
+      return;
+    }
+
     var currentMoveInfo = this.moveInfoList.find(function (moveInfo) {
       return moveInfo.pageId === _this4.currentPageId;
     });
     if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
-    this.setIsCtrlKeyDown(false);
     this.setMoveInfoList([currentMoveInfo]);
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
@@ -4177,8 +4183,9 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "handleClickOutside", function handleClickOutside() {
   var _this11 = this;
 
+  this.setIsCtrlKeyDown(false);
+
   if (!this.currentChapterId) {
-    this.setIsCtrlKeyDown(false);
     this.setMoveInfoList([]);
     return;
   }
@@ -4187,7 +4194,6 @@ var ChapterStore = observable((_observable$2 = {
     return moveInfo.chapterId === _this11.currentChapterId;
   });
   if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-  this.setIsCtrlKeyDown(false);
   this.setMoveInfoList([currentMoveInfo]);
 }), _defineProperty(_observable$2, "getSortedMoveInfoList", function getSortedMoveInfoList() {
   return this.moveInfoList.slice().sort(function (a, b) {
