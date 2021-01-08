@@ -4189,12 +4189,14 @@ var ChapterStore = observable((_observable$2 = {
   if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
   this.setIsCtrlKeyDown(false);
   this.setMoveInfoList([currentMoveInfo]);
+}), _defineProperty(_observable$2, "getSortedMoveInfoList", function getSortedMoveInfoList() {
+  return this.moveInfoList.slice().sort(function (a, b) {
+    return a.chapterIdx - b.chapterIdx;
+  });
 }), _defineProperty(_observable$2, "moveChapter", function moveChapter(moveTargetChapterIdx) {
   var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
 
-  var sortedMoveInfoList = this.moveInfoList.slice().sort(function (a, b) {
-    return a.chapterIdx - b.chapterIdx;
-  });
+  var sortedMoveInfoList = this.getSortedMoveInfoList();
   var chapters = sortedMoveInfoList.map(function (moveInfo) {
     return item[moveInfo.chapterIdx];
   }); // Step2. LocalStorage에서 삭제
@@ -4916,8 +4918,8 @@ var NoteStore$1 = observable({
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
-  draggedType: '',
-  draggedTitle: '',
+  draggedComponentId: '',
+  drageedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
@@ -5179,11 +5181,11 @@ var NoteStore$1 = observable({
   setIsDragging: function setIsDragging(isDragging) {
     this.isDragging = isDragging;
   },
-  setDraggedType: function setDraggedType(type) {
-    this.draggedType = type;
+  setDraggedComponentId: function setDraggedComponentId(id) {
+    this.draggedComponentId = id;
   },
-  setDraggedTitle: function setDraggedTitle(title) {
-    this.draggedTitle = title;
+  setDrageedComponentTitles: function setDrageedComponentTitles(titles) {
+    this.drageedComponentTitles = titles;
   },
   setDraggedOffset: function setDraggedOffset(offset) {
     this.draggedOffset = offset;
