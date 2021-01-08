@@ -527,13 +527,18 @@ const ChapterStore = observable({
       };
     });
 
-    localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-    this.getNoteChapterList().then(() => {
-      if (moveCnt > 0) { 
+    if (moveCnt > 0) {
+      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+      this.getNoteChapterList().then(() => {
+        if (!this.currentChapterId) this.handleClickOutside();
         NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
         NoteStore.setIsVisibleToast(true);
-      }
-    });
+        NoteStore.setIsDragging(false);
+      });
+    } else {
+      this.handleClickOutside();
+      NoteStore.setIsDragging(false);
+    }
   },
   /* 
     - search 관련

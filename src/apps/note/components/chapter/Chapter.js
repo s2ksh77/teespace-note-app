@@ -72,7 +72,6 @@ const Chapter = ({ chapter, index, isShared }) => {
 
       ChapterStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
-      NoteStore.setIsDragging(false);
     },
   });
 

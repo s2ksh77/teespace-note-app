@@ -65,7 +65,6 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
-      NoteStore.setIsDragging(false);
     },
   });
 
