@@ -6,9 +6,10 @@ import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
 import downloadBtn from '../../assets/drive_download.svg';
 import txt from '../../assets/drive_txt.svg';
-import pdf from '../../assets/pdf.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
+import pdf from '../../assets/drive_pdf.svg';
+import zip from '../../assets/zip.svg';
 import docs from '../../assets/drive_toword.svg';
 import video from '../../assets/movie.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
@@ -31,12 +32,15 @@ const FileLayout = () => {
         switch (extension) {
             case 'txt':
                 return txt;
+            case 'ppt':
             case 'pdf':
                 return pdf;
             case 'xlsx':
                 return excel;
             case 'docx':
                 return docs;
+            case 'zip':
+                return zip;
             case 'mp4':
                 return video;
             default: return file;
