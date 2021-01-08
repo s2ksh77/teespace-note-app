@@ -3041,7 +3041,8 @@ var PageStore = mobx.observable((_observable$1 = {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
       var _item$moveTargetChapt;
 
-      var item, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
+      var item, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt, _this5$moveInfoList$;
+
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
@@ -3104,7 +3105,7 @@ var PageStore = mobx.observable((_observable$1 = {
               }
 
               _context9.next = 19;
-              return _this5.fetchCurrentPageData(_this5.movePageId);
+              return _this5.fetchCurrentPageData((_this5$moveInfoList$ = _this5.moveInfoList[0]) === null || _this5$moveInfoList$ === void 0 ? void 0 : _this5$moveInfoList$.pageId);
 
             case 19:
               _context9.next = 22;
