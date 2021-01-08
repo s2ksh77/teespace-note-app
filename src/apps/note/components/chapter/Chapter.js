@@ -55,10 +55,10 @@ const Chapter = ({ chapter, index, isShared }) => {
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
-      NoteStore.setIsDragging(true);
-      NoteStore.setDraggedType('chapter');
-      NoteStore.setDraggedTitle(ChapterStore.moveInfoList[ChapterStore.moveInfoList.length - 1].shareData.text);
+      NoteStore.setDraggedComponentId(ChapterStore.moveInfoList[0]?.chapterId);
+      NoteStore.setDrageedComponentTitles(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+      NoteStore.setIsDragging(true);
 
       return {
         type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
@@ -71,11 +71,8 @@ const Chapter = ({ chapter, index, isShared }) => {
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
 
       ChapterStore.setDragEnterChapterIdx('');
-
-      NoteStore.setIsDragging(false);
-      NoteStore.setDraggedType('');
-      NoteStore.setDraggedTitle('');
       NoteStore.setDraggedOffset({});
+      NoteStore.setIsDragging(false);
     },
   });
 

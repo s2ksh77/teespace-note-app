@@ -110,13 +110,10 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             children={NoteStore.toastText}
             onClose={() => NoteStore.setIsVisibleToast(false)}
           />
-          {NoteStore.isDragging
-            ? NoteStore.draggedType && NoteStore.draggedTitle
-              ? <DragPreview 
-                type={NoteStore.draggedType} 
-                title={NoteStore.draggedTitle}
-                titles={PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text)} />
-              : null
+          {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
+            ? <DragPreview 
+              id={NoteStore.draggedComponentId}
+              titles={NoteStore.drageedComponentTitles} />
             : null}
           <TempEditor />
         </>

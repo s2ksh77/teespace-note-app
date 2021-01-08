@@ -47,10 +47,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       }
 
       PageStore.setMovePageId(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].pageId);
-      NoteStore.setIsDragging(true);
-      NoteStore.setDraggedType('page');
-      NoteStore.setDraggedTitle(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].shareData.text);
+      NoteStore.setDraggedComponentId(PageStore.moveInfoList[0]?.pageId);
+      NoteStore.setDrageedComponentTitles(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+      NoteStore.setIsDragging(true);
 
       return {
         type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
@@ -62,14 +62,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       if (res && res.target === 'Platform:Room')
         PageStore.createNoteSharePage(res.targetData.id, item.data);
 
-      PageStore.setMovePageId('');
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
-
-      NoteStore.setIsDragging(false);
-      NoteStore.setDraggedType('');
-      NoteStore.setDraggedTitle('');
       NoteStore.setDraggedOffset({});
+      NoteStore.setIsDragging(false);
     },
   });
 
