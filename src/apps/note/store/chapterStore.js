@@ -475,15 +475,14 @@ const ChapterStore = observable({
   },
 
   handleClickOutside() {
+    this.setIsCtrlKeyDown(false);
     if (!this.currentChapterId) {
-      this.setIsCtrlKeyDown(false);
       this.setMoveInfoList([]);
       return;
     }
     let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.chapterId === this.currentChapterId);
     if (!currentMoveInfo)
       currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-    this.setIsCtrlKeyDown(false);
     this.setMoveInfoList([currentMoveInfo]);
   },
 

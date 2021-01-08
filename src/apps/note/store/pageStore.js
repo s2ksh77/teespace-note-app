@@ -380,10 +380,13 @@ const PageStore = observable({
   },
 
   handleClickOutside() {
-    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.pageId === this.currentPageId);
-    if (!currentMoveInfo)
-      currentMoveInfo = this.createMoveInfo(this.currentPageData);
     this.setIsCtrlKeyDown(false);
+    if (!this.currentPageId) {
+      this.setMoveInfoList([]);
+      return;
+    }
+    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.pageId === this.currentPageId);
+    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
     this.setMoveInfoList([currentMoveInfo]);
   },
 
