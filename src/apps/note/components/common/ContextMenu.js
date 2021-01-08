@@ -127,8 +127,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
       {type === 'shared_page'
         ? null :
         <Item key="0">이름 변경</Item>}
-      <Item key="1">삭제</Item>
-      <Item key="2">다른 룸으로 전달</Item>
+        <Item key="1">삭제</Item>
+        <Item key="2">다른 룸으로 전달</Item>
       {/* <Item key="3">Mail로 전달</Item> */}
       <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
         <Item key="4">PDF 형식(.pdf)</Item>

@@ -8,11 +8,22 @@ const NoteUtil = {
   },
   decodeStr(str) {
     let pre = str, cur;
-    while (true) {
-      cur = decodeURI(pre);
-      if (cur === pre) return cur;
-      pre = cur;
-    }
+    try {
+      while (true) {
+        cur = decodeURI(pre);
+        if (cur === pre) return cur;
+        pre = cur;
+      }
+    } 
+    // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다. 
+    // 이때 decode가 완료된것으로 보이므로 그대로 return한다
+    catch(e) {
+      return pre;
+    }    
+  },
+  // encoding해서 일치 비교
+  isSameStr(str1,str2) {
+    return this.encodeStr(str1) === this.encodeStr(str2);
   }
 }
 
