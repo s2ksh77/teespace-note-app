@@ -30,10 +30,11 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
             ? (ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)
               ? 'selectedMenu'
               : '')
-            : (!NoteStore.isDragging && chapter.id === ChapterStore.currentChapterId
+            : (NoteStore.isDragging && ChapterStore.moveInfoList.length > 0
+                ? chapter.id === ChapterStore.moveInfoList[0].chapterId
+                : chapter.id === ChapterStore.currentChapterId)
               ? 'selectedMenu'
               : '')
-          )
         }
       >
         <Tooltip title={isEllipsisActive ? chapter.text : null} placement='bottomLeft'>

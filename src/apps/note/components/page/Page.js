@@ -139,8 +139,8 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
               ? ' selected'
               : '')
           : (NoteStore.showPage && (
-              NoteStore.isDragging
-                ? page.id === PageStore.movePageId
+              NoteStore.isDragging && PageStore.moveInfoList.length > 0
+                ? page.id === PageStore.moveInfoList[0].pageId
                 : page.id === PageStore.currentPageId)
               ? ' selected'
               : ''))
