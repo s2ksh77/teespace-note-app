@@ -623,7 +623,7 @@ const PageStore = observable({
       for (let i = 0; i < contentList.length; i++) {
         if (contentList[i].tagName === 'P') {
           if (contentList[i].textContent) {
-            const temp = this._findFirstTextContent(contentList[i].children);
+            const temp = this._findFirstTextContent(contentList[i].childNodes);
             if (temp) return temp;
           }
           if (contentList[i].getElementsByTagName('img').length > 0) {
@@ -644,9 +644,12 @@ const PageStore = observable({
         } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
           if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
         }
-        // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
-        // 그냥 <pre> 태그만 있는 경우도 있음
-        else if (contentList[i].textContent) {
+        /*
+          case 1. <div><br><div>인 경우 넘어가야함
+          case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
+          case 3. 그냥 <pre> 태그만 있는 경우도 있음
+        */
+          else if (contentList[i].textContent) {
           let temp = '';
           if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i])
           else temp = this._findFirstTextContent(contentList[i].children);
@@ -677,29 +680,51 @@ const PageStore = observable({
       }
     }
   },
-  // el = pre tag, pre tag 안에 textContent있을 때 함수
+  /*
+    case 1. pre tag 안에 '\n'만으로 줄바꿈 구현하여 text 있는 경우
+    case 2. pre tag인데도 안에 br tag랑 다른 tag들 있는 경우
+  */
   _getTitleFromPreTag(el) {
     const lineBreakIdx = el.textContent.indexOf('\n');
     // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
     if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx);
     // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
-    else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.children);
+    else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.childNodes);
   },
-  _findFirstTextContent(htmlCollection) {
+  // childNodes로 받는 버전(<p>text~ <br> text~ <br> ~</p> 에서 첫 번째 text~를 childNodes[0]으로 받을 수 있음)
+  _findFirstTextContent(nodeList) {
     try {
-      for (let item of Array.from(htmlCollection)) {
+      for (let item of Array.from(nodeList)) {
+        // pre tag이면 먼저 처리해야함
+        if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
         if (item.tagName === 'BR') continue;
         // todo : error 없으려나 테스트 필요
         if (item.tagName === 'SPAN' && item.textContent) return item.textContent;
         // depth가 더 있으면 들어간다
-        if (item.children.length) return this._findFirstTextContent(item.children);
+        if (item.childNodes.length) return this._findFirstTextContent(item.childNodes);
         // dataset.name 없으면 src 출력
         if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-        if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
+        // text node일 때 등
         if (item.textContent) return item.textContent.slice(0, 200);
       }
-    } catch (err) { return null };
+    } catch (err) {return null;}
   },
+  // children으로 받는 버전
+  // _findFirstTextContent(htmlCollection) {
+  //   try {
+  //     for (let item of Array.from(htmlCollection)) {
+  //       if (item.tagName === 'BR') continue;
+  //       // todo : error 없으려나 테스트 필요
+  //       if (item.tagName === 'SPAN' && item.textContent) return item.textContent;
+  //       // depth가 더 있으면 들어간다
+  //       if (item.children.length) return this._findFirstTextContent(item.children);
+  //       // dataset.name 없으면 src 출력
+  //       if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+  //       if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
+  //       if (item.textContent) return item.textContent.slice(0, 200);
+  //     }
+  //   } catch (err) { return null };
+  // },
   async createSharePage(targetList) {
     const {
       data: { dto: { noteList } }

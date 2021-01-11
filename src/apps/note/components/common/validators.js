@@ -2,7 +2,6 @@ import {isNil, isEmpty} from 'ramda';
 import NoteUtil from '../../NoteUtil';
 
 // evernote도 http://ksdjflaskd.sdflksjdlfk 링크 처리함
-// ims 250127
 const urlRegex = new RegExp(
   /^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}/im
 );
