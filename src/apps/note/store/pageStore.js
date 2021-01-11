@@ -6,6 +6,7 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
+import NoteUtil from '../NoteUtil';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -295,6 +296,8 @@ const PageStore = observable({
       this.currentPageId = dto.note_id;
       this.isNewPage = true;
       this.getNoteInfoList(dto.note_id).then(data => {
+        data.note_content = NoteUtil.decodeStr(data.note_content);
+        data.note_title = NoteUtil.decodeStr(data.note_title);
         this.currentPageData = data;
         this.prevModifiedUserName = this.currentPageData.user_name;
         this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false)
@@ -313,7 +316,7 @@ const PageStore = observable({
       EditorStore.setFileList(
         dto.fileList,
       );
-      EditorStore.tinymce?.undoManager.clear();
+      EditorStore.tinymce?.undoManager?.clear();
       EditorStore.tinymce?.focus();
       this.initializeBoxColor();
     });
@@ -503,6 +506,8 @@ const PageStore = observable({
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
+    dto.note_content = NoteUtil.decodeStr(dto.note_content);
+    dto.note_title = NoteUtil.decodeStr(dto.note_title);
     this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
