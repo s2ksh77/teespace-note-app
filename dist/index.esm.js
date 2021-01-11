@@ -3382,7 +3382,7 @@ var PageStore = observable((_observable$1 = {
     for (var i = 0; i < contentList.length; i++) {
       if (contentList[i].tagName === 'P') {
         if (contentList[i].textContent) {
-          var temp = this._findFirstTextContent(contentList[i].children);
+          var temp = this._findFirstTextContent(contentList[i].childNodes);
 
           if (temp) return temp;
         }
@@ -3407,8 +3407,12 @@ var PageStore = observable((_observable$1 = {
         if (!!contentList[i].textContent) return contentList[i].textContent;
       } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
         if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-      } // 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
-      // 그냥 <pre> 태그만 있는 경우도 있음
+      }
+      /*
+        case 1. <div><br><div>인 경우 넘어가야함
+        case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
+        case 3. 그냥 <pre> 태그만 있는 경우도 있음
+      */
       else if (contentList[i].textContent) {
           var _temp = '';
           if (contentList[i].tagName === 'PRE') _temp = this._getTitleFromPreTag(contentList[i]);else _temp = this._findFirstTextContent(contentList[i].children);
@@ -3443,19 +3447,21 @@ var PageStore = observable((_observable$1 = {
   var lineBreakIdx = el.textContent.indexOf('\n'); // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
 
   if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx); // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
-  else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.children);
-}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(htmlCollection) {
+  else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.childNodes);
+}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(nodeList) {
   try {
-    for (var _i = 0, _Array$from = Array.from(htmlCollection); _i < _Array$from.length; _i++) {
+    for (var _i = 0, _Array$from = Array.from(nodeList); _i < _Array$from.length; _i++) {
       var item = _Array$from[_i];
+      // pre tag이면 먼저 처리해야함
+      if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
       if (item.tagName === 'BR') continue; // todo : error 없으려나 테스트 필요
 
       if (item.tagName === 'SPAN' && item.textContent) return item.textContent; // depth가 더 있으면 들어간다
 
-      if (item.children.length) return this._findFirstTextContent(item.children); // dataset.name 없으면 src 출력
+      if (item.childNodes.length) return this._findFirstTextContent(item.childNodes); // dataset.name 없으면 src 출력
 
-      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-      if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
+      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src; // text node일 때 등
+
       if (item.textContent) return item.textContent.slice(0, 200);
     }
   } catch (err) {
