@@ -2900,7 +2900,7 @@ var PageStore = observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
-      var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
+      var _EditorStore$tinymce2, _EditorStore$tinymce3, _EditorStore$tinymce4;
 
       ChapterStore.getNoteChapterList();
 
@@ -2913,6 +2913,8 @@ var PageStore = observable((_observable$1 = {
       _this.isNewPage = true;
 
       _this.getNoteInfoList(dto.note_id).then(function (data) {
+        var _EditorStore$tinymce, _EditorStore$tinymce$;
+
         data.note_content = NoteUtil.decodeStr(data.note_content);
         data.note_title = NoteUtil.decodeStr(data.note_title);
         _this.currentPageData = data;
@@ -2926,15 +2928,15 @@ var PageStore = observable((_observable$1 = {
           후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
         */
 
-        EditorStore.tinymce.undoManager.clear();
+        (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
       });
 
       NoteStore$1.setTargetLayout('Content');
       NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(dto.fileList);
-      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
-      (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
+      (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : (_EditorStore$tinymce3 = _EditorStore$tinymce2.undoManager) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.clear();
+      (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.focus();
 
       _this.initializeBoxColor();
     });
@@ -3282,12 +3284,12 @@ var PageStore = observable((_observable$1 = {
 
     this.prevModifiedUserName = this.currentPageData.user_name;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
-      var _EditorStore$tinymce3, _EditorStore$tinymce4;
+      var _EditorStore$tinymce5, _EditorStore$tinymce6;
 
       _this8.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.focus();
-      (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.selection.setCursorLocation();
+      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.focus();
+      (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
 
       _this8.initializeBoxColor();
     });
@@ -3307,11 +3309,11 @@ var PageStore = observable((_observable$1 = {
     var _this10 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce5;
+      var _EditorStore$tinymce7;
 
       _this10.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this10.currentPageData.note_content);
+      (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setContent(_this10.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
@@ -3359,7 +3361,7 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce6, _EditorStore$tinymce7;
+    var _EditorStore$tinymce8, _EditorStore$tinymce9;
 
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -3401,8 +3403,8 @@ var PageStore = observable((_observable$1 = {
     EditorStore.setIsAttatch(false);
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
-    (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
+    (_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.selection.setCursorLocation();
+    (_EditorStore$tinymce9 = EditorStore.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.undoManager.clear();
     this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
