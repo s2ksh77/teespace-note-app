@@ -46,11 +46,11 @@ const LNBSearchResult = () => {
           {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
             return (
               <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id)}>
-                {chapter.type === "shared" 
-                ?<ChapterSearchShareIcon src={shareImg} />
-                :<ChapterSearchResultColor backgroundColor={chapter.color} />
+                {chapter.type === "shared" || chapter.type === "shared_page"
+                  ? <ChapterSearchShareIcon src={shareImg} />
+                  : <ChapterSearchResultColor backgroundColor={chapter.color} />
                 }
-                <ChapterSearchResultTitle>{chapter.text}</ChapterSearchResultTitle>
+                <ChapterSearchResultTitle style={(chapter.type === "shared" || chapter.type === "shared_page") ? { paddingLeft: "0.59rem" } : null}>{chapter.text}</ChapterSearchResultTitle>
                 <SearchResultBotttom />
               </ChapterSearchResult>
             )
