@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Prompt, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import LNBContainer from './components/lnb/LNBContainer';
 import useNoteStore from './store/useStore';
 import { GlobalStyle, LNB, Content } from './GlobalStyles';
@@ -111,7 +111,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             onClose={() => NoteStore.setIsVisibleToast(false)}
           />
           {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
-            ? <DragPreview 
+            ? <DragPreview
               id={NoteStore.draggedComponentId}
               titles={NoteStore.drageedComponentTitles} />
             : null}

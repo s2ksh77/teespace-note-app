@@ -213,6 +213,9 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     border: 0px solid #e0e0e0;
   }
+  .ant-dropdown::before{
+    bottom:0 !important;
+  }
 `;
 
 export const LNB = styled.div`

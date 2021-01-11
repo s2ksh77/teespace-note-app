@@ -59,7 +59,10 @@ const PageStore = observable({
       this.setOtherEdit(false);
       return true;
     }
-    else if (this.is_edit !== null && NoteRepository.USER_ID === PageStore.getCurrentPageData().is_edit) {
+    // createNotePage에서 createPage 하고 EditorContainer.js의 setNoteEditor-initialMode한 후 getNoteInfoList에서 currentPageData를 set한다.
+    // 그래서 getCurrentPageData().is_edit으로 확인하면 initialMode에서 isReadMode() === true가 된다.
+    // this.isEdit으로 수정
+    else if (this.isEdit !== null && NoteRepository.USER_ID === this.isEdit) {
       this.setOtherEdit(false);
       return false;
     }
@@ -278,12 +281,12 @@ const PageStore = observable({
 
     return returnData;
   },
-
+  // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
   initializeBoxColor() {
-    document.getElementById('tox-icon-text-color__color').removeAttribute('fill');
-    document.getElementById('tox-icon-text-color__color').removeAttribute('stroke');
-    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('fill');
-    document.getElementById('tox-icon-highlight-bg-color__color').removeAttribute('stroke');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
   },
 
   createNotePage() {
@@ -316,8 +319,12 @@ const PageStore = observable({
       EditorStore.setFileList(
         dto.fileList,
       );
-      EditorStore.tinymce?.undoManager?.clear();
-      EditorStore.tinymce?.focus();
+      // EditorStore.tinymce가 있어도 focus 시도시 에러날 수 있어
+      try {
+        EditorStore.tinymce?.undoManager?.clear();
+        EditorStore.tinymce?.focus();
+      } catch(e) {console.log(e);}
+      
       this.initializeBoxColor();
     });
   },

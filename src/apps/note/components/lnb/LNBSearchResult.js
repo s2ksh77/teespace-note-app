@@ -13,15 +13,21 @@ import SearchResultNotFound from '../common/SearchResultNotFound';
 const LNBSearchResult = () => {
   const { ChapterStore, PageStore } = useNoteStore();
   // 챕터 검색때만 초기화
-  const onClickChapterBtn = (chapterId, pageId) => async () => {
-    PageStore.fetchCurrentPageData(pageId);
-    ChapterStore.initSearchVar();
-    await ChapterStore.getNoteChapterList();
-    NoteStore.setShowPage(true);
+  const onClickChapterBtn = (chapterId) => async () => {
     ChapterStore.setScrollIntoViewId(chapterId);
+    ChapterStore.initSearchVar();
+    NoteStore.setShowPage(true);
+    ChapterStore.getChapterChildren(chapterId).then(data => {
+      if (data.noteList && data.noteList.length > 0) {
+        PageStore.fetchCurrentPageData(data.noteList[0].note_id)
+      } else {
+        ChapterStore.setCurrentChapterId(chapterId);
+        PageStore.setCurrentPageId('');
+      }
+    })
   }
 
-  const onClickPageBtn = (chapterId, pageId) => async () => {
+  const onClickPageBtn = (pageId) => async () => {
     if (!PageStore.isReadMode()) return;
     await PageStore.fetchCurrentPageData(pageId);
     // ChapterStore.initSearchVar();
@@ -31,24 +37,24 @@ const LNBSearchResult = () => {
 
   return useObserver(() => (
     <>
-      {(ChapterStore.searchResult?.["chapter"]?.length === 0 &&
-        ChapterStore.searchResult?.["page"]?.length === 0)
+      {(ChapterStore.searchResult?.["chapter"] === null &&
+        ChapterStore.searchResult?.["page"] === null)
         ? <SearchResultNotFound searchStr={ChapterStore.searchStr} /> :
         <>
           {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
             return (
-              <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id, chapter.firstPageId)}>
+              <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id)}>
                 <ChapterSearchResultColor backgroundColor={chapter.color} />
-                <ChapterSearchResultTitle>{chapter.title}</ChapterSearchResultTitle>
+                <ChapterSearchResultTitle>{chapter.text}</ChapterSearchResultTitle>
                 <SearchResultBotttom />
               </ChapterSearchResult>
             )
           })}
           {ChapterStore.searchResult?.["page"]?.map((page) => {
             return (
-              <PageSearchResult key={page.id} onClick={onClickPageBtn(page.chapterId, page.id)}>
-                <PageSearchResultPageTitle>{page.title}</PageSearchResultPageTitle>
-                <PageSearchResultChapterTitle>{page.chapterTitle}</PageSearchResultChapterTitle>
+              <PageSearchResult key={page.note_id} onClick={onClickPageBtn(page.note_id)}>
+                <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
+                <PageSearchResultChapterTitle>{page.parentText}</PageSearchResultChapterTitle>
                 <SearchResultBotttom />
               </PageSearchResult>
             )
