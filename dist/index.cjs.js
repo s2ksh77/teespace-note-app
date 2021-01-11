@@ -1248,6 +1248,36 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
+var NoteUtil = {
+  // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
+  // encodeURI : 매개변수로 전달된 문자열을 완전한 URI 전체라고 간주한다.
+  // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
+  // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
+  encodeStr: function encodeStr(str) {
+    return encodeURI(this.decodeStr(str));
+  },
+  decodeStr: function decodeStr(str) {
+    var pre = str,
+        cur;
+
+    try {
+      while (true) {
+        cur = decodeURI(pre);
+        if (cur === pre) return cur;
+        pre = cur;
+      }
+    } // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다. 
+    // 이때 decode가 완료된것으로 보이므로 그대로 return한다
+    catch (e) {
+      return pre;
+    }
+  },
+  // encoding해서 일치 비교
+  isSameStr: function isSameStr(str1, str2) {
+    return this.encodeStr(str1) === this.encodeStr(str2);
+  }
+};
+
 // isNil : Checks if the input value is null or undefined.
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
 
@@ -2874,7 +2904,7 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
-      var _EditorStore$tinymce, _EditorStore$tinymce2;
+      var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
       ChapterStore.getNoteChapterList();
 
@@ -2887,6 +2917,8 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.isNewPage = true;
 
       _this.getNoteInfoList(dto.note_id).then(function (data) {
+        data.note_content = NoteUtil.decodeStr(data.note_content);
+        data.note_title = NoteUtil.decodeStr(data.note_title);
         _this.currentPageData = data;
         _this.prevModifiedUserName = _this.currentPageData.user_name;
         _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
@@ -2905,7 +2937,7 @@ var PageStore = mobx.observable((_observable$1 = {
       NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(dto.fileList);
-      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
       (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
 
       _this.initializeBoxColor();
@@ -3194,6 +3226,8 @@ var PageStore = mobx.observable((_observable$1 = {
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
+              dto.note_content = NoteUtil.decodeStr(dto.note_content);
+              dto.note_title = NoteUtil.decodeStr(dto.note_title);
               _this6.noteInfoList = dto;
               _this6.currentPageData = dto;
               _this6.isEdit = dto.is_edit;
@@ -3201,7 +3235,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this6.modifiedDate = _this6.modifiedDateFormatting(_this6.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
 
-            case 14:
+            case 16:
             case "end":
               return _context10.stop();
           }
