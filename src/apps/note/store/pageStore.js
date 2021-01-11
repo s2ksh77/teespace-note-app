@@ -308,7 +308,7 @@ const PageStore = observable({
           이후 init을 타고,
           후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
         */
-        EditorStore.tinymce.undoManager.clear();
+        EditorStore.tinymce?.undoManager?.clear();
       })
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
