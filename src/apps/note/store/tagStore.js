@@ -396,12 +396,12 @@ const TagStore = observable({
       const targetChapter = ChapterStore.chapterList.find((chapter) => chapter.id === page.parent_notebook);
       return {
         chapterId: page.parent_notebook,
-        chapterTitle: targetChapter ? targetChapter.text : "",
-        id: page.note_id,
-        title: page.note_title
+        parentText: targetChapter ? targetChapter.text : "",
+        note_id: page.note_id,
+        note_title: page.note_title
       }
     })
-    ChapterStore.setSearchResult({ chapter: [], page: resultPageArr });
+    ChapterStore.setSearchResult({ chapter: null, page: resultPageArr });
   },
   setEditCreateTag() {
     // add Tag List 갱신
