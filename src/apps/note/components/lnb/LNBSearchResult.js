@@ -2,9 +2,11 @@ import React from 'react';
 import useNoteStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
+  ChapterSearchShareIcon,
   ChapterSearchResult, ChapterSearchResultColor, ChapterSearchResultTitle,
   PageSearchResult, PageSearchResultPageTitle, PageSearchResultChapterTitle, SearchResultBotttom
 } from '../../styles/lnbStyle';
+import shareImg from '../../assets/ts_share@3x.png';
 import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 
@@ -44,7 +46,10 @@ const LNBSearchResult = () => {
           {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
             return (
               <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id)}>
-                <ChapterSearchResultColor backgroundColor={chapter.color} />
+                {chapter.type === "shared" 
+                ?<ChapterSearchShareIcon src={shareImg} />
+                :<ChapterSearchResultColor backgroundColor={chapter.color} />
+                }
                 <ChapterSearchResultTitle>{chapter.text}</ChapterSearchResultTitle>
                 <SearchResultBotttom />
               </ChapterSearchResult>
@@ -53,8 +58,8 @@ const LNBSearchResult = () => {
           {ChapterStore.searchResult?.["page"]?.map((page) => {
             return (
               <PageSearchResult key={page.note_id} onClick={onClickPageBtn(page.note_id)}>
-                <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 <PageSearchResultChapterTitle>{page.parentText}</PageSearchResultChapterTitle>
+                <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 <SearchResultBotttom />
               </PageSearchResult>
             )

@@ -50,6 +50,13 @@ export const ChapterSearchResult = styled.div`
     background-color: rgba(30,168,223,0.20);
   }
 `
+export const ChapterSearchShareIcon = styled.img`
+  position: absolute;
+  width:0.8rem;
+  height:0.9rem;
+  top: 40%;
+  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%);
+`
 export const ChapterSearchResultColor = styled.div`
   background-color:${props => props.backgroundColor};
   width: 0.25rem;
