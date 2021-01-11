@@ -51,10 +51,13 @@ export const ChapterSearchResult = styled.div`
   }
 `
 export const ChapterSearchShareIcon = styled.img`
-  position: absolute;
-  width:0.8rem;
-  height:0.9rem;
-  top: 40%;
+  position: relative;
+  width: 0.8rem;
+  height: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left :-10px;
   filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%);
 `
 export const ChapterSearchResultColor = styled.div`
