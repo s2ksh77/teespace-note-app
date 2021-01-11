@@ -132,10 +132,9 @@ class NoteRepository {
   }
 
   getChapterText(chapterId) {
-    const { data } = API.Get(
+    return API.get(
       `note-api/chaptershare?action=List&id=${chapterId}`,
     );
-    return data.text;
   }
 
   async createChapter(chapterTitle, chapterColor) {

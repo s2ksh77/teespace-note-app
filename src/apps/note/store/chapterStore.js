@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { observable, toJS } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
@@ -169,9 +169,11 @@ const ChapterStore = observable({
     const { value } = NoteRepository.getChapterColor(chapterId);
     return value;
   },
-  getChapterName(chapterId) {
-    const { value } = NoteRepository.getChapterText(chapterId);
-    return value;
+  async getChapterName(chapterId) {
+    const {
+      data: { dto }
+    } = await NoteRepository.getChapterText(chapterId);
+    return dto.text;
   },
   getIsLoadingSearchResult() {
     return this.isLoadingSearching;
@@ -576,11 +578,28 @@ const ChapterStore = observable({
   async fetchSearchResult() {
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
     this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-    await this.getSearchResult();
+    // await this.getSearchResult();
     this.getSearchList().then(dto => {
-      console.log(dto)
+      if (dto.pageList && dto.pageList.length > 0) {
+        dto.pageList.map(page => {
+          this.getChapterName(page.parent_notebook).then(text => {
+            page.parentText = text;
+          }).then(() => {
+            this.setSearchResult({
+              chapter: dto.chapterList,
+              page: dto.pageList
+            });
+            this.setIsLoadingSearchResult(false);
+          })
+        })
+      } else {
+        this.setSearchResult({
+          chapter: dto.chapterList,
+          page: dto.pageList
+        });
+        this.setIsLoadingSearchResult(false);
+      }
     })
-    this.setIsLoadingSearchResult(false);
   },
   async getSearchResult() {
     this.setSearchResult({});

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SearchResultNotFoundCover,
   SearchKeyword,
@@ -7,11 +7,17 @@ import {
 } from '../../styles/commonStyle';
 import noSearchResultImg from '../../assets/no_search_result.png';
 
-const SearchResultNotFound = ({searchStr}) => {
+const SearchResultNotFound = ({ searchStr }) => {
+  const [searchText, setSearchText] = useState(null);
+
+  useEffect(() => {
+    setSearchText(searchStr);
+  }, [searchText]);
+
   return (
     <>
       <SearchResultNotFoundCover>
-        <SearchKeyword>'{searchStr}'</SearchKeyword>
+        <SearchKeyword>'{searchText}'</SearchKeyword>
         <NoSearchResultTitle>검색 결과가 없습니다.</NoSearchResultTitle>
         <NoSearchResultImg src={noSearchResultImg} />
       </SearchResultNotFoundCover>
