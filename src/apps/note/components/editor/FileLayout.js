@@ -8,6 +8,7 @@ import downloadBtn from '../../assets/drive_download.svg';
 import txt from '../../assets/drive_txt.svg';
 import excel from '../../assets/drive_tocell.svg';
 import file from '../../assets/drive_file.svg';
+import ppt from '../../assets/drive_topoint.svg';
 import pdf from '../../assets/drive_pdf.svg';
 import zip from '../../assets/zip.svg';
 import docs from '../../assets/drive_toword.svg';
@@ -33,6 +34,8 @@ const FileLayout = () => {
             case 'txt':
                 return txt;
             case 'ppt':
+            case 'pptx':
+                return ppt;
             case 'pdf':
                 return pdf;
             case 'xlsx':
