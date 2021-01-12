@@ -10531,7 +10531,8 @@ var EditorContainer = function EditorContainer() {
     }), EditorStore.isFile ? /*#__PURE__*/React.createElement(FileLayout, null) : null, /*#__PURE__*/React.createElement(TagListContainer, null), /*#__PURE__*/React.createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
-      cancelCallback: driveCancelCb
+      cancelCallback: driveCancelCb,
+      roomId: NoteRepository$1.WS_ID
     }), PageStore.isReadMode() && EditorStore.isPreview ? /*#__PURE__*/React.createElement(FilePreview, {
       visible: EditorStore.isPreview,
       fileMeta: EditorStore.previewFileMeta,
