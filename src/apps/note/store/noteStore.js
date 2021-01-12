@@ -156,6 +156,8 @@ const NoteStore = observable({
   // { type, title, subTitle, buttons }
   setModalInfo(modalType) {
     switch (modalType) {
+      case 'chapterconfirm':
+      case 'confirm':
       case 'fileDelete':
       case 'chapter':
       case 'page':

@@ -7,6 +7,7 @@ import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
+import { useCoreStores } from 'teespace-core';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -38,6 +39,7 @@ const PageStore = observable({
   exportPageTitle: '',
   editingUserID: '',
   editingUserName: '',
+  editingUserCount: '',
 
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
@@ -86,6 +88,12 @@ const PageStore = observable({
   },
   getEditingUserName() {
     return this.editingUserName;
+  },
+  setEditingUserCount(count) {
+    this.editingUserCount = count;
+  },
+  getEditingUserCount() {
+    return this.editingUserCount;
   },
   getContent() {
     return this.noteContent;
@@ -323,8 +331,8 @@ const PageStore = observable({
       try {
         EditorStore.tinymce?.undoManager?.clear();
         EditorStore.tinymce?.focus();
-      } catch(e) {console.log(e);}
-      
+      } catch (e) { console.log(e); }
+
       this.initializeBoxColor();
     });
   },
@@ -661,7 +669,7 @@ const PageStore = observable({
           case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
           case 3. 그냥 <pre> 태그만 있는 경우도 있음
         */
-          else if (contentList[i].textContent) {
+        else if (contentList[i].textContent) {
           let temp = '';
           if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i])
           else temp = this._findFirstTextContent(contentList[i].children);
@@ -719,7 +727,7 @@ const PageStore = observable({
         // text node일 때 등
         if (item.textContent) return item.textContent.slice(0, 200);
       }
-    } catch (err) {return null;}
+    } catch (err) { return null; }
   },
   // children으로 받는 버전
   // _findFirstTextContent(htmlCollection) {

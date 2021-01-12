@@ -416,7 +416,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile media"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />

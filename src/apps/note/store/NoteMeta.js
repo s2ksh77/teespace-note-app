@@ -55,6 +55,7 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
+      case 'chapterconfirm':
       case 'titleDuplicate':
       case 'failUpload':
       case 'sizefailUpload':
@@ -87,6 +88,7 @@ const NoteMeta = {
       case 'fileDelete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
       case 'editingPage':
+      case 'chapterconfirm':
       case 'confirm':
       case 'titleDuplicate':
       case 'sharedInfoConfirm':
@@ -127,7 +129,13 @@ const NoteMeta = {
       case 'confirm':
         dialogType.type = 'normal';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = `${userName} 님이 수정 중 입니다.`;
+        dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중 입니다.`;
+        dialogType.buttonConfig = this.setButtonConfig(type);
+        break;
+      case 'chapterconfirm':
+        dialogType.type = 'normal';
+        dialogType.title = '삭제할 수 없습니다.';
+        dialogType.subtitle = `${PageStore.editingUserCount} 명이 수정 중 입니다.`;
         dialogType.buttonConfig = this.setButtonConfig(type);
         break;
       case 'editCancel':
