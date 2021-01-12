@@ -52,11 +52,11 @@ export const checkWhitespace = (value) => value.trim().length > 0;
 // true : valid(중복X), false : invalid(중복)
 // chapter 생성
 export const checkNotDuplicate = (targetArr, key, value) =>{
-  return targetArr.find((item) => item[key] === value) ? false : true;
+  return targetArr.find((item) => NoteUtil.encodeStr(item[key]) === NoteUtil.encodeStr(value)) ? false : true;
 }
 
 // true : valid(중복X), false : invalid(중복)
 // 태그 생성 : 대소문자 구분 없이 동일 text 처리
 export const checkNotDuplicateIgnoreCase = (targetArr, key, value) =>{
-  return targetArr.find((item) => item[key].toUpperCase() === value.toUpperCase()) ? false : true;
+  return targetArr.find((item) => NoteUtil.encodeStr(item[key].toUpperCase()) === NoteUtil.encodeStr(value.toUpperCase())) ? false : true;
 }

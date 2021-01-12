@@ -16,6 +16,7 @@ import tagImage from '../../assets/tag_add.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
 import { isFilled, checkWhitespace } from '../common/validators';
+import NoteUtil from '../../NoteUtil';
 
 const TagListContainer = () => {
   const { TagStore, PageStore } = useNoteStore();
@@ -74,11 +75,14 @@ const TagListContainer = () => {
   }
 
   const handleModifyInput = () => {
+    const isSame = NoteUtil.isSameStr(TagStore.currentTagValue,TagStore.editTagValue);
+    const isSameIgnoringCase = NoteUtil.isSameStr(TagStore.currentTagValue.toUpperCase(),TagStore.editTagValue.toUpperCase());
+
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
-      if (TagStore.currentTagValue === TagStore.editTagValue) { }
+      if (isSame) { }
       // 대소문자만 바꾼 경우
-      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
+      else if (isSameIgnoringCase) {
         updateNoteTagList();
       }
       // 공백만 있거나 아무것도 입력하지 않은 경우
@@ -92,9 +96,9 @@ const TagListContainer = () => {
         }
       }
     } else { // 아이디 없는 애를 고칠 경우
-      if (TagStore.currentTagValue === TagStore.editTagValue) { }
+      if (isSame) { }
       // 대소문자만 바꾼 경우
-      else if (TagStore.currentTagValue.toUpperCase() === TagStore.editTagValue.toUpperCase()) {
+      else if (isSameIgnoringCase) {
         TagStore.setEditCreateTag();
       }
       // 공백만 있거나 아무것도 입력하지 않은 경우
@@ -238,17 +242,17 @@ const TagListContainer = () => {
                 >
 
                   {!PageStore.isReadMode() ?
-                    <Tooltip title={isEllipsisActive ? item.text : null}>
+                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
                       <TagText
                         onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
                         onMouseOver={handleTooltip}
                       >
-                        {item.text}
+                        {NoteUtil.decodeStr(item.text)}
                       </TagText>
                     </Tooltip>
                     :
-                    <Tooltip title={isEllipsisActive ? item.text : null}>
-                      <TagText onMouseOver={handleTooltip}>{item.text}
+                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
+                      <TagText onMouseOver={handleTooltip}>{NoteUtil.decodeStr(item.text)}
                       </TagText>
                     </Tooltip>
                   }

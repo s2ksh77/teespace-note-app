@@ -3,6 +3,7 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { Tooltip } from 'antd';
 import { TagChipGroup, TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
+import NoteUtil from '../../NoteUtil';
 
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
@@ -27,6 +28,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
     <>
       <TagChipGroup>
         {Object.keys(TagStore.sortedTagList[category][tagKey]).map(tagName => {
+          tagName = NoteUtil.decodeStr(tagName);
           const tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
           return (
             <Tooltip key={tagInfo.id} title={isEllipsisActive ? tagName : null}>

@@ -3,6 +3,7 @@ import NoteRepository from "./noteRepository";
 import ChapterStore from "./chapterStore";
 import PageStore from "./pageStore";
 import { checkNotDuplicateIgnoreCase } from '../components/common/validators';
+import NoteUtil from '../NoteUtil';
 
 const TagStore = observable({
   // note에 딸린 tagList
@@ -178,14 +179,13 @@ const TagStore = observable({
   },
 
   async createTag(createTagList, noteId) {
-    const createTagArray = [];
-    createTagList.forEach(tag => {
-      createTagArray.push({
+    const createTagArr = createTagList.map(tag => {
+      return{
         text: tag,
         note_id: noteId,
-      })
-    })
-    const { data: { dto } } = await NoteRepository.createTag(createTagArray);
+      }
+    });
+    const { data: { dto } } = await NoteRepository.createTag(createTagArr);
     this.setAddTagList([]);
     return dto;
   },
@@ -203,12 +203,11 @@ const TagStore = observable({
   },
 
   async updateTag(updateTagList) {
-    const updateTagArray = [];
-    updateTagList.forEach(async tag => {
-      updateTagArray.push({
+    const updateTagArray = updateTagList.map(tag => {
+      return {
         tag_id: tag.tag_id,
         text: tag.text,
-      })
+      }
     });
     const { data: { dto } } = await NoteRepository.updateTag(updateTagArray);
     return dto;
@@ -217,6 +216,29 @@ const TagStore = observable({
   /*
     비즈니스 로직
   */
+  // encode logic 추가된 createTag, updateTag
+  // tag는 tag 추가 및 수정시 동일값 체크 로직 & 저장할 때 encoding한다
+  async createNoteTag(createTagList, noteId) {
+    const createTagArr = createTagList.map(tag => {
+      return{
+        text: NoteUtil.encodeStr(tag),
+        note_id: noteId,
+      }
+    });
+    const { data: { dto } } = await NoteRepository.createTag(createTagArr);
+    this.setAddTagList([]);
+    return dto;
+  },
+  async updateNoteTag(updateTagList) {
+    const updateTagArr = updateTagList.map(tag => {
+      return {
+        tag_id: tag.tag_id,
+        text: NoteUtil.encodeStr(tag.text),
+      }
+    });
+    const { data: { dto } } = await NoteRepository.updateTag(updateTagArr);
+    return dto;
+  },
   async fetchNoteTagList(noteId) {
     await NoteRepository.getNoteTagList(noteId).then((response) => {
       if (response.status === 200) {
@@ -286,12 +308,12 @@ const TagStore = observable({
   // search result용 KeyTagObj
   createSearchResultObj(str) {
     let results = {};
-    let tagKeyArr$ = [];
+    let _tagKeyArr = [];
     this.allSortedTagList.forEach((item) => {
       let KEY = item.KEY;
       let resultKeyTags = {};
       item.tag_indexdto.tagList.forEach((tag) => {
-        let tagName = tag.text;
+        let tagName = NoteUtil.decodeStr(tag.text);
         if (!tagName.toUpperCase().includes(str.toUpperCase())) return;
         if (resultKeyTags.hasOwnProperty(tagName)) {
           resultKeyTags[tagName]["note_id"].push(tag.note_id);
@@ -304,11 +326,11 @@ const TagStore = observable({
       })
       if (Object.keys(resultKeyTags).length > 0) {
         results[KEY.toUpperCase()] = resultKeyTags;
-        if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
+        if (_tagKeyArr.indexOf(KEY.toUpperCase()) === -1) _tagKeyArr.push(KEY.toUpperCase());
       }
     })
     this.setKeyTagPairObj({ ...results });
-    this.setTagKeyArr([...tagKeyArr$.sort()]);
+    this.setTagKeyArr([..._tagKeyArr.sort()]);
     return this.keyTagPairObj;
   },
   createKeyTagPairObj() {
@@ -322,13 +344,14 @@ const TagStore = observable({
       정렬 순서는 대소문자 구분하지 않음!
     */
     let results = {};
-    let tagKeyArr$ = [];
+    let _tagKeyArr = [];
     this.allSortedTagList.forEach((item) => {
       let KEY = item.KEY;
       let resultObj = {};
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
       item.tag_indexdto.tagList.forEach((tag) => {
-        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"].push(tag.note_id);
+        tag.text = NoteUtil.decodeStr(tag.text);
+        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"] = [...resultObj[tag.text]["note_id"],tag.note_id];
         else {
           resultObj[tag.text] = {
             id: tag.tag_id,
@@ -337,14 +360,15 @@ const TagStore = observable({
         }
       })
       results[KEY.toUpperCase()] = resultObj;
-      if (tagKeyArr$.indexOf(KEY.toUpperCase()) === -1) tagKeyArr$.push(KEY.toUpperCase());
+      if (_tagKeyArr.indexOf(KEY.toUpperCase()) === -1) _tagKeyArr.push(KEY.toUpperCase());
     });
     this.setKeyTagPairObj({ ...results });
-    this.setTagKeyArr([...tagKeyArr$.sort()]);
+    this.setTagKeyArr([..._tagKeyArr.sort()]);
     return this.keyTagPairObj;
   },
   getEngTagObj(key) {
     let sortedEngTags = {};
+    // targetKeyObj : {tagName1:{tagId:'', note_id:[]}, tagName2:{tagId:'', note_id:[]}} 
     const targetKeyObj = this.keyTagPairObj[key];
     let sortedTagName = Object.keys(targetKeyObj).sort((a, b) => {
       if (a.toLowerCase() > b.toLowerCase()) {
