@@ -2132,13 +2132,13 @@ var TagStore = mobx.observable({
                 });
                 return {
                   chapterId: page.parent_notebook,
-                  chapterTitle: targetChapter ? targetChapter.text : "",
-                  id: page.note_id,
-                  title: page.note_title
+                  parentText: targetChapter ? targetChapter.text : "",
+                  note_id: page.note_id,
+                  note_title: page.note_title
                 };
               });
               ChapterStore.setSearchResult({
-                chapter: [],
+                chapter: null,
                 page: resultPageArr
               });
 
@@ -5602,8 +5602,18 @@ var useNoteStore = function useNoteStore() {
   };
 };
 
-function _templateObject11() {
+function _templateObject12() {
   var data = _taggedTemplateLiteral(["\n  border-bottom: 1px solid #E3E7EB;\n  position: absolute;\n  left: 1.69rem;\n  right: 1.69rem;\n  bottom: 0;\n"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #888D96;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject11 = function _templateObject11() {
     return data;
@@ -5613,7 +5623,7 @@ function _templateObject11() {
 }
 
 function _templateObject10() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #888D96;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.8125rem;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject10 = function _templateObject10() {
     return data;
@@ -5623,7 +5633,7 @@ function _templateObject10() {
 }
 
 function _templateObject9() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.8125rem;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: rgba(30,168,223,0.20);\n  }\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject9 = function _templateObject9() {
     return data;
@@ -5633,7 +5643,7 @@ function _templateObject9() {
 }
 
 function _templateObject8() {
-  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: rgba(30,168,223,0.20);\n  }\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject8 = function _templateObject8() {
     return data;
@@ -5643,7 +5653,7 @@ function _templateObject8() {
 }
 
 function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color:", ";\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem;\n  min-width: 0.25rem;\n"]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -5653,7 +5663,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n  background-color:", ";\n  width: 0.25rem;\n  height: 2.19rem;\n  align-self: center;\n  border-radius: 0.13rem;\n  min-width: 0.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  width: 0.8rem;\n  height: 0.9rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  left :-10px;\n  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%);\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -5719,14 +5729,15 @@ var LNBChapterCover = styled__default['default'].div(_templateObject3());
 var LNBNewChapter = styled__default['default'].div(_templateObject4()); // search 관련
 
 var ChapterSearchResult = styled__default['default'].div(_templateObject5());
-var ChapterSearchResultColor = styled__default['default'].div(_templateObject6(), function (props) {
+var ChapterSearchShareIcon = styled__default['default'].img(_templateObject6());
+var ChapterSearchResultColor = styled__default['default'].div(_templateObject7(), function (props) {
   return props.backgroundColor;
 });
-var ChapterSearchResultTitle = styled__default['default'].div(_templateObject7());
-var PageSearchResult = styled__default['default'].div(_templateObject8());
-var PageSearchResultPageTitle = styled__default['default'].div(_templateObject9());
-var PageSearchResultChapterTitle = styled__default['default'].div(_templateObject10());
-var SearchResultBotttom = styled__default['default'].div(_templateObject11());
+var ChapterSearchResultTitle = styled__default['default'].div(_templateObject8());
+var PageSearchResult = styled__default['default'].div(_templateObject9());
+var PageSearchResultPageTitle = styled__default['default'].div(_templateObject10());
+var PageSearchResultChapterTitle = styled__default['default'].div(_templateObject11());
+var SearchResultBotttom = styled__default['default'].div(_templateObject12());
 
 function _templateObject14() {
   var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 1.563rem 1.563rem;\n  border: 0.0625rem solid #c6ced6;\n  box-sizing: border-box;\n"]);
@@ -5748,10 +5759,10 @@ function _templateObject13() {
   return data;
 }
 
-function _templateObject12() {
+function _templateObject12$1() {
   var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n"]);
 
-  _templateObject12 = function _templateObject12() {
+  _templateObject12$1 = function _templateObject12() {
     return data;
   };
 
@@ -5879,7 +5890,7 @@ var LnbTitleCover = styled__default['default'].div(_templateObject8$1());
 var LnbTitleNewButton = styled__default['default'].button(_templateObject9$1());
 var LnbTitleSearchContainer = styled__default['default'].form(_templateObject10$1());
 var LnbTitleSearchIcon = styled__default['default'].button(_templateObject11$1());
-var LnbTitleSearchInput = styled__default['default'].input(_templateObject12());
+var LnbTitleSearchInput = styled__default['default'].input(_templateObject12$1());
 var TagSearchForm = styled__default['default'].form(_templateObject13(), function (props) {
   return props.show ? "block" : "none";
 });
@@ -6247,10 +6258,10 @@ function _templateObject13$1() {
   return data;
 }
 
-function _templateObject12$1() {
+function _templateObject12$2() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.94rem;\n  color: #000000;\n  margin-bottom: 0.69rem;\n"]);
 
-  _templateObject12$1 = function _templateObject12() {
+  _templateObject12$2 = function _templateObject12() {
     return data;
   };
 
@@ -6382,7 +6393,7 @@ var Button = styled__default['default'].img(_templateObject9$2()); // 돋보기�
 
 var SearchImgInput = styled__default['default'].input(_templateObject10$2());
 var SearchResultNotFoundCover = styled__default['default'].div(_templateObject11$2());
-var SearchKeyword = styled__default['default'].span(_templateObject12$1());
+var SearchKeyword = styled__default['default'].span(_templateObject12$2());
 var NoSearchResultTitle = styled__default['default'].span(_templateObject13$1());
 var NoSearchResultImg = styled__default['default'].img(_templateObject14$1());
 var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject15());
@@ -6482,10 +6493,10 @@ function _templateObject13$2() {
   return data;
 }
 
-function _templateObject12$2() {
+function _templateObject12$3() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n"]);
 
-  _templateObject12$2 = function _templateObject12() {
+  _templateObject12$3 = function _templateObject12() {
     return data;
   };
 
@@ -6618,7 +6629,7 @@ var TagImg = styled__default['default'].img(_templateObject9$3(), function (prop
 var TagTxt = styled__default['default'].div(_templateObject10$3());
 var Panel = antd.Collapse.Panel;
 var StyledCollapse = styled__default['default'](antd.Collapse)(_templateObject11$3());
-var TagKeyChildren = styled__default['default'].div(_templateObject12$2());
+var TagKeyChildren = styled__default['default'].div(_templateObject12$3());
 var TagKeyContainer = styled__default['default'].div(_templateObject13$2());
 var TagChipGroup = styled__default['default'].div(_templateObject14$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
@@ -8747,14 +8758,20 @@ var LNBSearchResult = function LNBSearchResult() {
       return /*#__PURE__*/React__default['default'].createElement(ChapterSearchResult, {
         key: chapter.id,
         onClick: onClickChapterBtn(chapter.id)
-      }, /*#__PURE__*/React__default['default'].createElement(ChapterSearchResultColor, {
+      }, chapter.type === "shared" || chapter.type === "shared_page" ? /*#__PURE__*/React__default['default'].createElement(ChapterSearchShareIcon, {
+        src: img$6
+      }) : /*#__PURE__*/React__default['default'].createElement(ChapterSearchResultColor, {
         backgroundColor: chapter.color
-      }), /*#__PURE__*/React__default['default'].createElement(ChapterSearchResultTitle, null, chapter.text), /*#__PURE__*/React__default['default'].createElement(SearchResultBotttom, null));
+      }), /*#__PURE__*/React__default['default'].createElement(ChapterSearchResultTitle, {
+        style: chapter.type === "shared" || chapter.type === "shared_page" ? {
+          paddingLeft: "0.59rem"
+        } : null
+      }, chapter.text), /*#__PURE__*/React__default['default'].createElement(SearchResultBotttom, null));
     }), (_ChapterStore$searchR5 = ChapterStore.searchResult) === null || _ChapterStore$searchR5 === void 0 ? void 0 : (_ChapterStore$searchR6 = _ChapterStore$searchR5["page"]) === null || _ChapterStore$searchR6 === void 0 ? void 0 : _ChapterStore$searchR6.map(function (page) {
       return /*#__PURE__*/React__default['default'].createElement(PageSearchResult, {
         key: page.note_id,
         onClick: onClickPageBtn(page.note_id)
-      }, /*#__PURE__*/React__default['default'].createElement(PageSearchResultPageTitle, null, page.note_title), /*#__PURE__*/React__default['default'].createElement(PageSearchResultChapterTitle, null, page.parentText), /*#__PURE__*/React__default['default'].createElement(SearchResultBotttom, null));
+      }, /*#__PURE__*/React__default['default'].createElement(PageSearchResultChapterTitle, null, page.parentText), /*#__PURE__*/React__default['default'].createElement(PageSearchResultPageTitle, null, page.note_title), /*#__PURE__*/React__default['default'].createElement(SearchResultBotttom, null));
     })));
   });
 };
@@ -9295,10 +9312,10 @@ function _templateObject13$3() {
   return data;
 }
 
-function _templateObject12$3() {
+function _templateObject12$4() {
   var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
 
-  _templateObject12$3 = function _templateObject12() {
+  _templateObject12$4 = function _templateObject12() {
     return data;
   };
 
@@ -9435,7 +9452,7 @@ var FoldBtn = styled__default['default'].div(_templateObject10$5(), function (pr
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
 });
 var FoldBtnImg = styled__default['default'].img(_templateObject11$4());
-var FileBodyLayout = styled__default['default'].div(_templateObject12$3());
+var FileBodyLayout = styled__default['default'].div(_templateObject12$4());
 var FileBody = styled__default['default'].div(_templateObject13$3(), function (props) {
   return props.closable ? styled.css(_templateObject14$3()) : styled.css(_templateObject15$2());
 });
@@ -11418,7 +11435,7 @@ var beforeRoute = function beforeRoute(location) {
     if (!isUndoActive && !PageStore.otherEdit) {
       PageStore.handleNoneEdit();
       return false;
-    } else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;else {
+    } else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;else if (pathname === '/logout') return true;else {
       NoteStore.setModalInfo('editCancel');
       return false;
     }
