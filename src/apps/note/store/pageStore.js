@@ -642,14 +642,26 @@ const PageStore = observable({
       // forEach 는 항상 return 값 undefined
       for (let i = 0; i < contentList.length; i++) {
         if (contentList[i].tagName === 'P') {
-          if (contentList[i].textContent) {
-            const temp = this._findFirstTextContent(contentList[i].childNodes);
-            if (temp) return temp;
+          const ImgList = contentList[i].getElementsByTagName('img');
+          // 이미지가 없을 때, textContent도 없으면 contentList[i+1]로 넘어가기
+          if (ImgList.length === 0) {
+            if (!!contentList[i].textContent) return contentList[i].textContent;
           }
-          if (contentList[i].getElementsByTagName('img').length > 0) {
-            const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
-            return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
-          } else if (!!contentList[i].textContent) return contentList[i].textContent;
+          else {
+            // 이미지+텍스트 있을 때 text가 먼저인지 확인
+            if (!!contentList[i].textContent) {
+              const temp = this._findFirstTextContent(contentList[i].childNodes);
+              if (temp) return temp;
+            } 
+            // 이미지만 있을 때
+            const imgName = ImgList[0].dataset.name;
+            return imgName ? imgName : ImgList[0].src;
+          }
+          // 예전 코드 혹시 몰라 남겨둠
+          // if (contentList[i].getElementsByTagName('img').length > 0) {
+          //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
+          //   return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
+          // } else if (!!contentList[i].textContent) return contentList[i].textContent;
         } else if (contentList[i].tagName === 'TABLE') {
           const tdList = contentList[i].getElementsByTagName('td');
           for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
@@ -724,7 +736,7 @@ const PageStore = observable({
         if (item.childNodes.length) return this._findFirstTextContent(item.childNodes);
         // dataset.name 없으면 src 출력
         if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-        // text node일 때 등
+        // 자식이 없는 text node일 때
         if (item.textContent) return item.textContent.slice(0, 200);
       }
     } catch (err) { return null; }
