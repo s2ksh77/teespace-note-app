@@ -4822,8 +4822,11 @@ var NoteMeta = {
         break;
 
       case 'confirm':
+      case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'sharedInfo':
+      case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
         eventList.push(function (e) {
@@ -4845,20 +4848,6 @@ var NoteMeta = {
         });
         break;
 
-      case 'sharedInfo':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-        });
-        break;
-
-      case 'editingPage':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-        });
-        break;
-
       case 'shareRoom':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -4872,12 +4861,6 @@ var NoteMeta = {
           NoteStore$1.setIsShared(false);
         });
         break;
-
-      case 'multiFileSomeFail':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-        });
     }
 
     return eventList;
@@ -4894,9 +4877,9 @@ var NoteMeta = {
           text: '취소'
         }];
 
+      case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
-      case 'confirm':
       case 'titleDuplicate':
       case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
