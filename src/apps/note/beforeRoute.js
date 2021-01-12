@@ -8,6 +8,7 @@ const beforeRoute = (location) => {
         const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
         if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return false; }
         else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
+        else if (pathname === '/logout') return true;
         else {
             NoteStore.setModalInfo('editCancel');
             return false;
