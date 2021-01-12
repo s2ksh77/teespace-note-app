@@ -10053,7 +10053,7 @@ var FileLayout = function FileLayout() {
         }
       }))), item.error ? /*#__PURE__*/React.createElement(FileErrorIcon, null, /*#__PURE__*/React.createElement(ExclamationCircleFilled, null)) : null, /*#__PURE__*/React.createElement(FileData, null, /*#__PURE__*/React.createElement(FileDataName, null, /*#__PURE__*/React.createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
-      }, item.file_name, item.fileExtension && ".".concat(item.file_extension))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
+      }, item.file_name, item.file_extension && ".".concat(item.file_extension))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -10106,12 +10106,12 @@ var FileLayout = function FileLayout() {
       }))), /*#__PURE__*/React.createElement(FileData, {
         mode: PageStore.isReadMode().toString()
       }, /*#__PURE__*/React.createElement(FileDataName, null, /*#__PURE__*/React.createElement(Tooltip, {
-        title: isEllipsisActive ? item.file_name + (item.fileExtension ? ".".concat(item.file_extension) : '') : null,
+        title: isEllipsisActive ? item.file_name + (item.file_extension ? ".".concat(item.file_extension) : '') : null,
         placement: "top"
       }, /*#__PURE__*/React.createElement(FileName, {
         onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null,
         onMouseOver: handleTooltip
-      }, item.file_name, item.fileExtension && ".".concat(item.file_extension)))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
+      }, item.file_name, item.file_extension && ".".concat(item.file_extension)))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {

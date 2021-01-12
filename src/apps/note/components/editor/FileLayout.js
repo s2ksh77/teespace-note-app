@@ -215,7 +215,7 @@ const FileLayout = () => {
                                         }
                                     >
                                         {item.file_name}
-                                        {item.fileExtension && `.${item.file_extension}`}
+                                        {item.file_extension && `.${item.file_extension}`}
                                     </FileName>
                                 </FileDataName>
                                 <FileDataTime>
@@ -261,7 +261,7 @@ const FileLayout = () => {
                                 <FileDataName>
                                     <Tooltip
                                         title={isEllipsisActive
-                                            ? item.file_name + (item.fileExtension ? `.${item.file_extension}` : '')
+                                            ? item.file_name + (item.file_extension ? `.${item.file_extension}` : '')
                                             : null}
                                         placement='top'
                                     >
@@ -274,7 +274,7 @@ const FileLayout = () => {
                                             onMouseOver={handleTooltip}
                                         >
                                             {item.file_name}
-                                            {item.fileExtension && `.${item.file_extension}`}
+                                            {item.file_extension && `.${item.file_extension}`}
                                         </FileName>
                                     </Tooltip>
                                 </FileDataName>
