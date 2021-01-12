@@ -12,10 +12,13 @@ import {
   PageTextInput,
 } from '../../styles/pageStyle';
 import { Tooltip } from 'antd';
+import NoteUtil from '../../NoteUtil';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  chapter.text = NoteUtil.decodeStr(chapter.text);
+  page.text = NoteUtil.decodeStr(page.text);
 
   const chapterMoveInfo = {
     chapterId: chapter.id,

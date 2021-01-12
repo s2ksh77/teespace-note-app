@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
+import NoteRepository from '../../store/noteRepository';
 import EditorHeader from './EditorHeader';
 import {
   EditorContainerWrapper,
@@ -422,6 +423,7 @@ const EditorContainer = () => {
         <DriveAttachModal visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}
           cancelCallback={driveCancelCb}
+          roomId={NoteRepository.WS_ID}
         />
         {PageStore.isReadMode() && EditorStore.isPreview
           ? <FilePreview

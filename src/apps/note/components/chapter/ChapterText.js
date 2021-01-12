@@ -13,10 +13,12 @@ import {
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "antd";
+import NoteUtil from '../../NoteUtil';
 
 const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  chapter.text = NoteUtil.decodeStr(chapter.text);
 
   const handleTooltip = e => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)

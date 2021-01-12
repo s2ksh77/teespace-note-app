@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import {isFilled} from './validators';
 import {Message, RoomStore, API } from 'teespace-core';
 import NoteRepository from '../../store/noteRepository';
+import NoteUtil from '../../NoteUtil';
 
 /*
   ToDo
@@ -38,6 +39,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle, noteDate}) => {
   const history = useHistory();
   const {NoteStore, PageStore} = useNoteStore();
   const [informDeleted, setInformDeleted] = useState(false);
+  noteTitle = NoteUtil.decodeStr(noteTitle);
 
   // const [imgSrc, setImgSrc] = useState(noteImg);
   // hover 효과 사라짐(혹시 몰라 남겨둠)
