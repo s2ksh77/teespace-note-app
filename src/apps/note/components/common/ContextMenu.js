@@ -9,11 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
 import { exportChapterData, exportPageData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
+import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { userStore } = useCoreStores();
 
   const renameComponent = () => {
     // 이름을 변경한다.
@@ -32,7 +34,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     }
   };
 
-  const deleteComponent = () => {
+  const deleteComponent = async () => {
     // 챕터/페이지를 삭제한다.
     ChapterStore.setNextSelectableChapterId(nextSelectableChapterId);
     PageStore.setNextSelectablePageId(nextSelectablePageId);
@@ -40,13 +42,33 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     switch (noteType) {
       case "chapter":
         ChapterStore.setDeleteChapterId(chapter.id);
-        NoteStore.setModalInfo('chapter');
+        ChapterStore.getChapterChildren(chapter.id).then(async dto => {
+          if (dto.noteList.length > 0) {
+            const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
+            if (editingList.length === 1) {
+              const res = await userStore.fetchProfile(editingList[0].is_edit);
+              PageStore.setEditingUserName(res.name);
+              NoteStore.setModalInfo('confirm');
+            } else if (editingList.length > 1) {
+              PageStore.setEditingUserCount(editingList.length);
+              NoteStore.setModalInfo('chapterconfirm');
+            } else NoteStore.setModalInfo('chapter');
+          } else NoteStore.setModalInfo('chapter');
+        });
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
-        PageStore.setDeletePageList({ note_id: page.id, type: page.type });
-        PageStore.setDeleteParentIdx(chapterIdx);
-        NoteStore.setModalInfo('page');
+        PageStore.getNoteInfoList(page.id).then(async dto => {
+          if (dto.is_edit === null || dto.is_edit === '') {
+            PageStore.setDeletePageList({ note_id: page.id, type: page.type });
+            PageStore.setDeleteParentIdx(chapterIdx);
+            NoteStore.setModalInfo('page');
+          } else {
+            const res = await userStore.fetchProfile(dto.is_edit);
+            PageStore.setEditingUserName(res.name);
+            NoteStore.setModalInfo('confirm');
+          }
+        })
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default:
@@ -127,8 +149,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
       {type === 'shared_page'
         ? null :
         <Item key="0">이름 변경</Item>}
-        <Item key="1">삭제</Item>
-        <Item key="2">다른 룸으로 전달</Item>
+      <Item key="1">삭제</Item>
+      <Item key="2">다른 룸으로 전달</Item>
       {/* <Item key="3">Mail로 전달</Item> */}
       <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
         <Item key="4">PDF 형식(.pdf)</Item>
