@@ -55,8 +55,11 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
+      case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'sharedInfo':
+      case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
@@ -65,18 +68,10 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
         break;
-      case 'sharedInfo':
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
-        break;
-      case 'editingPage':
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
-        break;
       case 'shareRoom':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.shareNote(); NoteStore.setIsShared(false); NoteStore.setModalInfo(null); })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); NoteStore.setIsShared(false); });
         break;
-      case 'multiFileSomeFail':
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
       default:
         break;
     }
@@ -87,9 +82,9 @@ const NoteMeta = {
       case 'delete':
       case 'fileDelete':
         return [{ type: 'delete', text: '삭제' }, { type: 'cancel', text: '취소' }]
+      case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
-      case 'confirm':
       case 'titleDuplicate':
       case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
