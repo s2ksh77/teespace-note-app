@@ -23,7 +23,7 @@ const urlRegex2 = new RegExp(
 );
 
 // 잘 안되는 거 있으면 이걸로 테스트 해보기 : (\w{3,}\@[\w\.]{1,})
-const isEmail = new RegExp(/^[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
+const isEmail = new RegExp(/^(mailto:\s?)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
 
 // 유효하면 true
 export const composeValidators = (...args) => (value) => {
@@ -39,6 +39,7 @@ export const composeValidators = (...args) => (value) => {
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
 export const isFilled = (value) => (!isNil(value) && !isEmpty(value) ? true : false);
 export const validUrl = (value) => (!isEmail.test(value) && (urlRegex.test(value) || urlRegex2.test(value)));
+export const isValidMail = (value) => isEmail.test(value);
 
 // url validation
 export const checkUrlValidation = (inputValue) => {
