@@ -234,6 +234,13 @@ const NoteStore = observable({
     })
 
     this.shareArrays.roomArray.forEach(room => {
+      if (!room.isVisible) {
+        RoomStore.activateRoom({
+          roomId: room.id, 
+          myUserId: NoteRepository.USER_ID
+        });
+      }
+      
       if (this.shareNoteType === 'chapter')
         ChapterStore.createNoteShareChapter(room.id, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
