@@ -5409,6 +5409,13 @@ var NoteStore$1 = mobx.observable({
       };
     }());
     this.shareArrays.roomArray.forEach(function (room) {
+      if (!room.isVisible) {
+        teespaceCore.RoomStore.activateRoom({
+          roomId: room.id,
+          myUserId: NoteRepository$1.USER_ID
+        });
+      }
+
       if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(room.id, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(room.id, [_this2.shareContent]);
     });
   },
