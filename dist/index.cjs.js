@@ -2578,6 +2578,7 @@ var PageStore = mobx.observable((_observable$1 = {
   nextSelectablePageId: '',
   isRename: false,
   renamePageId: '',
+  renamePagePrevText: '',
   renamePageText: '',
   isMovingPage: false,
   moveInfoList: [],
@@ -2707,6 +2708,12 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   setRenamePageId: function setRenamePageId(pageId) {
     this.renamePageId = pageId;
+  },
+  getRenamePagePrevText: function getRenamePagePrevText() {
+    return this.renamePagePrevText;
+  },
+  setRenamePagePrevText: function setRenamePagePrevText(pageText) {
+    this.renamePagePrevText = pageText;
   },
   getRenamePageText: function getRenamePageText() {
     return this.renamePageText;
@@ -3667,6 +3674,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   deleteChapterId: '',
   nextSelectableChapterId: '',
   renameChapterId: '',
+  renameChapterPrevText: '',
   renameChapterText: '',
   isMovingChapter: false,
   moveInfoList: [],
@@ -3708,6 +3716,12 @@ var ChapterStore = mobx.observable((_observable$2 = {
   },
   setRenameChapterId: function setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
+  },
+  getRenameChapterPrevText: function getRenameChapterPrevText() {
+    return this.renameChapterPrevText;
+  },
+  setRenameChapterPrevText: function setRenameChapterPrevText(chapterText) {
+    this.renameChapterPrevText = chapterText;
   },
   getRenameChapterText: function getRenameChapterText() {
     return this.renameChapterText;
