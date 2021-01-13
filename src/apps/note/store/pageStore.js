@@ -25,6 +25,7 @@ const PageStore = observable({
   nextSelectablePageId: '',
   isRename: false,
   renamePageId: '',
+  renamePagePrevText: '',
   renamePageText: '',
   isMovingPage: false,
   moveInfoList: [],
@@ -160,6 +161,12 @@ const PageStore = observable({
   },
   setRenamePageId(pageId) {
     this.renamePageId = pageId;
+  },
+  getRenamePagePrevText() {
+    return this.renamePagePrevText;
+  },
+  setRenamePagePrevText(pageText) {
+    this.renamePagePrevText = pageText;
   },
   getRenamePageText() {
     return this.renamePageText;

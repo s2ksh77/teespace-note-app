@@ -22,10 +22,12 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     switch (noteType) {
       case "chapter":
         ChapterStore.setRenameChapterId(chapter.id);
+        ChapterStore.setRenameChapterPrevText(chapter.text);
         ChapterStore.setRenameChapterText(chapter.text);
         break;
       case "page":
         PageStore.setRenamePageId(page.id);
+        PageStore.setRenamePagePrevText(page.text);
         PageStore.setRenamePageText(page.text);
         PageStore.setIsRename(true);
         break;

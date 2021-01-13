@@ -40,6 +40,7 @@ const ChapterStore = observable({
   deleteChapterId: '',
   nextSelectableChapterId: '',
   renameChapterId: '',
+  renameChapterPrevText: '',
   renameChapterText: '',
   isMovingChapter: false,
   moveInfoList: [],
@@ -81,6 +82,12 @@ const ChapterStore = observable({
   },
   setRenameChapterId(chapterId) {
     this.renameChapterId = chapterId;
+  },
+  getRenameChapterPrevText() {
+    return this.renameChapterPrevText;
+  },
+  setRenameChapterPrevText(chapterText) {
+    this.renameChapterPrevText = chapterText;
   },
   getRenameChapterText() {
     return this.renameChapterText;
