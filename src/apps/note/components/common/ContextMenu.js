@@ -15,7 +15,7 @@ const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapterId, nextSelectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const { userStore } = useCoreStores();
+  const { userStore, spaceStore } = useCoreStores();
 
   const renameComponent = () => {
     // 이름을 변경한다.
@@ -153,7 +153,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
         <Item key="0">이름 변경</Item>}
       <Item key="1">삭제</Item>
       <Item key="2">다른 룸으로 전달</Item>
-      {/* <Item key="3">Mail로 전달</Item> */}
+      {spaceStore.currentSapce?.plan !== 'BASIC' && <Item key="3">Mail로 전달</Item>}
       <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
         <Item key="4">PDF 형식(.pdf)</Item>
         <Item key="5">TXT 형식(.txt)</Item>

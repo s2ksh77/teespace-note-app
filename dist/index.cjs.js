@@ -7964,6 +7964,8 @@ var SubMenu = antd.Menu.SubMenu,
     Item = antd.Menu.Item;
 
 var ContextMenu = function ContextMenu(_ref) {
+  var _spaceStore$currentSa;
+
   var noteType = _ref.noteType,
       chapter = _ref.chapter,
       chapterIdx = _ref.chapterIdx,
@@ -7978,7 +7980,8 @@ var ContextMenu = function ContextMenu(_ref) {
       PageStore = _useNoteStore.PageStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      userStore = _useCoreStores.userStore;
+      userStore = _useCoreStores.userStore,
+      spaceStore = _useCoreStores.spaceStore;
 
   var renameComponent = function renameComponent() {
     // 이름을 변경한다.
@@ -8208,7 +8211,9 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "1"
   }, "\uC0AD\uC81C"), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "2"
-  }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
+  }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), ((_spaceStore$currentSa = spaceStore.currentSapce) === null || _spaceStore$currentSa === void 0 ? void 0 : _spaceStore$currentSa.plan) !== 'BASIC' && /*#__PURE__*/React__default['default'].createElement(Item, {
+    key: "3"
+  }, "Mail\uB85C \uC804\uB2EC"), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
     title: "\uB0B4\uBCF4\uB0B4\uAE30",
     onTitleClick: handleSubMenuClick
   }, /*#__PURE__*/React__default['default'].createElement(Item, {
