@@ -387,3 +387,38 @@ export const driveSaveSuccess = () => {
 export const driveSaveCancel = () => {
     EditorStore.setIsSaveDrive(false);
 }
+
+// DriveUtils.getDriveFileInfo 참고
+export const isImg = {ext:['apng', 'bmp','gif','jpg','jpeg','jfif','png','rle','die','raw'], isPreview:true};
+// 동영상 html 미지원
+export const isVideoWithoutPreview = {ext:['mkv','avi','mpg','flv','wmv','asf','asx','ogm','3gp','mov','dat','rm','mpe','mpeg'], isPreview:false};
+// 동영상 html 지원
+export const isVideoWithPreview = {ext:['mp4','ogv','webm'], isPreview:true};
+// 오디오
+export const isAudio = {ext:['mp3','wav','ogg','flac','wma','aac'], isPreview:true};
+// 오피스(파워포인트)
+export const isPowerPoint = {ext:['ppt','pptx','tpt'], isPreview:false};
+// 오피스(워드)
+export const isWord = {ext:['doc','docx','toc'], isPreview:false};
+// 오피스(엑셀)
+export const isExcel = {ext:['xls','xlsx','tls','csv'], isPreview:false};
+// 오피스(한글)
+export const isHangul = {ext:['hwp'], isPreview:false};
+export const isTxt = {ext:['txt'], isPreview:false};
+export const isPdf = {ext:['pdf'], isPreview:false};
+export const isZip = {ext:['zip','tar','rar','tgz','war','alz','ace','arc','arj','b64', 'bh','bhx','bin',
+  'bz2','cab','ear','enc','gz', 'ha','hqx','ice','img','jar','lha','lzh','mim','pak','uue','xxe','zoo'], isPreview:false};
+export const isExe = {ext:['exe'], isPreview:false};
+
+export const fileCategory = {
+  isImg,
+  isVideoWithoutPreview,
+  isVideoWithPreview,
+  isAudio,isPowerPoint, isWord, isExcel,isHangul,isTxt,isPdf, isZip, isExe}
+
+export const isPreview = (extension) => {
+  const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
+  if (!cat) return false;
+  return fileCategory[cat]["isPreview"];
+}
+

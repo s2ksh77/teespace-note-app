@@ -12,10 +12,13 @@ import ppt from '../../assets/drive_topoint.svg';
 import pdf from '../../assets/drive_pdf.svg';
 import zip from '../../assets/zip.svg';
 import docs from '../../assets/drive_toword.svg';
+import hangul from '../../assets/drive_tohangul.svg';
 import video from '../../assets/movie.svg';
+import audio from '../../assets/drive_audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
-import { downloadFile, handleDriveSave, openSaveDrive, saveDrive } from '../common/NoteFile';
+import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory, isPreview } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { ComponentStore } from 'teespace-core';
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
@@ -24,30 +27,37 @@ const FileLayout = () => {
     const [hoverFileIdx, setHoverFileIdx] = useState(null);
     const filebodyRef = useRef([]);
     const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+    // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
 
     const handleTooltip = e => {
         setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
     };
 
     const fileExtension = (extension) => {
-        switch (extension) {
-            case 'txt':
-                return txt;
-            case 'ppt':
-            case 'pptx':
-                return ppt;
-            case 'pdf':
-                return pdf;
-            case 'xlsx':
-                return excel;
-            case 'docx':
-                return docs;
-            case 'zip':
-                return zip;
-            case 'mp4':
-                return video;
-            default: return file;
-        }
+      // driveGetFileIcon(fileName)
+      const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
+      switch (cat) {
+        case 'isTxt':
+          return txt;
+        case 'isPowerPoint':
+          return ppt;
+        case 'isPdf':
+          return pdf;
+        case 'isExcel':
+          return excel;
+        case 'isWord':
+          return docs;
+        case 'isHangul':
+          return hangul;
+        case 'isZip':
+          return zip;
+        case 'isVideoWithPreview':
+        case 'isVideoWithoutPreview':
+          return video;
+        case 'isAudio':
+          return audio;
+        default: return file;
+      }
     }
     const handleFileDown = (key) => {
         if (key === '0') openSaveDrive();
@@ -125,17 +135,19 @@ const FileLayout = () => {
         }
     }
 
-    const onClickFileName = (item) => {
+    const onClickFileName = (item) => {  
+      const {file_id, file_name, file_extension:extension, user_context_2} = item;
+      if (isPreview(extension)) {
         EditorStore.setPreviewFileMeta({
-            userId: NoteRepository.USER_ID,
-            channelId: NoteRepository.chId,
-            roomId: NoteRepository.WS_ID,
-            fileId: item.file_id ? item.file_id : item.user_context_2,
-            fileName: item.file_name,
-            fileExtension: item.file_extension,
+          userId: NoteRepository.USER_ID,
+          channelId: NoteRepository.chId,
+          roomId: NoteRepository.WS_ID,
+          fileId: file_id ? file_id : user_context_2,
+          fileName: file_name,
+          fileExtension: extension,
         })
-
         EditorStore.setIsPreview(true);
+      } else {downloadFile(file_id ? file_id : user_context_2)}        
     }
 
     const handleFileRemove = async (fileId, index, type) => {
