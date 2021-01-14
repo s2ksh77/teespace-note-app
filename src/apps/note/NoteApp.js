@@ -113,7 +113,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
           {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
             ? <DragPreview
               id={NoteStore.draggedComponentId}
-              titles={NoteStore.drageedComponentTitles} />
+              titles={NoteStore.draggedComponentTitles} />
             : null}
           <TempEditor />
         </>

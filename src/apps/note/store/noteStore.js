@@ -26,7 +26,7 @@ const NoteStore = observable({
   LNBChapterCoverRef: '',
   isDragging: false,
   draggedComponentId: '',
-  drageedComponentTitles: [],
+  draggedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
@@ -257,8 +257,8 @@ const NoteStore = observable({
   setDraggedComponentId(id) {
     this.draggedComponentId = id;
   },
-  setDrageedComponentTitles(titles) {
-    this.drageedComponentTitles = titles;
+  setDraggedComponentTitles(titles) {
+    this.draggedComponentTitles = titles;
   },
   setDraggedOffset(offset) {
     this.draggedOffset = offset;
