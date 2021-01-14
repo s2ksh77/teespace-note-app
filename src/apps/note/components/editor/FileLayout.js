@@ -16,7 +16,7 @@ import hangul from '../../assets/drive_tohangul.svg';
 import video from '../../assets/movie.svg';
 import audio from '../../assets/drive_audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
-import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory, isPreview } from '../common/NoteFile';
+import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ComponentStore } from 'teespace-core';
 
@@ -137,7 +137,12 @@ const FileLayout = () => {
 
     const onClickFileName = (item) => {  
       const {file_id, file_name, file_extension:extension, user_context_2} = item;
-      if (isPreview(extension)) {
+      const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
+      const isPreviewFile = cat && fileCategory[cat]["isPreview"];
+      // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+      if (!PageStore.isReadMode() && !isPreviewFile) return;
+
+      if (isPreviewFile) {
         EditorStore.setPreviewFileMeta({
           userId: NoteRepository.USER_ID,
           channelId: NoteRepository.chId,
@@ -222,13 +227,7 @@ const FileLayout = () => {
                             {item.error ? <FileErrorIcon><ExclamationCircleFilled /></FileErrorIcon> : null}
                             <FileData>
                                 <FileDataName>
-                                    <FileName
-                                        onClick={
-                                            PageStore.isReadMode()
-                                                ? onClickFileName.bind(null, item)
-                                                : null
-                                        }
-                                    >
+                                    <FileName onClick={onClickFileName.bind(null, item)}>
                                         {item.file_name}
                                         {item.file_extension && `.${item.file_extension}`}
                                     </FileName>
@@ -281,11 +280,7 @@ const FileLayout = () => {
                                         placement='top'
                                     >
                                         <FileName
-                                            onClick={
-                                                PageStore.isReadMode()
-                                                    ? onClickFileName.bind(null, item)
-                                                    : null
-                                            }
+                                            onClick={onClickFileName.bind(null, item)}
                                             onMouseOver={handleTooltip}
                                         >
                                             {item.file_name}
