@@ -423,7 +423,7 @@ const EditorContainer = () => {
           cancelCallback={driveCancelCb}
           roomId={NoteRepository.WS_ID}
         />
-        {PageStore.isReadMode() && EditorStore.isPreview
+        {EditorStore.isPreview
           ? <FilePreview
             visible={EditorStore.isPreview}
             fileMeta={EditorStore.previewFileMeta}
