@@ -3034,22 +3034,20 @@ var PageStore = observable((_observable$1 = {
           ChapterStore.setCurrentChapterId('');
           ChapterStore.getNoteChapterList();
         } else {
-          ChapterStore.getNoteChapterList().then(function (chapterList) {
-            var currentChapter = chapterList.filter(function (chapter) {
-              return chapter.id === _this2.createParent;
-            })[0];
-            ChapterStore.setCurrentChapterId(_this2.createParent);
-
-            if (currentChapter.children.length >= 1) {
-              var pageId = currentChapter.children[0].id;
-              _this2.isNewPage = false;
-              _this2.createPageId = '';
-
-              _this2.setCurrentPageId(pageId);
-
-              _this2.fetchCurrentPageData(pageId);
-            }
+          var currentChapter = ChapterStore.chapterList.find(function (chapter) {
+            return chapter.id === _this2.createParent;
           });
+
+          if (currentChapter.children.length > 1) {
+            var pageId = currentChapter.children[1].id;
+            _this2.createPageId = '';
+
+            _this2.setCurrentPageId(pageId);
+
+            _this2.fetchCurrentPageData(pageId);
+          }
+
+          ChapterStore.getNoteChapterList();
         }
       } else {
         ChapterStore.getNoteChapterList().then(function () {
@@ -3167,7 +3165,6 @@ var PageStore = observable((_observable$1 = {
               }));
 
             case 8:
-              console.log(sortedMovePages, pageIds2);
               item[moveTargetChapterIdx].children = pageIds2;
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
@@ -3188,31 +3185,31 @@ var PageStore = observable((_observable$1 = {
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context9.next = 29;
+                _context9.next = 28;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-              _context9.next = 19;
+              _context9.next = 18;
               return ChapterStore.getNoteChapterList();
 
-            case 19:
+            case 18:
               if (!ChapterStore.currentChapterId) {
-                _context9.next = 24;
+                _context9.next = 23;
                 break;
               }
 
-              _context9.next = 22;
+              _context9.next = 21;
               return _this4.fetchCurrentPageData(sortedMovePages[0]);
 
-            case 22:
-              _context9.next = 25;
+            case 21:
+              _context9.next = 24;
               break;
 
-            case 24:
+            case 23:
               _this4.handleClickOutside();
 
-            case 25:
+            case 24:
               if (!moveCntToAnotherChapter) {
                 NoteStore$1.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
               } else {
@@ -3220,17 +3217,17 @@ var PageStore = observable((_observable$1 = {
               }
 
               NoteStore$1.setIsVisibleToast(true);
-              _context9.next = 30;
+              _context9.next = 29;
               break;
 
-            case 29:
+            case 28:
               // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
               _this4.handleClickOutside();
 
-            case 30:
+            case 29:
               NoteStore$1.setIsDragging(false);
 
-            case 31:
+            case 30:
             case "end":
               return _context9.stop();
           }
@@ -3309,9 +3306,7 @@ var PageStore = observable((_observable$1 = {
                 _this5.isNewPage = false;
               }
 
-              console.log('fetchNoteInfoList');
-
-            case 18:
+            case 17:
             case "end":
               return _context10.stop();
           }
