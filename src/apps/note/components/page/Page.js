@@ -44,20 +44,19 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const [, drag, preview] = useDrag({
     item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages' },
     begin: (monitor) => {
-      if (!PageStore.moveInfoList.find(info => info.pageId === page.id)) {
-        PageStore.setMoveInfoList([pageMoveInfo]);
+      if (!PageStore.moveInfoMap.get(page.id)) {
+        PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
-      PageStore.setMovePageId(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].pageId);
-      NoteStore.setDraggedComponentId(PageStore.moveInfoList[0]?.pageId);
+      NoteStore.setDraggedComponentId(page.id);
       NoteStore.setDraggedComponentTitles(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
       return {
         type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
-        data: PageStore.moveInfoList.map(moveInfo => moveInfo.shareData),
+        data: [...PageStore.moveInfoMap].map(keyValue => keyValue[1].shareData),
       };
     },
     end: (item, monitor) => {
@@ -89,18 +88,17 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   }, []);
 
   const handleSelectPage = useCallback((e) => {
-    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
     ChapterStore.setIsCtrlKeyDown(false);
 
     if (e.ctrlKey) {
-      const idx = PageStore.moveInfoList.findIndex((info) => info.pageId === page.id);
-      if (idx === -1) PageStore.appendMoveInfoList(pageMoveInfo);
-      else PageStore.removeMoveInfoList(idx);
+      if (PageStore.moveInfoMap.get(page.id)) PageStore.deleteMoveInfoMap(page.id);
+      else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
       PageStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    PageStore.setMoveInfoList([pageMoveInfo]);
+    PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
     PageStore.setIsCtrlKeyDown(false);
     onClick(page.id);
   }, [page]);
@@ -138,12 +136,12 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       className={
         'page-li' +
         (PageStore.isCtrlKeyDown
-          ? (PageStore.moveInfoList.find((info) => info.pageId === page.id)
+          ? (PageStore.moveInfoMap.get(page.id)
               ? ' selected'
               : '')
           : (NoteStore.showPage && (
-              NoteStore.isDragging && PageStore.moveInfoList.length > 0
-                ? page.id === PageStore.moveInfoList[0].pageId
+              NoteStore.isDragging && PageStore.moveInfoMap.size > 0
+                ? page.id === [...PageStore.moveInfoMap][0][0]
                 : page.id === PageStore.currentPageId)
               ? ' selected'
               : ''))

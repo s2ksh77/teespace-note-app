@@ -28,7 +28,7 @@ const PageStore = observable({
   renamePagePrevText: '',
   renamePageText: '',
   isMovingPage: false,
-  moveInfoList: [],
+  moveInfoMap: new Map(),
   isCtrlKeyDown: false,
   movePageId: '', // 이동을 원하는 page의 id
   dragEnterPageIdx: '',
@@ -181,17 +181,17 @@ const PageStore = observable({
   setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
   },
-  getMoveInfoList() {
-    return this.moveInfoList;
+  getMoveInfoMap() {
+    return this.moveInfoMap;
   },
-  setMoveInfoList(moveInfoList) {
-    this.moveInfoList = moveInfoList;
+  setMoveInfoMap(moveInfoMap) {
+    this.moveInfoMap = moveInfoMap;
   },
-  appendMoveInfoList(moveInfo) {
-    this.moveInfoList.push(moveInfo);
+  appendMoveInfoMap(key, value) {
+    this.moveInfoMap.set(key, value);
   },
-  removeMoveInfoList(idx) {
-    this.moveInfoList.splice(idx, 1);
+  deleteMoveInfoMap(key) {
+    this.moveInfoMap.delete(key);
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -407,12 +407,12 @@ const PageStore = observable({
   handleClickOutside() {
     this.setIsCtrlKeyDown(false);
     if (!this.currentPageId) {
-      this.setMoveInfoList([]);
+      this.moveInfoMap.clear();
       return;
     }
-    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.pageId === this.currentPageId);
+    let currentMoveInfo = this.moveInfoMap.get(this.currentPageId);
     if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
-    this.setMoveInfoList([currentMoveInfo]);
+    this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
   },
 
   async movePage(movePageId, moveTargetChapterId) {
@@ -423,7 +423,8 @@ const PageStore = observable({
   },
 
   getSortedMoveInfoList() {
-    return this.moveInfoList.slice().sort((a, b) => {
+    const moveInfoList = [...this.moveInfoMap].map(keyValue => keyValue[1]);
+    return moveInfoList.sort((a, b) => {
       if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
       return a.chapterIdx - b.chapterIdx;
     });
@@ -432,52 +433,46 @@ const PageStore = observable({
   async moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
-    // Step1. moveInfoList를 오름차순으로 정렬
     const sortedMoveInfoList = this.getSortedMoveInfoList();
+    const sortedMovePages = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx].children[moveInfo.pageIdx]);
 
-    // Step2. LocalStorage에서 삭제 / 서비스 호출
+    const pageIds2 = []; // 갈아 끼울 페이지 아이디 리스트
+    item[moveTargetChapterIdx].children.forEach((pageId, idx) => {
+      if (idx === moveTargetPageIdx) pageIds2.push(...sortedMovePages);
+      if (!this.moveInfoMap.get(pageId)) pageIds2.push(pageId);
+    });
+    if (moveTargetPageIdx >= pageIds2.length) pageIds2.push(...sortedMovePages);
+
     await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
-      if (moveInfo.chapterId === moveTargetChapterId
-        && moveInfo.pageIdx < moveTargetPageIdx) return;
-
-      item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-      if (moveInfo.chapterId !== moveTargetChapterId)
+      if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.pageId)) {
+        item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
         return this.movePage(moveInfo.pageId, moveTargetChapterId);
+      }
     }));
 
-    // Step3. LocalStorage에 추가
-    const pageIds = sortedMoveInfoList.map(moveInfo => moveInfo.pageId);
-    item[moveTargetChapterIdx].children.splice(moveTargetPageIdx, 0, ...pageIds);
+    console.log(sortedMovePages, pageIds2);
+    item[moveTargetChapterIdx].children = pageIds2;
 
-    // Step4. LocalStorage에서 삭제
-    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
-      if (moveInfo.chapterId !== moveTargetChapterId
-        || moveInfo.pageIdx >= moveTargetPageIdx) return;
-
-      item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
-    });
-
-    // Step5. 순서 이동 페이지 카운트 / moveInfoList 업데이트
     let moveCntInSameChapter = 0;
     let moveCntToAnotherChapter = 0;
     const startIdx = item[moveTargetChapterIdx].children.findIndex(pageId => pageId === sortedMoveInfoList[0].pageId);
-    this.moveInfoList = sortedMoveInfoList.map((moveInfo, idx) => {
-      if (moveInfo.chapterIdx !== moveTargetChapterIdx) moveCntToAnotherChapter++;
+    sortedMoveInfoList.map((moveInfo, idx) => {
+      if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;
       else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
-      return {
+      this.moveInfoMap.set(moveInfo.pageId, {
         pageId: moveInfo.pageId,
         pageIdx: startIdx + idx,
         chapterId: moveTargetChapterId,
         chapterIdx: moveTargetChapterIdx,
         shareData: moveInfo.shareData,
-      };
+      })
     });
 
     const moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
       await ChapterStore.getNoteChapterList();
-      if (ChapterStore.currentChapterId) await this.fetchCurrentPageData(this.moveInfoList[0]?.pageId);
+      if (ChapterStore.currentChapterId) await this.fetchCurrentPageData(sortedMovePages[0]);
       else this.handleClickOutside();
 
       if (!moveCntToAnotherChapter) {
@@ -538,6 +533,12 @@ const PageStore = observable({
     EditorStore.setFileList(
       dto.fileList,
     );
+    if (this.isNewPage) {
+      ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
+      this.setMoveInfoMap(new Map([[this.currentPageId, this.createMoveInfo(this.currentPageData)]]));
+      this.isNewPage = false;
+    }
+    console.log('fetchNoteInfoList');
   },
 
   async fetchCurrentPageData(pageId) {
@@ -635,7 +636,6 @@ const PageStore = observable({
     if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
-    this.isNewPage = false;
   },
   setIsNewPage(isNew) {
     this.isNewPage = isNew;
