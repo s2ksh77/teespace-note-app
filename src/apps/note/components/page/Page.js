@@ -131,7 +131,13 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   return useObserver(() => (
     <PageCover
-      ref={page.type === 'note' ? (node) => drag(drop(node)) : drag}
+      ref={
+        !PageStore.renamePageId
+          ? (page.type === 'note' 
+            ? (node) => drag(drop(node))
+            : drag)
+          : null
+      }
       id={page.id}
       className={
         'page-li' +
