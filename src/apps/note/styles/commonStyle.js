@@ -402,5 +402,5 @@ export const DraggedComponentTitle = styled.span`
   padding-right: 1.75rem;
   overflow: hidden;
   text-overflow: ellipsis;
-  whiteSpace: nowrap;
+  white-space: nowrap;
 `;
