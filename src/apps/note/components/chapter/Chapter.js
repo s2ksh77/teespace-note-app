@@ -215,9 +215,11 @@ const Chapter = ({ chapter, index, isShared }) => {
         <ChapterCover
           className={'chapter-div'}
           ref={
-            !isShared
-              ? (node) => drag(dropChapter(node))
-              : drag
+            !ChapterStore.renameChapterId
+              ? (!isShared
+                ? (node) => drag(dropChapter(node))
+                : drag)
+            :null
           }
           onClick={onClickChapterBtn}
         >

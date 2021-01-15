@@ -9,7 +9,7 @@ import {
   ModalTitleContainer,
   ModalTitle,
   ModalSubTitle,
-  ShraedInfoModal,
+  SharedInfoModal,
   ModalSharedInfoHeader,
   ModalHeaderBtn,
   ModalSharedInfoContainer,
@@ -82,7 +82,7 @@ const Modal = () => {
           <>
             {sharedInfo
               ? (
-                <ShraedInfoModal className="NoteModal">
+                <SharedInfoModal className="NoteModal">
                   <ModalSharedInfoHeader>
                     <RoomShareTitle>정보 보기</RoomShareTitle>
                     <ModalHeaderBtn
@@ -109,7 +109,7 @@ const Modal = () => {
                       );
                     })}
                   </ButtonGroup>
-                </ShraedInfoModal>
+                </SharedInfoModal>
               )
               : (
                 <CustomModal className="NoteModal" >
