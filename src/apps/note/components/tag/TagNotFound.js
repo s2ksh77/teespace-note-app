@@ -14,9 +14,8 @@ const TagNotFound = () => {
       <NoneContainer>
         <NoneTitle>태그가 없습니다.</NoneTitle>
         <NoneText>
-          페이지 하단에 태그를 입력하여 추가하거나
+          페이지 하단에 태그를 입력하여 추가하세요.
         </NoneText>
-        <NoneText>태그 목록을 검색하세요.</NoneText>
         <NoneImg src={noPageImage} alt="tag_not_found" />
       </NoneContainer>
     </>
