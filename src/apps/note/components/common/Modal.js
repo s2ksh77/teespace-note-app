@@ -43,9 +43,9 @@ const Modal = () => {
           <RoomShareModal>
             <RoomShareTitleContainer>
               <RoomShareTitle>다른 룸으로 전달</RoomShareTitle>
-              <ModalHeaderBtn 
+              <ModalHeaderBtn
                 style={{ right: '1.25rem' }}
-                src={cancelImg} 
+                src={cancelImg}
                 onClick={() => {
                   NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
                 }}
@@ -53,6 +53,7 @@ const Modal = () => {
             </RoomShareTitleContainer>
             <ItemSelector
               isVisibleRoom={true}
+              placeholder={`프렌즈/구성원/룸 목록에서\n 선택해 주세요.`}
               onSelectChange={data => {
                 NoteStore.setShareArrays(data);
                 setShareArraysCnt(data.userArray.length + data.roomArray.length);
@@ -84,8 +85,8 @@ const Modal = () => {
                 <ShraedInfoModal className="NoteModal">
                   <ModalSharedInfoHeader>
                     <RoomShareTitle>정보 보기</RoomShareTitle>
-                    <ModalHeaderBtn 
-                      src={cancelImg} 
+                    <ModalHeaderBtn
+                      src={cancelImg}
                       onClick={() => NoteStore.setModalInfo(null)}
                     />
                   </ModalSharedInfoHeader>
