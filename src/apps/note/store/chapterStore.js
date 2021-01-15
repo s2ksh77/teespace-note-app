@@ -43,7 +43,7 @@ const ChapterStore = observable({
   renameChapterPrevText: '',
   renameChapterText: '',
   isMovingChapter: false,
-  moveInfoList: [],
+  moveInfoMap: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
@@ -101,17 +101,17 @@ const ChapterStore = observable({
   setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
-  getMoveInfoList() {
-    return this.moveInfoList;
+  getMoveInfoMap() {
+    return this.moveInfoMap;
   },
-  setMoveInfoList(moveInfoList) {
-    this.moveInfoList = moveInfoList;
+  setMoveInfoMap(moveInfoMap) {
+    this.moveInfoMap = moveInfoMap;
   },
-  appendMoveInfoList(moveInfo) {
-    this.moveInfoList.push(moveInfo);
+  appendMoveInfoMap(key, value) {
+    this.moveInfoMap.set(key, value);
   },
-  removeMoveInfoList(idx) {
-    this.moveInfoList.splice(idx, 1);
+  deleteMoveInfoMap(key) {
+    this.moveInfoMap.delete(key);
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -492,58 +492,44 @@ const ChapterStore = observable({
   handleClickOutside() {
     this.setIsCtrlKeyDown(false);
     if (!this.currentChapterId) {
-      this.setMoveInfoList([]);
+      this.moveInfoMap.clear();
       return;
     }
-    let currentMoveInfo = this.moveInfoList.find(moveInfo => moveInfo.chapterId === this.currentChapterId);
-    if (!currentMoveInfo)
-      currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-    this.setMoveInfoList([currentMoveInfo]);
+    let currentMoveInfo = this.moveInfoMap.get(this.currentChapterId);
+    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
+    this.setMoveInfoMap(new Map([[this.currentChapterId, currentMoveInfo]]));
   },
 
   getSortedMoveInfoList() {
-    return this.moveInfoList.slice().sort((a, b) => {
-      return a.chapterIdx - b.chapterIdx;
-    });
+    const moveInfoList = [...this.moveInfoMap].map(keyValue => keyValue[1]);
+    return moveInfoList.sort((a, b) => a.chapterIdx - b.chapterIdx);
   },
 
   moveChapter(moveTargetChapterIdx) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
-    // Step1. moveInfoList를 오름차순으로 정렬
     const sortedMoveInfoList = this.getSortedMoveInfoList();
+    const sortedMoveChapters = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx]);
 
-    const chapters = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx]);
-
-    // Step2. LocalStorage에서 삭제
-    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
-      if (moveInfo.chapterIdx < moveTargetChapterIdx) return;
-      item.splice(moveInfo.chapterIdx, 1);
+    const chapters = [];
+    item.forEach((chapter, idx) => {
+      if (idx === moveTargetChapterIdx) chapters.push(...sortedMoveChapters);
+      if (!this.moveInfoMap.get(chapter.id)) chapters.push(chapter);
     });
 
-    // Step3. LocalStorage에 추가
-    item.splice(moveTargetChapterIdx, 0, ...chapters);
-
-    // Step4. LocalStorage에서 삭제
-    sortedMoveInfoList.slice().reverse().forEach(moveInfo => {
-      if (moveInfo.chapterIdx >= moveTargetChapterIdx) return;
-      item.splice(moveInfo.chapterIdx, 1);
-    });
-
-    // Step5. 순서 이동 챕터 카운트 / moveInfoList 업데이트
     let moveCnt = 0;
-    const startIdx = item.findIndex(chapter => chapter.id === sortedMoveInfoList[0].chapterId);
-    this.moveInfoList = sortedMoveInfoList.map((moveInfo, idx) => {
+    const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].chapterId);
+    sortedMoveInfoList.forEach((moveInfo, idx) => {
       if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
-      return {
+      this.moveInfoMap.set(moveInfo.chapterId, {
         chapterId: moveInfo.chapterId,
         chapterIdx: startIdx + idx,
         shareData: moveInfo.shareData,
-      };
+      })
     });
 
     if (moveCnt > 0) {
-      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
+      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
       this.getNoteChapterList().then(() => {
         if (!this.currentChapterId) this.handleClickOutside();
         NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
@@ -677,8 +663,8 @@ const ChapterStore = observable({
     return null;
   },
 
-  setFirstMoveInfoList(targetChapter) {
-    this.setMoveInfoList([{
+  setFirstMoveInfoMap(targetChapter) {
+    this.setMoveInfoMap(new Map([[targetChapter.id, {
       chapterId: targetChapter.id,
       chapterIdx: 0,
       shareData: {
@@ -686,11 +672,11 @@ const ChapterStore = observable({
         text: targetChapter.text,
         date: targetChapter.modified_date,
       },
-    }]);
+    }]]));
 
     if (targetChapter.children.length > 0) {
       const targetPage = targetChapter.children[0];
-      PageStore.setMoveInfoList([{
+      PageStore.setMoveInfoMap(new Map([[targetPage.id, {
         pageId: targetPage.id,
         pageIdx: 0,
         chapterId: targetChapter.id,
@@ -700,7 +686,7 @@ const ChapterStore = observable({
           text: targetPage.text,
           date: targetPage.modified_date,
         },
-      }]);
+      }]]));
     }
   },
 
@@ -711,7 +697,7 @@ const ChapterStore = observable({
       PageStore.setCurrentPageId('');
       return;
     }
-    this.setFirstMoveInfoList(targetChapter);
+    this.setFirstMoveInfoMap(targetChapter);
     const chapterId = targetChapter.id;
     const pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
     // setCurrentPageId는 fetchNoetInfoList에서

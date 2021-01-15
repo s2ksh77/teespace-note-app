@@ -50,19 +50,19 @@ const Chapter = ({ chapter, index, isShared }) => {
   const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters' },
     begin: (monitor) => {
-      if (!ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)) {
-        ChapterStore.setMoveInfoList([chapterMoveInfo]);
+      if (!ChapterStore.moveInfoMap.get(chapter.id)) {
+        ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
-      NoteStore.setDraggedComponentId(ChapterStore.moveInfoList[0]?.chapterId);
-      NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
+      NoteStore.setDraggedComponentId(chapter.id);
+      NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text)); 
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
       return {
         type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
-        data: ChapterStore.moveInfoList.map(moveInfo => moveInfo.shareData),
+        data: [...ChapterStore.moveInfoMap].map(keyValue => keyValue[1].shareData),
       };
     },
     end: (item, monitor) => {
@@ -125,22 +125,31 @@ const Chapter = ({ chapter, index, isShared }) => {
     if (!PageStore.isReadMode()) return;
 
     if (e.ctrlKey) {
-      const idx = ChapterStore.moveInfoList.findIndex((info) => info.chapterId === chapter.id);
-      if (idx === -1) ChapterStore.appendMoveInfoList(chapterMoveInfo);
-      else ChapterStore.removeMoveInfoList(idx);
+      if (ChapterStore.moveInfoMap.get(chapter.id)) ChapterStore.deleteMoveInfoMap(chapter.id);
+      else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);
       ChapterStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
     ChapterStore.setIsCtrlKeyDown(false);
     ChapterStore.setCurrentChapterId(chapter.id);
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    if (pageId) PageStore.setMoveInfoList([{ pageId: pageId, pageIdx: 0, chapterId: chapter.id, chapterIdx: index }]);
-    else PageStore.setMoveInfoList([]);
+    if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
+      pageId: pageId,
+      pageIdx: 0,
+      chapterId: chapter.id,
+      chapterIdx: index,
+      shareData: {
+        id: pageId,
+        text: ChapterStore.chapterList[index].children[0]?.text,
+        date: ChapterStore.chapterList[index].children[0]?.modified_date,
+      }
+    }]]))
+    else PageStore.setMoveInfoMap(new Map());
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 

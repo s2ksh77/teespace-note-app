@@ -29,11 +29,11 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
       <ChapterTitle
         className={
           (ChapterStore.isCtrlKeyDown
-            ? (ChapterStore.moveInfoList.find(info => info.chapterId === chapter.id)
+            ? (ChapterStore.moveInfoMap.get(chapter.id)
               ? 'selectedMenu'
               : '')
-            : (NoteStore.isDragging && ChapterStore.moveInfoList.length > 0
-                ? chapter.id === ChapterStore.moveInfoList[0].chapterId
+            : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0
+                ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
                 : chapter.id === ChapterStore.currentChapterId)
               ? 'selectedMenu'
               : '')
