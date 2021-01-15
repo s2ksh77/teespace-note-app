@@ -4571,6 +4571,7 @@ var ChapterStore = observable((_observable$2 = {
                   resultPageArr.push({
                     chapterId: chapter.id,
                     chapterTitle: chapter.text,
+                    color: chapter.color,
                     id: page.id,
                     title: page.text
                   });
