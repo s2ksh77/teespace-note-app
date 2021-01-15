@@ -256,7 +256,7 @@ export const ModalSubTitle = styled.div`
   color: #777777;
 `;
 
-export const ShraedInfoModal = styled.div`
+export const SharedInfoModal = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -299,6 +299,7 @@ export const ModalSharedInfoContainer = styled.div`
 `;
 
 export const ModalSharedInfoCover = styled.div`
+  display: flex;
   margin-bottom: 0.75rem;
 `;
 
@@ -310,6 +311,7 @@ export const ModalSharedInfoTitle = styled.span`
 `;
 
 export const ModalSharedInfoContent = styled.span`
+  width: calc(100% - 7rem);
   color: #777777;
   white-space: nowrap;
   overflow: hidden;
