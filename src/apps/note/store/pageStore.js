@@ -359,17 +359,14 @@ const PageStore = observable({
           ChapterStore.setCurrentChapterId('');
           ChapterStore.getNoteChapterList();
         } else {
-          ChapterStore.getNoteChapterList().then(chapterList => {
-            const currentChapter = chapterList.filter(chapter => chapter.id === this.createParent)[0];
-            ChapterStore.setCurrentChapterId(this.createParent);
-            if (currentChapter.children.length >= 1) {
-              const pageId = currentChapter.children[0].id
-              this.isNewPage = false;
-              this.createPageId = '';
-              this.setCurrentPageId(pageId);
-              this.fetchCurrentPageData(pageId);
-            }
-          })
+          const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
+          if (currentChapter.children.length > 1) {
+            const pageId = currentChapter.children[1].id
+            this.createPageId = '';
+            this.setCurrentPageId(pageId);
+            this.fetchCurrentPageData(pageId);
+          }
+          ChapterStore.getNoteChapterList();
         }
       } else {
         ChapterStore.getNoteChapterList().then(() => {
@@ -450,7 +447,6 @@ const PageStore = observable({
       }
     }));
 
-    console.log(sortedMovePages, pageIds2);
     item[moveTargetChapterIdx].children = pageIds2;
 
     let moveCntInSameChapter = 0;
@@ -538,7 +534,6 @@ const PageStore = observable({
       this.setMoveInfoMap(new Map([[this.currentPageId, this.createMoveInfo(this.currentPageData)]]));
       this.isNewPage = false;
     }
-    console.log('fetchNoteInfoList');
   },
 
   async fetchCurrentPageData(pageId) {
