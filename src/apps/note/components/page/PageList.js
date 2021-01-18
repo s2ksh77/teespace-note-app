@@ -57,8 +57,10 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
         {() =>
           <div style={{ height: '0px', marginLeft: '1.875rem' }}
             className={
-              PageStore.dragEnterChapterIdx === chapterIdx &&
-                PageStore.dragEnterPageIdx === chapter.children.length
+              PageStore.dragEnterChapterIdx === chapterIdx
+                && PageStore.dragEnterPageIdx === chapter.children.length
+                && chapter.type !== 'shared_page'
+                && chapter.type !== 'shared'
                 ? 'borderTopLine'
                 : ''
             }
