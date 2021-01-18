@@ -80,7 +80,7 @@ export const SearchImgInput = styled.input`
     height: 1rem;
     cursor:pointer;
     margin-right:0.43rem;
-    filter : invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);
+    filter: ${props => (props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);")}
 `;
 
 export const SearchResultNotFoundCover = styled.div`

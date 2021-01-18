@@ -172,9 +172,11 @@ const ChapterStore = observable({
       COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
     return this.isNewChapterColor;
   },
-  getChapterColor(chapterId) {
-    const { value } = NoteRepository.getChapterColor(chapterId);
-    return value;
+  async getChapterColor(chapterId) {
+    const {
+      data: { dto }
+    } = await NoteRepository.getChapterColor(chapterId);
+    return dto.color;
   },
   async getChapterName(chapterId) {
     const {

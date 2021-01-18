@@ -7,7 +7,7 @@ import {
 } from '../../styles/titleStyle';
 import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
-import searchImg from '../../assets/ts_m_search@3x.png';
+import searchImg from '../../assets/search.svg';
 import { SearchImgInput } from '../../styles/commonStyle';
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import { Button } from '../../styles/commonStyle';
@@ -26,7 +26,7 @@ const TagHeader = () => {
 
   const onSubmitForm = e => {
     e.preventDefault();
-    TagStore.searchTag(value);    
+    TagStore.searchTag(value);
     inputRef.current.focus();
   };
 
@@ -45,13 +45,13 @@ const TagHeader = () => {
 
   return useObserver(() => (
     <>
-      <ContentHeader 
+      <ContentHeader
         handleBackBtn={handleLayoutBtn}
         alignment={"right"}
       >
         <TagSearchForm onSubmit={onSubmitForm} show={TagStore.allSortedTagList.length > 0} >
-          <TagTitleSearchContainer>
-            <SearchImgInput type="image" border="0" alt=" " src={searchImg} />
+          <TagTitleSearchContainer isSearch={(TagStore.isSearching || value !== "") ? true : false}>
+            <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(TagStore.isSearching || value !== "") ? true : false} />
             <LnbTitleSearchInput
               autocomplete="off"
               ref={inputRef}
@@ -59,6 +59,7 @@ const TagHeader = () => {
               onChange={onChangeInput}
               placeholder="태그 검색"
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
+              isSearch={(TagStore.isSearching || value !== "") ? true : false}
             />
             <Button
               src={cancelImg}
@@ -66,7 +67,7 @@ const TagHeader = () => {
               onClick={onClickCancelBtn}
             />
           </TagTitleSearchContainer>
-        </TagSearchForm>          
+        </TagSearchForm>
       </ContentHeader>
     </>
   ));
