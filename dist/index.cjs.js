@@ -2141,23 +2141,35 @@ var TagStore = mobx.observable({
         engObj = {},
         numObj = {},
         etcObj = {};
-    this.tagKeyArr.forEach(function (key) {
-      if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
-        korObj[key] = _this9.keyTagPairObj[key];
-      } else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
-        // engObj[key] = this.keyTagPairObj[key];
-        engObj[key] = _this9.getEngTagObj(key);
-      } else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-        numObj[key] = _this9.keyTagPairObj[key];
+
+    if (this.tagKeyArr.length > 0) {
+      this.tagKeyArr.forEach(function (key) {
+        if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
+          korObj[key] = _this9.keyTagPairObj[key];
+        } else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
+          // engObj[key] = this.keyTagPairObj[key];
+          engObj[key] = _this9.getEngTagObj(key);
+        } else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
+          numObj[key] = _this9.keyTagPairObj[key];
+        } else {
+          etcObj[key] = _this9.keyTagPairObj[key];
+        }
+      });
+
+      if (TagStore.isSearching) {
+        if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
+        if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
+        if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
+        if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
       } else {
-        etcObj[key] = _this9.keyTagPairObj[key];
+        _sortedTagList["KOR"] = korObj;
+        _sortedTagList["ENG"] = engObj;
+        _sortedTagList["NUM"] = numObj;
+        _sortedTagList["ETC"] = etcObj;
       }
-    });
-    _sortedTagList["KOR"] = korObj;
-    _sortedTagList["ENG"] = engObj;
-    _sortedTagList["NUM"] = numObj;
-    _sortedTagList["ETC"] = etcObj;
-    this.setSortedTagList(_sortedTagList);
+
+      this.setSortedTagList(_sortedTagList);
+    } else this.setSortedTagList([]);
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
@@ -10685,6 +10697,9 @@ var EditorContainer = function EditorContainer() {
           });
           editor.on('PostProcess', function () {
             handleEditorContentsListener();
+          });
+          editor.on('Drop', function (e) {
+            console.log(e);
           }); // fired when a dialog has been opend
 
           editor.on('OpenWindow', function (e) {
@@ -10863,6 +10878,7 @@ var EditorContainer = function EditorContainer() {
         target_list: false,
         link_assume_external_targets: 'http',
         link_context_toolbar: false,
+        block_unsupported_drop: false,
         link_title: false,
         anchor_top: false,
         // link 입력중 dropdown으로 <top> 안뜨게 해

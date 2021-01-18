@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { observable, toJS } from "mobx";
 import NoteRepository from "./noteRepository";
 import ChapterStore from "./chapterStore";
 import PageStore from "./pageStore";
@@ -391,27 +391,36 @@ const TagStore = observable({
     let _sortedTagList = {};
     // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
     let korObj = {}, engObj = {}, numObj = {}, etcObj = {};
-    this.tagKeyArr.forEach((key) => {
-      if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
-        korObj[key] = this.keyTagPairObj[key];
-      }
-      else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
-        // engObj[key] = this.keyTagPairObj[key];
-        engObj[key] = this.getEngTagObj(key);
-      }
-      else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-        numObj[key] = this.keyTagPairObj[key];
-      }
-      else {
-        etcObj[key] = this.keyTagPairObj[key];
-      }
-    })
+    if (this.tagKeyArr.length > 0) {
+      this.tagKeyArr.forEach((key) => {
+        if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
+          korObj[key] = this.keyTagPairObj[key];
+        }
+        else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
+          // engObj[key] = this.keyTagPairObj[key];
+          engObj[key] = this.getEngTagObj(key);
+        }
+        else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
+          numObj[key] = this.keyTagPairObj[key];
+        }
+        else {
+          etcObj[key] = this.keyTagPairObj[key];
+        }
+      })
 
-    _sortedTagList["KOR"] = korObj;
-    _sortedTagList["ENG"] = engObj;
-    _sortedTagList["NUM"] = numObj;
-    _sortedTagList["ETC"] = etcObj;
-    this.setSortedTagList(_sortedTagList);
+      if (TagStore.isSearching) {
+        if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
+        if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
+        if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
+        if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
+      } else {
+        _sortedTagList["KOR"] = korObj;
+        _sortedTagList["ENG"] = engObj;
+        _sortedTagList["NUM"] = numObj;
+        _sortedTagList["ETC"] = etcObj;
+      }
+      this.setSortedTagList(_sortedTagList);
+    } else this.setSortedTagList([]);
   },
   async setTagNoteSearchResult(tagId) {
     const { data: { dto: { noteList } } } = await NoteRepository.getTagNoteList(tagId);
