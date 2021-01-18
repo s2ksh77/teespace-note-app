@@ -469,10 +469,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getChapterColor",
     value: function getChapterColor(chapterId) {
-      var _API$Get = API.Get("note-api/chaptershare?action=List&id=".concat(chapterId)),
-          data = _API$Get.data;
-
-      return data.color;
+      return API.Get("note-api/chaptershare?action=List&id=".concat(chapterId));
     }
   }, {
     key: "updateChapterColor",
@@ -2145,10 +2142,10 @@ var TagStore = observable({
         etcObj[key] = _this9.keyTagPairObj[key];
       }
     });
-    if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
-    if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
-    if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
-    if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
+    _sortedTagList["KOR"] = korObj;
+    _sortedTagList["ENG"] = engObj;
+    _sortedTagList["NUM"] = numObj;
+    _sortedTagList["ETC"] = etcObj;
     this.setSortedTagList(_sortedTagList);
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
@@ -2751,7 +2748,7 @@ var PageStore = observable((_observable$1 = {
   renamePagePrevText: '',
   renamePageText: '',
   isMovingPage: false,
-  moveInfoList: [],
+  moveInfoMap: new Map(),
   isCtrlKeyDown: false,
   movePageId: '',
   // 이동을 원하는 page의 id
@@ -2897,17 +2894,17 @@ var PageStore = observable((_observable$1 = {
   setIsMovingPage: function setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
   },
-  getMoveInfoList: function getMoveInfoList() {
-    return this.moveInfoList;
+  getMoveInfoMap: function getMoveInfoMap() {
+    return this.moveInfoMap;
   },
-  setMoveInfoList: function setMoveInfoList(moveInfoList) {
-    this.moveInfoList = moveInfoList;
+  setMoveInfoMap: function setMoveInfoMap(moveInfoMap) {
+    this.moveInfoMap = moveInfoMap;
   },
-  appendMoveInfoList: function appendMoveInfoList(moveInfo) {
-    this.moveInfoList.push(moveInfo);
+  appendMoveInfoMap: function appendMoveInfoMap(key, value) {
+    this.moveInfoMap.set(key, value);
   },
-  removeMoveInfoList: function removeMoveInfoList(idx) {
-    this.moveInfoList.splice(idx, 1);
+  deleteMoveInfoMap: function deleteMoveInfoMap(key) {
+    this.moveInfoMap.delete(key);
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -3208,22 +3205,20 @@ var PageStore = observable((_observable$1 = {
           ChapterStore.setCurrentChapterId('');
           ChapterStore.getNoteChapterList();
         } else {
-          ChapterStore.getNoteChapterList().then(function (chapterList) {
-            var currentChapter = chapterList.filter(function (chapter) {
-              return chapter.id === _this2.createParent;
-            })[0];
-            ChapterStore.setCurrentChapterId(_this2.createParent);
-
-            if (currentChapter.children.length >= 1) {
-              var pageId = currentChapter.children[0].id;
-              _this2.isNewPage = false;
-              _this2.createPageId = '';
-
-              _this2.setCurrentPageId(pageId);
-
-              _this2.fetchCurrentPageData(pageId);
-            }
+          var currentChapter = ChapterStore.chapterList.find(function (chapter) {
+            return chapter.id === _this2.createParent;
           });
+
+          if (currentChapter.children.length > 1) {
+            var pageId = currentChapter.children[1].id;
+            _this2.createPageId = '';
+
+            _this2.setCurrentPageId(pageId);
+
+            _this2.fetchCurrentPageData(pageId);
+          }
+
+          ChapterStore.getNoteChapterList();
         }
       } else {
         ChapterStore.getNoteChapterList().then(function () {
@@ -3266,20 +3261,16 @@ var PageStore = observable((_observable$1 = {
     };
   },
   handleClickOutside: function handleClickOutside() {
-    var _this4 = this;
-
     this.setIsCtrlKeyDown(false);
 
     if (!this.currentPageId) {
-      this.setMoveInfoList([]);
+      this.moveInfoMap.clear();
       return;
     }
 
-    var currentMoveInfo = this.moveInfoList.find(function (moveInfo) {
-      return moveInfo.pageId === _this4.currentPageId;
-    });
+    var currentMoveInfo = this.moveInfoMap.get(this.currentPageId);
     if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
-    this.setMoveInfoList([currentMoveInfo]);
+    this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
@@ -3306,91 +3297,90 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   getSortedMoveInfoList: function getSortedMoveInfoList() {
-    return this.moveInfoList.slice().sort(function (a, b) {
+    var moveInfoList = _toConsumableArray(this.moveInfoMap).map(function (keyValue) {
+      return keyValue[1];
+    });
+
+    return moveInfoList.sort(function (a, b) {
       if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
       return a.chapterIdx - b.chapterIdx;
     });
   },
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
-    var _this5 = this;
+    var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var _item$moveTargetChapt;
-
-      var item, sortedMoveInfoList, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt, _this5$moveInfoList$;
-
+      var item, sortedMoveInfoList, sortedMovePages, pageIds2, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
+              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
+              sortedMoveInfoList = _this4.getSortedMoveInfoList();
+              sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
+                return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
+              });
+              pageIds2 = []; // 갈아 끼울 페이지 아이디 리스트
 
-              sortedMoveInfoList = _this5.getSortedMoveInfoList(); // Step2. LocalStorage에서 삭제 / 서비스 호출
-
-              _context9.next = 4;
+              item[moveTargetChapterIdx].children.forEach(function (pageId, idx) {
+                if (idx === moveTargetPageIdx) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
+                if (!_this4.moveInfoMap.get(pageId)) pageIds2.push(pageId);
+              });
+              if (moveTargetPageIdx >= pageIds2.length) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
+              _context9.next = 8;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
-                if (moveInfo.chapterId === moveTargetChapterId && moveInfo.pageIdx < moveTargetPageIdx) return;
-                item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-                if (moveInfo.chapterId !== moveTargetChapterId) return _this5.movePage(moveInfo.pageId, moveTargetChapterId);
+                if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.pageId)) {
+                  item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
+                  return _this4.movePage(moveInfo.pageId, moveTargetChapterId);
+                }
               }));
 
-            case 4:
-              // Step3. LocalStorage에 추가
-              pageIds = sortedMoveInfoList.map(function (moveInfo) {
-                return moveInfo.pageId;
-              });
-
-              (_item$moveTargetChapt = item[moveTargetChapterIdx].children).splice.apply(_item$moveTargetChapt, [moveTargetPageIdx, 0].concat(_toConsumableArray(pageIds))); // Step4. LocalStorage에서 삭제
-
-
-              sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
-                if (moveInfo.chapterId !== moveTargetChapterId || moveInfo.pageIdx >= moveTargetPageIdx) return;
-                item[moveTargetChapterIdx].children.splice(moveInfo.pageIdx, 1);
-              }); // Step5. 순서 이동 페이지 카운트 / moveInfoList 업데이트
-
+            case 8:
+              item[moveTargetChapterIdx].children = pageIds2;
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
                 return pageId === sortedMoveInfoList[0].pageId;
               });
-              _this5.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
-                if (moveInfo.chapterIdx !== moveTargetChapterIdx) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
-                return {
+              sortedMoveInfoList.map(function (moveInfo, idx) {
+                if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
+
+                _this4.moveInfoMap.set(moveInfo.pageId, {
                   pageId: moveInfo.pageId,
                   pageIdx: startIdx + idx,
                   chapterId: moveTargetChapterId,
                   chapterIdx: moveTargetChapterIdx,
                   shareData: moveInfo.shareData
-                };
+                });
               });
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context9.next = 26;
+                _context9.next = 28;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-              _context9.next = 16;
+              _context9.next = 18;
               return ChapterStore.getNoteChapterList();
 
-            case 16:
+            case 18:
               if (!ChapterStore.currentChapterId) {
-                _context9.next = 21;
+                _context9.next = 23;
                 break;
               }
 
-              _context9.next = 19;
-              return _this5.fetchCurrentPageData((_this5$moveInfoList$ = _this5.moveInfoList[0]) === null || _this5$moveInfoList$ === void 0 ? void 0 : _this5$moveInfoList$.pageId);
-
-            case 19:
-              _context9.next = 22;
-              break;
+              _context9.next = 21;
+              return _this4.fetchCurrentPageData(sortedMovePages[0]);
 
             case 21:
-              _this5.handleClickOutside();
+              _context9.next = 24;
+              break;
 
-            case 22:
+            case 23:
+              _this4.handleClickOutside();
+
+            case 24:
               if (!moveCntToAnotherChapter) {
                 NoteStore$1.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
               } else {
@@ -3398,17 +3388,17 @@ var PageStore = observable((_observable$1 = {
               }
 
               NoteStore$1.setIsVisibleToast(true);
-              _context9.next = 27;
+              _context9.next = 29;
               break;
 
-            case 26:
+            case 28:
               // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
-              _this5.handleClickOutside();
+              _this4.handleClickOutside();
 
-            case 27:
+            case 29:
               NoteStore$1.setIsDragging(false);
 
-            case 28:
+            case 30:
             case "end":
               return _context9.stop();
           }
@@ -3444,7 +3434,7 @@ var PageStore = observable((_observable$1 = {
     }
   },
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
-    var _this6 = this;
+    var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var dto;
@@ -3453,7 +3443,7 @@ var PageStore = observable((_observable$1 = {
           switch (_context10.prev = _context10.next) {
             case 0:
               _context10.next = 2;
-              return _this6.getNoteInfoList(noteId);
+              return _this5.getNoteInfoList(noteId);
 
             case 2:
               dto = _context10.sent;
@@ -3463,23 +3453,31 @@ var PageStore = observable((_observable$1 = {
                 break;
               }
 
-              if (_this6.currentPageId === noteId) _this6.currentPageId = '';
+              if (_this5.currentPageId === noteId) _this5.currentPageId = '';
               return _context10.abrupt("return");
 
             case 6:
-              _this6.setCurrentPageId(dto.note_id);
+              _this5.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
               dto.note_content = NoteUtil.decodeStr(dto.note_content);
               dto.note_title = NoteUtil.decodeStr(dto.note_title);
-              _this6.noteInfoList = dto;
-              _this6.currentPageData = dto;
-              _this6.isEdit = dto.is_edit;
-              _this6.noteTitle = dto.note_title;
-              _this6.modifiedDate = _this6.modifiedDateFormatting(_this6.currentPageData.modified_date);
+              _this5.noteInfoList = dto;
+              _this5.currentPageData = dto;
+              _this5.isEdit = dto.is_edit;
+              _this5.noteTitle = dto.note_title;
+              _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore$1.setFileList(dto.fileList);
 
-            case 16:
+              if (_this5.isNewPage) {
+                ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
+
+                _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageData)]]));
+
+                _this5.isNewPage = false;
+              }
+
+            case 17:
             case "end":
               return _context10.stop();
           }
@@ -3488,7 +3486,7 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
-    var _this7 = this;
+    var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
       return regeneratorRuntime.wrap(function _callee11$(_context11) {
@@ -3501,7 +3499,7 @@ var PageStore = observable((_observable$1 = {
               }
 
               _context11.next = 3;
-              return _this7.fetchNoteInfoList(pageId);
+              return _this6.fetchNoteInfoList(pageId);
 
             case 3:
               _context11.next = 5;
@@ -3512,9 +3510,9 @@ var PageStore = observable((_observable$1 = {
               break;
 
             case 7:
-              _this7.setIsEdit('');
+              _this6.setIsEdit('');
 
-              _this7.setCurrentPageId('');
+              _this6.setCurrentPageId('');
 
             case 9:
             case "end":
@@ -3526,69 +3524,69 @@ var PageStore = observable((_observable$1 = {
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart: function noteEditStart(noteId) {
-    var _this8 = this;
+    var _this7 = this;
 
     this.prevModifiedUserName = this.currentPageData.user_name;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
       var _EditorStore$tinymce5, _EditorStore$tinymce6;
 
-      _this8.fetchNoteInfoList(dto.note_id);
+      _this7.fetchNoteInfoList(dto.note_id);
 
       (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.focus();
       (_EditorStore$tinymce6 = EditorStore$1.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
 
-      _this8.initializeBoxColor();
+      _this7.initializeBoxColor();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone: function noteEditDone(updateDto) {
-    var _this9 = this;
+    var _this8 = this;
 
     this.editDone(updateDto).then(function (dto) {
-      _this9.fetchNoteInfoList(dto.note_id);
+      _this8.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteNoneEdit: function noteNoneEdit(noteId) {
-    var _this10 = this;
+    var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
       var _EditorStore$tinymce7;
 
-      _this10.fetchNoteInfoList(dto.note_id);
+      _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce7 = EditorStore$1.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setContent(_this10.currentPageData.note_content);
+      (_EditorStore$tinymce7 = EditorStore$1.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
     });
   },
   handleNoneEdit: function handleNoneEdit() {
-    var _this11 = this;
+    var _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              if (!_this11.isNewPage) {
+              if (!_this10.isNewPage) {
                 _context12.next = 6;
                 break;
               }
 
-              _this11.setDeletePageList({
-                note_id: _this11.createPageId
+              _this10.setDeletePageList({
+                note_id: _this10.createPageId
               });
 
-              _this11.deleteParentIdx = _this11.createParentIdx;
+              _this10.deleteParentIdx = _this10.createParentIdx;
 
-              _this11.deleteNotePage();
+              _this10.deleteNotePage();
 
               _context12.next = 11;
               break;
 
             case 6:
-              if (!_this11.otherEdit) {
+              if (!_this10.otherEdit) {
                 _context12.next = 10;
                 break;
               }
@@ -3596,7 +3594,7 @@ var PageStore = observable((_observable$1 = {
               return _context12.abrupt("return");
 
             case 10:
-              _this11.noteNoneEdit(_this11.currentPageId);
+              _this10.noteNoneEdit(_this10.currentPageId);
 
             case 11:
             case "end":
@@ -3651,7 +3649,6 @@ var PageStore = observable((_observable$1 = {
     if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce8 = EditorStore$1.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.selection.setCursorLocation();
     (_EditorStore$tinymce9 = EditorStore$1.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.undoManager.clear();
-    this.isNewPage = false;
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
   this.isNewPage = isNew;
@@ -3662,54 +3659,51 @@ var PageStore = observable((_observable$1 = {
   if (contentList) {
     // forEach 는 항상 return 값 undefined
     for (var i = 0; i < contentList.length; i++) {
-      if (contentList[i].tagName === 'P') {
-        var ImgList = contentList[i].getElementsByTagName('img'); // 이미지가 없을 때, textContent도 없으면 contentList[i+1]로 넘어가기
-
-        if (ImgList.length === 0) {
-          if (!!contentList[i].textContent) return contentList[i].textContent;
-        } else {
-          // 이미지+텍스트 있을 때 text가 먼저인지 확인
-          if (!!contentList[i].textContent) {
-            var temp = this._findFirstTextContent(contentList[i].childNodes);
-
-            if (temp) return temp;
-          } // 이미지만 있을 때
-
-
-          var imgName = ImgList[0].dataset.name;
-          return imgName ? imgName : ImgList[0].src;
-        } // 예전 코드 혹시 몰라 남겨둠
-        // if (contentList[i].getElementsByTagName('img').length > 0) {
-        //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
-        //   return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
-        // } else if (!!contentList[i].textContent) return contentList[i].textContent;
-
-      } else if (contentList[i].tagName === 'TABLE') {
+      if (contentList[i].tagName === 'TABLE') {
+        // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
+        if (!contentList[i].textContent) return '(표)';
         var tdList = contentList[i].getElementsByTagName('td');
 
         for (var tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
           var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
 
           if (tableTitle !== undefined) return tableTitle;
-        }
+        } // if (i === contentList.length - 1) return '(표)'; >> length-1이어야하는건가??? 주석처리하고 위에 if문 추가
 
-        if (i === contentList.length - 1) return '(표)';
       } else if (contentList[i].tagName === 'IMG') {
         if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
       } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
         if (!!contentList[i].textContent) return contentList[i].textContent;
       } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
         if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-      }
+      } else if (contentList[i].tagName === 'BR') continue;else if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i]);
       /*
+        ** p태그랑 합침
         case 1. <div><br><div>인 경우 넘어가야함
         case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
         case 3. 그냥 <pre> 태그만 있는 경우도 있음
       */
-      else if (contentList[i].textContent) {
-          var _temp = '';
-          if (contentList[i].tagName === 'PRE') _temp = this._getTitleFromPreTag(contentList[i]);else _temp = this._findFirstTextContent(contentList[i].children);
-          if (_temp) return _temp;
+      else {
+          var ImgList = contentList[i].getElementsByTagName('img'); // 이미지가 없을 때, textContent도 없으면 contentList[i+1]로 넘어가기
+
+          if (ImgList.length === 0) {
+            if (!!contentList[i].textContent) return this._findFirstTextContent(contentList[i]);
+          } else {
+            // 이미지+텍스트 있을 때 text가 먼저인지 확인
+            if (!!contentList[i].textContent) {
+              var _temp = this._findFirstTextContent(contentList[i]);
+
+              if (_temp) return _temp;
+            } // 이미지만 있을 때
+
+
+            var imgName = ImgList[0].dataset.name;
+            return imgName ? imgName : ImgList[0].src; // 예전 코드 혹시 몰라 남겨둠
+            // if (contentList[i].getElementsByTagName('img').length > 0) {
+            //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
+            //   return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
+            // } else if (!!contentList[i].textContent) return contentList[i].textContent;
+          }
         }
     }
   }
@@ -3736,26 +3730,33 @@ var PageStore = observable((_observable$1 = {
       }
     }
   }
-}), _defineProperty(_observable$1, "_getTitleFromPreTag", function _getTitleFromPreTag(el) {
-  var lineBreakIdx = el.textContent.indexOf('\n'); // pre tag가 있을 때 명시적인 줄바꿈 태그가 없어도 \n만으로도 줄바꿈되어 보인다
-
-  if (lineBreakIdx !== -1) return el.textContent.slice(0, lineBreakIdx); // <br>같은 줄바꿈 태그가 있는 경우는 안에 다른 태그들이 있는 것이므로 findFirstTextContent 함수를 타게 한다
-  else if (el.getElementsByTagName('BR')) return this._findFirstTextContent(el.childNodes);
-}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(nodeList) {
+}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(parent) {
   try {
-    for (var _i = 0, _Array$from = Array.from(nodeList); _i < _Array$from.length; _i++) {
+    // 의도적인 줄바꿈이 있는 경우
+    var lineBreakIdx = parent.textContent.indexOf('\n');
+    if (lineBreakIdx !== -1) return parent.textContent.slice(0, lineBreakIdx); // hasLineBreak === trure면 전체 textContent를 return 아니면 첫줄만
+
+    var hasLineBreak = false; // (참고) text노드면 nodeName이 #text다
+    // 줄바꿈, 이미지가 있으면 자식 노드 탐색하는 for문 들어가야한다
+
+    if (Array.from(parent.childNodes).some(function (node) {
+      return ['DIV', 'PRE', 'P', 'IMG', 'BR'].includes(node.nodeName);
+    })) hasLineBreak = true;
+    if (!hasLineBreak) return parent.textContent.slice(0, 200); // 줄바꿈이 있으면 찾아서 첫 줄만 출력
+
+    for (var _i = 0, _Array$from = Array.from(parent.childNodes); _i < _Array$from.length; _i++) {
       var item = _Array$from[_i];
-      // pre tag이면 먼저 처리해야함
-      if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
-      if (item.tagName === 'BR') continue; // todo : error 없으려나 테스트 필요
+      // dataset.name 없으면 src 출력
+      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
+      if (!item.textContent || item.tagName === 'BR') continue; // 안에 자식 태그를 갖는 태그들은 depth 한 단계 더 들어가기
 
-      if (item.tagName === 'SPAN' && item.textContent) return item.textContent; // depth가 더 있으면 들어간다
+      if (['DIV', 'PRE', 'P'].includes(item.tagName)) return this._findFirstTextContent(item); // todo : error 없으려나 테스트 필요
 
-      if (item.childNodes.length) return this._findFirstTextContent(item.childNodes); // dataset.name 없으면 src 출력
+      if (item.tagName === 'SPAN') return item.textContent.slice(0, 200); // depth가 더 있으면 들어간다
 
-      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src; // 자식이 없는 text node일 때
+      if (item.childNodes.length) return this._findFirstTextContent(item); // 자식이 없는 text node일 때
 
-      if (item.textContent) return item.textContent.slice(0, 200);
+      return item.textContent.slice(0, 200);
     }
   } catch (err) {
     return null;
@@ -3847,7 +3848,7 @@ var ChapterStore = observable((_observable$2 = {
   renameChapterPrevText: '',
   renameChapterText: '',
   isMovingChapter: false,
-  moveInfoList: [],
+  moveInfoMap: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
@@ -3905,17 +3906,17 @@ var ChapterStore = observable((_observable$2 = {
   setIsMovingChapter: function setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
-  getMoveInfoList: function getMoveInfoList() {
-    return this.moveInfoList;
+  getMoveInfoMap: function getMoveInfoMap() {
+    return this.moveInfoMap;
   },
-  setMoveInfoList: function setMoveInfoList(moveInfoList) {
-    this.moveInfoList = moveInfoList;
+  setMoveInfoMap: function setMoveInfoMap(moveInfoMap) {
+    this.moveInfoMap = moveInfoMap;
   },
-  appendMoveInfoList: function appendMoveInfoList(moveInfo) {
-    this.moveInfoList.push(moveInfo);
+  appendMoveInfoMap: function appendMoveInfoMap(key, value) {
+    this.moveInfoMap.set(key, value);
   },
-  removeMoveInfoList: function removeMoveInfoList(idx) {
-    this.moveInfoList.splice(idx, 1);
+  deleteMoveInfoMap: function deleteMoveInfoMap(key) {
+    this.moveInfoMap.delete(key);
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -3977,12 +3978,6 @@ var ChapterStore = observable((_observable$2 = {
     return this.isNewChapterColor;
   },
   getChapterColor: function getChapterColor(chapterId) {
-    var _NoteRepository$getCh = NoteRepository$1.getChapterColor(chapterId),
-        value = _NoteRepository$getCh.value;
-
-    return value;
-  },
-  getChapterName: function getChapterName(chapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var _yield$NoteRepository, dto;
 
@@ -3991,12 +3986,12 @@ var ChapterStore = observable((_observable$2 = {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return NoteRepository$1.getChapterText(chapterId);
+              return NoteRepository$1.getChapterColor(chapterId);
 
             case 2:
               _yield$NoteRepository = _context.sent;
               dto = _yield$NoteRepository.data.dto;
-              return _context.abrupt("return", dto.text);
+              return _context.abrupt("return", dto.color);
 
             case 5:
             case "end":
@@ -4004,6 +3999,30 @@ var ChapterStore = observable((_observable$2 = {
           }
         }
       }, _callee);
+    }))();
+  },
+  getChapterName: function getChapterName(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _yield$NoteRepository2, dto;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.getChapterText(chapterId);
+
+            case 2:
+              _yield$NoteRepository2 = _context2.sent;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", dto.text);
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
     }))();
   },
   getIsLoadingSearchResult: function getIsLoadingSearchResult() {
@@ -4064,30 +4083,30 @@ var ChapterStore = observable((_observable$2 = {
   getChapterList: function getChapterList() {
     var _this = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var _yield$NoteRepository2, notbookList;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _yield$NoteRepository3, notbookList;
 
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              _context2.next = 2;
+              _context3.next = 2;
               return NoteRepository$1.getChapterList(NoteStore$1.getChannelId());
 
             case 2:
-              _yield$NoteRepository2 = _context2.sent;
-              notbookList = _yield$NoteRepository2.data.dto.notbookList;
+              _yield$NoteRepository3 = _context3.sent;
+              notbookList = _yield$NoteRepository3.data.dto.notbookList;
 
               _this.setChapterList(notbookList);
 
-              return _context2.abrupt("return", notbookList);
+              return _context3.abrupt("return", notbookList);
 
             case 6:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2);
+      }, _callee3);
     }))();
   },
   setChapterList: function setChapterList(chapterList) {
@@ -4100,30 +4119,6 @@ var ChapterStore = observable((_observable$2 = {
     this.sortedChapterList = obj;
   },
   createChapter: function createChapter(chapterTitle, chapterColor) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _yield$NoteRepository3, dto;
-
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return NoteRepository$1.createChapter(chapterTitle, chapterColor);
-
-            case 2:
-              _yield$NoteRepository3 = _context3.sent;
-              dto = _yield$NoteRepository3.dto;
-              return _context3.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }))();
-  },
-  deleteChapter: function deleteChapter(deleteChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
       var _yield$NoteRepository4, dto;
 
@@ -4132,7 +4127,7 @@ var ChapterStore = observable((_observable$2 = {
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return NoteRepository$1.deleteChapter(deleteChapterId);
+              return NoteRepository$1.createChapter(chapterTitle, chapterColor);
 
             case 2:
               _yield$NoteRepository4 = _context4.sent;
@@ -4147,7 +4142,7 @@ var ChapterStore = observable((_observable$2 = {
       }, _callee4);
     }))();
   },
-  renameChapter: function renameChapter(renameId, renameText, color) {
+  deleteChapter: function deleteChapter(deleteChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       var _yield$NoteRepository5, dto;
 
@@ -4156,7 +4151,7 @@ var ChapterStore = observable((_observable$2 = {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return NoteRepository$1.renameChapter(renameId, renameText, color);
+              return NoteRepository$1.deleteChapter(deleteChapterId);
 
             case 2:
               _yield$NoteRepository5 = _context5.sent;
@@ -4171,57 +4166,58 @@ var ChapterStore = observable((_observable$2 = {
       }, _callee5);
     }))();
   },
-  updateChapterColor: function updateChapterColor(chapterId) {
-    var _this2 = this;
-
+  renameChapter: function renameChapter(renameId, renameText, color) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var targetColor, _yield$NoteRepository6, dto;
+      var _yield$NoteRepository6, dto;
 
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
-              targetColor = _this2.getChapterRandomColor();
-              _context6.next = 3;
-              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
+              _context6.next = 2;
+              return NoteRepository$1.renameChapter(renameId, renameText, color);
 
-            case 3:
+            case 2:
               _yield$NoteRepository6 = _context6.sent;
               dto = _yield$NoteRepository6.dto;
               return _context6.abrupt("return", dto);
 
-            case 6:
+            case 5:
             case "end":
               return _context6.stop();
           }
         }
       }, _callee6);
     }))();
+  },
+  updateChapterColor: function updateChapterColor(chapterId) {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var targetColor, _yield$NoteRepository7, dto;
+
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              targetColor = _this2.getChapterRandomColor();
+              _context7.next = 3;
+              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
+
+            case 3:
+              _yield$NoteRepository7 = _context7.sent;
+              dto = _yield$NoteRepository7.dto;
+              return _context7.abrupt("return", dto);
+
+            case 6:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }))();
   }
 }, _defineProperty(_observable$2, "getChapterChildren", function getChapterChildren(chapterId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    var _yield$NoteRepository7, dto;
-
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.next = 2;
-            return NoteRepository$1.getChapterChildren(chapterId);
-
-          case 2:
-            _yield$NoteRepository7 = _context7.sent;
-            dto = _yield$NoteRepository7.data.dto;
-            return _context7.abrupt("return", dto);
-
-          case 5:
-          case "end":
-            return _context7.stop();
-        }
-      }
-    }, _callee7);
-  }))();
-}), _defineProperty(_observable$2, "getChapterInfoList", function getChapterInfoList(chapterId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
     var _yield$NoteRepository8, dto;
 
@@ -4230,7 +4226,7 @@ var ChapterStore = observable((_observable$2 = {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.next = 2;
-            return NoteRepository$1.getChapterInfoList(chapterId);
+            return NoteRepository$1.getChapterChildren(chapterId);
 
           case 2:
             _yield$NoteRepository8 = _context8.sent;
@@ -4244,7 +4240,7 @@ var ChapterStore = observable((_observable$2 = {
       }
     }, _callee8);
   }))();
-}), _defineProperty(_observable$2, "getSearchList", function getSearchList() {
+}), _defineProperty(_observable$2, "getChapterInfoList", function getChapterInfoList(chapterId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
     var _yield$NoteRepository9, dto;
 
@@ -4253,7 +4249,7 @@ var ChapterStore = observable((_observable$2 = {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.next = 2;
-            return NoteRepository$1.getSearchList(ChapterStore.searchStr);
+            return NoteRepository$1.getChapterInfoList(chapterId);
 
           case 2:
             _yield$NoteRepository9 = _context9.sent;
@@ -4266,6 +4262,29 @@ var ChapterStore = observable((_observable$2 = {
         }
       }
     }, _callee9);
+  }))();
+}), _defineProperty(_observable$2, "getSearchList", function getSearchList() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+    var _yield$NoteRepository10, dto;
+
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.next = 2;
+            return NoteRepository$1.getSearchList(ChapterStore.searchStr);
+
+          case 2:
+            _yield$NoteRepository10 = _context10.sent;
+            dto = _yield$NoteRepository10.data.dto;
+            return _context10.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10);
   }))();
 }), _defineProperty(_observable$2, "createMap", function createMap(notebookList) {
   var _this3 = this;
@@ -4377,66 +4396,66 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "checkDefaultChapterColor", function checkDefaultChapterColor(notbookList) {
   var _this6 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
     var _defaultChapter$;
 
     var idx, defaultChapter, _yield$_this6$updateC, color;
 
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
             idx = notbookList.findIndex(function (chapter) {
               return chapter.type === "default";
             });
 
             if (!(idx === -1)) {
-              _context10.next = 3;
+              _context11.next = 3;
               break;
             }
 
-            return _context10.abrupt("return", notbookList);
+            return _context11.abrupt("return", notbookList);
 
           case 3:
             defaultChapter = notbookList.splice(idx, 1);
 
             if (!(((_defaultChapter$ = defaultChapter[0]) === null || _defaultChapter$ === void 0 ? void 0 : _defaultChapter$.color) === null)) {
-              _context10.next = 10;
+              _context11.next = 10;
               break;
             }
 
-            _context10.next = 7;
+            _context11.next = 7;
             return _this6.updateChapterColor(defaultChapter[0].id);
 
           case 7:
-            _yield$_this6$updateC = _context10.sent;
+            _yield$_this6$updateC = _context11.sent;
             color = _yield$_this6$updateC.color;
             defaultChapter[0].color = color;
 
           case 10:
-            return _context10.abrupt("return", notbookList.concat(defaultChapter));
+            return _context11.abrupt("return", notbookList.concat(defaultChapter));
 
           case 11:
           case "end":
-            return _context10.stop();
+            return _context11.stop();
         }
       }
-    }, _callee10);
+    }, _callee11);
   }))();
 }), _defineProperty(_observable$2, "getNoteChapterList", function getNoteChapterList() {
   var _this7 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
     var notbookList, sharedList, tempChapterList;
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
-            _context11.next = 2;
+            _context12.next = 2;
             return _this7.getChapterList();
 
           case 2:
-            notbookList = _context11.sent;
+            notbookList = _context12.sent;
 
             _this7.createMap(notbookList);
 
@@ -4445,7 +4464,7 @@ var ChapterStore = observable((_observable$2 = {
             tempChapterList = [];
 
             if (localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())) {
-              _context11.next = 15;
+              _context12.next = 15;
               break;
             }
 
@@ -4453,15 +4472,15 @@ var ChapterStore = observable((_observable$2 = {
               return chapter.type === 'notebook' || chapter.type === 'default';
             }); // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
 
-            _context11.next = 11;
+            _context12.next = 11;
             return _this7.checkDefaultChapterColor(tempChapterList);
 
           case 11:
-            tempChapterList = _context11.sent;
+            tempChapterList = _context12.sent;
 
             _this7.setLocalStorageItem(NoteStore$1.getChannelId(), tempChapterList);
 
-            _context11.next = 17;
+            _context12.next = 17;
             break;
 
           case 15:
@@ -4474,14 +4493,14 @@ var ChapterStore = observable((_observable$2 = {
 
             _this7.sortChapterList();
 
-            return _context11.abrupt("return", _this7.chapterList);
+            return _context12.abrupt("return", _this7.chapterList);
 
           case 20:
           case "end":
-            return _context11.stop();
+            return _context12.stop();
         }
       }
-    }, _callee11);
+    }, _callee12);
   }))();
 }), _defineProperty(_observable$2, "sortChapterList", function sortChapterList() {
   var _roomChapterList = [],
@@ -4498,17 +4517,17 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
   var _this8 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
     var notbookList;
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context13.prev = _context13.next) {
           case 0:
-            _context12.next = 2;
+            _context13.next = 2;
             return _this8.createChapter(chapterTitle, chapterColor);
 
           case 2:
-            notbookList = _context12.sent;
+            notbookList = _context13.sent;
 
             _this8.getNoteChapterList();
 
@@ -4521,10 +4540,10 @@ var ChapterStore = observable((_observable$2 = {
 
           case 8:
           case "end":
-            return _context12.stop();
+            return _context13.stop();
         }
       }
-    }, _callee12);
+    }, _callee13);
   }))();
 }), _defineProperty(_observable$2, "deleteNoteChapter", function deleteNoteChapter() {
   var _this9 = this;
@@ -4562,63 +4581,55 @@ var ChapterStore = observable((_observable$2 = {
     }
   };
 }), _defineProperty(_observable$2, "handleClickOutside", function handleClickOutside() {
-  var _this11 = this;
-
   this.setIsCtrlKeyDown(false);
 
   if (!this.currentChapterId) {
-    this.setMoveInfoList([]);
+    this.moveInfoMap.clear();
     return;
   }
 
-  var currentMoveInfo = this.moveInfoList.find(function (moveInfo) {
-    return moveInfo.chapterId === _this11.currentChapterId;
-  });
+  var currentMoveInfo = this.moveInfoMap.get(this.currentChapterId);
   if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-  this.setMoveInfoList([currentMoveInfo]);
+  this.setMoveInfoMap(new Map([[this.currentChapterId, currentMoveInfo]]));
 }), _defineProperty(_observable$2, "getSortedMoveInfoList", function getSortedMoveInfoList() {
-  return this.moveInfoList.slice().sort(function (a, b) {
+  var moveInfoList = _toConsumableArray(this.moveInfoMap).map(function (keyValue) {
+    return keyValue[1];
+  });
+
+  return moveInfoList.sort(function (a, b) {
     return a.chapterIdx - b.chapterIdx;
   });
 }), _defineProperty(_observable$2, "moveChapter", function moveChapter(moveTargetChapterIdx) {
-  var _this12 = this;
+  var _this11 = this;
 
-  var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())); // Step1. moveInfoList를 오름차순으로 정렬
-
+  var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
   var sortedMoveInfoList = this.getSortedMoveInfoList();
-  var chapters = sortedMoveInfoList.map(function (moveInfo) {
+  var sortedMoveChapters = sortedMoveInfoList.map(function (moveInfo) {
     return item[moveInfo.chapterIdx];
-  }); // Step2. LocalStorage에서 삭제
-
-  sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
-    if (moveInfo.chapterIdx < moveTargetChapterIdx) return;
-    item.splice(moveInfo.chapterIdx, 1);
-  }); // Step3. LocalStorage에 추가
-
-  item.splice.apply(item, [moveTargetChapterIdx, 0].concat(_toConsumableArray(chapters))); // Step4. LocalStorage에서 삭제
-
-  sortedMoveInfoList.slice().reverse().forEach(function (moveInfo) {
-    if (moveInfo.chapterIdx >= moveTargetChapterIdx) return;
-    item.splice(moveInfo.chapterIdx, 1);
-  }); // Step5. 순서 이동 챕터 카운트 / moveInfoList 업데이트
-
+  });
+  var chapters = [];
+  item.forEach(function (chapter, idx) {
+    if (idx === moveTargetChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+    if (!_this11.moveInfoMap.get(chapter.id)) chapters.push(chapter);
+  });
   var moveCnt = 0;
-  var startIdx = item.findIndex(function (chapter) {
+  var startIdx = chapters.findIndex(function (chapter) {
     return chapter.id === sortedMoveInfoList[0].chapterId;
   });
-  this.moveInfoList = sortedMoveInfoList.map(function (moveInfo, idx) {
+  sortedMoveInfoList.forEach(function (moveInfo, idx) {
     if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
-    return {
+
+    _this11.moveInfoMap.set(moveInfo.chapterId, {
       chapterId: moveInfo.chapterId,
       chapterIdx: startIdx + idx,
       shareData: moveInfo.shareData
-    };
+    });
   });
 
   if (moveCnt > 0) {
-    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
+    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(chapters));
     this.getNoteChapterList().then(function () {
-      if (!_this12.currentChapterId) _this12.handleClickOutside();
+      if (!_this11.currentChapterId) _this11.handleClickOutside();
       NoteStore$1.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
       NoteStore$1.setIsVisibleToast(true);
       NoteStore$1.setIsDragging(false);
@@ -4634,14 +4645,14 @@ var ChapterStore = observable((_observable$2 = {
   this.setSearchResult({});
   this.setSearchStr("");
 }), _defineProperty(_observable$2, "getChapterFirstPage", function getChapterFirstPage(targetId) {
-  var _this13 = this;
+  var _this12 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+    return regeneratorRuntime.wrap(function _callee14$(_context14) {
       while (1) {
-        switch (_context13.prev = _context13.next) {
+        switch (_context14.prev = _context14.next) {
           case 0:
-            _this13.getChapterList().then(function (chapterList) {
+            _this12.getChapterList().then(function (chapterList) {
               var targetChapter = chapterList.filter(function (chapter) {
                 return chapter.id === targetId;
               })[0];
@@ -4654,78 +4665,78 @@ var ChapterStore = observable((_observable$2 = {
 
           case 1:
           case "end":
-            return _context13.stop();
-        }
-      }
-    }, _callee13);
-  }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
-  var _this14 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-    return regeneratorRuntime.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            _this14.setIsSearching(true); // 검색 결과 출력 종료까지임
-
-
-            _this14.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-            // await this.getSearchResult();
-
-
-            _this14.getSearchList().then(function (dto) {
-              if (dto.pageList && dto.pageList.length > 0) {
-                dto.pageList.map(function (page) {
-                  _this14.getChapterName(page.parent_notebook).then(function (text) {
-                    page.parentText = text;
-                  }).then(function () {
-                    _this14.setSearchResult({
-                      chapter: dto.chapterList,
-                      page: dto.pageList
-                    });
-
-                    _this14.setIsLoadingSearchResult(false);
-                  });
-                });
-              } else {
-                _this14.setSearchResult({
-                  chapter: dto.chapterList,
-                  page: dto.pageList
-                });
-
-                _this14.setIsLoadingSearchResult(false);
-              }
-            });
-
-          case 3:
-          case "end":
             return _context14.stop();
         }
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
-  var _this15 = this;
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+  var _this13 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-    var chapterList, resultChapterArr, resultPageArr;
     return regeneratorRuntime.wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
           case 0:
-            _this15.setSearchResult({});
+            _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
 
-            _context15.next = 3;
-            return _this15.getChapterList();
+
+            _this13.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+            // await this.getSearchResult();
+
+
+            _this13.getSearchList().then(function (dto) {
+              if (dto.pageList && dto.pageList.length > 0) {
+                dto.pageList.map(function (page) {
+                  _this13.getChapterName(page.parent_notebook).then(function (text) {
+                    page.parentText = text;
+                  }).then(function () {
+                    _this13.setSearchResult({
+                      chapter: dto.chapterList,
+                      page: dto.pageList
+                    });
+
+                    _this13.setIsLoadingSearchResult(false);
+                  });
+                });
+              } else {
+                _this13.setSearchResult({
+                  chapter: dto.chapterList,
+                  page: dto.pageList
+                });
+
+                _this13.setIsLoadingSearchResult(false);
+              }
+            });
 
           case 3:
-            chapterList = _context15.sent;
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15);
+  }))();
+}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
+  var _this14 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+    var chapterList, resultChapterArr, resultPageArr;
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            _this14.setSearchResult({});
+
+            _context16.next = 3;
+            return _this14.getChapterList();
+
+          case 3:
+            chapterList = _context16.sent;
             // searchResult 만들기
             resultChapterArr = [], resultPageArr = [];
             chapterList.map(function (chapter) {
               // chapter 저장
-              if (chapter.text.includes(_this15.searchStr)) {
+              if (chapter.text.includes(_this14.searchStr)) {
                 resultChapterArr.push({
                   id: chapter.id,
                   title: chapter.text,
@@ -4737,10 +4748,11 @@ var ChapterStore = observable((_observable$2 = {
 
 
               chapter.children.map(function (page) {
-                if (page.text.includes(_this15.searchStr)) {
+                if (page.text.includes(_this14.searchStr)) {
                   resultPageArr.push({
                     chapterId: chapter.id,
                     chapterTitle: chapter.text,
+                    color: chapter.color,
                     id: page.id,
                     title: page.text
                   });
@@ -4748,43 +4760,43 @@ var ChapterStore = observable((_observable$2 = {
               });
             });
 
-            _this15.setSearchResult({
+            _this14.setSearchResult({
               chapter: resultChapterArr,
               page: resultPageArr
             });
 
           case 7:
           case "end":
-            return _context15.stop();
-        }
-      }
-    }, _callee15);
-  }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-    var _yield$NoteRepository10, dto;
-
-    return regeneratorRuntime.wrap(function _callee16$(_context16) {
-      while (1) {
-        switch (_context16.prev = _context16.next) {
-          case 0:
-            _context16.next = 2;
-            return NoteRepository$1.createShareChapter(targetList);
-
-          case 2:
-            _yield$NoteRepository10 = _context16.sent;
-            dto = _yield$NoteRepository10.data.dto;
-            return _context16.abrupt("return", dto);
-
-          case 5:
-          case "end":
             return _context16.stop();
         }
       }
     }, _callee16);
   }))();
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    var _yield$NoteRepository11, dto;
+
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
+
+          case 2:
+            _yield$NoteRepository11 = _context17.sent;
+            dto = _yield$NoteRepository11.data.dto;
+            return _context17.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17);
+  }))();
 }), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChapterList) {
-  var _this16 = this;
+  var _this15 = this;
 
   if (!targetChapterList) return;
   var targetChId = NoteStore$1.getTargetChId(targetRoomId);
@@ -4802,15 +4814,15 @@ var ChapterStore = observable((_observable$2 = {
     };
   });
   this.createShareChapter(targetList).then(function () {
-    return _this16.getNoteChapterList();
+    return _this15.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
   if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
   if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
   if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
   return null;
-}), _defineProperty(_observable$2, "setFirstMoveInfoList", function setFirstMoveInfoList(targetChapter) {
-  this.setMoveInfoList([{
+}), _defineProperty(_observable$2, "setFirstMoveInfoMap", function setFirstMoveInfoMap(targetChapter) {
+  this.setMoveInfoMap(new Map([[targetChapter.id, {
     chapterId: targetChapter.id,
     chapterIdx: 0,
     shareData: {
@@ -4818,11 +4830,11 @@ var ChapterStore = observable((_observable$2 = {
       text: targetChapter.text,
       date: targetChapter.modified_date
     }
-  }]);
+  }]]));
 
   if (targetChapter.children.length > 0) {
     var targetPage = targetChapter.children[0];
-    PageStore.setMoveInfoList([{
+    PageStore.setMoveInfoMap(new Map([[targetPage.id, {
       pageId: targetPage.id,
       pageIdx: 0,
       chapterId: targetChapter.id,
@@ -4832,58 +4844,58 @@ var ChapterStore = observable((_observable$2 = {
         text: targetPage.text,
         date: targetPage.modified_date
       }
-    }]);
+    }]]));
   }
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
-  var _this17 = this;
+  var _this16 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
     var targetChapter, chapterId, pageId;
-    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return regeneratorRuntime.wrap(function _callee18$(_context18) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context18.prev = _context18.next) {
           case 0:
-            targetChapter = _this17.getFirstRenderedChapter();
+            targetChapter = _this16.getFirstRenderedChapter();
 
             if (targetChapter) {
-              _context17.next = 5;
+              _context18.next = 5;
               break;
             }
 
-            _this17.setCurrentChapterId('');
+            _this16.setCurrentChapterId('');
 
             PageStore.setCurrentPageId('');
-            return _context17.abrupt("return");
+            return _context18.abrupt("return");
 
           case 5:
-            _this17.setFirstMoveInfoList(targetChapter);
+            _this16.setFirstMoveInfoMap(targetChapter);
 
             chapterId = targetChapter.id;
             pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-            _context17.next = 10;
+            _context18.next = 10;
             return PageStore.fetchCurrentPageData(pageId);
 
           case 10:
             // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
             // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-            _this17.setCurrentChapterId(chapterId);
+            _this16.setCurrentChapterId(chapterId);
 
           case 11:
           case "end":
-            return _context17.stop();
+            return _context18.stop();
         }
       }
-    }, _callee17);
+    }, _callee18);
   }))();
 }), _defineProperty(_observable$2, "fetchFirstNote", function fetchFirstNote() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-    return regeneratorRuntime.wrap(function _callee18$(_context18) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return regeneratorRuntime.wrap(function _callee19$(_context19) {
       while (1) {
-        switch (_context18.prev = _context18.next) {
+        switch (_context19.prev = _context19.next) {
           case 0:
             ChapterStore.setLoadingPageInfo(true);
-            _context18.next = 3;
+            _context19.next = 3;
             return ChapterStore.setFirstNoteInfo();
 
           case 3:
@@ -4891,42 +4903,42 @@ var ChapterStore = observable((_observable$2 = {
 
           case 4:
           case "end":
-            return _context18.stop();
-        }
-      }
-    }, _callee18);
-  }))();
-}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
-  var _this18 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-    return regeneratorRuntime.wrap(function _callee19$(_context19) {
-      while (1) {
-        switch (_context19.prev = _context19.next) {
-          case 0:
-            _this18.setLoadingPageInfo(true);
-
-            _context19.next = 3;
-            return _this18.getNoteChapterList();
-
-          case 3:
-            if (!(_this18.chapterList.length > 0)) {
-              _context19.next = 6;
-              break;
-            }
-
-            _context19.next = 6;
-            return _this18.setFirstNoteInfo();
-
-          case 6:
-            _this18.setLoadingPageInfo(false);
-
-          case 7:
-          case "end":
             return _context19.stop();
         }
       }
     }, _callee19);
+  }))();
+}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
+  var _this17 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+    return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            _this17.setLoadingPageInfo(true);
+
+            _context20.next = 3;
+            return _this17.getNoteChapterList();
+
+          case 3:
+            if (!(_this17.chapterList.length > 0)) {
+              _context20.next = 6;
+              break;
+            }
+
+            _context20.next = 6;
+            return _this17.setFirstNoteInfo();
+
+          case 6:
+            _this17.setLoadingPageInfo(false);
+
+          case 7:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20);
   }))();
 }), _observable$2));
 
@@ -5324,7 +5336,7 @@ var NoteStore$1 = observable({
   LNBChapterCoverRef: '',
   isDragging: false,
   draggedComponentId: '',
-  drageedComponentTitles: [],
+  draggedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
@@ -5598,8 +5610,8 @@ var NoteStore$1 = observable({
   setDraggedComponentId: function setDraggedComponentId(id) {
     this.draggedComponentId = id;
   },
-  setDrageedComponentTitles: function setDrageedComponentTitles(titles) {
-    this.drageedComponentTitles = titles;
+  setDraggedComponentTitles: function setDraggedComponentTitles(titles) {
+    this.draggedComponentTitles = titles;
   },
   setDraggedOffset: function setDraggedOffset(offset) {
     this.draggedOffset = offset;
@@ -5811,7 +5823,7 @@ var PageSearchResultChapterTitle = styled.div(_templateObject11());
 var SearchResultBotttom = styled.div(_templateObject12());
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 1.563rem 1.563rem;\n  border: 0.0625rem solid #c6ced6;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -5831,7 +5843,7 @@ function _templateObject13() {
 }
 
 function _templateObject12$1() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background: ", "\n"]);
 
   _templateObject12$1 = function _templateObject12() {
     return data;
@@ -5961,7 +5973,13 @@ var LnbTitleCover = styled.div(_templateObject8$1());
 var LnbTitleNewButton = styled.button(_templateObject9$1());
 var LnbTitleSearchContainer = styled.form(_templateObject10$1());
 var LnbTitleSearchIcon = styled.button(_templateObject11$1());
-var LnbTitleSearchInput = styled.input(_templateObject12$1());
+var LnbTitleSearchInput = styled.input(_templateObject12$1(), function (props) {
+  return props.isSearch ? {
+    background: "#FFFFFF;"
+  } : {
+    background: "inherit;"
+  };
+});
 var TagSearchForm = styled.form(_templateObject13(), function (props) {
   return props.show ? "block" : "none";
 });
@@ -5970,7 +5988,7 @@ var TagTitleSearchContainer = styled.div(_templateObject14());
 const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
 function _templateObject48() {
-  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  whiteSpace: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject48 = function _templateObject48() {
     return data;
@@ -6070,7 +6088,7 @@ function _templateObject39() {
 }
 
 function _templateObject38() {
-  var data = _taggedTemplateLiteral(["\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-align: right;\n"]);
 
   _templateObject38 = function _templateObject38() {
     return data;
@@ -6090,7 +6108,7 @@ function _templateObject37() {
 }
 
 function _templateObject36() {
-  var data = _taggedTemplateLiteral(["\n  margin-bottom: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  margin-bottom: 0.75rem;\n"]);
 
   _templateObject36 = function _templateObject36() {
     return data;
@@ -6350,7 +6368,7 @@ function _templateObject11$2() {
 }
 
 function _templateObject10$2() {
-  var data = _taggedTemplateLiteral(["\n    width: 1rem;\n    height: 1rem;\n    cursor:pointer;\n    margin-right:0.43rem;\n    filter : invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 1rem;\n    height: 1rem;\n    cursor:pointer;\n    margin-right:0.43rem;\n    filter: ", "\n"]);
 
   _templateObject10$2 = function _templateObject10() {
     return data;
@@ -6462,7 +6480,9 @@ var NoneText = styled.span(_templateObject7$2());
 var NoneImg = styled.img(_templateObject8$2());
 var Button = styled.img(_templateObject9$2()); // 돋보기모양 submit btn
 
-var SearchImgInput = styled.input(_templateObject10$2());
+var SearchImgInput = styled.input(_templateObject10$2(), function (props) {
+  return props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);";
+});
 var SearchResultNotFoundCover = styled.div(_templateObject11$2());
 var SearchKeyword = styled.span(_templateObject12$2());
 var NoSearchResultTitle = styled.span(_templateObject13$1());
@@ -6486,7 +6506,7 @@ var IconImg = styled.img(_templateObject28());
 var ModalTitleContainer = styled.div(_templateObject29());
 var ModalTitle = styled.div(_templateObject30());
 var ModalSubTitle = styled.div(_templateObject31());
-var ShraedInfoModal = styled.div(_templateObject32());
+var SharedInfoModal = styled.div(_templateObject32());
 var ModalSharedInfoHeader = styled.div(_templateObject33());
 var ModalHeaderBtn = styled.img(_templateObject34());
 var ModalSharedInfoContainer = styled.div(_templateObject35());
@@ -6504,8 +6524,18 @@ var DraggedComponentContainer = styled.div(_templateObject46());
 var DraggedComponent = styled.div(_templateObject47());
 var DraggedComponentTitle = styled.span(_templateObject48());
 
+function _templateObject19$1() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  margin-left: auto;\n  color: #7B7671;\n  padding-left:0.4rem;\n"]);
+
+  _templateObject19$1 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject18$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  margin-left: auto;\n  color: #008cc8;\n  padding-left:0.4rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height:normal;\n"]);
 
   _templateObject18$1 = function _templateObject18() {
     return data;
@@ -6515,7 +6545,7 @@ function _templateObject18$1() {
 }
 
 function _templateObject17$1() {
-  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height:normal;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: #000000;\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border-radius: 25px;\n  border: 0px solid #7B7671;\n  &:hover{\n    color: #000000;\n    background-color: #EBE6DF;\n  }\n"]);
 
   _templateObject17$1 = function _templateObject17() {
     return data;
@@ -6525,7 +6555,7 @@ function _templateObject17$1() {
 }
 
 function _templateObject16$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: #000000;\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #3B3B3B;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border: 0px solid #7B7671;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n  transition-duration: 0s;\n  &:hover{\n    color: #000000;\n    border: 1px solid #7B7671;\n    background-color: #EBE6DF;\n  }\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -6535,7 +6565,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #000000;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border: 0.0625rem solid #1EA8DF;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: rgba(30,168,223,0.20);\n  background: rgba(30,168,223,0.20);\n  border: 1px solid #1EA8DF;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width:100%;\n  flex-wrap:wrap;\n"]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -6545,7 +6575,7 @@ function _templateObject15$1() {
 }
 
 function _templateObject14$2() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width:100%;\n  flex-wrap:wrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  font-size:0.8125rem;\n"]);
 
   _templateObject14$2 = function _templateObject14() {
     return data;
@@ -6555,7 +6585,7 @@ function _templateObject14$2() {
 }
 
 function _templateObject13$2() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  font-size:0.8125rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n"]);
 
   _templateObject13$2 = function _templateObject13() {
     return data;
@@ -6565,7 +6595,7 @@ function _templateObject13$2() {
 }
 
 function _templateObject12$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
 
   _templateObject12$3 = function _templateObject12() {
     return data;
@@ -6575,7 +6605,7 @@ function _templateObject12$3() {
 }
 
 function _templateObject11$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n    font-family: 'Noto Sans KR';\n    font-style: normal;\n    font-weight: 500;\n    font-size:13px;\n    font-color:#000000;\n"]);
 
   _templateObject11$3 = function _templateObject11() {
     return data;
@@ -6699,17 +6729,18 @@ var TagImg = styled.img(_templateObject9$3(), function (props) {
 });
 var TagTxt = styled.div(_templateObject10$3());
 var Panel = Collapse.Panel;
-var StyledCollapse = styled(Collapse)(_templateObject11$3());
-var TagKeyChildren = styled.div(_templateObject12$3());
-var TagKeyContainer = styled.div(_templateObject13$2());
-var TagChipGroup = styled.div(_templateObject14$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+var PanelHeader = styled(Panel)(_templateObject11$3());
+var StyledCollapse = styled(Collapse)(_templateObject12$3());
+var TagKeyChildren = styled.div(_templateObject13$2());
+var TagKeyContainer = styled.div(_templateObject14$2());
+var TagChipGroup = styled.div(_templateObject15$1()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 
-var TagChip = styled(Tag)(_templateObject15$1());
-var SearchTagChip = styled(Tag)(_templateObject16$1()); // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
+var TagChip = styled(Tag)(_templateObject16$1());
+var SearchTagChip = styled(Tag)(_templateObject17$1()); // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
 
-var TagChipText = styled.div(_templateObject17$1());
-var TagChipNum = styled.div(_templateObject18$1());
+var TagChipText = styled.div(_templateObject18$1());
+var TagChipNum = styled.div(_templateObject19$1());
 
 const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
 
@@ -6919,7 +6950,9 @@ var LNBHeader = function LNBHeader(_ref) {
     })), ChapterStore.isTagSearching ? /*#__PURE__*/React.createElement(SearchTagChip, null, /*#__PURE__*/React.createElement(TagChipText, null, ChapterStore.searchingTagName), /*#__PURE__*/React.createElement(Button, {
       onClick: cancelSearchingTagNote,
       style: {
-        marginLeft: "0.69rem"
+        marginLeft: "0.69rem",
+        width: "12px",
+        height: "12px"
       },
       src: img
     })) : /*#__PURE__*/React.createElement(LnbTitleSearchInput, {
@@ -7141,7 +7174,7 @@ var LNBNewChapterForm = observer(function (_ref) {
   }))));
 });
 
-const img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAABJxJREFUaAXtmslrFUEQxuMSFSUIelBBCXqIKIqIIoJbEAziGncTxbjFuB1cTuIlIHoRUdCLN0UPgjv4B6ioFwW9eBDcwGAgEhH3Nfp9TweKpnqWN90zk2DB96anpqa7ftPzerrnvYqK//b/CvSoK9ArI5o5aOcINBGqhD4LfRJl+uPsf0DcQ+gNVDhrRkZd0G8Puo46h0GFMZ+wwQV8BNp+RSDOAjaAbokL3DduYMI4wp6GzDGC39GTENsdBA00JH2y3BtxYVaLg2wvF7P1LAej2jIz6o/zhkAjoRroDhT0Lre3oFzMB6wGcgVOCXxfC/LtywqWHOchCfzYN5xZf5awbJvfVwn8wkzI574rWA5kh6A2qB06BvG7q9lxOCVwhxbkw+cKlrm1QhKC5ROQZofhlLEftSDXPpewzO05JCFY7uQBxQ7CJ2N/KTFOXa5hmVwS4L2Il8AsD2AlPswHLPNshUwI2y3NmZUZOxQ+5+YLlokmGbTWI94EHuWa1ids0lyXK8Bjk1YSFl8kWOY5HzJ7eHIYQJJjRYNl7rMhE3hmEihbbBFhmetUyASus0HE9fMqdikVp1n1xG07Km6ckld91ElRx+8qlRYBlnlXK7k18kCUhS2sJxgnc/G+ELpp+PPYZS6m8YVBpIUBvzLO7oN9vqEogs1TkrAtNJRQ3XUAbnNg+ArfAj08M+9qtPQTMnNbkjYD9uhtpeI8oW2w7chzcFpgnl8FaYNXHtA22G/IMfUjibCBEfoBZN5CWULbYJnTuSBRV1uO1m8hE5j7WUCHwTKHs5AzG42aXkMabODzCR0F6xSYv9k8jYD1CR0H1hkwRzz+ZhMABVtONfdAvgeyuLDOgC9YYLfDT/M5ettg+d4quPBym/o7rE3M2cAukgrzAW2D5aOnGZKgQTk18Eql4n0CVBYJfU+JL2cgC4PlHH6E0g6hUwPPUCq+Bl8lpJmLng6DXfSv0eHYBr0qt6mBOQl/plTuCzoOLJltwKd4MK3VogJ+b+SVZDkKOuntHRcWTVfsVPJhTvt50IUtRiUa9FX4XdzeSWCb0Kb29uU7/E5fz/qCTgLbACjbIyl4TCLEnXGdyStp3t5RPW27vY+iLm09y7spGKBQLNkKfGqxzGX33xA/n0tRrQbNX+KT3t7mheO+Bsu7S2uT8eacAC73Vo8qtQTSQmuwfNHOZ7l2cTh4ZWbL0JIGfRn+cnpag52Lur5AJiwHrUxh0V7JwqD5g5hmVXCegSQEl511kLRZ2OGrYBnHMmF3QLkZf8z6AZmJsadt0EyW8/RNEAdCrsikTcfOe8isk7BeRmPZeJwyR9ByoLW6p8D5DtJgW7QT8vJxoaFBX4I/rKdlvpOw0wlpsNtkYFHKq5BIudDjcW4HpME2FwVQy4Mzp6TQNTiH75M12K1aI0Xz2aaLF5GoeXuPga8N0mC3FA0sLJ81OKhNBSV0NWJeQt0eFgwlW4tPGzRhtbU2FwebS2d3048G5K1BazMowvLZ3O2tEQQatLyVCbux25MKgHUo26AJ2yRie0yR0FwkyJ7lI2xDjyFUQPgfKs6zn0A3oGlQLvYHb4hnJnRITEQAAAAASUVORK5CYII=";
+const img$4 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/tag%3c/title%3e %3cg id='Icon/common/tag' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M9.9201%2c3.0003 C11.1771%2c3.0003 12.3571%2c3.4893 13.2451%2c4.3783 L13.2451%2c4.3783 L20.5331%2c11.6653 C22.3671%2c13.4993 22.3671%2c16.4823 20.5331%2c18.3163 L20.5331%2c18.3163 L17.3151%2c21.5333 C16.4271%2c22.4223 15.2461%2c22.9113 13.9901%2c22.9113 C12.7331%2c22.9113 11.5531%2c22.4213 10.6651%2c21.5333 L10.6651%2c21.5333 L3.3771%2c14.2463 C2.4891%2c13.3583 2.0001%2c12.1773 2.0001%2c10.9203 L2.0001%2c10.9203 L2.0001%2c7.7033 C2.0001%2c5.1103 4.1091%2c3.0003 6.7031%2c3.0003 L6.7031%2c3.0003 Z M9.9201%2c5.0003 L6.7031%2c5.0003 C5.2131%2c5.0003 4.0001%2c6.2133 4.0001%2c7.7033 L4.0001%2c7.7033 L4.0001%2c10.9203 C4.0001%2c11.6433 4.2811%2c12.3213 4.7911%2c12.8323 L4.7911%2c12.8323 L12.0791%2c20.1193 C13.0991%2c21.1393 14.8791%2c21.1403 15.9011%2c20.1193 L15.9011%2c20.1193 L19.1191%2c16.9023 C20.1731%2c15.8483 20.1731%2c14.1333 19.1191%2c13.0793 L19.1191%2c13.0793 L11.8311%2c5.7923 C11.3201%2c5.2813 10.6411%2c5.0003 9.9201%2c5.0003 L9.9201%2c5.0003 Z M8.0371%2c6.7985 C9.2981%2c6.7985 10.3241%2c7.8245 10.3241%2c9.0855 C10.3241%2c10.3465 9.2981%2c11.3725 8.0371%2c11.3725 C6.7761%2c11.3725 5.7501%2c10.3465 5.7501%2c9.0855 C5.7501%2c7.8245 6.7761%2c6.7985 8.0371%2c6.7985 Z M8.0371%2c8.2985 C7.6031%2c8.2985 7.2501%2c8.6515 7.2501%2c9.0855 C7.2501%2c9.5195 7.6031%2c9.8725 8.0371%2c9.8725 C8.4711%2c9.8725 8.8241%2c9.5195 8.8241%2c9.0855 C8.8241%2c8.6515 8.4711%2c8.2985 8.0371%2c8.2985 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var LNBTag = /*#__PURE__*/memo(function () {
   var _useNoteStore = useNoteStore(),
@@ -7821,11 +7854,11 @@ var handleUnselect = function handleUnselect() {
     TagStore.setSelectTagIndex('');
   }
 
-  if (PageStore.moveInfoList.length > 1) {
+  if (PageStore.moveInfoMap.size > 1) {
     PageStore.handleClickOutside();
   }
 
-  if (ChapterStore.moveInfoList.length > 1) {
+  if (ChapterStore.moveInfoMap.size > 1) {
     ChapterStore.handleClickOutside();
   } //ref 귀찮 - 임시 구현
 
@@ -7941,19 +7974,12 @@ var fileCategory = {
   isZip: isZip,
   isExe: isExe
 };
-var isPreview = function isPreview(extension) {
-  var cat = Object.keys(fileCategory).find(function (cat) {
-    return fileCategory[cat]['ext'].includes(extension);
-  });
-  if (!cat) return false;
-  return fileCategory[cat]["isPreview"];
-};
 
 var SubMenu = Menu.SubMenu,
     Item = Menu.Item;
 
 var ContextMenu = function ContextMenu(_ref) {
-  var _spaceStore$currentSa;
+  var _spaceStore$currentSp;
 
   var noteType = _ref.noteType,
       chapter = _ref.chapter,
@@ -8200,7 +8226,7 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "1"
   }, "\uC0AD\uC81C"), /*#__PURE__*/React.createElement(Item, {
     key: "2"
-  }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), ((_spaceStore$currentSa = spaceStore.currentSapce) === null || _spaceStore$currentSa === void 0 ? void 0 : _spaceStore$currentSa.plan) !== 'BASIC' && /*#__PURE__*/React.createElement(Item, {
+  }, "\uB2E4\uB978 \uB8F8\uC73C\uB85C \uC804\uB2EC"), ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) !== 'BASIC' && /*#__PURE__*/React.createElement(Item, {
     key: "3"
   }, "Mail\uB85C \uC804\uB2EC"), /*#__PURE__*/React.createElement(SubMenu, {
     title: "\uB0B4\uBCF4\uB0B4\uAE30",
@@ -8254,9 +8280,7 @@ var ChapterText = function ChapterText(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ChapterTitle, {
-      className: ChapterStore.isCtrlKeyDown ? ChapterStore.moveInfoList.find(function (info) {
-        return info.chapterId === chapter.id;
-      }) ? 'selectedMenu' : '' : (NoteStore.isDragging && ChapterStore.moveInfoList.length > 0 ? chapter.id === ChapterStore.moveInfoList[0].chapterId : chapter.id === ChapterStore.currentChapterId) ? 'selectedMenu' : ''
+      className: ChapterStore.isCtrlKeyDown ? ChapterStore.moveInfoMap.get(chapter.id) ? 'selectedMenu' : '' : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0 ? chapter.id === _toConsumableArray(ChapterStore.moveInfoMap)[0][0] : chapter.id === ChapterStore.currentChapterId) ? 'selectedMenu' : ''
     }, /*#__PURE__*/React.createElement(Tooltip, {
       title: isEllipsisActive ? chapter.text : null,
       placement: "bottomLeft"
@@ -8426,26 +8450,21 @@ var Page = function Page(_ref) {
       type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages'
     },
     begin: function begin(monitor) {
-      var _PageStore$moveInfoLi;
-
-      if (!PageStore.moveInfoList.find(function (info) {
-        return info.pageId === page.id;
-      })) {
-        PageStore.setMoveInfoList([pageMoveInfo]);
+      if (!PageStore.moveInfoMap.get(page.id)) {
+        PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
-      PageStore.setMovePageId(PageStore.moveInfoList[PageStore.moveInfoList.length - 1].pageId);
-      NoteStore.setDraggedComponentId((_PageStore$moveInfoLi = PageStore.moveInfoList[0]) === null || _PageStore$moveInfoLi === void 0 ? void 0 : _PageStore$moveInfoLi.pageId);
-      NoteStore.setDrageedComponentTitles(PageStore.getSortedMoveInfoList().map(function (moveInfo) {
+      NoteStore.setDraggedComponentId(page.id);
+      NoteStore.setDraggedComponentTitles(PageStore.getSortedMoveInfoList().map(function (moveInfo) {
         return moveInfo.shareData.text;
       }));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
       return {
         type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
-        data: PageStore.moveInfoList.map(function (moveInfo) {
-          return moveInfo.shareData;
+        data: _toConsumableArray(PageStore.moveInfoMap).map(function (keyValue) {
+          return keyValue[1].shareData;
         })
       };
     },
@@ -8480,19 +8499,16 @@ var Page = function Page(_ref) {
     });
   }, []);
   var handleSelectPage = useCallback(function (e) {
-    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
     ChapterStore.setIsCtrlKeyDown(false);
 
     if (e.ctrlKey) {
-      var idx = PageStore.moveInfoList.findIndex(function (info) {
-        return info.pageId === page.id;
-      });
-      if (idx === -1) PageStore.appendMoveInfoList(pageMoveInfo);else PageStore.removeMoveInfoList(idx);
+      if (PageStore.moveInfoMap.get(page.id)) PageStore.deleteMoveInfoMap(page.id);else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
       PageStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    PageStore.setMoveInfoList([pageMoveInfo]);
+    PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
     PageStore.setIsCtrlKeyDown(false);
     onClick(page.id);
   }, [page]);
@@ -8522,13 +8538,11 @@ var Page = function Page(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(PageCover, {
-      ref: page.type === 'note' ? function (node) {
+      ref: !PageStore.renamePageId ? page.type === 'note' ? function (node) {
         return drag(drop(node));
-      } : drag,
+      } : drag : null,
       id: page.id,
-      className: 'page-li' + (PageStore.isCtrlKeyDown ? PageStore.moveInfoList.find(function (info) {
-        return info.pageId === page.id;
-      }) ? ' selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.moveInfoList.length > 0 ? page.id === PageStore.moveInfoList[0].pageId : page.id === PageStore.currentPageId) ? ' selected' : ''),
+      className: 'page-li' + (PageStore.isCtrlKeyDown ? PageStore.moveInfoMap.get(page.id) ? ' selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.moveInfoMap.size > 0 ? page.id === _toConsumableArray(PageStore.moveInfoMap)[0][0] : page.id === PageStore.currentPageId) ? ' selected' : ''),
       onClick: handleSelectPage
     }, /*#__PURE__*/React.createElement(PageMargin, {
       style: page.id === PageStore.getRenamePageId() && PageStore.isRename ? {
@@ -8650,7 +8664,7 @@ var PageList = function PageList(_ref) {
         height: '0px',
         marginLeft: '1.875rem'
       },
-      className: PageStore.dragEnterChapterIdx === chapterIdx && PageStore.dragEnterPageIdx === chapter.children.length ? 'borderTopLine' : ''
+      className: PageStore.dragEnterChapterIdx === chapterIdx && PageStore.dragEnterPageIdx === chapter.children.length && chapter.type !== 'shared_page' && chapter.type !== 'shared' ? 'borderTopLine' : ''
     });
   }), /*#__PURE__*/React.createElement(NewPage, {
     ref: drop,
@@ -8719,25 +8733,21 @@ var Chapter = function Chapter(_ref) {
       type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters'
     },
     begin: function begin(monitor) {
-      var _ChapterStore$moveInf;
-
-      if (!ChapterStore.moveInfoList.find(function (info) {
-        return info.chapterId === chapter.id;
-      })) {
-        ChapterStore.setMoveInfoList([chapterMoveInfo]);
+      if (!ChapterStore.moveInfoMap.get(chapter.id)) {
+        ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
-      NoteStore.setDraggedComponentId((_ChapterStore$moveInf = ChapterStore.moveInfoList[0]) === null || _ChapterStore$moveInf === void 0 ? void 0 : _ChapterStore$moveInf.chapterId);
-      NoteStore.setDrageedComponentTitles(ChapterStore.getSortedMoveInfoList().map(function (moveInfo) {
+      NoteStore.setDraggedComponentId(chapter.id);
+      NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(function (moveInfo) {
         return moveInfo.shareData.text;
       }));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
       return {
         type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
-        data: ChapterStore.moveInfoList.map(function (moveInfo) {
-          return moveInfo.shareData;
+        data: _toConsumableArray(ChapterStore.moveInfoMap).map(function (keyValue) {
+          return keyValue[1].shareData;
         })
       };
     },
@@ -8796,30 +8806,34 @@ var Chapter = function Chapter(_ref) {
   };
 
   var onClickChapterBtn = useCallback(function (e) {
+    var _ChapterStore$chapter, _ChapterStore$chapter2;
+
     if (!PageStore.isReadMode()) return;
 
     if (e.ctrlKey) {
-      var idx = ChapterStore.moveInfoList.findIndex(function (info) {
-        return info.chapterId === chapter.id;
-      });
-      if (idx === -1) ChapterStore.appendMoveInfoList(chapterMoveInfo);else ChapterStore.removeMoveInfoList(idx);
+      if (ChapterStore.moveInfoMap.get(chapter.id)) ChapterStore.deleteMoveInfoMap(chapter.id);else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);
       ChapterStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    ChapterStore.setMoveInfoList([chapterMoveInfo]);
+    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
     ChapterStore.setIsCtrlKeyDown(false);
     ChapterStore.setCurrentChapterId(chapter.id);
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    if (pageId) PageStore.setMoveInfoList([{
+    if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
       pageId: pageId,
       pageIdx: 0,
       chapterId: chapter.id,
-      chapterIdx: index
-    }]);else PageStore.setMoveInfoList([]);
+      chapterIdx: index,
+      shareData: {
+        id: pageId,
+        text: (_ChapterStore$chapter = ChapterStore.chapterList[index].children[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : _ChapterStore$chapter.text,
+        date: (_ChapterStore$chapter2 = ChapterStore.chapterList[index].children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.modified_date
+      }
+    }]]));else PageStore.setMoveInfoMap(new Map());
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
@@ -8875,9 +8889,9 @@ var Chapter = function Chapter(_ref) {
       itemType: "chapter"
     }, /*#__PURE__*/React.createElement(ChapterCover, {
       className: 'chapter-div',
-      ref: !isShared ? function (node) {
+      ref: !ChapterStore.renameChapterId ? !isShared ? function (node) {
         return drag(dropChapter(node));
-      } : drag,
+      } : drag : null,
       onClick: onClickChapterBtn
     }, renderChapterIcon(), ChapterStore.getRenameChapterId() === id ? /*#__PURE__*/React.createElement(ChapterTextInput, {
       maxLength: "200",
@@ -8914,11 +8928,11 @@ var ChapterList = function ChapterList(_ref) {
       ChapterStore = _useNoteStore.ChapterStore;
 
   var handleClickOutside = function handleClickOutside(e) {
-    if (!e.target.closest('.chapter-div') && ChapterStore.moveInfoList.length > 1) {
+    if (!e.target.closest('.chapter-div') && ChapterStore.moveInfoMap.size > 1) {
       ChapterStore.handleClickOutside();
     }
 
-    if (!e.target.closest('.page-li') && PageStore.moveInfoList.length > 1) {
+    if (!e.target.closest('.page-li') && PageStore.moveInfoMap.size > 1) {
       PageStore.handleClickOutside();
     }
   };
@@ -9228,7 +9242,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color:#1EA8DF !important;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 1.38rem;\n    display: flex;\n    align-items:center;\n    padding: 0 0.75rem !important;\n    border-radius: 21px !important;\n    background-color: #EFEFF2;\n    border: 0 !important;\n    color:#313131;\n    font-size:0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 0.69rem 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -9516,10 +9530,10 @@ function _templateObject20$1() {
   return data;
 }
 
-function _templateObject19$1() {
+function _templateObject19$2() {
   var data = _taggedTemplateLiteral([" \n  width: 100%;\n  top: -0.5rem !important;\n  position: relative !important;\n"]);
 
-  _templateObject19$1 = function _templateObject19() {
+  _templateObject19$2 = function _templateObject19() {
     return data;
   };
 
@@ -9733,7 +9747,7 @@ var FileBody = styled.div(_templateObject13$3(), function (props) {
 var FileContent = styled.div(_templateObject16$2());
 var FileDownloadIcon = styled.div(_templateObject17$2());
 var FileErrorIcon = styled.div(_templateObject18$2());
-var ProgressWrapper = styled.div(_templateObject19$1());
+var ProgressWrapper = styled.div(_templateObject19$2());
 var FileExtensionIcon = styled.div(_templateObject20$1(), FileDownloadIcon);
 var FileDownloadBtn = styled.img(_templateObject21$1());
 var FileExtensionBtn = styled.img(_templateObject22$1());
@@ -9748,7 +9762,7 @@ var FileClose = styled.div(_templateObject28$1());
 var FileCloseBtn = styled.img(_templateObject29$1());
 var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n";
 
-const img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/tag_add%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/tag_add' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M16%2c12 C16.5522848%2c12 17%2c12.4477153 17%2c13 L16.9996194%2c15 L19%2c15 C19.5522848%2c15 20%2c15.4477153 20%2c16 C20%2c16.5522848 19.5522848%2c17 19%2c17 L16.9996194%2c17 L17%2c19 C17%2c19.5522848 16.5522848%2c20 16%2c20 C15.4477153%2c20 15%2c19.5522848 15%2c19 L14.9996194%2c17 L13%2c17 C12.4477153%2c17 12%2c16.5522848 12%2c16 C12%2c15.4477153 12.4477153%2c15 13%2c15 L14.9996194%2c15 L15%2c13 C15%2c12.4477153 15.4477153%2c12 16%2c12 Z M8.34023349%2c1.00074646 L14.3094032%2c1.23974807 C15.0221643%2c1.26919481 15.6289873%2c1.87289763 15.6577193%2c2.58806415 L15.8973704%2c8.5532031 C15.9079389%2c8.89539977 15.7927278%2c9.20762807 15.5687793%2c9.43947123 L13.6616194%2c11.346 L9.53741848%2c15.4710789 C9.08530775%2c15.9231896 8.3387291%2c15.9245472 7.81438626%2c15.4959105 L7.70561696%2c15.3974858 L3.80461938%2c11.496 L3.02365047%2c12.2861419 L9.12199782%2c18.3939493 L10.9866194%2c16.474 L12.0926194%2c17.534 L10.0106081%2c19.6093089 C9.5775224%2c20.0686785 8.874178%2c20.0836069 8.38701228%2c19.6654142 L8.28610575%2c19.5691763 L1.91528974%2c13.1731645 C1.4614885%2c12.6931552 1.41548103%2c11.9467627 1.78862933%2c11.4492151 L1.87500948%2c11.3465943 L2.72861938%2c10.421 L1.49998163%2c9.19185043 C0.975025961%2c8.66689476 0.941984154%2c7.84445326 1.42638851%2c7.36004891 L7.44361108%2c1.34282634 C7.67684281%2c1.10959461 7.99493852%2c0.989308278 8.34023349%2c1.00074646 Z M8.4872346%2c2.49877551 L2.66190168%2c8.32410843 L8.57335896%2c14.2355657 L14.3986919%2c8.41023278 L14.1711831%2c2.72712965 L8.4872346%2c2.49877551 Z M11.4271541%2c4.00000003 C11.9794389%2c4.00000003 12.4271541%2c4.44771528 12.4271541%2c5.00000003 C12.4271541%2c5.55228478 11.9794389%2c6.00000003 11.4271541%2c6.00000003 C10.8748694%2c6.00000003 10.4271541%2c5.55228478 10.4271541%2c5.00000003 C10.4271541%2c4.44771528 10.8748694%2c4.00000003 11.4271541%2c4.00000003 Z' id='Combined-Shape' fill='rgb(117%2c 117%2c 127)'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/add_tag%3c/title%3e %3cg id='Icon/common/add_tag' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M9.9367%2c2.0313 C10.7577%2c2.0313 11.5697%2c2.2483 12.2827%2c2.6573 C12.7607%2c2.9323 12.9267%2c3.5443 12.6517%2c4.0223 C12.3757%2c4.5013 11.7647%2c4.6653 11.2857%2c4.3913 C10.8757%2c4.1563 10.4087%2c4.0313 9.9367%2c4.0313 L9.9367%2c4.0313 L6.7117%2c4.0313 C5.2167%2c4.0313 3.9997%2c5.2493 3.9997%2c6.7463 L3.9997%2c6.7463 L3.9997%2c9.9733 C3.9997%2c10.6883 4.2887%2c11.3873 4.7937%2c11.8923 L4.7937%2c11.8923 L12.0987%2c19.2023 C13.1247%2c20.2283 14.9097%2c20.2273 15.9327%2c19.2023 L15.9327%2c19.2023 L19.1587%2c15.9753 C19.9777%2c15.1553 20.1867%2c13.9043 19.6777%2c12.8633 C19.4357%2c12.3673 19.6407%2c11.7673 20.1367%2c11.5253 C20.6327%2c11.2823 21.2317%2c11.4883 21.4747%2c11.9843 C22.3587%2c13.7933 21.9957%2c15.9643 20.5737%2c17.3883 L20.5737%2c17.3883 L17.3477%2c20.6163 C16.4577%2c21.5063 15.2757%2c21.9983 14.0157%2c21.9983 C12.7567%2c21.9983 11.5737%2c21.5063 10.6837%2c20.6163 L10.6837%2c20.6163 L3.3797%2c13.3063 C2.5027%2c12.4293 1.9997%2c11.2143 1.9997%2c9.9733 L1.9997%2c9.9733 L1.9997%2c6.7463 C1.9997%2c4.1463 4.1137%2c2.0313 6.7117%2c2.0313 L6.7117%2c2.0313 Z M8.0488%2c5.7412 C9.3668%2c5.7412 10.4398%2c6.8132 10.4398%2c8.1332 C10.4398%2c9.4512 9.3668%2c10.5232 8.0488%2c10.5232 C6.7308%2c10.5232 5.6578%2c9.4512 5.6578%2c8.1332 C5.6578%2c6.8132 6.7308%2c5.7412 8.0488%2c5.7412 Z M18.5%2c0.9999 C19.053%2c0.9999 19.5%2c1.4469 19.5%2c1.9999 L19.5%2c1.9999 L19.5%2c4.5009 L22%2c4.5009 C22.553%2c4.5009 23%2c4.9479 23%2c5.5009 C23%2c6.0539 22.553%2c6.5009 22%2c6.5009 L22%2c6.5009 L19.5%2c6.5009 L19.5%2c9.0009 C19.5%2c9.5539 19.053%2c10.0009 18.5%2c10.0009 C17.947%2c10.0009 17.5%2c9.5539 17.5%2c9.0009 L17.5%2c9.0009 L17.5%2c6.5009 L15%2c6.5009 C14.447%2c6.5009 14%2c6.0539 14%2c5.5009 C14%2c4.9479 14.447%2c4.5009 15%2c4.5009 L15%2c4.5009 L17.5%2c4.5009 L17.5%2c1.9999 C17.5%2c1.4469 17.947%2c0.9999 18.5%2c0.9999 Z M8.0488%2c7.4402 C7.6678%2c7.4402 7.3578%2c7.7512 7.3578%2c8.1332 C7.3578%2c8.5132 7.6678%2c8.8242 8.0488%2c8.8242 C8.4298%2c8.8242 8.7398%2c8.5132 8.7398%2c8.1332 C8.7398%2c7.7512 8.4298%2c7.4402 8.0488%2c7.4402 Z' id='Combined-Shape' fill='%237B7671'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var AddTagForm = function AddTagForm(_ref) {
   var show = _ref.show,
@@ -10236,8 +10250,14 @@ var FileLayout = function FileLayout() {
         file_name = item.file_name,
         extension = item.file_extension,
         user_context_2 = item.user_context_2;
+    var cat = Object.keys(fileCategory).find(function (cat) {
+      return fileCategory[cat]['ext'].includes(extension);
+    });
+    var isPreviewFile = cat && fileCategory[cat]["isPreview"]; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
 
-    if (isPreview(extension)) {
+    if (!PageStore.isReadMode() && !isPreviewFile) return;
+
+    if (isPreviewFile) {
       EditorStore.setPreviewFileMeta({
         userId: NoteRepository$1.USER_ID,
         channelId: NoteRepository$1.chId,
@@ -10370,7 +10390,7 @@ var FileLayout = function FileLayout() {
           height: "1.875rem"
         }
       }))), item.error ? /*#__PURE__*/React.createElement(FileErrorIcon, null, /*#__PURE__*/React.createElement(ExclamationCircleFilled, null)) : null, /*#__PURE__*/React.createElement(FileData, null, /*#__PURE__*/React.createElement(FileDataName, null, /*#__PURE__*/React.createElement(FileName, {
-        onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null
+        onClick: onClickFileName.bind(null, item)
       }, item.file_name, item.file_extension && ".".concat(item.file_extension))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
@@ -10427,7 +10447,7 @@ var FileLayout = function FileLayout() {
         title: isEllipsisActive ? item.file_name + (item.file_extension ? ".".concat(item.file_extension) : '') : null,
         placement: "top"
       }, /*#__PURE__*/React.createElement(FileName, {
-        onClick: PageStore.isReadMode() ? onClickFileName.bind(null, item) : null,
+        onClick: onClickFileName.bind(null, item),
         onMouseOver: handleTooltip
       }, item.file_name, item.file_extension && ".".concat(item.file_extension)))), /*#__PURE__*/React.createElement(FileDataTime, null, /*#__PURE__*/React.createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React.createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
@@ -10635,6 +10655,9 @@ var EditorContainer = function EditorContainer() {
           });
           editor.on('PostProcess', function () {
             handleEditorContentsListener();
+          });
+          editor.on('Drop', function (e) {
+            console.log(e);
           }); // fired when a dialog has been opend
 
           editor.on('OpenWindow', function (e) {
@@ -10813,6 +10836,7 @@ var EditorContainer = function EditorContainer() {
         target_list: false,
         link_assume_external_targets: 'http',
         link_context_toolbar: false,
+        block_unsupported_drop: false,
         link_title: false,
         anchor_top: false,
         // link 입력중 dropdown으로 <top> 안뜨게 해
@@ -10851,7 +10875,7 @@ var EditorContainer = function EditorContainer() {
       successCallback: driveSuccessCb,
       cancelCallback: driveCancelCb,
       roomId: NoteRepository$1.WS_ID
-    }), PageStore.isReadMode() && EditorStore.isPreview ? /*#__PURE__*/React.createElement(FilePreview, {
+    }), EditorStore.isPreview ? /*#__PURE__*/React.createElement(FilePreview, {
       visible: EditorStore.isPreview,
       fileMeta: EditorStore.previewFileMeta,
       handleClose: function handleClose() {
@@ -11010,14 +11034,16 @@ var customExpandIcon = function customExpandIcon(props) {
   if (props.isActive) {
     return /*#__PURE__*/React.createElement("img", {
       style: {
-        width: '0.62rem'
+        width: '0.8rem',
+        top: '27px'
       },
       src: img$p,
       alt: "arrow-up"
     });
   } else return /*#__PURE__*/React.createElement("img", {
     style: {
-      width: '0.62rem'
+      width: '0.8rem',
+      top: '27px'
     },
     src: img$q,
     alt: "arrow-down"
@@ -11037,7 +11063,7 @@ var TagContentContainer = observer(function () {
     return (
       /*#__PURE__*/
       // "ㄱ~ㅎ"
-      React.createElement(Panel, {
+      React.createElement(PanelHeader, {
         header: categoryInfo[category],
         key: category
       }, (_Object$keys = Object.keys(TagStore.sortedTagList[category])) === null || _Object$keys === void 0 ? void 0 : _Object$keys.map(function (tagKey) {
@@ -11053,7 +11079,7 @@ var TagContentContainer = observer(function () {
   })));
 });
 
-const img$r = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAACAZJREFUaAXtW2tsVEUUntndtgaWbikUg0rfCgE1BEwAY3i0WKkkwp/GVwwmEBMjPgJEImjsD/kBf7QSJaDB+EOD6Q+tRIpYtmDEUrBKYkAs2yfYGgqFpQXtPu74nV22e2fuvu52u20NN2nvnDMzZ853zzzOnNMydue58wX+V1+ApxLN8uXVttPtJ5Yxpj2Bn7lc8Pshf5rgbAqNwwUbwKtfcNHKBP+Dccv3c/KKj7e07PNSfTqeEQOeN68qs2ug/ykAXAuFVwvBcswozjm7DvCHGGffFEyZVnf2bK3HTH+zbZMGLITg9qLyZ5gmdjDBiswOHLE9Z52w+tuDnQ1fco75MApPUoAn5z9ezph/FxNiwSjohLnPf8OvrTe7j/6QavlWMwKrq6stp9utO5nw70W/mbH6wkJt+Jq/c8ZPWizsCNbzzwDRBV4/6vzomxujP2SLF+5yFE/Ztmldw7Fjx1Jm7YQtnFtamT3k+fdLTN/VURT1YT0eB6i6DJul7lp7Q3eUdgF2bknFLI/PtwazZC3WPTY6ZovcntdnZliehTx35Hpz3IQA5xSuKvRpnu+wbudGEC9gsVqrYNvcF51tEerjshz5K4v9QtshmHgajQ064UOet/KMJ91dRzriCovTwCBcbU+W9XiGmqKAbbZmWF690X70tNovGdqRv2Khn/HdGGuJ2p9AZ9isi0dqaYsqWE/TmqVpHBmsZX9h9vSlqQJL47q7G1tm55Uuw4z5VK8HlTHt53i8/gNVVVWm9h1VTszOwQ1KvCh34hrozTcvOt/q6ztHm09Kn97eFs3j7jiYlVNyDYIr8KM3Smlbzy27x915JNlBowIOHD3B3ViVDbCN76vMVNMA3ZyVU3wdtq3Uy4all0xyFDcN3ehIar/Qf71huZjCWNs4Zw2PZX86wIaGHew++iGm9ychOvT2cbEzqGOIk/g7IuCAB2V0KpoLs3NfTlx0alpiTb8C0E2SNMHm2wtWPi/xEiQMuzT5xp0DV84r7qLAbrwolRtUgvoFmjkKyhb4NPELiLC+nHfNzMya7XLVD5mRZbBw18BVOAOsSC+EztmxAkt6uLucv8JjO6DXCdt2wd9DHrqwmHoMgLFJrFEk+MipUHhpJ60W23bYV7lGipEBpvsskEiuI7mLyXpQqfwqQS+LN0oyOatcuPClDIkXh5AsTJd3432W18WRkbZqLC1JF+zUDtdl1wozCkiAg5EKuTtdBGTO2FGZGZnfYnTp5qRZBKIriT8qYOlygC/aFu/Wk/hQI2/Z76q/hM3rgl6SpjFJZ31dpLIEGHfWB6RGQlyS6PFAcCbpBKPIOsfRUQKMtsqlnPfE6Z/2ahzEik5C0Tm2ShLgUHQx1IVbRG+oPF7eGuOSTvCCAxHRRPWTABs6aaMTSDOMY4LBmbglNefMJ9FxCAnw7bjxcBdsh/cME+OlIESepIoQlyU6DiEBRtt+ub0Yd4ARTyqUdOS8T6LjEBJgrGFpy0e49L44/dNejU2rSBp0RBYW7JxeGDyZEoou6nljWbaXVMyATnMkHTg/I9FxCMnClOtR2wdCqSpzjGiL17sKQ8PI+oc79VS8sgSYElu4LCCsonuE4fakq0xvURNcvh1x7nHkTTphRgvlazFmn1X2BeLDz+mE+GzcOtvd3dCu46W9SLFrn9Ba4UoPx+HgZTkHu53lZpSRLBzoiCyeIsBGQXKFl3bSL/yb9WCDCvA9ZhUxAKaUJVZJp14QZQQoSK7npbOMzepBHEcbpDGhY+Wi3K8lXgKEAXAgP4uUpdIX2S++2+xlW5GRFEmBd+H1foaQTqYsgNfU1taajosbAJNQys8GU5bhIXAcLPmzz/VxmJOeUn1z/3bcgB/Rj4aNxzX13ml79bxEyxEBYzOAV8m3qkIAeoM9v/w1lT9atGNWWQXGfFeRL5iNr7/UVPuPwk+IHN7x1NZed0c75WeB/FGlroIyApQZUPgpJQmsnwuKVE7SC4Z19wx2NZrerEIyIlo4VLl5/dI3Yen6EB18C6sQWo09v2zfaKxpSuDZC1a8gytQPeJrU+WxiQrktozsBDmGc1jtN7V4pcPr85+k7J1ah6nfZOVsI8WN1bpk6MlF5Q9zv/YRxnosVn+MW4Pz941YbaLVxQVMHR0FFUV+4T0UCTSqcefgByhunGzCOqeorMDnY1uwfJDKCTsW0ZQmfrKgEwJMA5ClKT+LIvmzxicQJOeNUKQuK0vUXW11/mVsFObAmnfDmssE4+uwC0OmiLm8wj3DpWRAJwyYhqEz8fCpK7sQKdwUHjZiiax+AQ4Mooys53ZYxodoxXSAmw5wD8GapRF7hpmQwbA5cQ2Oz8YwWy6ZBW0KcGgo2kEpZQnl54d4qXxDKRcdPYMdzh9JLjbID3A8vR5tDDOgkwJMA0MBHkxZivcosRVNGVP8gEvLa8ipUM/ZVIFOGnAISGlpZVYwi4fEFnI9+BCOUF1Cb1zxoMRPmLp7yDeO5S6mAvSIAetB0blMuR5Kf1BGAFMNQXKRGwilUnSRwjEUgwq+zwCkk+6zPS0H5UikXqhSHinolAJWdBs1ciSgo7qWo6ZtCgTDrT0M95a8sMVRxC2memqn1k9IwAQiWdATFrAJ0P34OKdCljbt3YQ6jpc3+dR0DkfTBw4OQkPhZ8IDJiixQONmbw/Dlf+sT8+fcOXooMVXejATeg3rgVCZNrJMRwn+kUTAB2Aapvrn2TPsWwZ6W5W//lF73qHvfIEJ+wX+A6LU8aKiHnthAAAAAElFTkSuQmCC";
+const img$r = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/search%3c/title%3e %3cg id='Icon/common/search' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.6826%2c1 C16.0216%2c1 20.3646%2c5.375 20.3646%2c10.752 C20.3646%2c13.042 19.5726%2c15.145 18.2556%2c16.81 L18.2556%2c16.81 L22.1736%2c20.76 L22.7096%2c21.301 C23.0986%2c21.693 23.0966%2c22.326 22.7036%2c22.715 C22.5086%2c22.908 22.2546%2c23.005 21.9996%2c23.005 C21.7436%2c23.005 21.4856%2c22.906 21.2896%2c22.709 L21.2896%2c22.709 L17.8786%2c19.271 C17.8786%2c19.27 17.8776%2c19.269 17.8776%2c19.269 L17.8776%2c19.269 L16.8666%2c18.249 C15.1876%2c19.656 13.0326%2c20.504 10.6826%2c20.504 C5.3436%2c20.504 0.9996%2c16.129 0.9996%2c10.752 C0.9996%2c5.375 5.3436%2c1 10.6826%2c1 Z M10.6826%2c3 C6.4466%2c3 2.9996%2c6.478 2.9996%2c10.752 C2.9996%2c15.027 6.4466%2c18.504 10.6826%2c18.504 C14.9176%2c18.504 18.3646%2c15.027 18.3646%2c10.752 C18.3646%2c6.478 14.9176%2c3 10.6826%2c3 Z M10.284%2c4.5271 C10.837%2c4.5271 11.284%2c4.9751 11.284%2c5.5271 C11.284%2c6.0791 10.837%2c6.5271 10.284%2c6.5271 C8.197%2c6.5271 6.499%2c8.2421 6.499%2c10.3511 C6.499%2c10.9031 6.052%2c11.3511 5.499%2c11.3511 C4.946%2c11.3511 4.499%2c10.9031 4.499%2c10.3511 C4.499%2c7.1401 7.094%2c4.5271 10.284%2c4.5271 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var TagHeader = function TagHeader() {
   var _useNoteStore = useNoteStore(),
@@ -11107,7 +11133,8 @@ var TagHeader = function TagHeader() {
       type: "image",
       border: "0",
       alt: " ",
-      src: img$r
+      src: img$r,
+      isSearch: TagStore.isSearching || value !== "" ? true : false
     }), /*#__PURE__*/React.createElement(LnbTitleSearchInput, {
       autocomplete: "off",
       ref: inputRef,
@@ -11126,7 +11153,7 @@ var TagHeader = function TagHeader() {
 };
 
 var TagNotFound = function TagNotFound() {
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, "\uD0DC\uADF8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React.createElement(NoneText, null, "\uD398\uC774\uC9C0 \uD558\uB2E8\uC5D0 \uD0DC\uADF8\uB97C \uC785\uB825\uD558\uC5EC \uCD94\uAC00\uD558\uAC70\uB098"), /*#__PURE__*/React.createElement(NoneText, null, "\uD0DC\uADF8 \uBAA9\uB85D\uC744 \uAC80\uC0C9\uD558\uC138\uC694."), /*#__PURE__*/React.createElement(NoneImg, {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, "\uD0DC\uADF8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React.createElement(NoneText, null, "\uD398\uC774\uC9C0 \uD558\uB2E8\uC5D0 \uD0DC\uADF8\uB97C \uC785\uB825\uD558\uC5EC \uCD94\uAC00\uD558\uC138\uC694."), /*#__PURE__*/React.createElement(NoneImg, {
     src: img$o,
     alt: "tag_not_found"
   })));
@@ -11151,7 +11178,11 @@ var TagContainer = function TagContainer() {
   };
 
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(TagHeader, null), /*#__PURE__*/React.createElement(ContentBodyCover, null, renderContent()));
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(TagHeader, null), /*#__PURE__*/React.createElement(ContentBodyCover, {
+      style: {
+        padding: "0rem 0.75rem"
+      }
+    }, renderContent()));
   });
 };
 
@@ -11196,6 +11227,7 @@ var Modal = function Modal() {
     }
   })), /*#__PURE__*/React.createElement(ItemSelector, {
     isVisibleRoom: true,
+    placeholder: "\uD504\uB80C\uC988/\uAD6C\uC131\uC6D0/\uB8F8 \uBAA9\uB85D\uC5D0\uC11C\n \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
     onSelectChange: function onSelectChange(data) {
       NoteStore.setShareArrays(data);
       setShareArraysCnt(data.userArray.length + data.roomArray.length);
@@ -11216,7 +11248,7 @@ var Modal = function Modal() {
       key: button.text,
       onClick: button.onClick
     }, button.text, shareArraysCnt > 0 && " ".concat(shareArraysCnt));
-  })))) : /*#__PURE__*/React.createElement(React.Fragment, null, sharedInfo ? /*#__PURE__*/React.createElement(ShraedInfoModal, {
+  })))) : /*#__PURE__*/React.createElement(React.Fragment, null, sharedInfo ? /*#__PURE__*/React.createElement(SharedInfoModal, {
     className: "NoteModal"
   }, /*#__PURE__*/React.createElement(ModalSharedInfoHeader, null, /*#__PURE__*/React.createElement(RoomShareTitle, null, "\uC815\uBCF4 \uBCF4\uAE30"), /*#__PURE__*/React.createElement(ModalHeaderBtn, {
     src: img,
@@ -11447,7 +11479,7 @@ var NoteApp = function NoteApp(_ref) {
       }
     }), NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? /*#__PURE__*/React.createElement(DragPreview$1, {
       id: NoteStore.draggedComponentId,
-      titles: NoteStore.drageedComponentTitles
+      titles: NoteStore.draggedComponentTitles
     }) : null, /*#__PURE__*/React.createElement(TempEditor, null)));
   });
 };

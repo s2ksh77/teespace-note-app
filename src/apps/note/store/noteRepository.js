@@ -112,10 +112,9 @@ class NoteRepository {
   }
 
   getChapterColor(chapterId) {
-    const { data } = API.Get(
+    return API.Get(
       `note-api/chaptershare?action=List&id=${chapterId}`,
     );
-    return data.color;
   }
   async updateChapterColor(chapterId, targetColor) {
     try {
