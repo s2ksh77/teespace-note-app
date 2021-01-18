@@ -180,7 +180,7 @@ const TagStore = observable({
 
   async createTag(createTagList, noteId) {
     const createTagArr = createTagList.map(tag => {
-      return{
+      return {
         text: tag,
         note_id: noteId,
       }
@@ -220,7 +220,7 @@ const TagStore = observable({
   // tag는 tag 추가 및 수정시 동일값 체크 로직 & 저장할 때 encoding한다
   async createNoteTag(createTagList, noteId) {
     const createTagArr = createTagList.map(tag => {
-      return{
+      return {
         text: NoteUtil.encodeStr(tag),
         note_id: noteId,
       }
@@ -351,7 +351,7 @@ const TagStore = observable({
       // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
       item.tag_indexdto.tagList.forEach((tag) => {
         tag.text = NoteUtil.decodeStr(tag.text);
-        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"] = [...resultObj[tag.text]["note_id"],tag.note_id];
+        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"] = [...resultObj[tag.text]["note_id"], tag.note_id];
         else {
           resultObj[tag.text] = {
             id: tag.tag_id,
@@ -407,10 +407,10 @@ const TagStore = observable({
       }
     })
 
-    if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
-    if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
-    if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
-    if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
+    _sortedTagList["KOR"] = korObj;
+    _sortedTagList["ENG"] = engObj;
+    _sortedTagList["NUM"] = numObj;
+    _sortedTagList["ETC"] = etcObj;
     this.setSortedTagList(_sortedTagList);
   },
   async setTagNoteSearchResult(tagId) {

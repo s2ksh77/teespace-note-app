@@ -82,9 +82,9 @@ const LNBHeader = ({ createNewChapter }) => {
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
-              <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem" }} src={cancelImg} />
+              <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem", width: "12px", height: "12px" }} src={cancelImg} />
             </SearchTagChip>
-          ) : 
+          ) :
             <LnbTitleSearchInput
               ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
               placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
@@ -92,7 +92,7 @@ const LNBHeader = ({ createNewChapter }) => {
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}
           {((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)
-          ? null :  <Button src={cancelImg} onClick={onClickCancelBtn} /> }          
+            ? null : <Button src={cancelImg} onClick={onClickCancelBtn} />}
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
