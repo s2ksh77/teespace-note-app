@@ -2,7 +2,8 @@ import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
   .noteFocusedTag {
-    background-color:#1EA8DF !important;
+    background-color: #DDD7CD;
+    border: 1px solid #7B7671;
   }
   .readModeIcon{
      margin-left: 1.19rem;
@@ -20,21 +21,20 @@ export const GlobalStyle = createGlobalStyle`
     border:0;
   }
   .ant-collapse-header {
-    height: 1.38rem;
+    height: 2.81rem !important;
     display: flex;
     align-items:center;
+    border-bottom: 1px solid #EEEDEB !important;
     padding: 0 0.75rem !important;
-    border-radius: 21px !important;
-    background-color: #EFEFF2;
-    border: 0 !important;
-    color:#313131;
-    font-size:0.8125rem;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 0.8125rem;
   }
   .ant-collapse-content {
     border:0 !important;
   }
   .ant-collapse-content-box {
-    padding: 0.69rem 2.51rem !important;
+    padding: 10px 2.51rem !important;
   }
   .ant-collapse-item {
     border:0 !important;

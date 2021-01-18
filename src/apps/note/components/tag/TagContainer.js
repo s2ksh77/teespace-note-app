@@ -16,9 +16,9 @@ const TagContainer = () => {
   }, [])
 
   const renderContent = () => {
-    if (TagStore.isSearchLoading) return <SearchingImg />;    
+    if (TagStore.isSearchLoading) return <SearchingImg />;
     if (TagStore.tagPanelLoading) return <LoadingImgContainer />;
-    
+
     // display할 태그가 있을 때
     if (Object.keys(TagStore.sortedTagList).length > 0) return <TagContentContainer />;
     // 태그가 없는데 search중 아닐 때
@@ -30,7 +30,7 @@ const TagContainer = () => {
   return useObserver(() => (
     <>
       <TagHeader />
-      <ContentBodyCover>
+      <ContentBodyCover style={{ padding: "0rem 0.75rem" }}>
         {renderContent()}
       </ContentBodyCover>
     </>

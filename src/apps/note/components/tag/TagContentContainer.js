@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { StyledCollapse } from '../../styles/tagStyle';
+import { PanelHeader, StyledCollapse } from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
 import { Panel, TagKeyContainer } from '../../styles/tagStyle';
 import TagKeyChildren from './TagKeyChildren';
@@ -17,8 +17,8 @@ const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
 const customExpandIcon = props => {
   if (props.isActive) {
-    return <img style={{ width: '0.62rem' }} src={arrowUp} alt="arrow-up" />;
-  } else return <img style={{ width: '0.62rem' }} src={arrowDown} alt="arrow-down" />;
+    return <img style={{ width: '0.8rem', top: '27px' }} src={arrowUp} alt="arrow-up" />;
+  } else return <img style={{ width: '0.8rem', top: '27px' }} src={arrowDown} alt="arrow-down" />;
 };
 
 const TagContentContainer = observer(() => {
@@ -32,7 +32,7 @@ const TagContentContainer = observer(() => {
         {Object.keys(TagStore.sortedTagList).map((category, idx) => {
           return (
             // "ㄱ~ㅎ"
-            <Panel header={categoryInfo[category]} key={category}>
+            <PanelHeader header={categoryInfo[category]} key={category} >
               {Object.keys(TagStore.sortedTagList[category])?.map(tagKey => {
                 // "ㄱ", "ㄴ" ...
                 return (
@@ -42,7 +42,7 @@ const TagContentContainer = observer(() => {
                   </TagKeyContainer>
                 );
               })}
-            </Panel>
+            </PanelHeader>
           );
         })}
       </StyledCollapse>

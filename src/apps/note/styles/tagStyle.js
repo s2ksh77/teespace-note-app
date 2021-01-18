@@ -106,6 +106,14 @@ export const TagTxt = styled.div`
 
 export const { Panel } = Collapse;
 
+export const PanelHeader = styled(Panel)`
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    font-size:13px;
+    font-color:#000000;
+`
+
 export const StyledCollapse = styled(Collapse)`
   width: 100%;
 `;
@@ -137,10 +145,9 @@ export const TagChip = styled(Tag)`
   margin-bottom: 0.4375rem;
   margin-top: 0.4375rem;
   margin-right: 0.38rem;
-  color: #000000;
+  color: #3B3B3B;
   font-size: 0.81rem;
   font-weight: 400;
-  border: 0.0625rem solid #1EA8DF;
   border-radius: 1.563rem;
   text-overflow: ellipsis;
   overflow:hidden;
@@ -150,11 +157,16 @@ export const TagChip = styled(Tag)`
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: rgba(30,168,223,0.20);
-  background: rgba(30,168,223,0.20);
-  border: 1px solid #1EA8DF;
+  background-color: #F7F4EF;
+  border: 0px solid #7B7671;
   border-radius: 25px;
   padding: 0 0.63rem;
+  transition-duration: 0s;
+  &:hover{
+    color: #000000;
+    border: 1px solid #7B7671;
+    background-color: #EBE6DF;
+  }
 `;
 
 export const SearchTagChip = styled(Tag)`
@@ -170,10 +182,13 @@ export const SearchTagChip = styled(Tag)`
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: rgba(30,168,223,0.20);
-  background: rgba(30,168,223,0.20);
-  border: 1px solid #1EA8DF;
+  background-color: #F7F4EF;
   border-radius: 25px;
+  border: 0px solid #7B7671;
+  &:hover{
+    color: #000000;
+    background-color: #EBE6DF;
+  }
 `;
 
 // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
@@ -185,8 +200,8 @@ export const TagChipText = styled.div`
 `;
 
 export const TagChipNum = styled.div`
-  font-size: 0.75rem;
+  font-size: 0.688rem;
   margin-left: auto;
-  color: #008cc8;
+  color: #7B7671;
   padding-left:0.4rem;
 `;
