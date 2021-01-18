@@ -1971,10 +1971,10 @@ var TagStore = observable({
         etcObj[key] = _this9.keyTagPairObj[key];
       }
     });
-    if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
-    if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
-    if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
-    if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
+    _sortedTagList["KOR"] = korObj;
+    _sortedTagList["ENG"] = engObj;
+    _sortedTagList["NUM"] = numObj;
+    _sortedTagList["ETC"] = etcObj;
     this.setSortedTagList(_sortedTagList);
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
