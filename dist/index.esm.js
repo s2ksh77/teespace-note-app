@@ -5823,7 +5823,7 @@ var PageSearchResultChapterTitle = styled.div(_templateObject11());
 var SearchResultBotttom = styled.div(_templateObject12());
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  background-color: ", "\n  border: ", "\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -5843,7 +5843,7 @@ function _templateObject13() {
 }
 
 function _templateObject12$1() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n"]);
 
   _templateObject12$1 = function _templateObject12() {
     return data;
@@ -5974,16 +5974,16 @@ var LnbTitleNewButton = styled.button(_templateObject9$1());
 var LnbTitleSearchContainer = styled.form(_templateObject10$1());
 var LnbTitleSearchIcon = styled.button(_templateObject11$1());
 var LnbTitleSearchInput = styled.input(_templateObject12$1(), function (props) {
-  return props.isSearch ? {
-    background: "#FFFFFF;"
-  } : {
-    background: "inherit;"
-  };
+  return props.isSearch ? "#FFFFFF;" : "inherit;";
 });
 var TagSearchForm = styled.form(_templateObject13(), function (props) {
   return props.show ? "block" : "none";
 });
-var TagTitleSearchContainer = styled.div(_templateObject14());
+var TagTitleSearchContainer = styled.div(_templateObject14(), function (props) {
+  return props.isSearch ? "#FFFFFF;" : "#F7F4EF;";
+}, function (props) {
+  return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
+});
 
 const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
@@ -11129,7 +11129,9 @@ var TagHeader = function TagHeader() {
     }, /*#__PURE__*/React.createElement(TagSearchForm, {
       onSubmit: onSubmitForm,
       show: TagStore.allSortedTagList.length > 0
-    }, /*#__PURE__*/React.createElement(TagTitleSearchContainer, null, /*#__PURE__*/React.createElement(SearchImgInput, {
+    }, /*#__PURE__*/React.createElement(TagTitleSearchContainer, {
+      isSearch: TagStore.isSearching || value !== "" ? true : false
+    }, /*#__PURE__*/React.createElement(SearchImgInput, {
       type: "image",
       border: "0",
       alt: " ",
@@ -11143,7 +11145,8 @@ var TagHeader = function TagHeader() {
       placeholder: "\uD0DC\uADF8 \uAC80\uC0C9",
       onKeyDown: function onKeyDown(e) {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
-      }
+      },
+      isSearch: TagStore.isSearching || value !== "" ? true : false
     }), /*#__PURE__*/React.createElement(Button, {
       src: img,
       style: cancelBtnVisibility,

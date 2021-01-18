@@ -154,9 +154,15 @@ export const LnbTitleSearchInput = styled.input`
   width: 13.3rem;
   align-self: center;
   font-size: 0.81rem !important;
+  background-color: inherit;
   border: 0rem;
   overflow: hidden;
   outline: none;
+  &:focus{
+    background: #FFFFFF;
+    outline: none;
+  }
+  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "inherit;")}
 `;
 
 export const TagSearchForm = styled.form`
@@ -170,7 +176,14 @@ export const TagTitleSearchContainer = styled.div`
   padding: 0 0.63rem;
   width: 10.5rem;
   height: 1.88rem;
-  border-radius: 1.563rem 1.563rem;
-  border: 0.0625rem solid #c6ced6;
+  border-radius: 6px;
+  border: 0rem solid #c6ced6;
+  background-color: #F7F4EF;
   box-sizing: border-box;
+  &:focus-within {
+    background: #FFFFFF;
+    border: 1px solid #7B7671;
+  }
+  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "#F7F4EF;")}
+  border: ${props => (props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;")}
 `;
