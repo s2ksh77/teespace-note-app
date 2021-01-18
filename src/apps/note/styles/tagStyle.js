@@ -161,6 +161,7 @@ export const TagChip = styled(Tag)`
   border: 0px solid #7B7671;
   border-radius: 25px;
   padding: 0 0.63rem;
+  transition-duration: 0s;
   &:hover{
     color: #000000;
     border: 1px solid #7B7671;
