@@ -26,6 +26,7 @@ const NoteStore = observable({
   LNBChapterCoverRef: '',
   isDragging: false,
   draggedComponentId: '',
+  draggedComponentType: '',
   draggedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
@@ -256,6 +257,9 @@ const NoteStore = observable({
   },
   setDraggedComponentId(id) {
     this.draggedComponentId = id;
+  },
+  setDraggedComponentType(type) {
+    this.draggedComponentType = type;
   },
   setDraggedComponentTitles(titles) {
     this.draggedComponentTitles = titles;

@@ -5347,6 +5347,7 @@ var NoteStore$1 = mobx.observable({
   LNBChapterCoverRef: '',
   isDragging: false,
   draggedComponentId: '',
+  draggedComponentType: '',
   draggedComponentTitles: [],
   draggedOffset: {},
   sharedInfo: {},
@@ -5621,6 +5622,9 @@ var NoteStore$1 = mobx.observable({
   setDraggedComponentId: function setDraggedComponentId(id) {
     this.draggedComponentId = id;
   },
+  setDraggedComponentType: function setDraggedComponentType(type) {
+    this.draggedComponentType = type;
+  },
   setDraggedComponentTitles: function setDraggedComponentTitles(titles) {
     this.draggedComponentTitles = titles;
   },
@@ -5884,7 +5888,7 @@ function _templateObject10$1() {
 }
 
 function _templateObject9$1() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 6.31rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.8125rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 25px;\n  background-color: #008cc8;\n  min-width:3rem;\n  &:hover {\n    background-color: #1ea8df;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject9$1 = function _templateObject9() {
     return data;
@@ -5954,7 +5958,7 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 3.5rem;\n  height: 1.69rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #008cc8;\n  &:hover {\n    background-color: #1ea8df;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 4.5rem;\n  height: 1.88rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #232D3B;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
 
   _templateObject2$1 = function _templateObject2() {
     return data;
@@ -6009,7 +6013,7 @@ function _templateObject48() {
 }
 
 function _templateObject47() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 3.125rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n"]);
 
   _templateObject47 = function _templateObject47() {
     return data;
@@ -6019,7 +6023,7 @@ function _templateObject47() {
 }
 
 function _templateObject46() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  background-color: rgba(30,168,223,0.20);\n  z-index:20;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n  z-index:20;\n"]);
 
   _templateObject46 = function _templateObject46() {
     return data;
@@ -6329,7 +6333,7 @@ function _templateObject16() {
 }
 
 function _templateObject15() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  visibility: hidden;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 1.5rem 1.5rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  visibility: hidden;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
 
   _templateObject15 = function _templateObject15() {
     return data;
@@ -7063,7 +7067,7 @@ function _templateObject3$4() {
 }
 
 function _templateObject2$4() {
-  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n  &:hover .ellipsisBtn {\n    visibility: visible;\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  margin: 4px 0 4px 0;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n  &:hover .ellipsisBtn {\n    visibility: visible;\n  }\n  &:hover:not(.ellipsisBtn) {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject2$4 = function _templateObject2() {
     return data;
@@ -8314,8 +8318,18 @@ var ChapterText = function ChapterText(_ref) {
   });
 };
 
-function _templateObject9$5() {
+function _templateObject10$5() {
   var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
+
+  _templateObject10$5 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject9$5() {
+  var data = _taggedTemplateLiteral(["\n  cursor: pointer;\n  align-self: center;\n"]);
 
   _templateObject9$5 = function _templateObject9() {
     return data;
@@ -8325,7 +8339,7 @@ function _templateObject9$5() {
 }
 
 function _templateObject8$5() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  align-self: center;\n  line-height: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  padding-left: 1.25rem;\n  cursor: pointer;\n  border-radius: 0.31rem;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  &:active {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject8$5 = function _templateObject8() {
     return data;
@@ -8335,7 +8349,7 @@ function _templateObject8$5() {
 }
 
 function _templateObject7$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 9.38rem;\n  height: 1.88rem;\n  display: flex;\n  justify-content: center;\n  margin-top: 1rem;\n  margin-bottom: 1rem;\n  margin-left: 1.06rem;\n  cursor: pointer;\n  &:hover {\n    background: rgba(30, 168, 223, 0.2);\n    border-radius: 0.94rem;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  height: 2.81rem;\n"]);
 
   _templateObject7$5 = function _templateObject7() {
     return data;
@@ -8345,7 +8359,7 @@ function _templateObject7$5() {
 }
 
 function _templateObject6$5() {
-  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  height: 2.81rem;\n  align-items: center;\n  color: #0090ca;\n  /* margin-left: 2.94rem; */\n  border-bottom: 0.0625rem solid #dadada;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  margin-left: 1.13rem;\n  line-height: 130%;\n  align-self: center;\n  min-width: calc(100% - 0.9rem);\n  overflow: hidden;\n  white-space: nowrap;\n  font-weight: 300;\n  border: none;\n  outline: none;\n  background-color: rgba(30,168,223,0.0);\n"]);
 
   _templateObject6$5 = function _templateObject6() {
     return data;
@@ -8355,7 +8369,7 @@ function _templateObject6$5() {
 }
 
 function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  margin-left: 1.13rem;\n  line-height: 130%;\n  align-self: center;\n  min-width: calc(100% - 0.9rem);\n  overflow: hidden;\n  white-space: nowrap;\n  font-weight: 300;\n  border: none;\n  outline: none;\n  background-color: rgba(30,168,223,0.0);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  margin-left: 1.25rem;\n  line-height: 130%;\n  color: #000000 !important;\n  align-self: center;\n  max-width: calc(100% - 2rem);\n  min-width: calc(100% - 2.775rem);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover {\n    color: #000000;\n  }\n"]);
 
   _templateObject5$5 = function _templateObject5() {
     return data;
@@ -8365,7 +8379,7 @@ function _templateObject5$5() {
 }
 
 function _templateObject4$5() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  margin-left: 1.25rem;\n  line-height: 130%;\n  color: #000000;\n  align-self: center;\n  max-width: calc(100% - 2rem);\n  min-width: calc(100% - 2.775rem);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-weight: 300;\n  &:hover {\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 0.25rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject4$5 = function _templateObject4() {
     return data;
@@ -8375,7 +8389,7 @@ function _templateObject4$5() {
 }
 
 function _templateObject3$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  border-bottom: 0.0625rem solid #dadada;\n  display: flex;\n  flex: auto;\n  min-width: calc(100% - 1.875rem);\n  max-width: calc(100% - 2.7rem);\n  padding-right: 0.25rem;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n"]);
 
   _templateObject3$5 = function _templateObject3() {
     return data;
@@ -8395,7 +8409,7 @@ function _templateObject2$5() {
 }
 
 function _templateObject$5() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n    visibility: visible;\n  }\n  &:hover:not(.ellipsisBtn){\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n    visibility: visible;\n  }\n"]);
 
   _templateObject$5 = function _templateObject() {
     return data;
@@ -8406,14 +8420,15 @@ function _templateObject$5() {
 var PageCover = styled__default['default'].li(_templateObject$5());
 var PageMargin = styled__default['default'].span(_templateObject2$5());
 var PageTextCover = styled__default['default'].span(_templateObject3$5());
-var PageText = styled__default['default'].a(_templateObject4$5());
-var PageTextInput = styled__default['default'].input(_templateObject5$5());
-var NewPage = styled__default['default'].span(_templateObject6$5(), function (props) {
+var PageTextContainer = styled__default['default'].span(_templateObject4$5());
+var PageText = styled__default['default'].a(_templateObject5$5());
+var PageTextInput = styled__default['default'].input(_templateObject6$5());
+var NewPage = styled__default['default'].span(_templateObject7$5(), function (props) {
   return props.show ? "flex" : "none";
 });
-var NewPageBtn = styled__default['default'].p(_templateObject7$5());
-var NewPageText = styled__default['default'].span(_templateObject8$5());
-var EllipsisIcon = styled__default['default'].i(_templateObject9$5());
+var NewPageBtn = styled__default['default'].p(_templateObject8$5());
+var NewPageText = styled__default['default'].span(_templateObject9$5());
+var EllipsisIcon = styled__default['default'].i(_templateObject10$5());
 
 var Page = function Page(_ref) {
   var page = _ref.page,
@@ -8467,6 +8482,7 @@ var Page = function Page(_ref) {
       }
 
       NoteStore.setDraggedComponentId(page.id);
+      NoteStore.setDraggedComponentType('page');
       NoteStore.setDraggedComponentTitles(PageStore.getSortedMoveInfoList().map(function (moveInfo) {
         return moveInfo.shareData.text;
       }));
@@ -8553,7 +8569,7 @@ var Page = function Page(_ref) {
         return drag(drop(node));
       } : drag : null,
       id: page.id,
-      className: 'page-li' + (PageStore.isCtrlKeyDown ? PageStore.moveInfoMap.get(page.id) ? ' selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.moveInfoMap.size > 0 ? page.id === _toConsumableArray(PageStore.moveInfoMap)[0][0] : page.id === PageStore.currentPageId) ? ' selected' : ''),
+      className: 'page-li',
       onClick: handleSelectPage
     }, /*#__PURE__*/React__default['default'].createElement(PageMargin, {
       style: page.id === PageStore.getRenamePageId() && PageStore.isRename ? {
@@ -8561,7 +8577,7 @@ var Page = function Page(_ref) {
       } : {
         background: 'unset'
       }
-    }), PageStore.getRenamePageId() === page.id ? /*#__PURE__*/React__default['default'].createElement(PageTextCover, {
+    }), PageStore.getRenamePageId() === page.id ? /*#__PURE__*/React__default['default'].createElement(PageTextContainer, {
       style: page.id === PageStore.getRenamePageId() && PageStore.isRename ? {
         background: '#ffffff'
       } : {
@@ -8583,6 +8599,8 @@ var Page = function Page(_ref) {
       autoFocus: true
     })) : /*#__PURE__*/React__default['default'].createElement(PageTextCover, {
       className: PageStore.dragEnterChapterIdx === chapterIdx ? PageStore.dragEnterPageIdx === index && page.type === 'note' ? 'borderTopLine' : '' : ''
+    }, /*#__PURE__*/React__default['default'].createElement(PageTextContainer, {
+      className: PageStore.isCtrlKeyDown ? PageStore.moveInfoMap.get(page.id) ? 'selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.moveInfoMap.size > 0 ? page.id === _toConsumableArray(PageStore.moveInfoMap)[0][0] : page.id === PageStore.currentPageId) ? 'selected' : ''
     }, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
       placement: "bottomLeft",
       title: isEllipsisActive ? page.text : null
@@ -8595,7 +8613,7 @@ var Page = function Page(_ref) {
       page: page,
       nextSelectablePageId: chapter.children.length > 1 ? chapter.children[0].id === page.id ? chapter.children[1].id : chapter.children[0].id : '',
       type: page.type
-    })));
+    }))));
   });
 };
 
@@ -8681,7 +8699,7 @@ var PageList = function PageList(_ref) {
     ref: drop,
     className: 'page-li',
     show: showNewPage
-  }, /*#__PURE__*/React__default['default'].createElement(NewPageBtn, {
+  }, /*#__PURE__*/React__default['default'].createElement(PageMargin, null), /*#__PURE__*/React__default['default'].createElement(NewPageBtn, {
     onClick: handleNewBtnClick(chapter.id)
   }, /*#__PURE__*/React__default['default'].createElement(NewPageText, null, "+ \uC0C8 \uD398\uC774\uC9C0 \uCD94\uAC00"))));
 };
@@ -8750,6 +8768,7 @@ var Chapter = function Chapter(_ref) {
       }
 
       NoteStore.setDraggedComponentId(chapter.id);
+      NoteStore.setDraggedComponentType('chapter');
       NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(function (moveInfo) {
         return moveInfo.shareData.text;
       }));
@@ -9253,7 +9272,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: rgba(30,168,223,0.20);\n  }\n  .selectedMenu {\n    color: #008CC8;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }  \n  .link-dialog-reverse {\n    flex-direction:column-reverse !important;\n  }\n  .note-link-footer{\n    flex-direction:row-reverse !important;\n    margin: auto !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 10.5rem !important;\n    height: 1.5rem !important;\n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-80% !important;\n    right: 3% !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -9631,10 +9650,10 @@ function _templateObject11$4() {
   return data;
 }
 
-function _templateObject10$5() {
+function _templateObject10$6() {
   var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #1ea8df;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #008CC8;\n  }\n"]);
 
-  _templateObject10$5 = function _templateObject10() {
+  _templateObject10$6 = function _templateObject10() {
     return data;
   };
 
@@ -9745,7 +9764,7 @@ var EditorContainerWrapper = styled__default['default'].div(_templateObject$7(),
 });
 var ReadModeContainer = styled__default['default'].div(_templateObject8$6());
 var ReadModeText = styled__default['default'].span(_templateObject9$6());
-var FoldBtn = styled__default['default'].div(_templateObject10$5(), function (props) {
+var FoldBtn = styled__default['default'].div(_templateObject10$6(), function (props) {
   return props.show ? "flex" : "none";
 }, function (props) {
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
@@ -10666,9 +10685,6 @@ var EditorContainer = function EditorContainer() {
           });
           editor.on('PostProcess', function () {
             handleEditorContentsListener();
-          });
-          editor.on('Drop', function (e) {
-            console.log(e);
           }); // fired when a dialog has been opend
 
           editor.on('OpenWindow', function (e) {
@@ -10847,7 +10863,6 @@ var EditorContainer = function EditorContainer() {
         target_list: false,
         link_assume_external_targets: 'http',
         link_context_toolbar: false,
-        block_unsupported_drop: false,
         link_title: false,
         anchor_top: false,
         // link 입력중 dropdown으로 <top> 안뜨게 해
@@ -11318,13 +11333,17 @@ var onOffsetChange = function onOffsetChange(monitor) {
 var DragPreview = function DragPreview(_ref) {
   var id = _ref.id,
       titles = _ref.titles;
+
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore;
+
   var previewRef = React.useRef(null);
   var element = document.getElementById(id);
   React.useEffect(function () {
     dragPreviewRef = previewRef.current;
-    var offset = JSON.parse(JSON.stringify(NoteStore$1.draggedOffset));
+    var offset = JSON.parse(JSON.stringify(NoteStore.draggedOffset));
 
-    if (NoteStore$1.layoutState === 'collapse') {
+    if (NoteStore.layoutState === 'collapse') {
       dragPreviewRef.style['top'] = offset.y + 30 + 'px';
       dragPreviewRef.style['left'] = offset.x + 20 + 'px';
     } else {
@@ -11338,8 +11357,11 @@ var DragPreview = function DragPreview(_ref) {
     }, titles.map(function (title, idx) {
       return /*#__PURE__*/React__default['default'].createElement(DraggedComponent, {
         key: idx,
-        style: {
-          width: "".concat(element.offsetWidth, "px")
+        style: NoteStore.draggedComponentType === 'chapter' ? {
+          width: "".concat(element.offsetWidth, "px"),
+          paddingLeft: '1.56rem'
+        } : {
+          width: "calc(".concat(element.offsetWidth, "px - 1.875rem)")
         }
       }, /*#__PURE__*/React__default['default'].createElement(DraggedComponentTitle, null, title));
     }));

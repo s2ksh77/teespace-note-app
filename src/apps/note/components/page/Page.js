@@ -51,6 +51,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       }
 
       NoteStore.setDraggedComponentId(page.id);
+      NoteStore.setDraggedComponentType('page');
       NoteStore.setDraggedComponentTitles(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
