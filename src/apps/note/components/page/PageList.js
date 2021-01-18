@@ -3,7 +3,7 @@ import { Observer, useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
-import { NewPage, NewPageBtn, NewPageText } from '../../styles/pageStyle';
+import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageStyle';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
@@ -72,6 +72,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
         className={'page-li'}
         show={showNewPage}
       >
+        <PageMargin />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
           <NewPageText>+ 새 페이지 추가</NewPageText>
         </NewPageBtn>

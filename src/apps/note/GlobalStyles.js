@@ -12,10 +12,9 @@ export const GlobalStyle = createGlobalStyle`
     border: 1px solid #513EC7 !important;
   }
   .selected{
-    background-color: rgba(30,168,223,0.20);
+    background-color: #F2EFEC;
   }
   .selectedMenu {
-    color: #008CC8;
   } 
   .ant-collapse {
     border:0;

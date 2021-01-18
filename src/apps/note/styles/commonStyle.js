@@ -115,12 +115,12 @@ export const ContextMenuCover = styled(Dropdown)`
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
-  border-radius: 1.5rem 1.5rem;
+  border-radius: 0.38rem;
   align-items: center;
   justify-content: center;
   color: #75757f;
   &:hover {
-    background-color: rgba(30, 168, 223, 0.2);
+    background-color: rgba(235, 230, 223, 1);
   }
 `;
 

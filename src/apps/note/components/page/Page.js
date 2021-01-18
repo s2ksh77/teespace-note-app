@@ -8,6 +8,7 @@ import {
   PageCover,
   PageMargin,
   PageTextCover,
+  PageTextContainer,
   PageText,
   PageTextInput,
 } from '../../styles/pageStyle';
@@ -139,19 +140,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
           : null
       }
       id={page.id}
-      className={
-        'page-li' +
-        (PageStore.isCtrlKeyDown
-          ? (PageStore.moveInfoMap.get(page.id)
-              ? ' selected'
-              : '')
-          : (NoteStore.showPage && (
-              NoteStore.isDragging && PageStore.moveInfoMap.size > 0
-                ? page.id === [...PageStore.moveInfoMap][0][0]
-                : page.id === PageStore.currentPageId)
-              ? ' selected'
-              : ''))
-      }
+      className={'page-li'}
       onClick={handleSelectPage}
     >
       <PageMargin
@@ -162,7 +151,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         }
       />
       {PageStore.getRenamePageId() === page.id ? (
-        <PageTextCover
+        <PageTextContainer
           style={
             page.id === PageStore.getRenamePageId() && PageStore.isRename
               ? { background: '#ffffff' }
@@ -183,16 +172,30 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             onFocus={handleFocus}
             autoFocus={true}
           />
-        </PageTextCover>
+        </PageTextContainer>
       ) : (
-          <PageTextCover
-            className={
-              PageStore.dragEnterChapterIdx === chapterIdx
-                ? PageStore.dragEnterPageIdx === index
-                  && (page.type === 'note')
-                  ? 'borderTopLine'
-                  : ''
+        <PageTextCover
+          className={
+            PageStore.dragEnterChapterIdx === chapterIdx
+              ? PageStore.dragEnterPageIdx === index
+                && (page.type === 'note')
+                ? 'borderTopLine'
                 : ''
+              : ''
+          }
+        >
+          <PageTextContainer
+            className={
+              PageStore.isCtrlKeyDown
+                ? (PageStore.moveInfoMap.get(page.id)
+                    ? 'selected'
+                    : '')
+                : (NoteStore.showPage && (
+                    NoteStore.isDragging && PageStore.moveInfoMap.size > 0
+                      ? page.id === [...PageStore.moveInfoMap][0][0]
+                      : page.id === PageStore.currentPageId)
+                    ? 'selected'
+                    : '')
             }
           >
             <Tooltip 
@@ -215,8 +218,9 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
               }
               type={page.type}
             />
-          </PageTextCover>
-        )}
+          </PageTextContainer>
+        </PageTextCover>
+      )}
     </PageCover>
   ));
 };

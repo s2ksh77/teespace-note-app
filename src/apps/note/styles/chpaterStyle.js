@@ -21,13 +21,18 @@ export const ChapterContainer = styled.ul`
 export const ChapterCover = styled.div`
   height: 2.81rem;
   display: flex;
+  margin: 4px 0 4px 0;
   font-weight: 500;
   border-bottom: 0.0625rem solid #dadada;
   &:hover .ellipsisBtn {
     visibility: visible;
   }
   &:hover:not(.ellipsisBtn) {
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+    background-color: #FAF8F7;
+    border-radius: 0.31rem;
+  }
+  &:active:not(.ellipsisBtn) {
+    background-color: #F2EFEC;
   }
 `;
 
