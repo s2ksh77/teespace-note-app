@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
-import tagImg from '../../assets/ts_tag@3x.png';
+import tagImg from '../../assets/tag.svg';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
 
 const LNBTag = memo(() => {

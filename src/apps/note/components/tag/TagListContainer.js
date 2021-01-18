@@ -12,7 +12,7 @@ import {
   TagText,
 } from '../../styles/tagStyle';
 import { EditorTagCover } from '../../styles/tagStyle';
-import tagImage from '../../assets/tag_add.svg';
+import tagImage from '../../assets/add_tag.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
 import { isFilled, checkWhitespace } from '../common/validators';
@@ -49,7 +49,7 @@ const TagListContainer = () => {
 
   const onClickNewTagBtn = () => {
     toggleTagInput();
-    tagList.current.scrollTo({left:0, behavior:'smooth'});
+    tagList.current.scrollTo({ left: 0, behavior: 'smooth' });
   }
 
   const handleFocus = (e) => e.target.select();
@@ -75,8 +75,8 @@ const TagListContainer = () => {
   }
 
   const handleModifyInput = () => {
-    const isSame = NoteUtil.isSameStr(TagStore.currentTagValue,TagStore.editTagValue);
-    const isSameIgnoringCase = NoteUtil.isSameStr(TagStore.currentTagValue.toUpperCase(),TagStore.editTagValue.toUpperCase());
+    const isSame = NoteUtil.isSameStr(TagStore.currentTagValue, TagStore.editTagValue);
+    const isSameIgnoringCase = NoteUtil.isSameStr(TagStore.currentTagValue.toUpperCase(), TagStore.editTagValue.toUpperCase());
 
     if (TagStore.currentTagId) {
       // 수정하지 않았으면 그대로 return
