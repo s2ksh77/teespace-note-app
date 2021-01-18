@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
-import takaImg from '../../assets/file_move_taka.png';
 import NoteStore from '../../store/noteStore';
 import {
   DraggedComponentContainer,
@@ -28,6 +27,7 @@ const onOffsetChange = (monitor) => () => {
 };
 
 const DragPreview = ({ id, titles }) => {
+  const { NoteStore } = useNoteStore();
   const previewRef = useRef(null);
   const element = document.getElementById(id);
 
@@ -51,9 +51,15 @@ const DragPreview = ({ id, titles }) => {
         return (
           <DraggedComponent 
             key={idx}
-            style={{ 
-              width: `${element.offsetWidth}px`,
-            }}
+            style={
+              NoteStore.draggedComponentType === 'chapter'
+                ? { 
+                  width: `${element.offsetWidth}px`,
+                  paddingLeft: '1.56rem'
+                } : {
+                  width: `calc(${element.offsetWidth}px - 1.875rem)`,
+                }
+            }
           >
             <DraggedComponentTitle>{title}</DraggedComponentTitle>
           </DraggedComponent>

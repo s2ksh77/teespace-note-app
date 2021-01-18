@@ -115,12 +115,12 @@ export const ContextMenuCover = styled(Dropdown)`
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
-  border-radius: 1.5rem 1.5rem;
+  border-radius: 0.38rem;
   align-items: center;
   justify-content: center;
   color: #75757f;
   &:hover {
-    background-color: rgba(30, 168, 223, 0.2);
+    background-color: rgba(235, 230, 223, 1);
   }
 `;
 
@@ -389,7 +389,8 @@ export const DraggedComponentContainer = styled.div`
   position: absolute;
   align-items: center;
   font-size: 0.81rem;
-  background-color: rgba(30,168,223,0.20);
+  background-color: rgba(242,239,236,0.5);
+  border-radius: 0.31rem;
   z-index:20;
 `;
 
@@ -397,7 +398,7 @@ export const DraggedComponent = styled.div`
   display: flex;
   height: 2.81rem;
   align-items: center;
-  padding-left: 3.125rem;
+  padding-left: 1.25rem;
 `;
 
 export const DraggedComponentTitle = styled.span`

@@ -56,6 +56,7 @@ const Chapter = ({ chapter, index, isShared }) => {
       }
 
       NoteStore.setDraggedComponentId(chapter.id);
+      NoteStore.setDraggedComponentType('chapter');
       NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text)); 
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
