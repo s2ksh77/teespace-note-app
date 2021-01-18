@@ -10,16 +10,16 @@ export const EditorHeaderContainer1 = styled.div`
 `;
 
 export const EditBtn = styled.button`
-  width: 3.5rem;
-  height: 1.69rem;
+  width: 4.5rem;
+  height: 1.88rem;
   color: white;
   font-size: 0.75rem;
   align-items: center;
   border-radius: 0.25rem;
   border: 0px solid #ffffff;
-  background-color: #008cc8;
+  background-color: #232D3B;
   &:hover {
-    background-color: #1ea8df;
+    background-color: #4C535D;
     cursor: pointer;
   }
   &:focus {
@@ -103,18 +103,18 @@ export const LnbTitleCover = styled.div`
 export const LnbTitleNewButton = styled.button`
   align-items: center;
   display: flex;
-  width: 6.31rem;
+  width: 4.5rem;
   height: 1.88rem;
   margin-right: 0.63rem;
   color: #ffffff;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   justify-content: center;
   border: 0px solid #ffffff;
-  border-radius: 25px;
-  background-color: #008cc8;
+  border-radius: 0.25rem;
+  background-color: #232D3B;
   min-width:3rem;
   &:hover {
-    background-color: #1ea8df;
+    background-color: #4C535D;
     cursor: pointer;
   }
   &:focus {
