@@ -3088,18 +3088,14 @@ var PageStore = mobx.observable((_observable$1 = {
     var chapterIdx = ChapterStore.chapterList.findIndex(function (chapter) {
       return chapter.id === chapterId;
     });
+    var pageIdx = ChapterStore.chapterList[chapterIdx].children.findIndex(function (page) {
+      return page.id === pageId;
+    });
     return {
-      pageId: pageId,
-      pageIdx: ChapterStore.chapterList[chapterIdx].children.findIndex(function (page) {
-        return page.id === pageId;
-      }),
+      item: ChapterStore.chapterList[chapterIdx].children[pageIdx],
+      pageIdx: pageIdx,
       chapterId: chapterId,
-      chapterIdx: chapterIdx,
-      shareData: {
-        id: pageId,
-        text: pageData.note_title,
-        date: pageData.modified_date
-      }
+      chapterIdx: chapterIdx
     };
   },
   handleClickOutside: function handleClickOutside() {
@@ -3171,9 +3167,9 @@ var PageStore = mobx.observable((_observable$1 = {
               if (moveTargetPageIdx >= pageIds2.length) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
               _context9.next = 8;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
-                if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.pageId)) {
+                if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
                   item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-                  return _this4.movePage(moveInfo.pageId, moveTargetChapterId);
+                  return _this4.movePage(moveInfo.item.id, moveTargetChapterId);
                 }
               }));
 
@@ -3182,17 +3178,16 @@ var PageStore = mobx.observable((_observable$1 = {
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
-                return pageId === sortedMoveInfoList[0].pageId;
+                return pageId === sortedMoveInfoList[0].item.id;
               });
               sortedMoveInfoList.map(function (moveInfo, idx) {
                 if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
 
-                _this4.moveInfoMap.set(moveInfo.pageId, {
-                  pageId: moveInfo.pageId,
+                _this4.moveInfoMap.set(moveInfo.item.id, {
+                  item: moveInfo.item,
                   pageIdx: startIdx + idx,
                   chapterId: moveTargetChapterId,
-                  chapterIdx: moveTargetChapterIdx,
-                  shareData: moveInfo.shareData
+                  chapterIdx: moveTargetChapterIdx
                 });
               });
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
@@ -4414,13 +4409,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
     return chapter.id === chapterId;
   });
   return {
-    chapterId: chapterId,
-    chapterIdx: chapterIdx,
-    shareData: {
-      id: chapterId,
-      text: this.chapterList[chapterIdx].text,
-      date: this.chapterList[chapterIdx].modified_date
-    }
+    item: this.chapterList[chapterIdx],
+    chapterIdx: chapterIdx
   };
 }), _defineProperty(_observable$2, "handleClickOutside", function handleClickOutside() {
   this.setIsCtrlKeyDown(false);
@@ -4456,15 +4446,14 @@ var ChapterStore = mobx.observable((_observable$2 = {
   });
   var moveCnt = 0;
   var startIdx = chapters.findIndex(function (chapter) {
-    return chapter.id === sortedMoveInfoList[0].chapterId;
+    return chapter.id === sortedMoveInfoList[0].item.id;
   });
   sortedMoveInfoList.forEach(function (moveInfo, idx) {
     if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
 
-    _this11.moveInfoMap.set(moveInfo.chapterId, {
-      chapterId: moveInfo.chapterId,
-      chapterIdx: startIdx + idx,
-      shareData: moveInfo.shareData
+    _this11.moveInfoMap.set(moveInfo.item.id, {
+      item: moveInfo.item,
+      chapterIdx: startIdx + idx
     });
   });
 
@@ -4665,27 +4654,17 @@ var ChapterStore = mobx.observable((_observable$2 = {
   return null;
 }), _defineProperty(_observable$2, "setFirstMoveInfoMap", function setFirstMoveInfoMap(targetChapter) {
   this.setMoveInfoMap(new Map([[targetChapter.id, {
-    chapterId: targetChapter.id,
-    chapterIdx: 0,
-    shareData: {
-      id: targetChapter.id,
-      text: targetChapter.text,
-      date: targetChapter.modified_date
-    }
+    item: targetChapter,
+    chapterIdx: 0
   }]]));
 
   if (targetChapter.children.length > 0) {
     var targetPage = targetChapter.children[0];
     PageStore.setMoveInfoMap(new Map([[targetPage.id, {
-      pageId: targetPage.id,
+      item: targetPage,
       pageIdx: 0,
       chapterId: targetChapter.id,
-      chapterIdx: 0,
-      shareData: {
-        id: targetPage.id,
-        text: targetPage.text,
-        date: targetPage.modified_date
-      }
+      chapterIdx: 0
     }]]));
   }
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
@@ -5177,9 +5156,7 @@ var NoteStore$1 = mobx.observable({
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
-  draggedComponentId: '',
-  draggedComponentType: '',
-  draggedComponentTitles: [],
+  draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
   isShared: false,
@@ -5450,14 +5427,8 @@ var NoteStore$1 = mobx.observable({
   setIsDragging: function setIsDragging(isDragging) {
     this.isDragging = isDragging;
   },
-  setDraggedComponentId: function setDraggedComponentId(id) {
-    this.draggedComponentId = id;
-  },
-  setDraggedComponentType: function setDraggedComponentType(type) {
-    this.draggedComponentType = type;
-  },
-  setDraggedComponentTitles: function setDraggedComponentTitles(titles) {
-    this.draggedComponentTitles = titles;
+  setDraggedItems: function setDraggedItems(items) {
+    this.draggedItems = items;
   },
   setDraggedOffset: function setDraggedOffset(offset) {
     this.draggedOffset = offset;
