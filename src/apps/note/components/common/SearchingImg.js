@@ -4,7 +4,7 @@ import {
   SearchLoadingTxt,
   SearchLoadingImg
 } from '../../styles/commonStyle';
-import loadingImg from '../../assets/loading_taka.gif';
+import loadingImg from '../../assets/search_loading.svg';
 
 const SearchingImg = () => {
   return (

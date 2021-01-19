@@ -5,7 +5,7 @@ import {
   NoSearchResultTitle,
   NoSearchResultImg
 } from '../../styles/commonStyle';
-import noSearchResultImg from '../../assets/no_search_result.png';
+import noSearchResultImg from '../../assets/no_result.svg';
 
 const SearchResultNotFound = ({ searchStr }) => {
   const [searchText, setSearchText] = useState(null);
