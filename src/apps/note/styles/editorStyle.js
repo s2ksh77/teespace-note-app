@@ -45,6 +45,9 @@ export const ReadModeContainer = styled.div`
   flex-direction: row;
   color: #999999;
 `;
+export const ReadModeIcon = styled.img`
+  margin-left: 16px;
+`
 export const ReadModeText = styled.span`
   margin-left: 0.5rem;
   color: #999999;
@@ -58,7 +61,7 @@ export const FoldBtn = styled.div`
   height: 2.06rem;
   display: ${(props) => props.show ? "flex" : "none"};
   align-items: center;
-  background-color: #1ea8df;
+  background-color: #205855;
   border: 0px solid #9ca7ad;
   cursor: pointer;
   border-top-left-radius: 0.31rem;
@@ -69,12 +72,13 @@ export const FoldBtn = styled.div`
   transform: ${props => props.isExpanded ? "rotate(180deg)"
     : "translate(-0.9rem, 0rem)"};
   &:hover {
-    background-color: #008CC8;
+    background-color: #205855;
   }
 `;
 
 export const FoldBtnImg = styled.img`
   width: 100%;
+  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);
 `;
 
 export const FileBodyLayout = styled.div`

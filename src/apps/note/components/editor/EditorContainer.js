@@ -6,11 +6,11 @@ import EditorHeader from './EditorHeader';
 import {
   EditorContainerWrapper,
   ReadModeContainer,
+  ReadModeIcon,
   ReadModeText,
   editorContentCSS
 } from '../../styles/editorStyle';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import lockImg from '../../assets/lock.svg'
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
@@ -169,13 +169,8 @@ const EditorContainer = () => {
         <EditorHeader />
         {PageStore.isReadMode() ? (
           <ReadModeContainer style={{ display: 'flex' }}>
-            <FontAwesomeIcon
-              icon={faLock}
-              className="readModeIcon"
-              size={'1x'}
-            />
+            <ReadModeIcon src={lockImg} />
             <ReadModeText>읽기 모드</ReadModeText>
-            <ReadModeText>편집하려면 수정 버튼을 클릭해주세요.</ReadModeText>
           </ReadModeContainer>
         ) : null}
         <Editor

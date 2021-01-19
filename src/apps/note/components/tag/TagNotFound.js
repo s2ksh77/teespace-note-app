@@ -1,5 +1,5 @@
 import React from 'react';
-import noPageImage from '../../assets/no_file.svg';
+import noPageImage from '../../assets/no_contents.svg';
 import {
   NoneContainer,
   NoneTitle,
