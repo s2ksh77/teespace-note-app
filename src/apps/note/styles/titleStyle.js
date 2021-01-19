@@ -129,12 +129,19 @@ export const LnbTitleSearchContainer = styled.form`
   padding: 0 0.63rem;
   width: 14.81rem;
   height: 1.88rem;
-  border-radius: 1.563rem 1.563rem;
-  border: 0.0625rem solid #c6ced6;
+  border-radius: 6px;
+  border: 0rem solid #c6ced6;
+  background-color: #F7F4EF;
+  &:focus-within {
+    background: #FFFFFF;
+    border: 1px solid #7B7671;
+  }
   box-sizing: border-box;
   margin: auto 0;
   flex:1;
   min-width:10.6rem;
+  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "#F7F4EF")}
+  border: ${props => (props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;")}
 `;
 
 export const LnbTitleSearchIcon = styled.button`

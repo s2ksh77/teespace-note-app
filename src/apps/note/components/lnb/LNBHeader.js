@@ -8,10 +8,10 @@ import {
   LnbTitleSearchInput,
 } from '../../styles/titleStyle';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import searchImg from '../../assets/search.svg';
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
-import { PreBtnWrapper, Button } from '../../styles/commonStyle';
+import { PreBtnWrapper, Button, SearchImgInput } from '../../styles/commonStyle';
 import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
@@ -75,10 +75,8 @@ const LNBHeader = ({ createNewChapter }) => {
         <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
           새 챕터
         </LnbTitleNewButton>
-        <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn}>
-          <LnbTitleSearchIcon type="submit">
-            <FontAwesomeIcon icon={faSearch} size={"1x"} />
-          </LnbTitleSearchIcon>
+        <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false}>
+          <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false} />
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
