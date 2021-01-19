@@ -45,6 +45,9 @@ export const ReadModeContainer = styled.div`
   flex-direction: row;
   color: #999999;
 `;
+export const ReadModeIcon = styled.img`
+  margin-left: 16px;
+`
 export const ReadModeText = styled.span`
   margin-left: 0.5rem;
   color: #999999;
