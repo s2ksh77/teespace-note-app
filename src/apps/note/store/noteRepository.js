@@ -446,7 +446,7 @@ class NoteRepository {
   async getSearchList(searchKey) {
     try {
       return await API.get(
-        `note-api/noteSearch?action=List&note_channel_id=${this.chId}&searchValue=${searchKey}`
+        `note-api/noteSearch?action=List&note_channel_id=${this.chId}&searchValue=${encodeURIComponent(searchKey)}`
       );
     } catch (e) {
       throw Error(JSON.stringify(e));

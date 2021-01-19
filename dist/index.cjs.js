@@ -1308,7 +1308,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context23.prev = 0;
                 _context23.next = 3;
-                return teespaceCore.API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(searchKey));
+                return teespaceCore.API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(encodeURIComponent(searchKey)));
 
               case 3:
                 return _context23.abrupt("return", _context23.sent);
