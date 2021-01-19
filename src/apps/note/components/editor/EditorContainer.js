@@ -436,6 +436,7 @@ const EditorContainer = () => {
           successCallback={driveSaveSuccess}
           cancelCallback={driveSaveCancel}
           file={EditorStore.saveDriveMeta}
+          roomId={NoteRepository.WS_ID}
         />
       </EditorContainerWrapper>
     </>
