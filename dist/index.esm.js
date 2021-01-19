@@ -469,7 +469,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getChapterColor",
     value: function getChapterColor(chapterId) {
-      return API.Get("note-api/chaptershare?action=List&id=".concat(chapterId));
+      return API.get("note-api/chaptershare?action=List&id=".concat(chapterId));
     }
   }, {
     key: "updateChapterColor",
@@ -10686,9 +10686,6 @@ var EditorContainer = function EditorContainer() {
           });
           editor.on('PostProcess', function () {
             handleEditorContentsListener();
-          });
-          editor.on('Drop', function (e) {
-            console.log(e);
           }); // fired when a dialog has been opend
 
           editor.on('OpenWindow', function (e) {
@@ -10867,7 +10864,6 @@ var EditorContainer = function EditorContainer() {
         target_list: false,
         link_assume_external_targets: 'http',
         link_context_toolbar: false,
-        block_unsupported_drop: false,
         link_title: false,
         anchor_top: false,
         // link 입력중 dropdown으로 <top> 안뜨게 해

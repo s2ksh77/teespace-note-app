@@ -112,7 +112,7 @@ class NoteRepository {
   }
 
   getChapterColor(chapterId) {
-    return API.Get(
+    return API.get(
       `note-api/chaptershare?action=List&id=${chapterId}`,
     );
   }
