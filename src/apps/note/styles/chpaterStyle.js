@@ -51,6 +51,7 @@ export const ColorCover = styled.span`
   position:absolute;
   display: flex;
   width: fit-content;
+  left: 0;
   align-items: center;
 `;
 

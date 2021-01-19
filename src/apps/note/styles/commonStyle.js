@@ -401,8 +401,6 @@ export const DraggedComponentContainer = styled.div`
   position: absolute;
   align-items: center;
   font-size: 0.81rem;
-  background-color: rgba(242,239,236,0.5);
-  border-radius: 0.31rem;
   z-index:20;
 `;
 
@@ -411,6 +409,8 @@ export const DraggedComponent = styled.div`
   height: 2.81rem;
   align-items: center;
   padding-left: 1.25rem;
+  background-color: rgba(242,239,236,0.5);
+  border-radius: 0.31rem;
 `;
 
 export const DraggedComponentTitle = styled.span`

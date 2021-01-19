@@ -481,13 +481,8 @@ const ChapterStore = observable({
   createMoveInfo(chapterId) {
     const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
     return {
-      chapterId: chapterId,
+      item: this.chapterList[chapterIdx],
       chapterIdx: chapterIdx,
-      shareData: {
-        id: chapterId,
-        text: this.chapterList[chapterIdx].text,
-        date: this.chapterList[chapterIdx].modified_date,
-      },
     };
   },
 
@@ -520,13 +515,12 @@ const ChapterStore = observable({
     });
 
     let moveCnt = 0;
-    const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].chapterId);
+    const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].item.id);
     sortedMoveInfoList.forEach((moveInfo, idx) => {
       if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
-      this.moveInfoMap.set(moveInfo.chapterId, {
-        chapterId: moveInfo.chapterId,
+      this.moveInfoMap.set(moveInfo.item.id, {
+        item: moveInfo.item,
         chapterIdx: startIdx + idx,
-        shareData: moveInfo.shareData,
       })
     });
 
@@ -667,27 +661,17 @@ const ChapterStore = observable({
 
   setFirstMoveInfoMap(targetChapter) {
     this.setMoveInfoMap(new Map([[targetChapter.id, {
-      chapterId: targetChapter.id,
+      item: targetChapter,
       chapterIdx: 0,
-      shareData: {
-        id: targetChapter.id,
-        text: targetChapter.text,
-        date: targetChapter.modified_date,
-      },
     }]]));
 
     if (targetChapter.children.length > 0) {
       const targetPage = targetChapter.children[0];
       PageStore.setMoveInfoMap(new Map([[targetPage.id, {
-        pageId: targetPage.id,
+        item: targetPage,
         pageIdx: 0,
         chapterId: targetChapter.id,
         chapterIdx: 0,
-        shareData: {
-          id: targetPage.id,
-          text: targetPage.text,
-          date: targetPage.modified_date,
-        },
       }]]));
     }
   },
