@@ -11,6 +11,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const onClickTagBtn = (tagId, tagName) => async () => {
     ChapterStore.setIsTagSearching(true);
+    ChapterStore.setIsSearching(true);
     // lnb search창에 검색 시도(클릭)한 태그이름 나오고 검색 실행중 화면 보이기
     ChapterStore.setSearchingTagName(tagName);
     // isTagSearching이고 isLoadingSearchResult일 때 검색 실행중 화면이 보인다
