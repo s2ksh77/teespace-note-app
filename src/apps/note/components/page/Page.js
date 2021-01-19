@@ -23,25 +23,13 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const chapterMoveInfo = {
     item: chapter,
-    chapterId: chapter.id,
     chapterIdx: chapterIdx,
-    shareData: {
-      id: chapter.id,
-      text: chapter.text,
-      date: chapter.modified_date,
-    },
   };
   const pageMoveInfo = {
     item: page,
-    pageId: page.id,
     pageIdx: index,
     chapterId: chapter.id,
     chapterIdx: chapterIdx,
-    shareData: {
-      id: page.id,
-      text: page.text,
-      date: page.modified_date,
-    },
   };
 
   const [, drag, preview] = useDrag({
@@ -58,7 +46,14 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
       return {
         type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
-        data: [...PageStore.moveInfoMap].map(keyValue => keyValue[1].shareData),
+        data: [...PageStore.moveInfoMap].map(keyValue => {
+          const item = keyValue[1].item;
+          return {
+            id: item.id,
+            text: item.text,
+            date: item.modified_date,
+          }
+        }),
       };
     },
     end: (item, monitor) => {

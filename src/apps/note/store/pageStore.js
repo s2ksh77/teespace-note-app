@@ -391,15 +391,9 @@ const PageStore = observable({
     const pageIdx = ChapterStore.chapterList[chapterIdx].children.findIndex(page => page.id === pageId);
     return {
       item: ChapterStore.chapterList[chapterIdx].children[pageIdx],
-      pageId: pageId,
       pageIdx: pageIdx,
       chapterId: chapterId,
       chapterIdx: chapterIdx,
-      shareData: {
-        id: pageId,
-        text: pageData.note_title,
-        date: pageData.modified_date,
-      },
     }
   },
 
@@ -443,9 +437,9 @@ const PageStore = observable({
     if (moveTargetPageIdx >= pageIds2.length) pageIds2.push(...sortedMovePages);
 
     await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
-      if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.pageId)) {
+      if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
         item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-        return this.movePage(moveInfo.pageId, moveTargetChapterId);
+        return this.movePage(moveInfo.item.id, moveTargetChapterId);
       }
     }));
 
@@ -453,17 +447,15 @@ const PageStore = observable({
 
     let moveCntInSameChapter = 0;
     let moveCntToAnotherChapter = 0;
-    const startIdx = item[moveTargetChapterIdx].children.findIndex(pageId => pageId === sortedMoveInfoList[0].pageId);
+    const startIdx = item[moveTargetChapterIdx].children.findIndex(pageId => pageId === sortedMoveInfoList[0].item.id);
     sortedMoveInfoList.map((moveInfo, idx) => {
       if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;
       else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
-      this.moveInfoMap.set(moveInfo.pageId, {
+      this.moveInfoMap.set(moveInfo.item.id, {
         item: moveInfo.item,
-        pageId: moveInfo.pageId,
         pageIdx: startIdx + idx,
         chapterId: moveTargetChapterId,
         chapterIdx: moveTargetChapterIdx,
-        shareData: moveInfo.shareData,
       })
     });
 

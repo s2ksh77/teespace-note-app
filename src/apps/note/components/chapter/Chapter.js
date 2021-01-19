@@ -26,13 +26,7 @@ const Chapter = ({ chapter, index, isShared }) => {
   const { id, text:title, color } = chapter;
   const chapterMoveInfo = {
     item: chapter,
-    chapterId: chapter.id,
     chapterIdx: index,
-    shareData: {
-      id: chapter.id,
-      text: chapter.text,
-      date: chapter.modified_date,
-    },
   };
 
   // 챕터를 다른 챕터 영역에 drop했을 때
@@ -62,7 +56,14 @@ const Chapter = ({ chapter, index, isShared }) => {
 
       return {
         type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
-        data: [...ChapterStore.moveInfoMap].map(keyValue => keyValue[1].shareData),
+        data: [...ChapterStore.moveInfoMap].map(keyValue => {
+          const item = keyValue[1].item;
+          return {
+            id: item.id,
+            text: item.text,
+            date: item.modified_date,
+          }
+        }),
       };
     },
     end: (item, monitor) => {
@@ -140,15 +141,9 @@ const Chapter = ({ chapter, index, isShared }) => {
     PageStore.fetchCurrentPageData(pageId);
     if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
       item: chapter.children[0],
-      pageId: pageId,
       pageIdx: 0,
       chapterId: chapter.id,
       chapterIdx: index,
-      shareData: {
-        id: pageId,
-        text: ChapterStore.chapterList[index].children[0]?.text,
-        date: ChapterStore.chapterList[index].children[0]?.modified_date,
-      }
     }]]))
     else PageStore.setMoveInfoMap(new Map());
     PageStore.setIsCtrlKeyDown(false);
