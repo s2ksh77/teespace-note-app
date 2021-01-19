@@ -3,9 +3,9 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { ContentHeaderCover, PreBtnWrapper, Button, RightAligned } from '../../styles/commonStyle';
 import HeaderButtons from './buttons';
-import preImg from '../../assets/back.svg';
+import preImg from '../../assets/arrow_back_1.svg';
 
-const ContentHeader = ({handleBackBtn, alignment, children}) => {  
+const ContentHeader = ({ handleBackBtn, alignment, children }) => {
   const { NoteStore } = useNoteStore();
   // editor header부분은 borderBottom 없게
   return useObserver(() => (
@@ -22,7 +22,7 @@ const ContentHeader = ({handleBackBtn, alignment, children}) => {
         <RightAligned>
           {alignment === "right" ? (children) : null}
           <HeaderButtons />
-        </RightAligned>        
+        </RightAligned>
       </ContentHeaderCover>
     </>
   ));

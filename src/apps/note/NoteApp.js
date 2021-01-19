@@ -7,7 +7,7 @@ import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
-import foldImg from './assets/arrow_left.svg';
+import foldImg from './assets/arrow_back_1.svg';
 import { useCoreStores, Toast } from 'teespace-core';
 import Modal from './components/common/Modal';
 import DragPreview from "./components/common/DragPreview";

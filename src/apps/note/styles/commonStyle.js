@@ -331,15 +331,19 @@ export const ModalNormalBtn = styled.div`
   justify-content: center;
   width: 4.5rem;
   height: 1.88rem;
-  border-radius: 1rem;
+  border-radius: 4px;
   font-size: 0.75rem;
   cursor: pointer;
-  background-color: #6C56E5;
+  background-color: #232D3B;
   color: white;
   margin-left: 0.38rem;
   &:hover{
-    background-color: #DCDDFF;
-    color: #000000;
+    background-color: #4C535D;
+    color: white;
+  }
+  &:active{
+    background-color: #232D3B;
+    color: white;
   }
 `;
 
@@ -349,15 +353,20 @@ export const ModalCancelBtn = styled.div`
   justify-content: center;
   width: 4.5rem;
   height: 1.88rem;
-  border-radius: 1rem;
+  border-radius: 4px;
   font-size: 0.75rem;
   cursor: pointer;
-  border: 1px solid #C6CED6;
+  border: 1px solid #D0CCC7;
   color: #3B3B3B;
   margin-left: 0.38rem;
   &:hover{
-    background-color: #DCDDFF;
-    color: #000000;
+    background-color: #FFFFFF;
+    border: 1px solid #232D3B;
+    color: #3B3B3B;
+  }
+  &:active{
+    background-color: #232D3B;
+    color: white;
   }
 `;
 
