@@ -388,9 +388,11 @@ const PageStore = observable({
     const pageId = pageData.note_id;
     const chapterId = pageData.parent_notebook;
     const chapterIdx = ChapterStore.chapterList.findIndex(chapter => chapter.id === chapterId);
+    const pageIdx = ChapterStore.chapterList[chapterIdx].children.findIndex(page => page.id === pageId);
     return {
+      item: ChapterStore.chapterList[chapterIdx].children[pageIdx],
       pageId: pageId,
-      pageIdx: ChapterStore.chapterList[chapterIdx].children.findIndex(page => page.id === pageId),
+      pageIdx: pageIdx,
       chapterId: chapterId,
       chapterIdx: chapterIdx,
       shareData: {
@@ -456,6 +458,7 @@ const PageStore = observable({
       if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;
       else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
       this.moveInfoMap.set(moveInfo.pageId, {
+        item: moveInfo.item,
         pageId: moveInfo.pageId,
         pageIdx: startIdx + idx,
         chapterId: moveTargetChapterId,

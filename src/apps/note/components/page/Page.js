@@ -22,6 +22,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   page.text = NoteUtil.decodeStr(page.text);
 
   const chapterMoveInfo = {
+    item: chapter,
     chapterId: chapter.id,
     chapterIdx: chapterIdx,
     shareData: {
@@ -31,6 +32,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     },
   };
   const pageMoveInfo = {
+    item: page,
     pageId: page.id,
     pageIdx: index,
     chapterId: chapter.id,
@@ -50,9 +52,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.setIsCtrlKeyDown(false);
       }
 
-      NoteStore.setDraggedComponentId(page.id);
-      NoteStore.setDraggedComponentType('page');
-      NoteStore.setDraggedComponentTitles(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text));
+      NoteStore.setDraggedItems(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 

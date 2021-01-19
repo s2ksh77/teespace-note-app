@@ -25,6 +25,7 @@ const Chapter = ({ chapter, index, isShared }) => {
   const titleInput = useRef(null);
   const { id, text:title, color } = chapter;
   const chapterMoveInfo = {
+    item: chapter,
     chapterId: chapter.id,
     chapterIdx: index,
     shareData: {
@@ -55,9 +56,7 @@ const Chapter = ({ chapter, index, isShared }) => {
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
-      NoteStore.setDraggedComponentId(chapter.id);
-      NoteStore.setDraggedComponentType('chapter');
-      NoteStore.setDraggedComponentTitles(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.shareData.text)); 
+      NoteStore.setDraggedItems(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item)); 
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
@@ -140,6 +139,7 @@ const Chapter = ({ chapter, index, isShared }) => {
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
     if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
+      item: chapter.children[0],
       pageId: pageId,
       pageIdx: 0,
       chapterId: chapter.id,

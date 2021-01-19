@@ -111,9 +111,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             onClose={() => NoteStore.setIsVisibleToast(false)}
           />
           {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
-            ? <DragPreview
-              id={NoteStore.draggedComponentId}
-              titles={NoteStore.draggedComponentTitles} />
+            ? <DragPreview items={NoteStore.draggedItems} />
             : null}
           <TempEditor />
         </>

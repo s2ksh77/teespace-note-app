@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
-import NoteStore from '../../store/noteStore';
+import ChapterColor from '../chapter/ChapterColor'
 import {
   DraggedComponentContainer,
   DraggedComponent,
@@ -26,10 +26,10 @@ const onOffsetChange = (monitor) => () => {
   dragPreviewRef.style['-webkit-transform'] = transform;
 };
 
-const DragPreview = ({ id, titles }) => {
+const DragPreview = ({ items }) => {
   const { NoteStore } = useNoteStore();
   const previewRef = useRef(null);
-  const element = document.getElementById(id);
+  const element = document.getElementById(items[0]?.id);
 
   useEffect(() => {
     dragPreviewRef = previewRef.current;
@@ -47,12 +47,12 @@ const DragPreview = ({ id, titles }) => {
 
   return useObserver(() => (
     <DraggedComponentContainer ref={previewRef}>
-      {titles.map((title, idx) => {
+      {items.map((item, idx) => {
         return (
           <DraggedComponent 
             key={idx}
             style={
-              NoteStore.draggedComponentType === 'chapter'
+              item.color
                 ? { 
                   width: `${element.offsetWidth}px`,
                   paddingLeft: '1.56rem'
@@ -61,7 +61,8 @@ const DragPreview = ({ id, titles }) => {
                 }
             }
           >
-            <DraggedComponentTitle>{title}</DraggedComponentTitle>
+            {item.color && <ChapterColor color={item.color} id={item.id}/>}
+            <DraggedComponentTitle>{item.text}</DraggedComponentTitle>
           </DraggedComponent>
         )
       })}

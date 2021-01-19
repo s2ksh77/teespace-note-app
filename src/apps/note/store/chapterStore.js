@@ -481,6 +481,7 @@ const ChapterStore = observable({
   createMoveInfo(chapterId) {
     const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
     return {
+      item: this.chapterList[chapterIdx],
       chapterId: chapterId,
       chapterIdx: chapterIdx,
       shareData: {
@@ -524,6 +525,7 @@ const ChapterStore = observable({
     sortedMoveInfoList.forEach((moveInfo, idx) => {
       if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
       this.moveInfoMap.set(moveInfo.chapterId, {
+        item: moveInfo.item,
         chapterId: moveInfo.chapterId,
         chapterIdx: startIdx + idx,
         shareData: moveInfo.shareData,
@@ -667,6 +669,7 @@ const ChapterStore = observable({
 
   setFirstMoveInfoMap(targetChapter) {
     this.setMoveInfoMap(new Map([[targetChapter.id, {
+      item: targetChapter,
       chapterId: targetChapter.id,
       chapterIdx: 0,
       shareData: {
@@ -679,6 +682,7 @@ const ChapterStore = observable({
     if (targetChapter.children.length > 0) {
       const targetPage = targetChapter.children[0];
       PageStore.setMoveInfoMap(new Map([[targetPage.id, {
+        item: targetPage,
         pageId: targetPage.id,
         pageIdx: 0,
         chapterId: targetChapter.id,
