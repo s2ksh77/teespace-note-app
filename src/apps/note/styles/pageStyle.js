@@ -19,6 +19,7 @@ export const PageMargin = styled.span`
 export const PageTextCover = styled.span`
   width: 100%;
   display: flex;
+  max-width: calc(100% - 1.875rem);
 `;
 
 export const PageTextContainer = styled.span`

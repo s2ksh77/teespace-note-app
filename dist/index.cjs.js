@@ -8409,7 +8409,7 @@ function _templateObject4$5() {
 }
 
 function _templateObject3$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  max-width: calc(100% - 1.875rem);\n"]);
 
   _templateObject3$5 = function _templateObject3() {
     return data;
