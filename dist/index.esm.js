@@ -4814,138 +4814,8 @@ var ChapterStore = observable((_observable$2 = {
   }))();
 }), _observable$2));
 
-function _templateObject48() {
-  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
-
-  _templateObject48 = function _templateObject48() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject47() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
-
-  _templateObject47 = function _templateObject47() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject46() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
-
-  _templateObject46 = function _templateObject46() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject45() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
-
-  _templateObject45 = function _templateObject45() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject44() {
-  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
-
-  _templateObject44 = function _templateObject44() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject43() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
-
-  _templateObject43 = function _templateObject43() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject42() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
-
-  _templateObject42 = function _templateObject42() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject41() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 4px;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #D0CCC7;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #FFFFFF;\n    border: 1px solid #232D3B;\n    color: #3B3B3B;\n  }\n  &:active{\n    background-color: #232D3B;\n    color: white;\n  }\n"]);
-
-  _templateObject41 = function _templateObject41() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject40() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 4px;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #232D3B;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #4C535D;\n    color: white;\n  }\n  &:active{\n    background-color: #232D3B;\n    color: white;\n  }\n"]);
-
-  _templateObject40 = function _templateObject40() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject39() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
-
-  _templateObject39 = function _templateObject39() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject38() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
-
-  _templateObject38 = function _templateObject38() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject37() {
-  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
-
-  _templateObject37 = function _templateObject37() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject36() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
-
-  _templateObject36 = function _templateObject36() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject35() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject35 = function _templateObject35() {
     return data;
@@ -4955,7 +4825,7 @@ function _templateObject35() {
 }
 
 function _templateObject34() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: 1rem;\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
 
   _templateObject34 = function _templateObject34() {
     return data;
@@ -4965,7 +4835,7 @@ function _templateObject34() {
 }
 
 function _templateObject33() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;  \n  width: 100%;\n  height: 2.69rem;\n  align-items: center;\n  font-size: 0.88rem;\n  font-weight: bold;\n  border-bottom: 0.06rem solid #dddddd;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
 
   _templateObject33 = function _templateObject33() {
     return data;
@@ -4975,7 +4845,7 @@ function _templateObject33() {
 }
 
 function _templateObject32() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width: 24.38rem;\n  height: 13.75rem;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  box-sizing: border-box;\n  z-index: 1000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
 
   _templateObject32 = function _templateObject32() {
     return data;
@@ -4985,7 +4855,7 @@ function _templateObject32() {
 }
 
 function _templateObject31() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.81rem;\n  color: #777777;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
 
   _templateObject31 = function _templateObject31() {
     return data;
@@ -4995,7 +4865,7 @@ function _templateObject31() {
 }
 
 function _templateObject30() {
-  var data = _taggedTemplateLiteral(["\n  text-align: center;\n  font-size: 0.94rem;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
 
   _templateObject30 = function _templateObject30() {
     return data;
@@ -5005,7 +4875,7 @@ function _templateObject30() {
 }
 
 function _templateObject29() {
-  var data = _taggedTemplateLiteral(["\n  height: 4.44rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
 
   _templateObject29 = function _templateObject29() {
     return data;
@@ -5015,7 +4885,7 @@ function _templateObject29() {
 }
 
 function _templateObject28() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width: 1.25rem;\n  height: 1.25rem;\n  margin: 0.88rem auto 0.94rem auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
 
   _templateObject28 = function _templateObject28() {
     return data;
@@ -5025,7 +4895,7 @@ function _templateObject28() {
 }
 
 function _templateObject27() {
-  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width:22.5rem;\n  height:11.88rem;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  padding: 1.25rem;\n  box-sizing:border-box;\n  z-index: 1000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
 
   _templateObject27 = function _templateObject27() {
     return data;
@@ -5035,7 +4905,7 @@ function _templateObject27() {
 }
 
 function _templateObject26() {
-  var data = _taggedTemplateLiteral(["\n  flex: 1;\n  text-align: center;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
 
   _templateObject26 = function _templateObject26() {
     return data;
@@ -5045,7 +4915,7 @@ function _templateObject26() {
 }
 
 function _templateObject25() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2rem;\n  display: flex;\n  font-size: 0.88rem;\n  align-items: center;\n  border-bottom: 1px solid #dddddd;\n  padding-bottom: 1rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
 
   _templateObject25 = function _templateObject25() {
     return data;
@@ -5055,7 +4925,7 @@ function _templateObject25() {
 }
 
 function _templateObject24() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
 
   _templateObject24 = function _templateObject24() {
     return data;
@@ -5065,7 +4935,7 @@ function _templateObject24() {
 }
 
 function _templateObject23() {
-  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0,0,0,.7);\n  z-index: 1000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
 
   _templateObject23 = function _templateObject23() {
     return data;
@@ -5322,52 +5192,22 @@ var MessageNoteImg = styled.img(_templateObject18());
 var MessageNoteInfo = styled.div(_templateObject19());
 var NoteTitleCover = styled.div(_templateObject20());
 var NoteTitle = styled.span(_templateObject21());
-var NoteDate = styled.div(_templateObject22()); // Modal.js
+var NoteDate = styled.div(_templateObject22());
+var RoomShareCover = styled.div(_templateObject23());
+var ModalSharedInfoContainer = styled.div(_templateObject24());
+var ModalSharedInfoCover = styled.div(_templateObject25());
+var ModalSharedInfoTitle = styled.span(_templateObject26());
+var ModalSharedInfoContent = styled.span(_templateObject27());
+var ButtonGroup = styled.div(_templateObject28());
+var SearchLoadingContainer = styled.div(_templateObject29());
+var SearchLoadingTxt = styled.div(_templateObject30());
+var SearchLoadingImg = styled.img(_templateObject31());
+var RightAligned = styled.div(_templateObject32());
+var DraggedComponentContainer = styled.div(_templateObject33());
+var DraggedComponent = styled.div(_templateObject34());
+var DraggedComponentTitle = styled.span(_templateObject35());
 
-var CustomOverlay = styled.div(_templateObject23());
-var RoomShareCover = styled.div(_templateObject24()); // export const RoomShareCover = styled.div`
-//   position: fixed;
-//   top: 50%;
-//   left: 50%;
-//   width:auto;
-//   height:auto;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   transform: translate(-50%,-50%);
-//   background-color: #FFF;
-//   padding: 1.25rem;
-//   box-sizing:border-box;
-//   z-index: 1000;
-// `;
-
-var RoomShareTitleContainer = styled.div(_templateObject25());
-var RoomShareTitle = styled.div(_templateObject26());
-var CustomModal = styled.div(_templateObject27());
-var IconImg = styled.img(_templateObject28());
-var ModalTitleContainer = styled.div(_templateObject29());
-var ModalTitle = styled.div(_templateObject30());
-var ModalSubTitle = styled.div(_templateObject31());
-var SharedInfoModal = styled.div(_templateObject32());
-var ModalSharedInfoHeader = styled.div(_templateObject33());
-var ModalHeaderBtn = styled.img(_templateObject34());
-var ModalSharedInfoContainer = styled.div(_templateObject35());
-var ModalSharedInfoCover = styled.div(_templateObject36());
-var ModalSharedInfoTitle = styled.span(_templateObject37());
-var ModalSharedInfoContent = styled.span(_templateObject38());
-var ButtonGroup = styled.div(_templateObject39());
-var ModalNormalBtn = styled.div(_templateObject40());
-var ModalCancelBtn = styled.div(_templateObject41());
-var SearchLoadingContainer = styled.div(_templateObject42());
-var SearchLoadingTxt = styled.div(_templateObject43());
-var SearchLoadingImg = styled.img(_templateObject44());
-var RightAligned = styled.div(_templateObject45());
-var DraggedComponentContainer = styled.div(_templateObject46());
-var DraggedComponent = styled.div(_templateObject47());
-var DraggedComponentTitle = styled.span(_templateObject48());
-
-var SharedModalBody = function SharedModalBody(_ref) {
+var ViewInfoModal = function ViewInfoModal(_ref) {
   var sharedInfo = _ref.sharedInfo;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ModalSharedInfoContainer, null, sharedInfo.map(function (info) {
     return /*#__PURE__*/React.createElement(ModalSharedInfoCover, {
@@ -5398,7 +5238,7 @@ function _templateObject$1() {
 var StyledButtonGroup = styled(ButtonGroup)(_templateObject$1());
 var AddMarginBtn = styled(Button$1)(_templateObject2$1());
 
-var RoomShareModal = function RoomShareModal(_ref) {
+var ForwardModal = function ForwardModal(_ref) {
   var handleCancel = _ref.handleCancel;
 
   var _useNoteStore = useNoteStore(),
@@ -5428,7 +5268,6 @@ var RoomShareModal = function RoomShareModal(_ref) {
     NoteStore.setModalInfo(null);
   };
 
-  console.log('shareRoom');
   return /*#__PURE__*/React.createElement(RoomShareCover, null, /*#__PURE__*/React.createElement(ItemSelector, {
     isVisibleRoom: true,
     placeholder: "\uD504\uB80C\uC988/\uAD6C\uC131\uC6D0/\uB8F8 \uBAA9\uB85D\uC5D0\uC11C\n \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
@@ -5438,7 +5277,8 @@ var RoomShareModal = function RoomShareModal(_ref) {
     type: "solid",
     shape: "defualt",
     alert: tooltipStr,
-    onClick: handleShare
+    onClick: handleShare,
+    disabled: !shareArraysCnt
   }, "전달", shareArraysCnt > 0 && " ".concat(shareArraysCnt)), /*#__PURE__*/React.createElement(Button$1, {
     key: "cancel",
     type: "oulined",
@@ -5471,11 +5311,11 @@ var NoteMeta = {
     };
 
     switch (type) {
-      case "sharedInfo":
+      case "viewInfo":
         return {
           targetComponent: "Modal",
           title: "정보 보기",
-          children: /*#__PURE__*/React.createElement(SharedModalBody, {
+          children: /*#__PURE__*/React.createElement(ViewInfoModal, {
             sharedInfo: [{
               title: '출처 룸',
               content: sharedRoomName
@@ -5494,20 +5334,20 @@ var NoteMeta = {
             onClick: handleCancel
           }, "\uD655\uC778")],
           onCancel: handleCancel,
-          className: "sharedInfoModal"
+          className: "viewInfoModal"
         };
 
-      case "shareRoom":
+      case "forward":
         return {
           targetComponent: "Modal",
           title: "다른 룸으로 전달",
-          children: /*#__PURE__*/React.createElement(RoomShareModal, {
+          children: /*#__PURE__*/React.createElement(ForwardModal, {
             handleCancel: handleCancel
           }),
           footer: null,
-          // RoomShareModal 안으로 넣음
+          // ForwardModal 안으로 넣음
           onCancel: handleCancel,
-          className: "shareRoomModal"
+          className: "forwardModal"
         };
 
       default:
@@ -5644,15 +5484,11 @@ var NoteMeta = {
         return [defaultBtn1];
 
       case 'editCancel':
-        // return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '저장'
         }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '저장 안 함'
         }), defaultBtn2];
-      // case 'shareRoom':
-      //   // return [{ type: 'share', text: '전달' }, { type: 'cancel', text: '취소' }]
-      //   return [{...defaultBtn1, text:'전달'},  defaultBtn2];
 
       case 'failOpenMail':
         return [defaultBtn1];
@@ -5723,9 +5559,6 @@ var NoteMeta = {
         dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns('editingPage');
         break;
-      // case 'shareRoom':
-      //   dialogType.btns = this.setBtns('shareRoom');
-      //   break;
 
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
@@ -6003,8 +5836,8 @@ var NoteStore$1 = observable({
   setModalInfo: function setModalInfo(modalType) {
     switch (modalType) {
       // AntdModal로 연다
-      case 'sharedInfo':
-      case 'shareRoom':
+      case 'viewInfo':
+      case 'forward':
         this.modalInfo = NoteMeta.openModal(modalType);
         this.setShowModal(true);
         break;
@@ -6077,7 +5910,7 @@ var NoteStore$1 = observable({
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
 
-              _this.setModalInfo('sharedInfo');
+              _this.setModalInfo('viewInfo');
 
             case 16:
             case "end":
