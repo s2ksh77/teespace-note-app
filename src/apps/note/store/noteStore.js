@@ -3,7 +3,7 @@ import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import EditorStore from './editorStore';
-import NoteMeta from './NoteMeta';
+import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
