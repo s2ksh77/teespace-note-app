@@ -41,7 +41,14 @@ const ForwardModal = ({handleCancel}) => {
         onSelectChange={handleSelectChange}
       />
       <StyledButtonGroup>
-        <AddMarginBtn key="share" type="solid" shape="defualt" alert={tooltipStr} onClick={handleShare}>
+        <AddMarginBtn 
+          key="share" 
+          type="solid" 
+          shape="defualt" 
+          alert={tooltipStr} 
+          onClick={handleShare}
+          disabled={!shareArraysCnt}
+        >
           {"전달"} 
           {shareArraysCnt > 0 && ` ${shareArraysCnt}`}
         </AddMarginBtn>
