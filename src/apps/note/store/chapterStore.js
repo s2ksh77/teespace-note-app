@@ -571,8 +571,9 @@ const ChapterStore = observable({
     this.getSearchList().then(dto => {
       if (dto.pageList && dto.pageList.length > 0) {
         dto.pageList.map(page => {
-          this.getChapterName(page.parent_notebook).then(text => {
-            page.parentText = text;
+          this.getChapterInfoList(page.parent_notebook).then(dto => {
+            page.parentColor = dto.color;
+            page.parentText = dto.text;
           }).then(() => {
             this.setSearchResult({
               chapter: dto.chapterList,
