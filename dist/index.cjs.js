@@ -4823,48 +4823,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _observable$2));
 
-function _templateObject36() {
-  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
-
-  _templateObject36 = function _templateObject36() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject35() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
-
-  _templateObject35 = function _templateObject35() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject34() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
-
-  _templateObject34 = function _templateObject34() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject33() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
-
-  _templateObject33 = function _templateObject33() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject32() {
-  var data = _taggedTemplateLiteral(["\n  width:4.06rem;\n  margin:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject32 = function _templateObject32() {
     return data;
@@ -4874,7 +4834,7 @@ function _templateObject32() {
 }
 
 function _templateObject31() {
-  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
 
   _templateObject31 = function _templateObject31() {
     return data;
@@ -4884,7 +4844,7 @@ function _templateObject31() {
 }
 
 function _templateObject30() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
 
   _templateObject30 = function _templateObject30() {
     return data;
@@ -4894,7 +4854,7 @@ function _templateObject30() {
 }
 
 function _templateObject29() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
 
   _templateObject29 = function _templateObject29() {
     return data;
@@ -4904,7 +4864,7 @@ function _templateObject29() {
 }
 
 function _templateObject28() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:4.06rem;\n  margin:auto;\n"]);
 
   _templateObject28 = function _templateObject28() {
     return data;
@@ -4914,7 +4874,7 @@ function _templateObject28() {
 }
 
 function _templateObject27() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
 
   _templateObject27 = function _templateObject27() {
     return data;
@@ -4924,7 +4884,7 @@ function _templateObject27() {
 }
 
 function _templateObject26() {
-  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
 
   _templateObject26 = function _templateObject26() {
     return data;
@@ -4934,7 +4894,7 @@ function _templateObject26() {
 }
 
 function _templateObject25() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
 
   _templateObject25 = function _templateObject25() {
     return data;
@@ -4944,7 +4904,7 @@ function _templateObject25() {
 }
 
 function _templateObject24() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
 
   _templateObject24 = function _templateObject24() {
     return data;
@@ -4954,7 +4914,7 @@ function _templateObject24() {
 }
 
 function _templateObject23() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
 
   _templateObject23 = function _templateObject23() {
     return data;
@@ -4964,7 +4924,7 @@ function _templateObject23() {
 }
 
 function _templateObject22() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  color: #5B5F62;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
 
   _templateObject22 = function _templateObject22() {
     return data;
@@ -4974,7 +4934,7 @@ function _templateObject22() {
 }
 
 function _templateObject21() {
-  var data = _taggedTemplateLiteral(["\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
 
   _templateObject21 = function _templateObject21() {
     return data;
@@ -4984,7 +4944,7 @@ function _templateObject21() {
 }
 
 function _templateObject20() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.813rem;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
 
   _templateObject20 = function _templateObject20() {
     return data;
@@ -4994,7 +4954,7 @@ function _templateObject20() {
 }
 
 function _templateObject19() {
-  var data = _taggedTemplateLiteral(["\n  padding: 0.12rem 0 0.12rem 0.75rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around;\n  width: calc(100% - 2.5rem);\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
 
   _templateObject19 = function _templateObject19() {
     return data;
@@ -5004,7 +4964,7 @@ function _templateObject19() {
 }
 
 function _templateObject18() {
-  var data = _taggedTemplateLiteral(["\n  width: 2.5rem;\n  height: 2.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  margin: auto auto auto 0.75rem;\n  font-size:0.75rem;\n"]);
 
   _templateObject18 = function _templateObject18() {
     return data;
@@ -5014,7 +4974,7 @@ function _templateObject18() {
 }
 
 function _templateObject17() {
-  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 17.25rem;\n  height: 4.25rem;\n  display: flex;\n  padding: 0.88rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 15.31rem;\n  height: 3.19rem;\n  display: flex;\n  padding: 0.69rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -5207,25 +5167,21 @@ var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject
 var ContextMenuIconCover = styled__default['default'].span(_templateObject16()); // ShareNoteMessage
 
 var MessageCover = styled__default['default'].div(_templateObject17());
-var MessageNoteImg = styled__default['default'].img(_templateObject18());
-var MessageNoteInfo = styled__default['default'].div(_templateObject19());
-var NoteTitleCover = styled__default['default'].div(_templateObject20());
-var NoteTitle = styled__default['default'].span(_templateObject21());
-var NoteDate = styled__default['default'].div(_templateObject22());
-var RoomShareCover = styled__default['default'].div(_templateObject23());
-var ModalSharedInfoContainer = styled__default['default'].div(_templateObject24());
-var ModalSharedInfoCover = styled__default['default'].div(_templateObject25());
-var ModalSharedInfoTitle = styled__default['default'].span(_templateObject26());
-var ModalSharedInfoContent = styled__default['default'].span(_templateObject27());
-var ButtonGroup = styled__default['default'].div(_templateObject28());
-var SearchLoadingContainer = styled__default['default'].div(_templateObject29());
-var SearchLoadingTxt = styled__default['default'].div(_templateObject30());
-var SearchLoadingImg = styled__default['default'].img(_templateObject31());
-var WaplLoadingImg = styled__default['default'].img(_templateObject32());
-var RightAligned = styled__default['default'].div(_templateObject33());
-var DraggedComponentContainer = styled__default['default'].div(_templateObject34());
-var DraggedComponent = styled__default['default'].div(_templateObject35());
-var DraggedComponentTitle = styled__default['default'].span(_templateObject36());
+var NoteTitle = styled__default['default'].span(_templateObject18());
+var RoomShareCover = styled__default['default'].div(_templateObject19());
+var ModalSharedInfoContainer = styled__default['default'].div(_templateObject20());
+var ModalSharedInfoCover = styled__default['default'].div(_templateObject21());
+var ModalSharedInfoTitle = styled__default['default'].span(_templateObject22());
+var ModalSharedInfoContent = styled__default['default'].span(_templateObject23());
+var ButtonGroup = styled__default['default'].div(_templateObject24());
+var SearchLoadingContainer = styled__default['default'].div(_templateObject25());
+var SearchLoadingTxt = styled__default['default'].div(_templateObject26());
+var SearchLoadingImg = styled__default['default'].img(_templateObject27());
+var WaplLoadingImg = styled__default['default'].img(_templateObject28());
+var RightAligned = styled__default['default'].div(_templateObject29());
+var DraggedComponentContainer = styled__default['default'].div(_templateObject30());
+var DraggedComponent = styled__default['default'].div(_templateObject31());
+var DraggedComponentTitle = styled__default['default'].span(_templateObject32());
 
 var ViewInfoModal = function ViewInfoModal(_ref) {
   var sharedInfo = _ref.sharedInfo;
