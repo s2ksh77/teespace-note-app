@@ -1,6 +1,9 @@
 import { observable, toJS } from 'mobx';
-import { API, WWMS, RoomStore, UserStore } from 'teespace-core';
+import { API, Button as Button$1, ItemSelector, WWMS, RoomStore, UserStore } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Dropdown } from 'antd';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -109,6 +112,22 @@ function _objectSpread2(target) {
   return target;
 }
 
+function _taggedTemplateLiteral(strings, raw) {
+  if (!raw) {
+    raw = strings.slice(0);
+  }
+
+  return Object.freeze(Object.defineProperties(strings, {
+    raw: {
+      value: Object.freeze(raw)
+    }
+  }));
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -117,8 +136,39 @@ function _arrayWithoutHoles(arr) {
   if (Array.isArray(arr)) return _arrayLikeToArray(arr);
 }
 
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
 function _iterableToArray(iter) {
   if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
 }
 
 function _unsupportedIterableToArray(o, minLen) {
@@ -140,6 +190,10 @@ function _arrayLikeToArray(arr, len) {
 
 function _nonIterableSpread() {
   throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 var _require = require('axios'),
@@ -4760,22 +4814,725 @@ var ChapterStore = observable((_observable$2 = {
   }))();
 }), _observable$2));
 
+function _templateObject48() {
+  var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+
+  _templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject47() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
+
+  _templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject46() {
+  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
+
+  _templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject45() {
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
+
+  _templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject44() {
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+
+  _templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject43() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+
+  _templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject41() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 4px;\n  font-size: 0.75rem;\n  cursor: pointer;\n  border: 1px solid #D0CCC7;\n  color: #3B3B3B;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #FFFFFF;\n    border: 1px solid #232D3B;\n    color: #3B3B3B;\n  }\n  &:active{\n    background-color: #232D3B;\n    color: white;\n  }\n"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject40() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4.5rem;\n  height: 1.88rem;\n  border-radius: 4px;\n  font-size: 0.75rem;\n  cursor: pointer;\n  background-color: #232D3B;\n  color: white;\n  margin-left: 0.38rem;\n  &:hover{\n    background-color: #4C535D;\n    color: white;\n  }\n  &:active{\n    background-color: #232D3B;\n    color: white;\n  }\n"]);
+
+  _templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject39() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
+
+  _templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject38() {
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
+
+  _templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject37() {
+  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
+
+  _templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject36() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
+
+  _templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject35() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
+
+  _templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject34() {
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: 1rem;\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n"]);
+
+  _templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject33() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;  \n  width: 100%;\n  height: 2.69rem;\n  align-items: center;\n  font-size: 0.88rem;\n  font-weight: bold;\n  border-bottom: 0.06rem solid #dddddd;\n"]);
+
+  _templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject32() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width: 24.38rem;\n  height: 13.75rem;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  box-sizing: border-box;\n  z-index: 1000;\n"]);
+
+  _templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject31() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.81rem;\n  color: #777777;\n"]);
+
+  _templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject30() {
+  var data = _taggedTemplateLiteral(["\n  text-align: center;\n  font-size: 0.94rem;\n  font-weight: bold;\n"]);
+
+  _templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject29() {
+  var data = _taggedTemplateLiteral(["\n  height: 4.44rem;\n"]);
+
+  _templateObject29 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject28() {
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width: 1.25rem;\n  height: 1.25rem;\n  margin: 0.88rem auto 0.94rem auto;\n"]);
+
+  _templateObject28 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject27() {
+  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  width:22.5rem;\n  height:11.88rem;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  transform: translate(-50%,-50%);\n  background-color: #FFF;\n  padding: 1.25rem;\n  box-sizing:border-box;\n  z-index: 1000;\n"]);
+
+  _templateObject27 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject26() {
+  var data = _taggedTemplateLiteral(["\n  flex: 1;\n  text-align: center;\n  font-weight: bold;\n"]);
+
+  _templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject25() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2rem;\n  display: flex;\n  font-size: 0.88rem;\n  align-items: center;\n  border-bottom: 1px solid #dddddd;\n  padding-bottom: 1rem;\n"]);
+
+  _templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject24() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
+
+  _templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject23() {
+  var data = _taggedTemplateLiteral(["\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0,0,0,.7);\n  z-index: 1000;\n"]);
+
+  _templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject22() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  color: #5B5F62;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
+
+  _templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject21() {
+  var data = _taggedTemplateLiteral(["\n  display: block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n"]);
+
+  _templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject20() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.813rem;\n  display: flex;\n  height: 50%;\n  align-items: center;\n"]);
+
+  _templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject19() {
+  var data = _taggedTemplateLiteral(["\n  padding: 0.12rem 0 0.12rem 0.75rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around;\n  width: calc(100% - 2.5rem);\n  box-sizing: border-box;\n"]);
+
+  _templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject18() {
+  var data = _taggedTemplateLiteral(["\n  width: 2.5rem;\n  height: 2.5rem;\n"]);
+
+  _templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject17() {
+  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 17.25rem;\n  height: 4.25rem;\n  display: flex;\n  padding: 0.88rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
+
+  _templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject16() {
+  var data = _taggedTemplateLiteral([""]);
+
+  _templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject15() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  visibility: hidden;\n  align-self: center;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  color: #75757f;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
+
+  _templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject14() {
+  var data = _taggedTemplateLiteral(["\n  width:8.13rem;\n"]);
+
+  _templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject13() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  margin-bottom: 1.25rem;\n"]);
+
+  _templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject12() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.94rem;\n  color: #000000;\n  margin-bottom: 0.69rem;\n"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  font-weight: bold;\n"]);
+
+  _templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject10() {
+  var data = _taggedTemplateLiteral(["\n    width: 1rem;\n    height: 1rem;\n    cursor:pointer;\n    margin-right:0.43rem;\n    filter: ", "\n    &:hover{\n      filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);\n    }\n"]);
+
+  _templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject9() {
+  var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)\n    brightness(90%) contrast(109%);\n"]);
+
+  _templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject8() {
+  var data = _taggedTemplateLiteral(["\n  width: 8.13rem;\n  margin-top: 1.25rem;\n"]);
+
+  _templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject7() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  font-weight: 300;\n  margin-top: 0.75rem;\n  color: #777777;\n"]);
+
+  _templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject6() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.938rem;\n  font-weight: 400;\n  color: #000000;\n  width: auto;\n  height: 1.38rem;\n  line-height: normal;\n"]);
+
+  _templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject5() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n"]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject4() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: calc(100% - 3rem);\n  overflow: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 1.25rem 0.75rem;\n"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3() {
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  align-items: center;\n  margin-right: 0.5rem;\n  cursor:pointer;\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  height: 3rem;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  padding: 0 0.75rem;\n  box-sizing: border-box;\n  border-bottom: ", ";\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  margin-left: 0.75rem;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+var HeaderButtonContainer = styled.div(_templateObject());
+var ContentHeaderCover = styled.div(_templateObject2(), function (props) {
+  return props.borderBottom ? "0.0625rem solid #dadada" : "";
+});
+var PreBtnWrapper = styled.div(_templateObject3(), function (props) {
+  return props.show ? "flex" : "none";
+});
+var ContentBodyCover = styled.div(_templateObject4());
+var NoneContainer = styled.div(_templateObject5());
+var NoneTitle = styled.div(_templateObject6());
+var NoneText = styled.span(_templateObject7());
+var NoneImg = styled.img(_templateObject8());
+var Button = styled.img(_templateObject9()); // 돋보기모양 submit btn
+
+var SearchImgInput = styled.input(_templateObject10(), function (props) {
+  return props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);";
+});
+var SearchResultNotFoundCover = styled.div(_templateObject11());
+var SearchKeyword = styled.span(_templateObject12());
+var NoSearchResultTitle = styled.span(_templateObject13());
+var NoSearchResultImg = styled.img(_templateObject14());
+var ContextMenuCover = styled(Dropdown)(_templateObject15());
+var ContextMenuIconCover = styled.span(_templateObject16()); // ShareNoteMessage
+
+var MessageCover = styled.div(_templateObject17());
+var MessageNoteImg = styled.img(_templateObject18());
+var MessageNoteInfo = styled.div(_templateObject19());
+var NoteTitleCover = styled.div(_templateObject20());
+var NoteTitle = styled.span(_templateObject21());
+var NoteDate = styled.div(_templateObject22()); // Modal.js
+
+var CustomOverlay = styled.div(_templateObject23());
+var RoomShareCover = styled.div(_templateObject24()); // export const RoomShareCover = styled.div`
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   width:auto;
+//   height:auto;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   transform: translate(-50%,-50%);
+//   background-color: #FFF;
+//   padding: 1.25rem;
+//   box-sizing:border-box;
+//   z-index: 1000;
+// `;
+
+var RoomShareTitleContainer = styled.div(_templateObject25());
+var RoomShareTitle = styled.div(_templateObject26());
+var CustomModal = styled.div(_templateObject27());
+var IconImg = styled.img(_templateObject28());
+var ModalTitleContainer = styled.div(_templateObject29());
+var ModalTitle = styled.div(_templateObject30());
+var ModalSubTitle = styled.div(_templateObject31());
+var SharedInfoModal = styled.div(_templateObject32());
+var ModalSharedInfoHeader = styled.div(_templateObject33());
+var ModalHeaderBtn = styled.img(_templateObject34());
+var ModalSharedInfoContainer = styled.div(_templateObject35());
+var ModalSharedInfoCover = styled.div(_templateObject36());
+var ModalSharedInfoTitle = styled.span(_templateObject37());
+var ModalSharedInfoContent = styled.span(_templateObject38());
+var ButtonGroup = styled.div(_templateObject39());
+var ModalNormalBtn = styled.div(_templateObject40());
+var ModalCancelBtn = styled.div(_templateObject41());
+var SearchLoadingContainer = styled.div(_templateObject42());
+var SearchLoadingTxt = styled.div(_templateObject43());
+var SearchLoadingImg = styled.img(_templateObject44());
+var RightAligned = styled.div(_templateObject45());
+var DraggedComponentContainer = styled.div(_templateObject46());
+var DraggedComponent = styled.div(_templateObject47());
+var DraggedComponentTitle = styled.span(_templateObject48());
+
+var SharedModalBody = function SharedModalBody(_ref) {
+  var sharedInfo = _ref.sharedInfo;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ModalSharedInfoContainer, null, sharedInfo.map(function (info) {
+    return /*#__PURE__*/React.createElement(ModalSharedInfoCover, {
+      key: info.title
+    }, /*#__PURE__*/React.createElement(ModalSharedInfoTitle, null, info.title), /*#__PURE__*/React.createElement(ModalSharedInfoContent, null, info.content));
+  })));
+};
+
+function _templateObject2$1() {
+  var data = _taggedTemplateLiteral(["\n  margin-right:0.38rem;\n"]);
+
+  _templateObject2$1 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject$1() {
+  var data = _taggedTemplateLiteral(["\n  margin: 1.25rem 0;\n"]);
+
+  _templateObject$1 = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+var StyledButtonGroup = styled(ButtonGroup)(_templateObject$1());
+var AddMarginBtn = styled(Button$1)(_templateObject2$1());
+
+var RoomShareModal = function RoomShareModal(_ref) {
+  var handleCancel = _ref.handleCancel;
+
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore;
+
+  var _useState = useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      shareArraysCnt = _useState2[0],
+      setShareArraysCnt = _useState2[1];
+
+  var _useState3 = useState(null),
+      _useState4 = _slicedToArray(_useState3, 2),
+      tooltipStr = _useState4[0],
+      setTooltipStr = _useState4[1];
+
+  var handleSelectChange = function handleSelectChange(data) {
+    NoteStore.setShareArrays(data);
+    setShareArraysCnt(data.userArray.length + data.roomArray.length);
+    if (shareArraysCnt === 0) setTooltipStr("프렌즈/구성원/룸을 선택해주세요");else setTooltipStr(null);
+  };
+
+  var handleShare = function handleShare(e) {
+    e.stopPropagation();
+    if (shareArraysCnt === 0) return;
+    NoteStore.shareNote();
+    NoteStore.setIsShared(false);
+    NoteStore.setModalInfo(null);
+  };
+
+  console.log('shareRoom');
+  return /*#__PURE__*/React.createElement(RoomShareCover, null, /*#__PURE__*/React.createElement(ItemSelector, {
+    isVisibleRoom: true,
+    placeholder: "\uD504\uB80C\uC988/\uAD6C\uC131\uC6D0/\uB8F8 \uBAA9\uB85D\uC5D0\uC11C\n \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+    onSelectChange: handleSelectChange
+  }), /*#__PURE__*/React.createElement(StyledButtonGroup, null, /*#__PURE__*/React.createElement(AddMarginBtn, {
+    key: "share",
+    type: "solid",
+    shape: "defualt",
+    alert: tooltipStr,
+    onClick: handleShare
+  }, "전달", shareArraysCnt > 0 && " ".concat(shareArraysCnt)), /*#__PURE__*/React.createElement(Button$1, {
+    key: "cancel",
+    type: "oulined",
+    shape: "defualt",
+    onClick: handleCancel
+  }, "\uCDE8\uC18C")));
+};
+
+/*
+  target 컴포넌트가 계속 바뀌어서 헷갈림
+  open + target 컴포넌트 이름
+*/
+
 var NoteMeta = {
-  openDialog: function openDialog(type) {
-    return this.setDialogConfig(this.setModalConfig(type), this.setEventConfig(type));
+  // antd modal prop 설정
+  openModal: function openModal(type) {
+    return this.setModalConfig(type);
   },
-  setDialogConfig: function setDialogConfig(dialogType, eventList) {
-    var buttonList = [];
+  // antd modal prop 만들기
+  setModalConfig: function setModalConfig(type) {
+    var _NoteStore$sharedInfo = NoteStore$1.sharedInfo,
+        sharedRoomName = _NoteStore$sharedInfo.sharedRoomName,
+        sharedUserName = _NoteStore$sharedInfo.sharedUserName,
+        sharedDate = _NoteStore$sharedInfo.sharedDate;
+
+    var handleCancel = function handleCancel(e) {
+      e.stopPropagation();
+      NoteStore$1.setModalInfo(null);
+      NoteStore$1.setIsShared(false);
+    };
+
+    switch (type) {
+      case "sharedInfo":
+        return {
+          targetComponent: "Modal",
+          title: "정보 보기",
+          children: /*#__PURE__*/React.createElement(SharedModalBody, {
+            sharedInfo: [{
+              title: '출처 룸',
+              content: sharedRoomName
+            }, {
+              title: '전달한 멤버',
+              content: sharedUserName
+            }, {
+              title: '전달 날짜',
+              content: sharedDate
+            }]
+          }),
+          footer: [/*#__PURE__*/React.createElement(Button$1, {
+            key: "confirm",
+            type: "solid",
+            shape: "defualt",
+            onClick: handleCancel
+          }, "\uD655\uC778")],
+          onCancel: handleCancel,
+          className: "sharedInfoModal"
+        };
+
+      case "shareRoom":
+        return {
+          targetComponent: "Modal",
+          title: "다른 룸으로 전달",
+          children: /*#__PURE__*/React.createElement(RoomShareModal, {
+            handleCancel: handleCancel
+          }),
+          footer: null,
+          // RoomShareModal 안으로 넣음
+          onCancel: handleCancel,
+          className: "shareRoomModal"
+        };
+
+      default:
+        return;
+    }
+  },
+  // core - Modal prop 설정
+  openMessage: function openMessage(type) {
+    return this.setMessageConfig(this.setMessageInfoConfig(type), this.setEventConfig(type));
+  },
+  // Modal(core - Message) prop 만들기
+  setMessageConfig: function setMessageConfig(dialogType, eventList) {
+    var buttonList = []; // type, shape, onClick, text 
+
     eventList.map(function (event, index) {
-      dialogType.buttonConfig[index].onClick = event;
-      buttonList.push(dialogType.buttonConfig[index]);
+      dialogType.btns[index].onClick = event;
+      buttonList.push(dialogType.btns[index]);
     });
     return {
-      type: 'alert',
+      targetComponent: "Message",
+      type: dialogType.type,
       title: dialogType.title,
-      subTitle: dialogType.subtitle ? dialogType.subtitle : null,
-      buttons: buttonList,
-      sharedInfo: dialogType.info ? dialogType.info : null
+      subTitle: dialogType.subtitle,
+      btns: buttonList,
+      customBadge: dialogType.customBadge
     };
   },
   setEventConfig: function setEventConfig(type) {
@@ -4843,201 +5600,161 @@ var NoteMeta = {
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
-      case 'sharedInfo':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'fileOpenMail':
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore$1.setModalInfo(null);
-        });
-        break;
-
-      case 'fileDelete':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          EditorStore.tempDeleteFile();
-          NoteStore$1.setModalInfo(null);
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-          EditorStore.setDeleteFileConfig('', '');
-        });
-        break;
-
-      case 'shareRoom':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.shareNote();
-          NoteStore$1.setIsShared(false);
-          NoteStore$1.setModalInfo(null);
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
-          NoteStore$1.setIsShared(false);
         });
         break;
     }
 
     return eventList;
   },
-  setButtonConfig: function setButtonConfig(type) {
+  setBtns: function setBtns(type) {
+    var shape = "default";
+    var defaultBtn1 = {
+      type: "solid",
+      shape: shape,
+      text: '확인'
+    }; // 버튼 한 개일 때랑 text 바꿔서 사용
+
+    var defaultBtn2 = {
+      type: "default",
+      shape: shape,
+      text: '취소'
+    };
+
     switch (type) {
       case 'delete':
-      case 'fileDelete':
-        return [{
-          type: 'delete',
+        // chapter랑 page
+        return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '삭제'
-        }, {
-          type: 'cancel',
-          text: '취소'
-        }];
+        }), defaultBtn2];
 
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
-      case 'sharedInfoConfirm':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
-        return [{
-          type: 'confirm',
-          text: '확인'
-        }];
+        return [defaultBtn1];
 
       case 'editCancel':
-        return [{
-          type: 'save',
+        // return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
+        return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '저장'
-        }, {
-          type: 'notSave',
+        }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '저장 안 함'
-        }, {
-          type: 'cancel',
-          text: '취소'
-        }];
+        }), defaultBtn2];
+      // case 'shareRoom':
+      //   // return [{ type: 'share', text: '전달' }, { type: 'cancel', text: '취소' }]
+      //   return [{...defaultBtn1, text:'전달'},  defaultBtn2];
 
-      case 'shareRoom':
-        return [{
-          type: 'share',
-          text: '전달'
-        }, {
-          type: 'cancel',
-          text: '취소'
-        }];
+      case 'failOpenMail':
+        return [defaultBtn1];
 
       default:
         return;
     }
   },
-  setModalConfig: function setModalConfig(type) {
-    var fileName = EditorStore.deleteFileName;
+  setMessageInfoConfig: function setMessageInfoConfig(type) {
+    var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
+
     var dialogType = {
-      type: 'alert',
+      type: 'default',
       title: '',
-      subtitle: '',
-      buttonConfig: []
+      subtitle: null,
+      btns: [],
+      customBadge: null
     };
     var editingUserName = PageStore.editingUserName;
-    var _NoteStore$sharedInfo = NoteStore$1.sharedInfo,
-        sharedRoomName = _NoteStore$sharedInfo.sharedRoomName,
-        sharedUserName = _NoteStore$sharedInfo.sharedUserName,
-        sharedDate = _NoteStore$sharedInfo.sharedDate;
 
     switch (type) {
       case 'chapter':
         dialogType.title = '챕터를 삭제하시겠습니까?';
         dialogType.subtitle = '챕터에 속한 페이지도 삭제됩니다.';
-        dialogType.buttonConfig = this.setButtonConfig('delete');
+        dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
         dialogType.title = '페이지를 삭제하시겠습니까?';
         dialogType.subtitle = '';
-        dialogType.buttonConfig = this.setButtonConfig('delete');
+        dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
-        dialogType.type = 'normal';
+        dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
         dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
-        dialogType.buttonConfig = this.setButtonConfig(type);
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
-        dialogType.type = 'normal';
+        dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
         dialogType.subtitle = "".concat(PageStore.editingUserCount, " \uBA85\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
-        dialogType.buttonConfig = this.setButtonConfig(type);
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'editCancel':
         dialogType.title = '페이지를 저장하고 나가시겠습니까?';
         dialogType.subtitle = '';
-        dialogType.buttonConfig = this.setButtonConfig(type);
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'fileDelete':
         dialogType.title = "\uC120\uD0DD\uD55C ".concat(fileName, " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
         dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
-        dialogType.buttonConfig = this.setButtonConfig('delete');
+        dialogType.btns = this.setBtns('delete');
         break;
 
       case 'titleDuplicate':
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
-        dialogType.buttonConfig = this.setButtonConfig('titleDuplicate');
+        dialogType.btns = this.setBtns('titleDuplicate');
         break;
 
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';
         dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
-        dialogType.buttonConfig = this.setButtonConfig('editingPage');
+        dialogType.btns = this.setBtns('editingPage');
         break;
-
-      case 'sharedInfo':
-        dialogType.info = [{
-          title: '출처 룸',
-          content: sharedRoomName
-        }, {
-          title: '전달한 멤버',
-          content: sharedUserName
-        }, {
-          title: '전달 날짜',
-          content: sharedDate
-        }];
-        dialogType.buttonConfig = this.setButtonConfig('sharedInfoConfirm');
-        break;
-
-      case 'shareRoom':
-        dialogType.buttonConfig = this.setButtonConfig('shareRoom');
-        break;
+      // case 'shareRoom':
+      //   dialogType.btns = this.setBtns('shareRoom');
+      //   break;
 
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
         dialogType.subtitle = '';
-        dialogType.buttonConfig = this.setButtonConfig('deletedPage');
+        dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
         dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
         dialogType.subtitle = "(".concat(EditorStore.uploadLength, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(EditorStore.failCount, "\uAC1C \uC2E4\uD328)");
-        dialogType.buttonConfig = this.setButtonConfig('multiFileSomeFail');
+        dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
       case 'sizefailUpload':
         dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
         dialogType.subtitle = '';
-        dialogType.buttonConfig = this.setButtonConfig('sizefailUpload');
+        dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
         dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
         dialogType.subtitle = '';
-        dialogType.buttonConfig = this.setButtonConfig('failUpload');
+        dialogType.btns = this.setBtns('failUpload');
+        break;
+
+      case 'failOpenMail':
+        dialogType.title = 'Mail로 전달할 수 없습니다.';
+        dialogType.subtitle = '외부 메일 연동 후 다시 시도해주세요.';
+        dialogType.btns = this.setBtns(type);
     }
 
     return dialogType;
@@ -5285,6 +6002,13 @@ var NoteStore$1 = observable({
   // { type, title, subTitle, buttons }
   setModalInfo: function setModalInfo(modalType) {
     switch (modalType) {
+      // AntdModal로 연다
+      case 'sharedInfo':
+      case 'shareRoom':
+        this.modalInfo = NoteMeta.openModal(modalType);
+        this.setShowModal(true);
+        break;
+
       case 'chapterconfirm':
       case 'confirm':
       case 'fileDelete':
@@ -5292,13 +6016,12 @@ var NoteStore$1 = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
-      case 'sharedInfo':
       case 'editingPage':
-      case 'shareRoom':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
-        this.modalInfo = NoteMeta.openDialog(modalType);
+      case "failOpenMail":
+        this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
 
