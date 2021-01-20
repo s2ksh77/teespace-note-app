@@ -14,7 +14,7 @@ const AddMarginBtn = styled(Button)`
   margin-right:0.38rem;
 `;
 
-const RoomShareModal = ({handleCancel}) => {
+const ForwardModal = ({handleCancel}) => {
   const { NoteStore } = useNoteStore();  
   const [shareArraysCnt, setShareArraysCnt] = useState(false);
   const [tooltipStr, setTooltipStr] = useState(null);
@@ -32,7 +32,7 @@ const RoomShareModal = ({handleCancel}) => {
      NoteStore.setIsShared(false); 
      NoteStore.setModalInfo(null); 
   }
-  console.log('shareRoom')
+  
   return (
     <RoomShareCover>
       <ItemSelector
@@ -51,4 +51,4 @@ const RoomShareModal = ({handleCancel}) => {
   )
 }
 
-export default RoomShareModal;
+export default ForwardModal;

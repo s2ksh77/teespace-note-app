@@ -6,7 +6,7 @@ import {
   ModalSharedInfoContent,
 } from '../../styles/commonStyle';
 
-const SharedModalBody = ({ sharedInfo }) => {
+const ViewInfoModal = ({ sharedInfo }) => {
 
   return (
     <>
@@ -24,4 +24,4 @@ const SharedModalBody = ({ sharedInfo }) => {
   )
 }
 
-export default SharedModalBody;
+export default ViewInfoModal;

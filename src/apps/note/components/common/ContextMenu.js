@@ -82,7 +82,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     NoteStore.setShareNoteType(noteType);
     NoteStore.setShareContent(noteType === 'chapter' ? chapter : page);
     NoteStore.setIsShared(true);
-    NoteStore.setModalInfo('shareRoom');
+    NoteStore.setModalInfo('forward');
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 

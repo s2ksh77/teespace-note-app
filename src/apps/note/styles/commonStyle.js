@@ -182,122 +182,10 @@ export const NoteDate = styled.div`
   align-items: center;
 `;
 
-// Modal.js
-export const CustomOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,.7);
-  z-index: 1000;
-`;
-
 export const RoomShareCover = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-// export const RoomShareCover = styled.div`
-//   position: fixed;
-//   top: 50%;
-//   left: 50%;
-//   width:auto;
-//   height:auto;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   transform: translate(-50%,-50%);
-//   background-color: #FFF;
-//   padding: 1.25rem;
-//   box-sizing:border-box;
-//   z-index: 1000;
-// `;
-export const RoomShareTitleContainer = styled.div`
-  width: 100%;
-  height: 2rem;
-  display: flex;
-  font-size: 0.88rem;
-  align-items: center;
-  border-bottom: 1px solid #dddddd;
-  padding-bottom: 1rem;
-`
-export const RoomShareTitle = styled.div`
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-`
-
-export const CustomModal = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width:22.5rem;
-  height:11.88rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translate(-50%,-50%);
-  background-color: #FFF;
-  padding: 1.25rem;
-  box-sizing:border-box;
-  z-index: 1000;
-`;
-
-export const IconImg = styled.img`
-  display:flex;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin: 0.88rem auto 0.94rem auto;
-`;
-
-export const ModalTitleContainer = styled.div`
-  height: 4.44rem;
-`;
-
-export const ModalTitle = styled.div`
-  text-align: center;
-  font-size: 0.94rem;
-  font-weight: bold;
-`;
-
-export const ModalSubTitle = styled.div`
-  font-size: 0.81rem;
-  color: #777777;
-`;
-
-export const SharedInfoModal = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 24.38rem;
-  height: 13.75rem;
-  align-items: center;
-  transform: translate(-50%,-50%);
-  background-color: #FFF;
-  box-sizing: border-box;
-  z-index: 1000;
-`;
-
-export const ModalSharedInfoHeader = styled.div`
-  display: flex;  
-  width: 100%;
-  height: 2.69rem;
-  align-items: center;
-  font-size: 0.88rem;
-  font-weight: bold;
-  border-bottom: 0.06rem solid #dddddd;
-`;
-
-export const ModalHeaderBtn = styled.img`
-  position: absolute;
-  right: 1rem;
-  width: 1rem;
-  height: 1rem;
-  cursor: pointer;
 `;
 
 export const ModalSharedInfoContainer = styled.div`
@@ -331,50 +219,6 @@ export const ModalSharedInfoContent = styled.span`
 
 export const ButtonGroup = styled.div`
   display: flex;
-`;
-export const ModalNormalBtn = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 4.5rem;
-  height: 1.88rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  background-color: #232D3B;
-  color: white;
-  margin-left: 0.38rem;
-  &:hover{
-    background-color: #4C535D;
-    color: white;
-  }
-  &:active{
-    background-color: #232D3B;
-    color: white;
-  }
-`;
-
-export const ModalCancelBtn = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 4.5rem;
-  height: 1.88rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  border: 1px solid #D0CCC7;
-  color: #3B3B3B;
-  margin-left: 0.38rem;
-  &:hover{
-    background-color: #FFFFFF;
-    border: 1px solid #232D3B;
-    color: #3B3B3B;
-  }
-  &:active{
-    background-color: #232D3B;
-    color: white;
-  }
 `;
 
 export const SearchLoadingContainer = styled.div`
