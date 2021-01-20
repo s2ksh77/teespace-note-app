@@ -1,13 +1,13 @@
 import React from 'react';
-import LoadingImg from '../../assets/Tee_loading.gif';
+import LoadingImg from '../../assets/wapl_loading.gif';
 import { CenterContent } from '../../GlobalStyles';
+import {WaplLoadingImg} from '../../styles/commonStyle';
 
-const imgcontainer = { width: '5rem', margin: 'auto' };
 const LoadingImgContainer = () => {
   return (
     <>
       <CenterContent>
-        <img style={imgcontainer} src={LoadingImg} alt="LoadingImg" />
+        <WaplLoadingImg src={LoadingImg} alt="LoadingImg" />
       </CenterContent>
     </>
   );

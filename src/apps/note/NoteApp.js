@@ -12,6 +12,7 @@ import { useCoreStores, Toast, Message } from 'teespace-core';
 import {Modal} from 'antd';
 import DragPreview from "./components/common/DragPreview";
 import TempEditor from './components/editor/TempEditor';
+import LoadingImgContainer from './components/common/LoadingImgContainer';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
@@ -81,7 +82,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      {NoteStore.loadingNoteApp ? <div></div> :
+      {NoteStore.loadingNoteApp ? <LoadingImgContainer/> :
         <>
           <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
             <LNBContainer />
