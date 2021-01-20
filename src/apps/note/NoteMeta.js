@@ -1,10 +1,10 @@
 import React from 'react';
-import NoteStore from './noteStore';
-import PageStore from './pageStore';
-import ChapterStore from './chapterStore';
-import EditorStore from './editorStore';
-import ViewInfoModal from '../components/common/ViewInfoModal';
-import ForwardModal from '../components/common/ForwardModal';
+import NoteStore from './store/noteStore';
+import PageStore from './store/pageStore';
+import ChapterStore from './store/chapterStore';
+import EditorStore from './store/editorStore';
+import ViewInfoModal from './components/common/ViewInfoModal';
+import ForwardModal from './components/common/ForwardModal';
 import { Button } from 'teespace-core';
 
 /*
