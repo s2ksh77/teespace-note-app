@@ -3,8 +3,8 @@ import NoteStore from './noteStore';
 import PageStore from './pageStore';
 import ChapterStore from './chapterStore';
 import EditorStore from './editorStore';
-import SharedModalBody from '../components/common/SharedModalBody';
-import RoomShareModal from '../components/common/RoomShareModal';
+import ViewInfoModal from '../components/common/ViewInfoModal';
+import ForwardModal from '../components/common/ForwardModal';
 import { Button } from 'teespace-core';
 
 /*
@@ -24,11 +24,11 @@ const NoteMeta = {
       NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
     }
     switch (type) {
-      case "sharedInfo":
+      case "viewInfo":
         return {
           targetComponent: "Modal",
           title:"정보 보기",
-          children: <SharedModalBody sharedInfo={[
+          children: <ViewInfoModal sharedInfo={[
             { title: '출처 룸', content: sharedRoomName },
             { title: '전달한 멤버', content: sharedUserName },
             { title: '전달 날짜', content: sharedDate }
@@ -39,16 +39,16 @@ const NoteMeta = {
             </Button>
           ],          
           onCancel:handleCancel,
-          className:"sharedInfoModal"
+          className:"viewInfoModal"
         }
-      case "shareRoom":
+      case "forward":
         return {
           targetComponent: "Modal",
           title:"다른 룸으로 전달",
-          children:<RoomShareModal handleCancel={handleCancel} />,
-          footer:null, // RoomShareModal 안으로 넣음
+          children:<ForwardModal handleCancel={handleCancel} />,
+          footer:null, // ForwardModal 안으로 넣음
           onCancel:handleCancel,
-          className:"shareRoomModal"
+          className:"forwardModal"
         }
       default:
         return;
@@ -118,14 +118,6 @@ const NoteMeta = {
       case 'fileOpenMail':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
-      // case 'fileDelete':
-      //   eventList.push(function (e) { e.stopPropagation(); EditorStore.tempDeleteFile(); NoteStore.setModalInfo(null) });
-      //   eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); EditorStore.setDeleteFileConfig('', '') });
-      //   break;
-      // case 'shareRoom':
-      //   eventList.push(function (e) { e.stopPropagation(); NoteStore.shareNote(); NoteStore.setIsShared(false); NoteStore.setModalInfo(null); })
-      //   eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null); NoteStore.setIsShared(false); });
-      //   break;
       default:
         break;
     }
@@ -148,11 +140,7 @@ const NoteMeta = {
       case 'sizefailUpload':
         return [defaultBtn1];
       case 'editCancel':
-        // return [{ type: 'save', text: '저장' }, { type: 'notSave', text: '저장 안 함' }, { type: 'cancel', text: '취소' }]
         return [{...defaultBtn1, text:'저장'}, {...defaultBtn1, text:'저장 안 함'}, defaultBtn2];
-      // case 'shareRoom':
-      //   // return [{ type: 'share', text: '전달' }, { type: 'cancel', text: '취소' }]
-      //   return [{...defaultBtn1, text:'전달'},  defaultBtn2];
       case 'failOpenMail':
         return [defaultBtn1];
       default:
@@ -214,9 +202,6 @@ const NoteMeta = {
         dialogType.subtitle = `${editingUserName} 님이 수정 중 입니다.`;
         dialogType.btns = this.setBtns('editingPage');
         break;
-      // case 'shareRoom':
-      //   dialogType.btns = this.setBtns('shareRoom');
-      //   break;
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
         dialogType.subtitle = '';

@@ -156,8 +156,8 @@ const NoteStore = observable({
   setModalInfo(modalType) {
     switch (modalType) {
       // AntdModal로 연다
-      case 'sharedInfo':
-      case 'shareRoom':
+      case 'viewInfo':
+      case 'forward':
         this.modalInfo = NoteMeta.openModal(modalType);
         this.setShowModal(true);
         break;
@@ -208,7 +208,7 @@ const NoteStore = observable({
       )
     };
 
-    this.setModalInfo('sharedInfo');
+    this.setModalInfo('viewInfo');
   },
 
   getTargetChId(targetRoomId) {
