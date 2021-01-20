@@ -241,6 +241,11 @@ export const SearchLoadingImg = styled.img`
   height: 8.44rem;
 `;
 
+export const WaplLoadingImg = styled.img`
+  width:4.06rem;
+  margin:auto;
+`;
+
 export const RightAligned = styled.div`
   display:flex;
   margin-left:auto;
