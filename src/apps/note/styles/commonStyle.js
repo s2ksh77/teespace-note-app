@@ -62,8 +62,8 @@ export const NoneText = styled.span`
 `;
 
 export const NoneImg = styled.img`
-  width: 13rem;
-  margin-top: 2.19rem;
+  width: 8.13rem;
+  margin-top: 1.25rem;
 `
 
 export const Button = styled.img`
@@ -108,7 +108,9 @@ export const NoSearchResultTitle = styled.span`
   margin-bottom: 1.25rem;
 `;
 
-export const NoSearchResultImg = styled.img``;
+export const NoSearchResultImg = styled.img`
+  width:8.13rem;
+`;
 
 export const ContextMenuCover = styled(Dropdown)`
   display: flex;
@@ -190,22 +192,28 @@ export const CustomOverlay = styled.div`
   background-color: rgba(0,0,0,.7);
   z-index: 1000;
 `;
-export const RoomShareModal = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width:auto;
-  height:auto;
+
+export const RoomShareCover = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  transform: translate(-50%,-50%);
-  background-color: #FFF;
-  padding: 1.25rem;
-  box-sizing:border-box;
-  z-index: 1000;
 `;
+// export const RoomShareCover = styled.div`
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   width:auto;
+//   height:auto;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   transform: translate(-50%,-50%);
+//   background-color: #FFF;
+//   padding: 1.25rem;
+//   box-sizing:border-box;
+//   z-index: 1000;
+// `;
 export const RoomShareTitleContainer = styled.div`
   width: 100%;
   height: 2rem;
@@ -295,18 +303,17 @@ export const ModalHeaderBtn = styled.img`
 export const ModalSharedInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 17.5rem;
-  height: 8rem;
   font-size: 0.94rem;
-  padding-top: 1.18rem;
 `;
 
 export const ModalSharedInfoCover = styled.div`
   display: flex;
+  align-items:flex-start;
   margin-bottom: 0.75rem;
 `;
 
 export const ModalSharedInfoTitle = styled.span`
+  display:inline-flex;
   width: 7rem;
   float: left;
   color: #000000;
@@ -314,12 +321,12 @@ export const ModalSharedInfoTitle = styled.span`
 `;
 
 export const ModalSharedInfoContent = styled.span`
+  display: inline-block;
   width: calc(100% - 7rem);
   color: #777777;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: right;
 `;
 
 export const ButtonGroup = styled.div`

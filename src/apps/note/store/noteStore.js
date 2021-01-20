@@ -155,6 +155,12 @@ const NoteStore = observable({
   // { type, title, subTitle, buttons }
   setModalInfo(modalType) {
     switch (modalType) {
+      // AntdModal로 연다
+      case 'sharedInfo':
+      case 'shareRoom':
+        this.modalInfo = NoteMeta.openModal(modalType);
+        this.setShowModal(true);
+        break;
       case 'chapterconfirm':
       case 'confirm':
       case 'fileDelete':
@@ -162,13 +168,12 @@ const NoteStore = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
-      case 'sharedInfo':
       case 'editingPage':
-      case 'shareRoom':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
-        this.modalInfo = NoteMeta.openDialog(modalType);
+      case "failOpenMail":
+        this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
       case null:

@@ -215,6 +215,19 @@ export const GlobalStyle = createGlobalStyle`
   .ant-dropdown::before{
     bottom:0 !important;
   }
+  .shareRoomModal .ant-modal-content{
+    width:32.5rem !important;
+  }
+  .shareRoomModal .ant-modal-body {
+    padding: 0rem !important;
+  }
+  .sharedInfoModal .ant-modal-body {
+    padding: 1.69rem 3.44rem 0 3.44rem !important;
+  }
+  .sharedInfoModal .ant-modal-footer{
+    border-top: 0px solid black !important;
+    padding:1.75rem 0 !important;
+  }
 `;
 
 export const LNB = styled.div`
