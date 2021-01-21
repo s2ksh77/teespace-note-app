@@ -76,6 +76,13 @@ export const ChapterTextInput = styled.input`
   font-weight: 400;
   border: none;
   outline: none;
+  &::placeholder {
+    color: #D0D0D0;
+  }
+  &::selection {
+    background: #F2EFEC;
+    color: #000000;
+  }
 `;
 
 export const ChapterTitle = styled.span`
@@ -128,10 +135,10 @@ export const ChapterInput = styled.input`
   margin-right: 0.9375rem;
   padding-right: 0.3125rem;
   &::placeholder {
-    color: #d0d0d0;
+    color: #D0D0D0;
   }
   &::selection {
-    background: rgba(30, 168, 223, 0.2);
+    background: #F2EFEC;
     color: #000000;
   }
   &:focus {
