@@ -15,7 +15,7 @@ import NoteUtil from '../../NoteUtil';
 
 //platform 코드 가져왔음
 const REM_UNIT = 16;
-const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#1a79ff' }) => {
+const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   const defaultWidth = 24;
   const defaultHeight = 24;
 
