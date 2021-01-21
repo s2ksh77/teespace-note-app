@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
@@ -21,6 +21,9 @@ import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
 import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUnselect, handleUpload, openSaveDrive } from '../common/NoteFile';
 import { ComponentStore } from 'teespace-core';
+import { WaplSearch } from 'teespace-core';
+import Mark from 'mark.js';
+import styled from 'styled-components';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -34,7 +37,19 @@ const EditorContainer = () => {
   const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
 
   const editorWrapperRef = useRef(null);
+  const instance = new Mark(EditorStore.tinymce?.getBody());
+  let eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
 
+  const [searchValue, setSearchValue] = useState('');
+  const instanceOption = {
+    "accuracy": {
+      "value": "partially",
+      "limiters": []
+    },
+    "done": function (count) {
+      EditorStore.setSearchTotalCount(count);
+    }
+  };
   const getEditorContent = content => {
     PageStore.setContent(content);
   };
@@ -136,6 +151,63 @@ const EditorContainer = () => {
     };
     input.click();
   }
+  const handleSearchInputChange = (value) => {
+    EditorStore.setSearchValue(value);
+  }
+
+  const handleSearchEditor = () => {
+    if (searchValue === EditorStore.searchValue) {
+      handleSearchNext();
+    } else {
+      instance.unmark();
+      setSearchValue(EditorStore.searchValue);
+      instance.mark(EditorStore.searchValue, instanceOption);
+      eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
+      if (EditorStore.searchTotalCount === 0) EditorStore.setSearchCurrentCount(0);
+      else {
+        EditorStore.setSearchCurrentCount(1);
+        eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+      }
+      EditorStore.setSearchResultState(true);
+    }
+  }
+
+  const handleClearSearch = () => {
+    EditorStore.setSearchValue('');
+    setSearchValue('');
+    EditorStore.setSearchResultState(false);
+    instance.unmark();
+  }
+  const handleSearchPrev = () => {
+    if (EditorStore.searchTotalCount === 0) return;
+    else {
+      if (EditorStore.searchCurrentCount > 1) {
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount - 1);
+      }
+      else {
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        EditorStore.setSearchCurrentCount(EditorStore.searchTotalCount);
+      }
+      eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+    }
+  }
+
+  const handleSearchNext = () => {
+    if (EditorStore.searchTotalCount === 0) return;
+    else {
+      if (EditorStore.searchCurrentCount < EditorStore.searchTotalCount) {
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount + 1);
+      } else {
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        EditorStore.setSearchCurrentCount(1);
+      }
+      eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+    }
+  }
 
   useLayoutEffect(() => {
     // 모드 변경의 목적
@@ -165,18 +237,33 @@ const EditorContainer = () => {
 
   return useObserver(() => (
     <>
-      <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()}>
+      <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()} isSearch={EditorStore.isSearch.toString()}>
         <EditorHeader />
-        {PageStore.isReadMode() ? (
+        {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
             <ReadModeText>읽기 모드</ReadModeText>
-          </ReadModeContainer>
-        ) : null}
+          </ReadModeContainer>) : null}
+        {EditorStore.isSearch ? (
+          <ReadModeContainer style={{ display: 'flex' }}>
+            <StyledWaplSearch
+              onChange={handleSearchInputChange}
+              placeholder='내용 검색'
+              onEnterDown={handleSearchEditor}
+              onClear={handleClearSearch}
+              onSearchPrev={handleSearchPrev}
+              onSearchNext={handleSearchNext}
+              className=''
+              isCountExist={EditorStore.searchResultState ? true : false}
+              SearchNumber={EditorStore.searchCurrentCount}
+              TotalNumber={EditorStore.searchTotalCount}
+            />
+          </ReadModeContainer>) : null}
         <Editor
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
           init={{
+            selector: 'noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
             height: 'calc(100% - 8.8rem)',
@@ -409,7 +496,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile | searchreplace"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
@@ -439,3 +526,18 @@ const EditorContainer = () => {
 };
 
 export default EditorContainer;
+
+const StyledWaplSearch = styled(WaplSearch)`
+  width: 100%;
+  background-color: #F7F4EF;
+  margin: 0 0.438rem;
+  border-bottom: 0rem solid #17202b;
+  border-radius: 0.375rem;
+  &:hover:not(:focus-within){
+    background-color: #F7F4EF !important;
+  }
+  &:focus-within {
+    background-color: #FFFFFF;
+    border: 1px solid #7B7671;
+  }
+`

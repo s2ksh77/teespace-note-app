@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { Dropdown } from 'antd';
+import NoteStore from '../store/noteStore';
 
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 0.75rem;
+  margin-left: ${props => props.layoutState === "collapse" ? "0.75rem" : "0rem"}
 `;
 
 export const ContentHeaderCover = styled.div`

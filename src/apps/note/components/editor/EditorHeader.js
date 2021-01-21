@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import {
@@ -9,11 +9,15 @@ import {
   EditingImg,
   ModifiedUser,
   ModifiedTime,
+  EditorSearchIconDiv,
+  EditorSearchIcon,
 } from '../../styles/titleStyle';
 import ContentHeader from '../common/ContentHeader';
 import editingImg from '../../assets/TeeSpace_working.gif';
 import { handleFileSync } from '../common/NoteFile';
 import { useCoreStores } from 'teespace-core';
+import searchImg from '../../assets/search.svg';
+import Mark from 'mark.js';
 
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -51,6 +55,7 @@ const EditorHeader = () => {
       await handleFileSync()
         .then(() => PageStore.handleSave());
     }
+    EditorStore.setIsSearch(false);
   };
 
   const handleTitleInput = e => {
@@ -62,6 +67,19 @@ const EditorHeader = () => {
 
   const editBtnText =
     PageStore.isReadMode() ? '수정' : '저장';
+
+  const handleSearchEditor = () => {
+    EditorStore.isSearch ? EditorStore.setIsSearch(false) : EditorStore.setIsSearch(true)
+    initialSearch();
+  }
+  const initialSearch = () => {
+    const instance = new Mark(EditorStore.tinymce?.getBody());
+    instance.unmark();
+    EditorStore.setSearchResultState(false);
+    EditorStore.setSearchValue('');
+    EditorStore.setSearchTotalCount(0);
+    EditorStore.setSearchCurrentCount(0);
+  }
 
   return useObserver(() => (
     <>
@@ -89,6 +107,9 @@ const EditorHeader = () => {
               : PageStore.currentPageData.user_name}
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
+          <EditorSearchIconDiv onClick={handleSearchEditor}>
+            <EditorSearchIcon src={searchImg} />
+          </EditorSearchIconDiv>
         </EditorHeaderContainer2>
       </ContentHeader>
     </>

@@ -306,6 +306,7 @@ const PageStore = observable({
 
   createNotePage() {
     this.createPage('(제목 없음)', null, this.createParent).then(dto => {
+      EditorStore.setIsSearch(false);
       ChapterStore.getNoteChapterList();
       this.setIsEdit(dto.is_edit);
       this.noteTitle = '';
@@ -570,6 +571,7 @@ const PageStore = observable({
           this.fetchNoteInfoList(dto.note_id);
           EditorStore.tinymce?.setContent(this.currentPageData.note_content);
           NoteStore.setShowModal(false);
+          EditorStore.setIsSearch(false);
         }
       );
   },
@@ -645,7 +647,7 @@ const PageStore = observable({
           for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
             var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
             if (tableTitle !== undefined) return tableTitle;
-          }          
+          }
           // if (i === contentList.length - 1) return '(표)'; >> length-1이어야하는건가??? 주석처리하고 위에 if문 추가
         } else if (contentList[i].tagName === 'IMG') {
           if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
@@ -671,11 +673,11 @@ const PageStore = observable({
             if (!!contentList[i].textContent) {
               const temp = this._findFirstTextContent(contentList[i]);
               if (temp) return temp;
-            } 
+            }
             // 이미지만 있을 때
             const imgName = ImgList[0].dataset.name;
             return imgName ? imgName : ImgList[0].src;
-            
+
             // 예전 코드 혹시 몰라 남겨둠
             // if (contentList[i].getElementsByTagName('img').length > 0) {
             //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
@@ -717,16 +719,16 @@ const PageStore = observable({
       let hasLineBreak = false;
       // (참고) text노드면 nodeName이 #text다
       // 줄바꿈, 이미지가 있으면 자식 노드 탐색하는 for문 들어가야한다
-      if (Array.from(parent.childNodes).some(node=> ['DIV', 'PRE','P','IMG','BR'].includes(node.nodeName))) hasLineBreak = true;
+      if (Array.from(parent.childNodes).some(node => ['DIV', 'PRE', 'P', 'IMG', 'BR'].includes(node.nodeName))) hasLineBreak = true;
 
-      if (!hasLineBreak) return parent.textContent.slice(0,200);
+      if (!hasLineBreak) return parent.textContent.slice(0, 200);
       // 줄바꿈이 있으면 찾아서 첫 줄만 출력
       for (let item of Array.from(parent.childNodes)) {
         // dataset.name 없으면 src 출력
         if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
         if (!item.textContent || item.tagName === 'BR') continue;
         // 안에 자식 태그를 갖는 태그들은 depth 한 단계 더 들어가기
-        if (['DIV', 'PRE','P'].includes(item.tagName)) return this._findFirstTextContent(item);
+        if (['DIV', 'PRE', 'P'].includes(item.tagName)) return this._findFirstTextContent(item);
         // todo : error 없으려나 테스트 필요
         if (item.tagName === 'SPAN') return item.textContent.slice(0, 200);
         // depth가 더 있으면 들어간다

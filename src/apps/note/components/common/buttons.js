@@ -42,7 +42,7 @@ const HeaderButtons = () => {
 
   const handleCancelBtn = e => {
     if (!PageStore.isReadMode()) {
-      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) {PageStore.handleNoneEdit(); return;}
+      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) { PageStore.handleNoneEdit(); return; }
       NoteStore.setModalInfo('editCancel'); return;
     }
     EventBus.dispatch('onLayoutClose');
@@ -50,7 +50,7 @@ const HeaderButtons = () => {
 
   return useObserver(() => (
     <>
-      <HeaderButtonContainer>
+      <HeaderButtonContainer layoutState={NoteStore.layoutState}>
         <Button style={style} src={onChangeImg()} onClick={handleLayoutState} />
         <Button style={style} src={cancel} onClick={handleCancelBtn} />
       </HeaderButtonContainer>
