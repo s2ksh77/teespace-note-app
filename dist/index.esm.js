@@ -7241,9 +7241,10 @@ var changeLinkDialog = function changeLinkDialog() {
     var dialog = document.querySelector('.tox-dialog');
     dialog.classList.add("custom-link-dialog");
     var footer = dialog.querySelector('.tox-dialog__footer');
+    changeLinkDialogFooter(footer); // 일단 버튼 위치 바꾸기
+
     changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
     changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
-    changeLinkDialogFooter(footer);
   } catch (err) {
     throw Error(err);
   }
