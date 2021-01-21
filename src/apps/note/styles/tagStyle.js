@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import { Collapse, Tag } from 'antd';
 
+export const TagContainerCover = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
 export const EditorTagCover = styled.div`
   white-space: nowrap;
   width: calc(100% - 0px);
@@ -156,7 +163,7 @@ export const TagChip = styled(Tag)`
   user-select: none;
   outline: none !important;
   background-color: #F7F4EF;
-  border: 0px solid #7B7671;
+  border: 1px solid transparent;
   border-radius: 25px;
   padding: 0 0.63rem;
   transition-duration: 0s;

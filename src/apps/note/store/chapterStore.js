@@ -513,6 +513,7 @@ const ChapterStore = observable({
       if (idx === moveTargetChapterIdx) chapters.push(...sortedMoveChapters);
       if (!this.moveInfoMap.get(chapter.id)) chapters.push(chapter);
     });
+    if (moveTargetChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
 
     let moveCnt = 0;
     const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].item.id);

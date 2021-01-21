@@ -103,7 +103,9 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             >
               <FoldBtnImg src={foldImg} />
             </FoldBtn>
-            {NoteStore.showPage ? <PageContainer /> : <TagContainer />}
+            <PageContainer />
+            <TagContainer />
+            {/* {NoteStore.showPage ? <PageContainer /> : <TagContainer />} */}
           </Content>
           <Toast
             visible={NoteStore.isVisibleToast}
