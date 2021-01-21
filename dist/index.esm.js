@@ -6902,7 +6902,7 @@ var LNBHeader = function LNBHeader(_ref) {
 };
 
 function _templateObject10$4() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.81rem !important;\n  color: #000000 !important;\n  height: 50%;\n  width: calc(100% - 1.6rem);\n  max-width: calc(100% - 1.6rem);\n  overflow: hidden;\n  align-self: center;\n  border: 0rem !important;\n  background-color: transparent !important;\n  margin-right: 0.9375rem;\n  padding-right: 0.3125rem;\n  &::placeholder {\n    color: #d0d0d0;\n  }\n  &::selection {\n    background: rgba(30, 168, 223, 0.2);\n    color: #000000;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.81rem !important;\n  color: #000000 !important;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  align-self: center;\n  border: 0rem !important;\n  background-color: transparent !important;\n  padding-left: 1.69rem;\n  // padding-right: 0.3125rem;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject10$4 = function _templateObject10() {
     return data;
@@ -6942,7 +6942,7 @@ function _templateObject7$4() {
 }
 
 function _templateObject6$4() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.69rem;\n  padding-right: 1.69rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.69rem;\n  padding-right: 1.69rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n"]);
 
   _templateObject6$4 = function _templateObject6() {
     return data;
@@ -7091,9 +7091,9 @@ var LNBNewChapterForm = observer(function (_ref) {
     if (titleRef.current && focusCondition) titleRef.current.focus();
   }, [ChapterStore$1.isNewChapter, NoteStore$2.showModal]);
   if (!show) return null;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNBNewChapter, null, /*#__PURE__*/React.createElement(ChapterColor, {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNBNewChapter, null, /*#__PURE__*/React.createElement(ChapterTitle, null, /*#__PURE__*/React.createElement(ChapterColor, {
     color: ChapterStore$1.isNewChapterColor
-  }), /*#__PURE__*/React.createElement(ChapterTitle, null, /*#__PURE__*/React.createElement(ChapterInput, {
+  }), /*#__PURE__*/React.createElement(ChapterInput, {
     ref: titleRef,
     placeholder: "\uC0C8 \uCC55\uD130",
     maxLength: "200",
@@ -8272,7 +8272,7 @@ function _templateObject7$5() {
 }
 
 function _templateObject6$5() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n"]);
 
   _templateObject6$5 = function _templateObject6() {
     return data;
