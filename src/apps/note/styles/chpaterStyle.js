@@ -76,6 +76,13 @@ export const ChapterTextInput = styled.input`
   font-weight: 400;
   border: none;
   outline: none;
+  &::placeholder {
+    color: #D0D0D0;
+  }
+  &::selection {
+    background: #F2EFEC;
+    color: #000000;
+  }
 `;
 
 export const ChapterTitle = styled.span`
@@ -118,20 +125,19 @@ export const ChapterFolderBtn = styled.span`
 export const ChapterInput = styled.input`
   font-size: 0.81rem !important;
   color: #000000 !important;
-  height: 50%;
-  width: calc(100% - 1.6rem);
-  max-width: calc(100% - 1.6rem);
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   align-self: center;
   border: 0rem !important;
   background-color: transparent !important;
-  margin-right: 0.9375rem;
-  padding-right: 0.3125rem;
+  padding-left: 1.69rem;
+  // padding-right: 0.3125rem;
   &::placeholder {
-    color: #d0d0d0;
+    color: #D0D0D0;
   }
   &::selection {
-    background: rgba(30, 168, 223, 0.2);
+    background: #F2EFEC;
     color: #000000;
   }
   &:focus {

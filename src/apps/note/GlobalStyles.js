@@ -93,13 +93,49 @@ export const GlobalStyle = createGlobalStyle`
       border-left: 0.5rem solid #FB3A3A;
       transform: translate(-0.43rem, -1.405rem);
     }
-  }  
-  .link-dialog-reverse {
-    flex-direction:column-reverse !important;
   }
-  .note-link-footer{
-    flex-direction:row-reverse !important;
+  .custom-dialog-header {
+    height: 2.75rem !important;
+    border-bottom: 1px solid #DDD9D4 !important;
+    font-size: 0.875rem !important;
+    color: #000000 !important;
+  }
+  .custom-link-dialog {
+    height:18rem !important;
+  }
+  .custom-dialog-title {
+    font-weight: bold !important;
     margin: auto !important;
+  }
+  .custom-dialog-form label{
+    margin-bottom:0.75rem !important;
+    font-weight: bold !important;
+  }
+  .custom-dialog-form input{
+    height:1.88rem !important;
+  }
+  .custom-dialog-form .tox-form__group:nth-child(1) input{
+    margin-bottom:1.25rem !important;
+  }
+  .custom-dialog-footer {
+    height: 4.39rem !important;
+  }
+  .custom-dialog-btns{
+    margin: auto !important;
+  }
+  .custom-dialog-btns button {
+    width:4.5rem !important;
+    height:1.88rem !important;
+    font-size:0.75rem !important;
+  }
+  .custom-dialog-btns button:nth-child(1) {
+    background-color: #232D3B !important;
+    color: white !important;
+  }
+  .custom-dialog-btns button:nth-child(2) {
+    background-color:#FFFFFF !important;
+    border: 1px solid #D0CCC7 !important;
+    color: #3B3B3B !important;
   }
   .link-toolbar {
     flex-direction:column !important;
@@ -127,13 +163,14 @@ export const GlobalStyle = createGlobalStyle`
   }
   .note-link-error-tooltip{
     display:none;
-    width: 10.5rem !important;
+    width: 11rem !important;
     height: 1.5rem !important;
+    font-size:0.75rem !important;    
     background: #FF5151 !important;
     border-radius:10px !important;
     position:absolute !important;
-    top:-80% !important;
-    right: 3% !important;
+    top:-90% !important;
+    right: 0rem !important;
     align-items: center !important;
     justify-content: center !important;
     color: #ffffff !important;

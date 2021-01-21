@@ -49,8 +49,8 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
   return (
     <>
       <LNBNewChapter>
-        <ChapterColor color={ChapterStore.isNewChapterColor} />
         <ChapterTitle>
+          <ChapterColor color={ChapterStore.isNewChapterColor} />
           <ChapterInput
             ref={titleRef}
             placeholder="새 챕터"

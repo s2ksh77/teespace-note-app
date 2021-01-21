@@ -62,6 +62,13 @@ export const PageTextInput = styled.input`
   font-weight: 400;
   border: none;
   outline: none;
+  &::placeholder {
+    color: #D0D0D0;
+  }
+  &::selection {
+    background: #F2EFEC;
+    color: #000000;
+  }
 `;
 
 export const NewPage = styled.span`
