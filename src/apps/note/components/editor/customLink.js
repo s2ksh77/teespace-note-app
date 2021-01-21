@@ -5,8 +5,9 @@ import { isFilled, validUrl, checkUrlValidation } from '../common/validators.js'
   Link Dialog 관련
 */
 const changeLinkDialogHeader = (header) => {
+  header.classList.add("custom-dialog-header")
   const title = header.querySelector('.tox-dialog__title');
-  title.style.margin = 'auto';
+  title.classList.add("custom-dialog-title");
   title.textContent = '링크 삽입';
 }
 
@@ -42,13 +43,17 @@ const renderValidation = (targetInput, errorMark, saveBtn) => {
 }
 
 const changeLinkDialogForm = (form, footer) => {
+  // 텍스트, 링크 순으로 바꿔주기
+  form.insertBefore(form.children[1],form.children[0]);
+  form.classList.add("custom-dialog-form");
+
   const formStr = {
     url: "링크",
     text: "텍스트"
   }
   // string 바꿔주기, renderValidationErrorMark
   Array.from(form.childNodes).map((child, idx) => {
-    const label$ = child.querySelector('.tox-form__group label');
+    const label$ = child.querySelector('.tox-form__group label');    
     const input$ = child.querySelector('input');
     const content =
       input$.getAttribute('type') === "url" ? "url" : "text";
@@ -59,7 +64,7 @@ const changeLinkDialogForm = (form, footer) => {
       Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
     */
     if (content === "url") {
-      const saveBtn = footer.querySelector('.tox-dialog__footer-end')?.childNodes[1];
+      const saveBtn = footer.querySelector('.tox-dialog__footer-end')?.childNodes[0];
       const errorMark = renderErrorMark(input$.parentElement);
       // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
       renderValidation(input$, errorMark, saveBtn);
@@ -68,18 +73,19 @@ const changeLinkDialogForm = (form, footer) => {
       }
     }
   });
-
-  // 텍스트, 링크 순으로 바꿔주기
-  form.classList.add('link-dialog-reverse');
 }
 
 const changeLinkDialogFooter = (footer) => {
-  const btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('note-link-footer')
+  footer.classList.add("custom-dialog-footer");
+  const btnGroup = footer.querySelector('.tox-dialog__footer-end');  
+  btnGroup.classList.add('custom-dialog-btns')
+  // 저장, 취소 버튼 위치 바껴야 한다
+  btnGroup.insertBefore(btnGroup.children[1],btnGroup.children[0]);
 }
 export const changeLinkDialog = () => {
   try {
     const dialog = document.querySelector('.tox-dialog');
+    dialog.classList.add("custom-link-dialog");
     const footer = dialog.querySelector('.tox-dialog__footer')
     changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
     changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);

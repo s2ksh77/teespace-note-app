@@ -262,6 +262,9 @@ export const editorContentCSS = `
   .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
     background-color: #f8cac6;
   }
+  .mce-content-body [data-mce-selected=inline-boundary] {
+    background-color:#FFE362;
+  }
   table[style*="border-width: 0px"],
   .mce-item-table:not([border]),
   .mce-item-table[border="0"],
