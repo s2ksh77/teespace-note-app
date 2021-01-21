@@ -156,7 +156,7 @@ export const TagChip = styled(Tag)`
   user-select: none;
   outline: none !important;
   background-color: #F7F4EF;
-  border: 0px solid #7B7671;
+  border: 1px solid transparent;
   border-radius: 25px;
   padding: 0 0.63rem;
   transition-duration: 0s;
