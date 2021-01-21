@@ -1375,7 +1375,7 @@ var TagStore = observable({
   // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearchLoading: false,
   searchStr: "",
-  tagPanelLoading: true,
+  tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -1860,21 +1860,17 @@ var TagStore = observable({
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              _this7.setTagPanelLoading(true);
-
-              _context12.next = 3;
+              _context12.next = 2;
               return _this7.fetchAllSortedTagList();
 
-            case 3:
+            case 2:
               // 키-태그 pair obj
               _this7.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
 
 
               _this7.categorizeTagObj();
 
-              _this7.setTagPanelLoading(false);
-
-            case 6:
+            case 4:
             case "end":
               return _context12.stop();
           }
@@ -3219,7 +3215,7 @@ var PageStore = observable((_observable$1 = {
     var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var item, sortedMoveInfoList, sortedMovePages, pageIds2, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
+      var item, sortedMoveInfoList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
@@ -3229,13 +3225,13 @@ var PageStore = observable((_observable$1 = {
               sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
                 return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
               });
-              pageIds2 = []; // 갈아 끼울 페이지 아이디 리스트
+              pageIds = []; // 갈아 끼울 페이지 아이디 리스트
 
               item[moveTargetChapterIdx].children.forEach(function (pageId, idx) {
-                if (idx === moveTargetPageIdx) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
-                if (!_this4.moveInfoMap.get(pageId)) pageIds2.push(pageId);
+                if (idx === moveTargetPageIdx) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
+                if (!_this4.moveInfoMap.get(pageId)) pageIds.push(pageId);
               });
-              if (moveTargetPageIdx >= pageIds2.length) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
+              if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
               _context9.next = 8;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
                 if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
@@ -3245,7 +3241,7 @@ var PageStore = observable((_observable$1 = {
               }));
 
             case 8:
-              item[moveTargetChapterIdx].children = pageIds2;
+              item[moveTargetChapterIdx].children = pageIds;
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
@@ -4516,6 +4512,7 @@ var ChapterStore = observable((_observable$2 = {
     if (idx === moveTargetChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
     if (!_this11.moveInfoMap.get(chapter.id)) chapters.push(chapter);
   });
+  if (moveTargetChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
   var moveCnt = 0;
   var startIdx = chapters.findIndex(function (chapter) {
     return chapter.id === sortedMoveInfoList[0].item.id;
