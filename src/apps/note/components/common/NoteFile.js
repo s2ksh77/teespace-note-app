@@ -408,13 +408,13 @@ export const isTxt = {ext:['txt'], isPreview:false};
 export const isPdf = {ext:['pdf'], isPreview:false};
 export const isZip = {ext:['zip','tar','rar','tgz','war','alz','ace','arc','arj','b64', 'bh','bhx','bin',
   'bz2','cab','ear','enc','gz', 'ha','hqx','ice','img','jar','lha','lzh','mim','pak','uue','xxe','zoo'], isPreview:false};
-export const isExe = {ext:['exe'], isPreview:false};
+export const isEtc = {ext:['exe','psd','mui','dll'], isPreview:false};
 
 export const fileCategory = {
   isImg,
   isVideoWithoutPreview,
   isVideoWithPreview,
-  isAudio,isPowerPoint, isWord, isExcel,isHangul,isTxt,isPdf, isZip, isExe}
+  isAudio,isPowerPoint, isWord, isExcel,isHangul,isTxt,isPdf, isZip, isEtc}
 
 export const isPreview = (extension) => {
   const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
