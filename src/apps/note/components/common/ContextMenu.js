@@ -167,6 +167,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
   return useObserver(() => (
     <ContextMenuCover
       className="ellipsisBtn"
+      right={noteType === 'page' ? '0.3rem' : '0'}
       overlay={menu}
       trigger={['click']}
       placement="bottomRight"

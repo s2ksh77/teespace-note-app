@@ -25,9 +25,10 @@ export const PageTextCover = styled.span`
 export const PageTextContainer = styled.span`
   width: 100%;
   display: flex;
-  padding-right: 0.25rem;
+  padding-right: 1.25rem;
   box-sizing: border-box;
   border-radius: 0.31rem;
+  align-items: center;
   &:hover:not(.ellipsisBtn){
     background-color: #FAF8F7;
     border-radius: 0.31rem;
@@ -44,8 +45,6 @@ export const PageText = styled.a`
   line-height: 130%;
   color: #000000 !important;
   align-self: center;
-  max-width: calc(100% - 2rem);
-  min-width: calc(100% - 2.775rem);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -55,17 +54,14 @@ export const PageText = styled.a`
 `;
 
 export const PageTextInput = styled.input`
-  display: inline-block;
-  margin-left: 1.13rem;
-  line-height: 130%;
-  align-self: center;
-  min-width: calc(100% - 0.9rem);
-  overflow: hidden;
-  white-space: nowrap;
-  font-weight: 300;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  font-weight: 400;
   border: none;
   outline: none;
-  background-color: rgba(30,168,223,0.0);
 `;
 
 export const NewPage = styled.span`

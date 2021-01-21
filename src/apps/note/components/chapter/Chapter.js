@@ -209,7 +209,17 @@ const Chapter = ({ chapter, index, isShared }) => {
         itemType="chapter"
       >
         <ChapterCover
-          className={'chapter-div'}
+          className={'chapter-div'
+          + (ChapterStore.isCtrlKeyDown
+              ? (ChapterStore.moveInfoMap.get(chapter.id)
+                ? ' selectedMenu'
+                : '')
+              : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0
+                  ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
+                  : chapter.id === ChapterStore.currentChapterId)
+                ? ' selectedMenu'
+                : '')
+          }
           ref={
             !ChapterStore.renameChapterId
               ? (!isShared

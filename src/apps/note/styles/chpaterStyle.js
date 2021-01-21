@@ -22,12 +22,13 @@ export const ChapterCover = styled.div`
   height: 2.81rem;
   display: flex;
   margin: 4px 0 4px 0;
+  align-items: center;
   font-weight: 500;
   border-bottom: 0.0625rem solid #dadada;
   &:hover .ellipsisBtn {
     visibility: visible;
   }
-  &:hover:not(.ellipsisBtn) {
+  &:hover {
     background-color: #FAF8F7;
     border-radius: 0.31rem;
   }
@@ -68,49 +69,49 @@ export const Color = styled.span`
 
 export const ChapterTextInput = styled.input`
   display: flex;
-  margin-left:1.69rem;
-  margin-right: 0.2rem;
-  min-width: calc(100% - 1.5rem);
+  width: 100%;
   height: 100%;
-  font-weight: 300;
+  padding-left: 1.69rem;
+  padding-right: 1.69rem;
+  font-weight: 400;
   border: none;
   outline: none;
 `;
 
 export const ChapterTitle = styled.span`
+  position: relative;
   display: flex;
   flex: auto;
-  margin-left: 1.69rem;
+  width: 100%;
   height: 100%;
   font-weight: 500;
-  max-width: calc(100% - 3.36rem);
   align-items: center;
   cursor: pointer;
+  max-width: calc(100% - 1.93rem);
 `;
 
 export const ChapterTextSpan = styled.span`
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100%;
-  min-width: calc(100% - 1.3rem);
   line-height: normal;
   font-weight: 400;
+  margin-left: 1.69rem;
 `;
 
 export const ChapterFolderBtn = styled.span`
   display: flex;
-  align-self: center;
   flex: 0 0 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
-  border-radius: 1.5rem 1.5rem;
+  border-radius: 0.38rem;
   align-items: center;
-  cursor: pointer;
-  margin-left: 0.2rem;
   justify-content: center;
-  &:hover{
-    background-color :rgba(30,168,223,0.2);
+  margin-left: 0.15rem;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(235, 230, 223, 1);
   }
 `;
 
