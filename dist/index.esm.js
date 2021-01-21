@@ -6563,7 +6563,7 @@ function _templateObject9$3() {
 }
 
 function _templateObject8$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  color: ", ";\n  &:hover .ellipsisBtn {\n    background-color: rgba(30, 168, 223, 0.2);\n  }\n  &:hover:not(.ellipsisBtn) {\n    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  color: ", ";\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n"]);
 
   _templateObject8$3 = function _templateObject8() {
     return data;
