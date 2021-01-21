@@ -430,12 +430,12 @@ const PageStore = observable({
     const sortedMoveInfoList = this.getSortedMoveInfoList();
     const sortedMovePages = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx].children[moveInfo.pageIdx]);
 
-    const pageIds2 = []; // 갈아 끼울 페이지 아이디 리스트
+    const pageIds = []; // 갈아 끼울 페이지 아이디 리스트
     item[moveTargetChapterIdx].children.forEach((pageId, idx) => {
-      if (idx === moveTargetPageIdx) pageIds2.push(...sortedMovePages);
-      if (!this.moveInfoMap.get(pageId)) pageIds2.push(pageId);
+      if (idx === moveTargetPageIdx) pageIds.push(...sortedMovePages);
+      if (!this.moveInfoMap.get(pageId)) pageIds.push(pageId);
     });
-    if (moveTargetPageIdx >= pageIds2.length) pageIds2.push(...sortedMovePages);
+    if (moveTargetPageIdx >= pageIds.length) pageIds.push(...sortedMovePages);
 
     await Promise.all(sortedMoveInfoList.slice().reverse().map(moveInfo => {
       if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
@@ -444,7 +444,7 @@ const PageStore = observable({
       }
     }));
 
-    item[moveTargetChapterIdx].children = pageIds2;
+    item[moveTargetChapterIdx].children = pageIds;
 
     let moveCntInSameChapter = 0;
     let moveCntToAnotherChapter = 0;
