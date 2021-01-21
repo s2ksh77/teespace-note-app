@@ -1,5 +1,12 @@
 import styled from "styled-components";
 
+export const PageContainerCover = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
 export const PageCover = styled.li`
   display: flex;
   width: 100%;

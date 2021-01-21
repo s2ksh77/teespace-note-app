@@ -137,6 +137,7 @@ const Chapter = ({ chapter, index, isShared }) => {
     ChapterStore.setCurrentChapterId(chapter.id);
     let pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
+    PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
     if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {

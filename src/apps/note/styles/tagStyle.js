@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import { Collapse, Tag } from 'antd';
 
+export const TagContainerCover = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
 export const EditorTagCover = styled.div`
   white-space: nowrap;
   width: calc(100% - 0px);

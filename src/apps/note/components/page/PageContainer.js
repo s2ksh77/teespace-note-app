@@ -4,12 +4,13 @@ import { observer } from 'mobx-react';
 import EditorContainer from '../editor/EditorContainer';
 import LoadingImgContainer from '../common/LoadingImgContainer';
 import PageNotFound from './PageNotFound';
-
-const { ChapterStore, PageStore } = useNoteStore();
+import { PageContainerCover } from '../../styles/pageStyle';
 
 // 페이지 보여줄 때
 const PageContainer = observer(() => {
-  const el = (() => {
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+
+  const renderContent = (() => {
     if (ChapterStore.loadingPageInfo) return <LoadingImgContainer />
     if (ChapterStore.currentChapterId) {
       if (PageStore.currentPageId) return <EditorContainer />;
@@ -17,7 +18,14 @@ const PageContainer = observer(() => {
     }
     return <PageNotFound type={"chapter"} />
   })();
-  return el;
+
+  return (
+    <PageContainerCover
+      style={NoteStore.showPage ? { display: 'flex' } : { display: 'none' }}
+    >
+      {renderContent}
+    </PageContainerCover>
+  );
 })
 
 export default PageContainer;

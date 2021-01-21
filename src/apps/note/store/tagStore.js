@@ -36,7 +36,7 @@ const TagStore = observable({
   // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearchLoading: false,
   searchStr: "",
-  tagPanelLoading: true,
+  tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   async getTagNoteList(tagId) {
     const res = await NoteRepository.getTagNoteList(tagId);
@@ -285,13 +285,11 @@ const TagStore = observable({
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
   // 일련의 flow
   async fetchTagData() {
-    this.setTagPanelLoading(true);
     await this.fetchAllSortedTagList();
     // 키-태그 pair obj
     this.createKeyTagPairObj();
     // kor, eng, num, etc별 sort한 키
     this.categorizeTagObj();
-    this.setTagPanelLoading(false);
   },
 
   async searchTag(str) {
