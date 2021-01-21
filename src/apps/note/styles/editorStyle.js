@@ -4,9 +4,14 @@ import styled, { css } from 'styled-components';
 export const EditorContainerWrapper = styled.div`
   width:100%;
   height:100%;
-  ${props => props.mode === "false" && css`
+  ${props => (props.mode === "false" && props.isSearch === "false") && css`
     .tox-editor-header{
      display:block;
+    }
+  `}
+  ${props => (props.mode === "false" && props.isSearch === "true") && css`
+    .tox-editor-header{
+     display:none;
     }
   `}
   ${props => props.mode === "true" && css`
@@ -24,14 +29,24 @@ export const EditorContainerWrapper = styled.div`
       height: calc(100% - 13rem) !important;
     }
   `}
-  ${props => (props.isFile === "false" && props.mode === "false") && css`
+  ${props => (props.isFile === "false" && props.mode === "false" && props.isSearch === "false") && css`
     .tox-tinymce{
       height: calc(100% - 6rem) !important;
     }
   `}
-  ${props => (props.isFile === "true" && props.mode === "false") && css`
+  ${props => (props.isFile === "false" && props.mode === "false" && props.isSearch === "true") && css`
     .tox-tinymce{
-      height: calc(100% - 10.2rem) !important;
+      height: calc(100% - 8.8rem) !important;
+    }
+  `}
+  ${props => (props.isFile === "true" && props.mode === "false" && props.isSearch === "false") && css`
+    .tox-tinymce{
+      height: calc(100% - 10.1rem) !important;
+    }
+  `}
+  ${props => (props.isFile === "true" && props.mode === "false" && props.isSearch === "true") && css`
+    .tox-tinymce{
+      height: calc(100% - 12.9rem) !important;
     }
   `}
 `;
@@ -285,5 +300,12 @@ export const editorContentCSS = `
   }
   img {
     max-width: 100%;
+  }
+  mark {
+    background-color: #FEF3BE;
+    color : #000000; 
+  }
+  mark.searchselected{
+    background-color: #FFD200 !important;
   }
 `

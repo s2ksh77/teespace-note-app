@@ -32,6 +32,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.setCurrentPageId(id);
     PageStore.fetchCurrentPageData(id);
+    EditorStore.setIsSearch(false);
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
     EditorStore.tinymce?.undoManager.clear();

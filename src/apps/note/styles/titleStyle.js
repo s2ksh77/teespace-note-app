@@ -84,11 +84,25 @@ export const ModifiedTime = styled.span`
   color: rgb(0, 0, 0);
   font-size: 0.6875rem;
   border-left: 1px solid #d8d8d8 !important;
-  padding: 0 0 0 0.38rem !important;
+  padding: 0 0.38rem !important;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 `;
+
+export const EditorSearchIconDiv = styled.div`
+  display: flex;
+  padding: 8px;
+  &:hover{
+    background: #ebe6df;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+`
+
+export const EditorSearchIcon = styled.img`
+  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);
+`
 
 export const LnbTitleCover = styled.div`
   width: 100%;

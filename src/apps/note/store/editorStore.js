@@ -6,7 +6,7 @@ import PageStore from './pageStore';
 import NoteStore from './noteStore';
 
 const EditorStore = observable({
-  tempTinymce:null,
+  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -17,6 +17,7 @@ const EditorStore = observable({
   isAttatch: false,
   isPreview: false,
   isSaveDrive: false,
+  isSearch: false,
   previewFileMeta: {},
   selectFileIdx: '',
   selectFileElement: '',
@@ -45,6 +46,10 @@ const EditorStore = observable({
   processLength: 0,
   processCount: 0,
   failCount: 0,
+  searchResultState: false,
+  searchCurrentCount: 1,
+  searchTotalCount: 0,
+  searchValue: '',
   getTempTinymce() {
     return this.tempTinymce
   },
@@ -94,6 +99,21 @@ const EditorStore = observable({
   },
   setIsPreview(flag) {
     this.isPreview = flag;
+  },
+  setIsSearch(flag) {
+    this.isSearch = flag;
+  },
+  setSearchValue(value) {
+    this.searchValue = value
+  },
+  setSearchTotalCount(count) {
+    this.searchTotalCount = count;
+  },
+  setSearchCurrentCount(count) {
+    this.searchCurrentCount = count;
+  },
+  setSearchResultState(flag) {
+    this.searchResultState = flag;
   },
   setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
