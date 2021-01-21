@@ -82,11 +82,9 @@ export const LnbTagContainer = styled.div`
   border-bottom: 0.0625rem solid #dadada;
   margin: 0 0.81rem;
   color: ${props => props.color || ''};
-  &:hover .ellipsisBtn {
-    background-color: rgba(30, 168, 223, 0.2);
-  }
-  &:hover:not(.ellipsisBtn) {
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+  &:hover {
+    background-color: #FAF8F7;
+    border-radius: 0.31rem;
   }
 `;
 
