@@ -5,16 +5,16 @@ import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
 import downloadBtn from '../../assets/drive_download.svg';
-import txt from '../../assets/drive_txt.svg';
-import excel from '../../assets/drive_tocell.svg';
-import file from '../../assets/drive_file.svg';
-import ppt from '../../assets/drive_topoint.svg';
-import pdf from '../../assets/drive_pdf.svg';
+import txt from '../../assets/txt.svg';
+import excel from '../../assets/cell.svg';
+import ppt from '../../assets/point.svg';
+import pdf from '../../assets/pdf.svg';
+import etc from '../../assets/etc.svg';
 import zip from '../../assets/zip.svg';
-import docs from '../../assets/drive_toword.svg';
-import hangul from '../../assets/drive_tohangul.svg';
+import docs from '../../assets/word.svg';
+import hangul from '../../assets/hangul.svg';
 import video from '../../assets/movie.svg';
-import audio from '../../assets/drive_audio.svg';
+import audio from '../../assets/audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
 import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -56,7 +56,7 @@ const FileLayout = () => {
           return video;
         case 'isAudio':
           return audio;
-        default: return file;
+        default: return etc;
       }
     }
     const handleFileDown = (key) => {

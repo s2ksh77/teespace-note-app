@@ -114,16 +114,15 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
           <TempEditor />
-          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Message") ? 
+          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Message") && 
             <Message 
               visible={true}
               type={NoteStore.modalInfo.type}
               title={NoteStore.modalInfo.title}
               subtitle={NoteStore.modalInfo.subTitle}
               btns={NoteStore.modalInfo.btns}        
-            /> 
-          : null}
-          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Modal") ?
+            />}
+          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Modal") &&
             <Modal
               visible={true}
               title={NoteStore.modalInfo.title}
@@ -133,8 +132,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
               wrapClassName={NoteStore.modalInfo.className}
             >
               {NoteStore.modalInfo.children}
-            </Modal>
-          : null}
+            </Modal>}
         </>
       }
     </>

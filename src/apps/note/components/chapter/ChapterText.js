@@ -26,19 +26,7 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
 
   return useObserver(() => (
     <>
-      <ChapterTitle
-        className={
-          (ChapterStore.isCtrlKeyDown
-            ? (ChapterStore.moveInfoMap.get(chapter.id)
-              ? 'selectedMenu'
-              : '')
-            : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0
-                ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
-                : chapter.id === ChapterStore.currentChapterId)
-              ? 'selectedMenu'
-              : '')
-        }
-      >
+      <ChapterTitle>
         <Tooltip title={isEllipsisActive ? chapter.text : null} placement='bottomLeft'>
           <ChapterTextSpan onMouseOver={handleTooltip}>{chapter.text}</ChapterTextSpan>
         </Tooltip>
@@ -61,7 +49,7 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
       <ChapterFolderBtn>
         <FontAwesomeIcon
           icon={isFolded ? faAngleDown : faAngleUp}
-          style={{ color: '#75757F' }}
+          style={{ color: '#7B7671' }}
           size={"lg"}
           onClick={handleFoldBtnClick}
         />

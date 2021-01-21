@@ -147,28 +147,20 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         }
       />
       {PageStore.getRenamePageId() === page.id ? (
-        <PageTextContainer
-          style={
-            page.id === PageStore.getRenamePageId() && PageStore.isRename
-              ? { background: '#ffffff' }
-              : { background: 'unset' }
-          }
-        >
-          <PageTextInput
-            maxLength="200"
-            placeholder={PageStore.renamePagePrevText}
-            value={PageStore.renamePageText}
-            onClick={e => e.stopPropagation()}
-            onChange={handlePageName}
-            onBlur={handlePageTextInput.bind(null, false)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') handlePageTextInput(false);
-              else if (e.key === 'Escape') handlePageTextInput(true);
-            }}
-            onFocus={handleFocus}
-            autoFocus={true}
-          />
-        </PageTextContainer>
+        <PageTextInput
+          maxLength="200"
+          placeholder={PageStore.renamePagePrevText}
+          value={PageStore.renamePageText}
+          onClick={e => e.stopPropagation()}
+          onChange={handlePageName}
+          onBlur={handlePageTextInput.bind(null, false)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') handlePageTextInput(false);
+            else if (e.key === 'Escape') handlePageTextInput(true);
+          }}
+          onFocus={handleFocus}
+          autoFocus={true}
+        />
       ) : (
         <PageTextCover
           className={
