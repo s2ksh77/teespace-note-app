@@ -4967,8 +4967,7 @@ var NoteMeta = {
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
-      btns: buttonList,
-      customBadge: dialogType.customBadge
+      btns: buttonList
     };
   },
   setEventConfig: function setEventConfig(type) {
@@ -5100,8 +5099,7 @@ var NoteMeta = {
       type: 'default',
       title: '',
       subtitle: null,
-      btns: [],
-      customBadge: null
+      btns: []
     };
     var editingUserName = PageStore.editingUserName;
 

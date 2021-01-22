@@ -58,8 +58,7 @@ const NoteMeta = {
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
-      btns: buttonList,
-      customBadge : dialogType.customBadge
+      btns: buttonList
     }
   },
   setEventConfig(type) {
@@ -141,8 +140,7 @@ const NoteMeta = {
       type: 'default',
       title: '',
       subtitle: null,
-      btns: [],
-      customBadge:null
+      btns: []
     }
     const editingUserName = PageStore.editingUserName;
     switch (type) {
