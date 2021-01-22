@@ -10690,6 +10690,7 @@ var EditorContainer = function EditorContainer() {
   var handleClearSearch = function handleClearSearch() {
     EditorStore.setSearchValue('');
     setSearchValue('');
+    EditorStore.setIsSearch(false);
     EditorStore.setSearchResultState(false);
     instance.unmark();
   };

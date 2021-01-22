@@ -175,6 +175,7 @@ const EditorContainer = () => {
   const handleClearSearch = () => {
     EditorStore.setSearchValue('');
     setSearchValue('');
+    EditorStore.setIsSearch(false);
     EditorStore.setSearchResultState(false);
     instance.unmark();
   }
