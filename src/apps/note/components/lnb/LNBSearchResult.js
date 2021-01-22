@@ -9,11 +9,13 @@ import {
 import shareImg from '../../assets/ts_share@3x.png';
 import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
-
+import Mark from 'mark.js';
 // chapter : id, title, color, firstPageId
 // page : chapterId, chapterTitle, id, title
 const LNBSearchResult = () => {
-  const { ChapterStore, PageStore } = useNoteStore();
+  const { ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const instance = new Mark(EditorStore.tinymce?.getBody());
+
   // 챕터 검색때만 초기화
   const onClickChapterBtn = (chapterId) => async () => {
     ChapterStore.setScrollIntoViewId(chapterId);
@@ -21,7 +23,7 @@ const LNBSearchResult = () => {
     NoteStore.setShowPage(true);
     ChapterStore.getChapterChildren(chapterId).then(data => {
       if (data.noteList && data.noteList.length > 0) {
-        PageStore.fetchCurrentPageData(data.noteList[0].note_id)
+        PageStore.fetchCurrentPageData(data.noteList[0].note_id);
       } else {
         ChapterStore.setCurrentChapterId(chapterId);
         PageStore.setCurrentPageId('');
@@ -31,7 +33,10 @@ const LNBSearchResult = () => {
 
   const onClickPageBtn = (pageId) => async () => {
     if (!PageStore.isReadMode()) return;
-    await PageStore.fetchCurrentPageData(pageId);
+    PageStore.fetchCurrentPageData(pageId).then(() => {
+      instance.unmark();
+      instance.mark(ChapterStore.searchStr);
+    });
     // ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
