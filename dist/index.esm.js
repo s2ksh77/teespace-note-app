@@ -4916,24 +4916,24 @@ var NoteMeta = {
       NoteStore$1.setIsShared(false);
     };
 
+    var initialConfig = {
+      targetComponent: "Modal",
+      name: type,
+      handleCancel: handleCancel
+    };
+
     switch (type) {
       case "viewInfo":
-        return {
-          targetComponent: "Modal",
-          name: type,
+        return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: "정보 보기",
-          handleCancel: handleCancel,
           className: "viewInfoModal"
-        };
+        });
 
       case "forward":
-        return {
-          targetComponent: "Modal",
-          name: type,
+        return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: "다른 룸으로 전달",
-          handleCancel: handleCancel,
           className: "forwardModal"
-        };
+        });
 
       default:
         return;

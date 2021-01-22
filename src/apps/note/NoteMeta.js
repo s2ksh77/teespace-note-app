@@ -18,21 +18,22 @@ const NoteMeta = {
       e.stopPropagation();
       NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
     }
+    const initialConfig = {
+      targetComponent: "Modal",
+      name:type,
+      handleCancel
+    }
     switch (type) {
       case "viewInfo":
         return {
-          targetComponent: "Modal",
-          name:type,
+          ...initialConfig,        
           title:"정보 보기",
-          handleCancel,
           className:"viewInfoModal"
         }
       case "forward":
         return {
-          targetComponent: "Modal",
-          name:type,
+          ...initialConfig,   
           title:"다른 룸으로 전달",
-          handleCancel,
           className:"forwardModal"
         }
       default:
