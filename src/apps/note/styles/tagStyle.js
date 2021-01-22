@@ -97,16 +97,14 @@ export const LnbTagContainer = styled.div`
 
 export const TagImg = styled.img`
   position:absolute;
-  width: 0.8rem;
-  margin-left:0.33rem;
-  filter: ${props =>
-    props.showTag ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)' :
-      'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)'};
+  width: 1rem;
+  left: 1rem;
+  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);
 `;
 
 export const TagTxt = styled.div`
   font-weight: 400;
-  margin-left:1.69rem;
+  margin-left: 2.63rem;
 `;
 
 export const { Panel } = Collapse;

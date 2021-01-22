@@ -39,13 +39,9 @@ export const ChapterCover = styled.div`
 
 export const ChapterShareIcon = styled.img`
   position: absolute;
-  width:0.8rem;
-  height:0.9rem;
-  margin: auto 0.5rem auto 0.35rem;
-  top: 0.95rem;
-  filter: ${props => props.selected
-    ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)'
-    : 'invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%)'};
+  width: 1rem;
+  left: 1rem;
+  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);
 `
 
 export const ColorCover = styled.span`
@@ -104,7 +100,7 @@ export const ChapterTextSpan = styled.span`
   white-space: nowrap;
   line-height: normal;
   font-weight: 400;
-  margin-left: 1.69rem;
+  margin-left: ${props => props.marginLeft};
 `;
 
 export const ChapterFolderBtn = styled.span`
