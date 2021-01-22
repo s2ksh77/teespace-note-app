@@ -5,9 +5,9 @@ import useNoteStore from '../../store/useStore';
 import ExpandImg from '../../assets/ts_maximize@3x.png';
 import CollapseImg from '../../assets/ts_minimize@3x.png';
 import cancel from '../../assets/ts_cancel@3x.png';
-import { HeaderButtonContainer, Button } from '../../styles/commonStyle';
+import { HeaderButtonContainer, Button, ButtonDiv } from '../../styles/commonStyle';
 
-const style = { cursor: 'pointer', marginLeft: '0.69rem' };
+const style = { cursor: 'pointer' };
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -50,9 +50,13 @@ const HeaderButtons = () => {
 
   return useObserver(() => (
     <>
-      <HeaderButtonContainer layoutState={NoteStore.layoutState}>
-        <Button style={style} src={onChangeImg()} onClick={handleLayoutState} />
-        <Button style={style} src={cancel} onClick={handleCancelBtn} />
+      <HeaderButtonContainer layoutState={NoteStore.layoutState} targetLayout={NoteStore.targetLayout}>
+        <ButtonDiv>
+          <Button style={style} src={onChangeImg()} onClick={handleLayoutState} />
+        </ButtonDiv>
+        <ButtonDiv>
+          <Button style={style} src={cancel} onClick={handleCancelBtn} />
+        </ButtonDiv>
       </HeaderButtonContainer>
     </>
   ));

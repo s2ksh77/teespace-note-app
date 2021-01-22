@@ -4909,8 +4909,18 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _observable$2));
 
-function _templateObject32() {
+function _templateObject33() {
   var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+
+  _templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject32() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
 
   _templateObject32 = function _templateObject32() {
     return data;
@@ -4920,7 +4930,7 @@ function _templateObject32() {
 }
 
 function _templateObject31() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 2.81rem;\n  align-items: center;\n  padding-left: 1.25rem;\n  background-color: rgba(242,239,236,0.5);\n  border-radius: 0.31rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
 
   _templateObject31 = function _templateObject31() {
     return data;
@@ -4930,7 +4940,7 @@ function _templateObject31() {
 }
 
 function _templateObject30() {
-  var data = _taggedTemplateLiteral(["\n  display: none;\n  flex-direction: column;\n  position: absolute;\n  align-items: center;\n  font-size: 0.81rem;\n  z-index:20;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
 
   _templateObject30 = function _templateObject30() {
     return data;
@@ -4940,7 +4950,7 @@ function _templateObject30() {
 }
 
 function _templateObject29() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  margin-left:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:4.06rem;\n  margin:auto;\n"]);
 
   _templateObject29 = function _templateObject29() {
     return data;
@@ -4950,7 +4960,7 @@ function _templateObject29() {
 }
 
 function _templateObject28() {
-  var data = _taggedTemplateLiteral(["\n  width:4.06rem;\n  margin:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
 
   _templateObject28 = function _templateObject28() {
     return data;
@@ -4960,7 +4970,7 @@ function _templateObject28() {
 }
 
 function _templateObject27() {
-  var data = _taggedTemplateLiteral(["\n  width: 8.44rem;\n  height: 8.44rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
 
   _templateObject27 = function _templateObject27() {
     return data;
@@ -4970,7 +4980,7 @@ function _templateObject27() {
 }
 
 function _templateObject26() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  text-align: center;\n  margin-bottom: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
 
   _templateObject26 = function _templateObject26() {
     return data;
@@ -4980,7 +4990,7 @@ function _templateObject26() {
 }
 
 function _templateObject25() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
 
   _templateObject25 = function _templateObject25() {
     return data;
@@ -4990,7 +5000,7 @@ function _templateObject25() {
 }
 
 function _templateObject24() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
 
   _templateObject24 = function _templateObject24() {
     return data;
@@ -5000,7 +5010,7 @@ function _templateObject24() {
 }
 
 function _templateObject23() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: calc(100% - 7rem);\n  color: #777777;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
 
   _templateObject23 = function _templateObject23() {
     return data;
@@ -5010,7 +5020,7 @@ function _templateObject23() {
 }
 
 function _templateObject22() {
-  var data = _taggedTemplateLiteral(["\n  display:inline-flex;\n  width: 7rem;\n  float: left;\n  color: #000000;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
 
   _templateObject22 = function _templateObject22() {
     return data;
@@ -5020,7 +5030,7 @@ function _templateObject22() {
 }
 
 function _templateObject21() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items:flex-start;\n  margin-bottom: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
 
   _templateObject21 = function _templateObject21() {
     return data;
@@ -5030,7 +5040,7 @@ function _templateObject21() {
 }
 
 function _templateObject20() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  font-size: 0.94rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
 
   _templateObject20 = function _templateObject20() {
     return data;
@@ -5040,7 +5050,7 @@ function _templateObject20() {
 }
 
 function _templateObject19() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  margin: auto auto auto 0.75rem;\n  font-size:0.75rem;\n"]);
 
   _templateObject19 = function _templateObject19() {
     return data;
@@ -5050,7 +5060,7 @@ function _templateObject19() {
 }
 
 function _templateObject18() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  margin: auto auto auto 0.75rem;\n  font-size:0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 15.31rem;\n  height: 3.19rem;\n  display: flex;\n  padding: 0.69rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
 
   _templateObject18 = function _templateObject18() {
     return data;
@@ -5060,7 +5070,7 @@ function _templateObject18() {
 }
 
 function _templateObject17() {
-  var data = _taggedTemplateLiteral(["\n  border-radius: 0.75rem;\n  background-color: white;\n  width: 15.31rem;\n  height: 3.19rem;\n  display: flex;\n  padding: 0.69rem 0.75rem;\n  box-sizing: border-box;\n  cursor: pointer;\n  &:hover {\n    text-decoration:underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral([""]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -5070,7 +5080,7 @@ function _templateObject17() {
 }
 
 function _templateObject16() {
-  var data = _taggedTemplateLiteral([""]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: ", ";\n  display: flex;\n  visibility: hidden;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  color: #7B7671;\n  background-color: #FAF8F7;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
 
   _templateObject16 = function _templateObject16() {
     return data;
@@ -5080,7 +5090,7 @@ function _templateObject16() {
 }
 
 function _templateObject15() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: ", ";\n  display: flex;\n  visibility: hidden;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  color: #7B7671;\n  background-color: #FAF8F7;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:8.13rem;\n"]);
 
   _templateObject15 = function _templateObject15() {
     return data;
@@ -5090,7 +5100,7 @@ function _templateObject15() {
 }
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  width:8.13rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  margin-bottom: 1.25rem;\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -5100,7 +5110,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  margin-bottom: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.94rem;\n  color: #000000;\n  margin-bottom: 0.69rem;\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -5110,7 +5120,7 @@ function _templateObject13() {
 }
 
 function _templateObject12() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.94rem;\n  color: #000000;\n  margin-bottom: 0.69rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  font-weight: bold;\n"]);
 
   _templateObject12 = function _templateObject12() {
     return data;
@@ -5120,7 +5130,7 @@ function _templateObject12() {
 }
 
 function _templateObject11() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  font-weight: bold;\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 1rem;\n    height: 1rem;\n    cursor:pointer;\n    margin-right:0.43rem;\n    filter: ", "\n    &:hover{\n      filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);\n    }\n"]);
 
   _templateObject11 = function _templateObject11() {
     return data;
@@ -5130,7 +5140,7 @@ function _templateObject11() {
 }
 
 function _templateObject10() {
-  var data = _taggedTemplateLiteral(["\n    width: 1rem;\n    height: 1rem;\n    cursor:pointer;\n    margin-right:0.43rem;\n    filter: ", "\n    &:hover{\n      filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)\n    brightness(90%) contrast(109%);\n"]);
 
   _templateObject10 = function _templateObject10() {
     return data;
@@ -5140,7 +5150,7 @@ function _templateObject10() {
 }
 
 function _templateObject9() {
-  var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  cursor: pointer;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)\n    brightness(90%) contrast(109%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
 
   _templateObject9 = function _templateObject9() {
     return data;
@@ -5200,7 +5210,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  align-items: center;\n  margin-right: 0.5rem;\n  cursor:pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  align-items: center;\n  margin-right: 0.5rem;\n  cursor:pointer;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -5210,7 +5220,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n  height: 3rem;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  padding: 0 0.75rem;\n  box-sizing: border-box;\n  border-bottom: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 3rem;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  padding: 0 0.5rem;\n  box-sizing: border-box;\n  border-bottom: ", ";\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -5229,7 +5239,7 @@ function _templateObject() {
   return data;
 }
 var HeaderButtonContainer = styled__default['default'].div(_templateObject(), function (props) {
-  return props.layoutState === "collapse" ? "0.75rem" : "0rem";
+  return props.layoutState === "collapse" && props.targetLayout === "LNB" ? "0.75rem" : "0rem";
 });
 var ContentHeaderCover = styled__default['default'].div(_templateObject2(), function (props) {
   return props.borderBottom ? "0.0625rem solid #dadada" : "";
@@ -5242,36 +5252,37 @@ var NoneContainer = styled__default['default'].div(_templateObject5());
 var NoneTitle = styled__default['default'].div(_templateObject6());
 var NoneText = styled__default['default'].span(_templateObject7());
 var NoneImg = styled__default['default'].img(_templateObject8());
-var Button = styled__default['default'].img(_templateObject9()); // 돋보기모양 submit btn
+var ButtonDiv = styled__default['default'].div(_templateObject9());
+var Button = styled__default['default'].img(_templateObject10()); // 돋보기모양 submit btn
 
-var SearchImgInput = styled__default['default'].input(_templateObject10(), function (props) {
+var SearchImgInput = styled__default['default'].input(_templateObject11(), function (props) {
   return props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);";
 });
-var SearchResultNotFoundCover = styled__default['default'].div(_templateObject11());
-var SearchKeyword = styled__default['default'].span(_templateObject12());
-var NoSearchResultTitle = styled__default['default'].span(_templateObject13());
-var NoSearchResultImg = styled__default['default'].img(_templateObject14());
-var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject15(), function (props) {
+var SearchResultNotFoundCover = styled__default['default'].div(_templateObject12());
+var SearchKeyword = styled__default['default'].span(_templateObject13());
+var NoSearchResultTitle = styled__default['default'].span(_templateObject14());
+var NoSearchResultImg = styled__default['default'].img(_templateObject15());
+var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject16(), function (props) {
   return props.right;
 });
-var ContextMenuIconCover = styled__default['default'].span(_templateObject16()); // ShareNoteMessage
+var ContextMenuIconCover = styled__default['default'].span(_templateObject17()); // ShareNoteMessage
 
-var MessageCover = styled__default['default'].div(_templateObject17());
-var NoteTitle = styled__default['default'].span(_templateObject18());
-var RoomShareCover = styled__default['default'].div(_templateObject19());
-var ModalSharedInfoContainer = styled__default['default'].div(_templateObject20());
-var ModalSharedInfoCover = styled__default['default'].div(_templateObject21());
-var ModalSharedInfoTitle = styled__default['default'].span(_templateObject22());
-var ModalSharedInfoContent = styled__default['default'].span(_templateObject23());
-var ButtonGroup = styled__default['default'].div(_templateObject24());
-var SearchLoadingContainer = styled__default['default'].div(_templateObject25());
-var SearchLoadingTxt = styled__default['default'].div(_templateObject26());
-var SearchLoadingImg = styled__default['default'].img(_templateObject27());
-var WaplLoadingImg = styled__default['default'].img(_templateObject28());
-var RightAligned = styled__default['default'].div(_templateObject29());
-var DraggedComponentContainer = styled__default['default'].div(_templateObject30());
-var DraggedComponent = styled__default['default'].div(_templateObject31());
-var DraggedComponentTitle = styled__default['default'].span(_templateObject32());
+var MessageCover = styled__default['default'].div(_templateObject18());
+var NoteTitle = styled__default['default'].span(_templateObject19());
+var RoomShareCover = styled__default['default'].div(_templateObject20());
+var ModalSharedInfoContainer = styled__default['default'].div(_templateObject21());
+var ModalSharedInfoCover = styled__default['default'].div(_templateObject22());
+var ModalSharedInfoTitle = styled__default['default'].span(_templateObject23());
+var ModalSharedInfoContent = styled__default['default'].span(_templateObject24());
+var ButtonGroup = styled__default['default'].div(_templateObject25());
+var SearchLoadingContainer = styled__default['default'].div(_templateObject26());
+var SearchLoadingTxt = styled__default['default'].div(_templateObject27());
+var SearchLoadingImg = styled__default['default'].img(_templateObject28());
+var WaplLoadingImg = styled__default['default'].img(_templateObject29());
+var RightAligned = styled__default['default'].div(_templateObject30());
+var DraggedComponentContainer = styled__default['default'].div(_templateObject31());
+var DraggedComponent = styled__default['default'].div(_templateObject32());
+var DraggedComponentTitle = styled__default['default'].span(_templateObject33());
 
 var ViewInfoModal = function ViewInfoModal(_ref) {
   var sharedInfo = _ref.sharedInfo;
@@ -6258,8 +6269,18 @@ var PageSearchResultPageTitle = styled__default['default'].div(_templateObject10
 var PageSearchResultChapterTitle = styled__default['default'].div(_templateObject11$1());
 var SearchResultBotttom = styled__default['default'].div(_templateObject12$1());
 
-function _templateObject16$1() {
+function _templateObject17$1() {
   var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  background-color: ", "\n  border: ", "\n"]);
+
+  _templateObject17$1 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject16$1() {
+  var data = _taggedTemplateLiteral(["\n  display:", ";\n  margin-left:auto;\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -6269,7 +6290,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  margin-left:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n"]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -6279,7 +6300,7 @@ function _templateObject15$1() {
 }
 
 function _templateObject14$1() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
 
   _templateObject14$1 = function _templateObject14() {
     return data;
@@ -6289,7 +6310,7 @@ function _templateObject14$1() {
 }
 
 function _templateObject13$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", "\n  border: ", "\n"]);
 
   _templateObject13$1 = function _templateObject13() {
     return data;
@@ -6299,7 +6320,7 @@ function _templateObject13$1() {
 }
 
 function _templateObject12$2() {
-  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", "\n  border: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject12$2 = function _templateObject12() {
     return data;
@@ -6309,7 +6330,7 @@ function _templateObject12$2() {
 }
 
 function _templateObject11$2() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 3rem;\n  display: flex;\n  align-items: center;\n  border-bottom: 0.0625rem solid #dadada;\n  padding: 0.63rem;\n  box-sizing: border-box;\n"]);
 
   _templateObject11$2 = function _templateObject11() {
     return data;
@@ -6319,7 +6340,7 @@ function _templateObject11$2() {
 }
 
 function _templateObject10$2() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 3rem;\n  display: flex;\n  align-items: center;\n  border-bottom: 0.0625rem solid #dadada;\n  padding: 0.63rem;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);\n"]);
 
   _templateObject10$2 = function _templateObject10() {
     return data;
@@ -6329,7 +6350,7 @@ function _templateObject10$2() {
 }
 
 function _templateObject9$2() {
-  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
 
   _templateObject9$2 = function _templateObject9() {
     return data;
@@ -6339,7 +6360,7 @@ function _templateObject9$2() {
 }
 
 function _templateObject8$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0.38rem !important;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject8$2 = function _templateObject8() {
     return data;
@@ -6349,7 +6370,7 @@ function _templateObject8$2() {
 }
 
 function _templateObject7$2() {
-  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0.38rem !important;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-width: 0px;\n  border-style: solid;\n  padding: 0 0.38rem 0 0 !important;\n"]);
 
   _templateObject7$2 = function _templateObject7() {
     return data;
@@ -6359,7 +6380,7 @@ function _templateObject7$2() {
 }
 
 function _templateObject6$2() {
-  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-width: 0px;\n  border-style: solid;\n  padding: 0 0.38rem 0 0 !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1.13rem;\n  margin-right: 0.5rem;\n"]);
 
   _templateObject6$2 = function _templateObject6() {
     return data;
@@ -6369,7 +6390,7 @@ function _templateObject6$2() {
 }
 
 function _templateObject5$2() {
-  var data = _taggedTemplateLiteral(["\n  width: 1.13rem;\n  margin-right: 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1px;\n  height: 24px;\n  background: #DDD9D4;\n  margin: 0 0.5rem;\n"]);
 
   _templateObject5$2 = function _templateObject5() {
     return data;
@@ -6422,26 +6443,27 @@ var EditorHeaderContainer1 = styled__default['default'].div(_templateObject$3())
 var EditBtn = styled__default['default'].button(_templateObject2$3());
 var EditorTitle = styled__default['default'].input(_templateObject3$2());
 var EditorHeaderContainer2 = styled__default['default'].div(_templateObject4$2());
-var EditingImg = styled__default['default'].img(_templateObject5$2());
-var ModifiedUser = styled__default['default'].span(_templateObject6$2());
-var ModifiedTime = styled__default['default'].span(_templateObject7$2());
-var EditorSearchIconDiv = styled__default['default'].div(_templateObject8$2());
-var EditorSearchIcon = styled__default['default'].img(_templateObject9$2());
-var LnbTitleCover = styled__default['default'].div(_templateObject10$2());
-var LnbTitleNewButton = styled__default['default'].button(_templateObject11$2());
-var LnbTitleSearchContainer = styled__default['default'].form(_templateObject12$2(), function (props) {
+var EditorDivider = styled__default['default'].div(_templateObject5$2());
+var EditingImg = styled__default['default'].img(_templateObject6$2());
+var ModifiedUser = styled__default['default'].span(_templateObject7$2());
+var ModifiedTime = styled__default['default'].span(_templateObject8$2());
+var EditorSearchIconDiv = styled__default['default'].div(_templateObject9$2());
+var EditorSearchIcon = styled__default['default'].img(_templateObject10$2());
+var LnbTitleCover = styled__default['default'].div(_templateObject11$2());
+var LnbTitleNewButton = styled__default['default'].button(_templateObject12$2());
+var LnbTitleSearchContainer = styled__default['default'].form(_templateObject13$1(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "#F7F4EF";
 }, function (props) {
   return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
 });
-var LnbTitleSearchIcon = styled__default['default'].button(_templateObject13$1());
-var LnbTitleSearchInput = styled__default['default'].input(_templateObject14$1(), function (props) {
+var LnbTitleSearchIcon = styled__default['default'].button(_templateObject14$1());
+var LnbTitleSearchInput = styled__default['default'].input(_templateObject15$1(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "inherit;";
 });
-var TagSearchForm = styled__default['default'].form(_templateObject15$1(), function (props) {
+var TagSearchForm = styled__default['default'].form(_templateObject16$1(), function (props) {
   return props.show ? "block" : "none";
 });
-var TagTitleSearchContainer = styled__default['default'].div(_templateObject16$1(), function (props) {
+var TagTitleSearchContainer = styled__default['default'].div(_templateObject17$1(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "#F7F4EF;";
 }, function (props) {
   return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
@@ -6481,10 +6503,10 @@ function _templateObject18$1() {
   return data;
 }
 
-function _templateObject17$1() {
+function _templateObject17$2() {
   var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #3B3B3B;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border: 1px solid transparent;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n  transition-duration: 0s;\n  &:hover{\n    color: #000000;\n    border: 1px solid #7B7671;\n    background-color: #EBE6DF;\n  }\n"]);
 
-  _templateObject17$1 = function _templateObject17() {
+  _templateObject17$2 = function _templateObject17() {
     return data;
   };
 
@@ -6674,7 +6696,7 @@ var TagKeyContainer = styled__default['default'].div(_templateObject15$2());
 var TagChipGroup = styled__default['default'].div(_templateObject16$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 
-var TagChip = styled__default['default'](antd.Tag)(_templateObject17$1());
+var TagChip = styled__default['default'](antd.Tag)(_templateObject17$2());
 var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject18$1()); // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
 
 var TagChipText = styled__default['default'].div(_templateObject19$1());
@@ -6685,8 +6707,7 @@ const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/Nl
 const img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAp1JREFUaAXtmr1KBDEUhVdFRRARLUTBQrCwU1/AxsbWxkKsfAofwMJeBB/Cl7DZfQQVOwVBxR/EQlHRc5DAECbZm8nuzs2QC5f5SWbmfDfJJHN3W61sOQI5AoojMAltJ/BH+A38AD4Mb6RNgaoD/7Wc0CptBqp24LvwuUCFLljCs6XV2ToU3cNN67xgf0Oo0gfL+7F7q7M2FBlYs70SqOwGy3txTKuyEaj5ghvQ4pbd3GUSWI5pvshU2TjUFCGL+wsOpVJY1lNnocBJwzL6IcDJw4YANwJWCtwYWAlwo2C7Aa+gAqeW4pvb3mc5g5KM+V5aF6CwAYvHycGyVXzARTh7P0nYqsBciibVjQlqLLSFo2CHzFNr3BL4Q/j8S9Tbhr856vM+z44yNadDW9gey/Yxv7Kkn5a1BKHXwAwAv6dLkwhNzfdMA3izrPk0AH9CWD/G3XcZsJZzxxBij8WYY6aLfMmD2rknoIDQT/AYUGZOOG0xR1ZqGqYlWxhfYlWN3fin6sX5uhyBHIEcgaQisAa153AuyGOmijtcfwQfg6u1WSh7gMeA2tcSWq3tQZktOPaYLV27udbS/eh+87XTegQsouwdHtuq9vWeR9ZftAUJtz2Grp1KspbmL3iu9S0TaWfwZSGJ5HnCWw2+GmHbcLvb+o4Hr7JHT6wCy0AkaVVhkwQmbAfu67bXnvKkWlgCy2CsNgFYCst6S6kDh8CCNW3gUNikgavAJgtcFTZJ4BjY5ID5N71u8yzLGRSXce1dNk9LfxJ13bcv508dYg1AN1gjquwri+kidfYKRQbO3kphCcVPy+L3NNNFzJGpM1ceKwTWQDGJsA9nuog5MpV2CFUxLasSyidqFIWEZkuze3NMq/u/MTRlyxHIEfiPwB+7UGoOrQOerwAAAABJRU5ErkJggg==";
 
 var style = {
-  cursor: 'pointer',
-  marginLeft: '0.69rem'
+  cursor: 'pointer'
 }; // 확대,축소 & 닫기 버튼
 
 var HeaderButtons = function HeaderButtons() {
@@ -6745,16 +6766,17 @@ var HeaderButtons = function HeaderButtons() {
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(HeaderButtonContainer, {
-      layoutState: NoteStore.layoutState
-    }, /*#__PURE__*/React__default['default'].createElement(Button, {
+      layoutState: NoteStore.layoutState,
+      targetLayout: NoteStore.targetLayout
+    }, /*#__PURE__*/React__default['default'].createElement(ButtonDiv, null, /*#__PURE__*/React__default['default'].createElement(Button, {
       style: style,
       src: onChangeImg(),
       onClick: handleLayoutState
-    }), /*#__PURE__*/React__default['default'].createElement(Button, {
+    })), /*#__PURE__*/React__default['default'].createElement(ButtonDiv, null, /*#__PURE__*/React__default['default'].createElement(Button, {
       style: style,
       src: img$1,
       onClick: handleCancelBtn
-    })));
+    }))));
   });
 };
 
@@ -9418,14 +9440,14 @@ var EditorHeader = function EditorHeader() {
       onClick: handleSearchEditor
     }, /*#__PURE__*/React__default['default'].createElement(EditorSearchIcon, {
       src: img
-    })))));
+    }))), /*#__PURE__*/React__default['default'].createElement(EditorDivider, null)));
   });
 };
 
-function _templateObject33() {
+function _templateObject33$1() {
   var data = _taggedTemplateLiteral(["\n  width: 0.56rem;\n  height: 0.56rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
 
-  _templateObject33 = function _templateObject33() {
+  _templateObject33$1 = function _templateObject33() {
     return data;
   };
 
@@ -9582,10 +9604,10 @@ function _templateObject18$2() {
   return data;
 }
 
-function _templateObject17$2() {
+function _templateObject17$3() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
-  _templateObject17$2 = function _templateObject17() {
+  _templateObject17$3 = function _templateObject17() {
     return data;
   };
 
@@ -9780,7 +9802,7 @@ var FoldBtn = styled__default['default'].div(_templateObject14$3(), function (pr
 });
 var FoldBtnImg = styled__default['default'].img(_templateObject15$3());
 var FileBodyLayout = styled__default['default'].div(_templateObject16$3());
-var FileBody = styled__default['default'].div(_templateObject17$2(), function (props) {
+var FileBody = styled__default['default'].div(_templateObject17$3(), function (props) {
   return props.closable ? styled.css(_templateObject18$2()) : styled.css(_templateObject19$2());
 });
 var FileContent = styled__default['default'].div(_templateObject20$2());
@@ -9798,7 +9820,7 @@ var FileName = styled__default['default'].div(_templateObject29$1());
 var FileDataTime = styled__default['default'].div(_templateObject30$1());
 var FileTime = styled__default['default'].div(_templateObject31$1());
 var FileClose = styled__default['default'].div(_templateObject32$1());
-var FileCloseBtn = styled__default['default'].img(_templateObject33());
+var FileCloseBtn = styled__default['default'].img(_templateObject33$1());
 var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
 
 const img$d = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
