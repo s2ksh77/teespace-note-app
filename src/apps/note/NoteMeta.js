@@ -1,11 +1,7 @@
-import React from 'react';
 import NoteStore from './store/noteStore';
 import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
-import ViewInfoModal from './components/common/ViewInfoModal';
-import ForwardModal from './components/common/ForwardModal';
-import { Button } from 'teespace-core';
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
@@ -18,36 +14,26 @@ const NoteMeta = {
   },
   // antd modal prop 만들기
   setModalConfig(type) {
-    const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
     const handleCancel = function(e) {
       e.stopPropagation();
       NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
     }
+    const initialConfig = {
+      targetComponent: "Modal",
+      name:type,
+      handleCancel
+    }
     switch (type) {
       case "viewInfo":
         return {
-          targetComponent: "Modal",
+          ...initialConfig,        
           title:"정보 보기",
-          children: <ViewInfoModal sharedInfo={[
-            { title: '출처 룸', content: sharedRoomName },
-            { title: '전달한 멤버', content: sharedUserName },
-            { title: '전달 날짜', content: sharedDate }
-          ]} />,
-          footer:[
-            <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>
-              확인
-            </Button>
-          ],          
-          onCancel:handleCancel,
           className:"viewInfoModal"
         }
       case "forward":
         return {
-          targetComponent: "Modal",
+          ...initialConfig,   
           title:"다른 룸으로 전달",
-          children:<ForwardModal handleCancel={handleCancel} />,
-          footer:null, // ForwardModal 안으로 넣음
-          onCancel:handleCancel,
           className:"forwardModal"
         }
       default:
@@ -72,8 +58,7 @@ const NoteMeta = {
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
-      btns: buttonList,
-      customBadge : dialogType.customBadge
+      btns: buttonList
     }
   },
   setEventConfig(type) {
@@ -155,8 +140,7 @@ const NoteMeta = {
       type: 'default',
       title: '',
       subtitle: null,
-      btns: [],
-      customBadge:null
+      btns: []
     }
     const editingUserName = PageStore.editingUserName;
     switch (type) {

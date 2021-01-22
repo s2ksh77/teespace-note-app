@@ -13,8 +13,8 @@ import {
   ChapterTextInput,
   ChapterShareIcon
 } from '../../styles/chpaterStyle';
-import shareImg from '../../assets/ts_share@3x.png';
-import sharedPageImg from '../../assets/page_share.svg';
+import shareImg from '../../assets/share_1.svg';
+import sharedPageImg from '../../assets/page_shared.svg';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();

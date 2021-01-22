@@ -28,7 +28,16 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
     <>
       <ChapterTitle>
         <Tooltip title={isEllipsisActive ? chapter.text : null} placement='bottomLeft'>
-          <ChapterTextSpan onMouseOver={handleTooltip}>{chapter.text}</ChapterTextSpan>
+          <ChapterTextSpan 
+            onMouseOver={handleTooltip}
+            marginLeft={
+              chapter.type === 'notebook'
+              ? '1.69rem'
+              : '2.63rem'
+            }
+          >
+            {chapter.text}
+          </ChapterTextSpan>
         </Tooltip>
         <ContextMenu
           noteType={"chapter"}
