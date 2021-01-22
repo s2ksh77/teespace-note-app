@@ -1496,7 +1496,7 @@ var TagStore = observable({
   // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearchLoading: false,
   searchStr: "",
-  tagPanelLoading: true,
+  tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -1981,21 +1981,17 @@ var TagStore = observable({
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              _this7.setTagPanelLoading(true);
-
-              _context12.next = 3;
+              _context12.next = 2;
               return _this7.fetchAllSortedTagList();
 
-            case 3:
+            case 2:
               // 키-태그 pair obj
               _this7.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
 
 
               _this7.categorizeTagObj();
 
-              _this7.setTagPanelLoading(false);
-
-            case 6:
+            case 4:
             case "end":
               return _context12.stop();
           }
@@ -3340,7 +3336,7 @@ var PageStore = observable((_observable$1 = {
     var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var item, sortedMoveInfoList, sortedMovePages, pageIds2, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
+      var item, sortedMoveInfoList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
@@ -3350,13 +3346,13 @@ var PageStore = observable((_observable$1 = {
               sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
                 return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
               });
-              pageIds2 = []; // 갈아 끼울 페이지 아이디 리스트
+              pageIds = []; // 갈아 끼울 페이지 아이디 리스트
 
               item[moveTargetChapterIdx].children.forEach(function (pageId, idx) {
-                if (idx === moveTargetPageIdx) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
-                if (!_this4.moveInfoMap.get(pageId)) pageIds2.push(pageId);
+                if (idx === moveTargetPageIdx) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
+                if (!_this4.moveInfoMap.get(pageId)) pageIds.push(pageId);
               });
-              if (moveTargetPageIdx >= pageIds2.length) pageIds2.push.apply(pageIds2, _toConsumableArray(sortedMovePages));
+              if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
               _context9.next = 8;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
                 if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
@@ -3366,7 +3362,7 @@ var PageStore = observable((_observable$1 = {
               }));
 
             case 8:
-              item[moveTargetChapterIdx].children = pageIds2;
+              item[moveTargetChapterIdx].children = pageIds;
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
@@ -4637,6 +4633,7 @@ var ChapterStore = observable((_observable$2 = {
     if (idx === moveTargetChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
     if (!_this11.moveInfoMap.get(chapter.id)) chapters.push(chapter);
   });
+  if (moveTargetChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
   var moveCnt = 0;
   var startIdx = chapters.findIndex(function (chapter) {
     return chapter.id === sortedMoveInfoList[0].item.id;
@@ -6499,8 +6496,18 @@ const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3
 
 const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
-function _templateObject19$1() {
+function _templateObject20$1() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  margin-left: auto;\n  color: #7B7671;\n  padding-left:0.4rem;\n"]);
+
+  _templateObject20$1 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject19$1() {
+  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height:normal;\n"]);
 
   _templateObject19$1 = function _templateObject19() {
     return data;
@@ -6510,7 +6517,7 @@ function _templateObject19$1() {
 }
 
 function _templateObject18$1() {
-  var data = _taggedTemplateLiteral(["\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height:normal;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: #000000;\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border-radius: 25px;\n  border: 0px solid #7B7671;\n  &:hover{\n    color: #000000;\n    background-color: #EBE6DF;\n  }\n"]);
 
   _templateObject18$1 = function _templateObject18() {
     return data;
@@ -6520,7 +6527,7 @@ function _templateObject18$1() {
 }
 
 function _templateObject17$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: #000000;\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border-radius: 25px;\n  border: 0px solid #7B7671;\n  &:hover{\n    color: #000000;\n    background-color: #EBE6DF;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #3B3B3B;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border: 1px solid transparent;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n  transition-duration: 0s;\n  &:hover{\n    color: #000000;\n    border: 1px solid #7B7671;\n    background-color: #EBE6DF;\n  }\n"]);
 
   _templateObject17$1 = function _templateObject17() {
     return data;
@@ -6530,7 +6537,7 @@ function _templateObject17$1() {
 }
 
 function _templateObject16$2() {
-  var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #3B3B3B;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border: 0px solid #7B7671;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n  transition-duration: 0s;\n  &:hover{\n    color: #000000;\n    border: 1px solid #7B7671;\n    background-color: #EBE6DF;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width:100%;\n  flex-wrap:wrap;\n"]);
 
   _templateObject16$2 = function _templateObject16() {
     return data;
@@ -6540,7 +6547,7 @@ function _templateObject16$2() {
 }
 
 function _templateObject15$2() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  width:100%;\n  flex-wrap:wrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  font-size:0.8125rem;\n"]);
 
   _templateObject15$2 = function _templateObject15() {
     return data;
@@ -6550,7 +6557,7 @@ function _templateObject15$2() {
 }
 
 function _templateObject14$2() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  font-size:0.8125rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n"]);
 
   _templateObject14$2 = function _templateObject14() {
     return data;
@@ -6560,7 +6567,7 @@ function _templateObject14$2() {
 }
 
 function _templateObject13$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
 
   _templateObject13$2 = function _templateObject13() {
     return data;
@@ -6570,7 +6577,7 @@ function _templateObject13$2() {
 }
 
 function _templateObject12$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n"]);
+  var data = _taggedTemplateLiteral(["\n    font-family: 'Noto Sans KR';\n    font-style: normal;\n    font-weight: 500;\n    font-size:13px;\n    font-color:#000000;\n"]);
 
   _templateObject12$3 = function _templateObject12() {
     return data;
@@ -6580,7 +6587,7 @@ function _templateObject12$3() {
 }
 
 function _templateObject11$3() {
-  var data = _taggedTemplateLiteral(["\n    font-family: 'Noto Sans KR';\n    font-style: normal;\n    font-weight: 500;\n    font-size:13px;\n    font-color:#000000;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-weight: 400;\n  margin-left:1.69rem;\n"]);
 
   _templateObject11$3 = function _templateObject11() {
     return data;
@@ -6590,7 +6597,7 @@ function _templateObject11$3() {
 }
 
 function _templateObject10$3() {
-  var data = _taggedTemplateLiteral(["\n  font-weight: 400;\n  margin-left:1.69rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:absolute;\n  width: 0.8rem;\n  margin-left:0.33rem;\n  filter: ", ";\n"]);
 
   _templateObject10$3 = function _templateObject10() {
     return data;
@@ -6600,7 +6607,7 @@ function _templateObject10$3() {
 }
 
 function _templateObject9$3() {
-  var data = _taggedTemplateLiteral(["\n  position:absolute;\n  width: 0.8rem;\n  margin-left:0.33rem;\n  filter: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  color: ", ";\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n"]);
 
   _templateObject9$3 = function _templateObject9() {
     return data;
@@ -6610,7 +6617,7 @@ function _templateObject9$3() {
 }
 
 function _templateObject8$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  color: ", ";\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 8.75rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding:0 0.75rem;\n  border: 0.0625rem solid #1ea8df;\n  background-color: #ffffff;\n  font-size: 0.813rem;\n  color: #000000;\n  outline: none;\n"]);
 
   _templateObject8$3 = function _templateObject8() {
     return data;
@@ -6620,7 +6627,7 @@ function _templateObject8$3() {
 }
 
 function _templateObject7$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 8.75rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding:0 0.75rem;\n  border: 0.0625rem solid #1ea8df;\n  background-color: #ffffff;\n  font-size: 0.813rem;\n  color: #000000;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  overflow-x: scroll;\n  max-width: none;\n  white-space: nowrap;\n  box-sizing: border-box;\n"]);
 
   _templateObject7$3 = function _templateObject7() {
     return data;
@@ -6630,7 +6637,7 @@ function _templateObject7$3() {
 }
 
 function _templateObject6$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  overflow-x: scroll;\n  max-width: none;\n  white-space: nowrap;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1.25rem;\n  height: 1.25rem;\n"]);
 
   _templateObject6$3 = function _templateObject6() {
     return data;
@@ -6640,7 +6647,7 @@ function _templateObject6$3() {
 }
 
 function _templateObject5$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 1.25rem;\n  height: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  max-width:15.69rem;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
 
   _templateObject5$3 = function _templateObject5() {
     return data;
@@ -6650,7 +6657,7 @@ function _templateObject5$3() {
 }
 
 function _templateObject4$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: block;\n  max-width:15.69rem;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  height:23px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex !important;\n  align-items: center !important;\n  width: calc(100% - 2.4rem);\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
 
   _templateObject4$3 = function _templateObject4() {
     return data;
@@ -6660,7 +6667,7 @@ function _templateObject4$3() {
 }
 
 function _templateObject3$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex !important;\n  align-items: center !important;\n  width: calc(100% - 2.4rem);\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.25rem;\n  border: none;\n  margin-left: 0.75rem;\n  margin-right: 0.88rem;\n  align-self: center;\n  background-color: transparent;\n  cursor: pointer;\n"]);
 
   _templateObject3$3 = function _templateObject3() {
     return data;
@@ -6670,7 +6677,7 @@ function _templateObject3$3() {
 }
 
 function _templateObject2$4() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.25rem;\n  border: none;\n  margin-left: 0.75rem;\n  margin-right: 0.88rem;\n  align-self: center;\n  background-color: transparent;\n  cursor: pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: calc(100% - 0px);\n  height: 2.94rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n"]);
 
   _templateObject2$4 = function _templateObject2() {
     return data;
@@ -6680,7 +6687,7 @@ function _templateObject2$4() {
 }
 
 function _templateObject$4() {
-  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: calc(100% - 0px);\n  height: 2.94rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n"]);
 
   _templateObject$4 = function _templateObject() {
     return data;
@@ -6688,34 +6695,35 @@ function _templateObject$4() {
 
   return data;
 }
-var EditorTagCover = styled.div(_templateObject$4());
-var TagNewBtn = styled.div(_templateObject2$4());
-var TagList = styled.div(_templateObject3$3());
-var TagText = styled.span(_templateObject4$3());
-var TagNewBtnIcon = styled.img(_templateObject5$3());
-var TagInputDIV = styled.div(_templateObject6$3());
-var TagInput = styled.input(_templateObject7$3()); // lnbTag
+var TagContainerCover = styled.div(_templateObject$4());
+var EditorTagCover = styled.div(_templateObject2$4());
+var TagNewBtn = styled.div(_templateObject3$3());
+var TagList = styled.div(_templateObject4$3());
+var TagText = styled.span(_templateObject5$3());
+var TagNewBtnIcon = styled.img(_templateObject6$3());
+var TagInputDIV = styled.div(_templateObject7$3());
+var TagInput = styled.input(_templateObject8$3()); // lnbTag
 
-var LnbTagContainer = styled.div(_templateObject8$3(), function (props) {
+var LnbTagContainer = styled.div(_templateObject9$3(), function (props) {
   return props.color || '';
 });
-var TagImg = styled.img(_templateObject9$3(), function (props) {
+var TagImg = styled.img(_templateObject10$3(), function (props) {
   return props.showTag ? 'invert(43%) sepia(30%) saturate(7449%) hue-rotate(174deg) brightness(93%) contrast(101%)' : 'invert(46%) sepia(7%) saturate(11%) hue-rotate(203deg) brightness(99%) contrast(91%)';
 });
-var TagTxt = styled.div(_templateObject10$3());
+var TagTxt = styled.div(_templateObject11$3());
 var Panel = Collapse.Panel;
-var PanelHeader = styled(Panel)(_templateObject11$3());
-var StyledCollapse = styled(Collapse)(_templateObject12$3());
-var TagKeyChildren = styled.div(_templateObject13$2());
-var TagKeyContainer = styled.div(_templateObject14$2());
-var TagChipGroup = styled.div(_templateObject15$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+var PanelHeader = styled(Panel)(_templateObject12$3());
+var StyledCollapse = styled(Collapse)(_templateObject13$2());
+var TagKeyChildren = styled.div(_templateObject14$2());
+var TagKeyContainer = styled.div(_templateObject15$2());
+var TagChipGroup = styled.div(_templateObject16$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 
-var TagChip = styled(Tag)(_templateObject16$2());
-var SearchTagChip = styled(Tag)(_templateObject17$1()); // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
+var TagChip = styled(Tag)(_templateObject17$1());
+var SearchTagChip = styled(Tag)(_templateObject18$1()); // line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
 
-var TagChipText = styled.div(_templateObject18$1());
-var TagChipNum = styled.div(_templateObject19$1());
+var TagChipText = styled.div(_templateObject19$1());
+var TagChipNum = styled.div(_templateObject20$1());
 
 const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAntJREFUaAXtmj1OxDAQRgEJKPhpqECiQKKHSyBxAEoqzkLBETgEl4ACDgEdEkhUCFFABd8rsgJjO7ZDtOPIn2RtMnGy88ZObE+ysNDUItAiMHIEDnX9a5UPla8B5UnnXqisqJjVljx7URkC6p4LtFmdyjPX4aH7tPRMS7MtGxtjdL9tG2h+L3ZlflcZ2qru+f5/M2I9lh+P/ww9Q1ucbdnb2JFLqwG3NmW/UtkPHHfNljldX//sA3ur4nbb2P6fi9RiKIElEFWqFLZKYGDvVGLd9j5yvKoWToElGAdTAE6Fpd5e7cA5sGKtGzgXtmrgEthqgUthqwQeAlsd8Lo87htnOU5QQmLu7RunyZyY06U88jnb2fpgOyDfKot0kTm9yqMOzv1NhQWKpeXP9TTpInJk5hTKY+XAdlAkEc5USBeRIzOpc3k1pGVNQsWcWtZBoGlpujf3NA+yphaBFoEWgRaBFoF/iMCGrsHQwhDDUMOQw9AzSYVWPUCbFNMxpmVMz5im5SgEyyyKljYnJto/57VMxJmQpygGCzDd25xu5JE7p2XJ1ac+WK7JPW1OH/LIBWafxXVIKbCsekzOjX2w2Mj5+pQKSz2TygGuHpYWSAWeBGwq8GRgU4AnBdsHPDnYGDCvIhlaQvc49pKEG/85V4WAYi+bq4Ul0iHgmL3Klu26VQzMd6xq2NwW5tMhHmRVyf1gi1ZM0YMqnai8BSp/yv7ro85Avbmbfd221MYqK3VpOTfwUrjQeaync5MIo8KP/fnwmrw/GpUg8+Iu8HPm+SnVuZ/N6kKehbpniZ10kdlXlrQCX6QDzRO2BLA7h8wJb97JkTW1CLQIjBeBb/I/Z0I7KO4JAAAAAElFTkSuQmCC";
 
@@ -8287,8 +8295,18 @@ var ChapterText = function ChapterText(_ref) {
   });
 };
 
-function _templateObject10$5() {
+function _templateObject11$4() {
   var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
+
+  _templateObject11$4 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject10$5() {
+  var data = _taggedTemplateLiteral(["\n  cursor: pointer;\n  align-self: center;\n"]);
 
   _templateObject10$5 = function _templateObject10() {
     return data;
@@ -8298,7 +8316,7 @@ function _templateObject10$5() {
 }
 
 function _templateObject9$5() {
-  var data = _taggedTemplateLiteral(["\n  cursor: pointer;\n  align-self: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  padding-left: 1.25rem;\n  cursor: pointer;\n  border-radius: 0.31rem;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  &:active {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject9$5 = function _templateObject9() {
     return data;
@@ -8308,7 +8326,7 @@ function _templateObject9$5() {
 }
 
 function _templateObject8$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  padding-left: 1.25rem;\n  cursor: pointer;\n  border-radius: 0.31rem;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  &:active {\n    background-color: #F2EFEC;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  height: 2.81rem;\n"]);
 
   _templateObject8$5 = function _templateObject8() {
     return data;
@@ -8318,7 +8336,7 @@ function _templateObject8$5() {
 }
 
 function _templateObject7$5() {
-  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  height: 2.81rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n"]);
 
   _templateObject7$5 = function _templateObject7() {
     return data;
@@ -8328,7 +8346,7 @@ function _templateObject7$5() {
 }
 
 function _templateObject6$5() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 100%;\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n  font-weight: 400;\n  border: none;\n  outline: none;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  margin-left: 1.25rem;\n  line-height: 130%;\n  color: #000000 !important;\n  align-self: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover {\n    color: #000000;\n  }\n"]);
 
   _templateObject6$5 = function _templateObject6() {
     return data;
@@ -8338,7 +8356,7 @@ function _templateObject6$5() {
 }
 
 function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  cursor: pointer;\n  margin-left: 1.25rem;\n  line-height: 130%;\n  color: #000000 !important;\n  align-self: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover {\n    color: #000000;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 1.25rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject5$5 = function _templateObject5() {
     return data;
@@ -8348,7 +8366,7 @@ function _templateObject5$5() {
 }
 
 function _templateObject4$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 1.25rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  max-width: calc(100% - 1.875rem);\n"]);
 
   _templateObject4$5 = function _templateObject4() {
     return data;
@@ -8358,7 +8376,7 @@ function _templateObject4$5() {
 }
 
 function _templateObject3$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  max-width: calc(100% - 1.875rem);\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: 0 0 1.875rem;\n  height: 100%;\n  display: flex;\n"]);
 
   _templateObject3$5 = function _templateObject3() {
     return data;
@@ -8368,7 +8386,7 @@ function _templateObject3$5() {
 }
 
 function _templateObject2$6() {
-  var data = _taggedTemplateLiteral(["\n  flex: 0 0 1.875rem;\n  height: 100%;\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n    visibility: visible;\n  }\n"]);
 
   _templateObject2$6 = function _templateObject2() {
     return data;
@@ -8378,7 +8396,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.81rem;\n  cursor: pointer;\n  &:hover .ellipsisBtn{\n    visibility: visible;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -8386,18 +8404,19 @@ function _templateObject$6() {
 
   return data;
 }
-var PageCover = styled.li(_templateObject$6());
-var PageMargin = styled.span(_templateObject2$6());
-var PageTextCover = styled.span(_templateObject3$5());
-var PageTextContainer = styled.span(_templateObject4$5());
-var PageText = styled.a(_templateObject5$5());
-var PageTextInput = styled.input(_templateObject6$5());
-var NewPage = styled.span(_templateObject7$5(), function (props) {
+var PageContainerCover = styled.div(_templateObject$6());
+var PageCover = styled.li(_templateObject2$6());
+var PageMargin = styled.span(_templateObject3$5());
+var PageTextCover = styled.span(_templateObject4$5());
+var PageTextContainer = styled.span(_templateObject5$5());
+var PageText = styled.a(_templateObject6$5());
+var PageTextInput = styled.input(_templateObject7$5());
+var NewPage = styled.span(_templateObject8$5(), function (props) {
   return props.show ? "flex" : "none";
 });
-var NewPageBtn = styled.p(_templateObject8$5());
-var NewPageText = styled.span(_templateObject9$5());
-var EllipsisIcon = styled.i(_templateObject10$5());
+var NewPageBtn = styled.p(_templateObject9$5());
+var NewPageText = styled.span(_templateObject10$5());
+var EllipsisIcon = styled.i(_templateObject11$4());
 
 var Page = function Page(_ref) {
   var page = _ref.page,
@@ -8804,6 +8823,7 @@ var Chapter = function Chapter(_ref) {
     ChapterStore.setCurrentChapterId(chapter.id);
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
+    PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
     if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
@@ -9564,10 +9584,10 @@ function _templateObject21$1() {
   return data;
 }
 
-function _templateObject20$1() {
+function _templateObject20$2() {
   var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
 
-  _templateObject20$1 = function _templateObject20() {
+  _templateObject20$2 = function _templateObject20() {
     return data;
   };
 
@@ -9654,10 +9674,10 @@ function _templateObject12$4() {
   return data;
 }
 
-function _templateObject11$4() {
+function _templateObject11$5() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid rgb(218, 218, 218);\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
-  _templateObject11$4 = function _templateObject11() {
+  _templateObject11$5 = function _templateObject11() {
     return data;
   };
 
@@ -9782,7 +9802,7 @@ var EditorContainerWrapper = styled.div(_templateObject$8(), function (props) {
 }, function (props) {
   return props.isFile === "true" && props.mode === "false" && props.isSearch === "true" && css(_templateObject10$6());
 });
-var ReadModeContainer = styled.div(_templateObject11$4());
+var ReadModeContainer = styled.div(_templateObject11$5());
 var ReadModeIcon = styled.img(_templateObject12$4());
 var ReadModeText = styled.span(_templateObject13$3());
 var FoldBtn = styled.div(_templateObject14$3(), function (props) {
@@ -9795,7 +9815,7 @@ var FileBodyLayout = styled.div(_templateObject16$3());
 var FileBody = styled.div(_templateObject17$2(), function (props) {
   return props.closable ? css(_templateObject18$2()) : css(_templateObject19$2());
 });
-var FileContent = styled.div(_templateObject20$1());
+var FileContent = styled.div(_templateObject20$2());
 var FileDownloadIcon = styled.div(_templateObject21$1());
 var FileErrorIcon = styled.div(_templateObject22$1());
 var ProgressWrapper = styled.div(_templateObject23$1());
@@ -11077,17 +11097,17 @@ var PageNotFound = function PageNotFound(_ref) {
   }))));
 };
 
-var _useNoteStore$1 = useNoteStore(),
-    ChapterStore$2 = _useNoteStore$1.ChapterStore,
-    PageStore$1 = _useNoteStore$1.PageStore; // 페이지 보여줄 때
-
-
 var PageContainer = observer(function () {
-  var el = function () {
-    if (ChapterStore$2.loadingPageInfo) return /*#__PURE__*/React.createElement(LoadingImgContainer, null);
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      ChapterStore = _useNoteStore.ChapterStore,
+      PageStore = _useNoteStore.PageStore;
 
-    if (ChapterStore$2.currentChapterId) {
-      if (PageStore$1.currentPageId) return /*#__PURE__*/React.createElement(EditorContainer, null);else return /*#__PURE__*/React.createElement(PageNotFound, {
+  var renderContent = function () {
+    if (ChapterStore.loadingPageInfo) return /*#__PURE__*/React.createElement(LoadingImgContainer, null);
+
+    if (ChapterStore.currentChapterId) {
+      if (PageStore.currentPageId) return /*#__PURE__*/React.createElement(EditorContainer, null);else return /*#__PURE__*/React.createElement(PageNotFound, {
         type: "page"
       }); // chapter 하위 page가 없을 때
     }
@@ -11097,7 +11117,13 @@ var PageContainer = observer(function () {
     });
   }();
 
-  return el;
+  return /*#__PURE__*/React.createElement(PageContainerCover, {
+    style: NoteStore.showPage ? {
+      display: 'flex'
+    } : {
+      display: 'none'
+    }
+  }, renderContent);
 });
 
 var TagKeyChildren$1 = function TagKeyChildren(_ref) {
@@ -11309,9 +11335,13 @@ var TagNotFound = function TagNotFound() {
 };
 
 var TagContainer = function TagContainer() {
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      TagStore = _useNoteStore.TagStore;
+
   useEffect(function () {
     TagStore.fetchTagData();
-  }, []);
+  }, [NoteStore.showPage]);
 
   var renderContent = function renderContent() {
     if (TagStore.isSearchLoading) return /*#__PURE__*/React.createElement(SearchingImg, null);
@@ -11327,7 +11357,13 @@ var TagContainer = function TagContainer() {
   };
 
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(TagHeader, null), /*#__PURE__*/React.createElement(ContentBodyCover, {
+    return /*#__PURE__*/React.createElement(TagContainerCover, {
+      style: NoteStore.showPage ? {
+        display: 'none'
+      } : {
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(TagHeader, null), /*#__PURE__*/React.createElement(ContentBodyCover, {
       style: {
         padding: "0rem 0.75rem"
       }
@@ -11531,7 +11567,7 @@ var NoteApp = function NoteApp(_ref) {
       }
     }, /*#__PURE__*/React.createElement(FoldBtnImg, {
       src: img$b
-    })), NoteStore.showPage ? /*#__PURE__*/React.createElement(PageContainer, null) : /*#__PURE__*/React.createElement(TagContainer, null)), /*#__PURE__*/React.createElement(Toast, {
+    })), /*#__PURE__*/React.createElement(PageContainer, null), /*#__PURE__*/React.createElement(TagContainer, null)), /*#__PURE__*/React.createElement(Toast, {
       visible: NoteStore.isVisibleToast,
       children: NoteStore.toastText,
       onClose: function onClose() {
