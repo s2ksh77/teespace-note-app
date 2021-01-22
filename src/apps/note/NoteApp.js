@@ -8,9 +8,9 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_back_1.svg';
-import { useCoreStores, Toast, Message } from 'teespace-core';
-import {Modal} from 'antd';
+import { useCoreStores, Toast } from 'teespace-core';
 import DragPreview from "./components/common/DragPreview";
+import NoteModal from './components/common/NoteModal';
 import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 
@@ -116,25 +116,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
           <TempEditor />
-          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Message") && 
-            <Message 
-              visible={true}
-              type={NoteStore.modalInfo.type}
-              title={NoteStore.modalInfo.title}
-              subtitle={NoteStore.modalInfo.subTitle}
-              btns={NoteStore.modalInfo.btns}        
-            />}
-          {(NoteStore.showModal && NoteStore.modalInfo.targetComponent === "Modal") &&
-            <Modal
-              visible={true}
-              title={NoteStore.modalInfo.title}
-              centered
-              footer={NoteStore.modalInfo.footer}
-              onCancel={NoteStore.modalInfo.onCancel}
-              wrapClassName={NoteStore.modalInfo.className}
-            >
-              {NoteStore.modalInfo.children}
-            </Modal>}
+          {NoteStore.showModal && <NoteModal/>}          
         </>
       }
     </>

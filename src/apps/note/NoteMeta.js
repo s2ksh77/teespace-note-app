@@ -1,11 +1,7 @@
-import React from 'react';
 import NoteStore from './store/noteStore';
 import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
-import ViewInfoModal from './components/common/ViewInfoModal';
-import ForwardModal from './components/common/ForwardModal';
-import { Button } from 'teespace-core';
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
@@ -18,7 +14,6 @@ const NoteMeta = {
   },
   // antd modal prop 만들기
   setModalConfig(type) {
-    const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
     const handleCancel = function(e) {
       e.stopPropagation();
       NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
@@ -27,27 +22,17 @@ const NoteMeta = {
       case "viewInfo":
         return {
           targetComponent: "Modal",
+          name:type,
           title:"정보 보기",
-          children: <ViewInfoModal sharedInfo={[
-            { title: '출처 룸', content: sharedRoomName },
-            { title: '전달한 멤버', content: sharedUserName },
-            { title: '전달 날짜', content: sharedDate }
-          ]} />,
-          footer:[
-            <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>
-              확인
-            </Button>
-          ],          
-          onCancel:handleCancel,
+          handleCancel,
           className:"viewInfoModal"
         }
       case "forward":
         return {
           targetComponent: "Modal",
+          name:type,
           title:"다른 룸으로 전달",
-          children:<ForwardModal handleCancel={handleCancel} />,
-          footer:null, // ForwardModal 안으로 넣음
-          onCancel:handleCancel,
+          handleCancel,
           className:"forwardModal"
         }
       default:
