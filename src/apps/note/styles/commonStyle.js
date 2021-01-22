@@ -157,6 +157,7 @@ export const MessageCover = styled.div`
   display: flex;
   padding: 0.69rem 0.75rem;
   box-sizing: border-box;
+  border: 1px solid #DDD9D4;
   cursor: pointer;
   &:hover {
     text-decoration:underline;
