@@ -592,40 +592,6 @@ const ChapterStore = observable({
       }
     })
   },
-  async getSearchResult() {
-    this.setSearchResult({});
-    const chapterList = await this.getChapterList();// searchResult 만들기
-    let resultChapterArr = [], resultPageArr = [];
-    chapterList.map((chapter) => {
-      // chapter 저장
-      if (chapter.text.includes(this.searchStr)) {
-        resultChapterArr.push({
-          id: chapter.id,
-          title: chapter.text,
-          color: chapter.color,
-          // 클릭하면 setCurrentPageId 해야해서 필요
-          firstPageId: (chapter.children.length > 0 ? chapter.children[0].id : null)
-        })
-      }
-      // page 저장
-      chapter.children.map((page) => {
-        if (page.text.includes(this.searchStr)) {
-          resultPageArr.push({
-            chapterId: chapter.id,
-            chapterTitle: chapter.text,
-            color: chapter.color,
-            id: page.id,
-            title: page.text
-          })
-        }
-      })
-    })
-
-    this.setSearchResult({
-      chapter: resultChapterArr,
-      page: resultPageArr
-    });
-  },
 
   async createShareChapter(targetList) {
     const {

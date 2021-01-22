@@ -11,6 +11,7 @@ import {
   ModifiedTime,
   EditorSearchIconDiv,
   EditorSearchIcon,
+  EditorDivider,
 } from '../../styles/titleStyle';
 import ContentHeader from '../common/ContentHeader';
 import editingImg from '../../assets/TeeSpace_working.gif';
@@ -22,6 +23,7 @@ import Mark from 'mark.js';
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore } = useCoreStores();
+  const instance = new Mark(EditorStore.tinymce?.getBody());
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
@@ -56,6 +58,8 @@ const EditorHeader = () => {
         .then(() => PageStore.handleSave());
     }
     EditorStore.setIsSearch(false);
+    instance.unmark();
+    EditorStore.tinymce?.undoManager?.clear();
   };
 
   const handleTitleInput = e => {
@@ -73,7 +77,6 @@ const EditorHeader = () => {
     initialSearch();
   }
   const initialSearch = () => {
-    const instance = new Mark(EditorStore.tinymce?.getBody());
     instance.unmark();
     EditorStore.setSearchResultState(false);
     EditorStore.setSearchValue('');
@@ -111,6 +114,7 @@ const EditorHeader = () => {
             <EditorSearchIcon src={searchImg} />
           </EditorSearchIconDiv>
         </EditorHeaderContainer2>
+        <EditorDivider />
       </ContentHeader>
     </>
   ));

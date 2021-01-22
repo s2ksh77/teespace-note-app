@@ -62,7 +62,12 @@ export const EditorHeaderContainer2 = styled.div`
   align-items: center;
   width: auto;  
 `;
-
+export const EditorDivider = styled.div`
+  width: 1px;
+  height: 24px;
+  background: #DDD9D4;
+  margin: 0 0.5rem;
+`;
 export const EditingImg = styled.img`
   width: 1.13rem;
   margin-right: 0.5rem;

@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import { Dropdown } from 'antd';
-import NoteStore from '../store/noteStore';
 
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: ${props => props.layoutState === "collapse" ? "0.75rem" : "0rem"}
+  margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"}
 `;
 
 export const ContentHeaderCover = styled.div`
@@ -14,7 +13,7 @@ export const ContentHeaderCover = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
   box-sizing: border-box;
   border-bottom: ${props => props.borderBottom ?
     "0.0625rem solid #dadada" : ""};
@@ -25,6 +24,12 @@ export const PreBtnWrapper = styled.div`
   align-items: center;
   margin-right: 0.5rem;
   cursor:pointer;
+  padding: 8px;
+  &:hover{
+    background: #ebe6df;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
 `;
 
 export const ContentBodyCover = styled.div`
@@ -65,6 +70,15 @@ export const NoneText = styled.span`
 export const NoneImg = styled.img`
   width: 8.13rem;
   margin-top: 1.25rem;
+`
+export const ButtonDiv = styled.div`
+  display: flex;
+  padding: 8px;
+  &:hover{
+    background: #ebe6df;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
 `
 
 export const Button = styled.img`

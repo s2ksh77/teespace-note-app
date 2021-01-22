@@ -7,7 +7,6 @@ import {
   LnbTitleSearchIcon,
   LnbTitleSearchInput,
 } from '../../styles/titleStyle';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import searchImg from '../../assets/search.svg';
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
@@ -17,10 +16,12 @@ import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
+import Mark from 'mark.js';
 
 const LNBHeader = ({ createNewChapter }) => {
-  const { ChapterStore, PageStore } = useNoteStore();
+  const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const inputRef = useRef(null);
+  const instance = new Mark(EditorStore.tinymce?.getBody());
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = (e) => {
@@ -55,6 +56,7 @@ const LNBHeader = ({ createNewChapter }) => {
   const onClickCancelBtn = (e) => {
     ChapterStore.initSearchVar();
     ChapterStore.getNoteChapterList();
+    instance.unmark();
   }
 
   // 태그칩에 있는 취소 버튼
