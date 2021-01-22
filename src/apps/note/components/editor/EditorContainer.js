@@ -434,6 +434,15 @@ const EditorContainer = () => {
                       type: 'menuitem',
                       text: 'Drive에 저장',
                       onAction: function () {
+                        const node = editor.selection.getNode();
+                        let fileName = node.getAttribute('data-name');
+                        let fileExtension
+                        let dotIndex = fileName.lastIndexOf('.');
+                        if (dotIndex !== -1) {
+                          fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+                          fileName = fileName.substring(0, dotIndex);
+                        }
+                        EditorStore.setSaveFileMeta(node.id, fileExtension, fileName);
                         openSaveDrive();
                       }
                     },
