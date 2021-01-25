@@ -208,7 +208,7 @@ export const exportDownloadPDF = (type) => {
     else {
         html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then((blob) => {
             const pdf = new File([blob], opt.filename, { type: blob.type });
-            const fileObjs = [{ originFileObj: pdf, name: opt.filename }, ];
+            const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1' },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
         });
@@ -241,11 +241,11 @@ export const exportPageData = async () => {
 }
 
 const downloadTxt = (title, data) => {
-  const link = document.createElement('a');
-  const mimeType = "text/plain;charset=utf-8";
-  link.setAttribute('download', `${title}.txt`);
-  link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
-  link.click();
+    const link = document.createElement('a');
+    const mimeType = "text/plain;charset=utf-8";
+    link.setAttribute('download', `${title}.txt`);
+    link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
+    link.click();
 }
 // txt로 내보내기 전에 setContent해줄 tempEditor init
 export const createTempEditor = () => {
@@ -389,36 +389,39 @@ export const driveSaveCancel = () => {
 }
 
 // DriveUtils.getDriveFileInfo 참고
-export const isImg = {ext:['apng', 'bmp','gif','jpg','jpeg','jfif','png','rle','die','raw'], isPreview:true};
+export const isImg = { ext: ['apng', 'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'png', 'rle', 'die', 'raw'], isPreview: true };
 // 동영상 html 미지원
-export const isVideoWithoutPreview = {ext:['mkv','avi','mpg','flv','wmv','asf','asx','ogm','3gp','mov','dat','rm','mpe','mpeg'], isPreview:false};
+export const isVideoWithoutPreview = { ext: ['mkv', 'avi', 'mpg', 'flv', 'wmv', 'asf', 'asx', 'ogm', '3gp', 'mov', 'dat', 'rm', 'mpe', 'mpeg'], isPreview: false };
 // 동영상 html 지원
-export const isVideoWithPreview = {ext:['mp4','ogv','webm'], isPreview:true};
+export const isVideoWithPreview = { ext: ['mp4', 'ogv', 'webm'], isPreview: true };
 // 오디오
-export const isAudio = {ext:['mp3','wav','ogg','flac','wma','aac'], isPreview:true};
+export const isAudio = { ext: ['mp3', 'wav', 'ogg', 'flac', 'wma', 'aac'], isPreview: true };
 // 오피스(파워포인트)
-export const isPowerPoint = {ext:['ppt','pptx','tpt'], isPreview:false};
+export const isPowerPoint = { ext: ['ppt', 'pptx', 'tpt'], isPreview: false };
 // 오피스(워드)
-export const isWord = {ext:['doc','docx','toc'], isPreview:false};
+export const isWord = { ext: ['doc', 'docx', 'toc'], isPreview: false };
 // 오피스(엑셀)
-export const isExcel = {ext:['xls','xlsx','tls','csv'], isPreview:false};
+export const isExcel = { ext: ['xls', 'xlsx', 'tls', 'csv'], isPreview: false };
 // 오피스(한글)
-export const isHangul = {ext:['hwp'], isPreview:false};
-export const isTxt = {ext:['txt'], isPreview:false};
-export const isPdf = {ext:['pdf'], isPreview:false};
-export const isZip = {ext:['zip','tar','rar','tgz','war','alz','ace','arc','arj','b64', 'bh','bhx','bin',
-  'bz2','cab','ear','enc','gz', 'ha','hqx','ice','img','jar','lha','lzh','mim','pak','uue','xxe','zoo'], isPreview:false};
-export const isEtc = {ext:['exe','psd','mui','dll'], isPreview:false};
+export const isHangul = { ext: ['hwp'], isPreview: false };
+export const isTxt = { ext: ['txt'], isPreview: false };
+export const isPdf = { ext: ['pdf'], isPreview: false };
+export const isZip = {
+    ext: ['zip', 'tar', 'rar', 'tgz', 'war', 'alz', 'ace', 'arc', 'arj', 'b64', 'bh', 'bhx', 'bin',
+        'bz2', 'cab', 'ear', 'enc', 'gz', 'ha', 'hqx', 'ice', 'img', 'jar', 'lha', 'lzh', 'mim', 'pak', 'uue', 'xxe', 'zoo'], isPreview: false
+};
+export const isEtc = { ext: ['exe', 'psd', 'mui', 'dll'], isPreview: false };
 
 export const fileCategory = {
-  isImg,
-  isVideoWithoutPreview,
-  isVideoWithPreview,
-  isAudio,isPowerPoint, isWord, isExcel,isHangul,isTxt,isPdf, isZip, isEtc}
+    isImg,
+    isVideoWithoutPreview,
+    isVideoWithPreview,
+    isAudio, isPowerPoint, isWord, isExcel, isHangul, isTxt, isPdf, isZip, isEtc
+}
 
 export const isPreview = (extension) => {
-  const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
-  if (!cat) return false;
-  return fileCategory[cat]["isPreview"];
+    const cat = Object.keys(fileCategory).find(cat => fileCategory[cat]['ext'].includes(extension));
+    if (!cat) return false;
+    return fileCategory[cat]["isPreview"];
 }
 
