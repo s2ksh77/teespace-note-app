@@ -5185,7 +5185,7 @@ var NoteStore$1 = mobx.observable({
     this.setShowPage(true);
   },
   addWWMSHandler: function addWWMSHandler() {
-    if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', handleWebsocket);
+    if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
   },
   getNoteFileList: function getNoteFileList() {
     return this.noteFileList;

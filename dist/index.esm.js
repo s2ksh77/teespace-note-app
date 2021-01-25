@@ -5181,7 +5181,7 @@ var NoteStore$1 = observable({
     this.setShowPage(true);
   },
   addWWMSHandler: function addWWMSHandler() {
-    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', handleWebsocket);
+    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
   },
   getNoteFileList: function getNoteFileList() {
     return this.noteFileList;
