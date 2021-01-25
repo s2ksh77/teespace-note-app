@@ -94,7 +94,7 @@ const NoteStore = observable({
     this.setShowPage(true);
   },
   addWWMSHandler() {
-    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', handleWebsocket);
+    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
   },
   getNoteFileList() {
     return this.noteFileList;
@@ -240,11 +240,11 @@ const NoteStore = observable({
     this.shareArrays.roomArray.forEach(room => {
       if (!room.isVisible) {
         RoomStore.activateRoom({
-          roomId: room.id, 
+          roomId: room.id,
           myUserId: NoteRepository.USER_ID
         });
       }
-      
+
       if (this.shareNoteType === 'chapter')
         ChapterStore.createNoteShareChapter(room.id, [this.shareContent,]);
       else if (this.shareNoteType === 'page')
