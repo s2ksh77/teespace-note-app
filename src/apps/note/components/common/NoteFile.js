@@ -261,6 +261,7 @@ const htmlToPdf = (isMailShare, element, opt) => {
             const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1' },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
+            NoteStore.setIsMailShare(true);
         });
     }
 };

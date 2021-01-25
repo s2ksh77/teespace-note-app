@@ -86,20 +86,15 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
-  const mailShareComponent = () => {
-    NoteStore.setIsMailShare(true);
-    exportComponent();
-  };
-
-  const exportComponent = () => {
+  const exportComponent = isMailShare => {
     switch (noteType) {
       case 'chapter':
         ChapterStore.setExportTitle(chapter.text);
-        exportData(false, noteType, chapter.id);
+        exportData(isMailShare, noteType, chapter.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
-        exportData(false, noteType, page.id);
+        exportData(isMailShare, noteType, page.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
@@ -132,8 +127,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
     if (key === "0") renameComponent();
     else if (key === "1") deleteComponent();
     else if (key === "2") shareComponent();
-    else if (key === "3") mailShareComponent();
-    else if (key === "4") exportComponent();
+    else if (key === "3") exportComponent(true);
+    else if (key === "4") exportComponent(false);
     else if (key === "5") exportTxtComponent();
     else infoComponent();
   };

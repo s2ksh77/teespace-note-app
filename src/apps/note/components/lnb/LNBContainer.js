@@ -13,13 +13,11 @@ import ChapterList from './ChapterList';
 import LNBSearchResult from './LNBSearchResult';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { ComponentStore } from 'teespace-core';
 import SearchingImg from '../common/SearchingImg';
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
-  const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
   const createNewChapter = async () => {
     // dialog 클릭시 blur이벤트 동작
@@ -79,15 +77,6 @@ const LNBContainer = () => {
                 <ChapterList type={"sharedChapterList"} isShared={true} /> : null}
             </DndProvider>}
         </LNBChapterCover>
-        <MailWriteModal
-          uploadFiles={NoteStore.mailShareFileObjs}
-          sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
-          onClose={() => {
-            NoteStore.setMailShareFileObjs([]);
-            NoteStore.setIsMailShare(false);
-          }}
-          visible={NoteStore.mailShareFileObjs.length > 0 ? true : false}
-        />
       </LNBCover>
     </>
   ));

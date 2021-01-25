@@ -8,7 +8,7 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_back_1.svg';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, ComponentStore } from 'teespace-core';
 import DragPreview from "./components/common/DragPreview";
 import NoteModal from './components/common/NoteModal';
 import TempEditor from './components/editor/TempEditor';
@@ -20,6 +20,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { userStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
+  const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
   /*
     1) collapse 아닐 때는 setTargetLayout(null) 넣어준다
@@ -117,6 +118,15 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             : null}
           <TempEditor />
           {NoteStore.showModal && <NoteModal/>}          
+          {NoteStore.isMailShare && <MailWriteModal
+            uploadFiles={NoteStore.mailShareFileObjs}
+            sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
+            onClose={() => {
+              NoteStore.setMailShareFileObjs([]);
+              NoteStore.setIsMailShare(false);
+            }}
+            visible={true}
+          />}
         </>
       }
     </>
