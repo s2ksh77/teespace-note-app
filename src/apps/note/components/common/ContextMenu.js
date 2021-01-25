@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Menu } from 'antd';
-import { exportChapterData, exportPageData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
+import { exportData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
 import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
@@ -94,14 +94,12 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
   const exportComponent = () => {
     switch (noteType) {
       case 'chapter':
-        ChapterStore.setExportId(chapter.id);
         ChapterStore.setExportTitle(chapter.text);
-        exportChapterData();
+        exportData(false, noteType, chapter.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
-        PageStore.setExportId(page.id);
-        exportPageData();
+        exportData(false, noteType, page.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
