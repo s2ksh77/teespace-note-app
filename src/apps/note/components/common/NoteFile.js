@@ -175,7 +175,45 @@ export const downloadFile = (fileId) => {
     document.body.removeChild(a);
 }
 
-export const makeExportElement = (data, type) => {
+export const exportData = async (isMailShare, type, exportId) => {
+    const html =
+        type === 'chapter'
+        ? await getChapterHtml(exportId)
+        : await getPageHtml(exportId);
+    if (!html) return;
+
+    makeExportElement(html);
+    exportDownloadPDF(isMailShare, type);
+};
+
+export const getChapterHtml = async exportId => {
+    let html = '';
+    const {
+        data: { dto: { noteList } },
+    } = await NoteRepository.getChapterChildren(exportId);
+
+    if (noteList.length > 0) {
+        noteList.forEach((page, idx) => {
+            html += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
+        })
+    } else alert('하위에 속한 페이지가 없습니다.');
+    
+    return html;
+};
+
+export const getPageHtml = async exportId => {
+    let html = '';
+    const {
+        data: { dto },
+    } = await NoteRepository.getNoteInfoList(exportId);
+
+    PageStore.exportPageTitle = dto.note_title;
+    html = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
+    
+    return html;
+};
+
+export const makeExportElement = html => {
     const fragment = document.createElement('div');
     fragment.style.visibility = 'visible';
     fragment.style.opacity = 0;
@@ -185,22 +223,34 @@ export const makeExportElement = (data, type) => {
     const targetDIV = document.createElement('div');
     targetDIV.setAttribute('id', 'exportTargetDiv');
     targetDIV.setAttribute('class', 'export');
-    targetDIV.innerHTML = data;
+    targetDIV.innerHTML = html;
     fragment.appendChild(targetDIV);
     document.body.appendChild(fragment);
-    exportDownloadPDF(type);
-}
-export const exportDownloadPDF = (type) => {
+};
+
+export const exportDownloadPDF = (isMailShare, type) => {
     const element = document.getElementById('exportTargetDiv');
+    const opt = getExportOpt(type);
+    htmlToPdf(isMailShare, element, opt);
+};
+
+const getExportOpt = type => {
     const opt = {
         margin: 2,
-        filename: type === 'page' ? `${PageStore.exportPageTitle}.pdf` : `${ChapterStore.exportChapterTitle}.pdf`,
+        filename: 
+            type === 'chapter' 
+            ? `${ChapterStore.exportChapterTitle}.pdf` 
+            : `${PageStore.exportPageTitle}.pdf`,
         pagebreak: { after: '.afterClass', avoid: 'span' },
         image: { type: 'jpeg', quality: 0.98 },
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
     };
 
-    if (!NoteStore.isMailShare) {
+    return opt;
+};
+
+const htmlToPdf = (isMailShare, element, opt) => {
+    if (!isMailShare) {
         html2pdf(element, opt).then(() => {
             document.getElementById('exportTarget').remove();
         });
@@ -213,32 +263,7 @@ export const exportDownloadPDF = (type) => {
             document.getElementById('exportTarget').remove();
         });
     }
-}
-export const exportChapterData = async () => {
-    let returnData = '';
-    await NoteRepository.getChapterChildren(ChapterStore.exportChapterId).then((response) => {
-        const {
-            data: { dto: { noteList } },
-        } = response;
-        if (noteList.length > 0) {
-            noteList.forEach((page, idx) => {
-                returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
-            })
-        } else return alert('하위에 속한 페이지가 없습니다.');
-        makeExportElement(returnData, 'chapter');
-    })
-}
-export const exportPageData = async () => {
-    let returnData = '';
-    await NoteRepository.getNoteInfoList(PageStore.exportPageId).then(response => {
-        const {
-            data: { dto },
-        } = response;
-        PageStore.exportPageTitle = dto.note_title
-        returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
-    })
-    makeExportElement(returnData, 'page');
-}
+};
 
 const downloadTxt = (title, data) => {
     const link = document.createElement('a');
