@@ -43,6 +43,9 @@ const EditorHeader = () => {
     const {
       target: { innerText },
     } = e;
+    EditorStore.setIsSearch(false);
+    instance.unmark();
+    EditorStore.tinymce?.undoManager?.clear();
     if (innerText === '수정') {
       if (PageStore.otherEdit) {
         const res = await userStore.fetchProfile(PageStore.getEditingUserID());
@@ -57,9 +60,6 @@ const EditorHeader = () => {
       await handleFileSync()
         .then(() => PageStore.handleSave());
     }
-    EditorStore.setIsSearch(false);
-    instance.unmark();
-    EditorStore.tinymce?.undoManager?.clear();
   };
 
   const handleTitleInput = e => {
