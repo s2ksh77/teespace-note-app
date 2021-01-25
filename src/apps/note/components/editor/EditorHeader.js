@@ -106,7 +106,7 @@ const EditorHeader = () => {
           {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={editingImg} />}
           <ModifiedUser>
             {!PageStore.isReadMode()
-              ? PageStore.prevModifiedUserName
+              ? NoteStore.userName
               : PageStore.currentPageData.user_name}
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
