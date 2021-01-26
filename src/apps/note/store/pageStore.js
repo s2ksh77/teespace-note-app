@@ -307,6 +307,7 @@ const PageStore = observable({
   createNotePage() {
     this.createPage('(제목 없음)', null, this.createParent).then(dto => {
       EditorStore.setIsSearch(false);
+      this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       this.createPageId = dto.note_id;
@@ -323,7 +324,6 @@ const PageStore = observable({
       this.prevModifiedUserName = this.currentPageData.user_name;
       this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false);
 
-      this.setIsEdit(dto.is_edit);
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
       EditorStore.tinymce?.undoManager?.clear();
