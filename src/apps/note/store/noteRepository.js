@@ -187,10 +187,12 @@ class NoteRepository {
 
   async createPage(pageName, pageContent, chapterId) {
     try {
+      const today = new Date();
       return API.Post(`note-api/note`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
+          modified_date: `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`,
           USER_ID: this.USER_ID,
           note_channel_id: this.chId,
           user_name: this.USER_NAME,

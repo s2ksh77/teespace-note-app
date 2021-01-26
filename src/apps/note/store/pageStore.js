@@ -307,41 +307,27 @@ const PageStore = observable({
   createNotePage() {
     this.createPage('(제목 없음)', null, this.createParent).then(dto => {
       EditorStore.setIsSearch(false);
-      ChapterStore.getNoteChapterList();
       this.setIsEdit(dto.is_edit);
-      this.noteTitle = '';
+      ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
       this.isNewPage = true;
-      this.getNoteInfoList(dto.note_id).then(data => {
-        data.note_content = NoteUtil.decodeStr(data.note_content);
-        data.note_title = NoteUtil.decodeStr(data.note_title);
-        this.currentPageData = data;
-        this.prevModifiedUserName = this.currentPageData.user_name;
-        this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false)
-        /* 
-          ims 249802 : 태그탭 클릭 후 [새 페이지 추가] 버튼을 누르면 실행 취소 버튼이 활성화되어 있는 이슈
-          createNotePage에서 showPage(true)로 Editor setup이 동작하는데, 아직 새 노트 info를 받아오지 못한 상태라 
-          setup 안의 setNoteEditor에서 예전 노트 내용으로 setContent가 이루어진다
-          이후 init을 타고,
-          후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
-        */
-        EditorStore.tinymce?.undoManager?.clear();
-      })
+      TagStore.setNoteTagList(dto.tagList);
+      EditorStore.setFileList(dto.fileList);
+      this.initializeBoxColor();
+
+      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
+      dto.note_title = NoteUtil.decodeStr('(제목 없음)');
+      this.currentPageData = dto;
+      this.noteTitle = '';
+      this.prevModifiedUserName = this.currentPageData.user_name;
+      this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false);
+
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
-      TagStore.setNoteTagList(dto.tagList);
-      EditorStore.setFileList(
-        dto.fileList,
-      );
-      // EditorStore.tinymce가 있어도 focus 시도시 에러날 수 있어
-      try {
-        EditorStore.tinymce?.undoManager?.clear();
-        EditorStore.tinymce?.focus();
-      } catch (e) { console.log(e); }
-
-      this.initializeBoxColor();
+      EditorStore.tinymce?.undoManager?.clear();
+      EditorStore.tinymce?.focus();
     });
   },
 
