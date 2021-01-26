@@ -642,7 +642,8 @@ const PageStore = observable({
       for (let i = 0; i < contentList.length; i++) {
         if (contentList[i].tagName === 'TABLE') {
           // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
-          if (!contentList[i].textContent) return '(표)';
+          const imgList = contentList[i].getElementsByTagName('img');
+          if (!contentList[i].textContent && !imgList) return '(표)';
           const tdList = contentList[i].getElementsByTagName('td');
           for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
             var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
