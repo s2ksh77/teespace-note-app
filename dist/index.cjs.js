@@ -540,15 +540,18 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "createPage",
     value: function () {
       var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(pageName, pageContent, chapterId) {
+        var today;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
                 _context9.prev = 0;
+                today = new Date();
                 return _context9.abrupt("return", teespaceCore.API.Post("note-api/note", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
+                    modified_date: "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes()),
                     USER_ID: this.USER_ID,
                     note_channel_id: this.chId,
                     user_name: this.USER_NAME,
@@ -559,17 +562,17 @@ var NoteRepository = /*#__PURE__*/function () {
                   }
                 }));
 
-              case 4:
-                _context9.prev = 4;
+              case 5:
+                _context9.prev = 5;
                 _context9.t0 = _context9["catch"](0);
                 throw Error(JSON.stringify(_context9.t0));
 
-              case 7:
+              case 8:
               case "end":
                 return _context9.stop();
             }
           }
-        }, _callee9, this, [[0, 4]]);
+        }, _callee9, this, [[0, 5]]);
       }));
 
       function createPage(_x12, _x13, _x14) {
@@ -2996,51 +2999,32 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
+      var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
+
       EditorStore.setIsSearch(false);
-      ChapterStore.getNoteChapterList();
 
       _this.setIsEdit(dto.is_edit);
 
-      _this.noteTitle = '';
+      ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       _this.createPageId = dto.note_id;
       _this.currentPageId = dto.note_id;
       _this.isNewPage = true;
-
-      _this.getNoteInfoList(dto.note_id).then(function (data) {
-        var _EditorStore$tinymce, _EditorStore$tinymce$;
-
-        data.note_content = NoteUtil.decodeStr(data.note_content);
-        data.note_title = NoteUtil.decodeStr(data.note_title);
-        _this.currentPageData = data;
-        _this.prevModifiedUserName = _this.currentPageData.user_name;
-        _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
-        /* 
-          ims 249802 : 태그탭 클릭 후 [새 페이지 추가] 버튼을 누르면 실행 취소 버튼이 활성화되어 있는 이슈
-          createNotePage에서 showPage(true)로 Editor setup이 동작하는데, 아직 새 노트 info를 받아오지 못한 상태라 
-          setup 안의 setNoteEditor에서 예전 노트 내용으로 setContent가 이루어진다
-          이후 init을 타고,
-          후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
-        */
-
-        (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
-      });
-
-      NoteStore$1.setTargetLayout('Content');
-      NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
-      EditorStore.setFileList(dto.fileList); // EditorStore.tinymce가 있어도 focus 시도시 에러날 수 있어
-
-      try {
-        var _EditorStore$tinymce2, _EditorStore$tinymce3, _EditorStore$tinymce4;
-
-        (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : (_EditorStore$tinymce3 = _EditorStore$tinymce2.undoManager) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.clear();
-        (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.focus();
-      } catch (e) {
-        console.log(e);
-      }
+      EditorStore.setFileList(dto.fileList);
 
       _this.initializeBoxColor();
+
+      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
+      dto.note_title = NoteUtil.decodeStr('(제목 없음)');
+      _this.currentPageData = dto;
+      _this.noteTitle = '';
+      _this.prevModifiedUserName = _this.currentPageData.user_name;
+      _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
+      NoteStore$1.setTargetLayout('Content');
+      NoteStore$1.setShowPage(true);
+      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
+      (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -3382,12 +3366,12 @@ var PageStore = mobx.observable((_observable$1 = {
 
     this.prevModifiedUserName = this.currentPageData.user_name;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
-      var _EditorStore$tinymce5, _EditorStore$tinymce6;
+      var _EditorStore$tinymce3, _EditorStore$tinymce4;
 
       _this7.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.focus();
-      (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
+      (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.focus();
+      (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.selection.setCursorLocation();
 
       _this7.initializeBoxColor();
     });
@@ -3407,11 +3391,11 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce7;
+      var _EditorStore$tinymce5;
 
       _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
       EditorStore.setIsSearch(false);
     });
@@ -3460,7 +3444,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce8, _EditorStore$tinymce9;
+    var _EditorStore$tinymce6, _EditorStore$tinymce7;
 
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -3502,8 +3486,8 @@ var PageStore = mobx.observable((_observable$1 = {
     EditorStore.setIsAttatch(false);
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.selection.setCursorLocation();
-    (_EditorStore$tinymce9 = EditorStore.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.undoManager.clear();
+    (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
+    (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
   this.isNewPage = isNew;
