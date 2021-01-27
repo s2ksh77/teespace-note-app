@@ -23,10 +23,8 @@ export const handleWebsocket = (message) => {
     if (message.NOTI_ETC) {
         const loginUSER = NoteRepository.USER_ID;
         const EVENT_CASE = message.NOTI_ETC.split(',')[0];
-        const MESSAGE_INFO = message.NOTI_ETC.split(',')[1];
-        const Info = MESSAGE_INFO.split(':');
-        let targetID = Info[0];
-        let targetUSER = Info[1];
+        const targetID = message.NOTI_ETC.split(',')[1];
+        const targetUSER = message.NOTI_ETC.split(',')[2];
 
         switch (EVENT_CASE) {
             case EVENT_TYPE.CREATE:
