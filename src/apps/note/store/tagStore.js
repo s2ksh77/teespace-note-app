@@ -421,18 +421,13 @@ const TagStore = observable({
     } else this.setSortedTagList([]);
   },
   async setTagNoteSearchResult(tagId) {
-    const { data: { dto: { noteList } } } = await NoteRepository.getTagNoteList(tagId);
-
-    const resultPageArr = noteList.map((page) => {
-      const targetChapter = ChapterStore.chapterList.find((chapter) => chapter.id === page.parent_notebook);
-      return {
-        chapterId: page.parent_notebook,
-        parentText: targetChapter ? targetChapter.text : "",
-        note_id: page.note_id,
-        note_title: page.note_title
+    const { data: {
+      dto: {
+        noteList
       }
-    })
-    ChapterStore.setSearchResult({ chapter: null, page: resultPageArr });
+    }
+    } = await NoteRepository.getTagNoteList(tagId);
+    ChapterStore.setSearchResult({ chapter: null, page: noteList });
   },
   setEditCreateTag() {
     // add Tag List 갱신

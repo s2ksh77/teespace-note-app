@@ -63,7 +63,7 @@ const LNBSearchResult = () => {
           {ChapterStore.searchResult?.["page"]?.map((page) => {
             return (
               <PageSearchResult key={page.note_id} onClick={onClickPageBtn(page.note_id)}>
-                <PageSearchResultChapterTitle>{page.parentText}</PageSearchResultChapterTitle>
+                <PageSearchResultChapterTitle>{page.text}</PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 <SearchResultBotttom />
               </PageSearchResult>
