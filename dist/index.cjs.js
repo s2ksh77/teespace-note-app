@@ -1991,7 +1991,7 @@ var TagStore = mobx.observable({
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var _yield$NoteRepository7, noteList, resultPageArr;
+      var _yield$NoteRepository7, noteList;
 
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
@@ -2003,23 +2003,12 @@ var TagStore = mobx.observable({
             case 2:
               _yield$NoteRepository7 = _context14.sent;
               noteList = _yield$NoteRepository7.data.dto.noteList;
-              resultPageArr = noteList.map(function (page) {
-                var targetChapter = ChapterStore.chapterList.find(function (chapter) {
-                  return chapter.id === page.parent_notebook;
-                });
-                return {
-                  chapterId: page.parent_notebook,
-                  parentText: targetChapter ? targetChapter.text : "",
-                  note_id: page.note_id,
-                  note_title: page.note_title
-                };
-              });
               ChapterStore.setSearchResult({
                 chapter: null,
-                page: resultPageArr
+                page: noteList
               });
 
-            case 6:
+            case 5:
             case "end":
               return _context14.stop();
           }
@@ -4505,7 +4494,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
   var _this13 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
@@ -4513,36 +4502,18 @@ var ChapterStore = mobx.observable((_observable$2 = {
       while (1) {
         switch (_context15.prev = _context15.next) {
           case 0:
-            _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
+            // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+            _this13.setIsSearching(true);
 
-
-            _this13.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-            // await this.getSearchResult();
-
+            _this13.setIsLoadingSearchResult(true);
 
             _this13.getSearchList().then(function (dto) {
-              if (dto.pageList && dto.pageList.length > 0) {
-                dto.pageList.map(function (page) {
-                  _this13.getChapterInfoList(page.parent_notebook).then(function (dto) {
-                    page.parentColor = dto.color;
-                    page.parentText = dto.text;
-                  }).then(function () {
-                    _this13.setSearchResult({
-                      chapter: dto.chapterList,
-                      page: dto.pageList
-                    });
+              _this13.setSearchResult({
+                chapter: dto.chapterList,
+                page: dto.pageList
+              });
 
-                    _this13.setIsLoadingSearchResult(false);
-                  });
-                });
-              } else {
-                _this13.setSearchResult({
-                  chapter: dto.chapterList,
-                  page: dto.pageList
-                });
-
-                _this13.setIsLoadingSearchResult(false);
-              }
+              _this13.setIsLoadingSearchResult(false);
             });
 
           case 3:
@@ -4552,31 +4523,78 @@ var ChapterStore = mobx.observable((_observable$2 = {
       }
     }, _callee15);
   }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-    var _yield$NoteRepository11, dto;
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+  var _this14 = this;
 
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
     return regeneratorRuntime.wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
           case 0:
-            _context16.next = 2;
-            return NoteRepository$1.createShareChapter(targetList);
+            _this14.setIsSearching(true); // 검색 결과 출력 종료까지임
 
-          case 2:
-            _yield$NoteRepository11 = _context16.sent;
-            dto = _yield$NoteRepository11.data.dto;
-            return _context16.abrupt("return", dto);
 
-          case 5:
+            _this14.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+            // await this.getSearchResult();
+
+
+            _this14.getSearchList().then(function (dto) {
+              if (dto.pageList && dto.pageList.length > 0) {
+                dto.pageList.map(function (page) {
+                  _this14.getChapterInfoList(page.parent_notebook).then(function (dto) {
+                    page.parentColor = dto.color;
+                    page.parentText = dto.text;
+                  }).then(function () {
+                    _this14.setSearchResult({
+                      chapter: dto.chapterList,
+                      page: dto.pageList
+                    });
+
+                    _this14.setIsLoadingSearchResult(false);
+                  });
+                });
+              } else {
+                _this14.setSearchResult({
+                  chapter: dto.chapterList,
+                  page: dto.pageList
+                });
+
+                _this14.setIsLoadingSearchResult(false);
+              }
+            });
+
+          case 3:
           case "end":
             return _context16.stop();
         }
       }
     }, _callee16);
   }))();
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    var _yield$NoteRepository11, dto;
+
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
+
+          case 2:
+            _yield$NoteRepository11 = _context17.sent;
+            dto = _yield$NoteRepository11.data.dto;
+            return _context17.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17);
+  }))();
 }), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChapterList) {
-  var _this14 = this;
+  var _this15 = this;
 
   if (!targetChapterList) return;
   var targetChId = NoteStore$1.getTargetChId(targetRoomId);
@@ -4594,7 +4612,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     };
   });
   this.createShareChapter(targetList).then(function () {
-    return _this14.getNoteChapterList();
+    return _this15.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
   if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
@@ -4617,55 +4635,55 @@ var ChapterStore = mobx.observable((_observable$2 = {
     }]]));
   }
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
-  var _this15 = this;
+  var _this16 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
     var targetChapter, chapterId, pageId;
-    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return regeneratorRuntime.wrap(function _callee18$(_context18) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context18.prev = _context18.next) {
           case 0:
-            targetChapter = _this15.getFirstRenderedChapter();
+            targetChapter = _this16.getFirstRenderedChapter();
 
             if (targetChapter) {
-              _context17.next = 5;
+              _context18.next = 5;
               break;
             }
 
-            _this15.setCurrentChapterId('');
+            _this16.setCurrentChapterId('');
 
             PageStore.setCurrentPageId('');
-            return _context17.abrupt("return");
+            return _context18.abrupt("return");
 
           case 5:
-            _this15.setFirstMoveInfoMap(targetChapter);
+            _this16.setFirstMoveInfoMap(targetChapter);
 
             chapterId = targetChapter.id;
             pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-            _context17.next = 10;
+            _context18.next = 10;
             return PageStore.fetchCurrentPageData(pageId);
 
           case 10:
             // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
             // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-            _this15.setCurrentChapterId(chapterId);
+            _this16.setCurrentChapterId(chapterId);
 
           case 11:
           case "end":
-            return _context17.stop();
+            return _context18.stop();
         }
       }
-    }, _callee17);
+    }, _callee18);
   }))();
 }), _defineProperty(_observable$2, "fetchFirstNote", function fetchFirstNote() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-    return regeneratorRuntime.wrap(function _callee18$(_context18) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return regeneratorRuntime.wrap(function _callee19$(_context19) {
       while (1) {
-        switch (_context18.prev = _context18.next) {
+        switch (_context19.prev = _context19.next) {
           case 0:
             ChapterStore.setLoadingPageInfo(true);
-            _context18.next = 3;
+            _context19.next = 3;
             return ChapterStore.setFirstNoteInfo();
 
           case 3:
@@ -4673,42 +4691,42 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
           case 4:
           case "end":
-            return _context18.stop();
-        }
-      }
-    }, _callee18);
-  }))();
-}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
-  var _this16 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-    return regeneratorRuntime.wrap(function _callee19$(_context19) {
-      while (1) {
-        switch (_context19.prev = _context19.next) {
-          case 0:
-            _this16.setLoadingPageInfo(true);
-
-            _context19.next = 3;
-            return _this16.getNoteChapterList();
-
-          case 3:
-            if (!(_this16.chapterList.length > 0)) {
-              _context19.next = 6;
-              break;
-            }
-
-            _context19.next = 6;
-            return _this16.setFirstNoteInfo();
-
-          case 6:
-            _this16.setLoadingPageInfo(false);
-
-          case 7:
-          case "end":
             return _context19.stop();
         }
       }
     }, _callee19);
+  }))();
+}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
+  var _this17 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+    return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            _this17.setLoadingPageInfo(true);
+
+            _context20.next = 3;
+            return _this17.getNoteChapterList();
+
+          case 3:
+            if (!(_this17.chapterList.length > 0)) {
+              _context20.next = 6;
+              break;
+            }
+
+            _context20.next = 6;
+            return _this17.setFirstNoteInfo();
+
+          case 6:
+            _this17.setLoadingPageInfo(false);
+
+          case 7:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20);
   }))();
 }), _observable$2));
 
