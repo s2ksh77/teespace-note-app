@@ -565,6 +565,18 @@ const ChapterStore = observable({
     태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
     isSearching이 검색 시작 ~ 검색 결과 출력전까지임
   */
+  async getSearchResult() { // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+    this.setIsSearching(true);
+    this.setIsLoadingSearchResult(true);
+    this.getSearchList().then(dto => {
+      this.setSearchResult({
+        chapter: dto.chapterList,
+        page: dto.pageList
+      });
+      this.setIsLoadingSearchResult(false);
+    })
+  },
+
   async fetchSearchResult() {
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
     this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
