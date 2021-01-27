@@ -5032,10 +5032,8 @@ var handleWebsocket = function handleWebsocket(message) {
   if (message.NOTI_ETC) {
     var loginUSER = NoteRepository$1.USER_ID;
     var EVENT_CASE = message.NOTI_ETC.split(',')[0];
-    var MESSAGE_INFO = message.NOTI_ETC.split(',')[1];
-    var Info = MESSAGE_INFO.split(':');
-    var targetID = Info[0];
-    var targetUSER = Info[1];
+    var targetID = message.NOTI_ETC.split(',')[1];
+    var targetUSER = message.NOTI_ETC.split(',')[2];
 
     switch (EVENT_CASE) {
       case EVENT_TYPE.CREATE:
