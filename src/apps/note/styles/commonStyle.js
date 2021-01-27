@@ -166,11 +166,13 @@ export const MessageCover = styled.div`
 
 export const NoteTitle = styled.span`
   display: inline-block;
+  width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  margin: auto auto auto 0.75rem;
   font-size:0.75rem;
+  align-self: center;
+  padding-left: 0.75rem;
 `;
 
 export const RoomShareCover = styled.div`
