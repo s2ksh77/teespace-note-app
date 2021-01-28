@@ -659,15 +659,18 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "createPage",
     value: function () {
       var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(pageName, pageContent, chapterId) {
+        var today;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
                 _context9.prev = 0;
+                today = new Date();
                 return _context9.abrupt("return", API.Post("note-api/note", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
+                    modified_date: "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes()),
                     USER_ID: this.USER_ID,
                     note_channel_id: this.chId,
                     user_name: this.USER_NAME,
@@ -678,17 +681,17 @@ var NoteRepository = /*#__PURE__*/function () {
                   }
                 }));
 
-              case 4:
-                _context9.prev = 4;
+              case 5:
+                _context9.prev = 5;
                 _context9.t0 = _context9["catch"](0);
                 throw Error(JSON.stringify(_context9.t0));
 
-              case 7:
+              case 8:
               case "end":
                 return _context9.stop();
             }
           }
-        }, _callee9, this, [[0, 4]]);
+        }, _callee9, this, [[0, 5]]);
       }));
 
       function createPage(_x12, _x13, _x14) {
@@ -2159,7 +2162,7 @@ var TagStore = observable({
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var _yield$NoteRepository7, noteList, resultPageArr;
+      var _yield$NoteRepository7, noteList;
 
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
@@ -2171,23 +2174,12 @@ var TagStore = observable({
             case 2:
               _yield$NoteRepository7 = _context14.sent;
               noteList = _yield$NoteRepository7.data.dto.noteList;
-              resultPageArr = noteList.map(function (page) {
-                var targetChapter = ChapterStore.chapterList.find(function (chapter) {
-                  return chapter.id === page.parent_notebook;
-                });
-                return {
-                  chapterId: page.parent_notebook,
-                  parentText: targetChapter ? targetChapter.text : "",
-                  note_id: page.note_id,
-                  note_title: page.note_title
-                };
-              });
               ChapterStore.setSearchResult({
                 chapter: null,
-                page: resultPageArr
+                page: noteList
               });
 
-            case 6:
+            case 5:
             case "end":
               return _context14.stop();
           }
@@ -3167,51 +3159,32 @@ var PageStore = observable((_observable$1 = {
     var _this = this;
 
     this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
+      var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
+
       EditorStore$1.setIsSearch(false);
-      ChapterStore.getNoteChapterList();
 
       _this.setIsEdit(dto.is_edit);
 
-      _this.noteTitle = '';
+      ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       _this.createPageId = dto.note_id;
       _this.currentPageId = dto.note_id;
       _this.isNewPage = true;
-
-      _this.getNoteInfoList(dto.note_id).then(function (data) {
-        var _EditorStore$tinymce, _EditorStore$tinymce$;
-
-        data.note_content = NoteUtil.decodeStr(data.note_content);
-        data.note_title = NoteUtil.decodeStr(data.note_title);
-        _this.currentPageData = data;
-        _this.prevModifiedUserName = _this.currentPageData.user_name;
-        _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
-        /* 
-          ims 249802 : 태그탭 클릭 후 [새 페이지 추가] 버튼을 누르면 실행 취소 버튼이 활성화되어 있는 이슈
-          createNotePage에서 showPage(true)로 Editor setup이 동작하는데, 아직 새 노트 info를 받아오지 못한 상태라 
-          setup 안의 setNoteEditor에서 예전 노트 내용으로 setContent가 이루어진다
-          이후 init을 타고,
-          후에 currentPageData가 새 노트 info로 채워져 다시 setContent(새 노트 내용)이 동작한다 -> undoManager.data가 생김
-        */
-
-        (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
-      });
-
-      NoteStore$1.setTargetLayout('Content');
-      NoteStore$1.setShowPage(true);
       TagStore.setNoteTagList(dto.tagList);
-      EditorStore$1.setFileList(dto.fileList); // EditorStore.tinymce가 있어도 focus 시도시 에러날 수 있어
-
-      try {
-        var _EditorStore$tinymce2, _EditorStore$tinymce3, _EditorStore$tinymce4;
-
-        (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : (_EditorStore$tinymce3 = _EditorStore$tinymce2.undoManager) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.clear();
-        (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.focus();
-      } catch (e) {
-        console.log(e);
-      }
+      EditorStore$1.setFileList(dto.fileList);
 
       _this.initializeBoxColor();
+
+      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
+      dto.note_title = NoteUtil.decodeStr('(제목 없음)');
+      _this.currentPageData = dto;
+      _this.noteTitle = '';
+      _this.prevModifiedUserName = _this.currentPageData.user_name;
+      _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
+      NoteStore$1.setTargetLayout('Content');
+      NoteStore$1.setShowPage(true);
+      (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
+      (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -3553,12 +3526,12 @@ var PageStore = observable((_observable$1 = {
 
     this.prevModifiedUserName = this.currentPageData.user_name;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
-      var _EditorStore$tinymce5, _EditorStore$tinymce6;
+      var _EditorStore$tinymce3, _EditorStore$tinymce4;
 
       _this7.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.focus();
-      (_EditorStore$tinymce6 = EditorStore$1.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
+      (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.focus();
+      (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.selection.setCursorLocation();
 
       _this7.initializeBoxColor();
     });
@@ -3578,11 +3551,11 @@ var PageStore = observable((_observable$1 = {
     var _this9 = this;
 
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
-      var _EditorStore$tinymce7;
+      var _EditorStore$tinymce5;
 
       _this9.fetchNoteInfoList(dto.note_id);
 
-      (_EditorStore$tinymce7 = EditorStore$1.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this9.currentPageData.note_content);
       NoteStore$1.setShowModal(false);
       EditorStore$1.setIsSearch(false);
     });
@@ -3631,7 +3604,7 @@ var PageStore = observable((_observable$1 = {
     }))();
   },
   handleSave: function handleSave() {
-    var _EditorStore$tinymce8, _EditorStore$tinymce9;
+    var _EditorStore$tinymce6, _EditorStore$tinymce7;
 
     if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
@@ -3673,8 +3646,8 @@ var PageStore = observable((_observable$1 = {
     EditorStore$1.setIsAttatch(false);
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce8 = EditorStore$1.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.selection.setCursorLocation();
-    (_EditorStore$tinymce9 = EditorStore$1.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.undoManager.clear();
+    (_EditorStore$tinymce6 = EditorStore$1.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
+    (_EditorStore$tinymce7 = EditorStore$1.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   }
 }, _defineProperty(_observable$1, "setIsNewPage", function setIsNewPage(isNew) {
   this.isNewPage = isNew;
@@ -3685,109 +3658,94 @@ var PageStore = observable((_observable$1 = {
   if (contentList) {
     // forEach 는 항상 return 값 undefined
     for (var i = 0; i < contentList.length; i++) {
-      if (contentList[i].tagName === 'TABLE') {
-        // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
-        var imgList = contentList[i].getElementsByTagName('img');
-        if (!contentList[i].textContent && !imgList) return '(표)';
-        var tdList = contentList[i].getElementsByTagName('td');
+      // 표는 무조건 return
+      if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]); // early return        
 
-        for (var tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-          var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
+      if (!contentList[i].textContent && contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length === 0) continue;
+      if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
+      // 표 제외, 이미지나 텍스트가 있을 때만 탄다
 
-          if (tableTitle !== undefined) return tableTitle;
-        } // if (i === contentList.length - 1) return '(표)'; >> length-1이어야하는건가??? 주석처리하고 위에 if문 추가
+      var title = this._getTitleByTagName(contentList[i]);
 
-      } else if (contentList[i].tagName === 'IMG') {
-        if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
-      } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
-        if (!!contentList[i].textContent) return contentList[i].textContent;
-      } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
-        if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-      } else if (contentList[i].tagName === 'BR') continue;else if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i]);
-      /*
-        ** p태그랑 합침
-        case 1. <div><br><div>인 경우 넘어가야함
-        case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
-        case 3. 그냥 <pre> 태그만 있는 경우도 있음
-      */
-      else {
-          var ImgList = contentList[i].getElementsByTagName('img'); // 이미지가 없을 때, textContent도 없으면 contentList[i+1]로 넘어가기
-
-          if (ImgList.length === 0) {
-            if (!!contentList[i].textContent) return this._findFirstTextContent(contentList[i]);
-          } else {
-            // 이미지+텍스트 있을 때 text가 먼저인지 확인
-            if (!!contentList[i].textContent) {
-              var _temp = this._findFirstTextContent(contentList[i]);
-
-              if (_temp) return _temp;
-            } // 이미지만 있을 때
-
-
-            var imgName = ImgList[0].dataset.name;
-            return imgName ? imgName : ImgList[0].src; // 예전 코드 혹시 몰라 남겨둠
-            // if (contentList[i].getElementsByTagName('img').length > 0) {
-            //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
-            //   return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
-            // } else if (!!contentList[i].textContent) return contentList[i].textContent;
-          }
-        }
+      if (title !== undefined) return title;
     }
   }
-}), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(td) {
-  if (td) {
-    for (var j = 0; j < td.length; j++) {
-      if (td[j].nodeName === '#text') {
-        return td[j].textContent;
-      } else if (td[j].nodeName === 'STRONG' || td[j].nodeName === 'BLOCKQUOTE' || td[j].nodeName === 'EM' || td[j].nodeName === 'H2' || td[j].nodeName === 'H3') {
-        if (!!td[j].textContent) return td[j].textContent;
-      } else if (td[j].nodeName === 'OL' || td[j].nodeName === 'UL') {
-        if (!!td[j].children[0].textContent) return td[j].children[0].textContent;
-      } else if (td[j].nodeName === 'IMG') {
-        return td[j].dataset.name;
-      } else if (td[j].nodeName === 'TABLE') {
-        // 두번 루프
-        var tdList = td[j].getElementsByTagName('td');
+}), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '(표)'; // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
-        for (var tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-          var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
+  var tdList = node.getElementsByTagName('td');
 
-          if (tableTitle !== undefined) return tableTitle;
-        }
-      }
+  for (var tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
+    var tdChildren = tdList[tdIndex].childNodes;
+
+    for (var j = 0; j < tdChildren.length; j++) {
+      var title = this._getTitleByTagName(tdChildren[j]);
+
+      if (title !== undefined) return title;
     }
   }
-}), _defineProperty(_observable$1, "_findFirstTextContent", function _findFirstTextContent(parent) {
-  try {
-    // 의도적인 줄바꿈이 있는 경우
-    var lineBreakIdx = parent.textContent.indexOf('\n');
-    if (lineBreakIdx !== -1) return parent.textContent.slice(0, lineBreakIdx); // hasLineBreak === trure면 전체 textContent를 return 아니면 첫줄만
+}), _defineProperty(_observable$1, "_searchInsideContainerTag", function _searchInsideContainerTag(node) {
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
 
-    var hasLineBreak = false; // (참고) text노드면 nodeName이 #text다
-    // 줄바꿈, 이미지가 있으면 자식 노드 탐색하는 for문 들어가야한다
+  var lineBreakIdx = node.textContent.indexOf('\n');
+  if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx); // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
+  // 즉 node 단위로 title을 뽑아낼 때
 
-    if (Array.from(parent.childNodes).some(function (node) {
-      return ['DIV', 'PRE', 'P', 'IMG', 'BR'].includes(node.nodeName);
-    })) hasLineBreak = true;
-    if (!hasLineBreak) return parent.textContent.slice(0, 200); // 줄바꿈이 있으면 찾아서 첫 줄만 출력
+  var hasLineBreak = false;
+  if (Array.from(node.childNodes).some(function (child) {
+    return ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName);
+  })) hasLineBreak = true; // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
 
-    for (var _i = 0, _Array$from = Array.from(parent.childNodes); _i < _Array$from.length; _i++) {
-      var item = _Array$from[_i];
-      // dataset.name 없으면 src 출력
-      if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-      if (!item.textContent || item.tagName === 'BR') continue; // 안에 자식 태그를 갖는 태그들은 depth 한 단계 더 들어가기
+  if (!hasLineBreak) return node.textContent.slice(0, 200);
 
-      if (['DIV', 'PRE', 'P'].includes(item.tagName)) return this._findFirstTextContent(item); // todo : error 없으려나 테스트 필요
+  for (var _i = 0, _Array$from = Array.from(node.childNodes); _i < _Array$from.length; _i++) {
+    var item = _Array$from[_i];
+    if (!item.textContent && item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length === 0) continue;
 
-      if (item.tagName === 'SPAN') return item.textContent.slice(0, 200); // depth가 더 있으면 들어간다
+    var title = this._getTitleByTagName(item);
 
-      if (item.childNodes.length) return this._findFirstTextContent(item); // 자식이 없는 text node일 때
-
-      return item.textContent.slice(0, 200);
-    }
-  } catch (err) {
-    return null;
+    if (title !== undefined) return title;
   }
+}), _defineProperty(_observable$1, "_getTitleByTagName", function _getTitleByTagName(node) {
+  switch (node.nodeName) {
+    case 'BR':
+      return;
+
+    case 'IMG':
+      return node.dataset.name ? node.dataset.name : node.src;
+
+    case 'SPAN':
+    case 'A':
+    case '#text':
+    case 'STRONG':
+    case 'BLOCKQUOTE':
+    case 'EM':
+    case 'H1':
+    case 'H2':
+    case 'H3':
+    case 'H4':
+    case 'H5':
+    case 'H6':
+      return node.textContent.slice(0, 200);
+
+    case 'OL':
+    case 'UL':
+      return node.children[0].textContent;
+
+    case 'TABLE':
+      var tableTitle = this._getTableTitle(node);
+
+      if (tableTitle !== undefined) return tableTitle;
+
+    case 'DIV':
+    case 'PRE':
+    case "P":
+      var title = this._searchInsideContainerTag(node);
+
+      if (title !== undefined) return title;
+  }
+
+  if (node.textContent) return node.textContent.slice(0, 200);
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
     var _yield$NoteRepository9, noteList;
@@ -4692,7 +4650,7 @@ var ChapterStore = observable((_observable$2 = {
       }
     }, _callee14);
   }))();
-}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+}), _defineProperty(_observable$2, "getSearchResult", function getSearchResult() {
   var _this13 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
@@ -4700,36 +4658,18 @@ var ChapterStore = observable((_observable$2 = {
       while (1) {
         switch (_context15.prev = _context15.next) {
           case 0:
-            _this13.setIsSearching(true); // 검색 결과 출력 종료까지임
+            // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+            _this13.setIsSearching(true);
 
-
-            _this13.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-            // await this.getSearchResult();
-
+            _this13.setIsLoadingSearchResult(true);
 
             _this13.getSearchList().then(function (dto) {
-              if (dto.pageList && dto.pageList.length > 0) {
-                dto.pageList.map(function (page) {
-                  _this13.getChapterInfoList(page.parent_notebook).then(function (dto) {
-                    page.parentColor = dto.color;
-                    page.parentText = dto.text;
-                  }).then(function () {
-                    _this13.setSearchResult({
-                      chapter: dto.chapterList,
-                      page: dto.pageList
-                    });
+              _this13.setSearchResult({
+                chapter: dto.chapterList,
+                page: dto.pageList
+              });
 
-                    _this13.setIsLoadingSearchResult(false);
-                  });
-                });
-              } else {
-                _this13.setSearchResult({
-                  chapter: dto.chapterList,
-                  page: dto.pageList
-                });
-
-                _this13.setIsLoadingSearchResult(false);
-              }
+              _this13.setIsLoadingSearchResult(false);
             });
 
           case 3:
@@ -4739,31 +4679,78 @@ var ChapterStore = observable((_observable$2 = {
       }
     }, _callee15);
   }))();
-}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-    var _yield$NoteRepository11, dto;
+}), _defineProperty(_observable$2, "fetchSearchResult", function fetchSearchResult() {
+  var _this14 = this;
 
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
     return regeneratorRuntime.wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
           case 0:
-            _context16.next = 2;
-            return NoteRepository$1.createShareChapter(targetList);
+            _this14.setIsSearching(true); // 검색 결과 출력 종료까지임
 
-          case 2:
-            _yield$NoteRepository11 = _context16.sent;
-            dto = _yield$NoteRepository11.data.dto;
-            return _context16.abrupt("return", dto);
 
-          case 5:
+            _this14.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+            // await this.getSearchResult();
+
+
+            _this14.getSearchList().then(function (dto) {
+              if (dto.pageList && dto.pageList.length > 0) {
+                dto.pageList.map(function (page) {
+                  _this14.getChapterInfoList(page.parent_notebook).then(function (dto) {
+                    page.parentColor = dto.color;
+                    page.parentText = dto.text;
+                  }).then(function () {
+                    _this14.setSearchResult({
+                      chapter: dto.chapterList,
+                      page: dto.pageList
+                    });
+
+                    _this14.setIsLoadingSearchResult(false);
+                  });
+                });
+              } else {
+                _this14.setSearchResult({
+                  chapter: dto.chapterList,
+                  page: dto.pageList
+                });
+
+                _this14.setIsLoadingSearchResult(false);
+              }
+            });
+
+          case 3:
           case "end":
             return _context16.stop();
         }
       }
     }, _callee16);
   }))();
+}), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    var _yield$NoteRepository11, dto;
+
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.next = 2;
+            return NoteRepository$1.createShareChapter(targetList);
+
+          case 2:
+            _yield$NoteRepository11 = _context17.sent;
+            dto = _yield$NoteRepository11.data.dto;
+            return _context17.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17);
+  }))();
 }), _defineProperty(_observable$2, "createNoteShareChapter", function createNoteShareChapter(targetRoomId, targetChapterList) {
-  var _this14 = this;
+  var _this15 = this;
 
   if (!targetChapterList) return;
   var targetChId = NoteStore$1.getTargetChId(targetRoomId);
@@ -4781,7 +4768,7 @@ var ChapterStore = observable((_observable$2 = {
     };
   });
   this.createShareChapter(targetList).then(function () {
-    return _this14.getNoteChapterList();
+    return _this15.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
   if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
@@ -4804,55 +4791,55 @@ var ChapterStore = observable((_observable$2 = {
     }]]));
   }
 }), _defineProperty(_observable$2, "setFirstNoteInfo", function setFirstNoteInfo() {
-  var _this15 = this;
+  var _this16 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
     var targetChapter, chapterId, pageId;
-    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return regeneratorRuntime.wrap(function _callee18$(_context18) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context18.prev = _context18.next) {
           case 0:
-            targetChapter = _this15.getFirstRenderedChapter();
+            targetChapter = _this16.getFirstRenderedChapter();
 
             if (targetChapter) {
-              _context17.next = 5;
+              _context18.next = 5;
               break;
             }
 
-            _this15.setCurrentChapterId('');
+            _this16.setCurrentChapterId('');
 
             PageStore.setCurrentPageId('');
-            return _context17.abrupt("return");
+            return _context18.abrupt("return");
 
           case 5:
-            _this15.setFirstMoveInfoMap(targetChapter);
+            _this16.setFirstMoveInfoMap(targetChapter);
 
             chapterId = targetChapter.id;
             pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-            _context17.next = 10;
+            _context18.next = 10;
             return PageStore.fetchCurrentPageData(pageId);
 
           case 10:
             // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
             // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-            _this15.setCurrentChapterId(chapterId);
+            _this16.setCurrentChapterId(chapterId);
 
           case 11:
           case "end":
-            return _context17.stop();
+            return _context18.stop();
         }
       }
-    }, _callee17);
+    }, _callee18);
   }))();
 }), _defineProperty(_observable$2, "fetchFirstNote", function fetchFirstNote() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-    return regeneratorRuntime.wrap(function _callee18$(_context18) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return regeneratorRuntime.wrap(function _callee19$(_context19) {
       while (1) {
-        switch (_context18.prev = _context18.next) {
+        switch (_context19.prev = _context19.next) {
           case 0:
             ChapterStore.setLoadingPageInfo(true);
-            _context18.next = 3;
+            _context19.next = 3;
             return ChapterStore.setFirstNoteInfo();
 
           case 3:
@@ -4860,42 +4847,42 @@ var ChapterStore = observable((_observable$2 = {
 
           case 4:
           case "end":
-            return _context18.stop();
-        }
-      }
-    }, _callee18);
-  }))();
-}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
-  var _this16 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-    return regeneratorRuntime.wrap(function _callee19$(_context19) {
-      while (1) {
-        switch (_context19.prev = _context19.next) {
-          case 0:
-            _this16.setLoadingPageInfo(true);
-
-            _context19.next = 3;
-            return _this16.getNoteChapterList();
-
-          case 3:
-            if (!(_this16.chapterList.length > 0)) {
-              _context19.next = 6;
-              break;
-            }
-
-            _context19.next = 6;
-            return _this16.setFirstNoteInfo();
-
-          case 6:
-            _this16.setLoadingPageInfo(false);
-
-          case 7:
-          case "end":
             return _context19.stop();
         }
       }
     }, _callee19);
+  }))();
+}), _defineProperty(_observable$2, "fetchChapterList", function fetchChapterList() {
+  var _this17 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+    return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            _this17.setLoadingPageInfo(true);
+
+            _context20.next = 3;
+            return _this17.getNoteChapterList();
+
+          case 3:
+            if (!(_this17.chapterList.length > 0)) {
+              _context20.next = 6;
+              break;
+            }
+
+            _context20.next = 6;
+            return _this17.setFirstNoteInfo();
+
+          case 6:
+            _this17.setLoadingPageInfo(false);
+
+          case 7:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20);
   }))();
 }), _observable$2));
 
@@ -5201,10 +5188,8 @@ var handleWebsocket = function handleWebsocket(message) {
   if (message.NOTI_ETC) {
     var loginUSER = NoteRepository$1.USER_ID;
     var EVENT_CASE = message.NOTI_ETC.split(',')[0];
-    var MESSAGE_INFO = message.NOTI_ETC.split(',')[1];
-    var Info = MESSAGE_INFO.split(':');
-    var targetID = Info[0];
-    var targetUSER = Info[1];
+    var targetID = message.NOTI_ETC.split(',')[1];
+    var targetUSER = message.NOTI_ETC.split(',')[2];
 
     switch (EVENT_CASE) {
       case EVENT_TYPE.CREATE:
@@ -6121,7 +6106,7 @@ function _templateObject20() {
 }
 
 function _templateObject19() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  margin: auto auto auto 0.75rem;\n  font-size:0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  font-size:0.75rem;\n  align-self: center;\n  padding-left: 0.75rem;\n"]);
 
   _templateObject19 = function _templateObject19() {
     return data;
@@ -6743,7 +6728,7 @@ var LNBHeader = function LNBHeader(_ref) {
 
             case 3:
               _context2.next = 5;
-              return ChapterStore.fetchSearchResult();
+              return ChapterStore.getSearchResult();
 
             case 5:
               inputRef.current.focus();
@@ -8985,7 +8970,7 @@ var LNBSearchResult = function LNBSearchResult() {
       return /*#__PURE__*/React.createElement(PageSearchResult, {
         key: page.note_id,
         onClick: onClickPageBtn(page.note_id)
-      }, /*#__PURE__*/React.createElement(PageSearchResultChapterTitle, null, page.parentText), /*#__PURE__*/React.createElement(PageSearchResultPageTitle, null, page.note_title), /*#__PURE__*/React.createElement(SearchResultBotttom, null));
+      }, /*#__PURE__*/React.createElement(PageSearchResultChapterTitle, null, page.text), /*#__PURE__*/React.createElement(PageSearchResultPageTitle, null, page.note_title), /*#__PURE__*/React.createElement(SearchResultBotttom, null));
     })));
   });
 };
@@ -9221,35 +9206,38 @@ var EditorHeader = function EditorHeader() {
           switch (_context.prev = _context.next) {
             case 0:
               if (!PageStore.isReadMode()) {
-                _context.next = 5;
+                _context.next = 8;
                 break;
               }
 
+              EditorStore.setIsSearch(false);
+              ChapterStore.initSearchVar();
+              instance.unmark();
               ChapterStore.getNoteChapterList();
               NoteStore.setTargetLayout('LNB');
-              _context.next = 13;
+              _context.next = 16;
               break;
 
-            case 5:
+            case 8:
               isUndoActive = (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.hasUndo();
 
               if (isUndoActive) {
-                _context.next = 12;
+                _context.next = 15;
                 break;
               }
 
-              _context.next = 9;
+              _context.next = 12;
               return PageStore.handleNoneEdit();
 
-            case 9:
+            case 12:
               NoteStore.setTargetLayout('LNB');
-              _context.next = 13;
+              _context.next = 16;
               break;
 
-            case 12:
+            case 15:
               NoteStore.setModalInfo('editCancel');
 
-            case 13:
+            case 16:
             case "end":
               return _context.stop();
           }
