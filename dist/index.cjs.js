@@ -934,7 +934,7 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "nonEdit",
     value: function () {
-      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(noteId, chapterId, userName) {
+      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(noteId, chapterId, userName, userId) {
         return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
             switch (_context15.prev = _context15.next) {
@@ -945,7 +945,7 @@ var NoteRepository = /*#__PURE__*/function () {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
+                    USER_ID: userId,
                     note_channel_id: this.chId,
                     note_id: noteId,
                     is_edit: '',
@@ -971,7 +971,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee15, this, [[0, 6]]);
       }));
 
-      function nonEdit(_x24, _x25, _x26) {
+      function nonEdit(_x24, _x25, _x26, _x27) {
         return _nonEdit.apply(this, arguments);
       }
 
@@ -1009,7 +1009,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee16, null, [[0, 6]]);
       }));
 
-      function createTag(_x27) {
+      function createTag(_x28) {
         return _createTag.apply(this, arguments);
       }
 
@@ -1047,7 +1047,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee17, null, [[0, 6]]);
       }));
 
-      function deleteTag(_x28) {
+      function deleteTag(_x29) {
         return _deleteTag.apply(this, arguments);
       }
 
@@ -1085,7 +1085,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee18, null, [[0, 6]]);
       }));
 
-      function updateTag(_x29) {
+      function updateTag(_x30) {
         return _updateTag.apply(this, arguments);
       }
 
@@ -1130,7 +1130,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee19, this, [[1, 7]]);
       }));
 
-      function storageFileDeepCopy(_x30) {
+      function storageFileDeepCopy(_x31) {
         return _storageFileDeepCopy.apply(this, arguments);
       }
 
@@ -1164,7 +1164,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee20, null, [[0, 6]]);
       }));
 
-      function createUploadMeta(_x31) {
+      function createUploadMeta(_x32) {
         return _createUploadMeta.apply(this, arguments);
       }
 
@@ -1206,7 +1206,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee21, this, [[0, 6]]);
       }));
 
-      function createUploadStorage(_x32, _x33, _x34) {
+      function createUploadStorage(_x33, _x34, _x35) {
         return _createUploadStorage.apply(this, arguments);
       }
 
@@ -1257,7 +1257,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee22, this, [[0, 6]]);
       }));
 
-      function deleteFile(_x35) {
+      function deleteFile(_x36) {
         return _deleteFile.apply(this, arguments);
       }
 
@@ -1330,7 +1330,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee23, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x36) {
+      function getSearchList(_x37) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -1362,7 +1362,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee24);
       }));
 
-      function createFileMeta(_x37) {
+      function createFileMeta(_x38) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -2765,6 +2765,7 @@ var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  userNick: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -3133,7 +3134,7 @@ var PageStore = mobx.observable((_observable$1 = {
       }, _callee6);
     }))();
   },
-  noneEdit: function noneEdit(noteId, parentNotebook, prevModifiedUserName, callback) {
+  noneEdit: function noneEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId, callback) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       var _yield$NoteRepository7, returnData;
 
@@ -3142,7 +3143,7 @@ var PageStore = mobx.observable((_observable$1 = {
           switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return NoteRepository$1.nonEdit(noteId, parentNotebook, prevModifiedUserName);
+              return NoteRepository$1.nonEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId);
 
             case 2:
               _yield$NoteRepository7 = _context7.sent;
@@ -3446,7 +3447,7 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      var dto;
+      var dto, userProfile;
       return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
           switch (_context10.prev = _context10.next) {
@@ -3466,6 +3467,12 @@ var PageStore = mobx.observable((_observable$1 = {
               return _context10.abrupt("return");
 
             case 6:
+              _context10.next = 8;
+              return teespaceCore.UserStore.fetchProfile(dto.USER_ID);
+
+            case 8:
+              userProfile = _context10.sent;
+
               _this5.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
@@ -3474,6 +3481,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.noteInfoList = dto;
               _this5.currentPageData = dto;
               _this5.isEdit = dto.is_edit;
+              _this5.userNick = userProfile.nick;
               _this5.noteTitle = dto.note_title;
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
               EditorStore$1.setFileList(dto.fileList);
@@ -3486,7 +3494,7 @@ var PageStore = mobx.observable((_observable$1 = {
                 _this5.isNewPage = false;
               }
 
-            case 17:
+            case 21:
             case "end":
               return _context10.stop();
           }
@@ -3536,6 +3544,7 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this7 = this;
 
     this.prevModifiedUserName = this.currentPageData.user_name;
+    this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
       var _EditorStore$tinymce3, _EditorStore$tinymce4;
 
@@ -3565,7 +3574,7 @@ var PageStore = mobx.observable((_observable$1 = {
   noteNoneEdit: function noteNoneEdit(noteId) {
     var _this9 = this;
 
-    this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName).then(function (dto) {
+    this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName, this.prevModifiedUserId).then(function (dto) {
       var _EditorStore$tinymce5;
 
       _this9.fetchNoteInfoList(dto.note_id);
@@ -3787,16 +3796,20 @@ var PageStore = mobx.observable((_observable$1 = {
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
   var targetChId = NoteStore.getTargetChId(targetRoomId);
+  var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
       note_id: page.note_id || page.id,
+      note_title: page.text,
+      modified_date: page.date,
       note_channel_id: NoteRepository$1.chId,
       USER_ID: NoteRepository$1.USER_ID,
       shared_user_id: NoteRepository$1.USER_ID,
       shared_room_name: NoteRepository$1.WS_ID,
       target_workspace_id: targetRoomId,
-      target_channel_id: targetChId
+      target_channel_id: targetChId,
+      messenger_id: targetTalkChId
     };
   });
   this.createSharePage(targetList).then(function () {
@@ -5504,10 +5517,10 @@ var NoteStore = mobx.observable({
       }, _callee);
     }))();
   },
-  getTargetChId: function getTargetChId(targetRoomId) {
+  getTargetChId: function getTargetChId(targetRoomId, chType) {
     return teespaceCore.RoomStore.getChannelIds({
       roomId: targetRoomId
-    })[NoteRepository$1.CH_TYPE];
+    })[chType ? chType : NoteRepository$1.CH_TYPE];
   },
   getSharedRoomName: function getSharedRoomName() {
     return teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).isMyRoom ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
@@ -9294,7 +9307,7 @@ var EditorHeader = function EditorHeader() {
 
             case 8:
               res = _context2.sent;
-              PageStore.setEditingUserName(res.name);
+              PageStore.setEditingUserName(res.nick ? res.nick : res.name);
               NoteStore.setModalInfo('editingPage');
               _context2.next = 14;
               break;
@@ -9367,7 +9380,7 @@ var EditorHeader = function EditorHeader() {
       autoComplete: "off"
     })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$d
-    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? NoteStore.userName : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
+    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName : PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
       onClick: handleSearchEditor
     }, /*#__PURE__*/React__default['default'].createElement(EditorSearchIcon, {
       src: img

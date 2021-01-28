@@ -295,13 +295,13 @@ class NoteRepository {
     }
   }
 
-  async nonEdit(noteId, chapterId, userName) {
+  async nonEdit(noteId, chapterId, userName, userId) {
     try {
       return await API.post(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
-          USER_ID: this.USER_ID,
+          USER_ID: userId,
           note_channel_id: this.chId,
           note_id: noteId,
           is_edit: '',

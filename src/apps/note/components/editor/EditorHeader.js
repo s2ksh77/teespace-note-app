@@ -52,7 +52,7 @@ const EditorHeader = () => {
     if (innerText === '수정') {
       if (PageStore.otherEdit) {
         const res = await userStore.fetchProfile(PageStore.getEditingUserID());
-        PageStore.setEditingUserName(res.name);
+        PageStore.setEditingUserName(res.nick ? res.nick : res.name);
         NoteStore.setModalInfo('editingPage');
       }
       else {
@@ -109,8 +109,8 @@ const EditorHeader = () => {
           {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={editingImg} />}
           <ModifiedUser>
             {!PageStore.isReadMode()
-              ? NoteStore.userName
-              : PageStore.currentPageData.user_name}
+              ? (userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName)
+              : (PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name)}
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
           <EditorSearchIconDiv onClick={handleSearchEditor}>

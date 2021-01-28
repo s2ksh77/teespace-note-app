@@ -7,12 +7,13 @@ import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
-import { useCoreStores } from 'teespace-core';
+import { UserStore } from 'teespace-core';
 
 const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  userNick: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -289,10 +290,10 @@ const PageStore = observable({
     return returnData;
   },
 
-  async noneEdit(noteId, parentNotebook, prevModifiedUserName, callback) {
+  async noneEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId, callback) {
     const {
       data: { dto: returnData },
-    } = await NoteRepository.nonEdit(noteId, parentNotebook, prevModifiedUserName)
+    } = await NoteRepository.nonEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId)
 
     return returnData;
   },
@@ -499,6 +500,7 @@ const PageStore = observable({
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
+    const userProfile = await UserStore.fetchProfile(dto.USER_ID);
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
@@ -506,6 +508,7 @@ const PageStore = observable({
     this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
+    this.userNick = userProfile.nick;
     this.noteTitle = dto.note_title;
     this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
     EditorStore.setFileList(
@@ -531,6 +534,7 @@ const PageStore = observable({
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart(noteId) {
     this.prevModifiedUserName = this.currentPageData.user_name;
+    this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       EditorStore.tinymce?.focus();
@@ -555,7 +559,8 @@ const PageStore = observable({
     this.noneEdit(
       noteId,
       this.currentPageData.parent_notebook,
-      this.prevModifiedUserName).then(
+      this.prevModifiedUserName,
+      this.prevModifiedUserId).then(
         (dto) => {
           this.fetchNoteInfoList(dto.note_id);
           EditorStore.tinymce?.setContent(this.currentPageData.note_content);
