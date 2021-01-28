@@ -2603,7 +2603,7 @@ var EditorStore$1 = mobx.observable((_observable = {
   this.tinymce.selection.setContent('');
   if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
   this.tinymce.focus();
-  NoteStore$1.setModalInfo(null);
+  NoteStore.setModalInfo(null);
 }), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
     var createCopyArray, _yield$NoteRepository4, dto;
@@ -3192,8 +3192,8 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.noteTitle = '';
       _this.prevModifiedUserName = _this.currentPageData.user_name;
       _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
-      NoteStore$1.setTargetLayout('Content');
-      NoteStore$1.setShowPage(true);
+      NoteStore.setTargetLayout('Content');
+      NoteStore.setShowPage(true);
       (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
       (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.focus();
     });
@@ -3209,8 +3209,8 @@ var PageStore = mobx.observable((_observable$1 = {
       }
 
       if (_this2.isNewPage) {
-        if (NoteStore$1.layoutState === "collapse") {
-          NoteStore$1.setTargetLayout('LNB');
+        if (NoteStore.layoutState === "collapse") {
+          NoteStore.setTargetLayout('LNB');
           _this2.isNewPage = false;
           _this2.createPageId = '';
 
@@ -3242,7 +3242,7 @@ var PageStore = mobx.observable((_observable$1 = {
         });
       }
 
-      NoteStore$1.setShowModal(false);
+      NoteStore.setShowModal(false);
     });
   },
   renameNotePage: function renameNotePage(chapterId) {
@@ -3325,7 +3325,7 @@ var PageStore = mobx.observable((_observable$1 = {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
+              item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
               sortedMoveInfoList = _this4.getSortedMoveInfoList();
               sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
                 return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
@@ -3369,7 +3369,7 @@ var PageStore = mobx.observable((_observable$1 = {
                 break;
               }
 
-              localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
+              localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
               _context9.next = 18;
               return ChapterStore.getNoteChapterList();
 
@@ -3391,12 +3391,12 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 24:
               if (!moveCntToAnotherChapter) {
-                NoteStore$1.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
               } else {
-                NoteStore$1.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
               }
 
-              NoteStore$1.setIsVisibleToast(true);
+              NoteStore.setIsVisibleToast(true);
               _context9.next = 29;
               break;
 
@@ -3405,7 +3405,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this4.handleClickOutside();
 
             case 29:
-              NoteStore$1.setIsDragging(false);
+              NoteStore.setIsDragging(false);
 
             case 30:
             case "end":
@@ -3571,7 +3571,7 @@ var PageStore = mobx.observable((_observable$1 = {
       _this9.fetchNoteInfoList(dto.note_id);
 
       (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this9.currentPageData.note_content);
-      NoteStore$1.setShowModal(false);
+      NoteStore.setShowModal(false);
       EditorStore$1.setIsSearch(false);
     });
   },
@@ -3657,7 +3657,7 @@ var PageStore = mobx.observable((_observable$1 = {
       EditorStore$1.tempFileLayoutList = [];
     }
 
-    NoteStore$1.setShowModal(false);
+    NoteStore.setShowModal(false);
     EditorStore$1.setIsAttatch(false);
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
@@ -3786,7 +3786,7 @@ var PageStore = mobx.observable((_observable$1 = {
   }))();
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
-  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var targetChId = NoteStore.getTargetChId(targetRoomId);
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
@@ -4091,7 +4091,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$1.getChapterList(NoteStore$1.getChannelId());
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
 
             case 2:
               _yield$NoteRepository3 = _context3.sent;
@@ -4463,7 +4463,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _this7.sharedCnt = sharedList.length;
             tempChapterList = [];
 
-            if (localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId())) {
+            if (localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
               _context12.next = 15;
               break;
             }
@@ -4478,15 +4478,15 @@ var ChapterStore = mobx.observable((_observable$2 = {
           case 11:
             tempChapterList = _context12.sent;
 
-            _this7.setLocalStorageItem(NoteStore$1.getChannelId(), tempChapterList);
+            _this7.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
 
             _context12.next = 17;
             break;
 
           case 15:
-            _this7.applyDifference(NoteStore$1.getChannelId(), notbookList);
+            _this7.applyDifference(NoteStore.getChannelId(), notbookList);
 
-            tempChapterList = _this7.getLocalStorageItem(NoteStore$1.getChannelId(), notbookList);
+            tempChapterList = _this7.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
 
           case 17:
             _this7.chapterList = tempChapterList.concat(sharedList); // component에서 render하기 좋도록 category 분류하기
@@ -4559,7 +4559,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     _this9.getNoteChapterList();
 
     _this9.deleteChapterId = '';
-    NoteStore$1.setShowModal(false);
+    NoteStore.setShowModal(false);
   });
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
   var _this10 = this;
@@ -4597,7 +4597,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
 }), _defineProperty(_observable$2, "moveChapter", function moveChapter(moveTargetChapterIdx) {
   var _this11 = this;
 
-  var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
+  var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
   var sortedMoveInfoList = this.getSortedMoveInfoList();
   var sortedMoveChapters = sortedMoveInfoList.map(function (moveInfo) {
     return item[moveInfo.chapterIdx];
@@ -4622,16 +4622,16 @@ var ChapterStore = mobx.observable((_observable$2 = {
   });
 
   if (moveCnt > 0) {
-    localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(chapters));
+    localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
     this.getNoteChapterList().then(function () {
       if (!_this11.currentChapterId) _this11.handleClickOutside();
-      NoteStore$1.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
-      NoteStore$1.setIsVisibleToast(true);
-      NoteStore$1.setIsDragging(false);
+      NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+      NoteStore.setIsVisibleToast(true);
+      NoteStore.setIsDragging(false);
     });
   } else {
     this.handleClickOutside();
-    NoteStore$1.setIsDragging(false);
+    NoteStore.setIsDragging(false);
   }
 }), _defineProperty(_observable$2, "initSearchVar", function initSearchVar() {
   this.setIsLoadingSearchResult(false);
@@ -4768,7 +4768,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var _this15 = this;
 
   if (!targetChapterList) return;
-  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+  var targetChId = NoteStore.getTargetChId(targetRoomId);
   var targetList = targetChapterList.map(function (chapter) {
     return {
       id: chapter.id,
@@ -4915,8 +4915,8 @@ var NoteMeta = {
   setModalConfig: function setModalConfig(type) {
     var handleCancel = function handleCancel(e) {
       e.stopPropagation();
-      NoteStore$1.setModalInfo(null);
-      NoteStore$1.setIsShared(false);
+      NoteStore.setModalInfo(null);
+      NoteStore.setIsShared(false);
     };
 
     var initialConfig = {
@@ -4974,7 +4974,7 @@ var NoteMeta = {
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
+          NoteStore.setModalInfo(null);
         });
         break;
 
@@ -4990,7 +4990,7 @@ var NoteMeta = {
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
+          NoteStore.setModalInfo(null);
         });
         break;
 
@@ -5019,7 +5019,7 @@ var NoteMeta = {
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
+          NoteStore.setModalInfo(null);
         });
         break;
 
@@ -5033,7 +5033,7 @@ var NoteMeta = {
       case 'fileOpenMail':
         eventList.push(function (e) {
           e.stopPropagation();
-          NoteStore$1.setModalInfo(null);
+          NoteStore.setModalInfo(null);
         });
         break;
     }
@@ -5268,7 +5268,7 @@ var handleWebsocket = function handleWebsocket(message) {
   }
 };
 
-var NoteStore$1 = mobx.observable({
+var NoteStore = mobx.observable({
   noteIdFromTalk: '',
   loadingNoteApp: true,
   workspaceId: '',
@@ -5341,11 +5341,11 @@ var NoteStore$1 = mobx.observable({
     return this.user_id;
   },
   init: function init(roomId, channelId, userId, userName, userEmail, callback) {
-    NoteStore$1.setWsId(roomId);
-    NoteStore$1.setChannelId(channelId);
-    NoteStore$1.setUserId(userId);
-    NoteStore$1.setUserName(userName);
-    NoteStore$1.setUserEmail(userEmail);
+    NoteStore.setWsId(roomId);
+    NoteStore.setChannelId(channelId);
+    NoteStore.setUserId(userId);
+    NoteStore.setUserName(userName);
+    NoteStore.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables: function initVariables() {
@@ -5631,7 +5631,7 @@ var NoteStore$1 = mobx.observable({
 
 var useNoteStore = function useNoteStore() {
   return {
-    NoteStore: NoteStore$1,
+    NoteStore: NoteStore,
     ChapterStore: ChapterStore,
     TagStore: TagStore,
     PageStore: PageStore,
@@ -6676,8 +6676,8 @@ var LNBHeader = function LNBHeader(_ref) {
   var instance = new Mark__default['default']((_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.getBody()); // 뒤로 가기 버튼
 
   var handleLayoutBtn = function handleLayoutBtn(e) {
-    NoteStore$1.setTargetLayout('Content');
-    NoteStore$1.setShowPage(false);
+    NoteStore.setTargetLayout('Content');
+    NoteStore.setShowPage(false);
   };
 
   var handleNewChapterClick = /*#__PURE__*/function () {
@@ -6780,7 +6780,7 @@ var LNBHeader = function LNBHeader(_ref) {
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleCover, null, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
-      show: NoteStore$1.layoutState === 'collapse' && ChapterStore.isTagSearching
+      show: NoteStore.layoutState === 'collapse' && ChapterStore.isTagSearching
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
       src: img$4,
       onClick: handleLayoutBtn
@@ -6816,7 +6816,7 @@ var LNBHeader = function LNBHeader(_ref) {
     }), !ChapterStore.isSearching && ChapterStore.searchStr === "" || ChapterStore.isTagSearching ? null : /*#__PURE__*/React__default['default'].createElement(Button, {
       src: img$1,
       onClick: onClickCancelBtn
-    })), NoteStore$1.layoutState === 'collapse' && /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null)));
+    })), NoteStore.layoutState === 'collapse' && /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null)));
   });
 };
 
@@ -6945,7 +6945,7 @@ var ChapterColor = function ChapterColor(_ref) {
 };
 
 var _useNoteStore = useNoteStore(),
-    NoteStore$2 = _useNoteStore.NoteStore,
+    NoteStore$1 = _useNoteStore.NoteStore,
     ChapterStore$1 = _useNoteStore.ChapterStore;
 
 var LNBNewChapterForm = mobxReact.observer(function (_ref) {
@@ -7006,9 +7006,9 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
 
 
   React.useEffect(function () {
-    var focusCondition = ChapterStore$1.isNewChapter || !NoteStore$2.showModal;
+    var focusCondition = ChapterStore$1.isNewChapter || !NoteStore$1.showModal;
     if (titleRef.current && focusCondition) titleRef.current.focus();
-  }, [ChapterStore$1.isNewChapter, NoteStore$2.showModal]);
+  }, [ChapterStore$1.isNewChapter, NoteStore$1.showModal]);
   if (!show) return null;
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNBNewChapter, null, /*#__PURE__*/React__default['default'].createElement(ChapterTitle, null, /*#__PURE__*/React__default['default'].createElement(ChapterColor, {
     color: ChapterStore$1.isNewChapterColor
@@ -7249,7 +7249,7 @@ var handleUpload = /*#__PURE__*/function () {
 
                         if (EditorStore$1.processLength == EditorStore$1.uploadLength) {
                           EditorStore$1.uploadDTO = [];
-                          if (EditorStore$1.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
+                          if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
                             PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                               EditorStore$1.setFileList(dto.fileList);
                               EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
@@ -7329,7 +7329,7 @@ var handleDriveCopy = /*#__PURE__*/function () {
                 EditorStore$1.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
                   if (dto.resultMsg === 'Success') {
                     EditorStore$1.driveFileList = [];
-                    if (EditorStore$1.failCount > 0) NoteStore$1.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
+                    if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
                       PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                         EditorStore$1.setFileList(dto.fileList);
                         EditorStore$1.processCount = 0;
@@ -7609,9 +7609,9 @@ var htmlToPdf = function htmlToPdf(isMailShare, element, opt) {
         name: opt.filename,
         uid: '1'
       }];
-      NoteStore$1.setMailShareFileObjs(fileObjs);
+      NoteStore.setMailShareFileObjs(fileObjs);
       document.getElementById('exportTarget').remove();
-      NoteStore$1.setIsMailShare(true);
+      NoteStore.setIsMailShare(true);
     });
   }
 };
@@ -7790,7 +7790,7 @@ var handleUnselect = function handleUnselect() {
   _toConsumableArray(contextMenuList).forEach(function (el) {
     if (!el.classList.contains('ant-dropdown-hidden')) {
       el.classList.add('ant-dropdown-hidden');
-      NoteStore$1.LNBChapterCoverRef.removeEventListener('wheel', NoteStore$1.disableScroll);
+      NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
     }
   });
 };
@@ -8913,7 +8913,7 @@ var LNBSearchResult = function LNBSearchResult() {
             case 0:
               ChapterStore.setScrollIntoViewId(chapterId);
               ChapterStore.initSearchVar();
-              NoteStore$1.setShowPage(true);
+              NoteStore.setShowPage(true);
               ChapterStore.getChapterChildren(chapterId).then(function (data) {
                 if (data.noteList && data.noteList.length > 0) {
                   PageStore.fetchCurrentPageData(data.noteList[0].note_id);
@@ -8951,8 +8951,8 @@ var LNBSearchResult = function LNBSearchResult() {
                 instance.mark(ChapterStore.searchStr);
               }); // ChapterStore.initSearchVar();
 
-              NoteStore$1.setShowPage(true);
-              if (NoteStore$1.layoutState === "collapse") NoteStore$1.setTargetLayout('Content');
+              NoteStore.setShowPage(true);
+              if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
 
             case 5:
             case "end":
@@ -10572,7 +10572,7 @@ var EditorContainer = function EditorContainer() {
       EditorStore.setFileLength(files.length);
 
       if (EditorStore.uploadLength > 30) {
-        NoteStore$1.setModalInfo('failUpload');
+        NoteStore.setModalInfo('failUpload');
         return;
       }
 
@@ -10582,7 +10582,7 @@ var EditorContainer = function EditorContainer() {
         }
 
         if (uploadsize > totalsize) {
-          NoteStore$1.setModalInfo('sizefailUpload');
+          NoteStore.setModalInfo('sizefailUpload');
           return;
         }
       }
