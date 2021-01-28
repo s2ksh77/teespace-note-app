@@ -1,3 +1,4 @@
+import NoteStore from '../../store/noteStore';
 import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 import NoteRepository from '../../store/noteRepository';
