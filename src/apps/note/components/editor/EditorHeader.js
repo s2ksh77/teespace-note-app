@@ -28,6 +28,9 @@ const EditorHeader = () => {
   // 뒤로 가기 버튼
   const handleLayoutBtn = async (e) => {
     if (PageStore.isReadMode()) {
+      EditorStore.setIsSearch(false);
+      ChapterStore.initSearchVar();
+      instance.unmark();
       ChapterStore.getNoteChapterList();
       NoteStore.setTargetLayout('LNB');
     } else {

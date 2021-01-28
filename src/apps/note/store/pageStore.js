@@ -626,121 +626,72 @@ const PageStore = observable({
     if (contentList) {
       // forEach 는 항상 return 값 undefined
       for (let i = 0; i < contentList.length; i++) {
-        if (contentList[i].tagName === 'TABLE') {
-          // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
-          const imgList = contentList[i].getElementsByTagName('img');
-          if (!contentList[i].textContent && !imgList.length) return '(표)';
-          const tdList = contentList[i].getElementsByTagName('td');
-          for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-            var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
-            if (tableTitle !== undefined) return tableTitle;
-          }
-          // if (i === contentList.length - 1) return '(표)'; >> length-1이어야하는건가??? 주석처리하고 위에 if문 추가
-        } else if (contentList[i].tagName === 'IMG') {
-          if (!!contentList[i].dataset.name) return contentList[i].dataset.name;
-        } else if (contentList[i].nodeName === 'STRONG' || contentList[i].nodeName === 'BLOCKQUOTE' || contentList[i].nodeName === 'EM' || contentList[i].nodeName === 'H2' || contentList[i].nodeName === 'H3') {
-          if (!!contentList[i].textContent) return contentList[i].textContent;
-        } else if (contentList[i].nodeName === 'OL' || contentList[i].nodeName === 'UL') {
-          if (!!contentList[i].children[0].textContent) return contentList[i].children[0].textContent;
-        } else if (contentList[i].tagName === 'BR') continue;
-        else if (contentList[i].tagName === 'PRE') temp = this._getTitleFromPreTag(contentList[i]);
-        /*
-          ** p태그랑 합침
-          case 1. <div><br><div>인 경우 넘어가야함
-          case 2. 복붙했는데 <div>태그 안에 <pre> 태그가 있는 경우가 있었음
-          case 3. 그냥 <pre> 태그만 있는 경우도 있음
-        */
-        else {
-          const ImgList = contentList[i].getElementsByTagName('img');
-          // 이미지가 없을 때, textContent도 없으면 contentList[i+1]로 넘어가기
-          if (ImgList.length === 0) {
-            if (!!contentList[i].textContent) return this._findFirstTextContent(contentList[i]);
-          } else {
-            // 이미지+텍스트 있을 때 text가 먼저인지 확인
-            if (!!contentList[i].textContent) {
-              const temp = this._findFirstTextContent(contentList[i]);
-              if (temp) return temp;
-            }
-            // 이미지만 있을 때
-            const imgName = ImgList[0].dataset.name;
-            return imgName ? imgName : ImgList[0].src;
+        // 표는 무조건 return
+        if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]);
+        // early return        
+        if (!contentList[i].textContent && 
+          (contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length===0)) continue;
+        if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
 
-            // 예전 코드 혹시 몰라 남겨둠
-            // if (contentList[i].getElementsByTagName('img').length > 0) {
-            //   const imgName = contentList[i].getElementsByTagName('img')[0].dataset.name;
-            //   return imgName ? imgName : contentList[i].getElementsByTagName('img')[0].src;
-            // } else if (!!contentList[i].textContent) return contentList[i].textContent;
-          }
-        }
+        // 표 제외, 이미지나 텍스트가 있을 때만 탄다
+        let title = this._getTitleByTagName(contentList[i]);
+        if (title !== undefined) return title;
       }
     }
   },
-  _getTableTitle(td) {
-    if (td) {
-      for (let j = 0; j < td.length; j++) {
-        if (td[j].nodeName === '#text') {
-          return td[j].textContent;
-        } else if (td[j].nodeName === 'STRONG' || td[j].nodeName === 'BLOCKQUOTE' || td[j].nodeName === 'EM' || td[j].nodeName === 'H2' || td[j].nodeName === 'H3') {
-          if (!!td[j].textContent) return td[j].textContent;
-        } else if (td[j].nodeName === 'OL' || td[j].nodeName === 'UL') {
-          if (!!td[j].children[0].textContent) return td[j].children[0].textContent;
-        } else if (td[j].nodeName === 'IMG') {
-          return td[j].dataset.name;
-        } else if (td[j].nodeName === 'TABLE') { // 두번 루프
-          const tdList = td[j].getElementsByTagName('td');
-          for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-            var tableTitle = this._getTableTitle(tdList[tdIndex].childNodes);
-            if (tableTitle !== undefined) return tableTitle;
-          }
-        }
+  // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
+  _getTableTitle(node) {
+    if (!node.textContent && node.getElementsByTagName('IMG').length===0) return '(표)';
+    // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
+    const tdList = node.getElementsByTagName('td');    
+    for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
+      const tdChildren = tdList[tdIndex].childNodes;
+      for (let j = 0; j < tdChildren.length; j++) {
+        let title = this._getTitleByTagName(tdChildren[j]);
+        if (title !== undefined) return title;
       }
     }
   },
-  // textContent를 가지고 있는 노드를 받는다
-  _findFirstTextContent(parent) {
-    try {
-      // 의도적인 줄바꿈이 있는 경우
-      const lineBreakIdx = parent.textContent.indexOf('\n');
-      if (lineBreakIdx !== -1) return parent.textContent.slice(0, lineBreakIdx);
-      // hasLineBreak === trure면 전체 textContent를 return 아니면 첫줄만
-      let hasLineBreak = false;
-      // (참고) text노드면 nodeName이 #text다
-      // 줄바꿈, 이미지가 있으면 자식 노드 탐색하는 for문 들어가야한다
-      if (Array.from(parent.childNodes).some(node => ['DIV', 'PRE', 'P', 'IMG', 'BR'].includes(node.nodeName))) hasLineBreak = true;
+  // div, pre, p 
+  _searchInsideContainerTag(node) {
+    if (!node.textContent && node.getElementsByTagName('IMG').length===0) return;
+    // 명시적인 줄바꿈이 있는 경우
+    const lineBreakIdx = node.textContent.indexOf('\n');
+    if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx);
 
-      if (!hasLineBreak) return parent.textContent.slice(0, 200);
-      // 줄바꿈이 있으면 찾아서 첫 줄만 출력
-      for (let item of Array.from(parent.childNodes)) {
-        // dataset.name 없으면 src 출력
-        if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-        if (!item.textContent || item.tagName === 'BR') continue;
-        // 안에 자식 태그를 갖는 태그들은 depth 한 단계 더 들어가기
-        if (['DIV', 'PRE', 'P'].includes(item.tagName)) return this._findFirstTextContent(item);
-        // todo : error 없으려나 테스트 필요
-        if (item.tagName === 'SPAN') return item.textContent.slice(0, 200);
-        // depth가 더 있으면 들어간다
-        if (item.childNodes.length) return this._findFirstTextContent(item);
-        // 자식이 없는 text node일 때
-        return item.textContent.slice(0, 200);
-      }
-    } catch (err) { return null; }
+    // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
+    // 즉 node 단위로 title을 뽑아낼 때
+    let hasLineBreak = false;
+    if (Array.from(node.childNodes).some(child => ['DIV', 'PRE', 'P', 'IMG', 'BR','OL','UL'].includes(child.nodeName))) hasLineBreak = true;
+    // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
+    if (!hasLineBreak) return node.textContent.slice(0, 200);
+
+    for (let item of Array.from(node.childNodes)) {
+      if (!item.textContent && (item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length===0)) continue;
+      let title = this._getTitleByTagName(item);
+      if (title !== undefined) return title;
+    }
   },
-  // children으로 받는 버전
-  // _findFirstTextContent(htmlCollection) {
-  //   try {
-  //     for (let item of Array.from(htmlCollection)) {
-  //       if (item.tagName === 'BR') continue;
-  //       // todo : error 없으려나 테스트 필요
-  //       if (item.tagName === 'SPAN' && item.textContent) return item.textContent;
-  //       // depth가 더 있으면 들어간다
-  //       if (item.children.length) return this._findFirstTextContent(item.children);
-  //       // dataset.name 없으면 src 출력
-  //       if (item.tagName === "IMG") return item.dataset.name ? item.dataset.name : item.src;
-  //       if (item.tagName === 'PRE' && item.textContent) return this._getTitleFromPreTag(item);
-  //       if (item.textContent) return item.textContent.slice(0, 200);
-  //     }
-  //   } catch (err) { return null };
-  // },
+  _getTitleByTagName(node) {
+    switch (node.nodeName) {
+      case 'BR':return;
+      case 'IMG':
+        return node.dataset.name ? node.dataset.name : node.src;
+      case 'SPAN':case 'A':case '#text':
+      case 'STRONG':case 'BLOCKQUOTE':case 'EM':case 'H1':case 'H2':case 'H3':case 'H4':case 'H5':case'H6':
+        return node.textContent.slice(0, 200);
+      case 'OL':case 'UL':
+        return node.children[0].textContent;
+      case 'TABLE':
+        let tableTitle = this._getTableTitle(node);
+        if (tableTitle !== undefined) return tableTitle;
+      case 'DIV':case 'PRE':case "P":
+        let title = this._searchInsideContainerTag(node);
+        if (title !== undefined) return title;
+      default:break;
+    }
+    if (node.textContent) return node.textContent.slice(0, 200);
+  },
   async createSharePage(targetList) {
     const {
       data: { dto: { noteList } }
