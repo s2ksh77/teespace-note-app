@@ -3552,6 +3552,10 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this8 = this;
 
     this.editDone(updateDto).then(function (dto) {
+      if (_this8.moveInfoMap.get(dto.note_id)) {
+        _this8.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
+
       _this8.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
