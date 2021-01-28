@@ -2514,7 +2514,7 @@ var EditorStore = observable((_observable = {
 
   switch (type) {
     case 'image':
-      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
+      EditorStore$1.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"/>');
       break;
 
     case 'video':
@@ -3366,6 +3366,10 @@ var PageStore = observable((_observable$1 = {
     var _this8 = this;
 
     this.editDone(updateDto).then(function (dto) {
+      if (_this8.moveInfoMap.get(dto.note_id)) {
+        _this8.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
+
       _this8.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();

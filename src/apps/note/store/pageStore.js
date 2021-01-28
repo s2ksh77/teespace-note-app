@@ -542,6 +542,9 @@ const PageStore = observable({
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone(updateDto) {
     this.editDone(updateDto).then(dto => {
+      if (this.moveInfoMap.get(dto.note_id)) { 
+        this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
       this.fetchNoteInfoList(dto.note_id);
       ChapterStore.getNoteChapterList();
     });
