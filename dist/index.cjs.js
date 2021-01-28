@@ -2700,7 +2700,7 @@ var EditorStore$1 = mobx.observable((_observable = {
 
   switch (type) {
     case 'image':
-      EditorStore$1.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"/>');
+      EditorStore$1.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"/>');
       break;
 
     case 'video':
