@@ -542,7 +542,7 @@ const PageStore = observable({
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone(updateDto) {
     this.editDone(updateDto).then(dto => {
-      if (this.moveInfoMap.get(dto.note_id)) { 
+      if (this.moveInfoMap.get(dto.note_id)) {
         this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
       this.fetchNoteInfoList(dto.note_id);
@@ -632,8 +632,8 @@ const PageStore = observable({
         // 표는 무조건 return
         if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]);
         // early return        
-        if (!contentList[i].textContent && 
-          (contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length===0)) continue;
+        if (!contentList[i].textContent &&
+          (contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length === 0)) continue;
         if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
 
         // 표 제외, 이미지나 텍스트가 있을 때만 탄다
@@ -644,9 +644,9 @@ const PageStore = observable({
   },
   // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
   _getTableTitle(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length===0) return '(표)';
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '(표)';
     // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
-    const tdList = node.getElementsByTagName('td');    
+    const tdList = node.getElementsByTagName('td');
     for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
       const tdChildren = tdList[tdIndex].childNodes;
       for (let j = 0; j < tdChildren.length; j++) {
@@ -657,7 +657,7 @@ const PageStore = observable({
   },
   // div, pre, p 
   _searchInsideContainerTag(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length===0) return;
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return;
     // 명시적인 줄바꿈이 있는 경우
     const lineBreakIdx = node.textContent.indexOf('\n');
     if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx);
@@ -665,33 +665,33 @@ const PageStore = observable({
     // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
     // 즉 node 단위로 title을 뽑아낼 때
     let hasLineBreak = false;
-    if (Array.from(node.childNodes).some(child => ['DIV', 'PRE', 'P', 'IMG', 'BR','OL','UL'].includes(child.nodeName))) hasLineBreak = true;
+    if (Array.from(node.childNodes).some(child => ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName))) hasLineBreak = true;
     // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
     if (!hasLineBreak) return node.textContent.slice(0, 200);
 
     for (let item of Array.from(node.childNodes)) {
-      if (!item.textContent && (item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length===0)) continue;
+      if (!item.textContent && (item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length === 0)) continue;
       let title = this._getTitleByTagName(item);
       if (title !== undefined) return title;
     }
   },
   _getTitleByTagName(node) {
     switch (node.nodeName) {
-      case 'BR':return;
+      case 'BR': return;
       case 'IMG':
         return node.dataset.name ? node.dataset.name : node.src;
-      case 'SPAN':case 'A':case '#text':
-      case 'STRONG':case 'BLOCKQUOTE':case 'EM':case 'H1':case 'H2':case 'H3':case 'H4':case 'H5':case'H6':
+      case 'SPAN': case 'A': case '#text':
+      case 'STRONG': case 'BLOCKQUOTE': case 'EM': case 'H1': case 'H2': case 'H3': case 'H4': case 'H5': case 'H6':
         return node.textContent.slice(0, 200);
-      case 'OL':case 'UL':
+      case 'OL': case 'UL':
         return node.children[0].textContent;
       case 'TABLE':
         let tableTitle = this._getTableTitle(node);
         if (tableTitle !== undefined) return tableTitle;
-      case 'DIV':case 'PRE':case "P":
+      case 'DIV': case 'PRE': case "P":
         let title = this._searchInsideContainerTag(node);
         if (title !== undefined) return title;
-      default:break;
+      default: break;
     }
     if (node.textContent) return node.textContent.slice(0, 200);
   },
@@ -706,16 +706,21 @@ const PageStore = observable({
     if (!targetPageList) return;
 
     const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
+
     const targetList = targetPageList.map(page => {
       return ({
         WS_ID: NoteRepository.WS_ID,
         note_id: (page.note_id || page.id),
+        note_title: page.text,
+        modified_date: page.date,
         note_channel_id: NoteRepository.chId,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
         shared_room_name: NoteRepository.WS_ID,
         target_workspace_id: targetRoomId,
-        target_channel_id: targetChId
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId
       });
     });
 

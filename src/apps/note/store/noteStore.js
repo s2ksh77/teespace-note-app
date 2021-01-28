@@ -211,8 +211,8 @@ const NoteStore = observable({
     this.setModalInfo('viewInfo');
   },
 
-  getTargetChId(targetRoomId) {
-    return RoomStore.getChannelIds({ roomId: targetRoomId })[NoteRepository.CH_TYPE];
+  getTargetChId(targetRoomId, chType) {
+    return RoomStore.getChannelIds({ roomId: targetRoomId })[chType ? chType : NoteRepository.CH_TYPE];
   },
 
   getSharedRoomName() {
