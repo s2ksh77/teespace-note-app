@@ -3605,16 +3605,20 @@ var PageStore = mobx.observable((_observable$1 = {
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
   var targetChId = NoteStore.getTargetChId(targetRoomId);
+  var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
   var targetList = targetPageList.map(function (page) {
     return {
       WS_ID: NoteRepository$1.WS_ID,
       note_id: page.note_id || page.id,
+      note_title: page.text,
+      modified_date: page.date,
       note_channel_id: NoteRepository$1.chId,
       USER_ID: NoteRepository$1.USER_ID,
       shared_user_id: NoteRepository$1.USER_ID,
       shared_room_name: NoteRepository$1.WS_ID,
       target_workspace_id: targetRoomId,
-      target_channel_id: targetChId
+      target_channel_id: targetChId,
+      messenger_id: targetTalkChId
     };
   });
   this.createSharePage(targetList).then(function () {
@@ -5322,10 +5326,10 @@ var NoteStore = mobx.observable({
       }, _callee);
     }))();
   },
-  getTargetChId: function getTargetChId(targetRoomId) {
+  getTargetChId: function getTargetChId(targetRoomId, chType) {
     return teespaceCore.RoomStore.getChannelIds({
       roomId: targetRoomId
-    })[NoteRepository$1.CH_TYPE];
+    })[chType ? chType : NoteRepository$1.CH_TYPE];
   },
   getSharedRoomName: function getSharedRoomName() {
     return teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).isMyRoom ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
