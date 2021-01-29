@@ -3578,6 +3578,8 @@ var PageStore = observable((_observable$1 = {
 
       _this9.fetchNoteInfoList(dto.note_id);
 
+      var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+      if (floatingMenu !== null) floatingMenu.click();
       (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this9.currentPageData.note_content);
       NoteStore.setShowModal(false);
       EditorStore$1.setIsSearch(false);
@@ -10940,7 +10942,7 @@ var EditorContainer = function EditorContainer() {
       onEditorChange: getEditorContent,
       apiKey: GlobalVariable.apiKey,
       plugins: "print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
-      toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile | searchreplace"
+      toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
     }), EditorStore.isFile ? /*#__PURE__*/React.createElement(FileLayout, null) : null, /*#__PURE__*/React.createElement(TagListContainer, null), /*#__PURE__*/React.createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
