@@ -503,7 +503,11 @@ const PageStore = observable({
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
     }
-    const userProfile = await UserStore.fetchProfile(dto.USER_ID);
+
+    if (dto.USER_ID) {
+      const userProfile = await UserStore.fetchProfile(dto.USER_ID);
+      this.userNick = userProfile.nick;
+    }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
@@ -511,7 +515,6 @@ const PageStore = observable({
     this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
-    this.userNick = userProfile.nick;
     this.noteTitle = dto.note_title;
     this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
     EditorStore.setFileList(
