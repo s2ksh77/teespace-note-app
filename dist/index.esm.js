@@ -5035,6 +5035,7 @@ var NoteMeta = {
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
@@ -5073,6 +5074,7 @@ var NoteMeta = {
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
@@ -5145,7 +5147,12 @@ var NoteMeta = {
       case 'titleDuplicate':
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
-        dialogType.btns = this.setBtns('titleDuplicate');
+        dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'duplicateTagName':
+        dialogType.title = '이미 있는 태그 이름입니다.';
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'editingPage':
@@ -5441,6 +5448,7 @@ var NoteStore = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'editingPage':
       case 'multiFileSomeFail':
       case 'failUpload':
@@ -9770,8 +9778,11 @@ const img$e = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 
 var AddTagForm = function AddTagForm(_ref) {
   var show = _ref.show,
-      toggleTagInput = _ref.toggleTagInput,
-      setOpenModal = _ref.setOpenModal;
+      toggleTagInput = _ref.toggleTagInput;
+
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      TagStore = _useNoteStore.TagStore;
 
   var _useState = useState(''),
       _useState2 = _slicedToArray(_useState, 2),
@@ -9793,7 +9804,7 @@ var AddTagForm = function AddTagForm(_ref) {
         TagStore.setIsNewTag(false);
         TagStore.prependNoteTagList(value);
       } else {
-        setOpenModal(true);
+        NoteStore.setModalInfo('duplicateTagName');
         TagStore.setIsNewTag(false);
       }
     } // input창 초기화
@@ -9828,18 +9839,14 @@ var AddTagForm = function AddTagForm(_ref) {
 
 var TagListContainer = function TagListContainer() {
   var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
       TagStore = _useNoteStore.TagStore,
       PageStore = _useNoteStore.PageStore;
 
   var _useState = useState(false),
       _useState2 = _slicedToArray(_useState, 2),
-      openModal = _useState2[0],
-      setOpenModal = _useState2[1];
-
-  var _useState3 = useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      isEllipsisActive = _useState4[0],
-      setIsEllipsisActive = _useState4[1];
+      isEllipsisActive = _useState2[0],
+      setIsEllipsisActive = _useState2[1];
 
   var focusedTag = useRef([]);
   var tagList = useRef(null); // scroll 때문에 필요
@@ -9910,7 +9917,7 @@ var TagListContainer = function TagListContainer() {
             if (TagStore.isValidTag(TagStore.editTagValue)) {
               updateNoteTagList();
             } else {
-              setOpenModal(true);
+              NoteStore.setModalInfo('duplicateTagName');
             }
           }
     } else {
@@ -9924,7 +9931,7 @@ var TagListContainer = function TagListContainer() {
             if (TagStore.isValidTag(TagStore.editTagValue)) {
               TagStore.setEditCreateTag();
             } else {
-              setOpenModal(true);
+              NoteStore.setModalInfo('duplicateTagName');
             }
           }
     }
@@ -9995,11 +10002,6 @@ var TagListContainer = function TagListContainer() {
     }
   };
 
-  var handleClickModalBtn = function handleClickModalBtn(e) {
-    e.stopPropagation();
-    setOpenModal(false);
-  };
-
   var handleTooltip = function handleTooltip(e) {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
@@ -10011,25 +10013,14 @@ var TagListContainer = function TagListContainer() {
     };
   });
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, /*#__PURE__*/React.createElement(Message, {
-      visible: openModal,
-      title: "이미 있는 태그 이름입니다.",
-      type: "error",
-      btns: [{
-        type: 'solid',
-        shape: 'round',
-        text: '확인',
-        onClick: handleClickModalBtn
-      }]
-    }), /*#__PURE__*/React.createElement(Tooltip, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, /*#__PURE__*/React.createElement(Tooltip, {
       title: !PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"
     }, /*#__PURE__*/React.createElement(TagNewBtn, null, /*#__PURE__*/React.createElement(TagNewBtnIcon, {
       src: img$5,
       onClick: onClickNewTagBtn
     }))), /*#__PURE__*/React.createElement(AddTagForm, {
       show: TagStore.isNewTag,
-      toggleTagInput: toggleTagInput,
-      setOpenModal: setOpenModal
+      toggleTagInput: toggleTagInput
     }), /*#__PURE__*/React.createElement(TagList, {
       ref: tagList
     }, TagStore.notetagList.map(function (item, index) {
