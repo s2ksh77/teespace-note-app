@@ -32,8 +32,9 @@ export const ChapterCover = styled.div`
     background-color: #FAF8F7;
     border-radius: 0.31rem;
   }
-  &:active:not(.ellipsisBtn) {
-    color: #205855;
+  &:active {
+    background-color: #FFFFFF;
+    border-radius: unset;
   }
 `;
 
