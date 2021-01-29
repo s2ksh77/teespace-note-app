@@ -15,7 +15,7 @@ export const GlobalStyle = createGlobalStyle`
     background-color: #F2EFEC;
   }
   .selectedMenu {
-    background-color: #F2EFEC;
+    color: #205855;
     border-radius: 0.31rem;
   } 
   .ant-collapse {
