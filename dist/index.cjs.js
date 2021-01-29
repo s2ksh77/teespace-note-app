@@ -3068,6 +3068,10 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this3 = this;
 
     this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(function (dto) {
+      if (_this3.moveInfoMap.get(dto.note_id)) {
+        _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
+
       _this3.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
@@ -4395,8 +4399,10 @@ var ChapterStore = mobx.observable((_observable$2 = {
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
   var _this10 = this;
 
-  this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function () {
-    return _this10.getNoteChapterList();
+  this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function (dto) {
+    if (_this10.moveInfoMap.get(dto.id)) _this10.moveInfoMap.get(dto.id).item.text = dto.text;
+
+    _this10.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "createMoveInfo", function createMoveInfo(chapterId) {
   var chapterIdx = this.chapterList.findIndex(function (chapter) {
