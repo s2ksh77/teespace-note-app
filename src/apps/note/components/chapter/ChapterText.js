@@ -5,13 +5,11 @@ import {
   ChapterTitle,
   ChapterTextSpan,
   ChapterFolderBtn,
+  ChapterFoldBtnIcon,
 } from "../../styles/chpaterStyle";
 import ContextMenu from "../common/ContextMenu";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleDown,
-  faAngleUp,
-} from "@fortawesome/free-solid-svg-icons";
+import arrowTopIcon from '../../assets/arrow_top_1.svg';
+import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 import { Tooltip } from "antd";
 import NoteUtil from '../../NoteUtil';
 
@@ -55,13 +53,8 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
           type={chapter.type}
         />
       </ChapterTitle>
-      <ChapterFolderBtn>
-        <FontAwesomeIcon
-          icon={isFolded ? faAngleDown : faAngleUp}
-          style={{ color: '#7B7671' }}
-          size={"lg"}
-          onClick={handleFoldBtnClick}
-        />
+      <ChapterFolderBtn onClick={handleFoldBtnClick}>
+        <ChapterFoldBtnIcon src={isFolded ? arrowBottomIcon : arrowTopIcon} />
       </ChapterFolderBtn>
     </>
   ));

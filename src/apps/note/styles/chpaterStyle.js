@@ -118,6 +118,12 @@ export const ChapterFolderBtn = styled.span`
   }
 `;
 
+export const ChapterFoldBtnIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+`;
+
 export const ChapterInput = styled.input`
   font-size: 0.81rem !important;
   color: #000000 !important;

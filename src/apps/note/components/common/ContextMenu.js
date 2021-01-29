@@ -4,9 +4,9 @@ import { useObserver } from "mobx-react";
 import {
   ContextMenuCover,
   ContextMenuIconCover,
+  ContextMenuIcon,
 } from "../../styles/commonStyle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import viewMoreIcon from '../../assets/view_more.svg';
 import { Menu } from 'antd';
 import { exportData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
 import { useCoreStores } from "teespace-core";
@@ -173,7 +173,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, nextSelectableChapte
       }}
     >
       <ContextMenuIconCover>
-        <FontAwesomeIcon icon={faEllipsisV} size={"1x"} />
+        <ContextMenuIcon src={viewMoreIcon} />
       </ContextMenuIconCover>
     </ContextMenuCover>
   ));

@@ -148,6 +148,12 @@ export const ContextMenuCover = styled(Dropdown)`
 
 export const ContextMenuIconCover = styled.span``;
 
+export const ContextMenuIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+`;
+
 // ShareNoteMessage
 export const MessageCover = styled.div`
   border-radius: 0.75rem;
