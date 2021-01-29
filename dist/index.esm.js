@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, Message, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Toast } from 'teespace-core';
+import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Message, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { createGlobalStyle, css } from 'styled-components';
@@ -3955,6 +3955,7 @@ var ChapterStore = observable((_observable$2 = {
     this.chapterNewTitle = title;
   },
   // 사용자 input이 없을 때
+  // 웹에서 더이상 안씀!
   getNewChapterTitle: function getNewChapterTitle() {
     var re = /^새 챕터 (\d+)$/gm;
     var chapterTitle, temp;
@@ -8548,7 +8549,6 @@ var PageList = function PageList(_ref) {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       PageStore = _useNoteStore.PageStore,
-      ChapterStore = _useNoteStore.ChapterStore,
       EditorStore = _useNoteStore.EditorStore;
 
   var _useDrop = useDrop({
@@ -8580,15 +8580,16 @@ var PageList = function PageList(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              _context.next = 2;
+              return PageStore.fetchCurrentPageData(id);
+
+            case 2:
               NoteStore.setShowPage(true);
-              ChapterStore.setCurrentChapterId(chapter.id);
-              PageStore.setCurrentPageId(id);
-              PageStore.fetchCurrentPageData(id);
               EditorStore.setIsSearch(false);
               if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
 
-            case 7:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -8644,16 +8645,10 @@ var Chapter = function Chapter(_ref) {
 
   var _useState = useState(false),
       _useState2 = _slicedToArray(_useState, 2),
-      openValidModal = _useState2[0],
-      setOpenValidModal = _useState2[1];
-
-  var _useState3 = useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      isFolded = _useState4[0],
-      setIsFolded = _useState4[1]; // 중복체크 후 다시 입력받기 위해 ref 추가
+      isFolded = _useState2[0],
+      setIsFolded = _useState2[1]; // 중복체크 후 다시 입력받기 위해 ref 추가
 
 
-  var titleInput = useRef(null);
   var id = chapter.id,
       title = chapter.text,
       color = chapter.color;
@@ -8743,14 +8738,10 @@ var Chapter = function Chapter(_ref) {
     return function () {
       // escape면 원래대로 돌아가기
       if (isEscape) ; // 기존과 동일 이름인 경우 통과
-      else if (ChapterStore.renameChapterText === title) ; // 기존에 이미 있는 이름이라면 다시 입력해야
-        else if (!ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
-            setOpenValidModal(true);
-            return;
-          } // 다 통과했으면 rename 가능
-          else {
-              ChapterStore.renameNoteChapter(color);
-            }
+      else if (ChapterStore.renameChapterText === title) ; // 다 통과했으면 rename 가능
+        else {
+            ChapterStore.renameNoteChapter(color);
+          }
 
       ChapterStore.setRenameChapterId('');
       NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
@@ -8804,11 +8795,6 @@ var Chapter = function Chapter(_ref) {
     }
   };
 
-  var handleModalBtnClick = function handleModalBtnClick() {
-    setOpenValidModal(false);
-    if (titleInput.current) titleInput.current.focus();
-  };
-
   var handleFoldBtnClick = function handleFoldBtnClick(e) {
     e.stopPropagation();
     var icon = e.currentTarget.dataset.icon;
@@ -8816,18 +8802,7 @@ var Chapter = function Chapter(_ref) {
   };
 
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Message, {
-      visible: openValidModal,
-      title: "중복된 이름이 있습니다.",
-      subtitle: "다른 이름을 입력하세요.",
-      type: "error",
-      btns: [{
-        type: 'solid',
-        shape: 'round',
-        text: '확인',
-        onClick: handleModalBtnClick
-      }]
-    }), /*#__PURE__*/React.createElement(ChapterContainer, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ChapterContainer, {
       ref: !isShared ? drop : null,
       className: (isFolded ? 'folded ' : '') + (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : ''),
       id: chapter.id,
@@ -8852,8 +8827,7 @@ var Chapter = function Chapter(_ref) {
         if (e.key === 'Enter') handleChapterTextInput(false)();else if (e.key === 'Escape') handleChapterTextInput(true)();
       },
       onFocus: handleFocus,
-      autoFocus: true,
-      ref: titleInput
+      autoFocus: true
     }) : /*#__PURE__*/React.createElement(ChapterText, {
       chapter: chapter,
       handleFoldBtnClick: handleFoldBtnClick,
@@ -9035,7 +9009,6 @@ var LNBContainer = function LNBContainer() {
 
   var createNewChapter = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var autoName;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -9057,36 +9030,23 @@ var LNBContainer = function LNBContainer() {
 
             case 4:
               if (ChapterStore.chapterNewTitle) {
-                _context.next = 11;
+                _context.next = 10;
                 break;
               }
 
-              autoName = ChapterStore.getNewChapterTitle();
-              ChapterStore.setChapterTitle(autoName);
-              _context.next = 9;
+              ChapterStore.setChapterTitle("새 챕터");
+              _context.next = 8;
               return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
 
-            case 9:
-              _context.next = 17;
+            case 8:
+              _context.next = 12;
               break;
 
-            case 11:
-              if (!ChapterStore.isValidChapterText(ChapterStore.chapterNewTitle)) {
-                _context.next = 16;
-                break;
-              }
-
-              _context.next = 14;
+            case 10:
+              _context.next = 12;
               return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
 
-            case 14:
-              _context.next = 17;
-              break;
-
-            case 16:
-              NoteStore.setModalInfo('titleDuplicate');
-
-            case 17:
+            case 12:
             case "end":
               return _context.stop();
           }

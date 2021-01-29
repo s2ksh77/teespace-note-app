@@ -136,6 +136,7 @@ const ChapterStore = observable({
     this.chapterNewTitle = title;
   },
   // 사용자 input이 없을 때
+  // 웹에서 더이상 안씀!
   getNewChapterTitle() {
     const re = /^새 챕터 (\d+)$/gm;
     let chapterTitle, temp;
