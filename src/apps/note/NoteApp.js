@@ -67,6 +67,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         NoteStore.setChannelId('');
         // 노트앱 확대 상태 -> 다른 앱(축소 상태가 된다) -> 노트앱(축소) 일 때 확대 상태 그렸다가 축소 상태를 그림(그 전에 targetLayout 바꿔도 깜빡임)
         // loadingNoteApp을 넣어줌
+        NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
     }
@@ -83,7 +84,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   return useObserver(() => (
     <>
       <GlobalStyle />
-      {NoteStore.loadingNoteApp ? <LoadingImgContainer/> :
+      {NoteStore.loadingNoteApp ? <LoadingImgContainer /> :
         <>
           <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
             <LNBContainer />
@@ -117,7 +118,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
           <TempEditor />
-          {NoteStore.showModal && <NoteModal/>}          
+          {NoteStore.showModal && <NoteModal />}
           {NoteStore.isMailShare && <MailWriteModal
             uploadFiles={NoteStore.mailShareFileObjs}
             sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
