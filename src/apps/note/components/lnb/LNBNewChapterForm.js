@@ -14,8 +14,12 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
   const titleRef = useRef(null);
 
   const handleBlur = async (e) => {
-    if (e.relatedTarget && e.relatedTarget.getAttribute('data-btn') === "editorEditBtn") {
-      ChapterStore.setChapterTempUl(false); return;
+    if (e.relatedTarget) {
+      switch (e.relatedTarget.getAttribute('data-btn')) {
+        case "editorEditBtn": ChapterStore.setChapterTempUl(false); return;
+        case "noteNewChapterBtn": return;
+        default:break;
+      }
     }
     await createNewChapter();
   }

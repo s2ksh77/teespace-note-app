@@ -6985,19 +6985,30 @@ var LNBNewChapterForm = observer(function (_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!(e.relatedTarget && e.relatedTarget.getAttribute('data-btn') === "editorEditBtn")) {
-                _context.next = 3;
+              if (!e.relatedTarget) {
+                _context.next = 8;
                 break;
               }
 
+              _context.t0 = e.relatedTarget.getAttribute('data-btn');
+              _context.next = _context.t0 === "editorEditBtn" ? 4 : _context.t0 === "noteNewChapterBtn" ? 6 : 7;
+              break;
+
+            case 4:
               ChapterStore$1.setChapterTempUl(false);
               return _context.abrupt("return");
 
-            case 3:
-              _context.next = 5;
+            case 6:
+              return _context.abrupt("return");
+
+            case 7:
+              return _context.abrupt("break", 8);
+
+            case 8:
+              _context.next = 10;
               return createNewChapter();
 
-            case 5:
+            case 10:
             case "end":
               return _context.stop();
           }
