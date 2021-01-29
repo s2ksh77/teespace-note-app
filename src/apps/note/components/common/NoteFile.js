@@ -337,7 +337,8 @@ const handleClickLink = (el) => {
 const handleClickImg = (el) => {
     if (!PageStore.isReadMode()) return;
 
-    const file = el.getAttribute('data-name').split('.');
+    const file = el.getAttribute('data-name')?.split('.');
+    if (file === undefined) return;
     EditorStore.setPreviewFileMeta({
         userId: NoteRepository.USER_ID,
         channelId: NoteRepository.chId,
