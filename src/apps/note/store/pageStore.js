@@ -367,6 +367,9 @@ const PageStore = observable({
 
   renameNotePage(chapterId) {
     this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(dto => {
+      if (this.moveInfoMap.get(dto.note_id)) {
+        this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
       this.fetchNoteInfoList(dto.note_id);
       ChapterStore.getNoteChapterList();
     });

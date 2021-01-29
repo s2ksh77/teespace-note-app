@@ -475,7 +475,10 @@ const ChapterStore = observable({
     });
   },
   renameNoteChapter(color) {
-    this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(() => this.getNoteChapterList());
+    this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(dto => {
+      if (this.moveInfoMap.get(dto.id)) this.moveInfoMap.get(dto.id).item.text = dto.text;
+      this.getNoteChapterList();
+    });
   },
 
   createMoveInfo(chapterId) {
