@@ -3239,6 +3239,10 @@ var PageStore = observable((_observable$1 = {
     var _this3 = this;
 
     this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(function (dto) {
+      if (_this3.moveInfoMap.get(dto.note_id)) {
+        _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      }
+
       _this3.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
@@ -4566,8 +4570,10 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
   var _this10 = this;
 
-  this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function () {
-    return _this10.getNoteChapterList();
+  this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function (dto) {
+    if (_this10.moveInfoMap.get(dto.id)) _this10.moveInfoMap.get(dto.id).item.text = dto.text;
+
+    _this10.getNoteChapterList();
   });
 }), _defineProperty(_observable$2, "createMoveInfo", function createMoveInfo(chapterId) {
   var chapterIdx = this.chapterList.findIndex(function (chapter) {
@@ -7609,7 +7615,8 @@ var htmlToPdf = function htmlToPdf(isMailShare, element, opt) {
       var fileObjs = [{
         originFileObj: pdf,
         name: opt.filename,
-        uid: '1'
+        uid: '1',
+        type: 'application/pdf'
       }];
       NoteStore.setMailShareFileObjs(fileObjs);
       document.getElementById('exportTarget').remove();
@@ -7736,8 +7743,11 @@ var handleClickLink = function handleClickLink(el) {
 };
 
 var handleClickImg = function handleClickImg(el) {
+  var _el$getAttribute;
+
   if (!PageStore.isReadMode()) return;
-  var file = el.getAttribute('data-name').split('.');
+  var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
+  if (file === undefined) return;
   EditorStore$1.setPreviewFileMeta({
     userId: NoteRepository$1.USER_ID,
     channelId: NoteRepository$1.chId,
@@ -8951,12 +8961,12 @@ var LNBSearchResult = function LNBSearchResult() {
               PageStore.fetchCurrentPageData(pageId).then(function () {
                 instance.unmark();
                 instance.mark(ChapterStore.searchStr);
+                NoteStore.setShowPage(true);
               }); // ChapterStore.initSearchVar();
 
-              NoteStore.setShowPage(true);
               if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
 
-            case 5:
+            case 4:
             case "end":
               return _context2.stop();
           }
@@ -11609,6 +11619,7 @@ var NoteApp = function NoteApp(_ref) {
         NoteStore.setChannelId(''); // 노트앱 확대 상태 -> 다른 앱(축소 상태가 된다) -> 노트앱(축소) 일 때 확대 상태 그렸다가 축소 상태를 그림(그 전에 targetLayout 바꿔도 깜빡임)
         // loadingNoteApp을 넣어줌
 
+        NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
     };
