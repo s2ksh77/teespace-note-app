@@ -178,8 +178,8 @@ export const downloadFile = (fileId) => {
 export const exportData = async (isMailShare, type, exportId) => {
     const html =
         type === 'chapter'
-        ? await getChapterHtml(exportId)
-        : await getPageHtml(exportId);
+            ? await getChapterHtml(exportId)
+            : await getPageHtml(exportId);
     if (!html) return;
 
     makeExportElement(html);
@@ -197,7 +197,7 @@ export const getChapterHtml = async exportId => {
             html += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
         })
     } else alert('하위에 속한 페이지가 없습니다.');
-    
+
     return html;
 };
 
@@ -209,7 +209,7 @@ export const getPageHtml = async exportId => {
 
     PageStore.exportPageTitle = dto.note_title;
     html = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
-    
+
     return html;
 };
 
@@ -237,10 +237,10 @@ export const exportDownloadPDF = (isMailShare, type) => {
 const getExportOpt = type => {
     const opt = {
         margin: 2,
-        filename: 
-            type === 'chapter' 
-            ? `${ChapterStore.exportChapterTitle}.pdf` 
-            : `${PageStore.exportPageTitle}.pdf`,
+        filename:
+            type === 'chapter'
+                ? `${ChapterStore.exportChapterTitle}.pdf`
+                : `${PageStore.exportPageTitle}.pdf`,
         pagebreak: { after: '.afterClass', avoid: 'span' },
         image: { type: 'jpeg', quality: 0.98 },
         jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
@@ -258,7 +258,7 @@ const htmlToPdf = (isMailShare, element, opt) => {
     else {
         html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then((blob) => {
             const pdf = new File([blob], opt.filename, { type: blob.type });
-            const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1' },];
+            const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1', type: 'application/pdf' },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
             NoteStore.setIsMailShare(true);
