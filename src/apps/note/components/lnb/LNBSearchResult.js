@@ -36,9 +36,9 @@ const LNBSearchResult = () => {
     PageStore.fetchCurrentPageData(pageId).then(() => {
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
+      NoteStore.setShowPage(true);
     });
     // ChapterStore.initSearchVar();
-    NoteStore.setShowPage(true);
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
   }
 
