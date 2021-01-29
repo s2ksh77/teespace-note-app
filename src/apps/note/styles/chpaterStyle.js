@@ -33,7 +33,7 @@ export const ChapterCover = styled.div`
     border-radius: 0.31rem;
   }
   &:active:not(.ellipsisBtn) {
-    background-color: #F2EFEC;
+    color: #205855;
   }
 `;
 
@@ -69,7 +69,7 @@ export const ChapterTextInput = styled.input`
   height: 100%;
   padding-left: 1.69rem;
   padding-right: 1.69rem;
-  font-weight: 400;
+  font-weight: 500;
   border: none;
   outline: none;
   &::placeholder {
@@ -99,7 +99,6 @@ export const ChapterTextSpan = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: normal;
-  font-weight: 400;
   margin-left: ${props => props.marginLeft};
 `;
 
@@ -116,6 +115,12 @@ export const ChapterFolderBtn = styled.span`
   &:hover {
     background-color: rgba(235, 230, 223, 1);
   }
+`;
+
+export const ChapterFoldBtnIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
 `;
 
 export const ChapterInput = styled.input`

@@ -159,13 +159,7 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   const handleFoldBtnClick = (e) => {
     e.stopPropagation();
-    
-    const {
-      dataset: { icon },
-    } = e.currentTarget;
-    
-    if (icon === "angle-up") setIsFolded(true);
-    else setIsFolded(false);
+    setIsFolded(!isFolded);
   };
 
   return useObserver(() => (

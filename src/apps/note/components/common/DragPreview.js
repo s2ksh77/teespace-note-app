@@ -55,7 +55,10 @@ const DragPreview = ({ items }) => {
               item.color
                 ? { 
                   width: `${element.offsetWidth}px`,
-                  paddingLeft: '1.56rem'
+                  paddingLeft: '1.56rem',
+                  backgroundColor: 'rgba(255,255,255,0.6)',
+                  color: '#205855',
+                  fontWeight: '500'
                 } : {
                   width: `calc(${element.offsetWidth}px - 1.875rem)`,
                 }

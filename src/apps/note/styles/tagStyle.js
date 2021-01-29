@@ -103,7 +103,7 @@ export const TagImg = styled.img`
 `;
 
 export const TagTxt = styled.div`
-  font-weight: 400;
+  font-weight: 500;
   margin-left: 2.63rem;
 `;
 

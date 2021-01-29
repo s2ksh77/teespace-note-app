@@ -148,6 +148,12 @@ export const ContextMenuCover = styled(Dropdown)`
 
 export const ContextMenuIconCover = styled.span``;
 
+export const ContextMenuIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+`;
+
 // ShareNoteMessage
 export const MessageCover = styled.div`
   border-radius: 0.75rem;
@@ -258,7 +264,7 @@ export const DraggedComponent = styled.div`
   height: 2.81rem;
   align-items: center;
   padding-left: 1.25rem;
-  background-color: rgba(242,239,236,0.5);
+  background-color: rgba(242,239,236,0.6);
   border-radius: 0.31rem;
 `;
 
