@@ -15,12 +15,11 @@ import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/add_tag.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
-import { isFilled, checkWhitespace } from '../common/validators';
+import { checkWhitespace } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
 
 const TagListContainer = () => {
-  const { TagStore, PageStore } = useNoteStore();
-  const [openModal, setOpenModal] = useState(false);
+  const { NoteStore, TagStore, PageStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const focusedTag = useRef([]);
   const tagList = useRef(null) // scroll 때문에 필요
@@ -91,8 +90,8 @@ const TagListContainer = () => {
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           updateNoteTagList();
-        } else {
-          setOpenModal(true);
+        } else {          
+          NoteStore.setModalInfo('duplicateTagName');
         }
       }
     } else { // 아이디 없는 애를 고칠 경우
@@ -107,8 +106,8 @@ const TagListContainer = () => {
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.setEditCreateTag();
-        } else {
-          setOpenModal(true);
+        } else {          
+          NoteStore.setModalInfo('duplicateTagName');
         }
       }
     }
@@ -175,10 +174,6 @@ const TagListContainer = () => {
     }
   }
 
-  const handleClickModalBtn = (e) => {
-    e.stopPropagation();
-    setOpenModal(false);
-  }
   const handleTooltip = (e) => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
   }
@@ -193,17 +188,6 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Message
-          visible={openModal}
-          title={"이미 있는 태그 이름입니다."}
-          type="error"
-          btns={[{
-            type: 'solid',
-            shape: 'round',
-            text: '확인',
-            onClick: handleClickModalBtn
-          }]}
-        />
         <Tooltip title={!PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
@@ -212,7 +196,6 @@ const TagListContainer = () => {
         <AddTagForm
           show={TagStore.isNewTag}
           toggleTagInput={toggleTagInput}
-          setOpenModal={setOpenModal}
         />
         <TagList ref={tagList}>
           {TagStore.notetagList.map((item, index) =>

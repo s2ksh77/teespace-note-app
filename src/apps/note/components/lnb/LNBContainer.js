@@ -25,19 +25,16 @@ const LNBContainer = () => {
     if (!ChapterStore.isNewChapter) return;
     // 분기는 더 여러개 있어야하지만 우선 만드는걸로
     if (!ChapterStore.chapterNewTitle) {
-      let autoName = ChapterStore.getNewChapterTitle();
-      ChapterStore.setChapterTitle(autoName);
-      await ChapterStore.createNoteChapter(
-        ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
-      );
-    } else if (ChapterStore.isValidChapterText(ChapterStore.chapterNewTitle)) {
+      ChapterStore.setChapterTitle("새 챕터");
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
         ChapterStore.isNewChapterColor
       );
     } else {
-      NoteStore.setModalInfo('titleDuplicate');
+      await ChapterStore.createNoteChapter(
+        ChapterStore.chapterNewTitle,
+        ChapterStore.isNewChapterColor
+      );
     }
   };
   const handleEditMode = () => {

@@ -28,10 +28,8 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   };
 
   const handleSelectPage = useCallback(async (id) => {
+    await PageStore.fetchCurrentPageData(id);
     NoteStore.setShowPage(true);
-    ChapterStore.setCurrentChapterId(chapter.id);
-    PageStore.setCurrentPageId(id);
-    PageStore.fetchCurrentPageData(id);
     EditorStore.setIsSearch(false);
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');

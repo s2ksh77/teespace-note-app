@@ -168,6 +168,7 @@ const NoteStore = observable({
       case 'page':
       case 'editCancel':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'editingPage':
       case 'multiFileSomeFail':
       case 'failUpload':

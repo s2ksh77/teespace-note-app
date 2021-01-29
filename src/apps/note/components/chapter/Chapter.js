@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import { useObserver } from 'mobx-react';
-import { Message } from 'teespace-core';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -18,11 +17,9 @@ import sharedPageImg from '../../assets/page_shared.svg';
 
 const Chapter = ({ chapter, index, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const [openValidModal, setOpenValidModal] = useState(false);
   const [isFolded, setIsFolded] = useState(false);
 
   // 중복체크 후 다시 입력받기 위해 ref 추가
-  const titleInput = useRef(null);
   const { id, text:title, color } = chapter;
   const chapterMoveInfo = {
     item: chapter,
@@ -106,10 +103,6 @@ const Chapter = ({ chapter, index, isShared }) => {
     if (isEscape) {}
     // 기존과 동일 이름인 경우 통과
     else if (ChapterStore.renameChapterText === title) {}
-    // 기존에 이미 있는 이름이라면 다시 입력해야
-    else if (!ChapterStore.isValidChapterText(ChapterStore.renameChapterText)) {
-      setOpenValidModal(true); return;
-    }
     // 다 통과했으면 rename 가능
     else {
       ChapterStore.renameNoteChapter(color);
@@ -164,11 +157,6 @@ const Chapter = ({ chapter, index, isShared }) => {
     }
   }
 
-  const handleModalBtnClick = () => {
-    setOpenValidModal(false);
-    if (titleInput.current) titleInput.current.focus();   
-  }
-
   const handleFoldBtnClick = (e) => {
     e.stopPropagation();
     
@@ -182,18 +170,6 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   return useObserver(() => (
     <>
-      <Message
-        visible={openValidModal}
-        title={"중복된 이름이 있습니다."}
-        subtitle={"다른 이름을 입력하세요."}
-        type="error"
-        btns={[{
-          type : 'solid',
-          shape : 'round',
-          text : '확인',
-          onClick : handleModalBtnClick
-        }]}
-      />
       <ChapterContainer
         ref={!isShared ? drop : null}
         className={
@@ -245,7 +221,6 @@ const Chapter = ({ chapter, index, isShared }) => {
               }}
               onFocus={handleFocus}
               autoFocus={true}
-              ref={titleInput}
             />
           ) : (
               <ChapterText

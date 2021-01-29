@@ -97,6 +97,7 @@ const NoteMeta = {
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
@@ -120,6 +121,7 @@ const NoteMeta = {
       case 'editingPage':
       case 'chapterconfirm':
       case 'titleDuplicate':
+      case 'duplicateTagName':
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
@@ -179,7 +181,11 @@ const NoteMeta = {
       case 'titleDuplicate':
         dialogType.title = '중복된 이름이 있습니다.';
         dialogType.subtitle = '다른 이름을 입력해주세요.';
-        dialogType.btns = this.setBtns('titleDuplicate');
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'duplicateTagName':
+        dialogType.title = '이미 있는 태그 이름입니다.';
+        dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';

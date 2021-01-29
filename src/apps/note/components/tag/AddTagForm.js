@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import { TagInput } from '../../styles/tagStyle';
 import {checkWhitespace} from '../common/validators';
 import { useObserver } from 'mobx-react';
-import TagStore from '../../store/tagStore';
+import useNoteStore from '../../store/useStore';
 
-const AddTagForm = ({show, toggleTagInput, setOpenModal}) => {  
+const AddTagForm = ({show, toggleTagInput}) => {
+  const { NoteStore, TagStore } = useNoteStore(); 
   const [value, setValue] = useState('');
   if (!show) return null;  
   const handleTagInput = e => {
@@ -19,8 +20,8 @@ const AddTagForm = ({show, toggleTagInput, setOpenModal}) => {
         TagStore.appendAddTagList(value);
         TagStore.setIsNewTag(false);
         TagStore.prependNoteTagList(value);
-      } else {        
-        setOpenModal(true);
+      } else {
+        NoteStore.setModalInfo('duplicateTagName');
         TagStore.setIsNewTag(false);
       }
     }
