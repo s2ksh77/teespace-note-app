@@ -55,6 +55,9 @@ export const GlobalStyle = createGlobalStyle`
   .tox-statusbar__resize-handle{
     display: none !important;
   }
+  .tox-tinymce-aux{
+    z-index: 100 !important;
+  }
   .borderTopLine{
     border-top: 0.13rem solid #FB3A3A;
     &::before {
