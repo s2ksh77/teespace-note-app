@@ -69,9 +69,9 @@ export const TagInput = styled.input`
   margin-right: 0.38rem;
   border-radius: 1.563rem;
   padding:0 0.75rem;
-  border: 0.0625rem solid #1ea8df;
+  border: 0.0625rem solid #7B7671;
   background-color: #ffffff;
-  font-size: 0.813rem;
+  font-size: 0.81rem;
   color: #000000;
   outline: none;
 `;
