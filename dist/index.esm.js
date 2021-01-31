@@ -7203,7 +7203,7 @@ var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
       input$.oninput = function (e) {
         renderValidation(input$, errorMark, saveBtn);
       };
-    }
+    } else input$.focus();
   });
 };
 
