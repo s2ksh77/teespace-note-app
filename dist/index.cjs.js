@@ -6541,7 +6541,7 @@ function _templateObject7$3() {
 }
 
 function _templateObject6$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 1.25rem;\n  height: 1.25rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1.25rem;\n  height: 1.25rem;\n  user-drag: none; \n  user-select: none;\n  -moz-user-select: none;\n  -webkit-user-drag: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n"]);
 
   _templateObject6$3 = function _templateObject6() {
     return data;
