@@ -274,7 +274,6 @@ export const GlobalStyle = createGlobalStyle`
 export const LNB = styled.div`
   display:${props => props.show ? "flex" : "none"};
   height: 100%;
-  border-right: 1px solid #e3e7eb;
   flex: 1 1 17.06rem;
   min-width: 17.06rem;
 `;
@@ -285,6 +284,7 @@ export const Content = styled.div`
   height: 100%;
   overflow-x: hidden;
   position: relative;
+  border-left:${props=>props.isBorderLeft ? "1px solid  #DDD9D4" : "0px"};
 `;
 
 export const CenterContent = styled.div`

@@ -2,9 +2,9 @@ import React from 'react';
 import { EventBus } from 'teespace-core';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
-import ExpandImg from '../../assets/ts_maximize@3x.png';
+import ExpandImg from '../../assets/ts_maximize.svg';
 import CollapseImg from '../../assets/ts_minimize@3x.png';
-import cancel from '../../assets/ts_cancel@3x.png';
+import cancel from '../../assets/ts_cancel.svg';
 import { HeaderButtonContainer, Button, ButtonDiv } from '../../styles/commonStyle';
 
 const style = { cursor: 'pointer' };

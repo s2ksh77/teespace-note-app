@@ -354,13 +354,13 @@ const ChapterStore = observable({
       else {
         const createdPageIds = [];
         const chapterIdx = chapterIds.indexOf(chapter.id);
-        chapter.children.forEach((page) => {
+        chapter.children.slice().reverse().forEach((page) => {
           if (!item[chapterIdx].children.includes(page.id)) {
             createdPageIds.push(page.id);
           }
         })
 
-        item[chapterIdx].children = createdPageIds.concat(item[chapterIdx].children);
+        item[chapterIdx].children = item[chapterIdx].children.concat(createdPageIds);
       }
     });
     item = createdChapterIds.concat(item);

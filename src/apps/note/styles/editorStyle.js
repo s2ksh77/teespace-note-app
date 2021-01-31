@@ -4,6 +4,9 @@ import styled, { css } from 'styled-components';
 export const EditorContainerWrapper = styled.div`
   width:100%;
   height:100%;
+  .tox-tinymce{
+    border-left: 0px solid black;
+  }
   ${props => (props.mode === "false" && props.isSearch === "false") && css`
     .tox-editor-header{
      display:block;

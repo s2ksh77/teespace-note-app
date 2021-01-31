@@ -52,6 +52,12 @@ export const TagText = styled.span`
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;
   height: 1.25rem;
+  user-drag: none; 
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 `;
 
 export const TagInputDIV = styled.div`
