@@ -201,7 +201,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
                 chapter.children.length > 1
                   ? chapter.children[0].id === page.id
                     ? chapter.children[1].id
-                    : chapter.children[0].id
+                    : chapter.children[index - 1].id
                   : ''
               }
               type={page.type}
