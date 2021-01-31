@@ -6510,7 +6510,7 @@ function _templateObject9$3() {
 }
 
 function _templateObject8$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 8.75rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding:0 0.75rem;\n  border: 0.0625rem solid #1ea8df;\n  background-color: #ffffff;\n  font-size: 0.813rem;\n  color: #000000;\n  outline: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 8.75rem;\n  height: 1.88rem;\n  margin-right: 0.38rem;\n  border-radius: 1.563rem;\n  padding:0 0.75rem;\n  border: 0.0625rem solid #7B7671;\n  background-color: #ffffff;\n  font-size: 0.81rem;\n  color: #000000;\n  outline: none;\n"]);
 
   _templateObject8$3 = function _templateObject8() {
     return data;
