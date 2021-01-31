@@ -71,7 +71,7 @@ const changeLinkDialogForm = (form, footer) => {
       input$.oninput = (e) => {
         renderValidation(input$, errorMark, saveBtn);
       }
-    }
+    } else input$.focus();
   });
 }
 
