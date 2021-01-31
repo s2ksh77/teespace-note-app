@@ -73,11 +73,16 @@ export const NoneImg = styled.img`
 `
 export const ButtonDiv = styled.div`
   display: flex;
-  padding: 8px;
+  align-items: center;
+  padding: 0 0.25rem;
+  height: 1.5rem;
   &:hover{
     background: #ebe6df;
     border-radius: 0.25rem;
     cursor: pointer;
+  }
+  & + div {
+    margin-left: 0.5rem;
   }
 `
 

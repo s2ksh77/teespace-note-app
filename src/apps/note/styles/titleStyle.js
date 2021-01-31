@@ -116,6 +116,7 @@ export const LnbTitleCover = styled.div`
   align-items: center;
   border-bottom: 0.0625rem solid #dadada;
   padding: 0.63rem;
+  padding-right: 0.75rem;
   box-sizing: border-box;
 `;
 
