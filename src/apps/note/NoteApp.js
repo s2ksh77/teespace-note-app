@@ -93,6 +93,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             show={renderCondition('Content')}
             onMouseOver={handleFoldBtn}
             onMouseOut={handleFoldBtn}
+            isBorderLeft={NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded}
           >
             <FoldBtn
               isExpanded={NoteStore.isContentExpanded}

@@ -284,6 +284,7 @@ export const Content = styled.div`
   height: 100%;
   overflow-x: hidden;
   position: relative;
+  border-left:${props=>props.isBorderLeft ? "1px solid  #DDD9D4" : "0px"};
 `;
 
 export const CenterContent = styled.div`

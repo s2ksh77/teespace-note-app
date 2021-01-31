@@ -9169,7 +9169,7 @@ function _templateObject4$6() {
 }
 
 function _templateObject3$6() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  flex-direction:column;\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:", ";\n  flex-direction:column;\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n  border-left:", ";\n"]);
 
   _templateObject3$6 = function _templateObject3() {
     return data;
@@ -9203,6 +9203,8 @@ var LNB = styled__default['default'].div(_templateObject2$6(), function (props) 
 });
 var Content = styled__default['default'].div(_templateObject3$6(), function (props) {
   return props.show ? "flex" : "none";
+}, function (props) {
+  return props.isBorderLeft ? "1px solid  #DDD9D4" : "0px";
 });
 var CenterContent = styled__default['default'].div(_templateObject4$6());
 
@@ -9729,7 +9731,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  width:100%;\n  height:100%;\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -11643,7 +11645,8 @@ var NoteApp = function NoteApp(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), /*#__PURE__*/React__default['default'].createElement(Content, {
       show: renderCondition('Content'),
       onMouseOver: handleFoldBtn,
-      onMouseOut: handleFoldBtn
+      onMouseOut: handleFoldBtn,
+      isBorderLeft: NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded
     }, /*#__PURE__*/React__default['default'].createElement(FoldBtn, {
       isExpanded: NoteStore.isContentExpanded,
       show: NoteStore.showPage && NoteStore.layoutState !== "collapse" && NoteStore.isHoveredFoldBtnLine,
