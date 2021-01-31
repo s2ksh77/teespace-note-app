@@ -349,7 +349,7 @@ const PageStore = observable({
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
           if (currentChapter.children.length > 1) {
-            const pageId = currentChapter.children[1].id
+            const pageId = currentChapter.children[currentChapter.children.length - 2].id;
             this.createPageId = '';
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
