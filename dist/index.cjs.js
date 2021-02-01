@@ -1251,7 +1251,7 @@ var NoteUtil = {
   // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
   // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
   encodeStr: function encodeStr(str) {
-    return encodeURI(this.decodeStr(str));
+    return escape(encodeURIComponent(this.decodeStr(str)));
   },
   decodeStr: function decodeStr(str) {
     var pre = str,
@@ -1259,7 +1259,7 @@ var NoteUtil = {
 
     try {
       while (true) {
-        cur = decodeURI(pre);
+        cur = decodeURIComponent(pre);
         if (cur === pre) return cur;
         pre = cur;
       }
