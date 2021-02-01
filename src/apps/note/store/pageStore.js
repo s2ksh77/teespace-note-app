@@ -737,7 +737,10 @@ const PageStore = observable({
       });
     });
 
-    this.createSharePage(targetList).then(() => ChapterStore.getNoteChapterList());;
+    this.createSharePage(targetList).then(() => {
+      ChapterStore.getNoteChapterList();
+      NoteStore.setIsDragging(false);
+    });
   },
 })
 

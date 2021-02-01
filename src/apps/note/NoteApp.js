@@ -13,11 +13,12 @@ import DragPreview from "./components/common/DragPreview";
 import NoteModal from './components/common/NoteModal';
 import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
+import GlobalVariable from './GlobalVariable';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const { userStore } = useCoreStores();
+  const { userStore, spaceStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
   const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
@@ -42,7 +43,11 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       ShareNoteMessage는 noteInfo 서비스콜 보내고 노트앱을 
     */
     if (isOtherRoom) {
-      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, userStore.myProfile.email, async () => {
+      const {id:userId,name:userName,email:userEmail} = userStore.myProfile;
+      const isBasicPlan = spaceStore.currentSpace?.plan === "Basic";
+      // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
+      NoteStore.init(roomId, channelId, userId,userName, userEmail, async () => {
+        GlobalVariable.setIsBasicPlan(isBasicPlan);
         NoteStore.addWWMSHandler();
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);
@@ -80,6 +85,12 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     else
       NoteStore.setIsHoveredFoldBtnLine(false);
   };
+
+  const handleCloseMailModal = () => {
+    NoteStore.setMailShareFileObjs([]);
+    NoteStore.setIsMailShare(false);
+    NoteStore.setMailReceiver([]);
+  }
 
   return useObserver(() => (
     <>
@@ -123,10 +134,8 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
           {NoteStore.isMailShare && <MailWriteModal
             uploadFiles={NoteStore.mailShareFileObjs}
             sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
-            onClose={() => {
-              NoteStore.setMailShareFileObjs([]);
-              NoteStore.setIsMailShare(false);
-            }}
+            toReceiver={NoteStore.mailReceiver}
+            onClose={handleCloseMailModal}
             visible={true}
           />}
         </>

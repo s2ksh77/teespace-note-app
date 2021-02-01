@@ -109,6 +109,9 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: bold !important;
     margin: auto !important;
   }
+  .custom-dialog-form > .tox-form__group{
+    position:relative;
+  }
   .custom-dialog-form label{
     margin-bottom:0.75rem !important;
     font-weight: bold !important;
@@ -150,33 +153,40 @@ export const GlobalStyle = createGlobalStyle`
   .note-show-element{
     display:flex !important;
   }
-  .note-link-input {
-    border: 1px solid #FF5151 !important;
-  }
-  .note-link-error {
+  .note-link-form-error {
     position: absolute !important;
     display:none;
-    align-items: center !important;
-    float: right !important;
+    align-items: center;
     width: 1.63rem !important;
     height: 1.63rem !important;
-    top:10% !important;
-    right: 3% !important;
+    right:0.25rem;
+  }
+  .tox-form__group > .note-link-form-error {
+    top: 37px;
+  }
+  .tox-control-wrap > .note-link-form-error {
+    top : 2px;
   }
   .note-link-error-tooltip{
     display:none;
-    width: 11rem !important;
+    align-items: center;
+    justify-content: center;
+    width: fit-content !important;
     height: 1.5rem !important;
-    font-size:0.75rem !important;    
+    padding:0 0.75rem !important;
+    font-size:0.688rem !important; 
     background: #FF5151 !important;
-    border-radius:10px !important;
+    border-radius:10px;
     position:absolute !important;
-    top:-90% !important;
-    right: 0rem !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #ffffff !important;
-    font-size: 11px !important;
+    top:-90%;
+    right: 0rem;
+    color: #ffffff !important;;
+  }
+  .tox-form__group > .note-link-error-tooltip {
+    top: -2px;
+  }
+  .tox-control-wrap > .note-link-error-tooltip {
+    top : -36px;
   }
   input{
     border:none;
