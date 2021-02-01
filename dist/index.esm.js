@@ -1271,6 +1271,18 @@ var NoteUtil = {
   }
 };
 
+var GlobalVariable = {
+  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
+  editorWrapper: null,
+  isBasicPlan: false,
+  setEditorWrapper: function setEditorWrapper(ref) {
+    this.editorWrapper = ref;
+  },
+  setIsBasicPlan: function setIsBasicPlan(isBasicPlan) {
+    this.isBasicPlan = isBasicPlan;
+  }
+};
+
 // isNil : Checks if the input value is null or undefined.
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
 
@@ -2566,14 +2578,6 @@ var EditorStore = observable((_observable = {
   }))();
 }), _observable));
 
-var GlobalVariable = {
-  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
-  editorWrapper: null,
-  setEditorWrapper: function setEditorWrapper(ref) {
-    this.editorWrapper = ref;
-  }
-};
-
 var _observable$1;
 var PageStore = observable((_observable$1 = {
   noteInfoList: [],
@@ -3639,7 +3643,8 @@ var PageStore = observable((_observable$1 = {
     };
   });
   this.createSharePage(targetList).then(function () {
-    return ChapterStore.getNoteChapterList();
+    ChapterStore.getNoteChapterList();
+    NoteStore.setIsDragging(false);
   });
 }), _observable$1));
 
@@ -5146,6 +5151,7 @@ var NoteStore = observable({
   // { userArray, roomArray }
   isMailShare: false,
   mailShareFileObjs: [],
+  mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -5189,12 +5195,13 @@ var NoteStore = observable({
   getUserId: function getUserId() {
     return this.user_id;
   },
+  // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init: function init(roomId, channelId, userId, userName, userEmail, callback) {
-    NoteStore.setWsId(roomId);
-    NoteStore.setChannelId(channelId);
-    NoteStore.setUserId(userId);
-    NoteStore.setUserName(userName);
-    NoteStore.setUserEmail(userEmail);
+    this.setWsId(roomId);
+    this.setChannelId(channelId);
+    this.setUserId(userId);
+    this.setUserName(userName);
+    this.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables: function initVariables() {
@@ -5204,6 +5211,7 @@ var NoteStore = observable({
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
     this.setShowPage(true);
+    this.setIsMailShare(false);
   },
   addWWMSHandler: function addWWMSHandler() {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
@@ -5255,6 +5263,9 @@ var NoteStore = observable({
   },
   setMailShareFileObjs: function setMailShareFileObjs(fileObjs) {
     this.mailShareFileObjs = fileObjs;
+  },
+  setMailReceiver: function setMailReceiver(receivers) {
+    this.mailReceiver = receivers;
   },
   setIsVisibleToast: function setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;
