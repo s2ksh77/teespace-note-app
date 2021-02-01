@@ -6,6 +6,7 @@ import EditorStore from './editorStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
+import GlobalVariable from '../GlobalVariable';
 
 const NoteStore = observable({
   noteIdFromTalk: '',
@@ -34,6 +35,7 @@ const NoteStore = observable({
   shareArrays: {}, // { userArray, roomArray }
   isMailShare: false,
   mailShareFileObjs: [],
+  mailReceiver:[],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk() {
@@ -77,12 +79,14 @@ const NoteStore = observable({
   getUserId() {
     return this.user_id;
   },
+  // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init(roomId, channelId, userId, userName, userEmail, callback) {
-    NoteStore.setWsId(roomId);
-    NoteStore.setChannelId(channelId);
-    NoteStore.setUserId(userId);
-    NoteStore.setUserName(userName);
-    NoteStore.setUserEmail(userEmail);
+    this.setWsId(roomId);
+    this.setChannelId(channelId);
+    this.setUserId(userId);
+    this.setUserName(userName);
+    this.setUserEmail(userEmail);
+    
     if (typeof callback === 'function') callback();
   },
   initVariables() {
@@ -92,6 +96,7 @@ const NoteStore = observable({
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
     this.setShowPage(true);
+    this.setIsMailShare(false);
   },
   addWWMSHandler() {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
@@ -142,6 +147,9 @@ const NoteStore = observable({
   },
   setMailShareFileObjs(fileObjs) {
     this.mailShareFileObjs = fileObjs;
+  },
+  setMailReceiver(receivers) {
+    this.mailReceiver = receivers;
   },
   setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;

@@ -1,5 +1,6 @@
 import {isNil, isEmpty} from 'ramda';
 import NoteUtil from '../../NoteUtil';
+import GlobalVariable from '../../GlobalVariable';
 
 // evernote도 http://ksdjflaskd.sdflksjdlfk 링크 처리함
 const urlRegex = new RegExp(
@@ -11,11 +12,6 @@ const urlRegex = new RegExp(
 //   /^https?:\/\/([^/]+)\/(.*)$/i
 // ); 
 
-
-// naver.com 같은거 인식하기
-// evernote도 section.blog.naver.com/BlogHome.nhn?directoryNo=0&currentPage=1&groupId=0 에서 .com까지만 인식한다
-// evernote에서 -허용, @는 mailto
-// evernote에서 google.com/index.html : google.com까지만 링크처리
 // localhost:3000/~ : 링크 처리 안 됨
 // $: m flag 있어야 matches the end of the string
 const urlRegex2 = new RegExp(
@@ -23,7 +19,8 @@ const urlRegex2 = new RegExp(
 );
 
 // 잘 안되는 거 있으면 이걸로 테스트 해보기 : (\w{3,}\@[\w\.]{1,})
-const isEmail = new RegExp(/^(mailto:\s?)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
+const isMailtoEmail = new RegExp(/^(mailto:\s*)[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
+const isEmail = new RegExp(/^(mailto:\s*)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
 
 // 유효하면 true
 export const composeValidators = (...args) => (value) => {
@@ -39,13 +36,18 @@ export const composeValidators = (...args) => (value) => {
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
 export const isFilled = (value) => (!isNil(value) && !isEmpty(value) ? true : false);
 export const validUrl = (value) => (!isEmail.test(value) && (urlRegex.test(value) || urlRegex2.test(value)));
+// mailto:\s? 로 시작하는지
+export const isValidMailtoMail = (value) => isMailtoEmail.test(value);
 export const isValidMail = (value) => isEmail.test(value);
 
-// url validation
+// url validation, "mailto:메일"도 valid
 export const checkUrlValidation = (inputValue) => {
-  const validator =  composeValidators(isFilled, validUrl);
-  return validator(inputValue);
+  return composeValidators(isFilled, validUrl)(inputValue);
 }
+
+// export const 
+export const isOpenMail = (inputVal) => !GlobalVariable.isBasicPlan && isValidMail(inputVal);
+export const isOpenLink = (inputVal) => checkUrlValidation(inputVal) || isOpenMail(inputVal);
 
 // true : valid, false : invalid
 export const checkWhitespace = (value) => value.trim().length > 0;

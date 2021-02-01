@@ -15,13 +15,12 @@ import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
-import { checkUrlValidation } from '../common/validators.js'
-import { changeLinkDialog, changeButtonStyle } from './customLink.js'
+import { checkUrlValidation, isOpenLink } from '../common/validators.js'
+import { changeLinkDialog, changeButtonStyle, openLink } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
 import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUnselect, handleUpload, openSaveDrive } from '../common/NoteFile';
-import { ComponentStore } from 'teespace-core';
-import { WaplSearch } from 'teespace-core';
+import { ComponentStore, WaplSearch, useCoreStores } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
 
@@ -32,6 +31,7 @@ window.addEventListener('beforeunload', function (e) {
 })
 const EditorContainer = () => {
   const { PageStore, EditorStore } = useNoteStore();
+
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   const FilePreview = ComponentStore.get('Drive:FilePreview');
   const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
@@ -295,7 +295,7 @@ const EditorContainer = () => {
                 }
                 // url invalid면 red highlighting
                 if (isAnchorElement(e.element)) {
-                  if (!checkUrlValidation(e.element.href)) {
+                  if (!isOpenLink(e.element.href)) {  // url이거나 basic plan 아니면서 메일인 경우
                     e.element.classList.add('note-invalidUrl')
                   } else {
                     e.element.classList.remove('note-invalidUrl')
@@ -400,11 +400,10 @@ const EditorContainer = () => {
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
                 onAction: function (_) {
-                  const targetUrl = getAnchorElement() ? getAnchorElement().href : null;
-                  if (targetUrl) window.open(targetUrl);
+                  openLink({isOnlyReadMode:false, url:getAnchorElement()?.href, target:'_blank'});
                 },
                 onSetup: function (api) {
-                  const targetUrl = getAnchorElement() ? checkUrlValidation(getAnchorElement().href) : null;
+                  const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
                   if (!targetUrl) api.setDisabled(true)
                   if (editor.selection.isCollapsed()) changeButtonStyle(2, 0);
                 }
@@ -499,6 +498,7 @@ const EditorContainer = () => {
                 args.node.appendChild(temp);
               }
             },
+            autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: editorContentCSS
