@@ -277,6 +277,18 @@ export const editorContentCSS = `
   a, img {
     cursor:pointer;
   }
+  ::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.625rem;
+  }
+  ::-webkit-scrollbar-thumb {
+      width: 0.375rem;
+      background: #C5C5C8;
+      /* border: 0.188rem solid transparent; */
+      background-clip: padding-box;
+      border-radius: 0.5625rem;
+      opacity: 0.6;
+  }
   .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
     background-color: #f8cac6;
   }
