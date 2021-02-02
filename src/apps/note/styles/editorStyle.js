@@ -154,10 +154,6 @@ export const FileDownloadIcon = styled.div`
   margin-right: 0.375rem;
   width: 1.88rem;
   height: 1.88rem;
-  &:hover{
-    background-color : #C4C6FF;
-    border-radius: 25px;
-  }
 `
 export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
@@ -189,10 +185,14 @@ export const FileExtensionIcon = styled.div`
   }
 `
 
+// filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 export const FileDownloadBtn = styled.img`
-  filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
+  width:1.5rem;
+  height:1.5rem;
 `
 export const FileExtensionBtn = styled.img`
+  width:1.5rem;
+  height:1.5rem;
 `
 
 export const FileData = styled.div`
