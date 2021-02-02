@@ -42,7 +42,8 @@ const TagListContainer = () => {
 
   // AddTagForm 보여줄지말지
   const toggleTagInput = () => {
-    if (!TagStore.isNewTag && !PageStore.isReadMode()) TagStore.setIsNewTag(true);
+    if (PageStore.isReadMode()) return; // early return으로 바꾸기
+    if (!TagStore.isNewTag) TagStore.setIsNewTag(true);
     else TagStore.setIsNewTag(false);
   };
 
