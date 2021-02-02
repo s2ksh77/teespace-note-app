@@ -498,7 +498,7 @@ const EditorContainer = () => {
                 args.node.appendChild(temp);
               }
             },
-            autolink_pattern: customAutoLinkPattern(), // 잘 안 먹음
+            autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: editorContentCSS

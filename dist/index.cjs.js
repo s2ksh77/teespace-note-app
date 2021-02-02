@@ -11118,7 +11118,6 @@ var EditorContainer = function EditorContainer() {
           }
         },
         autolink_pattern: customAutoLinkPattern(),
-        // 잘 안 먹음
         contextmenu: 'link-toolbar image imagetools table',
         table_sizing_mode: 'fixed',
         // only impacts the width of tables and cells
