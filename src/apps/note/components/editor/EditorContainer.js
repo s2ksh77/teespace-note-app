@@ -16,7 +16,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
 import { checkUrlValidation, isOpenLink } from '../common/validators.js'
-import { changeLinkDialog, changeButtonStyle, openLink } from './customLink.js'
+import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
 import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUnselect, handleUpload, openSaveDrive } from '../common/NoteFile';
@@ -498,7 +498,7 @@ const EditorContainer = () => {
                 args.node.appendChild(temp);
               }
             },
-            autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
+            autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             content_style: editorContentCSS
