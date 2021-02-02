@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import { Message } from 'teespace-core';
 import 'antd/dist/antd.css';
 import useNoteStore from '../../store/useStore';
 import {
@@ -15,14 +14,14 @@ import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/add_tag.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
-import { checkWhitespace } from '../common/validators';
+import { isFilled, checkWhitespace } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
 
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
-  const focusedTag = useRef([]);
-  const tagList = useRef(null) // scroll 때문에 필요
+  const tagList = useRef([]); // 모든 노트 태그 리스트 담을 것
+  const tagListCover = useRef(null) // scroll 때문에 필요
 
   const handleCloseBtn = (targetId, targetText) => {
     if (targetId) {
@@ -49,7 +48,7 @@ const TagListContainer = () => {
 
   const onClickNewTagBtn = () => {
     toggleTagInput();
-    tagList.current.scrollTo({ left: 0, behavior: 'smooth' });
+    tagListCover.current.scrollTo({ left: 0, behavior: 'smooth' });
   }
 
   const handleFocus = (e) => e.target.select();
@@ -131,43 +130,38 @@ const TagListContainer = () => {
     }
   }
 
-  const handleClickOutside = (e) => {
-    if (!e.target.closest(".ant-tag")) {
-      TagStore.setSelectTagIndex('')
-    }
+  const handleTagChipBlur = (index) => (e) => {
+    // 선택된게 blur된 경우 풀어주기
+    if (TagStore.selectTagIdx === index) TagStore.setSelectTagIndex('');
   }
 
-  // focusedTag.current에 idx 키에 element가 있다
+  // tagList.current에 idx 키에 element가 있다
   const handleClickTag = (idx, e) => {
     if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');
-    else changeFocusedTag(focusedTag.current[idx], idx);
+    else changeFocusedTag(tagList.current[idx], idx);
   }
 
   // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
   // idx : null 가능
   const changeFocusedTag = (target, idx) => {
-    if (target === null && idx === null) return;
-    if (idx === null) return;
-    if (target) {
-      TagStore.setSelectTagIndex(idx);
-      target.focus();
-      target.scrollIntoView(false);
-    }
+    if (!isFilled(idx) || !isFilled(target)) return;
+    TagStore.setSelectTagIndex(idx);
+    target.focus();
+    target.scrollIntoView(false);
   }
 
   const handleKeyDownTag = (e) => {
-    const prev = focusedTag.current;
     switch (e.keyCode) {
       // left
       case 37:
         if (TagStore.selectTagIdx > 0) {
-          changeFocusedTag(prev[TagStore.selectTagIdx - 1], TagStore.selectTagIdx - 1);
+          changeFocusedTag(tagList.current[TagStore.selectTagIdx - 1], TagStore.selectTagIdx - 1);
         }
         break;
       // right
       case 39:
         if (TagStore.selectTagIdx < TagStore.notetagList.length - 1) {
-          changeFocusedTag(prev[TagStore.selectTagIdx + 1], TagStore.selectTagIdx + 1);
+          changeFocusedTag(tagList.current[TagStore.selectTagIdx + 1], TagStore.selectTagIdx + 1);
         }
         break;
       default:
@@ -178,13 +172,6 @@ const TagListContainer = () => {
   const handleTooltip = (e) => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
   }
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    }
-  });
 
   return useObserver(() => (
     <>
@@ -198,7 +185,7 @@ const TagListContainer = () => {
           show={TagStore.isNewTag}
           toggleTagInput={toggleTagInput}
         />
-        <TagList ref={tagList}>
+        <TagList ref={tagListCover}>
           {TagStore.notetagList.map((item, index) =>
             (TagStore.editTagIndex === index) ? (
               <TagInput
@@ -213,7 +200,7 @@ const TagListContainer = () => {
               />
             ) : (
                 <TagChip
-                  ref={el => focusedTag.current[index] = el}
+                  ref={el => tagList.current[index] = el}
                   key={index}
                   className={index === TagStore.selectTagIdx ? 'noteFocusedTag' : ''}
                   data-idx={index}
@@ -223,23 +210,16 @@ const TagListContainer = () => {
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
                   onClick={handleClickTag.bind(null, index)}
                   onKeyDown={handleKeyDownTag.bind(null)}
+                  onBlur={handleTagChipBlur(index)}
                 >
-
-                  {!PageStore.isReadMode() ?
-                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
-                      <TagText
-                        onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
-                        onMouseOver={handleTooltip}
-                      >
-                        {NoteUtil.decodeStr(item.text)}
-                      </TagText>
-                    </Tooltip>
-                    :
-                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
-                      <TagText onMouseOver={handleTooltip}>{NoteUtil.decodeStr(item.text)}
-                      </TagText>
-                    </Tooltip>
-                  }
+                  <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
+                    <TagText
+                      onDoubleClick={!PageStore.isReadMode() ? handleChangeTag(item.text, index, item.tag_id) : null}
+                      onMouseOver={handleTooltip}
+                    >
+                      {NoteUtil.decodeStr(item.text)}
+                    </TagText>
+                  </Tooltip>
                 </TagChip>
               )
           )}
