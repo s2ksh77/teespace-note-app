@@ -1379,7 +1379,7 @@ var NoteUtil = {
   // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
   // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
   encodeStr: function encodeStr(str) {
-    return encodeURI(this.decodeStr(str));
+    return escape(encodeURIComponent(this.decodeStr(str)));
   },
   decodeStr: function decodeStr(str) {
     var pre = str,
@@ -1387,7 +1387,7 @@ var NoteUtil = {
 
     try {
       while (true) {
-        cur = decodeURI(pre);
+        cur = decodeURIComponent(pre);
         if (cur === pre) return cur;
         pre = cur;
       }
@@ -1403,21 +1403,30 @@ var NoteUtil = {
   }
 };
 
+var GlobalVariable = {
+  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
+  editorWrapper: null,
+  isBasicPlan: false,
+  setEditorWrapper: function setEditorWrapper(ref) {
+    this.editorWrapper = ref;
+  },
+  setIsBasicPlan: function setIsBasicPlan(isBasicPlan) {
+    this.isBasicPlan = isBasicPlan;
+  }
+};
+
 var urlRegex = new RegExp(/^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}/im); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
 // 혹시 나중에 안되는거 있으면 이거 테스트해보기
 // const urlRegex2 = new RegExp(
 //   /^https?:\/\/([^/]+)\/(.*)$/i
 // ); 
-// naver.com 같은거 인식하기
-// evernote도 section.blog.naver.com/BlogHome.nhn?directoryNo=0&currentPage=1&groupId=0 에서 .com까지만 인식한다
-// evernote에서 -허용, @는 mailto
-// evernote에서 google.com/index.html : google.com까지만 링크처리
 // localhost:3000/~ : 링크 처리 안 됨
 // $: m flag 있어야 matches the end of the string
 
 var urlRegex2 = new RegExp(/^[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+(.com|.net|.kr|.org|.biz)$/im); // 잘 안되는 거 있으면 이걸로 테스트 해보기 : (\w{3,}\@[\w\.]{1,})
 
-var isEmail = new RegExp(/^(mailto:\s?)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im); // 유효하면 true
+var isMailtoEmail = new RegExp(/^(mailto:\s*)[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
+var isEmail = new RegExp(/^(mailto:\s*)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im); // 유효하면 true
 
 var composeValidators = function composeValidators() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -1451,11 +1460,24 @@ var isFilled = function isFilled(value) {
 };
 var validUrl = function validUrl(value) {
   return !isEmail.test(value) && (urlRegex.test(value) || urlRegex2.test(value));
+}; // mailto:\s? 로 시작하는지
+
+var isValidMailtoMail = function isValidMailtoMail(value) {
+  return isMailtoEmail.test(value);
 };
+var isValidMail = function isValidMail(value) {
+  return isEmail.test(value);
+}; // url validation, "mailto:메일"도 valid
 
 var checkUrlValidation = function checkUrlValidation(inputValue) {
-  var validator = composeValidators(isFilled, validUrl);
-  return validator(inputValue);
+  return composeValidators(isFilled, validUrl)(inputValue);
+}; // export const 
+
+var isOpenMail = function isOpenMail(inputVal) {
+  return !GlobalVariable.isBasicPlan && isValidMail(inputVal);
+};
+var isOpenLink = function isOpenLink(inputVal) {
+  return checkUrlValidation(inputVal) || isOpenMail(inputVal);
 }; // true : valid, false : invalid
 
 var checkWhitespace = function checkWhitespace(value) {
@@ -2750,14 +2772,6 @@ var EditorStore$1 = mobx.observable((_observable = {
   }))();
 }), _observable));
 
-var GlobalVariable = {
-  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
-  editorWrapper: null,
-  setEditorWrapper: function setEditorWrapper(ref) {
-    this.editorWrapper = ref;
-  }
-};
-
 var _observable$1;
 var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
@@ -3823,7 +3837,8 @@ var PageStore = mobx.observable((_observable$1 = {
     };
   });
   this.createSharePage(targetList).then(function () {
-    return ChapterStore.getNoteChapterList();
+    ChapterStore.getNoteChapterList();
+    NoteStore.setIsDragging(false);
   });
 }), _observable$1));
 
@@ -5330,6 +5345,7 @@ var NoteStore = mobx.observable({
   // { userArray, roomArray }
   isMailShare: false,
   mailShareFileObjs: [],
+  mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -5373,12 +5389,13 @@ var NoteStore = mobx.observable({
   getUserId: function getUserId() {
     return this.user_id;
   },
+  // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init: function init(roomId, channelId, userId, userName, userEmail, callback) {
-    NoteStore.setWsId(roomId);
-    NoteStore.setChannelId(channelId);
-    NoteStore.setUserId(userId);
-    NoteStore.setUserName(userName);
-    NoteStore.setUserEmail(userEmail);
+    this.setWsId(roomId);
+    this.setChannelId(channelId);
+    this.setUserId(userId);
+    this.setUserName(userName);
+    this.setUserEmail(userEmail);
     if (typeof callback === 'function') callback();
   },
   initVariables: function initVariables() {
@@ -5388,6 +5405,7 @@ var NoteStore = mobx.observable({
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
     this.setShowPage(true);
+    this.setIsMailShare(false);
   },
   addWWMSHandler: function addWWMSHandler() {
     if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
@@ -5439,6 +5457,9 @@ var NoteStore = mobx.observable({
   },
   setMailShareFileObjs: function setMailShareFileObjs(fileObjs) {
     this.mailShareFileObjs = fileObjs;
+  },
+  setMailReceiver: function setMailReceiver(receivers) {
+    this.mailReceiver = receivers;
   },
   setIsVisibleToast: function setIsVisibleToast(isVisible) {
     this.isVisibleToast = isVisible;
@@ -7142,80 +7163,25 @@ const img$8 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
   Link Dialog 관련
 */
 
+var changeLinkDialog = function changeLinkDialog() {
+  try {
+    var dialog = document.querySelector('.tox-dialog');
+    dialog.classList.add("custom-link-dialog");
+    changeLinkDialogFooter(dialog.querySelector('.tox-dialog__footer')); // 일단 버튼 위치 바꾸기
+
+    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header')); // saveBtn : disable하려고 넘겨준다
+
+    changeLinkDialogForm(dialog);
+  } catch (err) {
+    throw Error(err);
+  }
+};
+
 var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
   header.classList.add("custom-dialog-header");
   var title = header.querySelector('.tox-dialog__title');
   title.classList.add("custom-dialog-title");
   title.textContent = '링크 삽입';
-}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
-
-
-var renderErrorMark = function renderErrorMark(target) {
-  var img = document.createElement('img');
-  img.src = img$8;
-  img.classList.add('note-link-error');
-  var tooltip = document.createElement('div');
-  tooltip.classList.add('note-link-error-tooltip');
-  tooltip.textContent = '해당 URL은 유효하지 않습니다.';
-  target.appendChild(img);
-  target.appendChild(tooltip);
-  return [img, tooltip];
-};
-
-var renderValidation = function renderValidation(targetInput, errorMark, saveBtn) {
-  var _value = targetInput.value; // 가독성을 위해 중복 검사함
-  // 빈 str이거나 invalid
-
-  if (!checkUrlValidation(_value)) {
-    saveBtn.setAttribute('disabled', true);
-  } else saveBtn.removeAttribute('disabled'); // errorMark는 invalid할 때만
-
-
-  if (!isFilled(_value) || validUrl(_value)) {
-    errorMark.map(function (child) {
-      return child.classList.remove('note-show-element');
-    });
-    targetInput.classList.remove('note-link-input');
-  } else {
-    errorMark.map(function (child) {
-      return child.classList.add('note-show-element');
-    });
-    targetInput.classList.add('note-link-input');
-  }
-};
-
-var changeLinkDialogForm = function changeLinkDialogForm(form, footer) {
-  // 텍스트, 링크 순으로 바꿔주기
-  form.insertBefore(form.children[1], form.children[0]);
-  form.classList.add("custom-dialog-form");
-  var formStr = {
-    url: "링크",
-    text: "텍스트"
-  }; // string 바꿔주기, renderValidationErrorMark
-
-  Array.from(form.childNodes).map(function (child, idx) {
-    var label$ = child.querySelector('.tox-form__group label');
-    var input$ = child.querySelector('input');
-    var content = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
-
-    label$.textContent = formStr[content];
-    /*
-      Link Dialog에서 유효성 검사 결과 ui 띄워주는 부분
-    */
-
-    if (content === "url") {
-      var _footer$querySelector;
-
-      var saveBtn = (_footer$querySelector = footer.querySelector('.tox-dialog__footer-end')) === null || _footer$querySelector === void 0 ? void 0 : _footer$querySelector.childNodes[0];
-      var errorMark = renderErrorMark(input$.parentElement); // input value 유효하지 않으면 errorMark 띄우고 saveBtn disabled처리
-
-      renderValidation(input$, errorMark, saveBtn);
-
-      input$.oninput = function (e) {
-        renderValidation(input$, errorMark, saveBtn);
-      };
-    } else input$.focus();
-  });
 };
 
 var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
@@ -7224,25 +7190,161 @@ var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
   btnGroup.classList.add('custom-dialog-btns'); // 저장, 취소 버튼 위치 바껴야 한다
 
   btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
+}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
+
+
+var renderErrorMark = function renderErrorMark(target) {
+  var img = document.createElement('img');
+  img.src = img$8;
+  img.classList.add('note-link-form-error');
+  var tooltip = document.createElement('div');
+  tooltip.classList.add('note-link-error-tooltip');
+  target.appendChild(img);
+  target.appendChild(tooltip);
+  return {
+    img$: img,
+    tooltip$: tooltip
+  };
+}; // 1 : 텍스트를 입력해 주세요 메시지 띄우기
+
+
+var textCondition = function textCondition(value) {
+  return isFilled(value) ? {
+    result: true,
+    message: ""
+  } : {
+    result: false,
+    message: "텍스트를 입력해 주세요."
+  };
 };
 
-var changeLinkDialog = function changeLinkDialog() {
-  try {
-    var dialog = document.querySelector('.tox-dialog');
-    dialog.classList.add("custom-link-dialog");
-    var footer = dialog.querySelector('.tox-dialog__footer');
-    changeLinkDialogFooter(footer); // 일단 버튼 위치 바꾸기
+var urlSaveCondition = function urlSaveCondition(_value) {
+  if (!isFilled(_value)) return {
+    result: false,
+    message: "링크를 입력해 주세요."
+  };
 
-    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
-    changeLinkDialogForm(dialog.querySelector('.tox-dialog__body .tox-form'), footer);
-  } catch (err) {
-    throw Error(err);
+  if (!GlobalVariable.isBasicPlan) {
+    if (isValidMailtoMail(_value)) return {
+      result: true,
+      message: ""
+    }; // pass
+
+    if (isValidMail(_value)) return {
+      result: false,
+      message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요."
+    }; // mailto 붙여달라고 메시지 띄우기
   }
+
+  if (checkUrlValidation(_value)) return {
+    result: true,
+    message: ""
+  }; // pass
+
+  return {
+    result: false,
+    message: "올바르지 않은 주소입니다."
+  }; // 유효하지 않은 주소라고 메시지 띄우기
+}; // errorMark 관련된 함수
+// params : errorMark, errorCondition, textInput
+
+
+var renderValidation = function renderValidation(params) {
+  return function (e, targetValue) {
+    var type = params.type,
+        errorMark = params.errorMark,
+        errorCondition = params.errorCondition,
+        textInput = params.textInput;
+    var img$ = errorMark.img$,
+        tooltip$ = errorMark.tooltip$;
+    var resultObj = errorCondition(targetValue); // pass
+
+    if (resultObj.result) {
+      [img$, tooltip$].forEach(function (node) {
+        return node.classList.remove('note-show-element');
+      });
+    } // text필드 errorMark 보여주는건 focusOut일 때만
+    else if (type === 'text' && e.type === 'input') ; else {
+        tooltip$.textContent = resultObj["message"];
+        [img$, tooltip$].forEach(function (node) {
+          return node.classList.add('note-show-element');
+        });
+      } // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
+
+
+    if (isFilled(textInput.value)) {
+      _toConsumableArray(textInput.parentElement.querySelectorAll('.note-show-element')).forEach(function (node) {
+        return node.classList.remove('note-show-element');
+      });
+    }
+  };
+};
+
+var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
+  // 텍스트, 링크 순으로 바꿔주기
+  var form = dialog.querySelector('.tox-dialog__body .tox-form');
+  form.insertBefore(form.children[1], form.children[0]);
+  form.classList.add("custom-dialog-form");
+  var formStr = {
+    url: "링크",
+    text: "텍스트"
+  };
+  var targetInputs$ = form.querySelectorAll('input');
+  var saveBtn = dialog.querySelector('.tox-dialog__footer button');
+
+  var handleInput = function handleInput(checkValidation) {
+    return function (e) {
+      if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value); // 두 input창이 비어있으면 saveBtn을 disable한다
+
+      if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {
+        saveBtn.setAttribute('disabled', true);
+        return;
+      } //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
+
+
+      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);else saveBtn.removeAttribute('disabled');
+    };
+  }; // string 바꿔주기, renderValidationErrorMark
+
+
+  _toConsumableArray(form.childNodes).forEach(function (child, idx) {
+    var input$ = child.querySelector('input');
+    var type = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
+
+    child.querySelector('.tox-form__group label').textContent = formStr[type]; // errorMark 그려주고
+
+    var errorMark = renderErrorMark(input$.parentElement);
+    /*
+      유효성 검사해서 error mark 그렸다 뺐다하기
+    */
+
+    var params = {
+      type: type,
+      errorMark: errorMark,
+      errorCondition: type === "text" ? textCondition : urlSaveCondition,
+      textInput: targetInputs$[0] // 텍스트 input
+
+    }; // validation 함수 만들기
+
+    var renderItemValidation = renderValidation(params); // focus out 했을 때 동작한다
+
+    if (type === "text") {
+      // focusOut일 때만 동작해야해서
+      input$.addEventListener("focusout", handleInput(renderItemValidation)); // 다 지웠을 때도 인식해야 하고, 중간에 focus상태에서 text 쓸 때도 에러메시지 지워져야함
+
+      input$.addEventListener("input", handleInput(renderItemValidation));
+    } //url
+    else input$.addEventListener("input", handleInput(renderItemValidation));
+  }); // text input으로 focus
+
+
+  targetInputs$[0].focus();
 };
 /*
   Link context Toolbar 관련
   custimizing contextToolbar
 */
+
 
 var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
 var changeButtonStyle = function changeButtonStyle(idx, count) {
@@ -7260,13 +7362,28 @@ var changeButtonStyle = function changeButtonStyle(idx, count) {
     setTimeout(changeButtonStyle, 50, idx, count + 1);
   }
 };
-var openLink = function openLink(url, target) {
-  if (!PageStore.isReadMode()) return;
+var openLink = function openLink(_ref) {
+  var isOnlyReadMode = _ref.isOnlyReadMode,
+      url = _ref.url,
+      target = _ref.target;
+  if (isOnlyReadMode && !PageStore.isReadMode()) return;
+  if (!url) return;
+
+  if (isOpenMail(url)) {
+    NoteStore.setIsMailShare(true);
+    NoteStore.setMailReceiver([{
+      mailAddr: url.replace(/^(mailto:\s?)/g, ''),
+      displayName: null,
+      userId: null
+    }]);
+    return;
+  }
 
   if (target !== '_blank') {
     document.location.href = url;
     return;
-  }
+  } // window.open(targetUrl);
+
 
   var link = document.createElement('a');
   link.href = url;
@@ -7275,6 +7392,13 @@ var openLink = function openLink(url, target) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}; // default autolink pattern
+// autolink_pattern:/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i,
+// 자동으로 mailto로 바꾸지 않는 경우
+// autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
+
+var customAutoLinkPattern = function customAutoLinkPattern() {
+  return GlobalVariable.isBasicPlan ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 };
 
 var handleUpload = /*#__PURE__*/function () {
@@ -7799,10 +7923,16 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
   };
 }();
 
-var handleClickLink = function handleClickLink(el) {
+var handleClickLink = function handleClickLink(e, el) {
+  e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
+
   var href = el.getAttribute('href');
   var target = el.getAttribute('target');
-  openLink(href, target);
+  openLink({
+    isOnlyReadMode: true,
+    url: href,
+    target: target
+  });
 };
 
 var handleClickImg = function handleClickImg(el) {
@@ -7833,7 +7963,7 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
     if (targetList && targetList.length > 0) {
       Array.from(targetList).forEach(function (el) {
         if (el.getAttribute('hasListener')) return;
-        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, event, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
         el.setAttribute('hasListener', true);
       });
     }
@@ -9189,7 +9319,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$6() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-input {\n    border: 1px solid #FF5151 !important;\n  }\n  .note-link-error {\n    position: absolute !important;\n    display:none;\n    align-items: center !important;\n    float: right !important;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    top:10% !important;\n    right: 3% !important;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    width: 11rem !important;\n    height: 1.5rem !important;\n    font-size:0.75rem !important;    \n    background: #FF5151 !important;\n    border-radius:10px !important;\n    position:absolute !important;\n    top:-90% !important;\n    right: 0rem !important;\n    align-items: center !important;\n    justify-content: center !important;\n    color: #ffffff !important;\n    font-size: 11px !important;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
 
   _templateObject$6 = function _templateObject() {
     return data;
@@ -9787,7 +9917,7 @@ var FileDataTime = styled__default['default'].div(_templateObject30$1());
 var FileTime = styled__default['default'].div(_templateObject31$1());
 var FileClose = styled__default['default'].div(_templateObject32$1());
 var FileCloseBtn = styled__default['default'].img(_templateObject33$1());
-var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
+var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
 
 const img$i = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
@@ -10789,7 +10919,8 @@ var EditorContainer = function EditorContainer() {
 
 
             if (isAnchorElement(e.element)) {
-              if (!checkUrlValidation(e.element.href)) {
+              if (!isOpenLink(e.element.href)) {
+                // url이거나 basic plan 아니면서 메일인 경우
                 e.element.classList.add('note-invalidUrl');
               } else {
                 e.element.classList.remove('note-invalidUrl');
@@ -10882,11 +11013,16 @@ var EditorContainer = function EditorContainer() {
           editor.ui.registry.addToggleButton('customToggleOpenLink', {
             icon: 'new-tab',
             onAction: function onAction(_) {
-              var targetUrl = getAnchorElement() ? getAnchorElement().href : null;
-              if (targetUrl) window.open(targetUrl);
+              var _getAnchorElement;
+
+              openLink({
+                isOnlyReadMode: false,
+                url: (_getAnchorElement = getAnchorElement()) === null || _getAnchorElement === void 0 ? void 0 : _getAnchorElement.href,
+                target: '_blank'
+              });
             },
             onSetup: function onSetup(api) {
-              var targetUrl = getAnchorElement() ? checkUrlValidation(getAnchorElement().href) : null;
+              var targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
               if (!targetUrl) api.setDisabled(true);
               if (editor.selection.isCollapsed()) changeButtonStyle(2, 0);
             }
@@ -10981,6 +11117,8 @@ var EditorContainer = function EditorContainer() {
             args.node.appendChild(temp);
           }
         },
+        autolink_pattern: customAutoLinkPattern(),
+        // 잘 안 먹음
         contextmenu: 'link-toolbar image imagetools table',
         table_sizing_mode: 'fixed',
         // only impacts the width of tables and cells
@@ -11555,7 +11693,8 @@ var NoteApp = function NoteApp(_ref) {
       ChapterStore = _useNoteStore.ChapterStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      userStore = _useCoreStores.userStore;
+      userStore = _useCoreStores.userStore,
+      spaceStore = _useCoreStores.spaceStore;
 
   var renderCondition = function renderCondition(target) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -11584,24 +11723,33 @@ var NoteApp = function NoteApp(_ref) {
     */
 
     if (isOtherRoom) {
-      NoteStore.init(roomId, channelId, userStore.myProfile.id, userStore.myProfile.name, userStore.myProfile.email, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _spaceStore$currentSp;
+
+      var _userStore$myProfile = userStore.myProfile,
+          userId = _userStore$myProfile.id,
+          userName = _userStore$myProfile.name,
+          userEmail = _userStore$myProfile.email;
+      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === "Basic"; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
+
+      NoteStore.init(roomId, channelId, userId, userName, userEmail, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                GlobalVariable.setIsBasicPlan(isBasicPlan);
                 NoteStore.addWWMSHandler(); // 깜빡임 방지위해 만든 변수
 
                 NoteStore.setLoadingNoteApp(false);
                 NoteStore.initVariables();
 
                 if (channelId) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
                 return _context.abrupt("return");
 
-              case 7:
+              case 8:
                 if (NoteStore.noteIdFromTalk) NoteStore.openNote(NoteStore.noteIdFromTalk);else if (layoutState === 'collapse') {
                   // lnb는 따로 로딩 화면 X
                   ChapterStore.getNoteChapterList();
@@ -11611,7 +11759,7 @@ var NoteApp = function NoteApp(_ref) {
                   NoteStore.setTargetLayout(null);
                 }
 
-              case 8:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -11637,6 +11785,12 @@ var NoteApp = function NoteApp(_ref) {
   var handleFoldBtn = function handleFoldBtn(e) {
     var targetX = e.currentTarget.getBoundingClientRect().x;
     if (Math.abs(targetX - e.clientX) <= 5) NoteStore.setIsHoveredFoldBtnLine(true);else NoteStore.setIsHoveredFoldBtnLine(false);
+  };
+
+  var handleCloseMailModal = function handleCloseMailModal() {
+    NoteStore.setMailShareFileObjs([]);
+    NoteStore.setIsMailShare(false);
+    NoteStore.setMailReceiver([]);
   };
 
   return mobxReact.useObserver(function () {
@@ -11672,10 +11826,8 @@ var NoteApp = function NoteApp(_ref) {
         mailAddr: NoteStore.userEmail,
         accountId: NoteStore.user_id
       },
-      onClose: function onClose() {
-        NoteStore.setMailShareFileObjs([]);
-        NoteStore.setIsMailShare(false);
-      },
+      toReceiver: NoteStore.mailReceiver,
+      onClose: handleCloseMailModal,
       visible: true
     })));
   });
