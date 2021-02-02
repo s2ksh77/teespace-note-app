@@ -4,7 +4,7 @@ import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionI
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
-import downloadBtn from '../../assets/drive_download.svg';
+import downloadBtn from '../../assets/file_download.svg';
 import txt from '../../assets/txt.svg';
 import excel from '../../assets/cell.svg';
 import ppt from '../../assets/point.svg';
@@ -19,6 +19,12 @@ import { Dropdown, Menu, Progress, Tooltip } from 'antd';
 import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ComponentStore } from 'teespace-core';
+import styled from "styled-components";
+
+const StyledMenu = styled(Menu)`
+  width:6.69rem;
+  border-radius: 5px;
+`;
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
@@ -187,10 +193,10 @@ const FileLayout = () => {
     }
 
     const menu = (
-        <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+        <StyledMenu onClick={onClickContextMenu}>
             <Menu.Item key="0">Drive에 저장</Menu.Item>
             <Menu.Item key="1">내 PC에 저장</Menu.Item>
-        </Menu>
+        </StyledMenu>
     );
 
     useEffect(() => {
@@ -221,7 +227,9 @@ const FileLayout = () => {
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
                                 <FileDownloadIcon>
-                                    {hover && item.file_id === hoverFileId ? (<FileDownloadBtn src={downloadBtn} style={{ width: "1.25rem", height: "1.25rem" }} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} style={{ width: "1.875rem", height: "1.875rem" }} />)}
+                                    {hover && item.file_id === hoverFileId  
+                                    ? (<FileDownloadBtn src={downloadBtn} />) 
+                                    : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
                             {item.error ? <FileErrorIcon><ExclamationCircleFilled /></FileErrorIcon> : null}
@@ -268,7 +276,9 @@ const FileLayout = () => {
                                 <FileDownloadIcon
                                     onMouseEnter={handleHoverIcon.bind(null, index)}
                                     onMouseLeave={handleLeaveIcon}>
-                                    {hover && index === hoverFileIdx ? (<FileDownloadBtn src={downloadBtn} style={{ width: "1.25rem", height: "1.25rem" }} />) : (<FileExtensionBtn src={fileExtension(item.file_extension)} style={{ width: "1.875rem", height: "1.875rem" }} />)}
+                                    {hover && index === hoverFileIdx 
+                                    ? (<FileDownloadBtn src={downloadBtn} />) 
+                                    : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
                             <FileData mode={PageStore.isReadMode().toString()}>
