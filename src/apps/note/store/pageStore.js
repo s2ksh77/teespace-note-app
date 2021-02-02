@@ -23,7 +23,7 @@ const PageStore = observable({
   createParentIdx: '',
   deletePageList: [],
   deleteParentIdx: '',
-  nextSelectablePageId: '',
+  selectablePageId: '',
   isRename: false,
   renamePageId: '',
   renamePagePrevText: '',
@@ -144,11 +144,11 @@ const PageStore = observable({
   setDeleteParentIdx(chapterIdx) {
     this.deleteParentIdx = chapterIdx;
   },
-  getNextSelectablePageId() {
-    return this.nextSelectablePageId;
+  getSelectablePageId() {
+    return this.selectablePageId;
   },
-  setNextSelectablePageId(pageId) {
-    this.nextSelectablePageId = pageId;
+  setSelectablePageId(pageId) {
+    this.selectablePageId = pageId;
   },
 
   getIsRename() {
@@ -335,8 +335,8 @@ const PageStore = observable({
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
       if (this.currentPageId === this.deletePageList[0].note_id) {
-        this.setCurrentPageId(this.nextSelectablePageId);
-        this.fetchCurrentPageData(this.nextSelectablePageId)
+        this.setCurrentPageId(this.selectablePageId);
+        this.fetchCurrentPageData(this.selectablePageId)
       }
       if (this.isNewPage) {
         if (NoteStore.layoutState === "collapse") {
