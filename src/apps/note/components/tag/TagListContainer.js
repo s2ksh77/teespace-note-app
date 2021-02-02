@@ -212,22 +212,14 @@ const TagListContainer = () => {
                   onKeyDown={handleKeyDownTag.bind(null)}
                   onBlur={handleTagChipBlur(index)}
                 >
-
-                  {!PageStore.isReadMode() ?
-                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
-                      <TagText
-                        onDoubleClick={handleChangeTag(item.text, index, item.tag_id)}
-                        onMouseOver={handleTooltip}
-                      >
-                        {NoteUtil.decodeStr(item.text)}
-                      </TagText>
-                    </Tooltip>
-                    :
-                    <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
-                      <TagText onMouseOver={handleTooltip}>{NoteUtil.decodeStr(item.text)}
-                      </TagText>
-                    </Tooltip>
-                  }
+                  <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
+                    <TagText
+                      onDoubleClick={!PageStore.isReadMode() ? handleChangeTag(item.text, index, item.tag_id) : null}
+                      onMouseOver={handleTooltip}
+                    >
+                      {NoteUtil.decodeStr(item.text)}
+                    </TagText>
+                  </Tooltip>
                 </TagChip>
               )
           )}
