@@ -17,7 +17,7 @@ import GlobalVariable from './GlobalVariable';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId }) => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
@@ -43,10 +43,10 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
       ShareNoteMessage는 noteInfo 서비스콜 보내고 노트앱을 
     */
     if (isOtherRoom) {
-      const {id:userId,name:userName,email:userEmail} = userStore.myProfile;
+      const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
       const isBasicPlan = spaceStore.currentSpace?.plan === "Basic";
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
-      NoteStore.init(roomId, channelId, userId,userName, userEmail, async () => {
+      NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
         GlobalVariable.setIsBasicPlan(isBasicPlan);
         NoteStore.addWWMSHandler();
         // 깜빡임 방지위해 만든 변수
@@ -75,6 +75,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
+      EditorStore.setInitialSearchState();
     }
   }, [roomId, channelId, layoutState]);
 
