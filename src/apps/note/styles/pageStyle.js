@@ -49,7 +49,7 @@ export const PageText = styled.a`
   display: inline-block;
   cursor: pointer;
   margin-left: 1.25rem;
-  line-height: 130%;
+  line-height: 1.1rem;
   color: #000000 !important;
   align-self: center;
   overflow: hidden;
