@@ -2331,6 +2331,11 @@ var EditorStore$1 = mobx.observable((_observable = {
   setIsPreview: function setIsPreview(flag) {
     this.isPreview = flag;
   },
+  setInitialSearchState: function setInitialSearchState() {
+    this.isSearch = false;
+    this.searchResultState = false;
+    this.searchValue = '';
+  },
   setIsSearch: function setIsSearch(flag) {
     this.isSearch = flag;
   },
@@ -11689,7 +11694,8 @@ var NoteApp = function NoteApp(_ref) {
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
-      ChapterStore = _useNoteStore.ChapterStore;
+      ChapterStore = _useNoteStore.ChapterStore,
+      EditorStore = _useNoteStore.EditorStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
       userStore = _useCoreStores.userStore,
@@ -11778,6 +11784,8 @@ var NoteApp = function NoteApp(_ref) {
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
+
+      EditorStore.setInitialSearchState();
     };
   }, [roomId, channelId, layoutState]);
 

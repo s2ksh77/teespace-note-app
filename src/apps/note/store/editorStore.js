@@ -100,6 +100,11 @@ const EditorStore = observable({
   setIsPreview(flag) {
     this.isPreview = flag;
   },
+  setInitialSearchState() {
+    this.isSearch = false;
+    this.searchResultState = false;
+    this.searchValue = '';
+  },
   setIsSearch(flag) {
     this.isSearch = flag;
   },
