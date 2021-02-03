@@ -1179,7 +1179,12 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context23.prev = 0;
                 _context23.next = 3;
-                return API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(encodeURIComponent(searchKey)));
+                return API.post("note-api/noteSearch?action=List", {
+                  dto: {
+                    note_channel_id: this.chId,
+                    text: searchKey
+                  }
+                });
 
               case 3:
                 return _context23.abrupt("return", _context23.sent);
