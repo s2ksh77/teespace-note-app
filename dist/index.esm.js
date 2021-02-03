@@ -5160,6 +5160,7 @@ var NoteStore = observable({
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
+  draggedType: '',
   draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
@@ -5443,6 +5444,9 @@ var NoteStore = observable({
   },
   setIsDragging: function setIsDragging(isDragging) {
     this.isDragging = isDragging;
+  },
+  setDraggedType: function setDraggedType(type) {
+    this.draggedType = type;
   },
   setDraggedItems: function setDraggedItems(items) {
     this.draggedItems = items;
