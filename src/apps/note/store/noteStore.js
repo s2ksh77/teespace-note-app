@@ -2,11 +2,9 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
-import EditorStore from './editorStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
-import GlobalVariable from '../GlobalVariable';
 
 const NoteStore = observable({
   noteIdFromTalk: '',
@@ -26,6 +24,7 @@ const NoteStore = observable({
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
+  draggedType: '',
   draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
@@ -266,6 +265,9 @@ const NoteStore = observable({
   },
   setIsDragging(isDragging) {
     this.isDragging = isDragging;
+  },
+  setDraggedType(type) {
+    this.draggedType = type;
   },
   setDraggedItems(items) {
     this.draggedItems = items;
