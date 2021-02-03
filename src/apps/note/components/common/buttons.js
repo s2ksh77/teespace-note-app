@@ -6,8 +6,12 @@ import ExpandImg from '../../assets/ts_maximize.svg';
 import CollapseImg from '../../assets/ts_minimize@3x.png';
 import cancel from '../../assets/ts_cancel.svg';
 import { HeaderButtonContainer, Button, ButtonDiv } from '../../styles/commonStyle';
+import styled from "styled-components";
 
-const style = { cursor: 'pointer' };
+const StyledBtn = styled(Button)`
+  cursor:pointer;
+`;
+
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -52,10 +56,10 @@ const HeaderButtons = () => {
     <>
       <HeaderButtonContainer layoutState={NoteStore.layoutState} targetLayout={NoteStore.targetLayout}>
         <ButtonDiv>
-          <Button style={style} src={onChangeImg()} onClick={handleLayoutState} />
+          <StyledBtn src={onChangeImg()} onClick={handleLayoutState} />
         </ButtonDiv>
         <ButtonDiv>
-          <Button style={style} src={cancel} onClick={handleCancelBtn} />
+          <StyledBtn src={cancel} onClick={handleCancelBtn} />
         </ButtonDiv>
       </HeaderButtonContainer>
     </>
