@@ -62,7 +62,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       if (res && res.target === 'Platform:Room')
         PageStore.createNoteSharePage(res.targetData.id, item.data);
 
-      if (item.type === 'Item:Note:SharedPages') NoteStore.setIsDragging(false);
+      if (!res && item.type === 'Item:Note:SharedPages') NoteStore.setIsDragging(false);
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});

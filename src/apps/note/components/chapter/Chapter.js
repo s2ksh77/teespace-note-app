@@ -69,7 +69,7 @@ const Chapter = ({ chapter, index, isShared }) => {
       if (res && res.target === 'Platform:Room')
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
 
-      if (item.type === 'Item:Note:SharedChapters') NoteStore.setIsDragging(false);
+      if (!res && item.type === 'Item:Note:SharedChapters') NoteStore.setIsDragging(false);
       ChapterStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
     },
