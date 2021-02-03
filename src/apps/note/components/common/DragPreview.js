@@ -8,6 +8,9 @@ import {
   DraggedComponent,
   DraggedComponentTitle,
 } from "../../styles/commonStyle";
+import { ChapterShareIcon } from '../../styles/chpaterStyle';
+import sharedPageIcon from '../../assets/page_shared.svg';
+import sharedIcon from '../../assets/share_1.svg';
 
 let subscribedToOffsetChange = false;
 let dragPreviewRef = null;
@@ -45,6 +48,12 @@ const DragPreview = ({ items }) => {
     }
   }, [previewRef]);
 
+  const renderChapterIcon = item => {
+    if (item.color) return <ChapterColor color={item.color} id={item.id}/>;
+    if (item.type === 'shared_page') return <ChapterShareIcon src={sharedPageIcon} />
+    return <ChapterShareIcon src={sharedIcon} />
+  };
+
   return useObserver(() => (
     <DraggedComponentContainer ref={previewRef}>
       {items.map((item, idx) => {
@@ -52,19 +61,28 @@ const DragPreview = ({ items }) => {
           <DraggedComponent 
             key={idx}
             style={
-              item.color
-                ? { 
-                  width: `${element.offsetWidth}px`,
-                  paddingLeft: '1.56rem',
-                  backgroundColor: 'rgba(255,255,255,0.6)',
-                  color: '#205855',
-                  fontWeight: '500'
-                } : {
+              NoteStore.draggedType === 'chapter'
+                ? item.color
+                  ? {
+                    width: `${element.offsetWidth}px`,
+                    paddingLeft: '1.56rem',
+                    backgroundColor: 'rgba(255,255,255,0.6)',
+                    color: '#205855',
+                    fontWeight: '500',
+                  }
+                  : {
+                    width: `${element.offsetWidth}px`,
+                    paddingLeft: '2.63rem',
+                    backgroundColor: 'rgba(255,255,255,0.6)',
+                    color: '#205855',
+                    fontWeight: '500',
+                  }
+                : {
                   width: `calc(${element.offsetWidth}px - 1.875rem)`,
                 }
             }
           >
-            {item.color && <ChapterColor color={item.color} id={item.id}/>}
+            {NoteStore.draggedType === 'chapter' && renderChapterIcon(item)}
             <DraggedComponentTitle>{item.text}</DraggedComponentTitle>
           </DraggedComponent>
         )

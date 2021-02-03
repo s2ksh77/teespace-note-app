@@ -40,6 +40,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.setIsCtrlKeyDown(false);
       }
 
+      NoteStore.setDraggedType('page');
       NoteStore.setDraggedItems(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
