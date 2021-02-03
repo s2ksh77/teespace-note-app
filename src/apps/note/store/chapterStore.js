@@ -645,7 +645,10 @@ const ChapterStore = observable({
       });
     });
 
-    this.createShareChapter(targetList).then(() => this.getNoteChapterList());
+    this.createShareChapter(targetList).then(() => {
+      this.getNoteChapterList();
+      NoteStore.setIsDragging(false);
+    });
   },
   getFirstRenderedChapter() {
     if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
