@@ -497,6 +497,30 @@ const EditorContainer = () => {
                 args.node.textContent = '';
                 args.node.appendChild(temp);
               }
+              /*
+                p tag 없이 br 태그만 있는 경우
+                현재는 contents 전체가 하나의 ptag 안에 있어서 블록 설정한 부분만 정렬이 불가능
+                복붙하고나서 일부만 정렬하고 싶을 때 주석 풀어서 각각 p tag 만들기
+              */
+              // if (args.node.querySelector('p') === null && args.node.querySelectorAll('br').length) {
+              //   const parent = document.createDocumentFragment();
+              //   let temp = document.createElement('p');
+              //   [...args.node.childNodes].forEach((node, idx, self) => {
+              //     if (node.nodeName === 'BR') {
+              //       if (temp.childElementCount > 0) parent.appendChild(temp);
+              //       temp = document.createElement('p');
+
+              //       const $pbr = document.createElement('p');
+              //       $pbr.appendChild(node);
+              //       parent.appendChild($pbr);
+              //     } 
+              //     else if ((idx+1) === self.length) {
+              //       temp.appendChild(node);
+              //       parent.appendChild(temp);
+              //     } else temp.appendChild(node);
+              //   })
+              //   args.node.appendChild(parent);
+              // }
             },
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
