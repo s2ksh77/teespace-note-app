@@ -19,7 +19,7 @@ const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
 
-  const createNewChapter = async () => {
+  const createNewChapter = async isNeededLNBLayout => {
     // dialog 클릭시 blur이벤트 동작
     if (NoteStore.showModal) return;
     if (!ChapterStore.isNewChapter) return;
@@ -28,12 +28,14 @@ const LNBContainer = () => {
       ChapterStore.setChapterTitle("새 챕터");
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
+        ChapterStore.isNewChapterColor,
+        isNeededLNBLayout
       );
     } else {
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
+        ChapterStore.isNewChapterColor,
+        isNeededLNBLayout
       );
     }
   };

@@ -198,15 +198,15 @@ const NoteStore = observable({
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
     const sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
+    // const sharedRoom = await RoomStore.fetchRoom({myUserId: noteInfo.shared_user_id,roomId:noteInfo.shared_room_name});
     const {name, nick} = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
-    
     this.sharedInfo = {
       sharedRoomName: (
         sharedRoom
           ? (sharedRoom.isMyRoom
             ? this.userName
             : sharedRoom.name)
-          : noteInfo.shared_room_name
+          : (nick ? nick : name) // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
       ),
       sharedUserName: nick ? nick : name,
       sharedDate: (
