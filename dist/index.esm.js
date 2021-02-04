@@ -10470,9 +10470,14 @@ var FileLayout = function FileLayout() {
           switch (_context.prev = _context.next) {
             case 0:
               removePostProcess = function removePostProcess() {
-                var _EditorStore$tinymce;
-
-                if (EditorStore.isFile) EditorStore.setFileIndex(index > 0 ? index - 1 : 0);else (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.focus();
+                if (EditorStore.isFile) EditorStore.setFileIndex(index > 0 ? index - 1 : 0);else {
+                  try {
+                    // 불안해서 넣는 try catch문
+                    EditorStore.tinymce.focus();
+                    EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(), true);
+                    EditorStore.tinymce.selection.collapse(false);
+                  } catch (err) {}
+                }
               };
 
               if (!(type === 'temp' && EditorStore.tempFileLayoutList.length > 0)) {

@@ -168,7 +168,13 @@ const FileLayout = () => {
     const handleFileRemove = async (fileId, index, type) => {
         const removePostProcess = () => {
           if (EditorStore.isFile) EditorStore.setFileIndex((index > 0) ? (index - 1) : 0);
-          else EditorStore.tinymce?.focus();
+          else {
+            try { // 불안해서 넣는 try catch문
+              EditorStore.tinymce.focus();
+              EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(),true);
+              EditorStore.tinymce.selection.collapse(false);
+            } catch(err) {}
+          }
         }
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
             EditorStore.tempFileLayoutList[index].deleted = true;
