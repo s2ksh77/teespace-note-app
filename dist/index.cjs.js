@@ -5569,7 +5569,8 @@ var NoteStore = mobx.observable({
 
             case 9:
               noteInfo = _context.t0;
-              sharedRoom = teespaceCore.RoomStore.getRoom(noteInfo.shared_room_name);
+              sharedRoom = teespaceCore.RoomStore.getRoom(noteInfo.shared_room_name); // const sharedRoom = await RoomStore.fetchRoom({myUserId: noteInfo.shared_user_id,roomId:noteInfo.shared_room_name});
+
               _context.next = 13;
               return teespaceCore.UserStore.getProfile({
                 userId: noteInfo.shared_user_id
@@ -5580,7 +5581,8 @@ var NoteStore = mobx.observable({
               name = _yield$UserStore$getP.name;
               nick = _yield$UserStore$getP.nick;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : noteInfo.shared_room_name,
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+                ,
                 sharedUserName: nick ? nick : name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
