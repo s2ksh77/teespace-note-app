@@ -459,7 +459,7 @@ const ChapterStore = observable({
     return sortedChapterList;
   },
 
-  async createNoteChapter(chapterTitle, chapterColor) {
+  async createNoteChapter(chapterTitle, chapterColor, isNeededLNBLayout) {
     const notbookList = await this.createChapter(chapterTitle, chapterColor);
     this.getNoteChapterList();
     this.setCurrentChapterId(notbookList.id);
@@ -467,7 +467,7 @@ const ChapterStore = observable({
     this.setChapterTempUl(false);
     await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     NoteStore.setShowPage(true);
-    NoteStore.setTargetLayout('Content');
+    if (!isNeededLNBLayout) NoteStore.setTargetLayout('Content');
   },
   deleteNoteChapter() {
     this.deleteChapter(this.deleteChapterData.id).then(() => {

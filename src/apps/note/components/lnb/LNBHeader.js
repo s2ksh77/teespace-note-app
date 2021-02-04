@@ -35,7 +35,7 @@ const LNBHeader = ({ createNewChapter }) => {
       ChapterStore.setChapterTempUl(true); // isNewChapter = true;
       ChapterStore.getChapterRandomColor();
     } else {
-      await createNewChapter();
+      await createNewChapter(true);
       ChapterStore.getChapterRandomColor();
       ChapterStore.setChapterTempUl(true);
     }

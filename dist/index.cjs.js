@@ -4571,7 +4571,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     sharedChapterList: _sharedChapterList
   });
   return sortedChapterList;
-}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
+}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor, isNeededLNBLayout) {
   var _this8 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
@@ -4599,7 +4599,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
           case 9:
             NoteStore.setShowPage(true);
-            NoteStore.setTargetLayout('Content');
+            if (!isNeededLNBLayout) NoteStore.setTargetLayout('Content');
 
           case 11:
           case "end":
@@ -6821,7 +6821,7 @@ var LNBHeader = function LNBHeader(_ref) {
 
             case 7:
               _context.next = 9;
-              return createNewChapter();
+              return createNewChapter(true);
 
             case 9:
               ChapterStore.getChapterRandomColor();
@@ -9232,7 +9232,7 @@ var LNBContainer = function LNBContainer() {
   var LNBRef = React.useRef(null);
 
   var createNewChapter = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(isNeededLNBLayout) {
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -9260,7 +9260,7 @@ var LNBContainer = function LNBContainer() {
 
               ChapterStore.setChapterTitle("새 챕터");
               _context.next = 8;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
+              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor, isNeededLNBLayout);
 
             case 8:
               _context.next = 12;
@@ -9268,7 +9268,7 @@ var LNBContainer = function LNBContainer() {
 
             case 10:
               _context.next = 12;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
+              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor, isNeededLNBLayout);
 
             case 12:
             case "end":
@@ -9278,7 +9278,7 @@ var LNBContainer = function LNBContainer() {
       }, _callee);
     }));
 
-    return function createNewChapter() {
+    return function createNewChapter(_x) {
       return _ref.apply(this, arguments);
     };
   }();
