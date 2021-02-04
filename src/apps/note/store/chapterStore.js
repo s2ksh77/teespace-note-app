@@ -38,7 +38,8 @@ const ChapterStore = observable({
   searchingTagName: '',
   searchStr: "", // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
-  deleteChapterData: '',
+  deleteChapterId: '',
+  selectableChapterId: '',
   renameChapterId: '',
   renameChapterPrevText: '',
   renameChapterText: '',
@@ -65,11 +66,17 @@ const ChapterStore = observable({
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
   },
-  getDeleteChapterData() {
-    return this.deleteChapterData;
+  getDeleteChapterId() {
+    return this.deleteChapterId;
   },
-  setDeleteChapterData(chapter) {
-    this.deleteChapterData = chapter;
+  setDeleteChapterId(chapter) {
+    this.deleteChapterId = chapter;
+  },
+  getSelectableChapterId() {
+    return this.selectableChapterId;
+  },
+  setSelectableChapterId(chapterId) {
+    this.selectableChapterId = chapterId;
   },
   getRenameChapterId() {
     return this.renameChapterId;
@@ -426,8 +433,7 @@ const ChapterStore = observable({
       this.applyDifference(NoteStore.getChannelId(), notbookList);
       tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
     }
-    // this.chapterList = tempChapterList.concat(sharedList);
-    // component에서 render하기 좋도록 category 분류하기
+  
     this.chapterList = tempChapterList.concat(sharedList);
     return this.chapterList;
   },
@@ -470,22 +476,16 @@ const ChapterStore = observable({
     if (!isNeededLNBLayout) NoteStore.setTargetLayout('Content');
   },
   deleteNoteChapter() {
-    this.deleteChapter(this.deleteChapterData.id).then(() => {
+    this.deleteChapter(this.deleteChapterId).then(() => {
       this.getNoteChapterList();
-      if (this.currentChapterId === this.deleteChapterData.id) {
-        this.setCurrentChapterId(this.deleteChapterData.selectableChapterId ? this.deleteChapterData.selectableChapterId : '');
-        PageStore.setCurrentPageId(this.deleteChapterData.selectablePageId ? this.deleteChapterData.selectablePageId : '');
-        PageStore.fetchCurrentPageData(this.deleteChapterData.selectablePageId ? this.deleteChapterData.selectablePageId : '');
+      if (this.currentChapterId === this.deleteChapterId) {
+        this.setCurrentChapterId(this.selectableChapterId);
+        PageStore.setCurrentPageId(PageStore.selectablePageId);
+        PageStore.fetchCurrentPageData(PageStore.selectablePageId);
       }
-      this.deleteChapterData = '';
+      this.deleteChapterId = '';
       NoteStore.setShowModal(false);
     });
-  },
-
-  getNextSelectableChapter(chapterList, chapterId) {
-    if (chapterList.length <= 1) return;
-    const currentChapterIdx = chapterList.findIndex((chapter) => chapter.id === chapterId);
-    return currentChapterIdx ? chapterList[currentChapterIdx - 1] : chapterList[1];
   },
 
   renameNoteChapter(color) {
@@ -653,9 +653,7 @@ const ChapterStore = observable({
     });
   },
   getFirstRenderedChapter() {
-    if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
-    if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
-    if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+    if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
 
