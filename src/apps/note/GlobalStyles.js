@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
      margin-left: 1.19rem;
   }
   .fileSelected{
-    border: 1px solid #513EC7 !important;
+    border: 1px solid #EC6222 !important;
   }
   .selected{
     background-color: #F2EFEC;
