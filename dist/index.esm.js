@@ -9686,7 +9686,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
