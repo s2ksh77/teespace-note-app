@@ -13,7 +13,7 @@ import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 import { Tooltip } from "antd";
 import NoteUtil from '../../NoteUtil';
 
-const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
+const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   chapter.text = NoteUtil.decodeStr(chapter.text);
@@ -40,15 +40,23 @@ const ChapterText = ({ chapter, handleFoldBtnClick, isFolded }) => {
         <ContextMenu
           noteType={"chapter"}
           chapter={chapter}
-          nextSelectableChapterId={
-            ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 ? (
-              ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[0].id
-            ) : ("")
+          selectableChapterId={
+            ChapterStore.chapterList.length > 1
+              ? index === 0
+                ? ChapterStore.chapterList[1].id
+                : ChapterStore.chapterList[index - 1].id
+              : ''
           }
-          nextSelectablePageId={
-            ChapterStore.chapterList.length - ChapterStore.sharedCnt > 1 && ChapterStore.chapterList[1].children.length > 0 && ChapterStore.chapterList[0].children.length > 0 ? (
-              ChapterStore.chapterList[0].id === chapter.id ? ChapterStore.chapterList[1].children[0].id : ChapterStore.chapterList[0].children[0].id
-            ) : ("")
+          selectablePageId={
+            ChapterStore.chapterList.length > 1
+              ? index === 0
+                ? ChapterStore.chapterList[1].children.length > 0
+                  ? ChapterStore.chapterList[1].children[0].id
+                  : ''
+                : ChapterStore.chapterList[index - 1].children.length > 0
+                  ? ChapterStore.chapterList[index - 1].children[0].id
+                  : ''
+              : ''
           }
           type={chapter.type}
         />

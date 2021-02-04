@@ -13,7 +13,7 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectablePageId, type }) => {
+const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId, selectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
 
@@ -38,9 +38,12 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectablePageId, ty
 
   const deleteComponent = async () => {
     // 챕터/페이지를 삭제한다.
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+
     switch (noteType) {
       case "chapter":
-        ChapterStore.setDeleteChapterData(chapter);
+        ChapterStore.setDeleteChapterId(chapter.id);
         ChapterStore.getChapterChildren(chapter.id).then(async dto => {
           if (dto.noteList.length > 0) {
             const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
@@ -57,7 +60,6 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectablePageId, ty
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case "page":
-        PageStore.setSelectablePageId(selectablePageId);
         PageStore.getNoteInfoList(page.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
             PageStore.setDeletePageList({ note_id: page.id, type: page.type });

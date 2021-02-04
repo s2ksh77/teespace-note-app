@@ -201,7 +201,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
               page={page}
               selectablePageId={
                 chapter.children.length > 1
-                  ? chapter.children[0].id === page.id
+                  ? index === 0
                     ? chapter.children[1].id
                     : chapter.children[index - 1].id
                   : ''

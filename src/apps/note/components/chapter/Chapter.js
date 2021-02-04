@@ -222,6 +222,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
           ) : (
               <ChapterText
                 chapter={chapter}
+                index={index}
                 handleFoldBtnClick={handleFoldBtnClick}
                 isFolded={isFolded}
               />
