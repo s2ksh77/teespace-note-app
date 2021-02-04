@@ -4402,11 +4402,17 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _this8.setCurrentChapterId(notbookList.id);
 
             PageStore.setCurrentPageId(notbookList.children[0].id);
-            PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
             _this8.setChapterTempUl(false);
 
-          case 8:
+            _context13.next = 9;
+            return PageStore.fetchCurrentPageData(notbookList.children[0].id);
+
+          case 9:
+            NoteStore.setShowPage(true);
+            NoteStore.setTargetLayout('Content');
+
+          case 11:
           case "end":
             return _context13.stop();
         }
