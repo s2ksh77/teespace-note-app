@@ -5175,14 +5175,14 @@ var NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = "".concat(PageStore.editingUserCount, " \uBA85\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(PageStore.editingUserCount, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5211,7 +5211,7 @@ var NoteMeta = {
 
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';
-        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns('editingPage');
         break;
 
