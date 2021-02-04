@@ -39,6 +39,7 @@ const LNBTag = memo(() => {
             ? ' tagBorderTopLine'
             : '')
         }
+        style={{ order: 2 }}
         onClick={onClickTagMenuBtn}
       >
         <TagImg

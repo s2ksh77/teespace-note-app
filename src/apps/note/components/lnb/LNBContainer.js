@@ -14,6 +14,7 @@ import LNBSearchResult from './LNBSearchResult';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 import SearchingImg from '../common/SearchingImg';
+import Chapter from "../chapter/Chapter";
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -44,6 +45,23 @@ const LNBContainer = () => {
     if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
   }
+
+  const handleClickOutside = e => {
+    if (!e.target.closest('.chapter-div') && ChapterStore.moveInfoMap.size > 1) {
+      ChapterStore.handleClickOutside();
+    }
+    if (!e.target.closest('.page-li') && PageStore.moveInfoMap.size > 1) {
+      PageStore.handleClickOutside();
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }, []);
+
   useEffect(() => {
     if (LNBRef.current) NoteStore.setLNBChapterCoverRef(LNBRef.current);
     // ChapterStore.fetchChapterList();
@@ -67,13 +85,20 @@ const LNBContainer = () => {
           {(ChapterStore.isSearching || ChapterStore.isTagSearching)
             ? (ChapterStore.isLoadingSearchResult ? <SearchingImg /> : <LNBSearchResult />)
             : <DndProvider backend={HTML5Backend}>
-              {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
+              {ChapterStore.chapterList
+                .map((item, index) => (
+                  item.type === 'notebook' || item.type === 'default' ?
+                    <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
+                    : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
+                ))}
+              <LNBTag />
+              {/* {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />
               {ChapterStore.sortedChapterList.sharedPageList.length > 0 && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length > 0 ?
                 <ChapterList type={"sharedPageList"} isShared={true} /> : null}
               {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ?
-                <ChapterList type={"sharedChapterList"} isShared={true} /> : null}
+                <ChapterList type={"sharedChapterList"} isShared={true} /> : null} */}
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>

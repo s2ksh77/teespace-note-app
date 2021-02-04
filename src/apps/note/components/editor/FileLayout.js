@@ -100,6 +100,7 @@ const FileLayout = () => {
     }
 
     const handleFileBodyClick = index => {
+        if (!filebodyRef.current[index]) return;
         EditorStore.setFileElement(filebodyRef.current[index]);
         EditorStore.selectFileElement.focus();
         EditorStore.selectFileElement.scrollIntoView(false);
@@ -167,8 +168,9 @@ const FileLayout = () => {
 
     const handleFileRemove = async (fileId, index, type) => {
         const removePostProcess = () => {
-          if (EditorStore.isFile) EditorStore.setFileIndex((index > 0) ? (index - 1) : 0);
-          else {
+          if (EditorStore.isFile) {
+            filebodyRef.current[(index > 0) ? (index - 1) : 0].click();
+          } else {
             try { // 불안해서 넣는 try catch문
               EditorStore.tinymce.focus();
               EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(),true);
