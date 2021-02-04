@@ -19,6 +19,8 @@ export const LNBChapterCover = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
+  display:flex;
+  flex-direction: column;
 `;
 
 export const LNBNewChapter = styled.div`

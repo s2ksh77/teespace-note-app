@@ -428,7 +428,7 @@ const ChapterStore = observable({
     }
     // this.chapterList = tempChapterList.concat(sharedList);
     // component에서 render하기 좋도록 category 분류하기
-    this.chapterList = this.sortChapterList(tempChapterList.concat(sharedList));
+    this.chapterList = tempChapterList.concat(sharedList);
     return this.chapterList;
   },
 
@@ -440,7 +440,7 @@ const ChapterStore = observable({
       else if (chapter.type === 'shared') _sharedChapterList.push(chapter);
       else _roomChapterList.push(chapter);
 
-      if (!idx) { 
+      if (!idx) {
         chapter.selectableChapterId = chapterList[1]?.id;
         chapter.selectablePageId = chapterList[1]?.children[0]?.id;
       } else {

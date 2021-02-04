@@ -89,6 +89,7 @@ export const LnbTagContainer = styled.div`
   position: relative;
   width: calc(100% - 1.62rem);
   height: 2.81rem;
+  min-height: 2.81rem;
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;

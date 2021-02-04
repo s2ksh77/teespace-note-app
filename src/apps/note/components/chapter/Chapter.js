@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
@@ -15,12 +15,12 @@ import {
 import shareImg from '../../assets/share_1.svg';
 import sharedPageImg from '../../assets/page_shared.svg';
 
-const Chapter = ({ chapter, index, isShared }) => {
+const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const [isFolded, setIsFolded] = useState(false);
 
   // 중복체크 후 다시 입력받기 위해 ref 추가
-  const { id, text:title, color } = chapter;
+  const { id, text: title, color } = chapter;
   const chapterMoveInfo = {
     item: chapter,
     chapterIdx: index,
@@ -48,7 +48,7 @@ const Chapter = ({ chapter, index, isShared }) => {
       }
 
       NoteStore.setDraggedType('chapter');
-      NoteStore.setDraggedItems(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item)); 
+      NoteStore.setDraggedItems(ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
@@ -102,9 +102,9 @@ const Chapter = ({ chapter, index, isShared }) => {
 
   const handleChapterTextInput = (isEscape) => () => {
     // escape면 원래대로 돌아가기
-    if (isEscape) {}
+    if (isEscape) { }
     // 기존과 동일 이름인 경우 통과
-    else if (ChapterStore.renameChapterText === title) {}
+    else if (ChapterStore.renameChapterText === title) { }
     // 다 통과했으면 rename 가능
     else {
       ChapterStore.renameNoteChapter(color);
@@ -179,17 +179,18 @@ const Chapter = ({ chapter, index, isShared }) => {
         }
         id={chapter.id}
         key={chapter.id}
+        style={{ order: flexOrder }}
         itemType="chapter"
       >
         <ChapterCover
           className={'chapter-div'
-          + (ChapterStore.isCtrlKeyDown
+            + (ChapterStore.isCtrlKeyDown
               ? (ChapterStore.moveInfoMap.get(chapter.id)
                 ? ' selectedMenu'
                 : '')
               : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0
-                  ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
-                  : chapter.id === ChapterStore.currentChapterId)
+                ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
+                : chapter.id === ChapterStore.currentChapterId)
                 ? ' selectedMenu'
                 : '')
           }
@@ -198,7 +199,7 @@ const Chapter = ({ chapter, index, isShared }) => {
               ? (!isShared
                 ? (node) => drag(dropChapter(node))
                 : drag)
-            :null
+              : null
           }
           onClick={onClickChapterBtn}
         >
