@@ -100,7 +100,6 @@ const FileLayout = () => {
     }
 
     const handleFileBodyClick = index => {
-        if (!filebodyRef.current[index]) return;
         EditorStore.setFileElement(filebodyRef.current[index]);
         EditorStore.selectFileElement.focus();
         EditorStore.selectFileElement.scrollIntoView(false);
@@ -169,7 +168,9 @@ const FileLayout = () => {
     const handleFileRemove = async (fileId, index, type) => {
         const removePostProcess = () => {
           if (EditorStore.isFile) {
-            filebodyRef.current[(index > 0) ? (index - 1) : 0].click();
+            EditorStore.setFileIndex(""); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
+            if (type === "temp") document.querySelector('#fileLayout #'+fileId)?.click();
+            else filebodyRef.current[(index > 0) ? (index - 1) : 0]?.click();
           } else {
             try { // 불안해서 넣는 try catch문
               EditorStore.tinymce.focus();
