@@ -10375,6 +10375,7 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileBodyClick = function handleFileBodyClick(index) {
+    if (!filebodyRef.current[index]) return;
     EditorStore.setFileElement(filebodyRef.current[index]);
     EditorStore.selectFileElement.focus();
     EditorStore.selectFileElement.scrollIntoView(false);
@@ -10470,7 +10471,9 @@ var FileLayout = function FileLayout() {
           switch (_context.prev = _context.next) {
             case 0:
               removePostProcess = function removePostProcess() {
-                if (EditorStore.isFile) EditorStore.setFileIndex(index > 0 ? index - 1 : 0);else {
+                if (EditorStore.isFile) {
+                  filebodyRef.current[index > 0 ? index - 1 : 0].click();
+                } else {
                   try {
                     // 불안해서 넣는 try catch문
                     EditorStore.tinymce.focus();
