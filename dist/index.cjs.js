@@ -5569,8 +5569,7 @@ var NoteStore = mobx.observable({
 
             case 9:
               noteInfo = _context.t0;
-              sharedRoom = teespaceCore.RoomStore.getRoom(noteInfo.shared_room_name); // const sharedRoom = await RoomStore.fetchRoom({myUserId: noteInfo.shared_user_id,roomId:noteInfo.shared_room_name});
-
+              sharedRoom = teespaceCore.RoomStore.getRoom(noteInfo.shared_room_name);
               _context.next = 13;
               return teespaceCore.UserStore.getProfile({
                 userId: noteInfo.shared_user_id
@@ -10403,34 +10402,48 @@ var FileLayout = function FileLayout() {
     EditorStore.selectFileElement.scrollIntoView(false);
   };
 
-  var handleKeyDownFile = function handleKeyDownFile(e) {
-    var keyCode = e.keyCode,
-        target = e.target;
-    if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
+  var handleKeyDownFile = function handleKeyDownFile(_ref2) {
+    var fileId = _ref2.fileId,
+        index = _ref2.index,
+        type = _ref2.type;
+    return function (e) {
+      var keyCode = e.keyCode,
+          target = e.target;
+      if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
 
-    switch (keyCode) {
-      case 37:
-        if (EditorStore.selectFileIdx > 0) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
+      switch (keyCode) {
+        case 37:
+          // <-
+          if (EditorStore.selectFileIdx > 0) {
+            EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
 
-          if (EditorStore.selectFileElement.previousElementSibling !== null) {
-            changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
+            if (EditorStore.selectFileElement.previousElementSibling !== null) {
+              changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
+            }
           }
-        }
 
-        break;
+          break;
 
-      case 39:
-        if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
+        case 39:
+          // ->
+          if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
+            EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
 
-          if (EditorStore.selectFileElement.nextElementSibling !== null) {
-            changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
+            if (EditorStore.selectFileElement.nextElementSibling !== null) {
+              changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
+            }
           }
-        }
 
-        break;
-    }
+          break;
+
+        case 8: // backspace
+
+        case 46:
+          // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
+          handleFileRemove(fileId, index, type);
+          break;
+      }
+    };
   };
 
   var onClickFileName = function onClickFileName(item) {
@@ -10461,55 +10474,66 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileRemove = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileId, index, type) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileId, index, type) {
+      var removePostProcess;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              removePostProcess = function removePostProcess() {
+                var _EditorStore$tinymce;
+
+                if (EditorStore.isFile) EditorStore.setFileIndex(index > 0 ? index - 1 : 0);else (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.focus();
+              };
+
               if (!(type === 'temp' && EditorStore.tempFileLayoutList.length > 0)) {
-                _context.next = 6;
+                _context.next = 7;
                 break;
               }
 
               EditorStore.tempFileLayoutList[index].deleted = true;
-              _context.next = 4;
+              _context.next = 5;
               return EditorStore.deleteFile(fileId).then(function (dto) {
                 if (dto.resultMsg === 'Success') {
                   setTimeout(function () {
                     EditorStore.tempFileLayoutList.splice(index, 1);
                     EditorStore.isFileLength();
+                    removePostProcess();
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.tempFileLayoutList[index].deleted = undefined;
                   EditorStore.tempFileLayoutList.splice(index, 1);
+                  removePostProcess();
                 }
               });
 
-            case 4:
-              _context.next = 10;
+            case 5:
+              _context.next = 11;
               break;
 
-            case 6:
+            case 7:
               if (!(type === 'uploaded' && EditorStore.fileLayoutList.length > 0)) {
-                _context.next = 10;
+                _context.next = 11;
                 break;
               }
 
               EditorStore.fileLayoutList[index].deleted = true;
-              _context.next = 10;
+              _context.next = 11;
               return EditorStore.deleteFile(fileId).then(function (dto) {
                 if (dto.resultMsg === 'Success') {
                   setTimeout(function () {
                     EditorStore.fileLayoutList.splice(index, 1);
                     EditorStore.isFileLength();
+                    removePostProcess();
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.fileLayoutList[index].deleted = undefined;
                   EditorStore.fileLayoutList.splice(index, 1);
+                  removePostProcess();
                 }
               });
 
-            case 10:
+            case 11:
             case "end":
               return _context.stop();
           }
@@ -10518,7 +10542,7 @@ var FileLayout = function FileLayout() {
     }));
 
     return function handleFileRemove(_x, _x2, _x3) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -10552,7 +10576,11 @@ var FileLayout = function FileLayout() {
         key: index,
         onClick: handleFileBodyClick.bind(null, item.file_id),
         className: index === EditorStore.selectFileIdx ? 'fileSelected' : '',
-        onKeyDown: handleKeyDownFile,
+        onKeyDown: handleKeyDownFile({
+          fileId: item.file_id ? item.file_id : item.user_context_2,
+          index: index,
+          type: "temp"
+        }),
         tabIndex: index,
         closable: !PageStore.isReadMode(),
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
@@ -10595,7 +10623,11 @@ var FileLayout = function FileLayout() {
         className: index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile',
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
         onMouseLeave: handleMouseLeave,
-        onKeyDown: handleKeyDownFile,
+        onKeyDown: handleKeyDownFile({
+          fileId: item.file_id ? item.file_id : item.user_context_2,
+          index: index,
+          type: "uploaded"
+        }),
         tabIndex: index,
         closable: !PageStore.isReadMode()
       }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {

@@ -198,8 +198,8 @@ const NoteStore = observable({
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
     const sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
-    // const sharedRoom = await RoomStore.fetchRoom({myUserId: noteInfo.shared_user_id,roomId:noteInfo.shared_room_name});
     const {name, nick} = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
+    
     this.sharedInfo = {
       sharedRoomName: (
         sharedRoom
