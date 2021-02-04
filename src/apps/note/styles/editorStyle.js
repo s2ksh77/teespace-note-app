@@ -159,6 +159,7 @@ export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
     position: absolute;
     left : 1.5rem;
+    top:1.5rem;
     font-size: 0.875rem;
     color: #FB3A3A;
   }

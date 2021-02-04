@@ -4560,7 +4560,7 @@ var ChapterStore = observable((_observable$2 = {
     sharedChapterList: _sharedChapterList
   });
   return sortedChapterList;
-}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
+}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor, isNeededLNBLayout) {
   var _this8 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
@@ -4580,11 +4580,17 @@ var ChapterStore = observable((_observable$2 = {
             _this8.setCurrentChapterId(notbookList.id);
 
             PageStore.setCurrentPageId(notbookList.children[0].id);
-            PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
             _this8.setChapterTempUl(false);
 
-          case 8:
+            _context13.next = 9;
+            return PageStore.fetchCurrentPageData(notbookList.children[0].id);
+
+          case 9:
+            NoteStore.setShowPage(true);
+            if (!isNeededLNBLayout) NoteStore.setTargetLayout('Content');
+
+          case 11:
           case "end":
             return _context13.stop();
         }
@@ -5169,14 +5175,14 @@ var NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = "".concat(PageStore.editingUserCount, " \uBA85\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(PageStore.editingUserCount, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5205,7 +5211,7 @@ var NoteMeta = {
 
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';
-        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns('editingPage');
         break;
 
@@ -5563,7 +5569,8 @@ var NoteStore = observable({
               name = _yield$UserStore$getP.name;
               nick = _yield$UserStore$getP.nick;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : noteInfo.shared_room_name,
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+                ,
                 sharedUserName: nick ? nick : name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
@@ -6802,7 +6809,7 @@ var LNBHeader = function LNBHeader(_ref) {
 
             case 7:
               _context.next = 9;
-              return createNewChapter();
+              return createNewChapter(true);
 
             case 9:
               ChapterStore.getChapterRandomColor();
@@ -9213,7 +9220,7 @@ var LNBContainer = function LNBContainer() {
   var LNBRef = useRef(null);
 
   var createNewChapter = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(isNeededLNBLayout) {
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -9241,7 +9248,7 @@ var LNBContainer = function LNBContainer() {
 
               ChapterStore.setChapterTitle("새 챕터");
               _context.next = 8;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
+              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor, isNeededLNBLayout);
 
             case 8:
               _context.next = 12;
@@ -9249,7 +9256,7 @@ var LNBContainer = function LNBContainer() {
 
             case 10:
               _context.next = 12;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
+              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor, isNeededLNBLayout);
 
             case 12:
             case "end":
@@ -9259,7 +9266,7 @@ var LNBContainer = function LNBContainer() {
       }, _callee);
     }));
 
-    return function createNewChapter() {
+    return function createNewChapter(_x) {
       return _ref.apply(this, arguments);
     };
   }();
@@ -9347,7 +9354,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #513EC7 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -9679,7 +9686,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
@@ -10368,6 +10375,7 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileBodyClick = function handleFileBodyClick(index) {
+    if (!filebodyRef.current[index]) return;
     EditorStore.setFileElement(filebodyRef.current[index]);
     EditorStore.selectFileElement.focus();
     EditorStore.selectFileElement.scrollIntoView(false);
@@ -10384,34 +10392,48 @@ var FileLayout = function FileLayout() {
     EditorStore.selectFileElement.scrollIntoView(false);
   };
 
-  var handleKeyDownFile = function handleKeyDownFile(e) {
-    var keyCode = e.keyCode,
-        target = e.target;
-    if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
+  var handleKeyDownFile = function handleKeyDownFile(_ref2) {
+    var fileId = _ref2.fileId,
+        index = _ref2.index,
+        type = _ref2.type;
+    return function (e) {
+      var keyCode = e.keyCode,
+          target = e.target;
+      if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
 
-    switch (keyCode) {
-      case 37:
-        if (EditorStore.selectFileIdx > 0) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
+      switch (keyCode) {
+        case 37:
+          // <-
+          if (EditorStore.selectFileIdx > 0) {
+            EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
 
-          if (EditorStore.selectFileElement.previousElementSibling !== null) {
-            changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
+            if (EditorStore.selectFileElement.previousElementSibling !== null) {
+              changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
+            }
           }
-        }
 
-        break;
+          break;
 
-      case 39:
-        if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
+        case 39:
+          // ->
+          if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
+            EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
 
-          if (EditorStore.selectFileElement.nextElementSibling !== null) {
-            changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
+            if (EditorStore.selectFileElement.nextElementSibling !== null) {
+              changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
+            }
           }
-        }
 
-        break;
-    }
+          break;
+
+        case 8: // backspace
+
+        case 46:
+          // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
+          handleFileRemove(fileId, index, type);
+          break;
+      }
+    };
   };
 
   var onClickFileName = function onClickFileName(item) {
@@ -10442,55 +10464,73 @@ var FileLayout = function FileLayout() {
   };
 
   var handleFileRemove = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileId, index, type) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileId, index, type) {
+      var removePostProcess;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              removePostProcess = function removePostProcess() {
+                if (EditorStore.isFile) {
+                  filebodyRef.current[index > 0 ? index - 1 : 0].click();
+                } else {
+                  try {
+                    // 불안해서 넣는 try catch문
+                    EditorStore.tinymce.focus();
+                    EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(), true);
+                    EditorStore.tinymce.selection.collapse(false);
+                  } catch (err) {}
+                }
+              };
+
               if (!(type === 'temp' && EditorStore.tempFileLayoutList.length > 0)) {
-                _context.next = 6;
+                _context.next = 7;
                 break;
               }
 
               EditorStore.tempFileLayoutList[index].deleted = true;
-              _context.next = 4;
+              _context.next = 5;
               return EditorStore.deleteFile(fileId).then(function (dto) {
                 if (dto.resultMsg === 'Success') {
                   setTimeout(function () {
                     EditorStore.tempFileLayoutList.splice(index, 1);
                     EditorStore.isFileLength();
+                    removePostProcess();
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.tempFileLayoutList[index].deleted = undefined;
                   EditorStore.tempFileLayoutList.splice(index, 1);
+                  removePostProcess();
                 }
               });
 
-            case 4:
-              _context.next = 10;
+            case 5:
+              _context.next = 11;
               break;
 
-            case 6:
+            case 7:
               if (!(type === 'uploaded' && EditorStore.fileLayoutList.length > 0)) {
-                _context.next = 10;
+                _context.next = 11;
                 break;
               }
 
               EditorStore.fileLayoutList[index].deleted = true;
-              _context.next = 10;
+              _context.next = 11;
               return EditorStore.deleteFile(fileId).then(function (dto) {
                 if (dto.resultMsg === 'Success') {
                   setTimeout(function () {
                     EditorStore.fileLayoutList.splice(index, 1);
                     EditorStore.isFileLength();
+                    removePostProcess();
                   }, 1000);
                 } else if (dto.resultMsg === 'Fail') {
                   EditorStore.fileLayoutList[index].deleted = undefined;
                   EditorStore.fileLayoutList.splice(index, 1);
+                  removePostProcess();
                 }
               });
 
-            case 10:
+            case 11:
             case "end":
               return _context.stop();
           }
@@ -10499,7 +10539,7 @@ var FileLayout = function FileLayout() {
     }));
 
     return function handleFileRemove(_x, _x2, _x3) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -10533,7 +10573,11 @@ var FileLayout = function FileLayout() {
         key: index,
         onClick: handleFileBodyClick.bind(null, item.file_id),
         className: index === EditorStore.selectFileIdx ? 'fileSelected' : '',
-        onKeyDown: handleKeyDownFile,
+        onKeyDown: handleKeyDownFile({
+          fileId: item.file_id ? item.file_id : item.user_context_2,
+          index: index,
+          type: "temp"
+        }),
         tabIndex: index,
         closable: !PageStore.isReadMode(),
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
@@ -10576,7 +10620,11 @@ var FileLayout = function FileLayout() {
         className: index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile',
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
         onMouseLeave: handleMouseLeave,
-        onKeyDown: handleKeyDownFile,
+        onKeyDown: handleKeyDownFile({
+          fileId: item.file_id ? item.file_id : item.user_context_2,
+          index: index,
+          type: "uploaded"
+        }),
         tabIndex: index,
         closable: !PageStore.isReadMode()
       }, /*#__PURE__*/React.createElement(FileContent, null, /*#__PURE__*/React.createElement(Dropdown, {

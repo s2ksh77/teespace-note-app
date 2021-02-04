@@ -159,13 +159,13 @@ const NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중 입니다.`;
+        dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중입니다.`;
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = '삭제할 수 없습니다.';
-        dialogType.subtitle = `${PageStore.editingUserCount} 명이 수정 중 입니다.`;
+        dialogType.subtitle = `${PageStore.editingUserCount}명이 수정 중입니다.`;
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
@@ -189,7 +189,7 @@ const NoteMeta = {
         break;
       case 'editingPage':
         dialogType.title = '수정할 수 없습니다.';
-        dialogType.subtitle = `${editingUserName} 님이 수정 중 입니다.`;
+        dialogType.subtitle = `${editingUserName} 님이 수정 중입니다.`;
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
