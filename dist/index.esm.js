@@ -1179,7 +1179,12 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context23.prev = 0;
                 _context23.next = 3;
-                return API.get("note-api/noteSearch?action=List&note_channel_id=".concat(this.chId, "&searchValue=").concat(encodeURIComponent(searchKey)));
+                return API.post("note-api/noteSearch?action=List", {
+                  dto: {
+                    note_channel_id: this.chId,
+                    text: searchKey
+                  }
+                });
 
               case 3:
                 return _context23.abrupt("return", _context23.sent);
@@ -1204,53 +1209,14 @@ var NoteRepository = /*#__PURE__*/function () {
       return getSearchList;
     }()
   }, {
-    key: "getSearchListForTest",
+    key: "createFileMeta",
     value: function () {
-      var _getSearchListForTest = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(searchKey) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(targetList) {
         return regeneratorRuntime.wrap(function _callee24$(_context24) {
           while (1) {
             switch (_context24.prev = _context24.next) {
               case 0:
-                _context24.prev = 0;
-                _context24.next = 3;
-                return API.post("note-api/noteSearch?action=List", {
-                  dto: {
-                    note_channel_id: this.chId,
-                    text: searchKey
-                  }
-                });
-
-              case 3:
-                return _context24.abrupt("return", _context24.sent);
-
-              case 6:
-                _context24.prev = 6;
-                _context24.t0 = _context24["catch"](0);
-                throw Error(JSON.stringify(_context24.t0));
-
-              case 9:
-              case "end":
-                return _context24.stop();
-            }
-          }
-        }, _callee24, this, [[0, 6]]);
-      }));
-
-      function getSearchListForTest(_x38) {
-        return _getSearchListForTest.apply(this, arguments);
-      }
-
-      return getSearchListForTest;
-    }()
-  }, {
-    key: "createFileMeta",
-    value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(targetList) {
-        return regeneratorRuntime.wrap(function _callee25$(_context25) {
-          while (1) {
-            switch (_context25.prev = _context25.next) {
-              case 0:
-                _context25.next = 2;
+                _context24.next = 2;
                 return API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -1258,17 +1224,17 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context25.abrupt("return", _context25.sent);
+                return _context24.abrupt("return", _context24.sent);
 
               case 3:
               case "end":
-                return _context25.stop();
+                return _context24.stop();
             }
           }
-        }, _callee25);
+        }, _callee24);
       }));
 
-      function createFileMeta(_x39) {
+      function createFileMeta(_x38) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -3542,7 +3508,8 @@ var PageStore = observable((_observable$1 = {
     }
 
     NoteStore.setShowModal(false);
-    EditorStore.setIsAttatch(false);
+    EditorStore$1.setIsAttatch(false);
+    EditorStore$1.setInitialSearchState();
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();

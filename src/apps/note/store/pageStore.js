@@ -626,6 +626,7 @@ const PageStore = observable({
     }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
+    EditorStore.setInitialSearchState();
     const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
