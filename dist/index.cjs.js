@@ -3736,6 +3736,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
     NoteStore.setShowModal(false);
     EditorStore$1.setIsAttatch(false);
+    EditorStore$1.setInitialSearchState();
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce6 = EditorStore$1.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
