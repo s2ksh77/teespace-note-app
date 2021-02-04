@@ -464,8 +464,10 @@ const ChapterStore = observable({
     this.getNoteChapterList();
     this.setCurrentChapterId(notbookList.id);
     PageStore.setCurrentPageId(notbookList.children[0].id);
-    PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
+    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
+    NoteStore.setShowPage(true);
+    NoteStore.setTargetLayout('Content');
   },
   deleteNoteChapter() {
     this.deleteChapter(this.deleteChapterData.id).then(() => {
