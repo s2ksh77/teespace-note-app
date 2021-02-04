@@ -426,8 +426,7 @@ const ChapterStore = observable({
       this.applyDifference(NoteStore.getChannelId(), notbookList);
       tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
     }
-    // this.chapterList = tempChapterList.concat(sharedList);
-    // component에서 render하기 좋도록 category 분류하기
+  
     this.chapterList = tempChapterList.concat(sharedList);
     return this.chapterList;
   },
@@ -653,9 +652,7 @@ const ChapterStore = observable({
     });
   },
   getFirstRenderedChapter() {
-    if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
-    if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
-    if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+    if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
 
