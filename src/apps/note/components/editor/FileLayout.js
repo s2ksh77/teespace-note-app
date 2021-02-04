@@ -169,8 +169,7 @@ const FileLayout = () => {
         const removePostProcess = () => {
           if (EditorStore.isFile) {
             EditorStore.setFileIndex(""); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
-            if (type === "temp") document.querySelector('#fileLayout #'+fileId)?.click();
-            else filebodyRef.current[(index > 0) ? (index - 1) : 0]?.click();
+            if (type === "uploaded") filebodyRef.current[(index > 0) ? (index - 1) : 0]?.click();
           } else {
             try { // 불안해서 넣는 try catch문
               EditorStore.tinymce.focus();
@@ -238,7 +237,6 @@ const FileLayout = () => {
                 {EditorStore.tempFileLayoutList.map((item, index) => (
                     item.type === 'file' ? <FileBody id={item.file_id ? item.file_id : item.user_context_2}
                         key={index}
-                        onClick={handleFileBodyClick.bind(null, item.file_id)}
                         className={index === EditorStore.selectFileIdx ? 'fileSelected' : ''}
                         onKeyDown={handleKeyDownFile({
                           fileId: item.file_id ? item.file_id : item.user_context_2,
