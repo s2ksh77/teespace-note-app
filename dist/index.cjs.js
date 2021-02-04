@@ -3702,7 +3702,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
   // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {},
   // {chapter:[], page:[]} 형태
-  deleteChapterData: '',
+  deleteChapterId: '',
+  selectableChapterId: '',
   renameChapterId: '',
   renameChapterPrevText: '',
   renameChapterText: '',
@@ -3729,11 +3730,17 @@ var ChapterStore = mobx.observable((_observable$2 = {
   setCurrentChapterId: function setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
   },
-  getDeleteChapterData: function getDeleteChapterData() {
-    return this.deleteChapterData;
+  getDeleteChapterId: function getDeleteChapterId() {
+    return this.deleteChapterId;
   },
-  setDeleteChapterData: function setDeleteChapterData(chapter) {
-    this.deleteChapterData = chapter;
+  setDeleteChapterId: function setDeleteChapterId(chapter) {
+    this.deleteChapterId = chapter;
+  },
+  getSelectableChapterId: function getSelectableChapterId() {
+    return this.selectableChapterId;
+  },
+  setSelectableChapterId: function setSelectableChapterId(chapterId) {
+    this.selectableChapterId = chapterId;
   },
   getRenameChapterId: function getRenameChapterId() {
     return this.renameChapterId;
@@ -4343,8 +4350,6 @@ var ChapterStore = mobx.observable((_observable$2 = {
             tempChapterList = _this7.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
 
           case 17:
-            // this.chapterList = tempChapterList.concat(sharedList);
-            // component에서 render하기 좋도록 category 분류하기
             _this7.chapterList = tempChapterList.concat(sharedList);
             return _context12.abrupt("return", _this7.chapterList);
 
@@ -4422,25 +4427,19 @@ var ChapterStore = mobx.observable((_observable$2 = {
 }), _defineProperty(_observable$2, "deleteNoteChapter", function deleteNoteChapter() {
   var _this9 = this;
 
-  this.deleteChapter(this.deleteChapterData.id).then(function () {
+  this.deleteChapter(this.deleteChapterId).then(function () {
     _this9.getNoteChapterList();
 
-    if (_this9.currentChapterId === _this9.deleteChapterData.id) {
-      _this9.setCurrentChapterId(_this9.deleteChapterData.selectableChapterId ? _this9.deleteChapterData.selectableChapterId : '');
+    if (_this9.currentChapterId === _this9.deleteChapterId) {
+      _this9.setCurrentChapterId(_this9.selectableChapterId);
 
-      PageStore.setCurrentPageId(_this9.deleteChapterData.selectablePageId ? _this9.deleteChapterData.selectablePageId : '');
-      PageStore.fetchCurrentPageData(_this9.deleteChapterData.selectablePageId ? _this9.deleteChapterData.selectablePageId : '');
+      PageStore.setCurrentPageId(PageStore.selectablePageId);
+      PageStore.fetchCurrentPageData(PageStore.selectablePageId);
     }
 
-    _this9.deleteChapterData = '';
+    _this9.deleteChapterId = '';
     NoteStore.setShowModal(false);
   });
-}), _defineProperty(_observable$2, "getNextSelectableChapter", function getNextSelectableChapter(chapterList, chapterId) {
-  if (chapterList.length <= 1) return;
-  var currentChapterIdx = chapterList.findIndex(function (chapter) {
-    return chapter.id === chapterId;
-  });
-  return currentChapterIdx ? chapterList[currentChapterIdx - 1] : chapterList[1];
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
   var _this10 = this;
 
@@ -4670,9 +4669,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     NoteStore.setIsDragging(false);
   });
 }), _defineProperty(_observable$2, "getFirstRenderedChapter", function getFirstRenderedChapter() {
-  if (this.sortedChapterList.roomChapterList.length > 0) return this.sortedChapterList.roomChapterList[0];
-  if (this.sortedChapterList.sharedPageList.length > 0) return this.sortedChapterList.sharedPageList[0];
-  if (this.sortedChapterList.sharedChapterList.length > 0) return this.sortedChapterList.sharedChapterList[0];
+  if (this.chapterList.length > 0) return this.chapterList[0];
   return null;
 }), _defineProperty(_observable$2, "setFirstMoveInfoMap", function setFirstMoveInfoMap(targetChapter) {
   this.setMoveInfoMap(new Map([[targetChapter.id, {
