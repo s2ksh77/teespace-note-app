@@ -91,7 +91,7 @@ const LNBContainer = () => {
                     <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
                     : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
                 ))}
-              <LNBTag />
+              <LNBTag flexOrder={2} />
               {/* {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
                 <ChapterList type={"roomChapterList"} isShared={false} /> : null}
               <LNBTag />

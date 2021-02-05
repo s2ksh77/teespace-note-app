@@ -179,7 +179,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         }
         id={chapter.id}
         key={chapter.id}
-        style={{ order: flexOrder }}
+        order={flexOrder}
         itemType="chapter"
       >
         <ChapterCover

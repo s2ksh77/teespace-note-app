@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import tagImg from '../../assets/add_tag.svg';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
 
-const LNBTag = memo(() => {
+const LNBTag = memo(({ flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
@@ -39,7 +39,7 @@ const LNBTag = memo(() => {
             ? ' tagBorderTopLine'
             : '')
         }
-        style={{ order: 2 }}
+        order={flexOrder}
         onClick={onClickTagMenuBtn}
       >
         <TagImg
