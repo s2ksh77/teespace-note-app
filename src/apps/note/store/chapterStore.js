@@ -467,12 +467,15 @@ const ChapterStore = observable({
 
   async createNoteChapter(chapterTitle, chapterColor) {
     const notbookList = await this.createChapter(chapterTitle, chapterColor);
-    this.getNoteChapterList();
+    await this.getNoteChapterList();
     this.setCurrentChapterId(notbookList.id);
     PageStore.setCurrentPageId(notbookList.children[0].id);
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
+    this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
+    PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
   },
+
   deleteNoteChapter() {
     this.deleteChapter(this.deleteChapterId).then(() => {
       this.getNoteChapterList();
@@ -480,6 +483,8 @@ const ChapterStore = observable({
         this.setCurrentChapterId(this.selectableChapterId);
         PageStore.setCurrentPageId(PageStore.selectablePageId);
         PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+        this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
+        PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
       }
       this.deleteChapterId = '';
       NoteStore.setShowModal(false);
@@ -495,6 +500,7 @@ const ChapterStore = observable({
 
   createMoveInfo(chapterId) {
     const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
+    if (chapterIdx < 0) return;
     return {
       item: this.chapterList[chapterIdx],
       chapterIdx: chapterIdx,
