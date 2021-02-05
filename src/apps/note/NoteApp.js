@@ -138,6 +138,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             toReceiver={NoteStore.mailReceiver}
             onClose={handleCloseMailModal}
             visible={true}
+            totalSize={NoteStore.mailShareFileObjs[0].fileSize}
           />}
         </>
       }
