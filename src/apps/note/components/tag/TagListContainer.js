@@ -51,8 +51,6 @@ const TagListContainer = () => {
     tagListCover.current.scrollTo({ left: 0, behavior: 'smooth' });
   }
 
-  const handleFocus = (e) => e.target.select();
-
   const handleChangeTag = (text, index, id) => () => {
     TagStore.setCurrentTagData(id, text);
     TagStore.setEditTagValue(text);
@@ -90,7 +88,7 @@ const TagListContainer = () => {
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           updateNoteTagList();
-        } else {          
+        } else {
           NoteStore.setModalInfo('duplicateTagName');
         }
       }
@@ -106,7 +104,7 @@ const TagListContainer = () => {
       else {
         if (TagStore.isValidTag(TagStore.editTagValue)) {
           TagStore.setEditCreateTag();
-        } else {          
+        } else {
           NoteStore.setModalInfo('duplicateTagName');
         }
       }
@@ -195,7 +193,6 @@ const TagListContainer = () => {
                 onChange={handleChangeName}
                 onBlur={handleModifyInput}
                 onKeyDown={handleModifyingKeyDown}
-                onFocus={handleFocus}
                 autoFocus={true}
               />
             ) : (
