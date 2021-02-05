@@ -449,8 +449,7 @@ const PageStore = observable({
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
       await ChapterStore.getNoteChapterList();
-      if (ChapterStore.currentChapterId) await this.fetchCurrentPageData(sortedMovePages[0]);
-      else this.handleClickOutside();
+      await this.fetchCurrentPageData(sortedMovePages[0]);
 
       if (!moveCntToAnotherChapter) {
         NoteStore.setToastText(`${moveCntInSameChapter}개의 페이지가 이동하였습니다.`);
