@@ -4,19 +4,20 @@ import { Dropdown } from 'antd';
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"}
+  margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"};
 `;
 
 export const ContentHeaderCover = styled.div`
-  height: 3rem;
+  height: ${props => props.borderBottom ?
+    "3rem" : "2.938rem"};
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: row;
-  padding: 0 0.5rem;
+  padding: 0 0.75rem 0 1rem;
   box-sizing: border-box;
   border-bottom: ${props => props.borderBottom ?
-    "0.0625rem solid #dadada" : ""};
+    "1px solid #dadada" : ""};
 `;
 
 export const PreBtnWrapper = styled.div`
@@ -76,10 +77,10 @@ export const ButtonDiv = styled.div`
   align-items: center;
   padding: 0 0.25rem;
   height: 1.5rem;
+  cursor: pointer;
   &:hover{
     background: #ebe6df;
     border-radius: 0.25rem;
-    cursor: pointer;
   }
   & + div {
     margin-left: 0.5rem;
@@ -89,9 +90,6 @@ export const ButtonDiv = styled.div`
 export const Button = styled.img`
   width: 1rem;
   height: 1rem;
-  cursor: pointer;
-  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)
-    brightness(90%) contrast(109%);
 `;
 
 // 돋보기모양 submit btn
