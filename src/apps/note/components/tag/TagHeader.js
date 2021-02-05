@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ContentHeader from '../common/ContentHeader';
 import {
   TagSearchForm,
@@ -41,6 +41,10 @@ const TagHeader = () => {
     TagStore.setSearchStr('');
     TagStore.fetchTagData();
   };
+
+  useEffect(()=>{
+    return () => setValue('');
+  },[NoteStore.showPage])
 
   const cancelBtnVisibility = (TagStore.isSearching || value !== "") ? { display: '' } : { display: 'none' };
 
