@@ -6,6 +6,11 @@ var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
 require('styled-components');
+var Mark = require('mark.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -4864,6 +4869,14 @@ var NoteMeta = {
       case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
+
+          if (EditorStore.isSearch) {
+            var _EditorStore$tinymce;
+
+            var instance = new Mark__default['default']((_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.getBody());
+            instance.unmark();
+          }
+
           PageStore.handleSave();
         });
         eventList.push(function (e) {
@@ -4871,16 +4884,16 @@ var NoteMeta = {
           if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
             if (EditorStore.notSaveFileList.length > 0) {
               EditorStore.notSaveFileDelete().then(function () {
-                var _EditorStore$tinymce;
+                var _EditorStore$tinymce2;
 
                 PageStore.noteNoneEdit(PageStore.currentPageId);
-                (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+                (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
               });
             } else {
-              var _EditorStore$tinymce2;
+              var _EditorStore$tinymce3;
 
               PageStore.noteNoneEdit(PageStore.currentPageId);
-              (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
+              (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
             }
           }
         });
