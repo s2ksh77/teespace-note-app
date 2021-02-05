@@ -32,6 +32,11 @@ export const TagNewBtn = styled.div`
   cursor: pointer;
 `;
 
+export const PanelArrow = styled.img`
+  width:0.8rem;
+  bottom:1rem;
+`;
+
 export const TagList = styled.div`
   display: flex !important;
   align-items: center !important;

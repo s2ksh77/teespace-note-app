@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { PanelHeader, StyledCollapse } from '../../styles/tagStyle';
 import TagStore from '../../store/tagStore';
-import { Panel, TagKeyContainer } from '../../styles/tagStyle';
+import { TagKeyContainer, PanelArrow } from '../../styles/tagStyle';
 import TagKeyChildren from './TagKeyChildren';
 import arrowUp from '../../assets/ts_arrow_up_line@3x.png';
 import arrowDown from '../../assets/ts_arrow_down_line@3x.png';
@@ -17,8 +17,8 @@ const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
 const customExpandIcon = props => {
   if (props.isActive) {
-    return <img style={{ width: '0.8rem', top: '27px' }} src={arrowUp} alt="arrow-up" />;
-  } else return <img style={{ width: '0.8rem', top: '27px' }} src={arrowDown} alt="arrow-down" />;
+    return <PanelArrow src={arrowUp} alt="arrow-up" />;
+  } else return <PanelArrow src={arrowDown} alt="arrow-down" />;
 };
 
 const TagContentContainer = observer(() => {
