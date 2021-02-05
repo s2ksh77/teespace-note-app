@@ -3041,13 +3041,13 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this2 = this;
 
     this.deletePage(this.deletePageList).then(function () {
-      if (_this2.currentPageId === _this2.deletePageList[0].note_id) {
-        _this2.setCurrentPageId(_this2.selectablePageId);
+      if (!_this2.isNewPage) {
+        if (_this2.currentPageId === _this2.deletePageList[0].note_id) {
+          _this2.setCurrentPageId(_this2.selectablePageId);
 
-        _this2.fetchCurrentPageData(_this2.selectablePageId);
-      }
-
-      if (_this2.isNewPage) {
+          _this2.fetchCurrentPageData(_this2.selectablePageId);
+        }
+      } else {
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           _this2.isNewPage = false;
@@ -3089,15 +3089,15 @@ var PageStore = mobx.observable((_observable$1 = {
       ChapterStore.getNoteChapterList();
     });
   },
-  createMoveInfo: function createMoveInfo(pageData) {
-    var pageId = pageData.note_id;
-    var chapterId = pageData.parent_notebook;
+  createMoveInfo: function createMoveInfo(pageId, chapterId) {
     var chapterIdx = ChapterStore.chapterList.findIndex(function (chapter) {
       return chapter.id === chapterId;
     });
+    if (chapterIdx < 0) return;
     var pageIdx = ChapterStore.chapterList[chapterIdx].children.findIndex(function (page) {
       return page.id === pageId;
     });
+    if (pageIdx < 0) return;
     return {
       item: ChapterStore.chapterList[chapterIdx].children[pageIdx],
       pageIdx: pageIdx,
@@ -3114,7 +3114,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }
 
     var currentMoveInfo = this.moveInfoMap.get(this.currentPageId);
-    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
+    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageId, ChapterStore.currentChapterId);
     this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
@@ -3200,7 +3200,7 @@ var PageStore = mobx.observable((_observable$1 = {
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context9.next = 28;
+                _context9.next = 24;
                 break;
               }
 
@@ -3209,22 +3209,10 @@ var PageStore = mobx.observable((_observable$1 = {
               return ChapterStore.getNoteChapterList();
 
             case 18:
-              if (!ChapterStore.currentChapterId) {
-                _context9.next = 23;
-                break;
-              }
-
-              _context9.next = 21;
+              _context9.next = 20;
               return _this4.fetchCurrentPageData(sortedMovePages[0]);
 
-            case 21:
-              _context9.next = 24;
-              break;
-
-            case 23:
-              _this4.handleClickOutside();
-
-            case 24:
+            case 20:
               if (!moveCntToAnotherChapter) {
                 NoteStore.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
               } else {
@@ -3232,17 +3220,17 @@ var PageStore = mobx.observable((_observable$1 = {
               }
 
               NoteStore.setIsVisibleToast(true);
-              _context9.next = 29;
+              _context9.next = 25;
               break;
 
-            case 28:
+            case 24:
               // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
               _this4.handleClickOutside();
 
-            case 29:
+            case 25:
               NoteStore.setIsDragging(false);
 
-            case 30:
+            case 26:
             case "end":
               return _context9.stop();
           }
@@ -3329,7 +3317,7 @@ var PageStore = mobx.observable((_observable$1 = {
               if (_this5.isNewPage) {
                 ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
 
-                _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageData)]]));
+                _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
                 _this5.isNewPage = false;
               }
@@ -4398,9 +4386,10 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
           case 2:
             notbookList = _context13.sent;
+            _context13.next = 5;
+            return _this8.getNoteChapterList();
 
-            _this8.getNoteChapterList();
-
+          case 5:
             _this8.setCurrentChapterId(notbookList.id);
 
             PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -4408,7 +4397,11 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
             _this8.setChapterTempUl(false);
 
-          case 8:
+            _this8.setMoveInfoMap(new Map([[_this8.currentChapterId, _this8.createMoveInfo(_this8.currentChapterId)]]));
+
+            PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this8.currentChapterId)]]));
+
+          case 11:
           case "end":
             return _context13.stop();
         }
@@ -4426,6 +4419,10 @@ var ChapterStore = mobx.observable((_observable$2 = {
 
       PageStore.setCurrentPageId(PageStore.selectablePageId);
       PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+
+      _this9.setMoveInfoMap(new Map([[_this9.currentChapterId, _this9.createMoveInfo(_this9.currentChapterId)]]));
+
+      PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this9.currentChapterId)]]));
     }
 
     _this9.deleteChapterId = '';
@@ -4443,6 +4440,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var chapterIdx = this.chapterList.findIndex(function (chapter) {
     return chapter.id === chapterId;
   });
+  if (chapterIdx < 0) return;
   return {
     item: this.chapterList[chapterIdx],
     chapterIdx: chapterIdx
