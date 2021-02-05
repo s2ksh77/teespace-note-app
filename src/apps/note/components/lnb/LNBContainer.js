@@ -87,9 +87,11 @@ const LNBContainer = () => {
             : <DndProvider backend={HTML5Backend}>
               {ChapterStore.chapterList
                 .map((item, index) => (
-                  item.type === 'notebook' || item.type === 'default' ?
-                    <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
-                    : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
+                  item.type === 'notebook' || item.type === 'default'
+                    ? <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
+                    : item.type === 'shared_page'
+                      ? item.children.length > 0 && <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
+                      : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
                 ))}
               <LNBTag flexOrder={2} />
               {/* {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
