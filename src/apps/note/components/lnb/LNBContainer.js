@@ -20,7 +20,7 @@ const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
 
-  const createNewChapter = async isNeededLNBLayout => {
+  const createNewChapter = async () => {
     // dialog 클릭시 blur이벤트 동작
     if (NoteStore.showModal) return;
     if (!ChapterStore.isNewChapter) return;
@@ -29,14 +29,12 @@ const LNBContainer = () => {
       ChapterStore.setChapterTitle("새 챕터");
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor,
-        isNeededLNBLayout
+        ChapterStore.isNewChapterColor
       );
     } else {
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor,
-        isNeededLNBLayout
+        ChapterStore.isNewChapterColor
       );
     }
   };
@@ -87,9 +85,11 @@ const LNBContainer = () => {
             : <DndProvider backend={HTML5Backend}>
               {ChapterStore.chapterList
                 .map((item, index) => (
-                  item.type === 'notebook' || item.type === 'default' ?
-                    <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
-                    : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
+                  item.type === 'notebook' || item.type === 'default'
+                    ? <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
+                    : item.type === 'shared_page'
+                      ? item.children.length > 0 && <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
+                      : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
                 ))}
               <LNBTag flexOrder={2} />
               {/* {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?

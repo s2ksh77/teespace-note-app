@@ -258,7 +258,7 @@ const htmlToPdf = (isMailShare, element, opt) => {
     else {
         html2pdf().set(opt).from(element).toPdf().outputPdf('blob').then((blob) => {
             const pdf = new File([blob], opt.filename, { type: blob.type });
-            const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1', type: 'application/pdf' },];
+            const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1', type: 'application/pdf', fileSize: pdf.size },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
             NoteStore.setIsMailShare(true);
@@ -328,11 +328,11 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     getTxtFormat(chapterTitle, returnData);
 }
 
-const handleClickLink = (e,el) => {
-  e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
-  const href = el.getAttribute('href');
-  const target = el.getAttribute('target');
-  openLink({isOnlyReadMode:true, url:href, target});
+const handleClickLink = (e, el) => {
+    e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
+    const href = el.getAttribute('href');
+    const target = el.getAttribute('target');
+    openLink({ isOnlyReadMode: true, url: href, target });
 };
 
 const handleClickImg = (el) => {

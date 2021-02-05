@@ -345,7 +345,6 @@ const PageStore = observable({
           this.createPageId = '';
           this.setCurrentPageId('');
           ChapterStore.setCurrentChapterId('');
-          ChapterStore.getNoteChapterList();
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
           if (currentChapter.children.length > 1) {
@@ -354,13 +353,9 @@ const PageStore = observable({
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           }
-          ChapterStore.getNoteChapterList();
         }
-      } else {
-        ChapterStore.getNoteChapterList().then(() => {
-          if (this.deletePageList[0].type === 'shared' && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length === 0) ChapterStore.fetchFirstNote();
-        });
       }
+      ChapterStore.getNoteChapterList();
       NoteStore.setShowModal(false);
     });
   },
