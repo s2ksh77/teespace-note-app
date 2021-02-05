@@ -9,6 +9,7 @@ export const ChapterContainer = styled.ul`
   display: flex;
   flex-direction: column;
   font-size: 0.81rem;
+  order: ${props => props.order};
   height: auto;
   width: auto;
   &.folded{

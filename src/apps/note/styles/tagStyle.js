@@ -95,6 +95,7 @@ export const LnbTagContainer = styled.div`
   cursor: pointer;
   border-bottom: 0.0625rem solid #dadada;
   margin: 0 0.81rem;
+  order: ${props => props.order};
   color: ${props => props.color || ''};
   &:hover {
     background-color: #FAF8F7;
