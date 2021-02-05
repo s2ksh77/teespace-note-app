@@ -483,6 +483,8 @@ const ChapterStore = observable({
         this.setCurrentChapterId(this.selectableChapterId);
         PageStore.setCurrentPageId(PageStore.selectablePageId);
         PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+        this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
+        PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
       }
       this.deleteChapterId = '';
       NoteStore.setShowModal(false);
