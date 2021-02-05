@@ -3051,7 +3051,6 @@ var PageStore = mobx.observable((_observable$1 = {
           _this2.setCurrentPageId('');
 
           ChapterStore.setCurrentChapterId('');
-          ChapterStore.getNoteChapterList();
         } else {
           var currentChapter = ChapterStore.chapterList.find(function (chapter) {
             return chapter.id === _this2.createParent;
@@ -3065,17 +3064,10 @@ var PageStore = mobx.observable((_observable$1 = {
 
             _this2.fetchCurrentPageData(pageId);
           }
-
-          ChapterStore.getNoteChapterList();
         }
-      } else {
-        ChapterStore.getNoteChapterList().then(function () {
-          var _ChapterStore$sortedC;
-
-          if (_this2.deletePageList[0].type === 'shared' && ((_ChapterStore$sortedC = ChapterStore.sortedChapterList.sharedPageList[0]) === null || _ChapterStore$sortedC === void 0 ? void 0 : _ChapterStore$sortedC.children.length) === 0) ChapterStore.fetchFirstNote();
-        });
       }
 
+      ChapterStore.getNoteChapterList();
       NoteStore.setShowModal(false);
     });
   },
@@ -4387,7 +4379,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     sharedChapterList: _sharedChapterList
   });
   return sortedChapterList;
-}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor, isNeededLNBLayout) {
+}), _defineProperty(_observable$2, "createNoteChapter", function createNoteChapter(chapterTitle, chapterColor) {
   var _this8 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
@@ -4407,17 +4399,11 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _this8.setCurrentChapterId(notbookList.id);
 
             PageStore.setCurrentPageId(notbookList.children[0].id);
+            PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
             _this8.setChapterTempUl(false);
 
-            _context13.next = 9;
-            return PageStore.fetchCurrentPageData(notbookList.children[0].id);
-
-          case 9:
-            NoteStore.setShowPage(true);
-            if (!isNeededLNBLayout) NoteStore.setTargetLayout('Content');
-
-          case 11:
+          case 8:
           case "end":
             return _context13.stop();
         }
