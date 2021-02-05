@@ -4,6 +4,7 @@ import {
   TagSearchForm,
   TagTitleSearchContainer,
   LnbTitleSearchInput,
+  HeaderDivider
 } from '../../styles/titleStyle';
 import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
@@ -68,6 +69,7 @@ const TagHeader = () => {
             />
           </TagTitleSearchContainer>
         </TagSearchForm>
+        <HeaderDivider/>
       </ContentHeader>
     </>
   ));

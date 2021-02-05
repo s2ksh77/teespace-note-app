@@ -62,11 +62,11 @@ export const EditorHeaderContainer2 = styled.div`
   align-items: center;
   width: auto;  
 `;
-export const EditorDivider = styled.div`
+export const HeaderDivider = styled.div`
   width: 1px;
   height: 24px;
   background: #DDD9D4;
-  margin: 0 0.5rem;
+  margin: auto 0.56rem;
 `;
 export const EditingImg = styled.img`
   width: 1.13rem;
@@ -110,13 +110,13 @@ export const EditorSearchIcon = styled.img`
 `
 
 export const LnbTitleCover = styled.div`
+  display: flex;
+  flex-shrink: 0;
   width: 100%;
   height: 3rem;
-  display: flex;
+  padding: 0 0.75rem 0 1rem;
   align-items: center;
-  border-bottom: 0.0625rem solid #dadada;
-  padding: 0.63rem;
-  padding-right: 0.75rem;
+  border-bottom: 1px solid #dadada;
   box-sizing: border-box;
 `;
 

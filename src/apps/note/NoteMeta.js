@@ -2,6 +2,7 @@ import NoteStore from './store/noteStore';
 import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
+import Mark from 'mark.js';
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
@@ -10,31 +11,31 @@ import EditorStore from './store/editorStore';
 const NoteMeta = {
   // antd modal prop 설정
   openModal(type) {
-    return this.setModalConfig(type);    
+    return this.setModalConfig(type);
   },
   // antd modal prop 만들기
   setModalConfig(type) {
-    const handleCancel = function(e) {
+    const handleCancel = function (e) {
       e.stopPropagation();
       NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
     }
     const initialConfig = {
       targetComponent: "Modal",
-      name:type,
+      name: type,
       handleCancel
     }
     switch (type) {
       case "viewInfo":
         return {
-          ...initialConfig,        
-          title:"정보 보기",
-          className:"viewInfoModal"
+          ...initialConfig,
+          title: "정보 보기",
+          className: "viewInfoModal"
         }
       case "forward":
         return {
-          ...initialConfig,   
-          title:"다른 룸으로 전달",
-          className:"forwardModal"
+          ...initialConfig,
+          title: "다른 룸으로 전달",
+          className: "forwardModal"
         }
       default:
         return;
@@ -52,7 +53,7 @@ const NoteMeta = {
       dialogType.btns[index].onClick = event;
       buttonList.push(dialogType.btns[index])
     })
-    
+
     return {
       targetComponent: "Message",
       type: dialogType.type,
@@ -75,7 +76,14 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':
-        eventList.push(function (e) { e.stopPropagation(); PageStore.handleSave() });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          if (EditorStore.isSearch) {
+            const instance = new Mark(EditorStore.tinymce?.getBody());
+            instance.unmark();
+          }
+          PageStore.handleSave();
+        });
         eventList.push(function (e) {
           e.stopPropagation();
           if (PageStore.isNewPage) PageStore.handleNoneEdit();
@@ -108,15 +116,15 @@ const NoteMeta = {
         break;
     }
     return eventList;
-  },  
+  },
   setBtns(type) {
-    const shape="default";
-    const defaultBtn1 = { type :"solid", shape, text:'확인' }; // 버튼 한 개일 때랑 text 바꿔서 사용
-    const defaultBtn2 = { type :"default", shape, text:'취소'};
+    const shape = "default";
+    const defaultBtn1 = { type: "solid", shape, text: '확인' }; // 버튼 한 개일 때랑 text 바꿔서 사용
+    const defaultBtn2 = { type: "default", shape, text: '취소' };
 
     switch (type) {
       case 'delete': // chapter랑 page
-        return [{...defaultBtn1, text:'삭제'}, defaultBtn2];
+        return [{ ...defaultBtn1, text: '삭제' }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -127,7 +135,7 @@ const NoteMeta = {
       case 'sizefailUpload':
         return [defaultBtn1];
       case 'editCancel':
-        return [{...defaultBtn1, text:'저장'}, {...defaultBtn1, text:'저장 안 함'}, defaultBtn2];
+        return [{ ...defaultBtn1, text: '저장' }, { ...defaultBtn1, text: '저장 안 함' }, defaultBtn2];
       case 'failOpenMail':
         return [defaultBtn1];
       default:

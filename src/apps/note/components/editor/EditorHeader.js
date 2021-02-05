@@ -11,7 +11,7 @@ import {
   ModifiedTime,
   EditorSearchIconDiv,
   EditorSearchIcon,
-  EditorDivider,
+  HeaderDivider,
 } from '../../styles/titleStyle';
 import ContentHeader from '../common/ContentHeader';
 import editingImg from '../../assets/TeeSpace_working.gif';
@@ -117,7 +117,7 @@ const EditorHeader = () => {
             <EditorSearchIcon src={searchImg} />
           </EditorSearchIconDiv>
         </EditorHeaderContainer2>
-        <EditorDivider />
+        <HeaderDivider />
       </ContentHeader>
     </>
   ));
