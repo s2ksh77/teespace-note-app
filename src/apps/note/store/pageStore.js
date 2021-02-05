@@ -334,11 +334,12 @@ const PageStore = observable({
 
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
-      if (this.currentPageId === this.deletePageList[0].note_id) {
-        this.setCurrentPageId(this.selectablePageId);
-        this.fetchCurrentPageData(this.selectablePageId)
-      }
-      if (this.isNewPage) {
+      if (!this.isNewPage) {
+        if (this.currentPageId === this.deletePageList[0].note_id) {
+          this.setCurrentPageId(this.selectablePageId);
+          this.fetchCurrentPageData(this.selectablePageId)
+        }
+      } else {
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           this.isNewPage = false;
