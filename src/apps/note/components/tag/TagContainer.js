@@ -9,6 +9,11 @@ import LoadingImgContainer from '../common/LoadingImgContainer';
 import SearchingImg from '../common/SearchingImg';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 import { TagContainerCover } from '../../styles/tagStyle';
+import styled from 'styled-components';
+
+const StyledContentCover = styled(ContentBodyCover)`
+  padding: 0rem 0.75rem;
+`;
 
 const TagContainer = () => {
   const { NoteStore, TagStore } = useNoteStore();
@@ -34,9 +39,9 @@ const TagContainer = () => {
       style={NoteStore.showPage ? { display: 'none' } : { display: 'flex' }}
     >
       <TagHeader />
-      <ContentBodyCover style={{ padding: "0rem 0.75rem" }}>
+      <StyledContentCover>
         {renderContent()}
-      </ContentBodyCover>
+      </StyledContentCover>
     </TagContainerCover>
   ));
 };
