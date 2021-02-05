@@ -370,11 +370,11 @@ const PageStore = observable({
     });
   },
 
-  createMoveInfo(pageData) {
-    const pageId = pageData.note_id;
-    const chapterId = pageData.parent_notebook;
+  createMoveInfo(pageId, chapterId) {
     const chapterIdx = ChapterStore.chapterList.findIndex(chapter => chapter.id === chapterId);
+    if (chapterIdx < 0) return;
     const pageIdx = ChapterStore.chapterList[chapterIdx].children.findIndex(page => page.id === pageId);
+    if (pageIdx < 0) return;
     return {
       item: ChapterStore.chapterList[chapterIdx].children[pageIdx],
       pageIdx: pageIdx,
@@ -390,7 +390,7 @@ const PageStore = observable({
       return;
     }
     let currentMoveInfo = this.moveInfoMap.get(this.currentPageId);
-    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageData);
+    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageId, ChapterStore.currentChapterId);
     this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
   },
 
@@ -516,7 +516,7 @@ const PageStore = observable({
     );
     if (this.isNewPage) {
       ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
-      this.setMoveInfoMap(new Map([[this.currentPageId, this.createMoveInfo(this.currentPageData)]]));
+      this.setMoveInfoMap(new Map([[this.currentPageId, this.createMoveInfo(this.currentPageId, ChapterStore.currentChapterId)]]));
       this.isNewPage = false;
     }
   },

@@ -500,6 +500,7 @@ const ChapterStore = observable({
 
   createMoveInfo(chapterId) {
     const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
+    if (chapterIdx < 0) return;
     return {
       item: this.chapterList[chapterIdx],
       chapterIdx: chapterIdx,
