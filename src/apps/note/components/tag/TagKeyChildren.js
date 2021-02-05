@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { Tooltip } from 'antd';
-import { TagChipGroup, TagChip, TagChipText, TagChipNum } from '../../styles/tagStyle';
+import { TagChipGroup, TagChip, TagText, TagChipNum } from '../../styles/tagStyle';
 import NoteUtil from '../../NoteUtil';
 
 // "ㄱ", ["가나다", "고교구"]
@@ -37,7 +37,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
                 onClick={onClickTagBtn(tagInfo.id, tagName)}
                 key={tagInfo.id}
               >
-                <TagChipText onMouseOver={handleTooltip}>{tagName}</TagChipText>
+                <TagText onMouseOver={handleTooltip}>{tagName}</TagText>
                 <TagChipNum>{tagInfo.note_id.length}</TagChipNum>
               </TagChip>
             </Tooltip>
