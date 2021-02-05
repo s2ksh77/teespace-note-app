@@ -52,6 +52,7 @@ export const TagText = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   height:23px;
+  line-height:normal;
 `;
 
 export const TagNewBtnIcon = styled.img`
@@ -207,17 +208,10 @@ export const SearchTagChip = styled(Tag)`
   }
 `;
 
-// line-height 넣은 이유 : 'y' 아래쪽이 잘리지 않도록
-export const TagChipText = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height:normal;
-`;
-
 export const TagChipNum = styled.div`
   font-size: 0.688rem;
   margin-left: auto;
   color: #7B7671;
   padding-left:0.4rem;
+  line-height:normal;
 `;

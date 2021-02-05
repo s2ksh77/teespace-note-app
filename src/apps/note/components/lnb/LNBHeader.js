@@ -11,12 +11,19 @@ import searchImg from '../../assets/search.svg';
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
 import { PreBtnWrapper, Button, SearchImgInput } from '../../styles/commonStyle';
-import { SearchTagChip, TagChipText } from '../../styles/tagStyle';
+import { SearchTagChip, TagText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
+import styled from 'styled-components';
+
+const SearchCancelBtn = styled(Button)`
+  margin-left: 0.69rem;
+  width: 0.75rem;
+  height: 0.75rem;
+`;
 
 const LNBHeader = ({ createNewChapter }) => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -81,8 +88,8 @@ const LNBHeader = ({ createNewChapter }) => {
           <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false} />
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
-              <TagChipText>{ChapterStore.searchingTagName}</TagChipText>
-              <Button onClick={cancelSearchingTagNote} style={{ marginLeft: "0.69rem", width: "12px", height: "12px" }} src={cancelImg} />
+              <TagText>{ChapterStore.searchingTagName}</TagText>
+              <SearchCancelBtn onClick={cancelSearchingTagNote} src={cancelImg} />
             </SearchTagChip>
           ) :
             <LnbTitleSearchInput

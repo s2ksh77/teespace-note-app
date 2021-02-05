@@ -49,7 +49,7 @@ export const ChapterSearchResult = styled.div`
   align-items:center;
   cursor:pointer;
   &:hover {
-    background-color: rgba(30,168,223,0.20);
+    background-color: #FAF8F7;
   }
 `
 export const ChapterSearchShareIcon = styled.img`
@@ -89,11 +89,12 @@ export const PageSearchResult = styled.div`
   justify-content:space-around;
   cursor:pointer;
   &:hover {
-    background-color: rgba(30,168,223,0.20);
+    background-color: #FAF8F7;
   }
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  background-color:${props=>props.isSelected ? '#F2EFEC' : ''};
 `
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.8125rem;

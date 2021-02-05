@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import useNoteStore from "../../store/useStore";
 import { useObserver } from "mobx-react";
 import {
@@ -15,6 +15,7 @@ import Mark from 'mark.js';
 const LNBSearchResult = () => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const instance = new Mark(EditorStore.tinymce?.getBody());
+  const [selected, setSelected] = useState(null);
 
   // 챕터 검색때만 초기화
   const onClickChapterBtn = (chapterId) => async () => {
@@ -37,6 +38,7 @@ const LNBSearchResult = () => {
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
       NoteStore.setShowPage(true);
+      setSelected(pageId);
     });
     // ChapterStore.initSearchVar();
     if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
@@ -50,7 +52,10 @@ const LNBSearchResult = () => {
         <>
           {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
             return (
-              <ChapterSearchResult key={chapter.id} onClick={onClickChapterBtn(chapter.id)}>
+              <ChapterSearchResult 
+                key={chapter.id}
+                onClick={onClickChapterBtn(chapter.id)}
+              >
                 {chapter.type === "shared" || chapter.type === "shared_page"
                   ? <ChapterSearchShareIcon src={shareImg} />
                   : <ChapterSearchResultColor backgroundColor={chapter.color} />
@@ -62,7 +67,11 @@ const LNBSearchResult = () => {
           })}
           {ChapterStore.searchResult?.["page"]?.map((page) => {
             return (
-              <PageSearchResult key={page.note_id} onClick={onClickPageBtn(page.note_id)}>
+              <PageSearchResult 
+                key={page.note_id}
+                isSelected={(selected === page.note_id) ? true : false}
+                onClick={onClickPageBtn(page.note_id)}
+              >
                 <PageSearchResultChapterTitle>{page.text}</PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 <SearchResultBotttom />

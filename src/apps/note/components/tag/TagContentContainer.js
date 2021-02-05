@@ -16,9 +16,8 @@ const categoryInfo = {
 const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
 const customExpandIcon = props => {
-  if (props.isActive) {
-    return <PanelArrow src={arrowUp} alt="arrow-up" />;
-  } else return <PanelArrow src={arrowDown} alt="arrow-down" />;
+  if (props.isActive) return <PanelArrow src={arrowUp} alt="arrow-up" />;
+  return <PanelArrow src={arrowDown} alt="arrow-down" />;
 };
 
 const TagContentContainer = observer(() => {
