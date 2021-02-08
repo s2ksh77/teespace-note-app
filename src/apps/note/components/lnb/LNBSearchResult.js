@@ -38,10 +38,9 @@ const LNBSearchResult = () => {
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
       NoteStore.setShowPage(true);
+      if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
       setSelected(pageId);
-    });
-    // ChapterStore.initSearchVar();
-    if (NoteStore.layoutState === "collapse") NoteStore.setTargetLayout('Content');
+    });    
   }
 
   return useObserver(() => (
