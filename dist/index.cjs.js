@@ -3015,7 +3015,7 @@ var PageStore = mobx.observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage('(제목 없음)', null, this.createParent).then(function (dto) {
+    this.createPage(NoteStore.getI18n('untitled'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
       EditorStore.setIsSearch(false);
@@ -3033,7 +3033,7 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.initializeBoxColor();
 
       dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr('(제목 없음)');
+      dto.note_title = NoteUtil.decodeStr(NoteStore.getI18n('untitled'));
       _this.currentPageData = dto;
       _this.noteTitle = '';
       _this.prevModifiedUserName = _this.currentPageData.user_name;
@@ -3467,14 +3467,14 @@ var PageStore = mobx.observable((_observable$1 = {
   handleSave: function handleSave() {
     var _EditorStore$tinymce6, _EditorStore$tinymce7;
 
-    if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
+    if (this.noteTitle === '' || this.noteTitle === NoteStore.getI18n('untitled')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
           this.setTitle(EditorStore.tempFileLayoutList[0].file_name + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore.fileLayoutList.length > 0) {
           this.setTitle(EditorStore.fileLayoutList[0].file_name + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
-      } else this.setTitle('(제목 없음)');
+      } else this.setTitle(NoteStore.getI18n('untitled'));
     }
 
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
@@ -4943,20 +4943,20 @@ var NoteMeta = {
     var defaultBtn1 = {
       type: "solid",
       shape: shape,
-      text: '확인'
+      text: NoteStore.getI18n('ok')
     }; // 버튼 한 개일 때랑 text 바꿔서 사용
 
     var defaultBtn2 = {
       type: "default",
       shape: shape,
-      text: '취소'
+      text: NoteStore.getI18n('cancel')
     };
 
     switch (type) {
       case 'delete':
         // chapter랑 page
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: '삭제'
+          text: NoteStore.getI18n('delete')
         }), defaultBtn2];
 
       case 'confirm':
@@ -4972,9 +4972,9 @@ var NoteMeta = {
 
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: '저장'
+          text: NoteStore.getI18n('save')
         }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: '저장 안 함'
+          text: NoteStore.getI18n('notSave')
         }), defaultBtn2];
 
       case 'failOpenMail':
@@ -4997,44 +4997,44 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
-        dialogType.title = '챕터를 삭제하시겠습니까?';
-        dialogType.subtitle = '챕터에 속한 페이지도 삭제됩니다.';
+        dialogType.title = NoteStore.getI18n('chapterDelete');
+        dialogType.subtitle = NoteStore.getI18n('chapterChildrenDelete');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
-        dialogType.title = '페이지를 삭제하시겠습니까?';
+        dialogType.title = NoteStore.getI18n('pageDelete');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = '삭제할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = '삭제할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = "".concat(PageStore.editingUserCount, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'editCancel':
-        dialogType.title = '페이지를 저장하고 나가시겠습니까?';
+        dialogType.title = NoteStore.getI18n('editCancel');
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'fileDelete':
         dialogType.title = "\uC120\uD0DD\uD55C ".concat(fileName, " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
-        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
+        dialogType.subtitle = NoteStore.getI18n('notRestore');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'titleDuplicate':
-        dialogType.title = '중복된 이름이 있습니다.';
-        dialogType.subtitle = '다른 이름을 입력해주세요.';
+        dialogType.title = NoteStore.getI18n('duplicate');
+        dialogType.subtitle = NoteStore.getI18n('anotherName');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5044,7 +5044,7 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
-        dialogType.title = '수정할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableModify');
         dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
         dialogType.btns = this.setBtns('editingPage');
         break;
@@ -5061,12 +5061,12 @@ var NoteMeta = {
         break;
 
       case 'sizefailUpload':
-        dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
+        dialogType.title = NoteStore.getI18n('sizeoverUpload');
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
-        dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
+        dialogType.title = NoteStore.getI18n('countoverUpload');
         dialogType.btns = this.setBtns('failUpload');
         break;
 
@@ -5173,6 +5173,138 @@ var handleWebsocket = function handleWebsocket(message) {
   }
 };
 
+var languageSet = {
+  newChapter: '새 챕터',
+  page: '페이지',
+  chapter: '챕터',
+  searchPageChapter: '페이지, 챕터 검색',
+  addNewPage: '새 페이지 추가',
+  tag: '태그',
+  untitled: '(제목 없음)',
+  newPage: '새 페이지',
+  receivedPage: '전달받은 페이지',
+  duplicate: '중복된 이름이 있습니다.',
+  anotherName: '다른 이름을 입력해주세요.',
+  ok: '확인',
+  unableModify: '수정할 수 없습니다.',
+  unableDelte: '삭제 할 수 없습니다.',
+  otherEditing: "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4."),
+  pageDelete: '페이지를 삭제하시겠습니까?',
+  chapterDelete: '챕터를 삭제하시겠습니까?',
+  chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
+  delete: '삭제',
+  cancel: '취소',
+  modify: '수정',
+  readmode: '읽기 모드',
+  save: '저장',
+  // pageotherMove: `${}개의 페이지를 ${} 으로 이동하였습니다.`,
+  // chapterMove: `${}개의 챕터가 이동하였습니다.`,
+  // pageMove: `${}개의 페이지가 이동하였습니다.`,
+  nonePage: '페이지가 없습니다.',
+  // unregisteredMember: `${}`,
+  noSearchResult: '검색 결과가 없습니다.',
+  searching: '검색중 ...',
+  searchContent: '내용 검색',
+  done: '완료',
+  invalidLink: '해당 URL은 유효하지 않습니다.',
+  attachFile: '파일 첨부',
+  attachDrive: 'Drive에서 첨부',
+  attachLocal: '내 PC에서 첨부',
+  spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
+  countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
+  // selectedDelete: `선택한 ${}을 삭제하시겠습니까?`,
+  notRestore: '삭제 후에는 복구할 수 없습니다.',
+  editCancel: '페이지를 저장하고 나가시겠습니까?',
+  notSave: '저장 안함',
+  rename: '이름 변경',
+  forward: '다른 룸으로 전달',
+  sendEmail: 'Mail로 전달',
+  export: '내보내기',
+  viewInfo: '정보보기',
+  forwardRoom: '출처 룸',
+  forwardMemeber: '전달한 멤버',
+  forwardDate: '전달 날짜',
+  send: '전달',
+  korCategory: 'ㄱ ~ ㅎ',
+  engCategory: 'A ~ Z',
+  numCategory: '0 ~ 9',
+  etcCategory: '기타',
+  searchTag: '태그 검색',
+  notag: '페이지 하단에 태그를 입력하여 추가하세요.',
+  addTag: '태그 추가',
+  notavailableTag: '읽기모드에서는 추가할 수 없습니다.'
+};
+var ko = {
+  translation: languageSet
+};
+
+var languageSet$1 = {
+  newChapter: 'New Chapter',
+  page: 'page',
+  chapter: 'chapter',
+  searchPageChapter: 'Search page or chapter',
+  addNewPage: 'Create new page',
+  tag: 'Tag',
+  untitled: '(Untitled)',
+  newPage: 'New Page',
+  receivedPage: 'Page Received',
+  duplicate: 'Duplicate name exists',
+  anotherName: 'Enter another name.',
+  ok: 'OK',
+  unableModify: 'Unable to Modify.',
+  unableDelte: 'Unable to delete.',
+  otherEditing: "It is currently being modified by ".concat(PageStore.editingUserName),
+  pageDelete: 'Do you want to delete this page ?',
+  chapterDelete: 'Do you want to delete this chapter ?',
+  chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
+  delete: 'Delete',
+  cancel: 'Cancel',
+  modify: 'Modify',
+  readmode: 'Read Mode',
+  save: 'Save',
+  // pageotherMove: `${} pages moved to ${}`,
+  // chapterMove: `${} chapters moved.`,
+  // pageMove: `${} pages moved.`,
+  nonePage: 'No Page exists',
+  // unregisteredMember: `${}`,
+  noSearchResult: 'No search results found.',
+  searching: 'Searching ...',
+  searchContent: 'Search keyword',
+  done: 'Done',
+  invalidLink: 'The URL is not valid',
+  attachFile: 'Attach Files',
+  attachDrive: 'Attach from Drive',
+  attachLocal: 'Attach from My PC',
+  spaceStorageFull: 'There is not enough storage space to attach the file.',
+  sizeoverUpload: 'You can attach up to 20 GB files at a time.',
+  countoverUpload: 'You can attach up to 30 files at a time.',
+  // selectedDelete: `Do you want to delete the selected ${}`,
+  notRestore: 'This action cannot be undone.',
+  editCancel: 'Do you want to save this page and exit?',
+  notSave: 'Not Save',
+  rename: 'Rename',
+  forward: 'Forward',
+  sendEmail: 'Send Email',
+  export: 'Export',
+  viewInfo: 'View Information',
+  forwardRoom: 'Room',
+  forwardMemeber: 'Memeber',
+  forwardDate: 'Date',
+  send: 'Send',
+  korCategory: 'ㄱ ~ ㅎ',
+  engCategory: 'A ~ Z',
+  numCategory: '0 ~ 9',
+  etcCategory: 'Others',
+  searchTag: 'Search tag',
+  notag: 'Enter a tag at the bottom of the page or choose one from the list.',
+  addTag: 'Add Tag',
+  notavailableTag: 'Cannot be added in read mode.'
+};
+var en = {
+  translation: languageSet$1
+};
+
 var NoteStore = mobx.observable({
   noteIdFromTalk: '',
   loadingNoteApp: true,
@@ -5206,6 +5338,8 @@ var NoteStore = mobx.observable({
   mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
+  i18nLanguage: 'ko',
+  i18nKeyMap: '',
   getNoteIdFromTalk: function getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -5264,6 +5398,21 @@ var NoteStore = mobx.observable({
     ChapterStore.setChapterList([]);
     this.setShowPage(true);
     this.setIsMailShare(false);
+  },
+  initI18n: function initI18n() {
+    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'ko';
+    this.i18nLanguage = lang;
+
+    switch (this.i18nLanguage) {
+      case 'ko':
+        return this.i18nKeyMap = ko.translation;
+
+      case 'en':
+        return this.i18nKeyMap = en.translation;
+    }
+  },
+  getI18n: function getI18n(key) {
+    return this.i18nKeyMap[key];
   },
   addWWMSHandler: function addWWMSHandler() {
     if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
