@@ -49,7 +49,7 @@ const EditorHeader = () => {
     EditorStore.setIsSearch(false);
     instance.unmark();
     EditorStore.tinymce?.undoManager?.clear();
-    if (innerText === '수정') {
+    if (innerText === NoteStore.getI18n('modify')) {
       if (PageStore.otherEdit) {
         const res = await userStore.fetchProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);
@@ -58,7 +58,7 @@ const EditorHeader = () => {
       else {
         PageStore.noteEditStart(PageStore.currentPageData.note_id);
       }
-    } else if (innerText === '저장') {
+    } else if (innerText === NoteStore.getI18n('save')) {
       // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync()
         .then(() => PageStore.handleSave());
@@ -73,7 +73,7 @@ const EditorHeader = () => {
   };
 
   const editBtnText =
-    PageStore.isReadMode() ? '수정' : '저장';
+    PageStore.isReadMode() ? NoteStore.getI18n('modify') : NoteStore.getI18n('save');
 
   const handleSearchEditor = () => {
     EditorStore.isSearch ? EditorStore.setIsSearch(false) : EditorStore.setIsSearch(true)
@@ -98,7 +98,7 @@ const EditorHeader = () => {
           <EditorTitle
             id="editorTitle"
             maxLength="200"
-            placeholder='(제목 없음)'
+            placeholder={NoteStore.getI18n('untitled')}
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={!PageStore.isReadMode() ? false : true}

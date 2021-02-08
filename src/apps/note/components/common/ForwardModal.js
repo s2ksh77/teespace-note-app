@@ -1,6 +1,6 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import {
-  RoomShareCover,  
+  RoomShareCover,
   ButtonGroup,
 } from '../../styles/commonStyle';
 import { ItemSelector, Button } from 'teespace-core';
@@ -14,11 +14,11 @@ const AddMarginBtn = styled(Button)`
   margin-right:0.38rem;
 `;
 
-const ForwardModal = ({handleCancel}) => {
-  const { NoteStore } = useNoteStore();  
+const ForwardModal = ({ handleCancel }) => {
+  const { NoteStore } = useNoteStore();
   const [shareArraysCnt, setShareArraysCnt] = useState(false);
   const [tooltipStr, setTooltipStr] = useState(null);
-  
+
   const handleSelectChange = (data) => {
     NoteStore.setShareArrays(data);
     setShareArraysCnt(data.userArray.length + data.roomArray.length);
@@ -26,13 +26,13 @@ const ForwardModal = ({handleCancel}) => {
     else setTooltipStr(null);
   }
   const handleShare = (e) => {
-     e.stopPropagation(); 
-     if (shareArraysCnt === 0) return;
-     NoteStore.shareNote(); 
-     NoteStore.setIsShared(false); 
-     NoteStore.setModalInfo(null); 
+    e.stopPropagation();
+    if (shareArraysCnt === 0) return;
+    NoteStore.shareNote();
+    NoteStore.setIsShared(false);
+    NoteStore.setModalInfo(null);
   }
-  
+
   return (
     <RoomShareCover>
       <ItemSelector
@@ -41,18 +41,18 @@ const ForwardModal = ({handleCancel}) => {
         onSelectChange={handleSelectChange}
       />
       <StyledButtonGroup>
-        <AddMarginBtn 
-          key="share" 
-          type="solid" 
-          shape="defualt" 
-          alert={tooltipStr} 
+        <AddMarginBtn
+          key="share"
+          type="solid"
+          shape="defualt"
+          alert={tooltipStr}
           onClick={handleShare}
           disabled={!shareArraysCnt}
         >
-          {"전달"} 
+          {NoteStore.getI18n('send')}
           {shareArraysCnt > 0 && ` ${shareArraysCnt}`}
         </AddMarginBtn>
-        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>취소</Button>
+        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>{NoteStore.getI18n('cancel')}</Button>
       </StyledButtonGroup>
     </RoomShareCover>
   )

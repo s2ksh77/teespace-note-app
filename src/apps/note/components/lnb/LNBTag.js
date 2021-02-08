@@ -47,7 +47,7 @@ const LNBTag = memo(({ flexOrder }) => {
           src={tagImg}
           alt="tagImg"
         />
-        <TagTxt>태그</TagTxt>
+        <TagTxt>{NoteStore.getI18n('tag')}</TagTxt>
       </LnbTagContainer>
     </>
   ));

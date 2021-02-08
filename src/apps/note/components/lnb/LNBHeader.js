@@ -82,7 +82,7 @@ const LNBHeader = ({ createNewChapter }) => {
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
         <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
-          새 챕터
+          {NoteStore.getI18n('newChapter')}
         </LnbTitleNewButton>
         <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false}>
           <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false} />
@@ -94,7 +94,7 @@ const LNBHeader = ({ createNewChapter }) => {
           ) :
             <LnbTitleSearchInput
               ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
-              placeholder={ChapterStore.isTagSearching ? "" : "페이지, 챕터 검색"}
+              placeholder={ChapterStore.isTagSearching ? "" : NoteStore.getI18n('searchPageChapter')}
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}

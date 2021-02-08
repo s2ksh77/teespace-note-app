@@ -190,6 +190,7 @@ export const LnbTitleSearchInput = styled.input`
     outline: none;
   }
   background-color: ${props => (props.isSearch ? "#FFFFFF;" : "inherit;")}
+  line-height: 1;
 `;
 
 export const TagSearchForm = styled.form`

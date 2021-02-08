@@ -9,11 +9,11 @@ import useNoteStore from '../../store/useStore';
 
 const ViewInfoModal = () => {
   const { NoteStore } = useNoteStore();
-  const {sharedRoomName, sharedUserName, sharedDate} = NoteStore.sharedInfo;
+  const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
   const sharedInfo = [
-    { title: '출처 룸', content: sharedRoomName },
-    { title: '전달한 멤버', content: sharedUserName },
-    { title: '전달 날짜', content: sharedDate }
+    { title: NoteStore.getI18n('forwardRoom'), content: sharedRoomName },
+    { title: NoteStore.getI18n('forwardMemeber'), content: sharedUserName },
+    { title: NoteStore.getI18n('forwardDate'), content: sharedDate }
   ];
 
   return (

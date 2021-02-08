@@ -5,6 +5,7 @@ import PageStore from './pageStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
+import { en, ko } from '../i18n';
 
 const NoteStore = observable({
   noteIdFromTalk: '',
@@ -34,9 +35,11 @@ const NoteStore = observable({
   shareArrays: {}, // { userArray, roomArray }
   isMailShare: false,
   mailShareFileObjs: [],
-  mailReceiver:[],
+  mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
+  i18nLanguage: 'ko',
+  i18nKeyMap: '',
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -85,7 +88,7 @@ const NoteStore = observable({
     this.setUserId(userId);
     this.setUserName(userName);
     this.setUserEmail(userEmail);
-    
+
     if (typeof callback === 'function') callback();
   },
   initVariables() {
@@ -96,6 +99,18 @@ const NoteStore = observable({
     ChapterStore.setChapterList([]);
     this.setShowPage(true);
     this.setIsMailShare(false);
+  },
+  initI18n(lang = 'ko') {
+    this.i18nLanguage = lang;
+    switch (this.i18nLanguage) {
+      case 'ko':
+        return this.i18nKeyMap = ko.translation;
+      case 'en':
+        return this.i18nKeyMap = en.translation;
+    }
+  },
+  getI18n(key) {
+    return this.i18nKeyMap[key];
   },
   addWWMSHandler() {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
@@ -199,8 +214,8 @@ const NoteStore = observable({
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
     const sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
-    const {name, nick} = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
-    
+    const { name, nick } = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
+
     this.sharedInfo = {
       sharedRoomName: (
         sharedRoom

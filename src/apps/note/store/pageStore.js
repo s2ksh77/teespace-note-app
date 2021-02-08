@@ -309,7 +309,7 @@ const PageStore = observable({
   },
 
   createNotePage() {
-    this.createPage('(제목 없음)', null, this.createParent).then(dto => {
+    this.createPage(NoteStore.getI18n('untitled'), null, this.createParent).then(dto => {
       EditorStore.setIsSearch(false);
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
@@ -322,7 +322,7 @@ const PageStore = observable({
       this.initializeBoxColor();
 
       dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr('(제목 없음)');
+      dto.note_title = NoteUtil.decodeStr(NoteStore.getI18n('untitled'));
       this.currentPageData = dto;
       this.noteTitle = '';
       this.prevModifiedUserName = this.currentPageData.user_name;
@@ -588,7 +588,7 @@ const PageStore = observable({
   },
 
   handleSave() {
-    if (this.noteTitle === '' || this.noteTitle === '(제목 없음)') {
+    if (this.noteTitle === '' || this.noteTitle === NoteStore.getI18n('untitled')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
       else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
@@ -598,7 +598,7 @@ const PageStore = observable({
           this.setTitle(EditorStore.fileLayoutList[0].file_name
             + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
-      } else this.setTitle('(제목 없음)');
+      } else this.setTitle(NoteStore.getI18n('untitled'));
     }
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
       return c.charCodeAt(0) !== 65279;
