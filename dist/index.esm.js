@@ -7523,12 +7523,8 @@ var handleUpload = /*#__PURE__*/function () {
   };
 }();
 var driveSuccessCb = function driveSuccessCb(fileList) {
-  if (fileList.length > 30) {
-    NoteStore.setModalInfo('failUpload');
-    return;
-  }
-
   if (fileList) {
+    if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
     EditorStore$1.setFileLength(fileList.length);
     fileList.forEach(function (file) {
       return EditorStore$1.addDriveFileList(file);
@@ -7545,6 +7541,32 @@ var driveCancelCb = function driveCancelCb() {
     EditorStore$1.setIsAttatch(false);
   }, 100);
 };
+
+var isValidFileLength = function isValidFileLength(fileList) {
+  if (fileList.length > 30) {
+    NoteStore.setModalInfo('failUpload');
+    return false;
+  }
+
+  return true;
+};
+
+var isValidFileSize = function isValidFileSize(fileList) {
+  var totalSize = 20000000000; // 20GB
+
+  var uploadSize = 0;
+  fileList.forEach(function (file) {
+    uploadSize += file.file_size;
+  });
+
+  if (uploadSize > totalSize) {
+    NoteStore.setModalInfo('sizefailUpload');
+    return false;
+  }
+
+  return true;
+};
+
 var handleDriveCopy = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
     var copyArr, resultArray;

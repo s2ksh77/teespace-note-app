@@ -64,12 +64,8 @@ export const handleUpload = async () => {
 }
 
 export const driveSuccessCb = (fileList) => {
-    if (fileList.length > 30) {
-        NoteStore.setModalInfo('failUpload');
-        return;
-    }
-    
     if (fileList) {
+        if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
         EditorStore.setFileLength(fileList.length);
         fileList.forEach(file => EditorStore.addDriveFileList(file));
         handleDriveCopy();
@@ -81,6 +77,28 @@ export const driveCancelCb = () => {
     EditorStore.setIsAttatch(true);
     EditorStore.setIsDrive(false);
     setTimeout(() => { EditorStore.setIsAttatch(false); }, 100)
+}
+
+const isValidFileLength = fileList => {
+    if (fileList.length > 30) {
+        NoteStore.setModalInfo('failUpload');
+        return false;
+    }
+    return true;
+}
+
+const isValidFileSize = fileList => {
+    const totalSize = 20000000000; // 20GB
+    let uploadSize = 0;
+    fileList.forEach(file => {
+        uploadSize += file.file_size;
+    })
+    
+    if (uploadSize > totalSize) {
+        NoteStore.setModalInfo('sizefailUpload');
+        return false;
+    }
+    return true;
 }
 
 export const handleDriveCopy = async () => {
