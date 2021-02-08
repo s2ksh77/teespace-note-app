@@ -2087,6 +2087,7 @@ var EditorStore = observable((_observable = {
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
+  isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
   failCount: 0,
@@ -2166,6 +2167,9 @@ var EditorStore = observable((_observable = {
   },
   setPreviewFileMeta: function setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
+  },
+  setIsFileFilteredByNameLen: function setIsFileFilteredByNameLen(flag) {
+    this.isFileFilteredByNameLen = flag;
   },
   createUploadMeta: function createUploadMeta(meta, type) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -4914,6 +4918,14 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+
+      case 'failUploadByFileNameLen':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+          EditorStore.setIsFileFilteredByNameLen(false);
+        });
+        break;
     }
 
     return eventList;
@@ -4947,6 +4959,7 @@ var NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
         return [defaultBtn1];
 
       case 'editCancel':
@@ -4969,7 +4982,7 @@ var NoteMeta = {
     var dialogType = {
       type: 'default',
       title: '',
-      subtitle: null,
+      subtitle: '',
       btns: []
     };
     var editingUserName = PageStore.editingUserName;
@@ -4983,7 +4996,6 @@ var NoteMeta = {
 
       case 'page':
         dialogType.title = '페이지를 삭제하시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('delete');
         break;
 
@@ -5003,7 +5015,6 @@ var NoteMeta = {
 
       case 'editCancel':
         dialogType.title = '페이지를 저장하고 나가시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5032,7 +5043,6 @@ var NoteMeta = {
 
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
@@ -5044,14 +5054,17 @@ var NoteMeta = {
 
       case 'sizefailUpload':
         dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
         dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('failUpload');
+        break;
+
+      case 'failUploadByFileNameLen':
+        dialogType.title = '파일명이 70자를 넘는 경우 업로드할 수 없습니다.';
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'failOpenMail':
@@ -5329,6 +5342,7 @@ var NoteStore = observable({
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
       case "failOpenMail":
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
