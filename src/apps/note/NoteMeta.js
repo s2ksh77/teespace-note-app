@@ -112,6 +112,12 @@ const NoteMeta = {
       case 'fileOpenMail':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'failUploadByFileNameLen':
+        eventList.push(function (e) { 
+          e.stopPropagation(); NoteStore.setModalInfo(null);
+          EditorStore.setIsFileFilteredByNameLen(false); 
+        });
+        break;
       default:
         break;
     }
@@ -133,6 +139,7 @@ const NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
         return [defaultBtn1];
       case 'editCancel':
         return [{ ...defaultBtn1, text: '저장' }, { ...defaultBtn1, text: '저장 안 함' }, defaultBtn2];
@@ -149,7 +156,7 @@ const NoteMeta = {
     const dialogType = {
       type: 'default',
       title: '',
-      subtitle: null,
+      subtitle: '',
       btns: []
     }
     const editingUserName = PageStore.editingUserName;
@@ -161,7 +168,6 @@ const NoteMeta = {
         break;
       case 'page':
         dialogType.title = '페이지를 삭제하시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'confirm':
@@ -178,7 +184,6 @@ const NoteMeta = {
         break;
       case 'editCancel':
         dialogType.title = '페이지를 저장하고 나가시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns(type);
         break;
       case 'fileDelete':
@@ -202,7 +207,6 @@ const NoteMeta = {
         break;
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
@@ -212,13 +216,15 @@ const NoteMeta = {
         break;
       case 'sizefailUpload':
         dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
       case 'failUpload':
         dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('failUpload');
+        break;
+      case 'failUploadByFileNameLen':
+        dialogType.title = '파일명이 70자를 넘는 경우 업로드할 수 없습니다.';
+        dialogType.btns = this.setBtns(type);
         break;
       case 'failOpenMail':
         dialogType.title = 'Mail로 전달할 수 없습니다.';

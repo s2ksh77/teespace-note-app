@@ -19,7 +19,17 @@ import { checkUrlValidation, isOpenLink } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile, driveCancelCb, driveSaveCancel, driveSaveSuccess, driveSuccessCb, handleDriveSave, handleEditorContentsListener, handleUnselect, handleUpload, openSaveDrive } from '../common/NoteFile';
+import { downloadFile, 
+  driveCancelCb, 
+  driveSaveCancel, 
+  driveSaveSuccess, 
+  driveSuccessCb, handleDriveSave, 
+  handleEditorContentsListener, 
+  handleUnselect, 
+  handleUpload, 
+  openSaveDrive,
+  isValidFileNameLength
+} from '../common/NoteFile';
 import { ComponentStore, WaplSearch, useCoreStores } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
@@ -109,14 +119,23 @@ const EditorContainer = () => {
       input.setAttribute('multiple', true);
     }
     input.onchange = function () {
-      var files = this.files;
-      var uploadsize = 0;
-      var totalsize = 20000000000; // 20GB
+      let files = [...this.files];
+      let uploadsize = 0;
+      let totalsize = 20000000000; // 20GB
+      // 파일명 filtering
+      const filteredFiles = files.filter(file=> isValidFileNameLength(file.name));
+      if (files.length !== filteredFiles.length) {
+        files = filteredFiles;
+        EditorStore.setIsFileFilteredByNameLen(true);
+        if (files.length === 0) {NoteStore.setModalInfo('failUploadByFileNameLen');return};
+      }
+
       EditorStore.setFileLength(files.length);
       if (EditorStore.uploadLength > 30) {
         NoteStore.setModalInfo('failUpload');
         return;
       }
+
       if (files) {
         for (let i = 0; i < files.length; i++) {
           uploadsize += files[i].size
