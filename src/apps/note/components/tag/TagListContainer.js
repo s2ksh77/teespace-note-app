@@ -174,7 +174,7 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Tooltip title={!PageStore.isReadMode() ? "태그 추가" : "읽기모드에서는 추가할 수 없습니다"}>
+        <Tooltip title={!PageStore.isReadMode() ? NoteStore.getI18n('addTag') : NoteStore.getI18n('notavailableTag')}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
