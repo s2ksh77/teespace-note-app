@@ -3,10 +3,10 @@ const NoteUtil = {
   // encodeURI : 매개변수로 전달된 문자열을 완전한 URI 전체라고 간주한다.
   // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
   // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
-  encodeStr(str) {
+  encodeStr(str: string) {
     return escape(encodeURIComponent(this.decodeStr(str)));
   },
-  decodeStr(str) {
+  decodeStr(str: string) {
     let pre = str, cur;
     try {
       while (true) {
@@ -22,7 +22,7 @@ const NoteUtil = {
     }    
   },
   // encoding해서 일치 비교
-  isSameStr(str1,str2) {
+  isSameStr(str1: string, str2: string): boolean {
     return this.encodeStr(str1) === this.encodeStr(str2);
   }
 }

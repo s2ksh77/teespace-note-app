@@ -7,8 +7,7 @@ import visualizer from 'rollup-plugin-visualizer';
 import url from 'rollup-plugin-url';
 import json from '@rollup/plugin-json';
 import pkg from './package.json';
-
-const extensions = ['.js', '.jsx'];
+import typescript from 'rollup-plugin-typescript2';
 
 process.env.BABEL_ENV = 'production';
 
@@ -23,6 +22,10 @@ export default {
       file: pkg.module,
       format: 'esm',
     },
+  ],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
     json(),
@@ -39,5 +42,6 @@ export default {
     image(),
     visualizer(),
     url(),
+    typescript({ typescript: require('typescript') })
   ],
 };
