@@ -113,9 +113,9 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'failUploadByFileNameLen':
-        eventList.push(function (e) { 
+        eventList.push(function (e) {
           e.stopPropagation(); NoteStore.setModalInfo(null);
-          EditorStore.setIsFileFilteredByNameLen(false); 
+          EditorStore.setIsFileFilteredByNameLen(false);
         });
         break;
       default:
@@ -125,12 +125,12 @@ const NoteMeta = {
   },
   setBtns(type) {
     const shape = "default";
-    const defaultBtn1 = { type: "solid", shape, text: '확인' }; // 버튼 한 개일 때랑 text 바꿔서 사용
-    const defaultBtn2 = { type: "default", shape, text: '취소' };
+    const defaultBtn1 = { type: "solid", shape, text: NoteStore.getI18n('ok') }; // 버튼 한 개일 때랑 text 바꿔서 사용
+    const defaultBtn2 = { type: "default", shape, text: NoteStore.getI18n('cancel') };
 
     switch (type) {
       case 'delete': // chapter랑 page
-        return [{ ...defaultBtn1, text: '삭제' }, defaultBtn2];
+        return [{ ...defaultBtn1, text: NoteStore.getI18n('delete') }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -142,7 +142,7 @@ const NoteMeta = {
       case 'failUploadByFileNameLen':
         return [defaultBtn1];
       case 'editCancel':
-        return [{ ...defaultBtn1, text: '저장' }, { ...defaultBtn1, text: '저장 안 함' }, defaultBtn2];
+        return [{ ...defaultBtn1, text: NoteStore.getI18n('save') }, { ...defaultBtn1, text: NoteStore.getI18n('notSave') }, defaultBtn2];
       case 'failOpenMail':
         return [defaultBtn1];
       default:
@@ -162,38 +162,38 @@ const NoteMeta = {
     const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
-        dialogType.title = '챕터를 삭제하시겠습니까?';
-        dialogType.subtitle = '챕터에 속한 페이지도 삭제됩니다.';
+        dialogType.title = NoteStore.getI18n('chapterDelete');
+        dialogType.subtitle = NoteStore.getI18n('chapterChildrenDelete');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'page':
-        dialogType.title = '페이지를 삭제하시겠습니까?';
+        dialogType.title = NoteStore.getI18n('pageDelete');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = '삭제할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중입니다.`;
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = '삭제할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = `${PageStore.editingUserCount}명이 수정 중입니다.`;
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
-        dialogType.title = '페이지를 저장하고 나가시겠습니까?';
+        dialogType.title = NoteStore.getI18n('editCancel');
         dialogType.btns = this.setBtns(type);
         break;
       case 'fileDelete':
         dialogType.title = `선택한 ${fileName} 을 삭제하시겠습니까?`;
-        dialogType.subtitle = '삭제 후에는 복구할 수 없습니다.';
+        dialogType.subtitle = NoteStore.getI18n('notRestore');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'titleDuplicate':
-        dialogType.title = '중복된 이름이 있습니다.';
-        dialogType.subtitle = '다른 이름을 입력해주세요.';
+        dialogType.title = NoteStore.getI18n('duplicate');
+        dialogType.subtitle = NoteStore.getI18n('anotherName');
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
@@ -201,7 +201,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
-        dialogType.title = '수정할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('unableModify');
         dialogType.subtitle = `${editingUserName} 님이 수정 중입니다.`;
         dialogType.btns = this.setBtns('editingPage');
         break;
@@ -215,11 +215,11 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
-        dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
+        dialogType.title = NoteStore.getI18n('sizeoverUpload');
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
       case 'failUpload':
-        dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
+        dialogType.title = NoteStore.getI18n('countoverUpload');
         dialogType.btns = this.setBtns('failUpload');
         break;
       case 'failUploadByFileNameLen':

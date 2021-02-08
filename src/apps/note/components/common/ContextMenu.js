@@ -143,16 +143,16 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       {type === 'shared_page'
         ? null :
-        <Item key="0">이름 변경</Item>}
-      <Item key="1">삭제</Item>
-      <Item key="2">다른 룸으로 전달</Item>
-      {spaceStore.currentSpace?.plan !== 'BASIC' && <Item key="3">Mail로 전달</Item>}
-      <SubMenu title="내보내기" onTitleClick={handleSubMenuClick}>
+        <Item key="0">{NoteStore.getI18n('rename')}</Item>}
+      <Item key="1">{NoteStore.getI18n('delete')}</Item>
+      <Item key="2">{NoteStore.getI18n('forward')}</Item>
+      {spaceStore.currentSpace?.plan !== 'BASIC' && <Item key="3">{NoteStore.getI18n('sendEmail')}</Item>}
+      <SubMenu title={NoteStore.getI18n('export')} onTitleClick={handleSubMenuClick}>
         <Item key="4">PDF 형식(.pdf)</Item>
         <Item key="5">TXT 형식(.txt)</Item>
       </SubMenu>
       {type === 'shared'
-        ? <Item key="6">정보 보기</Item>
+        ? <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>
         : null}
     </Menu>
   );

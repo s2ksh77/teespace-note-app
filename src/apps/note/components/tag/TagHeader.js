@@ -15,7 +15,7 @@ import { Button } from '../../styles/commonStyle';
 import styled from 'styled-components';
 
 const CancelBtn = styled(Button)`
-  display:${props=>props.visible ? '' : 'none'};
+  display:${props => props.visible ? '' : 'none'};
 `;
 
 const TagHeader = () => {
@@ -52,9 +52,9 @@ const TagHeader = () => {
     if (e.key === 'Escape') onClickCancelBtn();
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     return () => setValue('');
-  },[NoteStore.showPage]);
+  }, [NoteStore.showPage]);
 
   return useObserver(() => (
     <>
@@ -70,7 +70,7 @@ const TagHeader = () => {
               ref={inputRef}
               value={value}
               onChange={onChangeInput}
-              placeholder="태그 검색"
+              placeholder={NoteStore.getI18n('searchTag')}
               onKeyDown={handleKeyDown}
               isSearch={activateSearchIcon ? true : false}
             />
@@ -81,7 +81,7 @@ const TagHeader = () => {
             />
           </TagTitleSearchContainer>
         </TagSearchForm>
-        <HeaderDivider/>
+        <HeaderDivider />
       </ContentHeader>
     </>
   ));

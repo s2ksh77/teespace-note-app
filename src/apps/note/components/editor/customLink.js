@@ -12,7 +12,7 @@ export const changeLinkDialog = () => {
     const dialog = document.querySelector('.tox-dialog');
     dialog.classList.add("custom-link-dialog");
     changeLinkDialogFooter(dialog.querySelector('.tox-dialog__footer')); // 일단 버튼 위치 바꾸기
-    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));    
+    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header'));
     // saveBtn : disable하려고 넘겨준다
     changeLinkDialogForm(dialog);
   } catch (err) { throw Error(err) };
@@ -27,10 +27,10 @@ const changeLinkDialogHeader = (header) => {
 
 const changeLinkDialogFooter = (footer) => {
   footer.classList.add("custom-dialog-footer");
-  const btnGroup = footer.querySelector('.tox-dialog__footer-end');  
+  const btnGroup = footer.querySelector('.tox-dialog__footer-end');
   btnGroup.classList.add('custom-dialog-btns')
   // 저장, 취소 버튼 위치 바껴야 한다
-  btnGroup.insertBefore(btnGroup.children[1],btnGroup.children[0]);
+  btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
 }
 
 // tinyMCE dialog에 끼워넣는거라 react로 안 짬
@@ -42,42 +42,42 @@ const renderErrorMark = (target) => {
   tooltip.classList.add('note-link-error-tooltip');
   target.appendChild(img);
   target.appendChild(tooltip);
-  return {img$:img, tooltip$:tooltip};
+  return { img$: img, tooltip$: tooltip };
 }
 
 // 1 : 텍스트를 입력해 주세요 메시지 띄우기
-const textCondition = (value) => 
-  isFilled(value) ? {result:true,message:""} : {result:false,message:"텍스트를 입력해 주세요."};
+const textCondition = (value) =>
+  isFilled(value) ? { result: true, message: "" } : { result: false, message: "텍스트를 입력해 주세요." };
 
 const urlSaveCondition = (_value) => {
-  if (!isFilled(_value)) return {result:false,message:"링크를 입력해 주세요."};
+  if (!isFilled(_value)) return { result: false, message: "링크를 입력해 주세요." };
   if (!GlobalVariable.isBasicPlan) {
-    if (isValidMailtoMail(_value)) return {result:true,message:""}; // pass
-    if (isValidMail(_value)) return {result:false, message:"이메일의 경우, 앞에 'mailto:'를 붙여주세요."}; // mailto 붙여달라고 메시지 띄우기
+    if (isValidMailtoMail(_value)) return { result: true, message: "" }; // pass
+    if (isValidMail(_value)) return { result: false, message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요." }; // mailto 붙여달라고 메시지 띄우기
   }
-  if (checkUrlValidation(_value)) return {result:true,message:""}; // pass
-  return {result:false, message:"올바르지 않은 주소입니다."}; // 유효하지 않은 주소라고 메시지 띄우기
+  if (checkUrlValidation(_value)) return { result: true, message: "" }; // pass
+  return { result: false, message: "올바르지 않은 주소입니다." }; // 유효하지 않은 주소라고 메시지 띄우기
 }
 
 // errorMark 관련된 함수
 // params : errorMark, errorCondition, textInput
 const renderValidation = (params) => (e, targetValue) => {
-  const {type, errorMark, errorCondition, textInput} = params;
-  const {img$, tooltip$} = errorMark;
+  const { type, errorMark, errorCondition, textInput } = params;
+  const { img$, tooltip$ } = errorMark;
   const resultObj = errorCondition(targetValue);
-  
+
   // pass
   if (resultObj.result) {
     [img$, tooltip$].forEach((node) => node.classList.remove('note-show-element'));
-  } 
+  }
   // text필드 errorMark 보여주는건 focusOut일 때만
-  else if (type === 'text' && e.type === 'input') {}
+  else if (type === 'text' && e.type === 'input') { }
   else {
     tooltip$.textContent = resultObj["message"];
     [img$, tooltip$].forEach((node) => node.classList.add('note-show-element'));
   }
   // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
-  if (isFilled(textInput.value)){
+  if (isFilled(textInput.value)) {
     [...textInput.parentElement.querySelectorAll('.note-show-element')].forEach((node) => node.classList.remove('note-show-element'));
   }
 }
@@ -85,24 +85,24 @@ const renderValidation = (params) => (e, targetValue) => {
 const changeLinkDialogForm = (dialog) => {
   // 텍스트, 링크 순으로 바꿔주기
   const form = dialog.querySelector('.tox-dialog__body .tox-form');
-  form.insertBefore(form.children[1],form.children[0]);
+  form.insertBefore(form.children[1], form.children[0]);
   form.classList.add("custom-dialog-form");
 
-  const formStr = { url: "링크", text: "텍스트" };  
+  const formStr = { url: "링크", text: "텍스트" };
   const targetInputs$ = form.querySelectorAll('input');
   const saveBtn = dialog.querySelector('.tox-dialog__footer button');
 
   const handleInput = (checkValidation) => (e) => {
     if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value);
     // 두 input창이 비어있으면 saveBtn을 disable한다
-    if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {saveBtn.setAttribute('disabled', true);return;}
+    if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) { saveBtn.setAttribute('disabled', true); return; }
     //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
     if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);
     else saveBtn.removeAttribute('disabled');
   }
 
   // string 바꿔주기, renderValidationErrorMark
-  [...form.childNodes].forEach((child, idx) => {  
+  [...form.childNodes].forEach((child, idx) => {
     const input$ = child.querySelector('input');
     const type = input$.getAttribute('type') === "url" ? "url" : "text";
     // label text 바꾸기
@@ -111,12 +111,12 @@ const changeLinkDialogForm = (dialog) => {
     const errorMark = renderErrorMark(input$.parentElement);
     /*
       유효성 검사해서 error mark 그렸다 뺐다하기
-    */ 
+    */
     const params = {
       type,
       errorMark,
       errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput:targetInputs$[0] // 텍스트 input
+      textInput: targetInputs$[0] // 텍스트 input
     };
     // validation 함수 만들기
     const renderItemValidation = renderValidation(params);
@@ -153,16 +153,16 @@ export const changeButtonStyle = (idx, count) => {
   }
 }
 
-export const openLink = ({isOnlyReadMode, url, target}) => {
+export const openLink = ({ isOnlyReadMode, url, target }) => {
   if (isOnlyReadMode && !PageStore.isReadMode()) return;
   if (!url) return;
-  
+
   if (isOpenMail(url)) {
     NoteStore.setIsMailShare(true);
     NoteStore.setMailReceiver([{
-      mailAddr:url.replace(/^(mailto:\s?)/g,''),
-      displayName:null,
-      userId:null
+      mailAddr: url.replace(/^(mailto:\s?)/g, ''),
+      displayName: null,
+      userId: null
     }]);
     return;
   }
@@ -170,7 +170,7 @@ export const openLink = ({isOnlyReadMode, url, target}) => {
   if (target !== '_blank') {
     document.location.href = url;
     return;
-  }  
+  }
   // window.open(targetUrl);
   const link = document.createElement('a');
   link.href = url;
@@ -187,6 +187,6 @@ export const openLink = ({isOnlyReadMode, url, target}) => {
 // autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
 export const customAutoLinkPattern = () => {
   return GlobalVariable.isBasicPlan
-  ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i  
-  : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+    ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i
+    : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 }

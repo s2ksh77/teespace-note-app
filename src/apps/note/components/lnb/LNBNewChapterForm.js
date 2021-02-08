@@ -18,7 +18,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
       switch (e.relatedTarget.getAttribute('data-btn')) {
         case "editorEditBtn": ChapterStore.setChapterTempUl(false); return;
         case "noteNewChapterBtn": return;
-        default:break;
+        default: break;
       }
     }
     await createNewChapter();
@@ -57,7 +57,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
           <ChapterColor color={ChapterStore.isNewChapterColor} />
           <ChapterInput
             ref={titleRef}
-            placeholder="새 챕터"
+            placeholder={NoteStore.getI18n('newChapter')}
             maxLength="200"
             value={ChapterStore.chapterNewTitle}
             onChange={handleTitleInput}

@@ -16,7 +16,7 @@ import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
 
 // layoutState는 collapse, expand, close가 있다
-const NoteApp = ({ layoutState, roomId, channelId }) => {
+const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -92,6 +92,9 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
     NoteStore.setIsMailShare(false);
     NoteStore.setMailReceiver([]);
   }
+  useEffect(() => {
+    NoteStore.initI18n(lang);
+  }, [lang])
 
   return useObserver(() => (
     <>

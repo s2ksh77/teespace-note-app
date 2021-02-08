@@ -73,7 +73,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
       >
         <PageMargin />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
-          <NewPageText>+ 새 페이지 추가</NewPageText>
+          <NewPageText>+ {NoteStore.getI18n('newPage')}</NewPageText>
         </NewPageBtn>
       </NewPage>
     </>

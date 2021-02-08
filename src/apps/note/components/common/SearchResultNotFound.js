@@ -6,6 +6,7 @@ import {
   NoSearchResultImg
 } from '../../styles/commonStyle';
 import noSearchResultImg from '../../assets/no_result.svg';
+import NoteStore from '../../store/noteStore';
 
 const SearchResultNotFound = ({ searchStr }) => {
   const [searchText, setSearchText] = useState(null);
@@ -18,7 +19,7 @@ const SearchResultNotFound = ({ searchStr }) => {
     <>
       <SearchResultNotFoundCover>
         <SearchKeyword>'{searchText}'</SearchKeyword>
-        <NoSearchResultTitle>검색 결과가 없습니다.</NoSearchResultTitle>
+        <NoSearchResultTitle>{NoteStore.getI18n('noSearchResult')}</NoSearchResultTitle>
         <NoSearchResultImg src={noSearchResultImg} />
       </SearchResultNotFoundCover>
     </>
