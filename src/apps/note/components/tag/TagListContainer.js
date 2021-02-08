@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import 'antd/dist/antd.css';
 import useNoteStore from '../../store/useStore';

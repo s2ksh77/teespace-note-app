@@ -71,6 +71,9 @@ export const ChapterSearchResultColor = styled.div`
   min-width: 0.25rem;
 `;
 export const ChapterSearchResultTitle = styled.div`
+  display: flex;
+  height: 100%;
+  align-items: center;
   padding-left: 1.19rem;
   font-size: 0.8125rem;
   font-weight: bold;
@@ -92,7 +95,6 @@ export const PageSearchResult = styled.div`
     background-color: #FAF8F7;
   }
   text-overflow: ellipsis;
-  overflow: hidden;
   white-space: nowrap;
   background-color:${props=>props.isSelected ? '#F2EFEC' : ''};
 `
