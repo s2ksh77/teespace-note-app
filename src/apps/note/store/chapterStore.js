@@ -549,10 +549,15 @@ const ChapterStore = observable({
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
       this.getNoteChapterList().then(() => {
-        if (!this.currentChapterId) this.handleClickOutside();
-        NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
-        NoteStore.setIsVisibleToast(true);
+        this.currentChapterId = sortedMoveChapters[0].id;
+        PageStore.currentPageId = sortedMoveChapters[0].children[0];
         NoteStore.setIsDragging(false);
+        if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();
+        else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
+        PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
+          NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
+          NoteStore.setIsVisibleToast(true);
+        });
       });
     } else {
       this.handleClickOutside();
