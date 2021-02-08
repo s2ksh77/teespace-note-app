@@ -180,6 +180,7 @@ const NoteStore = observable({
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
       case "failOpenMail":
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);

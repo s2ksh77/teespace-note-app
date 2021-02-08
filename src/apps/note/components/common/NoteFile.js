@@ -9,6 +9,7 @@ import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 import NoteStore from '../../store/noteStore';
 import TagStore from '../../store/tagStore';
+import {isFilled} from './validators';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 export const handleUpload = async () => {
@@ -60,6 +61,7 @@ export const handleUpload = async () => {
                 }
             }
         })
+        if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
     }
 }
 
@@ -99,6 +101,12 @@ const isValidFileSize = fileList => {
         return false;
     }
     return true;
+}
+
+export const isValidFileNameLength = fileName => {
+  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+  return true;
 }
 
 export const handleDriveCopy = async () => {
