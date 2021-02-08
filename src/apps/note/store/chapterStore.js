@@ -549,7 +549,6 @@ const ChapterStore = observable({
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
       this.getNoteChapterList().then(() => {
-        if (!this.currentChapterId) this.handleClickOutside();
         NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
         NoteStore.setIsVisibleToast(true);
         NoteStore.setIsDragging(false);
