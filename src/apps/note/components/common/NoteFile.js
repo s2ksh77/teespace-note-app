@@ -64,6 +64,11 @@ export const handleUpload = async () => {
 }
 
 export const driveSuccessCb = (fileList) => {
+    if (fileList.length > 30) {
+        NoteStore.setModalInfo('failUpload');
+        return;
+    }
+    
     if (fileList) {
         EditorStore.setFileLength(fileList.length);
         fileList.forEach(file => EditorStore.addDriveFileList(file));
