@@ -2777,6 +2777,9 @@ var PageStore = mobx.observable((_observable$1 = {
   deleteMoveInfoMap: function deleteMoveInfoMap(key) {
     this.moveInfoMap.delete(key);
   },
+  clearMoveInfoMap: function clearMoveInfoMap() {
+    this.moveInfoMap.clear();
+  },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
   },
@@ -3299,7 +3302,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 9:
               userProfile = _context10.sent;
-              _this5.userNick = userProfile.nick;
+              if (userProfile) _this5.userNick = userProfile.nick;
 
             case 11:
               _this5.setCurrentPageId(dto.note_id);
@@ -4494,10 +4497,14 @@ var ChapterStore = mobx.observable((_observable$2 = {
   if (moveCnt > 0) {
     localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
     this.getNoteChapterList().then(function () {
-      if (!_this11.currentChapterId) _this11.handleClickOutside();
-      NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
-      NoteStore.setIsVisibleToast(true);
+      _this11.currentChapterId = sortedMoveChapters[0].id;
+      PageStore.currentPageId = sortedMoveChapters[0].children[0];
       NoteStore.setIsDragging(false);
+      if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
+      PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
+        NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+        NoteStore.setIsVisibleToast(true);
+      });
     });
   } else {
     this.handleClickOutside();
