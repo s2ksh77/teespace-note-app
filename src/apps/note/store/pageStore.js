@@ -501,7 +501,7 @@ const PageStore = observable({
 
     if (dto.USER_ID) {
       const userProfile = await UserStore.fetchProfile(dto.USER_ID);
-      this.userNick = userProfile.nick;
+      if (userProfile) this.userNick = userProfile.nick;
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
