@@ -131,7 +131,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
         btns={[{
           type : 'solid',
           shape : 'round',
-          text : '확인',
+          text : NoteStore.getI18n('ok'),
           onClick : handleClick
         }]}
       />

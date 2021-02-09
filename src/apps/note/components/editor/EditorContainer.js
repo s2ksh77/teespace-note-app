@@ -444,7 +444,7 @@ const EditorContainer = () => {
               // 이미지 다운로드/삭제
               editor.ui.registry.addMenuButton('downloadImage', {
                 icon: 'save',
-                tooltip: '다운로드',
+                tooltip: NoteStore.getI18n('download'),
                 fetch: function (callback) {
                   var items = [
                     {
