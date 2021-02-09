@@ -11988,8 +11988,8 @@ var NoteApp = function NoteApp(_ref) {
   };
 
   var handleCloseMailModal = function handleCloseMailModal() {
-    NoteStore.setMailShareFileObjs([]);
     NoteStore.setIsMailShare(false);
+    NoteStore.setMailShareFileObjs([]);
     NoteStore.setMailReceiver([]);
   };
 
@@ -12029,7 +12029,7 @@ var NoteApp = function NoteApp(_ref) {
       toReceiver: NoteStore.mailReceiver,
       onClose: handleCloseMailModal,
       visible: true,
-      totalSize: NoteStore.mailShareFileObjs[0].fileSize !== undefined ? NoteStore.mailShareFileObjs[0].fileSize : '0'
+      totalSize: NoteStore.mailShareFileObjs[0].fileSize
     })));
   });
 };

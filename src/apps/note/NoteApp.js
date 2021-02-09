@@ -88,8 +88,8 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
   };
 
   const handleCloseMailModal = () => {
-    NoteStore.setMailShareFileObjs([]);
     NoteStore.setIsMailShare(false);
+    NoteStore.setMailShareFileObjs([]);
     NoteStore.setMailReceiver([]);
   }
 
@@ -138,8 +138,7 @@ const NoteApp = ({ layoutState, roomId, channelId }) => {
             toReceiver={NoteStore.mailReceiver}
             onClose={handleCloseMailModal}
             visible={true}
-            totalSize={NoteStore.mailShareFileObjs[0].fileSize !== undefined
-              ? NoteStore.mailShareFileObjs[0].fileSize : '0'}
+            totalSize={NoteStore.mailShareFileObjs[0].fileSize}
           />}
         </>
       }
