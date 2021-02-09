@@ -1,5 +1,5 @@
 import { observable, toJS } from 'mobx';
-import { API, UserStore, WWMS, RoomStore } from 'teespace-core';
+import { API, logEvent, UserStore, WWMS, RoomStore } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import 'styled-components';
 import Mark from 'mark.js';
@@ -3321,6 +3321,7 @@ var PageStore = observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
+                logEvent('note', 'clickNoteBtn');
                 _this5.isNewPage = false;
               }
 
@@ -4882,6 +4883,7 @@ var NoteMeta = {
           }
 
           PageStore.handleSave();
+          logEvent('note', 'clickModifyBtn');
         });
         eventList.push(function (e) {
           e.stopPropagation();

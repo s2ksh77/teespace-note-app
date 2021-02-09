@@ -3329,6 +3329,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
+                teespaceCore.logEvent('note', 'clickNoteBtn');
                 _this5.isNewPage = false;
               }
 
@@ -4890,6 +4891,7 @@ var NoteMeta = {
           }
 
           PageStore.handleSave();
+          teespaceCore.logEvent('note', 'clickModifyBtn');
         });
         eventList.push(function (e) {
           e.stopPropagation();
