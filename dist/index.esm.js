@@ -3216,9 +3216,9 @@ var PageStore = observable((_observable$1 = {
 
             case 20:
               if (!moveCntToAnotherChapter) {
-                NoteStore.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
               } else {
-                NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
               }
 
               NoteStore.setIsVisibleToast(true);
@@ -3248,7 +3248,6 @@ var PageStore = observable((_observable$1 = {
     var mDay = parseInt(mDate.split('.')[2]);
     var mHour = parseInt(mTime.split(':')[0]);
     var mMinute = parseInt(mTime.split(':')[1]);
-    var meridiem = mHour < 12 ? '오전' : '오후';
     var curDate = new Date();
 
     var convertTwoDigit = function convertTwoDigit(digit) {
@@ -3256,7 +3255,8 @@ var PageStore = observable((_observable$1 = {
     };
 
     if (mHour > 12) mHour = mHour - 12;
-    var basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    var hhmm = convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    var basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
 
     if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear() && !isSharedInfo) {
       // 같은 해
@@ -4501,7 +4501,7 @@ var ChapterStore = observable((_observable$2 = {
       NoteStore.setIsDragging(false);
       if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
       PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
-        NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+        NoteStore.setToastText(NoteStore.getI18n('chapterMove')(moveCnt));
         NoteStore.setIsVisibleToast(true);
       });
     });
@@ -4804,13 +4804,13 @@ var NoteMeta = {
     switch (type) {
       case "viewInfo":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: "정보 보기",
+          title: NoteStore.getI18n('viewInfo'),
           className: "viewInfoModal"
         });
 
       case "forward":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: "다른 룸으로 전달",
+          title: NoteStore.getI18n('forward'),
           className: "forwardModal"
         });
 
@@ -5005,7 +5005,7 @@ var NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5022,7 +5022,7 @@ var NoteMeta = {
         break;
 
       case 'fileDelete':
-        dialogType.title = "\uC120\uD0DD\uD55C ".concat(fileName, " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+        dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
         dialogType.subtitle = NoteStore.getI18n('notRestore');
         dialogType.btns = this.setBtns('delete');
         break;
@@ -5040,7 +5040,7 @@ var NoteMeta = {
 
       case 'editingPage':
         dialogType.title = NoteStore.getI18n('unableModify');
-        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns('editingPage');
         break;
 
@@ -5193,17 +5193,37 @@ var languageSet = {
   delete: '삭제',
   cancel: '취소',
   modify: '수정',
+  amSameDay: function amSameDay(hhmm) {
+    return "\uC624\uC804 ".concat(hhmm);
+  },
+  pmSameDay: function pmSameDay(hhmm) {
+    return "\uC624\uD6C4 ".concat(hhmm);
+  },
   readmode: '읽기 모드',
   save: '저장',
-  // pageotherMove: `${}개의 페이지를 ${} 으로 이동하였습니다.`,
-  // chapterMove: `${}개의 챕터가 이동하였습니다.`,
-  // pageMove: `${}개의 페이지가 이동하였습니다.`,
+  pageotherMove: function pageotherMove(moveCnt, targetPage) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(targetPage, " \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
+  chapterMove: function chapterMove(moveCnt) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
+  pageMove: function pageMove(moveCnt) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
   nonePage: '페이지가 없습니다.',
+  // noPageInChapter: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
   searching: '검색중 ...',
   searchContent: '내용 검색',
+  insertLink: '링크 삽입',
   done: '완료',
+  enterText: '텍스트를 입력해 주세요.',
+  enterLink: '링크를 입력해 주세요.',
+  text: '텍스트',
+  link: '링크',
+  editLink: '링크 편집',
+  deleteLink: '링크 삭제',
   invalidLink: '해당 URL은 유효하지 않습니다.',
   attachFile: '파일 첨부',
   attachDrive: 'Drive에서 첨부',
@@ -5211,7 +5231,9 @@ var languageSet = {
   spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
   sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
-  // selectedDelete: `선택한 ${}을 삭제하시겠습니까?`,
+  selectedDelete: function selectedDelete(fileName) {
+    return "\uC120\uD0DD\uD55C ".concat(fileName, "\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+  },
   notRestore: '삭제 후에는 복구할 수 없습니다.',
   editCancel: '페이지를 저장하고 나가시겠습니까?',
   notSave: '저장 안함',
@@ -5219,16 +5241,20 @@ var languageSet = {
   forward: '다른 룸으로 전달',
   sendEmail: 'Mail로 전달',
   export: '내보내기',
-  viewInfo: '정보보기',
+  viewInfo: '정보 보기',
   forwardRoom: '출처 룸',
   forwardMemeber: '전달한 멤버',
   forwardDate: '전달 날짜',
+  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오전 ${hhmm}`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
+  selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
   send: '전달',
-  korCategory: 'ㄱ ~ ㅎ',
-  engCategory: 'A ~ Z',
-  numCategory: '0 ~ 9',
+  korCategory: 'ㄱ~ㅎ',
+  engCategory: 'A~Z',
+  numCategory: '0~9',
   etcCategory: '기타',
   searchTag: '태그 검색',
+  noTagFound: '태그가 없습니다.',
   notag: '페이지 하단에 태그를 입력하여 추가하세요.',
   addTag: '태그 추가',
   notavailableTag: '읽기모드에서는 추가할 수 없습니다.'
@@ -5259,17 +5285,37 @@ var languageSet$1 = {
   delete: 'Delete',
   cancel: 'Cancel',
   modify: 'Modify',
+  amSameDay: function amSameDay(hhmm) {
+    return "".concat(hhmm, " AM");
+  },
+  pmSameDay: function pmSameDay(hhmm) {
+    return "".concat(hhmm, " PM");
+  },
   readmode: 'Read Mode',
   save: 'Save',
-  // pageotherMove: `${} pages moved to ${}`,
-  // chapterMove: `${} chapters moved.`,
-  // pageMove: `${} pages moved.`,
+  pageotherMove: function pageotherMove(moveCnt, targetPage) {
+    return "".concat(moveCnt, " pages moved to ").concat(targetPage);
+  },
+  chapterMove: function chapterMove(moveCnt) {
+    return "".concat(moveCnt, " chapters moved.");
+  },
+  pageMove: function pageMove(moveCnt) {
+    return "".concat(moveCnt, " pages moved.");
+  },
   nonePage: 'No Page exists',
+  // noPageInChapter: 'To create one'
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
   searching: 'Searching ...',
   searchContent: 'Search keyword',
+  insertLink: 'insert Link',
   done: 'Done',
+  enterText: 'Enter a text.',
+  enterLink: 'Enter a link.',
+  text: 'Text',
+  link: 'Link',
+  editLink: 'Modify',
+  deleteLink: 'Delete',
   invalidLink: 'The URL is not valid',
   attachFile: 'Attach Files',
   attachDrive: 'Attach from Drive',
@@ -5277,7 +5323,9 @@ var languageSet$1 = {
   spaceStorageFull: 'There is not enough storage space to attach the file.',
   sizeoverUpload: 'You can attach up to 20 GB files at a time.',
   countoverUpload: 'You can attach up to 30 files at a time.',
-  // selectedDelete: `Do you want to delete the selected ${}`,
+  selectedDelete: function selectedDelete(fileName) {
+    return "Do you want to delete the selected ".concat(fileName);
+  },
   notRestore: 'This action cannot be undone.',
   editCancel: 'Do you want to save this page and exit?',
   notSave: 'Not Save',
@@ -5289,12 +5337,16 @@ var languageSet$1 = {
   forwardRoom: 'Room',
   forwardMemeber: 'Memeber',
   forwardDate: 'Date',
+  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} AM`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} PM`,
+  selectFromList: 'Select people from the Friends/Members/Rooms list.',
   send: 'Send',
-  korCategory: 'ㄱ ~ ㅎ',
-  engCategory: 'A ~ Z',
-  numCategory: '0 ~ 9',
+  korCategory: 'ㄱ-ㅎ',
+  engCategory: 'A-Z',
+  numCategory: '0-9',
   etcCategory: 'Others',
   searchTag: 'Search tag',
+  noTagFound: 'No tag found.',
   notag: 'Enter a tag at the bottom of the page or choose one from the list.',
   addTag: 'Add Tag',
   notavailableTag: 'Cannot be added in read mode.'
