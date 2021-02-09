@@ -3,6 +3,7 @@ import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
+import { logEvent } from 'teespace-core';
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
@@ -83,6 +84,7 @@ const NoteMeta = {
             instance.unmark();
           }
           PageStore.handleSave();
+          logEvent('note', 'clickModifyBtn');
         });
         eventList.push(function (e) {
           e.stopPropagation();

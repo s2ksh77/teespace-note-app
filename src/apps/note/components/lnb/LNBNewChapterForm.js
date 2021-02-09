@@ -7,6 +7,7 @@ import {
   ChapterInput,
   ChapterTitle,
 } from "../../styles/chpaterStyle";
+import { logEvent } from 'teespace-core';
 
 const { NoteStore, ChapterStore } = useNoteStore();
 const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
@@ -22,6 +23,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
       }
     }
     await createNewChapter();
+    logEvent('note', 'clickNewChapterBtn');
   }
 
   const handleTitleInput = ({ target: { value } }) => {
@@ -32,6 +34,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
     switch (event.key) {
       case "Enter":
         createNewChapter();
+        logEvent('note', 'clickNewChapterBtn');
         break;
       // esc키 누르면 blur이벤트 먼저 타서 create된다
       case "Escape":

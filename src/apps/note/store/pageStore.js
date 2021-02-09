@@ -7,7 +7,7 @@ import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
-import { UserStore } from 'teespace-core';
+import { UserStore, logEvent } from 'teespace-core';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -522,6 +522,7 @@ const PageStore = observable({
     if (this.isNewPage) {
       ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
       this.setMoveInfoMap(new Map([[this.currentPageId, this.createMoveInfo(this.currentPageId, ChapterStore.currentChapterId)]]));
+      logEvent('note', 'clickNoteBtn')
       this.isNewPage = false;
     }
   },

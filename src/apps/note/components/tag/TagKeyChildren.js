@@ -4,6 +4,7 @@ import useNoteStore from '../../store/useStore';
 import { Tooltip } from 'antd';
 import { TagChipGroup, TagChip, TagText, TagChipNum } from '../../styles/tagStyle';
 import NoteUtil from '../../NoteUtil';
+import { logEvent } from 'teespace-core';
 
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
@@ -21,6 +22,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
     if (NoteStore.layoutState === 'collapse') {
       NoteStore.setTargetLayout('LNB');
     }
+    logEvent('note', 'clickTagBtn')
   };
   const handleTooltip = (e) => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
