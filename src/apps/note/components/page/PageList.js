@@ -33,7 +33,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     EditorStore.setIsSearch(false);
     if (NoteStore.layoutState === 'collapse')
       NoteStore.setTargetLayout('Content');
-    EditorStore.tinymce?.undoManager.clear();
+    EditorStore.tinymce?.undoManager?.clear();
   }, []);
 
   return (
