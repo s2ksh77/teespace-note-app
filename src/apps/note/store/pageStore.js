@@ -337,6 +337,7 @@ const PageStore = observable({
 
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
+      this.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
       if (!this.isNewPage) {
         if (this.currentPageId === this.deletePageList[0].note_id) {
           this.setCurrentPageId(this.selectablePageId);
