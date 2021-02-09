@@ -28,13 +28,13 @@ const NoteMeta = {
       case "viewInfo":
         return {
           ...initialConfig,
-          title: "정보 보기",
+          title: NoteStore.getI18n('viewInfo'),
           className: "viewInfoModal"
         }
       case "forward":
         return {
           ...initialConfig,
-          title: "다른 룸으로 전달",
+          title: NoteStore.getI18n('forward'),
           className: "forwardModal"
         }
       default:
@@ -173,7 +173,7 @@ const NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중입니다.`;
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
@@ -187,7 +187,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'fileDelete':
-        dialogType.title = `선택한 ${fileName} 을 삭제하시겠습니까?`;
+        dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
         dialogType.subtitle = NoteStore.getI18n('notRestore');
         dialogType.btns = this.setBtns('delete');
         break;
@@ -202,7 +202,7 @@ const NoteMeta = {
         break;
       case 'editingPage':
         dialogType.title = NoteStore.getI18n('unableModify');
-        dialogType.subtitle = `${editingUserName} 님이 수정 중입니다.`;
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':

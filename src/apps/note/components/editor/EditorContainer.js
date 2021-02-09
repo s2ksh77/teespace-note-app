@@ -19,14 +19,15 @@ import { checkUrlValidation, isOpenLink } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile, 
-  driveCancelCb, 
-  driveSaveCancel, 
-  driveSaveSuccess, 
-  driveSuccessCb, handleDriveSave, 
-  handleEditorContentsListener, 
-  handleUnselect, 
-  handleUpload, 
+import {
+  downloadFile,
+  driveCancelCb,
+  driveSaveCancel,
+  driveSaveSuccess,
+  driveSuccessCb, handleDriveSave,
+  handleEditorContentsListener,
+  handleUnselect,
+  handleUpload,
   openSaveDrive,
   isValidFileNameLength
 } from '../common/NoteFile';
@@ -123,11 +124,11 @@ const EditorContainer = () => {
       let uploadsize = 0;
       let totalsize = 20000000000; // 20GB
       // 파일명 filtering
-      const filteredFiles = files.filter(file=> isValidFileNameLength(file.name));
+      const filteredFiles = files.filter(file => isValidFileNameLength(file.name));
       if (files.length !== filteredFiles.length) {
         files = filteredFiles;
         EditorStore.setIsFileFilteredByNameLen(true);
-        if (files.length === 0) {NoteStore.setModalInfo('failUploadByFileNameLen');return};
+        if (files.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
       }
 
       EditorStore.setFileLength(files.length);
@@ -262,13 +263,13 @@ const EditorContainer = () => {
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
-            <ReadModeText>읽기 모드</ReadModeText>
+            <ReadModeText>{NoteStore.getI18n('readmode')}</ReadModeText>
           </ReadModeContainer>) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <StyledWaplSearch
               onChange={handleSearchInputChange}
-              placeholder='내용 검색'
+              placeholder={NoteStore.getI18n('searchContent')}
               onEnterDown={handleSearchEditor}
               onClear={handleClearSearch}
               onSearchPrev={handleSearchPrev}
@@ -283,7 +284,7 @@ const EditorContainer = () => {
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
           init={{
-            selector: 'noteEditor',
+            selector: '#noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
             height: 'calc(100% - 8.8rem)',
@@ -367,12 +368,12 @@ const EditorContainer = () => {
               `);
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'fileIcon',
-                tooltip: '파일 첨부',
+                tooltip: NoteStore.getI18n('attachFile'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: 'Drive 에서 첨부',
+                      text: NoteStore.getI18n('attachDrive'),
                       onAction: function () {
                         // alert('기능 구현 중입니다.')
                         EditorStore.setIsDrive(true);
@@ -380,7 +381,7 @@ const EditorContainer = () => {
                     },
                     {
                       type: 'menuitem',
-                      text: '내 PC 에서 첨부',
+                      text: NoteStore.getI18n('attachLocal'),
                       onAction: function () {
                         editor.editorUpload.uploadImages(handleFileBlob('file'))
                       }
@@ -419,7 +420,7 @@ const EditorContainer = () => {
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
                 onAction: function (_) {
-                  openLink({isOnlyReadMode:false, url:getAnchorElement()?.href, target:'_blank'});
+                  openLink({ isOnlyReadMode: false, url: getAnchorElement()?.href, target: '_blank' });
                 },
                 onSetup: function (api) {
                   const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
@@ -479,7 +480,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('deleteImage', {
                 icon: 'remove',
-                tooltip: '삭제',
+                tooltip: NoteStore.getI18n('delete'),
                 onAction: function () {
                   EditorStore.deleteImage();
                 },
@@ -503,7 +504,7 @@ const EditorContainer = () => {
             quickbars_insert_toolbar: false,
             quickbars_image_toolbar: false,
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-            language: 'ko_KR',
+            language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
             toolbar_drawer: false,
             paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {
