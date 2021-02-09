@@ -16,6 +16,7 @@ import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
 import { isFilled, checkWhitespace } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
+import { logEvent } from 'teespace-core';
 
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
@@ -136,7 +137,10 @@ const TagListContainer = () => {
   // tagList.current에 idx 키에 element가 있다
   const handleClickTag = (idx, e) => {
     if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');
-    else changeFocusedTag(tagList.current[idx], idx);
+    else {
+      changeFocusedTag(tagList.current[idx], idx);
+      logEvent('note', 'clickTagBtn')
+    }
   }
 
   // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯

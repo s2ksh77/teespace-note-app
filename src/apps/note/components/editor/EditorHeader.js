@@ -19,6 +19,7 @@ import { handleFileSync } from '../common/NoteFile';
 import { useCoreStores } from 'teespace-core';
 import searchImg from '../../assets/search.svg';
 import Mark from 'mark.js';
+import { logEvent } from 'teespace-core';
 
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -62,6 +63,7 @@ const EditorHeader = () => {
       // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync()
         .then(() => PageStore.handleSave());
+      logEvent('note', 'clickModifyBtn');
     }
   };
 
