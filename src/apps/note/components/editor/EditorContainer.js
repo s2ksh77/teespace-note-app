@@ -19,14 +19,15 @@ import { checkUrlValidation, isOpenLink } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
 import PageStore from '../../store/pageStore';
 import NoteStore from '../../store/noteStore';
-import { downloadFile, 
-  driveCancelCb, 
-  driveSaveCancel, 
-  driveSaveSuccess, 
-  driveSuccessCb, handleDriveSave, 
-  handleEditorContentsListener, 
-  handleUnselect, 
-  handleUpload, 
+import {
+  downloadFile,
+  driveCancelCb,
+  driveSaveCancel,
+  driveSaveSuccess,
+  driveSuccessCb, handleDriveSave,
+  handleEditorContentsListener,
+  handleUnselect,
+  handleUpload,
   openSaveDrive,
   isValidFileNameLength
 } from '../common/NoteFile';
@@ -123,11 +124,11 @@ const EditorContainer = () => {
       let uploadsize = 0;
       let totalsize = 20000000000; // 20GB
       // 파일명 filtering
-      const filteredFiles = files.filter(file=> isValidFileNameLength(file.name));
+      const filteredFiles = files.filter(file => isValidFileNameLength(file.name));
       if (files.length !== filteredFiles.length) {
         files = filteredFiles;
         EditorStore.setIsFileFilteredByNameLen(true);
-        if (files.length === 0) {NoteStore.setModalInfo('failUploadByFileNameLen');return};
+        if (files.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
       }
 
       EditorStore.setFileLength(files.length);
@@ -283,7 +284,7 @@ const EditorContainer = () => {
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
           init={{
-            selector: 'noteEditor',
+            selector: '#noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
             height: 'calc(100% - 8.8rem)',
@@ -419,7 +420,7 @@ const EditorContainer = () => {
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
                 onAction: function (_) {
-                  openLink({isOnlyReadMode:false, url:getAnchorElement()?.href, target:'_blank'});
+                  openLink({ isOnlyReadMode: false, url: getAnchorElement()?.href, target: '_blank' });
                 },
                 onSetup: function (api) {
                   const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
@@ -503,7 +504,7 @@ const EditorContainer = () => {
             quickbars_insert_toolbar: false,
             quickbars_image_toolbar: false,
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-            language: 'ko_KR',
+            language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
             toolbar_drawer: false,
             paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {

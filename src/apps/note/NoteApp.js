@@ -48,7 +48,7 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
       NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
         GlobalVariable.setIsBasicPlan(isBasicPlan);
-        NoteStore.addWWMSHandler((authStore.sessionInfo.deviceType==='PC') ? true : false); // PC인지 아닌지
+        NoteStore.addWWMSHandler((authStore.sessionInfo.deviceType === 'PC') ? true : false); // PC인지 아닌지
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);
         NoteStore.initVariables();
@@ -78,7 +78,7 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
     }
   }, [roomId, channelId, layoutState]);
 
-  useEffect(()=>{
+  useEffect(() => {
     return () => EditorStore.setInitialSearchState();
   }, [roomId, channelId])
 
