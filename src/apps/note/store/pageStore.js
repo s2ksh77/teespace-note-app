@@ -658,7 +658,7 @@ const PageStore = observable({
   },
   // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
   _getTableTitle(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '(표)';
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return NoteStore.getI18n('table');
     // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
     const tdList = node.getElementsByTagName('td');
     for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Observer, useObserver } from 'mobx-react';
+import { Observer } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
@@ -7,7 +7,7 @@ import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageS
 import { logEvent } from 'teespace-core';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
-  const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   const [, drop] = useDrop({
     accept: 'Item:Note:Pages',

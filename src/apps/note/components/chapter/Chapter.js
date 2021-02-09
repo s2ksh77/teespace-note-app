@@ -141,7 +141,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       chapterId: chapter.id,
       chapterIdx: index,
     }]]))
-    else PageStore.setMoveInfoMap(new Map());
+    else PageStore.clearMoveInfoMap();
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 

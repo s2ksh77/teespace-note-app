@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import useNoteStore from "../../store/useStore";
 import {
   LnbTitleCover,
   LnbTitleNewButton,
   LnbTitleSearchContainer,
-  LnbTitleSearchIcon,
   LnbTitleSearchInput,
 } from '../../styles/titleStyle';
 import searchImg from '../../assets/search.svg';
@@ -13,7 +12,6 @@ import cancelImg from '../../assets/ts_cancel@3x.png';
 import { PreBtnWrapper, Button, SearchImgInput } from '../../styles/commonStyle';
 import { SearchTagChip, TagText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
-import NoteStore from "../../store/noteStore";
 import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
@@ -26,7 +24,7 @@ const SearchCancelBtn = styled(Button)`
 `;
 
 const LNBHeader = ({ createNewChapter }) => {
-  const { ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const inputRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
 

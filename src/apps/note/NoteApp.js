@@ -17,7 +17,7 @@ import GlobalVariable from './GlobalVariable';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
-  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
   const { userStore, spaceStore, authStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();

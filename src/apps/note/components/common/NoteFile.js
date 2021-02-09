@@ -1,15 +1,14 @@
-import useNoteStore from '../../store/useStore';
 import html2pdf from 'html2pdf.js';
 import { toJS } from 'mobx';
 import { API } from 'teespace-core';
 import { openLink } from '../editor/customLink';
-import EditorStore from '../../store/editorStore';
 import NoteRepository from '../../store/noteRepository';
-import PageStore from '../../store/pageStore';
-import ChapterStore from '../../store/chapterStore';
 import NoteStore from '../../store/noteStore';
+import ChapterStore from '../../store/chapterStore';
+import PageStore from '../../store/pageStore';
+import EditorStore from '../../store/editorStore';
 import TagStore from '../../store/tagStore';
-import {isFilled} from './validators';
+import { isFilled } from './validators';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 export const handleUpload = async () => {
@@ -225,7 +224,7 @@ export const getChapterHtml = async exportId => {
 
     if (noteList.length > 0) {
         noteList.forEach((page, idx) => {
-            html += `<span style="font-size:24px;">제목 : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
+            html += `<span style="font-size:24px;">${NoteStore.getI18n('title')} : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
         })
     } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -239,7 +238,7 @@ export const getPageHtml = async exportId => {
     } = await NoteRepository.getNoteInfoList(exportId);
 
     PageStore.exportPageTitle = dto.note_title;
-    html = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br>${dto.note_content}`
+    html = `<span style="font-size:24px;">${NoteStore.getI18n('title')} : ${dto.note_title}</span><br>${dto.note_content}`
 
     return html;
 };
@@ -339,7 +338,7 @@ export const exportPageAsTxt = async (noteId) => {
         data: { dto },
     } = response;
     // PageStore.exportPageTitle = dto.note_title
-    let returnData = `<span style="font-size:24px;">제목 : ${dto.note_title}</span><br />${dto.note_content}`;
+    let returnData = `<span style="font-size:24px;">${NoteStore.getI18n('title')} : ${dto.note_title}</span><br />${dto.note_content}`;
 
     getTxtFormat(dto.note_title, returnData);
 }
@@ -349,7 +348,7 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     const { data: { dto: { noteList } } } = await NoteRepository.getChapterChildren(chapterId);
     if (noteList.length > 0) {
         noteList.forEach((page, idx) => {
-            returnData += `<span style="font-size:24px;">제목 : ${page.note_title}</span>
+            returnData += `<span style="font-size:24px;">${NoteStore.getI18n('title')} : ${page.note_title}</span>
       <br />
       ${page.note_content}
       ${(idx === (noteList.length - 1)) ? '' : '<br />'}`
@@ -359,8 +358,8 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     getTxtFormat(chapterTitle, returnData);
 }
 
-const handleClickLink = (e, el) => {
-    e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
+const handleClickLink = (el) => {
+    // e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
     const href = el.getAttribute('href');
     const target = el.getAttribute('target');
     openLink({ isOnlyReadMode: true, url: href, target });
@@ -390,7 +389,7 @@ export const handleEditorContentsListener = () => {
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
-                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, event, el));
+                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));
                 else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
                 el.setAttribute('hasListener', true);
             });

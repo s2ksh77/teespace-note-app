@@ -26,7 +26,7 @@ const PageNotFound = ({ type }) => {
       <ContentHeader handleBackBtn={handleLayoutBtn} />
       <ContentBodyCover>
         <NoneContainer>
-          <NoneTitle>{str}가 없습니다.</NoneTitle>
+          <NoneTitle>{type === 'page' ? NoteStore.getI18n('noPage') : NoteStore.getI18n('noChapter')}</NoneTitle>
           <NoneText>
             시작하려면 "새 {str} 추가" 버튼을 클릭하세요.
           </NoneText>

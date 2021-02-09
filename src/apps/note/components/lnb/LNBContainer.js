@@ -26,7 +26,7 @@ const LNBContainer = () => {
     if (!ChapterStore.isNewChapter) return;
     // 분기는 더 여러개 있어야하지만 우선 만드는걸로
     if (!ChapterStore.chapterNewTitle) {
-      ChapterStore.setChapterTitle("새 챕터");
+      ChapterStore.setChapterTitle(NoteStore.getI18n('newChapter'));
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
         ChapterStore.isNewChapterColor

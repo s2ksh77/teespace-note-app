@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useNoteStore from '../../store/useStore';
 import {
   SearchResultNotFoundCover,
   SearchKeyword,
@@ -6,9 +7,9 @@ import {
   NoSearchResultImg
 } from '../../styles/commonStyle';
 import noSearchResultImg from '../../assets/no_result.svg';
-import NoteStore from '../../store/noteStore';
 
 const SearchResultNotFound = ({ searchStr }) => {
+  const { NoteStore } = useNoteStore();
   const [searchText, setSearchText] = useState(null);
 
   useEffect(() => {
