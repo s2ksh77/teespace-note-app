@@ -75,9 +75,12 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
-      EditorStore.setInitialSearchState();
     }
   }, [roomId, channelId, layoutState]);
+
+  useEffect(()=>{
+    return () => EditorStore.setInitialSearchState();
+  }, [roomId, channelId])
 
   const handleFoldBtn = e => {
     const targetX = e.currentTarget.getBoundingClientRect().x;
