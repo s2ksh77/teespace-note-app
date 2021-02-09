@@ -112,8 +112,8 @@ const NoteStore = observable({
   getI18n(key) {
     return this.i18nKeyMap[key];
   },
-  addWWMSHandler() {
-    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
+  addWWMSHandler(isWeb=true) {
+    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
   },
   getNoteFileList() {
     return this.noteFileList;

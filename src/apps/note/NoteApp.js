@@ -18,7 +18,7 @@ import GlobalVariable from './GlobalVariable';
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore, spaceStore, authStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
   const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
@@ -48,7 +48,7 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
       NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
         GlobalVariable.setIsBasicPlan(isBasicPlan);
-        NoteStore.addWWMSHandler();
+        NoteStore.addWWMSHandler((authStore.sessionInfo.deviceType==='PC') ? true : false); // PC인지 아닌지
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);
         NoteStore.initVariables();

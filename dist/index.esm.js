@@ -5261,92 +5261,95 @@ var NoteMeta = {
   }
 };
 
-var handleWebsocket = function handleWebsocket(message) {
-  var EVENT_TYPE = {
-    CREATE: "CREATE",
-    DELETE: "DELETE",
-    UPDATE: "UPDATE",
-    EDIT_START: "EDIT",
-    EDIT_DONE: "EDITDONE",
-    RENAME: "RENAME",
-    CHAPTER_RENAME: "CHAPTERRENAME",
-    CHAPTER_CREATE: "CHAPTERCREATE",
-    CHAPTER_DELETE: "CHAPTERDELETE",
-    NONEDIT: "NONEDIT",
-    MOVE: "MOVE"
-  };
+var handleWebsocket = function handleWebsocket() {
+  var isWeb = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+  return function (message) {
+    var EVENT_TYPE = {
+      CREATE: "CREATE",
+      DELETE: "DELETE",
+      UPDATE: "UPDATE",
+      EDIT_START: "EDIT",
+      EDIT_DONE: "EDITDONE",
+      RENAME: "RENAME",
+      CHAPTER_RENAME: "CHAPTERRENAME",
+      CHAPTER_CREATE: "CHAPTERCREATE",
+      CHAPTER_DELETE: "CHAPTERDELETE",
+      NONEDIT: "NONEDIT",
+      MOVE: "MOVE"
+    };
 
-  if (message.NOTI_ETC === null) {
-    console.warn(" NOTE_ETC is empty");
-    return;
-  }
-
-  if (message.NOTI_ETC) {
-    var loginUSER = NoteRepository$1.USER_ID;
-    var EVENT_CASE = message.NOTI_ETC.split(',')[0];
-    var targetID = message.NOTI_ETC.split(',')[1];
-    var targetUSER = message.NOTI_ETC.split(',')[2];
-
-    switch (EVENT_CASE) {
-      case EVENT_TYPE.CREATE:
-        if (targetUSER === loginUSER) return;else ChapterStore.getNoteChapterList();
-        break;
-
-      case EVENT_TYPE.DELETE:
-        if (targetUSER === loginUSER) return;else {
-          if (PageStore.getCurrentPageId() === targetID) {
-            ChapterStore.setCurrentChapterId(ChapterStore.getCurrentChapterId());
-            ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
-          }
-
-          ChapterStore.getNoteChapterList();
-        }
-        break;
-
-      case EVENT_TYPE.UPDATE:
-      case EVENT_TYPE.EDIT_DONE:
-      case EVENT_TYPE.NONEDIT:
-      case EVENT_TYPE.EDIT_START:
-        // EDIT,NOTE_ID:USER_ID
-        if (targetUSER === loginUSER) return;else {
-          if (PageStore.getCurrentPageId() === targetID) {
-            PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
-          }
-
-          ChapterStore.getNoteChapterList();
-        }
-        break;
-
-      case EVENT_TYPE.MOVE:
-        // 서버에서 곧 넣을 예정
-        break;
-
-      case EVENT_TYPE.CHAPTER_CREATE:
-      case EVENT_TYPE.CHAPTER_RENAME:
-        if (targetUSER === loginUSER) return;else {
-          ChapterStore.getNoteChapterList();
-        }
-        break;
-
-      case EVENT_TYPE.CHAPTER_DELETE:
-        if (targetUSER === loginUSER) return;else {
-          if (ChapterStore.getCurrentChapterId() === targetID) {
-            ChapterStore.getNoteChapterList();
-            setTimeout(function () {
-              if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
-                var firstChapter = ChapterStore.chapterList[0];
-                ChapterStore.setCurrentChapterId(firstChapter.id);
-
-                if (firstChapter.children && firstChapter.children.length > 0) {
-                  PageStore.fetchCurrentPageData(firstChapter.children[0].id);
-                } else PageStore.setCurrentPageId('');
-              } else NoteStore.setShowPage(false);
-            }, 200);
-          } else ChapterStore.getNoteChapterList();
-        }
-        break;
+    if (message.NOTI_ETC === null) {
+      console.warn(" NOTE_ETC is empty");
+      return;
     }
-  }
+
+    if (message.NOTI_ETC) {
+      var loginUSER = NoteRepository$1.USER_ID;
+      var EVENT_CASE = message.NOTI_ETC.split(',')[0];
+      var targetID = message.NOTI_ETC.split(',')[1];
+      var targetUSER = message.NOTI_ETC.split(',')[2];
+
+      switch (EVENT_CASE) {
+        case EVENT_TYPE.CREATE:
+          if (isWeb && targetUSER === loginUSER) return;else ChapterStore.getNoteChapterList();
+          break;
+
+        case EVENT_TYPE.DELETE:
+          if (isWeb && targetUSER === loginUSER) return;else {
+            if (PageStore.getCurrentPageId() === targetID) {
+              ChapterStore.setCurrentChapterId(ChapterStore.getCurrentChapterId());
+              ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
+            }
+
+            ChapterStore.getNoteChapterList();
+          }
+          break;
+
+        case EVENT_TYPE.UPDATE:
+        case EVENT_TYPE.EDIT_DONE:
+        case EVENT_TYPE.NONEDIT:
+        case EVENT_TYPE.EDIT_START:
+          // EDIT,NOTE_ID:USER_ID
+          if (isWeb && targetUSER === loginUSER) return;else {
+            if (PageStore.getCurrentPageId() === targetID) {
+              PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
+            }
+
+            ChapterStore.getNoteChapterList();
+          }
+          break;
+
+        case EVENT_TYPE.MOVE:
+          // 서버에서 곧 넣을 예정
+          break;
+
+        case EVENT_TYPE.CHAPTER_CREATE:
+        case EVENT_TYPE.CHAPTER_RENAME:
+          if (isWeb && targetUSER === loginUSER) return;else {
+            ChapterStore.getNoteChapterList();
+          }
+          break;
+
+        case EVENT_TYPE.CHAPTER_DELETE:
+          if (isWeb && targetUSER === loginUSER) return;else {
+            if (ChapterStore.getCurrentChapterId() === targetID) {
+              ChapterStore.getNoteChapterList();
+              setTimeout(function () {
+                if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
+                  var firstChapter = ChapterStore.chapterList[0];
+                  ChapterStore.setCurrentChapterId(firstChapter.id);
+
+                  if (firstChapter.children && firstChapter.children.length > 0) {
+                    PageStore.fetchCurrentPageData(firstChapter.children[0].id);
+                  } else PageStore.setCurrentPageId('');
+                } else NoteStore.setShowPage(false);
+              }, 200);
+            } else ChapterStore.getNoteChapterList();
+          }
+          break;
+      }
+    }
+  };
 };
 
 var languageSet = {
@@ -5591,7 +5594,8 @@ var NoteStore = observable({
     return this.i18nKeyMap[key];
   },
   addWWMSHandler: function addWWMSHandler() {
-    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
+    var isWeb = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
   },
   getNoteFileList: function getNoteFileList() {
     return this.noteFileList;
@@ -9005,7 +9009,7 @@ var PageList = function PageList(_ref) {
 
   var handleSelectPage = useCallback( /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
-      var _EditorStore$tinymce;
+      var _EditorStore$tinymce, _EditorStore$tinymce$;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -9018,7 +9022,7 @@ var PageList = function PageList(_ref) {
               NoteStore.setShowPage(true);
               EditorStore.setIsSearch(false);
               if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
-              (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.clear();
+              (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
 
             case 6:
             case "end":
@@ -12045,7 +12049,8 @@ var NoteApp = function NoteApp(_ref) {
 
   var _useCoreStores = useCoreStores(),
       userStore = _useCoreStores.userStore,
-      spaceStore = _useCoreStores.spaceStore;
+      spaceStore = _useCoreStores.spaceStore,
+      authStore = _useCoreStores.authStore;
 
   var renderCondition = function renderCondition(target) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -12088,7 +12093,8 @@ var NoteApp = function NoteApp(_ref) {
             switch (_context.prev = _context.next) {
               case 0:
                 GlobalVariable.setIsBasicPlan(isBasicPlan);
-                NoteStore.addWWMSHandler(); // 깜빡임 방지위해 만든 변수
+                NoteStore.addWWMSHandler(authStore.sessionInfo.deviceType === 'PC' ? true : false); // PC인지 아닌지
+                // 깜빡임 방지위해 만든 변수
 
                 NoteStore.setLoadingNoteApp(false);
                 NoteStore.initVariables();

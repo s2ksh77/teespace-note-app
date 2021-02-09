@@ -3,7 +3,7 @@ import PageStore from '../../store/pageStore';
 import ChapterStore from '../../store/chapterStore';
 import NoteRepository from '../../store/noteRepository';
 
-export const handleWebsocket = (message) => {
+export const handleWebsocket = (isWeb=true) => (message) => {
     const EVENT_TYPE = {
         CREATE: "CREATE",
         DELETE: "DELETE",
@@ -29,11 +29,11 @@ export const handleWebsocket = (message) => {
 
         switch (EVENT_CASE) {
             case EVENT_TYPE.CREATE:
-                if (targetUSER === loginUSER) return;
+                if (isWeb && targetUSER === loginUSER) return;
                 else ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.DELETE:
-                if (targetUSER === loginUSER) return;
+                if (isWeb && targetUSER === loginUSER) return;
                 else {
                     if (PageStore.getCurrentPageId() === targetID) {
                         ChapterStore.setCurrentChapterId(ChapterStore.getCurrentChapterId());
@@ -46,7 +46,7 @@ export const handleWebsocket = (message) => {
             case EVENT_TYPE.EDIT_DONE:
             case EVENT_TYPE.NONEDIT:
             case EVENT_TYPE.EDIT_START: // EDIT,NOTE_ID:USER_ID
-                if (targetUSER === loginUSER) return;
+                if (isWeb && targetUSER === loginUSER) return;
                 else {
                     if (PageStore.getCurrentPageId() === targetID) {
                         PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
@@ -58,13 +58,13 @@ export const handleWebsocket = (message) => {
                 break;
             case EVENT_TYPE.CHAPTER_CREATE:
             case EVENT_TYPE.CHAPTER_RENAME:
-                if (targetUSER === loginUSER) return;
+                if (isWeb && targetUSER === loginUSER) return;
                 else {
                     ChapterStore.getNoteChapterList();
                 }
                 break;
             case EVENT_TYPE.CHAPTER_DELETE:
-                if (targetUSER === loginUSER) return;
+                if (isWeb && targetUSER === loginUSER) return;
                 else {
                     if (ChapterStore.getCurrentChapterId() === targetID) {
                         ChapterStore.getNoteChapterList();
