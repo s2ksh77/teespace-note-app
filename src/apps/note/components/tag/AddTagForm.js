@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { TagInput } from '../../styles/tagStyle';
 import {checkWhitespace} from '../common/validators';
-import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 
 const AddTagForm = ({show, toggleTagInput}) => {

@@ -1,15 +1,14 @@
-import useNoteStore from '../../store/useStore';
 import html2pdf from 'html2pdf.js';
 import { toJS } from 'mobx';
 import { API } from 'teespace-core';
 import { openLink } from '../editor/customLink';
-import EditorStore from '../../store/editorStore';
 import NoteRepository from '../../store/noteRepository';
-import PageStore from '../../store/pageStore';
-import ChapterStore from '../../store/chapterStore';
 import NoteStore from '../../store/noteStore';
+import ChapterStore from '../../store/chapterStore';
+import PageStore from '../../store/pageStore';
+import EditorStore from '../../store/editorStore';
 import TagStore from '../../store/tagStore';
-import {isFilled} from './validators';
+import { isFilled } from './validators';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 export const handleUpload = async () => {
@@ -359,8 +358,8 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     getTxtFormat(chapterTitle, returnData);
 }
 
-const handleClickLink = (e, el) => {
-    e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
+const handleClickLink = (el) => {
+    // e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
     const href = el.getAttribute('href');
     const target = el.getAttribute('target');
     openLink({ isOnlyReadMode: true, url: href, target });
@@ -390,7 +389,7 @@ export const handleEditorContentsListener = () => {
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
-                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, event, el));
+                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));
                 else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
                 el.setAttribute('hasListener', true);
             });

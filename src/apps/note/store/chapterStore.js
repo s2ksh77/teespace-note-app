@@ -1,9 +1,8 @@
-import { observable, toJS } from "mobx";
+import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
 import { checkNotDuplicate } from '../components/common/validators';
-import { ThemeConsumer } from "styled-components";
 
 const ChapterStore = observable({
   chapterColor: "",

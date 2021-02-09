@@ -1,15 +1,12 @@
 import React, {useState} from 'react';
-import ReactDom from 'react-dom';
 import {
   MessageCover,
   NoteTitle
 } from '../../styles/commonStyle';
-// import noteImg from '../../assets/note_active.svg';
-// import hoverImg from '../../assets/TeeNote_hover.png';
 import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
-import {isFilled} from './validators';
-import {Message, RoomStore, API } from 'teespace-core';
+import { isFilled } from './validators';
+import { Message, RoomStore, API } from 'teespace-core';
 import NoteRepository from '../../store/noteRepository';
 import NoteUtil from '../../NoteUtil';
 

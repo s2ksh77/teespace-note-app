@@ -152,7 +152,7 @@ const NoteMeta = {
     }
   },
   setMessageInfoConfig(type) {
-    const userName = '';
+    // const userName = '';
     const fileName = EditorStore.deleteFileName;
     // type이 error면 빨간색, error말고 다른 색이면 보라색
     const dialogType = {
@@ -161,7 +161,7 @@ const NoteMeta = {
       subtitle: '',
       btns: []
     }
-    const editingUserName = PageStore.editingUserName;
+    // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
         dialogType.title = NoteStore.getI18n('chapterDelete');

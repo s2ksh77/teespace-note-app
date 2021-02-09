@@ -22,7 +22,7 @@ const TagContentContainer = observer(() => {
     NUM: NoteStore.getI18n('numCategory'),
     ETC: NoteStore.getI18n('etcCategory'),
   };
-  
+
   return (
     <>
       <StyledCollapse
@@ -30,7 +30,7 @@ const TagContentContainer = observer(() => {
         expandIcon={panelProps => customExpandIcon(panelProps)}
         expandIconPosition={'right'}
       >
-        {Object.keys(TagStore.sortedTagList).map((category, idx) => {
+        {Object.keys(TagStore.sortedTagList).map((category) => {
           return (
             // "ㄱ~ㅎ"
             <PanelHeader header={categoryInfo[category]} key={category} >

@@ -1,7 +1,6 @@
-import { observable, toJS } from "mobx";
+import { observable } from "mobx";
 import NoteRepository from "./noteRepository";
 import ChapterStore from "./chapterStore";
-import PageStore from "./pageStore";
 import { checkNotDuplicateIgnoreCase } from '../components/common/validators';
 import NoteUtil from '../NoteUtil';
 

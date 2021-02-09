@@ -18,20 +18,19 @@ import GlobalVariable from '../../GlobalVariable';
 import { checkUrlValidation, isOpenLink } from '../common/validators.js'
 import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
 import PageStore from '../../store/pageStore';
-import NoteStore from '../../store/noteStore';
 import {
   downloadFile,
   driveCancelCb,
   driveSaveCancel,
   driveSaveSuccess,
-  driveSuccessCb, handleDriveSave,
+  driveSuccessCb,
   handleEditorContentsListener,
   handleUnselect,
   handleUpload,
   openSaveDrive,
   isValidFileNameLength
 } from '../common/NoteFile';
-import { ComponentStore, WaplSearch, useCoreStores } from 'teespace-core';
+import { ComponentStore, WaplSearch } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
 
@@ -41,7 +40,7 @@ window.addEventListener('beforeunload', function (e) {
   if (!PageStore.isReadMode()) PageStore.handleSave();
 })
 const EditorContainer = () => {
-  const { PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   const FilePreview = ComponentStore.get('Drive:FilePreview');
@@ -90,7 +89,7 @@ const EditorContainer = () => {
     else fd.append('file', blobInfo.blob());
 
     if (isImage) {
-      const currentImg = EditorStore.getImgElement();
+      // const currentImg = EditorStore.getImgElement();
       EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'image');
       // const tempArr = currentImg.getAttribute('src').split('/');
       // const tempId = tempArr[tempArr.length - 1];
@@ -154,7 +153,7 @@ const EditorContainer = () => {
             var id = 'blobid' + (new Date()).getTime();
             var blobCache = EditorStore.tinymce.editorUpload.blobCache;
             var base64 = reader.result.split(',')[1];
-            var baseUri = reader.result;
+            // var baseUri = reader.result;
             var blobInfo = blobCache.create(id, file, base64, file.name);
             blobCache.add(blobInfo);
             // if (isImage) {
@@ -375,7 +374,6 @@ const EditorContainer = () => {
                       type: 'menuitem',
                       text: NoteStore.getI18n('attachDrive'),
                       onAction: function () {
-                        // alert('기능 구현 중입니다.')
                         EditorStore.setIsDrive(true);
                       }
                     },

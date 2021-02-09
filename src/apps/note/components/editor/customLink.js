@@ -1,8 +1,8 @@
 import errorImg from '../../assets/note_error.svg';
+import NoteStore from '../../store/noteStore';
 import PageStore from '../../store/pageStore';
 import GlobalVariable from '../../GlobalVariable';
 import { isFilled, checkUrlValidation, isValidMailtoMail, isValidMail, isOpenMail } from '../common/validators.js';
-import NoteStore from '../../store/noteStore';
 
 /*
   Link Dialog 관련
@@ -102,7 +102,7 @@ const changeLinkDialogForm = (dialog) => {
   }
 
   // string 바꿔주기, renderValidationErrorMark
-  [...form.childNodes].forEach((child, idx) => {
+  [...form.childNodes].forEach((child) => {
     const input$ = child.querySelector('input');
     const type = input$.getAttribute('type') === "url" ? "url" : "text";
     // label text 바꾸기
