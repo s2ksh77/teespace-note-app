@@ -37,7 +37,7 @@ const ForwardModal = ({ handleCancel }) => {
     <RoomShareCover>
       <ItemSelector
         isVisibleRoom={true}
-        placeholder={`프렌즈/구성원/룸 목록에서\n 선택해 주세요.`}
+        placeholder={NoteStore.getI18n('selectFromList')}
         onSelectChange={handleSelectChange}
       />
       <StyledButtonGroup>

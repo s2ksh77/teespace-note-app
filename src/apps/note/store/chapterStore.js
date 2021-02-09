@@ -555,7 +555,7 @@ const ChapterStore = observable({
         if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();
         else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
-          NoteStore.setToastText(`${moveCnt}개의 챕터가 이동하였습니다.`);
+          NoteStore.setToastText(NoteStore.getI18n('chapterMove')(moveCnt));
           NoteStore.setIsVisibleToast(true);
         });
       });

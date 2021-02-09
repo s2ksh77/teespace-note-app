@@ -262,13 +262,13 @@ const EditorContainer = () => {
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
-            <ReadModeText>읽기 모드</ReadModeText>
+            <ReadModeText>{NoteStore.getI18n('readmode')}</ReadModeText>
           </ReadModeContainer>) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <StyledWaplSearch
               onChange={handleSearchInputChange}
-              placeholder='내용 검색'
+              placeholder={NoteStore.getI18n('searchContent')}
               onEnterDown={handleSearchEditor}
               onClear={handleClearSearch}
               onSearchPrev={handleSearchPrev}
@@ -367,12 +367,12 @@ const EditorContainer = () => {
               `);
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'fileIcon',
-                tooltip: '파일 첨부',
+                tooltip: NoteStore.getI18n('attachFile'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: 'Drive 에서 첨부',
+                      text: NoteStore.getI18n('attachDrive'),
                       onAction: function () {
                         // alert('기능 구현 중입니다.')
                         EditorStore.setIsDrive(true);
@@ -380,7 +380,7 @@ const EditorContainer = () => {
                     },
                     {
                       type: 'menuitem',
-                      text: '내 PC 에서 첨부',
+                      text: NoteStore.getI18n('attachLocal'),
                       onAction: function () {
                         editor.editorUpload.uploadImages(handleFileBlob('file'))
                       }
@@ -479,7 +479,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('deleteImage', {
                 icon: 'remove',
-                tooltip: '삭제',
+                tooltip: NoteStore.getI18n('delete'),
                 onAction: function () {
                   EditorStore.deleteImage();
                 },

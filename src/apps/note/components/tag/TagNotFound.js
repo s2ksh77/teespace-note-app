@@ -1,4 +1,5 @@
 import React from 'react';
+import useNoteStore from '../../store/useStore';
 import noPageImage from '../../assets/no_contents.svg';
 import {
   NoneContainer,
@@ -9,13 +10,13 @@ import {
 
 // 페이지가 존재하지 않습니다
 const TagNotFound = () => {
+  const { NoteStore } = useNoteStore();
+
   return (
     <>
       <NoneContainer>
-        <NoneTitle>태그가 없습니다.</NoneTitle>
-        <NoneText>
-          페이지 하단에 태그를 입력하여 추가하세요.
-        </NoneText>
+        <NoneTitle>{NoteStore.getI18n('noTagFound')}</NoneTitle>
+        <NoneText>{NoteStore.getI18n('notag')}</NoneText>
         <NoneImg src={noPageImage} alt="tag_not_found" />
       </NoneContainer>
     </>

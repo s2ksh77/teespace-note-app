@@ -457,9 +457,9 @@ const PageStore = observable({
       await this.fetchCurrentPageData(sortedMovePages[0]);
 
       if (!moveCntToAnotherChapter) {
-        NoteStore.setToastText(`${moveCntInSameChapter}개의 페이지가 이동하였습니다.`);
+        NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
       } else {
-        NoteStore.setToastText(`${moveCnt}개의 페이지를 ${ChapterStore.chapterList[moveTargetChapterIdx].text}으로 이동하였습니다.`);
+        NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
       }
       NoteStore.setIsVisibleToast(true);
     } else { // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
@@ -477,12 +477,12 @@ const PageStore = observable({
     const mDay = parseInt(mDate.split('.')[2]);
     let mHour = parseInt(mTime.split(':')[0]);
     const mMinute = parseInt(mTime.split(':')[1]);
-    const meridiem = mHour < 12 ? '오전' : '오후';
     const curDate = new Date();
     const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
 
     if (mHour > 12) mHour = mHour - 12;
-    const basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    const hhmm = convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    const basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
 
     if (date === this.currentPageData.modified_date
       && mYear === curDate.getFullYear()
