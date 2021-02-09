@@ -2268,6 +2268,7 @@ var EditorStore$1 = observable((_observable = {
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
+  isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
   failCount: 0,
@@ -2347,6 +2348,9 @@ var EditorStore$1 = observable((_observable = {
   },
   setPreviewFileMeta: function setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
+  },
+  setIsFileFilteredByNameLen: function setIsFileFilteredByNameLen(flag) {
+    this.isFileFilteredByNameLen = flag;
   },
   createUploadMeta: function createUploadMeta(meta, type) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -5095,6 +5099,14 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+
+      case 'failUploadByFileNameLen':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+          EditorStore$1.setIsFileFilteredByNameLen(false);
+        });
+        break;
     }
 
     return eventList;
@@ -5128,6 +5140,7 @@ var NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
         return [defaultBtn1];
 
       case 'editCancel':
@@ -5150,7 +5163,7 @@ var NoteMeta = {
     var dialogType = {
       type: 'default',
       title: '',
-      subtitle: null,
+      subtitle: '',
       btns: []
     };
     var editingUserName = PageStore.editingUserName;
@@ -5164,7 +5177,6 @@ var NoteMeta = {
 
       case 'page':
         dialogType.title = '페이지를 삭제하시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('delete');
         break;
 
@@ -5184,7 +5196,6 @@ var NoteMeta = {
 
       case 'editCancel':
         dialogType.title = '페이지를 저장하고 나가시겠습니까?';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5213,7 +5224,6 @@ var NoteMeta = {
 
       case 'deletedPage':
         dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
@@ -5225,14 +5235,17 @@ var NoteMeta = {
 
       case 'sizefailUpload':
         dialogType.title = '파일 첨부는 한 번에 최대 20GB까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
         dialogType.title = '파일 첨부는 한 번에 30개까지 가능합니다.';
-        dialogType.subtitle = '';
         dialogType.btns = this.setBtns('failUpload');
+        break;
+
+      case 'failUploadByFileNameLen':
+        dialogType.title = '파일명이 70자를 넘는 경우 업로드할 수 없습니다.';
+        dialogType.btns = this.setBtns(type);
         break;
 
       case 'failOpenMail':
@@ -5510,6 +5523,7 @@ var NoteStore = observable({
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadByFileNameLen':
       case "failOpenMail":
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
@@ -5750,7 +5764,7 @@ function _templateObject10() {
 }
 
 function _templateObject9() {
-  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  background-color:", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:relative;\n  width:calc(100% - 1.5rem);\n  height:3.81rem;\n  margin:0 0.75rem;\n  padding: 0.75rem 1.69rem;\n  display:flex;\n  flex-direction:column;\n  justify-content:space-around;\n  cursor:pointer;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  background-color:", ";\n"]);
 
   _templateObject9 = function _templateObject9() {
     return data;
@@ -5760,7 +5774,7 @@ function _templateObject9() {
 }
 
 function _templateObject8() {
-  var data = _taggedTemplateLiteral(["\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  align-items: center;\n  padding-left: 1.19rem;\n  font-size: 0.8125rem;\n  font-weight: bold;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject8 = function _templateObject8() {
     return data;
@@ -7457,7 +7471,7 @@ var handleUpload = /*#__PURE__*/function () {
             uploadArr = [];
 
             if (!EditorStore$1.uploadDTO) {
-              _context.next = 5;
+              _context.next = 6;
               break;
             }
 
@@ -7511,6 +7525,9 @@ var handleUpload = /*#__PURE__*/function () {
             });
 
           case 5:
+            if (EditorStore$1.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
+
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -7567,6 +7584,13 @@ var isValidFileSize = function isValidFileSize(fileList) {
   return true;
 };
 
+var isValidFileNameLength = function isValidFileNameLength(fileName) {
+  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+
+  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+
+  return true;
+};
 var handleDriveCopy = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
     var copyArr, resultArray;
@@ -9402,7 +9426,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$8() {
-  var data = _taggedTemplateLiteral(["\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n    border-radius: 0.8125rem;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
 
   _templateObject$8 = function _templateObject() {
     return data;
@@ -9944,7 +9968,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$9() {
-  var data = _taggedTemplateLiteral(["\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  flex-direction:column;\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$9 = function _templateObject() {
     return data;
@@ -10816,9 +10840,25 @@ var EditorContainer = function EditorContainer() {
     }
 
     input.onchange = function () {
-      var files = this.files;
+      var files = _toConsumableArray(this.files);
+
       var uploadsize = 0;
       var totalsize = 20000000000; // 20GB
+      // 파일명 filtering
+
+      var filteredFiles = files.filter(function (file) {
+        return isValidFileNameLength(file.name);
+      });
+
+      if (files.length !== filteredFiles.length) {
+        files = filteredFiles;
+        EditorStore.setIsFileFilteredByNameLen(true);
+
+        if (files.length === 0) {
+          NoteStore.setModalInfo('failUploadByFileNameLen');
+          return;
+        }
+      }
 
       EditorStore.setFileLength(files.length);
 
