@@ -337,6 +337,7 @@ const PageStore = observable({
 
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
+      this.setIsEdit(null);
       if (!this.isNewPage) {
         if (this.currentPageId === this.deletePageList[0].note_id) {
           this.setCurrentPageId(this.selectablePageId);
