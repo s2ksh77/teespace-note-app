@@ -32,7 +32,7 @@ export const PageTextCover = styled.span`
 export const PageTextContainer = styled.span`
   width: 100%;
   display: flex;
-  padding-right: 1.25rem;
+  padding-right: 1.75rem;
   box-sizing: border-box;
   border-radius: 0.31rem;
   align-items: center;

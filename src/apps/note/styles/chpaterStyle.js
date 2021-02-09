@@ -96,7 +96,7 @@ export const ChapterTitle = styled.span`
 `;
 
 export const ChapterTextSpan = styled.span`
-  width: 100%;
+  width: calc(100% - 3.5rem);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
