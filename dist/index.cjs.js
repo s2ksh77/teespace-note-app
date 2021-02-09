@@ -12040,7 +12040,7 @@ var NoteApp = function NoteApp(_ref) {
       toReceiver: NoteStore.mailReceiver,
       onClose: handleCloseMailModal,
       visible: true,
-      totalSize: NoteStore.mailShareFileObjs[0].fileSize
+      totalSize: NoteStore.mailShareFileObjs[0].fileSize !== undefined ? NoteStore.mailShareFileObjs[0].fileSize : '0'
     })));
   });
 };
