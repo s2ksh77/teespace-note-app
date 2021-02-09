@@ -5,7 +5,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
-require('styled-components');
 var Mark = require('mark.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -3537,7 +3536,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '(표)'; // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return NoteStore.getI18n('table'); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
   var tdList = node.getElementsByTagName('td');
 
@@ -4990,6 +4989,7 @@ var NoteMeta = {
     }
   },
   setMessageInfoConfig: function setMessageInfoConfig(type) {
+    // const userName = '';
     var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
     var dialogType = {
@@ -4997,8 +4997,7 @@ var NoteMeta = {
       title: '',
       subtitle: '',
       btns: []
-    };
-    var editingUserName = PageStore.editingUserName;
+    }; // const editingUserName = PageStore.editingUserName;
 
     switch (type) {
       case 'chapter':
@@ -5189,6 +5188,7 @@ var languageSet = {
   addNewPage: '새 페이지 추가',
   tag: '태그',
   untitled: '(제목 없음)',
+  table: '(표)',
   newPage: '새 페이지',
   receivedPage: '전달받은 페이지',
   duplicate: '중복된 이름이 있습니다.',
@@ -5203,6 +5203,7 @@ var languageSet = {
   delete: '삭제',
   cancel: '취소',
   modify: '수정',
+  download: '다운로드',
   amSameDay: function amSameDay(hhmm) {
     return "\uC624\uC804 ".concat(hhmm);
   },
@@ -5220,7 +5221,8 @@ var languageSet = {
   pageMove: function pageMove(moveCnt) {
     return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
   },
-  nonePage: '페이지가 없습니다.',
+  noPage: '페이지가 없습니다.',
+  noChapter: '챕터가 없습니다.',
   // noPageInChapter: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
@@ -5252,6 +5254,7 @@ var languageSet = {
   sendEmail: 'Mail로 전달',
   export: '내보내기',
   viewInfo: '정보 보기',
+  title: '제목',
   forwardRoom: '출처 룸',
   forwardMemeber: '전달한 멤버',
   forwardDate: '전달 날짜',
@@ -5281,6 +5284,7 @@ var languageSet$1 = {
   addNewPage: 'Create new page',
   tag: 'Tag',
   untitled: '(Untitled)',
+  table: '(Table)',
   newPage: 'New Page',
   receivedPage: 'Page Received',
   duplicate: 'Duplicate name exists',
@@ -5295,6 +5299,7 @@ var languageSet$1 = {
   delete: 'Delete',
   cancel: 'Cancel',
   modify: 'Modify',
+  download: 'Download',
   amSameDay: function amSameDay(hhmm) {
     return "".concat(hhmm, " AM");
   },
@@ -5312,7 +5317,8 @@ var languageSet$1 = {
   pageMove: function pageMove(moveCnt) {
     return "".concat(moveCnt, " pages moved.");
   },
-  nonePage: 'No Page exists',
+  noPage: 'No page exists.',
+  noChapter: 'No chapter exists.',
   // noPageInChapter: 'To create one'
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
@@ -5344,6 +5350,7 @@ var languageSet$1 = {
   sendEmail: 'Send Email',
   export: 'Export',
   viewInfo: 'View Information',
+  title: 'Title',
   forwardRoom: 'Room',
   forwardMemeber: 'Memeber',
   forwardDate: 'Date',
