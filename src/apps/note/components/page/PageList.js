@@ -4,6 +4,7 @@ import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageStyle';
+import { logEvent } from 'teespace-core';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, ChapterStore, EditorStore } = useNoteStore();
@@ -25,6 +26,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     PageStore.setCreatePageParent(targetId);
     PageStore.setCreatePageParentIdx(chapterIdx);
     PageStore.createNotePage();
+    logEvent('note', 'clickNewPageBtn');
   };
 
   const handleSelectPage = useCallback(async (id) => {
