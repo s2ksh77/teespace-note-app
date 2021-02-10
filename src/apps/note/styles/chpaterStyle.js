@@ -6,7 +6,7 @@ export const ChapterContainer = styled.ul`
   user-select: none;
   margin: 0rem 0.81rem 0rem 0.81rem;
   padding: 0rem;
-  display: flex;
+  display: block;
   flex-direction: column;
   font-size: 0.81rem;
   order: ${props => props.order};
