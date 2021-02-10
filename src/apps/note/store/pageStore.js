@@ -475,13 +475,13 @@ const PageStore = observable({
     const mYear = parseInt(mDate.split('.')[0]);
     const mMonth = parseInt(mDate.split('.')[1]);
     const mDay = parseInt(mDate.split('.')[2]);
-    let mHour = parseInt(mTime.split(':')[0]);
+    const mHour = parseInt(mTime.split(':')[0]);
     const mMinute = parseInt(mTime.split(':')[1]);
     const curDate = new Date();
     const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
+    const m12Hour = mHour > 12 ? mHour - 12 : mHour;
 
-    if (mHour > 12) mHour = mHour - 12;
-    const hhmm = convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    const hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
     const basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
 
     if (date === this.currentPageData.modified_date
