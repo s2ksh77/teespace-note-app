@@ -283,7 +283,7 @@ const EditorContainer = () => {
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
           init={{
-            selector: 'noteEditor',
+            selector: '#noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
             height: 'calc(100% - 8.8rem)',
