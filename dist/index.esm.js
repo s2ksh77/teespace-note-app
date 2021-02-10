@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Message, Toast } from 'teespace-core';
+import { API, logEvent, UserStore, WWMS, RoomStore, EventBus, useCoreStores, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Message, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import styled, { createGlobalStyle, css } from 'styled-components';
 import Mark from 'mark.js';
@@ -3499,6 +3499,7 @@ var PageStore = observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
+                logEvent('note', 'clickNoteBtn');
                 _this5.isNewPage = false;
               }
 
@@ -5060,6 +5061,7 @@ var NoteMeta = {
           }
 
           PageStore.handleSave();
+          logEvent('note', 'clickModifyBtn');
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -7120,6 +7122,9 @@ var LNBNewChapterForm = observer(function (_ref) {
               return createNewChapter();
 
             case 10:
+              logEvent('note', 'clickNewChapterBtn');
+
+            case 11:
             case "end":
               return _context.stop();
           }
@@ -7141,6 +7146,7 @@ var LNBNewChapterForm = observer(function (_ref) {
     switch (event.key) {
       case "Enter":
         createNewChapter();
+        logEvent('note', 'clickNewChapterBtn');
         break;
       // esc키 누르면 blur이벤트 먼저 타서 create된다
 
@@ -8848,6 +8854,7 @@ var PageList = function PageList(_ref) {
       PageStore.setCreatePageParent(targetId);
       PageStore.setCreatePageParentIdx(chapterIdx);
       PageStore.createNotePage();
+      logEvent('note', 'clickNewPageBtn');
     };
   };
 
@@ -9575,12 +9582,12 @@ var EditorHeader = function EditorHeader() {
               PageStore.noteEditStart(PageStore.currentPageData.note_id);
 
             case 14:
-              _context2.next = 19;
+              _context2.next = 20;
               break;
 
             case 16:
               if (!(innerText === '저장')) {
-                _context2.next = 19;
+                _context2.next = 20;
                 break;
               }
 
@@ -9590,6 +9597,9 @@ var EditorHeader = function EditorHeader() {
               });
 
             case 19:
+              logEvent('note', 'clickModifyBtn');
+
+            case 20:
             case "end":
               return _context2.stop();
           }
@@ -10217,7 +10227,10 @@ var TagListContainer = function TagListContainer() {
 
 
   var handleClickTag = function handleClickTag(idx, e) {
-    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(tagList.current[idx], idx);
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else {
+      changeFocusedTag(tagList.current[idx], idx);
+      logEvent('note', 'clickTagBtn');
+    }
   }; // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
   // idx : null 가능
 
@@ -11028,7 +11041,7 @@ var EditorContainer = function EditorContainer() {
       id: "noteEditor",
       value: PageStore.currentPageData.note_content,
       init: {
-        selector: 'noteEditor',
+        selector: '#noteEditor',
         menubar: false,
         toolbar_mode: 'floating',
         height: 'calc(100% - 8.8rem)',
@@ -11415,7 +11428,9 @@ var TagKeyChildren$1 = function TagKeyChildren(_ref) {
                 NoteStore.setTargetLayout('LNB');
               }
 
-            case 8:
+              logEvent('note', 'clickTagBtn');
+
+            case 9:
             case "end":
               return _context.stop();
           }
