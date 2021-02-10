@@ -91,8 +91,8 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
   };
 
   const handleCloseMailModal = () => {
-    NoteStore.setMailShareFileObjs([]);
     NoteStore.setIsMailShare(false);
+    NoteStore.setMailShareFileObjs([]);
     NoteStore.setMailReceiver([]);
   }
   useEffect(() => {
