@@ -40,30 +40,30 @@ const FileLayout = () => {
     };
 
     const fileExtension = (extension) => {
-      // driveGetFileIcon(fileName)
-      const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
-      switch (cat) {
-        case 'isTxt':
-          return txt;
-        case 'isPowerPoint':
-          return ppt;
-        case 'isPdf':
-          return pdf;
-        case 'isExcel':
-          return excel;
-        case 'isWord':
-          return docs;
-        case 'isHangul':
-          return hangul;
-        case 'isZip':
-          return zip;
-        case 'isVideoWithPreview':
-        case 'isVideoWithoutPreview':
-          return video;
-        case 'isAudio':
-          return audio;
-        default: return etc;
-      }
+        // driveGetFileIcon(fileName)
+        const cat = Object.keys(fileCategory).find(cat => fileCategory[cat]['ext'].includes(extension));
+        switch (cat) {
+            case 'isTxt':
+                return txt;
+            case 'isPowerPoint':
+                return ppt;
+            case 'isPdf':
+                return pdf;
+            case 'isExcel':
+                return excel;
+            case 'isWord':
+                return docs;
+            case 'isHangul':
+                return hangul;
+            case 'isZip':
+                return zip;
+            case 'isVideoWithPreview':
+            case 'isVideoWithoutPreview':
+                return video;
+            case 'isAudio':
+                return audio;
+            default: return etc;
+        }
     }
     const handleFileDown = (key) => {
         if (key === '0') openSaveDrive();
@@ -116,7 +116,7 @@ const FileLayout = () => {
         EditorStore.selectFileElement.scrollIntoView(false);
     }
 
-    const handleKeyDownFile = ({fileId, index, type}) => e => {
+    const handleKeyDownFile = ({ fileId, index, type }) => e => {
         const { keyCode, target } = e;
         if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
         switch (keyCode) {
@@ -138,76 +138,76 @@ const FileLayout = () => {
                 break;
             case 8: // backspace
             case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
-                handleFileRemove(fileId, index, type);
+                if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
                 break;
             default:
                 break;
         }
     }
 
-    const onClickFileName = (item) => {  
-      const {file_id, file_name, file_extension:extension, user_context_2} = item;
-      const cat = Object.keys(fileCategory).find(cat=>fileCategory[cat]['ext'].includes(extension));
-      const isPreviewFile = cat && fileCategory[cat]["isPreview"];
-      // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
-      if (!PageStore.isReadMode() && !isPreviewFile) return;
+    const onClickFileName = (item) => {
+        const { file_id, file_name, file_extension: extension, user_context_2 } = item;
+        const cat = Object.keys(fileCategory).find(cat => fileCategory[cat]['ext'].includes(extension));
+        const isPreviewFile = cat && fileCategory[cat]["isPreview"];
+        // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+        if (!PageStore.isReadMode() && !isPreviewFile) return;
 
-      if (isPreviewFile) {
-        EditorStore.setPreviewFileMeta({
-          userId: NoteRepository.USER_ID,
-          channelId: NoteRepository.chId,
-          roomId: NoteRepository.WS_ID,
-          fileId: file_id ? file_id : user_context_2,
-          fileName: file_name,
-          fileExtension: extension,
-        })
-        EditorStore.setIsPreview(true);
-      } else {downloadFile(file_id ? file_id : user_context_2)}        
+        if (isPreviewFile) {
+            EditorStore.setPreviewFileMeta({
+                userId: NoteRepository.USER_ID,
+                channelId: NoteRepository.chId,
+                roomId: NoteRepository.WS_ID,
+                fileId: file_id ? file_id : user_context_2,
+                fileName: file_name,
+                fileExtension: extension,
+            })
+            EditorStore.setIsPreview(true);
+        } else { downloadFile(file_id ? file_id : user_context_2) }
     }
 
     const handleFileRemove = async (fileId, index, type) => {
         const removePostProcess = () => {
-          if (EditorStore.isFile) {
-            EditorStore.setFileIndex(""); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
-            if (type === "uploaded") filebodyRef.current[(index > 0) ? (index - 1) : 0]?.click();
-          } else {
-            try { // 불안해서 넣는 try catch문
-              EditorStore.tinymce.focus();
-              EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(),true);
-              EditorStore.tinymce.selection.collapse(false);
-            } catch(err) {}
-          }
+            if (EditorStore.isFile) {
+                EditorStore.setFileIndex(""); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
+                if (type === "uploaded") filebodyRef.current[(index > 0) ? (index - 1) : 0]?.click();
+            } else {
+                try { // 불안해서 넣는 try catch문
+                    EditorStore.tinymce.focus();
+                    EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(), true);
+                    EditorStore.tinymce.selection.collapse(false);
+                } catch (err) { }
+            }
         }
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
             EditorStore.tempFileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
-              if (dto.resultMsg === 'Success') {
-                  setTimeout(() => {
-                      EditorStore.tempFileLayoutList.splice(index, 1);
-                      EditorStore.isFileLength();
-                      removePostProcess();
-                  }, 1000);
+                if (dto.resultMsg === 'Success') {
+                    setTimeout(() => {
+                        EditorStore.tempFileLayoutList.splice(index, 1);
+                        EditorStore.isFileLength();
+                        removePostProcess();
+                    }, 1000);
 
-              } else if (dto.resultMsg === 'Fail') {
-                  EditorStore.tempFileLayoutList[index].deleted = undefined;
-                  EditorStore.tempFileLayoutList.splice(index, 1);
-                  removePostProcess();
-              }
+                } else if (dto.resultMsg === 'Fail') {
+                    EditorStore.tempFileLayoutList[index].deleted = undefined;
+                    EditorStore.tempFileLayoutList.splice(index, 1);
+                    removePostProcess();
+                }
             });
         } else if (type === 'uploaded' && EditorStore.fileLayoutList.length > 0) {
             EditorStore.fileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
-              if (dto.resultMsg === 'Success') {
-                  setTimeout(() => {
-                      EditorStore.fileLayoutList.splice(index, 1);
-                      EditorStore.isFileLength();
-                      removePostProcess();
-                  }, 1000);
-              } else if (dto.resultMsg === 'Fail') {
-                  EditorStore.fileLayoutList[index].deleted = undefined;
-                  EditorStore.fileLayoutList.splice(index, 1);
-                  removePostProcess();
-              }
+                if (dto.resultMsg === 'Success') {
+                    setTimeout(() => {
+                        EditorStore.fileLayoutList.splice(index, 1);
+                        EditorStore.isFileLength();
+                        removePostProcess();
+                    }, 1000);
+                } else if (dto.resultMsg === 'Fail') {
+                    EditorStore.fileLayoutList[index].deleted = undefined;
+                    EditorStore.fileLayoutList.splice(index, 1);
+                    removePostProcess();
+                }
             });
         }
     }
@@ -239,9 +239,9 @@ const FileLayout = () => {
                         key={index}
                         className={index === EditorStore.selectFileIdx ? 'fileSelected' : ''}
                         onKeyDown={handleKeyDownFile({
-                          fileId: item.file_id ? item.file_id : item.user_context_2,
-                          index,
-                          type:"temp"
+                            fileId: item.file_id ? item.file_id : item.user_context_2,
+                            index,
+                            type: "temp"
                         })}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}
@@ -250,9 +250,9 @@ const FileLayout = () => {
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
                                 <FileDownloadIcon>
-                                    {hover && item.file_id === hoverFileId  
-                                    ? (<FileDownloadBtn src={downloadBtn} />) 
-                                    : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                    {hover && item.file_id === hoverFileId
+                                        ? (<FileDownloadBtn src={downloadBtn} />)
+                                        : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
                             {item.error ? <FileErrorIcon><ExclamationCircleFilled /></FileErrorIcon> : null}
@@ -292,9 +292,9 @@ const FileLayout = () => {
                         onMouseEnter={handleMouseHover.bind(null, item.file_id)}
                         onMouseLeave={handleMouseLeave}
                         onKeyDown={handleKeyDownFile({
-                          fileId: item.file_id ? item.file_id : item.user_context_2,
-                          index,
-                          type:"uploaded"
+                            fileId: item.file_id ? item.file_id : item.user_context_2,
+                            index,
+                            type: "uploaded"
                         })}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}>
@@ -303,9 +303,9 @@ const FileLayout = () => {
                                 <FileDownloadIcon
                                     onMouseEnter={handleHoverIcon.bind(null, index)}
                                     onMouseLeave={handleLeaveIcon}>
-                                    {hover && index === hoverFileIdx 
-                                    ? (<FileDownloadBtn src={downloadBtn} />) 
-                                    : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
+                                    {hover && index === hoverFileIdx
+                                        ? (<FileDownloadBtn src={downloadBtn} />)
+                                        : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
                             </Dropdown>
                             <FileData mode={PageStore.isReadMode().toString()}>
