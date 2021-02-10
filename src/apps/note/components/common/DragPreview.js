@@ -83,7 +83,7 @@ const DragPreview = ({ items }) => {
             }
           >
             {NoteStore.draggedType === 'chapter' && renderChapterIcon(item)}
-            <DraggedComponentTitle>{item.text}</DraggedComponentTitle>
+            <DraggedComponentTitle>{item.type === 'shared_page' ?  NoteStore.getI18n('receivedPage') : item.text}</DraggedComponentTitle>
           </DraggedComponent>
         )
       })}

@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useLayoutEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
-import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Message, Toast } from 'teespace-core';
+import { API, logEvent, UserStore, WWMS, RoomStore, EventBus, useCoreStores, WaplSearch, ComponentStore, Button as Button$1, ItemSelector, Message, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
-import styled, { createGlobalStyle, css } from 'styled-components';
 import Mark from 'mark.js';
 import { useObserver, observer, Observer } from 'mobx-react';
+import styled, { createGlobalStyle, css } from 'styled-components';
 import { Dropdown, Collapse, Tag, Menu, Tooltip, Progress, Modal } from 'antd';
 import { useDrop, useDrag, DndProvider, DragLayer } from 'react-dnd';
 import { getEmptyImage, HTML5Backend } from 'react-dnd-html5-backend';
@@ -13,7 +13,6 @@ import html2pdf from 'html2pdf.js';
 import 'antd/dist/antd.css';
 import { Editor } from '@tinymce/tinymce-react';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import 'react-dom';
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -3397,9 +3396,9 @@ var PageStore = observable((_observable$1 = {
 
             case 20:
               if (!moveCntToAnotherChapter) {
-                NoteStore.setToastText("".concat(moveCntInSameChapter, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
               } else {
-                NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(ChapterStore.chapterList[moveTargetChapterIdx].text, "\uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+                NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
               }
 
               NoteStore.setIsVisibleToast(true);
@@ -3429,15 +3428,15 @@ var PageStore = observable((_observable$1 = {
     var mDay = parseInt(mDate.split('.')[2]);
     var mHour = parseInt(mTime.split(':')[0]);
     var mMinute = parseInt(mTime.split(':')[1]);
-    var meridiem = mHour < 12 ? '오전' : '오후';
     var curDate = new Date();
 
     var convertTwoDigit = function convertTwoDigit(digit) {
       return ('0' + digit).slice(-2);
     };
 
-    if (mHour > 12) mHour = mHour - 12;
-    var basicDate = meridiem + ' ' + convertTwoDigit(mHour) + ':' + convertTwoDigit(mMinute);
+    var m12Hour = mHour > 12 ? mHour - 12 : mHour;
+    var hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
+    var basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
 
     if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear() && !isSharedInfo) {
       // 같은 해
@@ -3502,6 +3501,7 @@ var PageStore = observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
+                logEvent('note', 'clickNoteBtn');
                 _this5.isNewPage = false;
               }
 
@@ -3709,7 +3709,7 @@ var PageStore = observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '(표)'; // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return NoteStore.getI18n('table'); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
   var tdList = node.getElementsByTagName('td');
 
@@ -4682,7 +4682,7 @@ var ChapterStore = observable((_observable$2 = {
       NoteStore.setIsDragging(false);
       if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
       PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
-        NoteStore.setToastText("".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4."));
+        NoteStore.setToastText(NoteStore.getI18n('chapterMove')(moveCnt));
         NoteStore.setIsVisibleToast(true);
       });
     });
@@ -4985,13 +4985,13 @@ var NoteMeta = {
     switch (type) {
       case "viewInfo":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: "정보 보기",
+          title: NoteStore.getI18n('viewInfo'),
           className: "viewInfoModal"
         });
 
       case "forward":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: "다른 룸으로 전달",
+          title: NoteStore.getI18n('forward'),
           className: "forwardModal"
         });
 
@@ -5063,6 +5063,7 @@ var NoteMeta = {
           }
 
           PageStore.handleSave();
+          logEvent('note', 'clickModifyBtn');
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -5161,6 +5162,7 @@ var NoteMeta = {
     }
   },
   setMessageInfoConfig: function setMessageInfoConfig(type) {
+    // const userName = '';
     var fileName = EditorStore$1.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
     var dialogType = {
@@ -5168,8 +5170,7 @@ var NoteMeta = {
       title: '',
       subtitle: '',
       btns: []
-    };
-    var editingUserName = PageStore.editingUserName;
+    }; // const editingUserName = PageStore.editingUserName;
 
     switch (type) {
       case 'chapter':
@@ -5186,7 +5187,7 @@ var NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5203,7 +5204,7 @@ var NoteMeta = {
         break;
 
       case 'fileDelete':
-        dialogType.title = "\uC120\uD0DD\uD55C ".concat(fileName, " \uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+        dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
         dialogType.subtitle = NoteStore.getI18n('notRestore');
         dialogType.btns = this.setBtns('delete');
         break;
@@ -5221,7 +5222,7 @@ var NoteMeta = {
 
       case 'editingPage':
         dialogType.title = NoteStore.getI18n('unableModify');
-        dialogType.subtitle = "".concat(editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = NoteStore.getI18n('otherEditing');
         dialogType.btns = this.setBtns('editingPage');
         break;
 
@@ -5360,6 +5361,7 @@ var languageSet = {
   addNewPage: '새 페이지 추가',
   tag: '태그',
   untitled: '(제목 없음)',
+  table: '(표)',
   newPage: '새 페이지',
   receivedPage: '전달받은 페이지',
   duplicate: '중복된 이름이 있습니다.',
@@ -5374,17 +5376,39 @@ var languageSet = {
   delete: '삭제',
   cancel: '취소',
   modify: '수정',
+  download: '다운로드',
+  amSameDay: function amSameDay(hhmm) {
+    return "\uC624\uC804 ".concat(hhmm);
+  },
+  pmSameDay: function pmSameDay(hhmm) {
+    return "\uC624\uD6C4 ".concat(hhmm);
+  },
   readmode: '읽기 모드',
   save: '저장',
-  // pageotherMove: `${}개의 페이지를 ${} 으로 이동하였습니다.`,
-  // chapterMove: `${}개의 챕터가 이동하였습니다.`,
-  // pageMove: `${}개의 페이지가 이동하였습니다.`,
-  nonePage: '페이지가 없습니다.',
+  pageotherMove: function pageotherMove(moveCnt, targetPage) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(targetPage, " \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
+  chapterMove: function chapterMove(moveCnt) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
+  pageMove: function pageMove(moveCnt) {
+    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+  },
+  noPage: '페이지가 없습니다.',
+  noChapter: '챕터가 없습니다.',
+  // noPageInChapter: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
   searching: '검색중 ...',
   searchContent: '내용 검색',
+  insertLink: '링크 삽입',
   done: '완료',
+  enterText: '텍스트를 입력해 주세요.',
+  enterLink: '링크를 입력해 주세요.',
+  text: '텍스트',
+  link: '링크',
+  editLink: '링크 편집',
+  deleteLink: '링크 삭제',
   invalidLink: '해당 URL은 유효하지 않습니다.',
   attachFile: '파일 첨부',
   attachDrive: 'Drive에서 첨부',
@@ -5392,7 +5416,9 @@ var languageSet = {
   spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
   sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
-  // selectedDelete: `선택한 ${}을 삭제하시겠습니까?`,
+  selectedDelete: function selectedDelete(fileName) {
+    return "\uC120\uD0DD\uD55C ".concat(fileName, "\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+  },
   notRestore: '삭제 후에는 복구할 수 없습니다.',
   editCancel: '페이지를 저장하고 나가시겠습니까?',
   notSave: '저장 안함',
@@ -5400,16 +5426,21 @@ var languageSet = {
   forward: '다른 룸으로 전달',
   sendEmail: 'Mail로 전달',
   export: '내보내기',
-  viewInfo: '정보보기',
+  viewInfo: '정보 보기',
+  title: '제목',
   forwardRoom: '출처 룸',
   forwardMemeber: '전달한 멤버',
   forwardDate: '전달 날짜',
+  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오전 ${hhmm}`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
+  selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
   send: '전달',
-  korCategory: 'ㄱ ~ ㅎ',
-  engCategory: 'A ~ Z',
-  numCategory: '0 ~ 9',
+  korCategory: 'ㄱ~ㅎ',
+  engCategory: 'A~Z',
+  numCategory: '0~9',
   etcCategory: '기타',
   searchTag: '태그 검색',
+  noTagFound: '태그가 없습니다.',
   notag: '페이지 하단에 태그를 입력하여 추가하세요.',
   addTag: '태그 추가',
   notavailableTag: '읽기모드에서는 추가할 수 없습니다.'
@@ -5426,6 +5457,7 @@ var languageSet$1 = {
   addNewPage: 'Create new page',
   tag: 'Tag',
   untitled: '(Untitled)',
+  table: '(Table)',
   newPage: 'New Page',
   receivedPage: 'Page Received',
   duplicate: 'Duplicate name exists',
@@ -5440,17 +5472,39 @@ var languageSet$1 = {
   delete: 'Delete',
   cancel: 'Cancel',
   modify: 'Modify',
+  download: 'Download',
+  amSameDay: function amSameDay(hhmm) {
+    return "".concat(hhmm, " AM");
+  },
+  pmSameDay: function pmSameDay(hhmm) {
+    return "".concat(hhmm, " PM");
+  },
   readmode: 'Read Mode',
   save: 'Save',
-  // pageotherMove: `${} pages moved to ${}`,
-  // chapterMove: `${} chapters moved.`,
-  // pageMove: `${} pages moved.`,
-  nonePage: 'No Page exists',
+  pageotherMove: function pageotherMove(moveCnt, targetPage) {
+    return "".concat(moveCnt, " pages moved to ").concat(targetPage);
+  },
+  chapterMove: function chapterMove(moveCnt) {
+    return "".concat(moveCnt, " chapters moved.");
+  },
+  pageMove: function pageMove(moveCnt) {
+    return "".concat(moveCnt, " pages moved.");
+  },
+  noPage: 'No page exists.',
+  noChapter: 'No chapter exists.',
+  // noPageInChapter: 'To create one'
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
   searching: 'Searching ...',
   searchContent: 'Search keyword',
+  insertLink: 'insert Link',
   done: 'Done',
+  enterText: 'Enter a text.',
+  enterLink: 'Enter a link.',
+  text: 'Text',
+  link: 'Link',
+  editLink: 'Modify',
+  deleteLink: 'Delete',
   invalidLink: 'The URL is not valid',
   attachFile: 'Attach Files',
   attachDrive: 'Attach from Drive',
@@ -5458,7 +5512,9 @@ var languageSet$1 = {
   spaceStorageFull: 'There is not enough storage space to attach the file.',
   sizeoverUpload: 'You can attach up to 20 GB files at a time.',
   countoverUpload: 'You can attach up to 30 files at a time.',
-  // selectedDelete: `Do you want to delete the selected ${}`,
+  selectedDelete: function selectedDelete(fileName) {
+    return "Do you want to delete the selected ".concat(fileName);
+  },
   notRestore: 'This action cannot be undone.',
   editCancel: 'Do you want to save this page and exit?',
   notSave: 'Not Save',
@@ -5467,15 +5523,20 @@ var languageSet$1 = {
   sendEmail: 'Send Email',
   export: 'Export',
   viewInfo: 'View Information',
+  title: 'Title',
   forwardRoom: 'Room',
   forwardMemeber: 'Memeber',
   forwardDate: 'Date',
+  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} AM`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} PM`,
+  selectFromList: 'Select people from the Friends/Members/Rooms list.',
   send: 'Send',
-  korCategory: 'ㄱ ~ ㅎ',
-  engCategory: 'A ~ Z',
-  numCategory: '0 ~ 9',
+  korCategory: 'ㄱ-ㅎ',
+  engCategory: 'A-Z',
+  numCategory: '0-9',
   etcCategory: 'Others',
   searchTag: 'Search tag',
+  noTagFound: 'No tag found.',
   notag: 'Enter a tag at the bottom of the page or choose one from the list.',
   addTag: 'Add Tag',
   notavailableTag: 'Cannot be added in read mode.'
@@ -6952,6 +7013,7 @@ var LNBHeader = function LNBHeader(_ref) {
   var createNewChapter = _ref.createNewChapter;
 
   var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore,
       EditorStore = _useNoteStore.EditorStore;
@@ -7130,7 +7192,7 @@ function _templateObject9$4() {
 }
 
 function _templateObject8$4() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: normal;\n  margin-left: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: calc(100% - 3.5rem);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: normal;\n  margin-left: ", ";\n"]);
 
   _templateObject8$4 = function _templateObject8() {
     return data;
@@ -7276,6 +7338,9 @@ var LNBNewChapterForm = observer(function (_ref) {
               return createNewChapter();
 
             case 10:
+              logEvent('note', 'clickNewChapterBtn');
+
+            case 11:
             case "end":
               return _context.stop();
           }
@@ -7297,6 +7362,7 @@ var LNBNewChapterForm = observer(function (_ref) {
     switch (event.key) {
       case "Enter":
         createNewChapter();
+        logEvent('note', 'clickNewChapterBtn');
         break;
       // esc키 누르면 blur이벤트 먼저 타서 create된다
 
@@ -7397,7 +7463,7 @@ var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
   header.classList.add("custom-dialog-header");
   var title = header.querySelector('.tox-dialog__title');
   title.classList.add("custom-dialog-title");
-  title.textContent = '링크 삽입';
+  title.textContent = NoteStore.getI18n('insertLink');
 };
 
 var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
@@ -7430,14 +7496,14 @@ var textCondition = function textCondition(value) {
     message: ""
   } : {
     result: false,
-    message: "텍스트를 입력해 주세요."
+    message: NoteStore.getI18n('enterText')
   };
 };
 
 var urlSaveCondition = function urlSaveCondition(_value) {
   if (!isFilled(_value)) return {
     result: false,
-    message: "링크를 입력해 주세요."
+    message: NoteStore.getI18n('enterLink')
   };
 
   if (!GlobalVariable.isBasicPlan) {
@@ -7459,7 +7525,7 @@ var urlSaveCondition = function urlSaveCondition(_value) {
 
   return {
     result: false,
-    message: "올바르지 않은 주소입니다."
+    message: NoteStore.getI18n('invalidLink')
   }; // 유효하지 않은 주소라고 메시지 띄우기
 }; // errorMark 관련된 함수
 // params : errorMark, errorCondition, textInput
@@ -7502,8 +7568,8 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
   form.insertBefore(form.children[1], form.children[0]);
   form.classList.add("custom-dialog-form");
   var formStr = {
-    url: "링크",
-    text: "텍스트"
+    url: NoteStore.getI18n('link'),
+    text: NoteStore.getI18n('text')
   };
   var targetInputs$ = form.querySelectorAll('input');
   var saveBtn = dialog.querySelector('.tox-dialog__footer button');
@@ -7523,7 +7589,7 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
   }; // string 바꿔주기, renderValidationErrorMark
 
 
-  _toConsumableArray(form.childNodes).forEach(function (child, idx) {
+  _toConsumableArray(form.childNodes).forEach(function (child) {
     var input$ = child.querySelector('input');
     var type = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
 
@@ -7562,10 +7628,10 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
 */
 
 
-var linkToolbarStr = ['링크 편집', '링크 삭제', '링크로 이동'];
 var changeButtonStyle = function changeButtonStyle(idx, count) {
   var _toolbar$childNodes;
 
+  var linkToolbarStr = [NoteStore.getI18n('editLink'), NoteStore.getI18n('deleteLink'), '링크로 이동'];
   var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
   var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
@@ -7953,7 +8019,7 @@ var getChapterHtml = /*#__PURE__*/function () {
 
             if (noteList.length > 0) {
               noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                html += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
               });
             } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -7987,7 +8053,7 @@ var getPageHtml = /*#__PURE__*/function () {
             _yield$NoteRepository2 = _context6.sent;
             dto = _yield$NoteRepository2.data.dto;
             PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            html = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
             return _context6.abrupt("return", html);
 
           case 8:
@@ -8116,7 +8182,7 @@ var exportPageAsTxt = /*#__PURE__*/function () {
             response = _context7.sent;
             dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
 
-            returnData = "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(dto.note_title, "</span><br />").concat(dto.note_content);
+            returnData = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
             getTxtFormat(dto.note_title, returnData);
 
           case 6:
@@ -8153,7 +8219,7 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
             }
 
             noteList.forEach(function (page, idx) {
-              returnData += "<span style=\"font-size:24px;\">\uC81C\uBAA9 : ".concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
+              returnData += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
             });
             _context8.next = 10;
             break;
@@ -8177,9 +8243,8 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
   };
 }();
 
-var handleClickLink = function handleClickLink(e, el) {
-  e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
-
+var handleClickLink = function handleClickLink(el) {
+  // e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
   var href = el.getAttribute('href');
   var target = el.getAttribute('target');
   openLink({
@@ -8217,7 +8282,7 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
     if (targetList && targetList.length > 0) {
       Array.from(targetList).forEach(function (el) {
         if (el.getAttribute('hasListener')) return;
-        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, event, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
         el.setAttribute('hasListener', true);
       });
     }
@@ -8643,6 +8708,7 @@ var ChapterText = function ChapterText(_ref) {
       isFolded = _ref.isFolded;
 
   var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
       ChapterStore = _useNoteStore.ChapterStore;
 
   var _useState = useState(false),
@@ -8663,7 +8729,7 @@ var ChapterText = function ChapterText(_ref) {
     }, /*#__PURE__*/React.createElement(ChapterTextSpan, {
       onMouseOver: handleTooltip,
       marginLeft: chapter.type === 'notebook' || chapter.type === 'default' ? '1.69rem' : '2.63rem'
-    }, chapter.text)), /*#__PURE__*/React.createElement(ContextMenu, {
+    }, chapter.type === 'shared_page' ? NoteStore.getI18n('receivedPage') : chapter.text)), /*#__PURE__*/React.createElement(ContextMenu, {
       noteType: "chapter",
       chapter: chapter,
       selectableChapterId: ChapterStore.chapterList.length > 1 ? index === 0 ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[index - 1].id : '',
@@ -8738,7 +8804,7 @@ function _templateObject6$5() {
 }
 
 function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 1.25rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 1.75rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject5$5 = function _templateObject5() {
     return data;
@@ -9004,6 +9070,7 @@ var PageList = function PageList(_ref) {
       PageStore.setCreatePageParent(targetId);
       PageStore.setCreatePageParentIdx(chapterIdx);
       PageStore.createNotePage();
+      logEvent('note', 'clickNewPageBtn');
     };
   };
 
@@ -9208,7 +9275,7 @@ var Chapter = function Chapter(_ref) {
       pageIdx: 0,
       chapterId: chapter.id,
       chapterIdx: index
-    }]]));else PageStore.setMoveInfoMap(new Map());
+    }]]));else PageStore.clearMoveInfoMap();
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
@@ -9285,6 +9352,9 @@ const img$e = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 
 var SearchResultNotFound = function SearchResultNotFound(_ref) {
   var searchStr = _ref.searchStr;
+
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore;
 
   var _useState = useState(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -9447,7 +9517,7 @@ var LNBContainer = function LNBContainer() {
                 break;
               }
 
-              ChapterStore.setChapterTitle("새 챕터");
+              ChapterStore.setChapterTitle(NoteStore.getI18n('newChapter'));
               _context.next = 8;
               return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
 
@@ -9731,12 +9801,12 @@ var EditorHeader = function EditorHeader() {
               PageStore.noteEditStart(PageStore.currentPageData.note_id);
 
             case 14:
-              _context2.next = 19;
+              _context2.next = 20;
               break;
 
             case 16:
               if (!(innerText === NoteStore.getI18n('save'))) {
-                _context2.next = 19;
+                _context2.next = 20;
                 break;
               }
 
@@ -9746,6 +9816,9 @@ var EditorHeader = function EditorHeader() {
               });
 
             case 19:
+              logEvent('note', 'clickModifyBtn');
+
+            case 20:
             case "end":
               return _context2.stop();
           }
@@ -10373,7 +10446,10 @@ var TagListContainer = function TagListContainer() {
 
 
   var handleClickTag = function handleClickTag(idx, e) {
-    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else changeFocusedTag(tagList.current[idx], idx);
+    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');else {
+      changeFocusedTag(tagList.current[idx], idx);
+      logEvent('note', 'clickTagBtn');
+    }
   }; // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
   // idx : null 가능
 
@@ -10652,7 +10728,7 @@ var FileLayout = function FileLayout() {
 
         case 46:
           // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
-          handleFileRemove(fileId, index, type);
+          if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
           break;
       }
     };
@@ -10905,6 +10981,7 @@ var EditorContainer = function EditorContainer() {
   var _EditorStore$tinymce, _EditorStore$tinymce2, _EditorStore$tinymce3;
 
   var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
       PageStore = _useNoteStore.PageStore,
       EditorStore = _useNoteStore.EditorStore;
 
@@ -10959,7 +11036,7 @@ var EditorContainer = function EditorContainer() {
     if (isImage) fd.append('image', blobInfo.blob());else fd.append('file', blobInfo.blob());
 
     if (isImage) {
-      var currentImg = EditorStore.getImgElement();
+      // const currentImg = EditorStore.getImgElement();
       EditorStore.setUploadFileDTO({
         fileName: fileName,
         fileExtension: fileExtension,
@@ -11041,7 +11118,8 @@ var EditorContainer = function EditorContainer() {
           reader.onload = function () {
             var id = 'blobid' + new Date().getTime();
             var blobCache = EditorStore.tinymce.editorUpload.blobCache;
-            var base64 = reader.result.split(',')[1];
+            var base64 = reader.result.split(',')[1]; // var baseUri = reader.result;
+
             var blobInfo = blobCache.create(id, file, base64, file.name);
             blobCache.add(blobInfo); // if (isImage) {
             //   var img = new Image();
@@ -11165,13 +11243,13 @@ var EditorContainer = function EditorContainer() {
       }
     }, /*#__PURE__*/React.createElement(ReadModeIcon, {
       src: img$i
-    }), /*#__PURE__*/React.createElement(ReadModeText, null, "\uC77D\uAE30 \uBAA8\uB4DC")) : null, EditorStore.isSearch ? /*#__PURE__*/React.createElement(ReadModeContainer, {
+    }), /*#__PURE__*/React.createElement(ReadModeText, null, NoteStore.getI18n('readmode'))) : null, EditorStore.isSearch ? /*#__PURE__*/React.createElement(ReadModeContainer, {
       style: {
         display: 'flex'
       }
     }, /*#__PURE__*/React.createElement(StyledWaplSearch, {
       onChange: handleSearchInputChange,
-      placeholder: "\uB0B4\uC6A9 \uAC80\uC0C9",
+      placeholder: NoteStore.getI18n('searchContent'),
       onEnterDown: handleSearchEditor,
       onClear: handleClearSearch,
       onSearchPrev: handleSearchPrev,
@@ -11184,7 +11262,7 @@ var EditorContainer = function EditorContainer() {
       id: "noteEditor",
       value: PageStore.currentPageData.note_content,
       init: {
-        selector: 'noteEditor',
+        selector: '#noteEditor',
         menubar: false,
         toolbar_mode: 'floating',
         height: 'calc(100% - 8.8rem)',
@@ -11261,18 +11339,17 @@ var EditorContainer = function EditorContainer() {
           editor.ui.registry.addIcon('fileIcon', "\n                <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n                <svg width=\"20px\" height=\"20px\" viewBox=\"0 0 20 20\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n                    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->\n                    <g id=\"Icon/system/attach2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n                        <path d=\"M16.2531062,9.4970085 L9.68131059,16.1137765 C8.44870863,17.3548135 6.36532803,17.2775531 5.03811517,15.9412578 C3.71044964,14.6045067 3.63371435,12.506869 4.86631631,11.2658321 L12.5598106,3.51968926 C13.2837555,2.79079022 14.5101025,2.83947794 15.2927597,3.6274911 C16.075417,4.41550426 16.1233211,5.64978765 15.3993762,6.37868669 L8.93712984,12.8851558 C8.72184198,13.1019169 8.35343399,13.0827134 8.11533237,12.8429824 C7.87677808,12.6027956 7.85815776,12.2323223 8.07344562,12.0155612 L13.4137633,6.63869838 C13.818021,6.23167424 13.8231955,5.57696759 13.4253208,5.17637015 C13.0274461,4.77577271 12.3771893,4.78098258 11.9729316,5.18800672 L6.63261392,10.5648695 C5.6599822,11.5441572 5.7080297,13.1866593 6.74101052,14.2267091 C7.77353867,15.2663031 9.40487715,15.3146794 10.3775089,14.3353917 L16.8397553,7.82892259 C18.3214954,6.33704257 18.2441654,3.83164057 16.6670816,2.24376443 C15.0899978,0.655888293 12.6016244,0.578029109 11.1198843,2.06990913 L3.42638994,9.81605192 C1.43554145,11.8205243 1.5417026,15.1892806 3.66334199,17.3254389 C5.78452871,19.4611414 9.13084112,19.5684848 11.1216896,17.5640124 L17.6934852,10.9472444 C18.0976159,10.5403481 18.1027888,9.88584718 17.7050391,9.4853756 C17.3072894,9.08490401 16.6572369,9.09011224 16.2531062,9.4970085 Z\" id=\"Fill-1\" fill=\"#000000\"></path>\n                    </g>\n                </svg>\n              ");
           editor.ui.registry.addMenuButton('insertfile', {
             icon: 'fileIcon',
-            tooltip: '파일 첨부',
+            tooltip: NoteStore.getI18n('attachFile'),
             fetch: function fetch(callback) {
               var items = [{
                 type: 'menuitem',
-                text: 'Drive 에서 첨부',
+                text: NoteStore.getI18n('attachDrive'),
                 onAction: function onAction() {
-                  // alert('기능 구현 중입니다.')
                   EditorStore.setIsDrive(true);
                 }
               }, {
                 type: 'menuitem',
-                text: '내 PC 에서 첨부',
+                text: NoteStore.getI18n('attachLocal'),
                 onAction: function onAction() {
                   editor.editorUpload.uploadImages(handleFileBlob('file'));
                 }
@@ -11343,7 +11420,7 @@ var EditorContainer = function EditorContainer() {
 
           editor.ui.registry.addMenuButton('downloadImage', {
             icon: 'save',
-            tooltip: '다운로드',
+            tooltip: NoteStore.getI18n('download'),
             fetch: function fetch(callback) {
               var items = [{
                 type: 'menuitem',
@@ -11375,7 +11452,7 @@ var EditorContainer = function EditorContainer() {
           });
           editor.ui.registry.addButton('deleteImage', {
             icon: 'remove',
-            tooltip: '삭제',
+            tooltip: NoteStore.getI18n('delete'),
             onAction: function onAction() {
               EditorStore.deleteImage();
             }
@@ -11400,7 +11477,7 @@ var EditorContainer = function EditorContainer() {
         quickbars_insert_toolbar: false,
         quickbars_image_toolbar: false,
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-        language: 'ko_KR',
+        language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
         toolbar_drawer: false,
         paste_data_images: true,
         // add images by drag and drop
@@ -11500,7 +11577,7 @@ var PageNotFound = function PageNotFound(_ref) {
 
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ContentHeader, {
     handleBackBtn: handleLayoutBtn
-  }), /*#__PURE__*/React.createElement(ContentBodyCover, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, str, "\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React.createElement(NoneText, null, "\uC2DC\uC791\uD558\uB824\uBA74 \"\uC0C8 ", str, " \uCD94\uAC00\" \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."), /*#__PURE__*/React.createElement(NoneImg, {
+  }), /*#__PURE__*/React.createElement(ContentBodyCover, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, type === 'page' ? NoteStore.getI18n('noPage') : NoteStore.getI18n('noChapter')), /*#__PURE__*/React.createElement(NoneText, null, "\uC2DC\uC791\uD558\uB824\uBA74 \"\uC0C8 ", str, " \uCD94\uAC00\" \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."), /*#__PURE__*/React.createElement(NoneImg, {
     src: img$v,
     alt: "page_not_found"
   }))));
@@ -11571,7 +11648,9 @@ var TagKeyChildren$1 = function TagKeyChildren(_ref) {
                 NoteStore.setTargetLayout('LNB');
               }
 
-            case 8:
+              logEvent('note', 'clickTagBtn');
+
+            case 9:
             case "end":
               return _context.stop();
           }
@@ -11605,12 +11684,6 @@ const img$w = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/Nl
 
 const img$x = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAdVJREFUaAXtlt9GBlEUxb8eoVeJRCKRiOjPU0R0EVFE0UV0EVH0AvVAddEbdJf+6H9U66dvGGPOaarvfN/MWIvtnDn77L3WXhfjdDqGHbADdsAO2AE7YAfsgB2wA3bADtgBO2AH7IAdsAOtc2BYE50p7hTnimlFvwDXhQJuNKAlOU7F8JmLd+2XkrN+c8CV50ZLctyKIU/K/k0xn5CZ3nAUedGSHJdiKBLz/aqYS8BOT3qXcaIlORbF8KEoE/Ci89keKqAXPcu40LDQQ65oq2VlY0PPRKurJekRGxYNfcWK2Mqc5+xZ8Z+/N7X0CPWHeyBYFWtI1JNyU39QRQ21ob5wDhRrYg+Je1Ru8hfquEtNqB9ctcC6VIREPig3UUEld7gb6gNHrbApNSGx98qNR9SS406ofiNSO9DUVkQ0z8GxEnWckQsNS89aY0fqQuJ5GY3m1LMve7ll9du5u7Xe7kpdJrq43ig30g32xXz2TY9GYU9qM/HF9Vo5oniefVPbSOxLdTZE1ZWaRuNA6qsOy91W4FBT/DQ0d1qFY00TGvqoVZN2hxnSelIyNGfkWgkG40V21Q32rR1Wsxl2wA7YATtgB+yAHbADdsAO2AE7YAfsgB3ogwNf3XgBZWI0GlcAAAAASUVORK5CYII=";
 
-var categoryInfo = {
-  KOR: 'ㄱ ~ ㅎ',
-  ENG: 'A ~ Z',
-  NUM: '0 ~ 9',
-  ETC: '기타'
-};
 var defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
 var customExpandIcon = function customExpandIcon(props) {
@@ -11625,13 +11698,19 @@ var customExpandIcon = function customExpandIcon(props) {
 };
 
 var TagContentContainer = observer(function () {
+  var categoryInfo = {
+    KOR: NoteStore.getI18n('korCategory'),
+    ENG: NoteStore.getI18n('engCategory'),
+    NUM: NoteStore.getI18n('numCategory'),
+    ETC: NoteStore.getI18n('etcCategory')
+  };
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(StyledCollapse, {
     defaultActiveKey: defaultActiveArr,
     expandIcon: function expandIcon(panelProps) {
       return customExpandIcon(panelProps);
     },
     expandIconPosition: 'right'
-  }, Object.keys(TagStore.sortedTagList).map(function (category, idx) {
+  }, Object.keys(TagStore.sortedTagList).map(function (category) {
     var _Object$keys;
 
     return (
@@ -11744,7 +11823,10 @@ var TagHeader = function TagHeader() {
 };
 
 var TagNotFound = function TagNotFound() {
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, "\uD0DC\uADF8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React.createElement(NoneText, null, "\uD398\uC774\uC9C0 \uD558\uB2E8\uC5D0 \uD0DC\uADF8\uB97C \uC785\uB825\uD558\uC5EC \uCD94\uAC00\uD558\uC138\uC694."), /*#__PURE__*/React.createElement(NoneImg, {
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore;
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NoneContainer, null, /*#__PURE__*/React.createElement(NoneTitle, null, NoteStore.getI18n('noTagFound')), /*#__PURE__*/React.createElement(NoneText, null, NoteStore.getI18n('notag')), /*#__PURE__*/React.createElement(NoneImg, {
     src: img$v,
     alt: "tag_not_found"
   })));
@@ -11866,7 +11948,7 @@ var DragPreview = function DragPreview(_ref) {
         } : {
           width: "calc(".concat(element.offsetWidth, "px - 1.875rem)")
         }
-      }, NoteStore.draggedType === 'chapter' && renderChapterIcon(item), /*#__PURE__*/React.createElement(DraggedComponentTitle, null, item.text));
+      }, NoteStore.draggedType === 'chapter' && renderChapterIcon(item), /*#__PURE__*/React.createElement(DraggedComponentTitle, null, item.type === 'shared_page' ? NoteStore.getI18n('receivedPage') : item.text));
     }));
   });
 };
@@ -11963,7 +12045,7 @@ var ForwardModal = function ForwardModal(_ref) {
 
   return /*#__PURE__*/React.createElement(RoomShareCover, null, /*#__PURE__*/React.createElement(ItemSelector, {
     isVisibleRoom: true,
-    placeholder: "\uD504\uB80C\uC988/\uAD6C\uC131\uC6D0/\uB8F8 \uBAA9\uB85D\uC5D0\uC11C\n \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+    placeholder: NoteStore.getI18n('selectFromList'),
     onSelectChange: handleSelectChange
   }), /*#__PURE__*/React.createElement(StyledButtonGroup, null, /*#__PURE__*/React.createElement(AddMarginBtn, {
     key: "share",
@@ -12136,10 +12218,13 @@ var NoteApp = function NoteApp(_ref) {
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
-
-      EditorStore.setInitialSearchState();
     };
   }, [roomId, channelId, layoutState]);
+  useEffect(function () {
+    return function () {
+      return EditorStore.setInitialSearchState();
+    };
+  }, [roomId, channelId]);
 
   var handleFoldBtn = function handleFoldBtn(e) {
     var targetX = e.currentTarget.getBoundingClientRect().x;
@@ -12476,7 +12561,7 @@ var ShareNoteMessage = function ShareNoteMessage(_ref2) {
     btns: [{
       type: 'solid',
       shape: 'round',
-      text: '확인',
+      text: NoteStore.getI18n('ok'),
       onClick: handleClick
     }]
   }), /*#__PURE__*/React.createElement(MessageCover, {
