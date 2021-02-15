@@ -84,7 +84,16 @@ const NoteMeta = {
             instance.unmark();
           }
           PageStore.handleSave();
-          logEvent('note', 'clickModifyBtn');
+          import('teespace-core')
+            .then(module => {
+              try {
+                const { logEvent } = module;
+                logEvent('note', 'clickModifyBtn')
+              } catch (e) {
+                console.error(e);
+              }
+            })
+            .catch(e => console.error(e));
         });
         eventList.push(function (e) {
           e.stopPropagation();
