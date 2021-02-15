@@ -9,6 +9,26 @@ var Mark = require('mark.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () {
+            return e[k];
+          }
+        });
+      }
+    });
+  }
+  n['default'] = e;
+  return Object.freeze(n);
+}
+
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -3328,7 +3348,16 @@ var PageStore = mobx.observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
-                teespaceCore.logEvent('note', 'clickNoteBtn');
+                Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
+                  try {
+                    var logEvent = module.logEvent;
+                    logEvent('note', 'clickNoteBtn');
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }).catch(function (e) {
+                  return console.error(e);
+                });
                 _this5.isNewPage = false;
               }
 

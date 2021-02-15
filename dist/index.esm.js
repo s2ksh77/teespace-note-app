@@ -1,5 +1,5 @@
 import { observable, toJS } from 'mobx';
-import { API, logEvent, UserStore, WWMS, RoomStore } from 'teespace-core';
+import { API, UserStore, logEvent, WWMS, RoomStore } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import Mark from 'mark.js';
 
@@ -3320,7 +3320,16 @@ var PageStore = observable((_observable$1 = {
 
                 _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
 
-                logEvent('note', 'clickNoteBtn');
+                import('teespace-core').then(function (module) {
+                  try {
+                    var logEvent = module.logEvent;
+                    logEvent('note', 'clickNoteBtn');
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }).catch(function (e) {
+                  return console.error(e);
+                });
                 _this5.isNewPage = false;
               }
 
