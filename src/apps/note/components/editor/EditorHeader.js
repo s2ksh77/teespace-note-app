@@ -14,7 +14,7 @@ import {
   HeaderDivider,
 } from '../../styles/titleStyle';
 import ContentHeader from '../common/ContentHeader';
-import editingImg from '../../assets/TeeSpace_working.gif';
+import waplWorking from '../../assets/wapl_working.svg';
 import { handleFileSync } from '../common/NoteFile';
 import { useCoreStores } from 'teespace-core';
 import searchImg from '../../assets/search.svg';
@@ -108,7 +108,7 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={editingImg} />}
+          {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />}
           <ModifiedUser>
             {!PageStore.isReadMode()
               ? (userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName)

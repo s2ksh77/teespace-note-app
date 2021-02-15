@@ -69,7 +69,6 @@ export const HeaderDivider = styled.div`
   margin: auto 0.56rem;
 `;
 export const EditingImg = styled.img`
-  width: 1.13rem;
   margin-right: 0.5rem;
 `;
 
