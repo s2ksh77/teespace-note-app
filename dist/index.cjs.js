@@ -3245,6 +3245,7 @@ var PageStore = mobx.observable((_observable$1 = {
               if (!moveCntToAnotherChapter) {
                 NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
               } else {
+                ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
                 NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
               }
 
@@ -4331,16 +4332,18 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var _this7 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    var notbookList, sharedList, tempChapterList;
+    var _yield$NoteRepository11, notbookList, sharedList, tempChapterList;
+
     return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.next = 2;
-            return _this7.getChapterList();
+            return NoteRepository$1.getChapterList(NoteStore.getChannelId());
 
           case 2:
-            notbookList = _context12.sent;
+            _yield$NoteRepository11 = _context12.sent;
+            notbookList = _yield$NoteRepository11.data.dto.notbookList;
 
             _this7.createMap(notbookList);
 
@@ -4349,7 +4352,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
             tempChapterList = [];
 
             if (localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-              _context12.next = 15;
+              _context12.next = 16;
               break;
             }
 
@@ -4357,27 +4360,28 @@ var ChapterStore = mobx.observable((_observable$2 = {
               return chapter.type === 'notebook' || chapter.type === 'default';
             }); // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
 
-            _context12.next = 11;
+            _context12.next = 12;
             return _this7.checkDefaultChapterColor(tempChapterList);
 
-          case 11:
+          case 12:
             tempChapterList = _context12.sent;
 
             _this7.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
 
-            _context12.next = 17;
+            _context12.next = 18;
             break;
 
-          case 15:
+          case 16:
             _this7.applyDifference(NoteStore.getChannelId(), notbookList);
 
             tempChapterList = _this7.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
 
-          case 17:
-            _this7.chapterList = tempChapterList.concat(sharedList);
+          case 18:
+            _this7.setChapterList(tempChapterList.concat(sharedList));
+
             return _context12.abrupt("return", _this7.chapterList);
 
-          case 19:
+          case 20:
           case "end":
             return _context12.stop();
         }
@@ -4656,7 +4660,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _defineProperty(_observable$2, "createShareChapter", function createShareChapter(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-    var _yield$NoteRepository11, dto;
+    var _yield$NoteRepository12, dto;
 
     return regeneratorRuntime.wrap(function _callee17$(_context17) {
       while (1) {
@@ -4666,8 +4670,8 @@ var ChapterStore = mobx.observable((_observable$2 = {
             return NoteRepository$1.createShareChapter(targetList);
 
           case 2:
-            _yield$NoteRepository11 = _context17.sent;
-            dto = _yield$NoteRepository11.data.dto;
+            _yield$NoteRepository12 = _context17.sent;
+            dto = _yield$NoteRepository12.data.dto;
             return _context17.abrupt("return", dto);
 
           case 5:
@@ -4919,7 +4923,17 @@ var NoteMeta = {
           }
 
           PageStore.handleSave();
-          teespaceCore.logEvent('note', 'clickModifyBtn');
+          Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
+            try {
+              var _logEvent = module.logEvent;
+
+              _logEvent('note', 'clickModifyBtn');
+            } catch (e) {
+              console.error(e);
+            }
+          }).catch(function (e) {
+            return console.error(e);
+          });
         });
         eventList.push(function (e) {
           e.stopPropagation();
