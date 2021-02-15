@@ -416,7 +416,7 @@ const ChapterStore = observable({
   },
 
   async getNoteChapterList() {
-    const notbookList = await this.getChapterList();
+    const {data: { dto: { notbookList }}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
     this.createMap(notbookList);
     const sharedList = this.getSharedList(notbookList);
     this.sharedCnt = sharedList.length;
@@ -432,8 +432,8 @@ const ChapterStore = observable({
       this.applyDifference(NoteStore.getChannelId(), notbookList);
       tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
     }
-  
-    this.chapterList = tempChapterList.concat(sharedList);
+    
+    this.setChapterList(tempChapterList.concat(sharedList));
     return this.chapterList;
   },
 
