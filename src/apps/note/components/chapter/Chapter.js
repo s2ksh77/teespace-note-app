@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
@@ -21,10 +21,10 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   // 중복체크 후 다시 입력받기 위해 ref 추가
   const { id, text: title, color } = chapter;
-  const chapterMoveInfo = {
+  const chapterMoveInfo = useMemo(()=>({
     item: chapter,
     chapterIdx: index,
-  };
+  }),[chapter, index]);
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
