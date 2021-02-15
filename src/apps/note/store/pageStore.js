@@ -459,6 +459,7 @@ const PageStore = observable({
       if (!moveCntToAnotherChapter) {
         NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
       } else {
+        ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
         NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
       }
       NoteStore.setIsVisibleToast(true);
