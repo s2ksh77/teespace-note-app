@@ -190,7 +190,6 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             <ContextMenu
               noteType={'page'}
               note={page}
-              chapterIdx={chapterIdx}
               selectablePageId={
                 chapter.children.length > 1
                   ? index === 0

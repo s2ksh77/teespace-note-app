@@ -13,7 +13,7 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, note, chapterIdx, selectableChapterId, selectablePageId, type }) => {
+const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const store = {
