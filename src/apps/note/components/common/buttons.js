@@ -38,7 +38,8 @@ const HeaderButtons = () => {
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
-        if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
+        if (NoteStore.targetLayout === 'Content') ChapterStore.getNoteChapterList();
+        else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
         NoteStore.setTargetLayout(null);
         break;
     }
