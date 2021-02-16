@@ -7015,7 +7015,7 @@ var HeaderButtons = function HeaderButtons() {
 
       default:
         teespaceCore.EventBus.dispatch('onLayoutExpand');
-        if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
+        if (NoteStore.targetLayout === 'Content') ChapterStore.getNoteChapterList();else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
         NoteStore.setTargetLayout(null);
         break;
     }
