@@ -13,38 +13,37 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId, selectablePageId, type }) => {
+const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
+  const store = {
+    'chapter': ChapterStore,
+    'page': PageStore,
+  }
 
+  /**
+   * 챕터/페이지의 이름을 변경한다.
+   */
   const renameComponent = () => {
-    // 이름을 변경한다.
-    switch (noteType) {
-      case "chapter":
-        ChapterStore.setRenameChapterId(chapter.id);
-        ChapterStore.setRenameChapterPrevText(chapter.text);
-        ChapterStore.setRenameChapterText(chapter.text);
-        break;
-      case "page":
-        PageStore.setRenamePageId(page.id);
-        PageStore.setRenamePagePrevText(page.text);
-        PageStore.setRenamePageText(page.text);
-        PageStore.setIsRename(true);
-        break;
-      default:
-        break;
-    }
+    const targetStore = store[noteType];
+    if (!targetStore) return;
+
+    targetStore.setRenameId(note.id);
+    targetStore.setRenamePrevText(note.text);
+    targetStore.setRenameText(note.text);
   };
 
+  /**
+   * 챕터/페이지를 삭제한다.
+   */
   const deleteComponent = async () => {
-    // 챕터/페이지를 삭제한다.
     ChapterStore.setSelectableChapterId(selectableChapterId);
     PageStore.setSelectablePageId(selectablePageId);
 
     switch (noteType) {
-      case "chapter":
-        ChapterStore.setDeleteChapterId(chapter.id);
-        ChapterStore.getChapterChildren(chapter.id).then(async dto => {
+      case 'chapter':
+        ChapterStore.setDeleteChapterId(note.id);
+        ChapterStore.getChapterChildren(note.id).then(async dto => {
           if (dto.noteList.length > 0) {
             const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
             if (editingList.length === 1) {
@@ -59,11 +58,10 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
         });
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
-      case "page":
-        PageStore.getNoteInfoList(page.id).then(async dto => {
+      case 'page':
+        PageStore.getNoteInfoList(note.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
-            PageStore.setDeletePageList({ note_id: page.id, type: page.type });
-            PageStore.setDeleteParentIdx(chapterIdx);
+            PageStore.setDeletePageList({ note_id: note.id });
             NoteStore.setModalInfo('page');
           } else {
             const res = await userStore.fetchProfile(dto.is_edit);
@@ -80,35 +78,29 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
 
   const shareComponent = () => {
     NoteStore.setShareNoteType(noteType);
-    NoteStore.setShareContent(noteType === 'chapter' ? chapter : page);
+    NoteStore.setShareContent(note);
     NoteStore.setIsShared(true);
     NoteStore.setModalInfo('forward');
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const exportComponent = isMailShare => {
-    switch (noteType) {
-      case 'chapter':
-        ChapterStore.setExportTitle(chapter.text);
-        exportData(isMailShare, noteType, chapter.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
-        break;
-      case 'page':
-        exportData(isMailShare, noteType, page.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
-        break;
-      default: break;
-    }
+    const targetStore = store[noteType];
+    if (!targetStore) return;
+
+    if (noteType === 'chapter') targetStore.setExportTitle(note.text);
+    exportData(isMailShare, noteType, note.id);
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
   const exportTxtComponent = () => {
     switch (noteType) {
       case 'chapter':
-        exportChapterAsTxt(chapter.text, chapter.id);
+        exportChapterAsTxt(note.text, note.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
-        exportPageAsTxt(page.id);
+        exportPageAsTxt(note.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
@@ -116,8 +108,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
   }
 
   const infoComponent = () => {
-    if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapter.id);
-    else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, page.id);
+    NoteStore.handleSharedInfo(noteType, note.id);
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
@@ -141,19 +132,18 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-      {type === 'shared_page'
-        ? null :
-        <Item key="0">{NoteStore.getI18n('rename')}</Item>}
+      {type !== 'shared_page' 
+        && <Item key="0">{NoteStore.getI18n('rename')}</Item>}
       <Item key="1">{NoteStore.getI18n('delete')}</Item>
       <Item key="2">{NoteStore.getI18n('forward')}</Item>
-      {spaceStore.currentSpace?.plan !== 'BASIC' && <Item key="3">{NoteStore.getI18n('sendEmail')}</Item>}
+      {spaceStore.currentSpace?.plan !== 'BASIC' 
+        && <Item key="3">{NoteStore.getI18n('sendEmail')}</Item>}
       <SubMenu title={NoteStore.getI18n('export')} onTitleClick={handleSubMenuClick}>
         <Item key="4">PDF 형식(.pdf)</Item>
         <Item key="5">TXT 형식(.txt)</Item>
       </SubMenu>
       {type === 'shared'
-        ? <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>
-        : null}
+        && <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>}
     </Menu>
   );
 

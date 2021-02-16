@@ -39,7 +39,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
         </Tooltip>
         <ContextMenu
           noteType={"chapter"}
-          chapter={chapter}
+          note={chapter}
           selectableChapterId={
             ChapterStore.chapterList.length > 1
               ? index === 0
