@@ -189,9 +189,8 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             </Tooltip>
             <ContextMenu
               noteType={'page'}
-              chapter={chapter}
+              note={page}
               chapterIdx={chapterIdx}
-              page={page}
               selectablePageId={
                 chapter.children.length > 1
                   ? index === 0

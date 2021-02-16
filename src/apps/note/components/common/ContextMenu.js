@@ -13,37 +13,37 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId, selectablePageId, type }) => {
+const ContextMenu = ({ noteType, note, chapterIdx, selectableChapterId, selectablePageId, type }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
+  const store = {
+    'chapter': ChapterStore,
+    'page': PageStore,
+  }
 
+  /**
+   * 챕터/페이지의 이름을 변경한다.
+   */
   const renameComponent = () => {
-    // 이름을 변경한다.
-    switch (noteType) {
-      case "chapter":
-        ChapterStore.setRenameChapterId(chapter.id);
-        ChapterStore.setRenameChapterPrevText(chapter.text);
-        ChapterStore.setRenameChapterText(chapter.text);
-        break;
-      case "page":
-        PageStore.setRenamePageId(page.id);
-        PageStore.setRenamePagePrevText(page.text);
-        PageStore.setRenamePageText(page.text);
-        break;
-      default:
-        break;
-    }
+    const targetStore = store[noteType];
+    if (!targetStore) return;
+
+    targetStore.setRenameId(note.id);
+    targetStore.setRenamePrevText(note.text);
+    targetStore.setRenameText(note.text);
   };
 
+  /**
+   * 챕터/페이지를 삭제한다.
+   */
   const deleteComponent = async () => {
-    // 챕터/페이지를 삭제한다.
     ChapterStore.setSelectableChapterId(selectableChapterId);
     PageStore.setSelectablePageId(selectablePageId);
 
     switch (noteType) {
-      case "chapter":
-        ChapterStore.setDeleteChapterId(chapter.id);
-        ChapterStore.getChapterChildren(chapter.id).then(async dto => {
+      case 'chapter':
+        ChapterStore.setDeleteChapterId(note.id);
+        ChapterStore.getChapterChildren(note.id).then(async dto => {
           if (dto.noteList.length > 0) {
             const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
             if (editingList.length === 1) {
@@ -58,8 +58,8 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
         });
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
-      case "page":
-        PageStore.getNoteInfoList(page.id).then(async dto => {
+      case 'page':
+        PageStore.getNoteInfoList(note.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
             PageStore.setDeletePageList({ note_id: note.id });
             NoteStore.setModalInfo('page');
@@ -78,35 +78,29 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
 
   const shareComponent = () => {
     NoteStore.setShareNoteType(noteType);
-    NoteStore.setShareContent(noteType === 'chapter' ? chapter : page);
+    NoteStore.setShareContent(note);
     NoteStore.setIsShared(true);
     NoteStore.setModalInfo('forward');
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const exportComponent = isMailShare => {
-    switch (noteType) {
-      case 'chapter':
-        ChapterStore.setExportTitle(chapter.text);
-        exportData(isMailShare, noteType, chapter.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
-        break;
-      case 'page':
-        exportData(isMailShare, noteType, page.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
-        break;
-      default: break;
-    }
+    const targetStore = store[noteType];
+    if (!targetStore) return;
+
+    if (noteType === 'chapter') targetStore.setExportTitle(note.text);
+    exportData(isMailShare, noteType, note.id);
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
   const exportTxtComponent = () => {
     switch (noteType) {
       case 'chapter':
-        exportChapterAsTxt(chapter.text, chapter.id);
+        exportChapterAsTxt(note.text, note.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
-        exportPageAsTxt(page.id);
+        exportPageAsTxt(note.id);
         NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
@@ -114,8 +108,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
   }
 
   const infoComponent = () => {
-    if (noteType === 'chapter') NoteStore.handleSharedInfo(noteType, chapter.id);
-    else if (noteType === 'page') NoteStore.handleSharedInfo(noteType, page.id);
+    NoteStore.handleSharedInfo(noteType, note.id);
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
