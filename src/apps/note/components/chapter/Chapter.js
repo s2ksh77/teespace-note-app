@@ -97,20 +97,20 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     const {
       target: { value },
     } = e;
-    ChapterStore.setRenameChapterText(value);
+    ChapterStore.setRenameText(value);
   };
 
   const handleChapterTextInput = (isEscape) => () => {
     // escape면 원래대로 돌아가기
     if (isEscape) { }
     // 기존과 동일 이름인 경우 통과
-    else if (ChapterStore.renameChapterText === title) { }
+    else if (ChapterStore.renameText === title) { }
     // 다 통과했으면 rename 가능
     else {
       ChapterStore.renameNoteChapter(color);
     }
 
-    ChapterStore.setRenameChapterId('');
+    ChapterStore.setRenameId('');
     NoteStore.LNBChapterCoverRef.removeEventListener(
       'wheel',
       NoteStore.disableScroll,
@@ -195,7 +195,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
                 : '')
           }
           ref={
-            !ChapterStore.renameChapterId
+            !ChapterStore.renameId
               ? (!isShared
                 ? (node) => drag(dropChapter(node))
                 : drag)
@@ -204,11 +204,11 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
           onClick={onClickChapterBtn}
         >
           {renderChapterIcon()}
-          {ChapterStore.getRenameChapterId() === id ? (
+          {ChapterStore.getRenameId() === id ? (
             <ChapterTextInput
               maxLength="200"
-              placeholder={ChapterStore.renameChapterPrevText}
-              value={ChapterStore.renameChapterText}
+              placeholder={ChapterStore.renamePrevText}
+              value={ChapterStore.renameText}
               onClick={e => e.stopPropagation()}
               onChange={handleChapterName}
               onBlur={handleChapterTextInput(false)}

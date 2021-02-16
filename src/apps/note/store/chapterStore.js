@@ -39,9 +39,9 @@ const ChapterStore = observable({
   searchResult: {}, // {chapter:[], page:[]} 형태
   deleteChapterId: '',
   selectableChapterId: '',
-  renameChapterId: '',
-  renameChapterPrevText: '',
-  renameChapterText: '',
+  renameId: '',
+  renamePrevText: '',
+  renameText: '',
   isMovingChapter: false,
   moveInfoMap: new Map(),
   isCtrlKeyDown: false,
@@ -77,23 +77,23 @@ const ChapterStore = observable({
   setSelectableChapterId(chapterId) {
     this.selectableChapterId = chapterId;
   },
-  getRenameChapterId() {
-    return this.renameChapterId;
+  getRenameId() {
+    return this.renameId;
   },
-  setRenameChapterId(chapterId) {
-    this.renameChapterId = chapterId;
+  setRenameId(chapterId) {
+    this.renameId = chapterId;
   },
-  getRenameChapterPrevText() {
-    return this.renameChapterPrevText;
+  getRenamePrevText() {
+    return this.renamePrevText;
   },
-  setRenameChapterPrevText(chapterText) {
-    this.renameChapterPrevText = chapterText;
+  setRenamePrevText(chapterText) {
+    this.renamePrevText = chapterText;
   },
-  getRenameChapterText() {
-    return this.renameChapterText;
+  getRenameText() {
+    return this.renameText;
   },
-  setRenameChapterText(chapterText) {
-    this.renameChapterText = chapterText;
+  setRenameText(chapterText) {
+    this.renameText = chapterText;
   },
   getIsMovingChapter() {
     return this.isMovingChapter;
@@ -491,7 +491,7 @@ const ChapterStore = observable({
   },
 
   renameNoteChapter(color) {
-    this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(dto => {
+    this.renameChapter(this.renameId, this.renameText, color).then(dto => {
       if (this.moveInfoMap.get(dto.id)) this.moveInfoMap.get(dto.id).item.text = dto.text;
       this.getNoteChapterList();
     });

@@ -22,12 +22,10 @@ const PageStore = observable({
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
-  deleteParentIdx: '',
   selectablePageId: '',
-  isRename: false,
-  renamePageId: '',
-  renamePagePrevText: '',
-  renamePageText: '',
+  renameId: '',
+  renamePrevText: '',
+  renameText: '',
   isMovingPage: false,
   moveInfoMap: new Map(),
   isCtrlKeyDown: false,
@@ -138,12 +136,6 @@ const PageStore = observable({
     this.deletePageList = [];
     this.deletePageList.push(page);
   },
-  getDeleteParentIdx() {
-    return this.deleteParentIdx;
-  },
-  setDeleteParentIdx(chapterIdx) {
-    this.deleteParentIdx = chapterIdx;
-  },
   getSelectablePageId() {
     return this.selectablePageId;
   },
@@ -151,29 +143,23 @@ const PageStore = observable({
     this.selectablePageId = pageId;
   },
 
-  getIsRename() {
-    return this.isRename;
+  getRenameId() {
+    return this.renameId;
   },
-  setIsRename(flag) {
-    this.isRename = flag;
+  setRenameId(pageId) {
+    this.renameId = pageId;
   },
-  getRenamePageId() {
-    return this.renamePageId;
+  getRenamePrevText() {
+    return this.renamePrevText;
   },
-  setRenamePageId(pageId) {
-    this.renamePageId = pageId;
+  setRenamePrevText(pageText) {
+    this.renamePrevText = pageText;
   },
-  getRenamePagePrevText() {
-    return this.renamePagePrevText;
+  getRenameText() {
+    return this.renameText;
   },
-  setRenamePagePrevText(pageText) {
-    this.renamePagePrevText = pageText;
-  },
-  getRenamePageText() {
-    return this.renamePageText;
-  },
-  setRenamePageText(pageText) {
-    this.renamePageText = pageText;
+  setRenameText(pageText) {
+    this.renameText = pageText;
   },
 
   getIsMovingPage() {
@@ -366,7 +352,7 @@ const PageStore = observable({
   },
 
   renameNotePage(chapterId) {
-    this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(dto => {
+    this.renamePage(this.renameId, this.renameText, chapterId).then(dto => {
       if (this.moveInfoMap.get(dto.note_id)) {
         this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -592,7 +578,6 @@ const PageStore = observable({
   async handleNoneEdit() {
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.createPageId });
-      this.deleteParentIdx = this.createParentIdx;
       this.deleteNotePage();
     } else {
       if (this.otherEdit) return;

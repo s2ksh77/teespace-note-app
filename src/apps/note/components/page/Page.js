@@ -106,16 +106,15 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     const {
       target: { value },
     } = e;
-    PageStore.setRenamePageText(value);
+    PageStore.setRenameText(value);
   };
 
   const handlePageTextInput = (isEscape) => {
     if (!isEscape) {
       PageStore.renameNotePage(chapter.id);
-      PageStore.setIsRename(false);
     }
 
-    PageStore.setRenamePageId('');
+    PageStore.setRenameId('');
     NoteStore.LNBChapterCoverRef.removeEventListener(
       'wheel',
       NoteStore.disableScroll,
@@ -131,7 +130,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   return useObserver(() => (
     <PageCover
       ref={
-        !PageStore.renamePageId
+        !PageStore.renameId
           ? (page.type === 'note' 
             ? (node) => drag(drop(node))
             : drag)
@@ -141,18 +140,12 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       className={'page-li'}
       onClick={handleSelectPage}
     >
-      <PageMargin
-        style={
-          page.id === PageStore.getRenamePageId() && PageStore.isRename
-            ? { background: '#ffffff' }
-            : { background: 'unset' }
-        }
-      />
-      {PageStore.getRenamePageId() === page.id ? (
+      <PageMargin />
+      {PageStore.getRenameId() === page.id ? (
         <PageTextInput
           maxLength="200"
-          placeholder={PageStore.renamePagePrevText}
-          value={PageStore.renamePageText}
+          placeholder={PageStore.renamePrevText}
+          value={PageStore.renameText}
           onClick={e => e.stopPropagation()}
           onChange={handlePageName}
           onBlur={handlePageTextInput.bind(null, false)}

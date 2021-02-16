@@ -29,7 +29,6 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
         PageStore.setRenamePageId(page.id);
         PageStore.setRenamePagePrevText(page.text);
         PageStore.setRenamePageText(page.text);
-        PageStore.setIsRename(true);
         break;
       default:
         break;
@@ -62,8 +61,7 @@ const ContextMenu = ({ noteType, chapter, chapterIdx, page, selectableChapterId,
       case "page":
         PageStore.getNoteInfoList(page.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
-            PageStore.setDeletePageList({ note_id: page.id, type: page.type });
-            PageStore.setDeleteParentIdx(chapterIdx);
+            PageStore.setDeletePageList({ note_id: note.id });
             NoteStore.setModalInfo('page');
           } else {
             const res = await userStore.fetchProfile(dto.is_edit);
