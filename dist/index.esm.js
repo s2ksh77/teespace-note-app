@@ -2607,12 +2607,10 @@ var PageStore = observable((_observable$1 = {
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
-  deleteParentIdx: '',
   selectablePageId: '',
-  isRename: false,
-  renamePageId: '',
-  renamePagePrevText: '',
-  renamePageText: '',
+  renameId: '',
+  renamePrevText: '',
+  renameText: '',
   isMovingPage: false,
   moveInfoMap: new Map(),
   isCtrlKeyDown: false,
@@ -2718,41 +2716,29 @@ var PageStore = observable((_observable$1 = {
     this.deletePageList = [];
     this.deletePageList.push(page);
   },
-  getDeleteParentIdx: function getDeleteParentIdx() {
-    return this.deleteParentIdx;
-  },
-  setDeleteParentIdx: function setDeleteParentIdx(chapterIdx) {
-    this.deleteParentIdx = chapterIdx;
-  },
   getSelectablePageId: function getSelectablePageId() {
     return this.selectablePageId;
   },
   setSelectablePageId: function setSelectablePageId(pageId) {
     this.selectablePageId = pageId;
   },
-  getIsRename: function getIsRename() {
-    return this.isRename;
+  getRenameId: function getRenameId() {
+    return this.renameId;
   },
-  setIsRename: function setIsRename(flag) {
-    this.isRename = flag;
+  setRenameId: function setRenameId(pageId) {
+    this.renameId = pageId;
   },
-  getRenamePageId: function getRenamePageId() {
-    return this.renamePageId;
+  getRenamePrevText: function getRenamePrevText() {
+    return this.renamePrevText;
   },
-  setRenamePageId: function setRenamePageId(pageId) {
-    this.renamePageId = pageId;
+  setRenamePrevText: function setRenamePrevText(pageText) {
+    this.renamePrevText = pageText;
   },
-  getRenamePagePrevText: function getRenamePagePrevText() {
-    return this.renamePagePrevText;
+  getRenameText: function getRenameText() {
+    return this.renameText;
   },
-  setRenamePagePrevText: function setRenamePagePrevText(pageText) {
-    this.renamePagePrevText = pageText;
-  },
-  getRenamePageText: function getRenamePageText() {
-    return this.renamePageText;
-  },
-  setRenamePageText: function setRenamePageText(pageText) {
-    this.renamePageText = pageText;
+  setRenameText: function setRenameText(pageText) {
+    this.renameText = pageText;
   },
   getIsMovingPage: function getIsMovingPage() {
     return this.isMovingPage;
@@ -3080,7 +3066,7 @@ var PageStore = observable((_observable$1 = {
   renameNotePage: function renameNotePage(chapterId) {
     var _this3 = this;
 
-    this.renamePage(this.renamePageId, this.renamePageText, chapterId).then(function (dto) {
+    this.renamePage(this.renameId, this.renameText, chapterId).then(function (dto) {
       if (_this3.moveInfoMap.get(dto.note_id)) {
         _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -3435,7 +3421,7 @@ var PageStore = observable((_observable$1 = {
           switch (_context12.prev = _context12.next) {
             case 0:
               if (!_this10.isNewPage) {
-                _context12.next = 6;
+                _context12.next = 5;
                 break;
               }
 
@@ -3443,25 +3429,23 @@ var PageStore = observable((_observable$1 = {
                 note_id: _this10.createPageId
               });
 
-              _this10.deleteParentIdx = _this10.createParentIdx;
-
               _this10.deleteNotePage();
 
-              _context12.next = 11;
+              _context12.next = 10;
               break;
 
-            case 6:
+            case 5:
               if (!_this10.otherEdit) {
-                _context12.next = 10;
+                _context12.next = 9;
                 break;
               }
 
               return _context12.abrupt("return");
 
-            case 10:
+            case 9:
               _this10.noteNoneEdit(_this10.currentPageId);
 
-            case 11:
+            case 10:
             case "end":
               return _context12.stop();
           }
@@ -3701,9 +3685,9 @@ var ChapterStore = observable((_observable$2 = {
   // {chapter:[], page:[]} 형태
   deleteChapterId: '',
   selectableChapterId: '',
-  renameChapterId: '',
-  renameChapterPrevText: '',
-  renameChapterText: '',
+  renameId: '',
+  renamePrevText: '',
+  renameText: '',
   isMovingChapter: false,
   moveInfoMap: new Map(),
   isCtrlKeyDown: false,
@@ -3739,23 +3723,23 @@ var ChapterStore = observable((_observable$2 = {
   setSelectableChapterId: function setSelectableChapterId(chapterId) {
     this.selectableChapterId = chapterId;
   },
-  getRenameChapterId: function getRenameChapterId() {
-    return this.renameChapterId;
+  getRenameId: function getRenameId() {
+    return this.renameId;
   },
-  setRenameChapterId: function setRenameChapterId(chapterId) {
-    this.renameChapterId = chapterId;
+  setRenameId: function setRenameId(chapterId) {
+    this.renameId = chapterId;
   },
-  getRenameChapterPrevText: function getRenameChapterPrevText() {
-    return this.renameChapterPrevText;
+  getRenamePrevText: function getRenamePrevText() {
+    return this.renamePrevText;
   },
-  setRenameChapterPrevText: function setRenameChapterPrevText(chapterText) {
-    this.renameChapterPrevText = chapterText;
+  setRenamePrevText: function setRenamePrevText(chapterText) {
+    this.renamePrevText = chapterText;
   },
-  getRenameChapterText: function getRenameChapterText() {
-    return this.renameChapterText;
+  getRenameText: function getRenameText() {
+    return this.renameText;
   },
-  setRenameChapterText: function setRenameChapterText(chapterText) {
-    this.renameChapterText = chapterText;
+  setRenameText: function setRenameText(chapterText) {
+    this.renameText = chapterText;
   },
   getIsMovingChapter: function getIsMovingChapter() {
     return this.isMovingChapter;
@@ -4446,7 +4430,7 @@ var ChapterStore = observable((_observable$2 = {
 }), _defineProperty(_observable$2, "renameNoteChapter", function renameNoteChapter(color) {
   var _this10 = this;
 
-  this.renameChapter(this.renameChapterId, this.renameChapterText, color).then(function (dto) {
+  this.renameChapter(this.renameId, this.renameText, color).then(function (dto) {
     if (_this10.moveInfoMap.get(dto.id)) _this10.moveInfoMap.get(dto.id).item.text = dto.text;
 
     _this10.getNoteChapterList();
