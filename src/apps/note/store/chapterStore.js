@@ -3,6 +3,8 @@ import NoteRepository from "./noteRepository";
 import NoteStore from "./noteStore";
 import PageStore from "./pageStore";
 import { checkNotDuplicate } from '../components/common/validators';
+import {CHAPTER_TYPE} from '../GlobalVariable';
+import NoteUtil from '../NoteUtil';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -301,30 +303,19 @@ const ChapterStore = observable({
   /**
    * ChapterStore Business Logic in NoteApp
    */
-  createMap(notebookList) {
+  // normalChapters = type이 defualt, notebook인 chapter
+  createMap(normalChapters) {
     // chapterMap: {key: chapterId, value: chapterIndex on server}
     // pageMap: {key: pageId, value: {parent: chapterIndex on server, idx: pageIndex on server}}
     this.chapterMap.clear();
     this.pageMap.clear();
 
-    notebookList.forEach((chapter, i) => {
-      if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
-
+    normalChapters.forEach((chapter, i) => {
       this.chapterMap.set(chapter.id, i);
       chapter.children.forEach((page, j) => {
         this.pageMap.set(page.id, { parent: chapter.id, idx: j });
       });
     });
-  },
-
-  getSharedList(notebookList) {
-    const sharedList = [];
-    notebookList.forEach((chapter, idx) => {
-      if (chapter.type === 'shared_page') sharedList.splice(0, 0, notebookList[idx]);
-      else if (chapter.type === 'shared') sharedList.push(notebookList[idx]);
-    });
-
-    return sharedList;
   },
 
   setLocalStorageItem(targetChannelId, tempChapterList) {
@@ -338,7 +329,7 @@ const ChapterStore = observable({
 
     localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
   },
-
+  // notebookList의 chapter.type은 default, notebook만 있음
   applyDifference(targetChannelId, notebookList) {
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
 
@@ -346,8 +337,6 @@ const ChapterStore = observable({
     const createdChapterIds = [];
     let chapterIds = item.map((chapter) => chapter.id);
     notebookList.forEach((chapter) => {
-      if (chapter.type === 'shared_page' || chapter.type === 'shared') return;
-
       if (!chapterIds.includes(chapter.id)) {
         createdChapterIds.push({ id: chapter.id, children: chapter.children.map((page) => page.id) });
       }
@@ -403,65 +392,66 @@ const ChapterStore = observable({
     return localChapterList;
   },
 
-  async checkDefaultChapterColor(notbookList) {
-    const idx = notbookList.findIndex(chapter => chapter.type === "default");
-    if (idx === -1) return notbookList;
-
-    const defaultChapter = notbookList.splice(idx, 1);
-    if (defaultChapter[0]?.color === null) {
-      const { color } = await this.updateChapterColor(defaultChapter[0].id);
-      defaultChapter[0].color = color;
+  async checkDefaultChapterColor(notebookList) {
+    if (notebookList.length === 0 || notebookList[0].type !== 'default') return notebookList;
+    if (notebookList[0].color === null && notebookList[0].id) {
+      const { color } = await this.updateChapterColor(notebookList[0].id);
+      notebookList[0].color = color;
     }
-    return notbookList.concat(defaultChapter);
+    return notebookList;
+  },
+
+  // type : defalut, notebook, shared_page, shared
+  // default chapterColor도 null이면 update 해준다
+  async sortServerChapterList(notebookList) {
+    let normalChapters=[], sharedChapters=[];
+    if (notebookList.length === 0) return {normalChapters, sharedChapters};
+    const {getChapterNumType} = NoteUtil;
+    // type : defalut(0), notebook(1), shared_page, shared 순으로 sort된다
+    notebookList.sort((a,b) => getChapterNumType(a.type)-getChapterNumType(b.type));
+    
+    notebookList = await this.checkDefaultChapterColor(notebookList);
+    const firstSharedIdx = notebookList.findIndex(chapter=> [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED].includes(chapter.type));
+    
+    switch (firstSharedIdx) {
+      case 0: // 전달만 있는 경우
+        sharedChapters = notebookList.slice(0);
+        break;
+      case -1: // 전달 챕터/페이지 없는 경우
+        normalChapters = notebookList.slice(0);
+        break;
+      default: // 전달인거, 아닌거 다 있는 경우
+        normalChapters = notebookList.slice(0,firstSharedIdx);
+        sharedChapters = notebookList.slice(firstSharedIdx);
+        break;
+    }    
+    return {normalChapters, sharedChapters};
   },
 
   async getNoteChapterList() {
     const {data: { dto: { notbookList }}} = await NoteRepository.getChapterList(NoteStore.getChannelId());
-    this.createMap(notbookList);
-    const sharedList = this.getSharedList(notbookList);
-    this.sharedCnt = sharedList.length;
-
-    let tempChapterList = [];
+    // type순 정렬 및 반환
+    let {normalChapters, sharedChapters} = await this.sortServerChapterList(notbookList);
+    this.createMap(normalChapters);
+    this.sharedCnt = sharedChapters.length;
+    
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-      tempChapterList = notbookList.filter((chapter) => chapter.type === 'notebook' || chapter.type === 'default');
-      // TODO : update chapterColor 로직 더 좋은 아이디어로 수정하기
-      tempChapterList = await this.checkDefaultChapterColor(tempChapterList);
-      this.setLocalStorageItem(NoteStore.getChannelId(), tempChapterList);
-    }
-    else {
-      this.applyDifference(NoteStore.getChannelId(), notbookList);
-      tempChapterList = this.getLocalStorageItem(NoteStore.getChannelId(), notbookList);
+      this.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+    } else {
+      this.applyDifference(NoteStore.getChannelId(), normalChapters);
+      normalChapters = this.getLocalStorageItem(NoteStore.getChannelId(), normalChapters);
     }
     
-    this.setChapterList(tempChapterList.concat(sharedList));
+    this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
   },
-
-  sortChapterList(chapterList) {
-    let _roomChapterList = [], _sharedPageList = [], _sharedChapterList = [];
-
-    const sortedChapterList = chapterList.map((chapter, idx) => {
-      if (chapter.type === "shared_page") _sharedPageList.push(chapter);
-      else if (chapter.type === 'shared') _sharedChapterList.push(chapter);
-      else _roomChapterList.push(chapter);
-
-      if (!idx) {
-        chapter.selectableChapterId = chapterList[1]?.id;
-        chapter.selectablePageId = chapterList[1]?.children[0]?.id;
-      } else {
-        chapter.selectableChapterId = chapterList[idx - 1].id;
-        chapter.selectablePageId = chapterList[idx - 1].children[0]?.id;
-      }
-      return chapter;
-    })
-
-    this.setSortedChapterList({
-      roomChapterList: _roomChapterList,
-      sharedPageList: _sharedPageList,
-      sharedChapterList: _sharedChapterList
-    })
-
-    return sortedChapterList;
+  
+  // localStorage에서 page 얻기
+  getFirstPageFromChapter(chapterId) {
+    const items = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+    const chapter = items.find(chapter => chapter.id === chapterId);
+    if (!chapter || chapter.children.length === 0) return null;
+    return chapter.children[0];
   },
 
   async createNoteChapter(chapterTitle, chapterColor) {

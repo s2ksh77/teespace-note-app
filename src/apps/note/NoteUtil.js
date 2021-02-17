@@ -1,3 +1,5 @@
+import {CHAPTER_TYPE} from './GlobalVariable';
+
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
   // encodeURI : 매개변수로 전달된 문자열을 완전한 URI 전체라고 간주한다.
@@ -24,7 +26,17 @@ const NoteUtil = {
   // encoding해서 일치 비교
   isSameStr(str1,str2) {
     return this.encodeStr(str1) === this.encodeStr(str2);
-  }
+  },
+
+  getChapterNumType(type) {
+    switch (type) {
+      case CHAPTER_TYPE.DEFAULT:return 0;
+      case CHAPTER_TYPE.NOTEBOOK:return 1;
+      case CHAPTER_TYPE.SHARED_PAGE:return 2;
+      case CHAPTER_TYPE.SHARED:return 3;
+      default:return null;
+    }
+  },
 }
 
 export default NoteUtil;
