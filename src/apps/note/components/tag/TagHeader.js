@@ -53,7 +53,11 @@ const TagHeader = () => {
   }
 
   useEffect(() => {
-    return () => setValue('');
+    return () => {
+      setValue('');
+      TagStore.setIsSearching(false);
+      TagStore.setSearchStr('');
+    }
   }, [NoteStore.showPage]);
 
   return useObserver(() => (
