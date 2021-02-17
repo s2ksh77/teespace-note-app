@@ -154,8 +154,6 @@ const NoteMeta = {
         return [defaultBtn1];
       case 'editCancel':
         return [{ ...defaultBtn1, text: NoteStore.getI18n('save') }, { ...defaultBtn1, text: NoteStore.getI18n('notSave') }, defaultBtn2];
-      case 'failOpenMail':
-        return [defaultBtn1];
       default:
         return;
     }
@@ -190,7 +188,7 @@ const NoteMeta = {
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = `${PageStore.editingUserCount}명이 수정 중입니다.`;
+        dialogType.subtitle = NoteStore.getI18n('othersEditing');
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
@@ -208,7 +206,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
-        dialogType.title = '이미 있는 태그 이름입니다.';
+        dialogType.title = NoteStore.getI18n('usedTagName');
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
@@ -217,12 +215,12 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
-        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('deletedNote');
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
-        dialogType.subtitle = `(${EditorStore.uploadLength}개 항목 중 ${EditorStore.failCount}개 실패)`;
+        dialogType.title = NoteStore.getI18n('someFilesUploadFail');
+        dialogType.subtitle = NoteStore.getI18n('uploadFail');
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
@@ -234,13 +232,9 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('failUpload');
         break;
       case 'failUploadByFileNameLen':
-        dialogType.title = '파일명이 70자를 넘는 경우 업로드할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('lengthoverUpload');
         dialogType.btns = this.setBtns(type);
         break;
-      case 'failOpenMail':
-        dialogType.title = 'Mail로 전달할 수 없습니다.';
-        dialogType.subtitle = '외부 메일 연동 후 다시 시도해주세요.';
-        dialogType.btns = this.setBtns(type);
       default:
         break;
     }

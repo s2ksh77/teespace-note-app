@@ -1,4 +1,5 @@
 import PageStore from "../store/pageStore";
+import EditorStore from "../store/editorStore";
 
 const languageSet = {
   newChapter: 'New Chapter',
@@ -8,7 +9,7 @@ const languageSet = {
   addNewPage: 'Create new page',
   tag: 'Tag',
   untitled: '(Untitled)',
-  table: '(Table)',
+  table: '(Tables)',
   newPage: 'New Page',
   receivedPage: 'Page Received',
   duplicate: 'Duplicate name exists',
@@ -17,6 +18,7 @@ const languageSet = {
   unableModify: 'Unable to Modify.',
   unableDelte: 'Unable to delete.',
   otherEditing: `It is currently being modified by ${PageStore.editingUserName}`,
+  othersEditing: `It is currently being modified by ${PageStore.editingUserCount} people`,
   pageDelete: 'Do you want to delete this page ?',
   chapterDelete: 'Do you want to delete this chapter ?',
   chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
@@ -33,7 +35,8 @@ const languageSet = {
   pageMove: (moveCnt) => `${moveCnt} pages moved.`,
   noPage: 'No page exists.',
   noChapter: 'No chapter exists.',
-  // noPageInChapter: 'To create one'
+  // clickNewPage: '',
+  clickNewChapter: 'Click the "New Chapter" button to start a new chapter.',
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
   searching: 'Searching ...',
@@ -46,6 +49,7 @@ const languageSet = {
   link: 'Link',
   editLink: 'Modify',
   deleteLink: 'Delete',
+  moveToLink: 'Move to Link',
   invalidLink: 'The URL is not valid',
   attachFile: 'Attach Files',
   attachDrive: 'Attach from Drive',
@@ -53,6 +57,9 @@ const languageSet = {
   spaceStorageFull: 'There is not enough storage space to attach the file.',
   sizeoverUpload: 'You can attach up to 20 GB files at a time.',
   countoverUpload: 'You can attach up to 30 files at a time.',
+  lengthoverUpload: 'The name of the file cannot exceed the limit of 70 characters.',
+  someFilesUploadFail: 'Unable to upload some files.',
+  uploadFail: `(${EditorStore.failCount} out of ${EditorStore.uploadLength} failed)`,
   selectedDelete: (fileName) => `Do you want to delete the selected ${fileName}`,
   notRestore: 'This action cannot be undone.',
   editCancel: 'Do you want to save this page and exit?',
@@ -70,6 +77,8 @@ const languageSet = {
   // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} PM`,
   selectFromList: 'Select people from the Friends/Members/Rooms list.',
   send: 'Send',
+  pdfFormat: 'PDF Format(.pdf)',
+  txtFormat: 'TXT Format(.txt)',
   korCategory: 'ㄱ-ㅎ',
   engCategory: 'A-Z',
   numCategory: '0-9',
@@ -79,6 +88,12 @@ const languageSet = {
   notag: 'Enter a tag at the bottom of the page or choose one from the list.',
   addTag: 'Add Tag',
   notavailableTag: 'Cannot be added in read mode.',
+  usedTagName: 'The tag name already exists.',
+  deletedNote: 'Failed to get the note because it has deleted.',
+  align: 'Align',
+  replaceImages: 'Replace Images',
+  saveToDrive: 'Save to Drive',
+  saveToMyPC: 'Save to My PC',
 };
 
 export default { translation: languageSet };

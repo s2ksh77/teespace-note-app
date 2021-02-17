@@ -22,7 +22,7 @@ const ForwardModal = ({ handleCancel }) => {
   const handleSelectChange = (data) => {
     NoteStore.setShareArrays(data);
     setShareArraysCnt(data.userArray.length + data.roomArray.length);
-    if (shareArraysCnt === 0) setTooltipStr("프렌즈/구성원/룸을 선택해주세요");
+    if (shareArraysCnt === 0) setTooltipStr("프렌즈/구성원/룸을 선택해 주세요");
     else setTooltipStr(null);
   }
   const handleShare = (e) => {
