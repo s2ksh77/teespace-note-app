@@ -257,7 +257,6 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 0.75rem;
     line-height: 1.25rem;
     color: #000;
-    border-radius: 0.8125rem;
   }
   .ant-dropdown-menu-submenu-popup ul{
     margin: 0;
@@ -265,6 +264,9 @@ export const GlobalStyle = createGlobalStyle`
   .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {
     padding: 0;
     border: 0px solid #e0e0e0;
+  }
+  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {
+    background-color: unset;
   }
   .ant-dropdown::before{
     bottom:0 !important;
