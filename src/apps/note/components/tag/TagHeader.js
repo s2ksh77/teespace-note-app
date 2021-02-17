@@ -53,7 +53,7 @@ const TagHeader = () => {
   }
 
   useEffect(() => {
-    return () => {
+    if (NoteStore.showPage) {
       setValue('');
       TagStore.setIsSearching(false);
       TagStore.setSearchStr('');

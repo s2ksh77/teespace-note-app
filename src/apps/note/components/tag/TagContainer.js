@@ -19,7 +19,7 @@ const TagContainer = () => {
   const { NoteStore, TagStore } = useNoteStore();
 
   useEffect(() => {
-    TagStore.fetchTagData();
+    if (!NoteStore.showPage) TagStore.fetchTagData();
   }, [NoteStore.showPage]);
 
   const renderContent = () => {
