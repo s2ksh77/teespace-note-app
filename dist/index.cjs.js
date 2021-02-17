@@ -5050,9 +5050,6 @@ var NoteMeta = {
           text: NoteStore.getI18n('notSave')
         }), defaultBtn2];
 
-      case 'failOpenMail':
-        return [defaultBtn1];
-
       default:
         return;
     }
@@ -5090,7 +5087,7 @@ var NoteMeta = {
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = "".concat(PageStore.editingUserCount, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
+        dialogType.subtitle = NoteStore.getI18n('othersEditing');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5112,7 +5109,7 @@ var NoteMeta = {
         break;
 
       case 'duplicateTagName':
-        dialogType.title = '이미 있는 태그 이름입니다.';
+        dialogType.title = NoteStore.getI18n('usedTagName');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5123,13 +5120,13 @@ var NoteMeta = {
         break;
 
       case 'deletedPage':
-        dialogType.title = '노트가 삭제되어 불러올 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('deletedNote');
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
-        dialogType.title = '일부 파일이 업로드되지 못하였습니다.';
-        dialogType.subtitle = "(".concat(EditorStore.uploadLength, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(EditorStore.failCount, "\uAC1C \uC2E4\uD328)");
+        dialogType.title = NoteStore.getI18n('someFilesUploadFail');
+        dialogType.subtitle = NoteStore.getI18n('uploadFail');
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
@@ -5144,14 +5141,9 @@ var NoteMeta = {
         break;
 
       case 'failUploadByFileNameLen':
-        dialogType.title = '파일명이 70자를 넘는 경우 업로드할 수 없습니다.';
+        dialogType.title = NoteStore.getI18n('lengthoverUpload');
         dialogType.btns = this.setBtns(type);
         break;
-
-      case 'failOpenMail':
-        dialogType.title = 'Mail로 전달할 수 없습니다.';
-        dialogType.subtitle = '외부 메일 연동 후 다시 시도해주세요.';
-        dialogType.btns = this.setBtns(type);
     }
 
     return dialogType;
@@ -5266,6 +5258,7 @@ var languageSet = {
   unableModify: '수정할 수 없습니다.',
   unableDelte: '삭제 할 수 없습니다.',
   otherEditing: "".concat(PageStore.editingUserName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4."),
+  othersEditing: "".concat(PageStore.editingUserCount, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4."),
   pageDelete: '페이지를 삭제하시겠습니까?',
   chapterDelete: '챕터를 삭제하시겠습니까?',
   chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
@@ -5292,7 +5285,8 @@ var languageSet = {
   },
   noPage: '페이지가 없습니다.',
   noChapter: '챕터가 없습니다.',
-  // noPageInChapter: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  // clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
   searching: '검색중 ...',
@@ -5305,6 +5299,7 @@ var languageSet = {
   link: '링크',
   editLink: '링크 편집',
   deleteLink: '링크 삭제',
+  moveToLink: '링크로 이동',
   invalidLink: '해당 URL은 유효하지 않습니다.',
   attachFile: '파일 첨부',
   attachDrive: 'Drive에서 첨부',
@@ -5312,6 +5307,9 @@ var languageSet = {
   spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
   sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
+  lengthoverUpload: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
+  someFilesUploadFail: '일부 파일이 업로드되지 못하였습니다.',
+  uploadFail: "(".concat(EditorStore.uploadLength, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(EditorStore.failCount, "\uAC1C \uC2E4\uD328)"),
   selectedDelete: function selectedDelete(fileName) {
     return "\uC120\uD0DD\uD55C ".concat(fileName, "\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
   },
@@ -5331,6 +5329,8 @@ var languageSet = {
   // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
   selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
   send: '전달',
+  pdfFormat: 'PDF 형식(.pdf)',
+  txtFormat: 'TXT 형식(.txt)',
   korCategory: 'ㄱ~ㅎ',
   engCategory: 'A~Z',
   numCategory: '0~9',
@@ -5339,7 +5339,13 @@ var languageSet = {
   noTagFound: '태그가 없습니다.',
   notag: '페이지 하단에 태그를 입력하여 추가하세요.',
   addTag: '태그 추가',
-  notavailableTag: '읽기모드에서는 추가할 수 없습니다.'
+  notavailableTag: '읽기모드에서는 추가할 수 없습니다.',
+  usedTagName: '이미 있는 태그 이름입니다.',
+  deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
+  align: '정렬',
+  replaceImages: '이미지 교체',
+  saveToDrive: 'Drive에 저장',
+  saveToMyPC: '내 PC에 저장'
 };
 var ko = {
   translation: languageSet
@@ -5353,7 +5359,7 @@ var languageSet$1 = {
   addNewPage: 'Create new page',
   tag: 'Tag',
   untitled: '(Untitled)',
-  table: '(Table)',
+  table: '(Tables)',
   newPage: 'New Page',
   receivedPage: 'Page Received',
   duplicate: 'Duplicate name exists',
@@ -5362,6 +5368,7 @@ var languageSet$1 = {
   unableModify: 'Unable to Modify.',
   unableDelte: 'Unable to delete.',
   otherEditing: "It is currently being modified by ".concat(PageStore.editingUserName),
+  othersEditing: "It is currently being modified by ".concat(PageStore.editingUserCount, " people"),
   pageDelete: 'Do you want to delete this page ?',
   chapterDelete: 'Do you want to delete this chapter ?',
   chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
@@ -5388,7 +5395,8 @@ var languageSet$1 = {
   },
   noPage: 'No page exists.',
   noChapter: 'No chapter exists.',
-  // noPageInChapter: 'To create one'
+  // clickNewPage: '',
+  clickNewChapter: 'Click the "New Chapter" button to start a new chapter.',
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
   searching: 'Searching ...',
@@ -5401,6 +5409,7 @@ var languageSet$1 = {
   link: 'Link',
   editLink: 'Modify',
   deleteLink: 'Delete',
+  moveToLink: 'Move to Link',
   invalidLink: 'The URL is not valid',
   attachFile: 'Attach Files',
   attachDrive: 'Attach from Drive',
@@ -5408,6 +5417,9 @@ var languageSet$1 = {
   spaceStorageFull: 'There is not enough storage space to attach the file.',
   sizeoverUpload: 'You can attach up to 20 GB files at a time.',
   countoverUpload: 'You can attach up to 30 files at a time.',
+  lengthoverUpload: 'The name of the file cannot exceed the limit of 70 characters.',
+  someFilesUploadFail: 'Unable to upload some files.',
+  uploadFail: "(".concat(EditorStore.failCount, " out of ").concat(EditorStore.uploadLength, " failed)"),
   selectedDelete: function selectedDelete(fileName) {
     return "Do you want to delete the selected ".concat(fileName);
   },
@@ -5427,6 +5439,8 @@ var languageSet$1 = {
   // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} PM`,
   selectFromList: 'Select people from the Friends/Members/Rooms list.',
   send: 'Send',
+  pdfFormat: 'PDF Format(.pdf)',
+  txtFormat: 'TXT Format(.txt)',
   korCategory: 'ㄱ-ㅎ',
   engCategory: 'A-Z',
   numCategory: '0-9',
@@ -5435,7 +5449,13 @@ var languageSet$1 = {
   noTagFound: 'No tag found.',
   notag: 'Enter a tag at the bottom of the page or choose one from the list.',
   addTag: 'Add Tag',
-  notavailableTag: 'Cannot be added in read mode.'
+  notavailableTag: 'Cannot be added in read mode.',
+  usedTagName: 'The tag name already exists.',
+  deletedNote: 'Failed to get the note because it has deleted.',
+  align: 'Align',
+  replaceImages: 'Replace Images',
+  saveToDrive: 'Save to Drive',
+  saveToMyPC: 'Save to My PC'
 };
 var en = {
   translation: languageSet$1
@@ -5637,7 +5657,6 @@ var NoteStore = mobx.observable({
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
-      case "failOpenMail":
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
