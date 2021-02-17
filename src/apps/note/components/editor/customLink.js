@@ -153,6 +153,8 @@ export const changeButtonStyle = (idx, count) => {
   }
 }
 
+// customToggleOpenLink에서는 isOnlyReadMode가 false : 수정모드에서 열려야 하는 메뉴라서
+// 읽기모드에서 a tag 클릭으로 들어온 경우 isOnlyReadMode : true
 export const openLink = ({ isOnlyReadMode, url, target }) => {
   if (isOnlyReadMode && !PageStore.isReadMode()) return;
   if (!url) return;

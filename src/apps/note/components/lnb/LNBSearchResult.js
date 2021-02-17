@@ -23,8 +23,10 @@ const LNBSearchResult = () => {
     ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
     ChapterStore.getChapterChildren(chapterId).then(data => {
-      if (data.noteList && data.noteList.length > 0) {
-        PageStore.fetchCurrentPageData(data.noteList[0].note_id);
+      // 어차피 이미 그려진 리스트에 없다면 첫 번째 자식 선택 못하므로 일단 그려진 애들 중 첫번째가 삭제되지 않은 경우 선택
+      const pageId = ChapterStore.getFirstPageFromChapter(chapterId);
+      if (pageId && data.noteList && data.noteList.length > 0 && data.noteList.find(page => page.note_id === pageId)) {
+        PageStore.fetchCurrentPageData(pageId);
       } else {
         ChapterStore.setCurrentChapterId(chapterId);
         PageStore.setCurrentPageId('');
