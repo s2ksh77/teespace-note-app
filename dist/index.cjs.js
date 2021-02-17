@@ -6,6 +6,7 @@ var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
 var Mark = require('mark.js');
+require('html2pdf.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -2223,6 +2224,7 @@ var EditorStore = mobx.observable((_observable = {
   setIsFileFilteredByNameLen: function setIsFileFilteredByNameLen(flag) {
     this.isFileFilteredByNameLen = flag;
   },
+  // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var _yield$NoteRepository, dto;
@@ -4844,6 +4846,82 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _observable$2));
 
+var handleUpload = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var uploadArr;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            uploadArr = [];
+
+            if (!EditorStore.uploadDTO) {
+              _context.next = 5;
+              break;
+            }
+
+            uploadArr = mobx.toJS(EditorStore.uploadDTO).map(function (item) {
+              return EditorStore.createUploadMeta(item.uploadMeta, item.type);
+            });
+            _context.next = 5;
+            return Promise.all(uploadArr).then(function (results) {
+              if (EditorStore.uploadDTO.length === results.length) {
+                var _loop = function _loop(i) {
+                  (function (result) {
+                    if (result.id !== undefined) {
+                      var handleUploadProgress = function handleUploadProgress(e) {
+                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
+                        EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                        EditorStore.tempFileLayoutList[i].file_id = result.id;
+                      };
+
+                      EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
+                        if (dto.resultMsg === 'Success') {
+                          if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                        } else if (dto.resultMsg === 'Fail') {
+                          EditorStore.failCount++;
+                          EditorStore.tempFileLayoutList[i].progress = 0;
+                          EditorStore.tempFileLayoutList[i].error = true;
+                        }
+
+                        EditorStore.processLength++;
+
+                        if (EditorStore.processLength == EditorStore.uploadLength) {
+                          EditorStore.uploadDTO = [];
+                          if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
+                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                              EditorStore.setFileList(dto.fileList);
+                              EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+                              EditorStore.processCount = 0;
+                              EditorStore.tempFileLayoutList = [];
+                            });
+                          }
+                        }
+                      });
+                    }
+                  })(results[i]);
+                };
+
+                for (var i = 0; i < results.length; i++) {
+                  _loop(i);
+                }
+              }
+            });
+
+          case 5:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function handleUpload() {
+    return _ref.apply(this, arguments);
+  };
+}();
+
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
   open + target 컴포넌트 이름
@@ -5005,6 +5083,7 @@ var NoteMeta = {
           e.stopPropagation();
           NoteStore.setModalInfo(null);
           EditorStore.setIsFileFilteredByNameLen(false);
+          if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
         });
         break;
     }
@@ -5356,7 +5435,7 @@ var languageSet$1 = {
   page: 'page',
   chapter: 'chapter',
   searchPageChapter: 'Search page or chapter',
-  addNewPage: 'Create new page',
+  addNewPage: 'Add new page',
   tag: 'Tag',
   untitled: '(Untitled)',
   table: '(Tables)',
