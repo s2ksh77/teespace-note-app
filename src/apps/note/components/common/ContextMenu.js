@@ -56,7 +56,6 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
             } else NoteStore.setModalInfo('chapter');
           } else NoteStore.setModalInfo('chapter');
         });
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
         PageStore.getNoteInfoList(note.id).then(async dto => {
@@ -69,7 +68,6 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
             NoteStore.setModalInfo('confirm');
           }
         })
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default:
         break;
@@ -81,7 +79,6 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
     NoteStore.setShareContent(note);
     NoteStore.setIsShared(true);
     NoteStore.setModalInfo('forward');
-    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const exportComponent = isMailShare => {
@@ -90,18 +87,15 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
 
     if (noteType === 'chapter') targetStore.setExportTitle(note.text);
     exportData(isMailShare, noteType, note.id);
-    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
   const exportTxtComponent = () => {
     switch (noteType) {
       case 'chapter':
         exportChapterAsTxt(note.text, note.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       case 'page':
         exportPageAsTxt(note.id);
-        NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
         break;
       default: break;
     }
@@ -109,7 +103,6 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
 
   const infoComponent = () => {
     NoteStore.handleSharedInfo(noteType, note.id);
-    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   }
 
   const onClickContextMenu = ({ key, domEvent }) => {
@@ -122,6 +115,8 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
     else if (key === "4") exportComponent(false);
     else if (key === "5") exportTxtComponent();
     else infoComponent();
+
+    if (key) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleSubMenuClick = ({ domEvent }) => {
