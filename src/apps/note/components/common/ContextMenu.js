@@ -139,8 +139,8 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, ty
       {spaceStore.currentSpace?.plan !== 'BASIC' 
         && <Item key="3">{NoteStore.getI18n('sendEmail')}</Item>}
       <SubMenu title={NoteStore.getI18n('export')} onTitleClick={handleSubMenuClick}>
-        <Item key="4">PDF 형식(.pdf)</Item>
-        <Item key="5">TXT 형식(.txt)</Item>
+        <Item key="4">{NoteStore.getI18n('pdfFormat')}</Item>
+        <Item key="5">{NoteStore.getI18n('txtFormat')}</Item>
       </SubMenu>
       {type === 'shared'
         && <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>}

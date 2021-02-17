@@ -139,7 +139,7 @@ const changeLinkDialogForm = (dialog) => {
   custimizing contextToolbar
 */
 export const changeButtonStyle = (idx, count) => {
-  const linkToolbarStr = [NoteStore.getI18n('editLink'), NoteStore.getI18n('deleteLink'), '링크로 이동']
+  const linkToolbarStr = [NoteStore.getI18n('editLink'), NoteStore.getI18n('deleteLink'), NoteStore.getI18n('moveToLink')]
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
   const target = toolbar.childNodes?.[idx];

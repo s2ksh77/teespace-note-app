@@ -126,7 +126,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
     <>
       <Message
         visible={informDeleted}
-        title={"노트가 삭제되어 불러올 수 없습니다."}
+        title={NoteStore.getI18n('deletedNote')}
         type="error"
         btns={[{
           type : 'solid',

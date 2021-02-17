@@ -344,7 +344,7 @@ const EditorContainer = () => {
               // 정렬 그룹 버튼
               editor.ui.registry.addGroupToolbarButton('alignment', {
                 icon: 'align-center',
-                tooltip: '정렬',
+                tooltip: NoteStore.getI18n('align'),
                 items: 'alignleft aligncenter alignright alignjustify'
               });
 
@@ -435,7 +435,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('changeImage', {
                 icon: 'gallery',
-                tooltip: '이미지 교체',
+                tooltip: NoteStore.getI18n('replaceImages'),
                 onAction: function (_) {
                   handleFileBlob('image');
                 }
@@ -449,7 +449,7 @@ const EditorContainer = () => {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: 'Drive에 저장',
+                      text: NoteStore.getI18n('saveToDrive'),
                       onAction: function () {
                         const node = editor.selection.getNode();
                         let fileName = node.getAttribute('data-name');
@@ -465,7 +465,7 @@ const EditorContainer = () => {
                     },
                     {
                       type: 'menuitem',
-                      text: '내 PC에 저장',
+                      text: NoteStore.getI18n('saveToMyPC'),
                       onAction: function () {
                         const id = editor.selection.getNode().id;
                         if (id) downloadFile(id);

@@ -214,8 +214,8 @@ const FileLayout = () => {
 
     const menu = (
         <StyledMenu onClick={onClickContextMenu}>
-            <Menu.Item key="0">Drive에 저장</Menu.Item>
-            <Menu.Item key="1">내 PC에 저장</Menu.Item>
+            <Menu.Item key="0">{NoteStore.getI18n('saveToDrive')}</Menu.Item>
+            <Menu.Item key="1">{NoteStore.getI18n('saveToMyPC')}</Menu.Item>
         </StyledMenu>
     );
 
