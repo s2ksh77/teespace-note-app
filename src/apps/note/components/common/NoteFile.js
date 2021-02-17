@@ -60,7 +60,6 @@ export const handleUpload = async () => {
                 }
             }
         })
-        if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
     }
 }
 

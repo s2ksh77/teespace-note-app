@@ -197,7 +197,6 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
                     : chapter.children[index - 1].id
                   : ''
               }
-              type={page.type}
             />
           </PageTextContainer>
         </PageTextCover>

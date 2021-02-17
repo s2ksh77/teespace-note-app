@@ -127,10 +127,12 @@ const EditorStore = observable({
   setIsFileFilteredByNameLen(flag) {
     this.isFileFilteredByNameLen = flag;
   },
+  // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {
     const {
       data: { dto },
     } = await NoteRepository.createUploadMeta(meta);
+    // log_file_id랑 note_id가 온다
     if (dto.log_file_id) {
       return { id: dto.log_file_id, type: type };
     }

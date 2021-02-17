@@ -58,7 +58,6 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
                   : ''
               : ''
           }
-          type={chapter.type}
         />
       </ChapterTitle>
       <ChapterFolderBtn onClick={handleFoldBtnClick}>

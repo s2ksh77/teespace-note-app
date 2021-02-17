@@ -6,7 +6,7 @@ const languageSet = {
   page: 'page',
   chapter: 'chapter',
   searchPageChapter: 'Search page or chapter',
-  addNewPage: 'Create new page',
+  addNewPage: 'Add new page',
   tag: 'Tag',
   untitled: '(Untitled)',
   table: '(Tables)',

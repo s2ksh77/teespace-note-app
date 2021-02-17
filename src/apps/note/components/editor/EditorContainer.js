@@ -104,7 +104,9 @@ const EditorContainer = () => {
       // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
       // currentFile.setAttribute('temp-id', tempId);
     }
-    if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
+    // 먼저 파일 이름 길이 체크하고 upload해야
+    if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
+    else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
   };
 
   const handleFileBlob = (type) => {

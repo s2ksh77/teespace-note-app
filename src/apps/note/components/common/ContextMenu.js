@@ -13,7 +13,7 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, type }) => {
+const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const store = {
@@ -132,7 +132,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, ty
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-      {type !== 'shared_page' 
+      {note.type !== 'shared_page' 
         && <Item key="0">{NoteStore.getI18n('rename')}</Item>}
       <Item key="1">{NoteStore.getI18n('delete')}</Item>
       <Item key="2">{NoteStore.getI18n('forward')}</Item>
@@ -142,7 +142,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, ty
         <Item key="4">{NoteStore.getI18n('pdfFormat')}</Item>
         <Item key="5">{NoteStore.getI18n('txtFormat')}</Item>
       </SubMenu>
-      {type === 'shared'
+      {note.type === 'shared'
         && <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>}
     </Menu>
   );

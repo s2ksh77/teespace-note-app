@@ -3,6 +3,7 @@ import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
+import {handleUpload} from './components/common/NoteFile';
 import { logEvent } from 'teespace-core';
 
 /*
@@ -127,6 +128,7 @@ const NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation(); NoteStore.setModalInfo(null);
           EditorStore.setIsFileFilteredByNameLen(false);
+          if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
         });
         break;
       default:
