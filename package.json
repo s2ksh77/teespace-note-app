@@ -22,8 +22,11 @@
     "craco-less": "^1.17.0",
     "html2pdf.js": "^0.9.2",
     "i18next": "^19.8.4",
+    "mark.js": "^8.11.1",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "ramda": "^0.27.1",
@@ -35,8 +38,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "mark.js": "^8.11.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
   },
   "peerDependencies": {
     "react": "^16.13.1",

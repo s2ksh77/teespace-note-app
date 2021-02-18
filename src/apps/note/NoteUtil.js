@@ -1,4 +1,5 @@
 import {CHAPTER_TYPE} from './GlobalVariable';
+import moment from 'moment-timezone';
 
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -37,6 +38,12 @@ const NoteUtil = {
       default:return null;
     }
   },
+  // storage에서 주는 "2021-02-18 15:01:28.0 Asia/Seoul" 형식을 unixTime으로
+  getUnixTime(inputTime='') {
+    const [date=null,time=null,zone=null] = inputTime.split(' ');
+    if ([date,time,zone].includes(null)) return null;
+    return moment.tz(date+' '+time,zone).unix();
+  }
 }
 
 export default NoteUtil;
