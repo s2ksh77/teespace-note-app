@@ -196,6 +196,7 @@ const NoteStore = observable({
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
+      case 'uploadingFiles': // todo
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;

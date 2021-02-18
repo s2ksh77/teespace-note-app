@@ -122,6 +122,7 @@ const NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'fileOpenMail':
+      case 'uploadingFiles':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'failUploadByFileNameLen':
@@ -153,6 +154,7 @@ const NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
+      case 'uploadingFiles':
         return [defaultBtn1];
       case 'editCancel':
         return [{ ...defaultBtn1, text: NoteStore.getI18n('save') }, { ...defaultBtn1, text: NoteStore.getI18n('notSave') }, defaultBtn2];
@@ -237,6 +239,9 @@ const NoteMeta = {
         dialogType.title = NoteStore.getI18n('lengthoverUpload');
         dialogType.btns = this.setBtns(type);
         break;
+      case 'uploadingFiles':
+        dialogType.title = '업로드 중인 파일이 있습니다.'; // 아직 기능이 완벽하게 구현 안된거라 i18n은 기능 구현 후
+        dialogType.btns = this.setBtns(type);
       default:
         break;
     }

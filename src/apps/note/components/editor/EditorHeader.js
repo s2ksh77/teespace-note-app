@@ -44,6 +44,9 @@ const EditorHeader = () => {
   }
 
   const handleClickBtn = async e => {
+    if (EditorStore.isUploading) {
+      NoteStore.setModalInfo('uploadingFiles');return;
+    }
     const {
       target: { innerText },
     } = e;
