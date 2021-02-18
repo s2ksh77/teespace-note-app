@@ -43,7 +43,7 @@ const EditorStore = observable({
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
-  isFileFilteredByNameLen:false,
+  isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
   failCount: 0,
@@ -126,6 +126,12 @@ const EditorStore = observable({
   },
   setIsFileFilteredByNameLen(flag) {
     this.isFileFilteredByNameLen = flag;
+  },
+  setProcessLength(len) {
+    this.processLength = len;
+  },
+  setProcessCount(count) {
+    this.processCount = count;
   },
   async createUploadMeta(meta, type) {
     const {

@@ -39,9 +39,10 @@ export const handleUpload = async () => {
                                     EditorStore.tempFileLayoutList[i].progress = 0;
                                     EditorStore.tempFileLayoutList[i].error = true;
                                 }
-                                EditorStore.processLength++
+                                EditorStore.processLength++;
                                 if (EditorStore.processLength == EditorStore.uploadLength) {
                                     EditorStore.uploadDTO = [];
+                                    EditorStore.setProcessLength(0);
                                     if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
                                     else if (EditorStore.failCount === 0) {
                                         PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
@@ -49,7 +50,7 @@ export const handleUpload = async () => {
                                                 dto.fileList,
                                             );
                                             EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
-                                            EditorStore.processCount = 0;
+                                            EditorStore.setProcessCount(0);
                                             EditorStore.tempFileLayoutList = [];
                                         });
                                     }
@@ -94,7 +95,7 @@ const isValidFileSize = fileList => {
     fileList.forEach(file => {
         uploadSize += file.file_size;
     })
-    
+
     if (uploadSize > totalSize) {
         NoteStore.setModalInfo('sizefailUpload');
         return false;
@@ -103,9 +104,9 @@ const isValidFileSize = fileList => {
 }
 
 export const isValidFileNameLength = fileName => {
-  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
-  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
-  return true;
+    if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+    if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+    return true;
 }
 
 export const handleDriveCopy = async () => {
