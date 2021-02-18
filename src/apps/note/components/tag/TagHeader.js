@@ -9,14 +9,8 @@ import {
 import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import searchImg from '../../assets/search.svg';
-import { SearchImgInput } from '../../styles/commonStyle';
+import { CancelBtn, SearchImgInput } from '../../styles/commonStyle';
 import cancelImg from '../../assets/ts_cancel@3x.png';
-import { Button } from '../../styles/commonStyle';
-import styled from 'styled-components';
-
-const CancelBtn = styled(Button)`
-  display:${props => props.visible ? '' : 'none'};
-`;
 
 const TagHeader = () => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
