@@ -430,7 +430,6 @@ export const handleFileSync = async () => {
 export const handleImageListener = async () => {
     if (EditorStore.tinymce && PageStore.isReadMode()) {
         const targetImageList = await EditorStore.tinymce.dom.doc.images;
-        console.log(targetImageList);
     }
 }
 

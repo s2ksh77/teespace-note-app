@@ -4,6 +4,7 @@ import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import NoteStore from './noteStore';
+import NoteUtil from '../NoteUtil';
 
 const EditorStore = observable({
   tempTinymce: null,
@@ -214,7 +215,7 @@ const EditorStore = observable({
   // not image 파일 첨부 영역을 위함
   checkFile() {
     let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
-    let checkFile
+    let checkFile;
     if (this.fileList) {
       checkFile = this.fileList.filter(file => !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase()))
     }
@@ -226,6 +227,9 @@ const EditorStore = observable({
       this.setFileArray([]);
     } else {
       this.setIsFile(true);
+      const { getUnixTime } = NoteUtil;
+      // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
+      checkFile.sort((a,b) => getUnixTime(b['file_updated_at'])-getUnixTime(a['file_updated_at']));
       this.setFileArray(checkFile);
     };
   },
