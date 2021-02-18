@@ -11225,6 +11225,11 @@ var beforeRoute = function beforeRoute(location) {
   if (!PageStore.isReadMode()) {
     var _EditorStore$tinymce;
 
+    if (EditorStore.isUploading) {
+      NoteStore.setModalInfo('uploadingFiles');
+      return false;
+    }
+
     var locationRoomId = pathname.split('/')[2];
     var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
 
