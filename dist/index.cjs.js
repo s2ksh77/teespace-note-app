@@ -5084,7 +5084,7 @@ var NoteMeta = {
 
     var initialConfig = {
       targetComponent: "Modal",
-      name: type,
+      modalName: type,
       handleCancel: handleCancel
     };
 
@@ -5119,6 +5119,8 @@ var NoteMeta = {
     });
     return {
       targetComponent: "Message",
+      modalName: dialogType.modalName,
+      // openMessage의 인자인 type
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
@@ -5219,13 +5221,10 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+      // NoteFile을 import해야해서 NoeModal component에서 이벤트 추가함
 
       case 'failUploadByFileNameLen':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore.setModalInfo(null);
-          EditorStore$1.setIsFileFilteredByNameLen(false); // if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
-        });
+        eventList.push(function (e) {});
         break;
     }
 
@@ -5281,6 +5280,7 @@ var NoteMeta = {
 
     var dialogType = {
       type: 'default',
+      modalName: type,
       title: '',
       subtitle: '',
       btns: []
@@ -12204,17 +12204,28 @@ var ForwardModal = function ForwardModal(_ref) {
 
 var NoteModal = mobxReact.observer(function () {
   var _useNoteStore = useNoteStore(),
-      NoteStore = _useNoteStore.NoteStore;
+      NoteStore = _useNoteStore.NoteStore,
+      EditorStore = _useNoteStore.EditorStore;
 
   var _NoteStore$modalInfo = NoteStore.modalInfo,
       targetComponent = _NoteStore$modalInfo.targetComponent,
+      modalName = _NoteStore$modalInfo.modalName,
       title = _NoteStore$modalInfo.title,
       type = _NoteStore$modalInfo.type,
       subTitle = _NoteStore$modalInfo.subTitle,
       btns = _NoteStore$modalInfo.btns,
-      name = _NoteStore$modalInfo.name,
       className = _NoteStore$modalInfo.className,
-      handleCancel = _NoteStore$modalInfo.handleCancel;
+      handleCancel = _NoteStore$modalInfo.handleCancel; // NoteMeta에서 NoteFile을 가져오면 안돼ㅓ
+
+  if (modalName === 'failUploadByFileNameLen') {
+    btns[0].onClick = function (e) {
+      e.stopPropagation();
+      NoteStore.setModalInfo(null);
+      EditorStore.setIsFileFilteredByNameLen(false);
+      if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
+    };
+  }
+
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, targetComponent === "Message" ? /*#__PURE__*/React__default['default'].createElement(teespaceCore.Message, {
     visible: true,
     type: type,
@@ -12225,7 +12236,7 @@ var NoteModal = mobxReact.observer(function () {
     visible: true,
     title: title,
     centered: true,
-    footer: name === "viewInfo" && /*#__PURE__*/React__default['default'].createElement(teespaceCore.Button, {
+    footer: modalName === "viewInfo" && /*#__PURE__*/React__default['default'].createElement(teespaceCore.Button, {
       key: "confirm",
       type: "solid",
       shape: "defualt",
@@ -12233,7 +12244,7 @@ var NoteModal = mobxReact.observer(function () {
     }, NoteStore.getI18n('ok')),
     onCancel: handleCancel,
     wrapClassName: className
-  }, name === "viewInfo" ?
+  }, modalName === "viewInfo" ?
   /*#__PURE__*/
   // 정보보기 팝업
   React__default['default'].createElement(ViewInfoModal, null) : /*#__PURE__*/React__default['default'].createElement(ForwardModal, {

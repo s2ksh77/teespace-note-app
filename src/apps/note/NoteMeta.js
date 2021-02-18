@@ -3,7 +3,6 @@ import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
-// import {handleUpload} from './components/common/NoteFile';
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
@@ -22,7 +21,7 @@ const NoteMeta = {
     }
     const initialConfig = {
       targetComponent: "Modal",
-      name: type,
+      modalName: type,
       handleCancel
     }
     switch (type) {
@@ -57,6 +56,7 @@ const NoteMeta = {
 
     return {
       targetComponent: "Message",
+      modalName:dialogType.modalName, // openMessage의 인자인 type
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
@@ -124,12 +124,9 @@ const NoteMeta = {
       case 'uploadingFiles':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      // NoteFile을 import해야해서 NoeModal component에서 이벤트 추가함
       case 'failUploadByFileNameLen':
-        eventList.push(function (e) {
-          e.stopPropagation(); NoteStore.setModalInfo(null);
-          EditorStore.setIsFileFilteredByNameLen(false);
-          // if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
-        });
+        eventList.push(function (e) {});
         break;
       default:
         break;
@@ -167,6 +164,7 @@ const NoteMeta = {
     // type이 error면 빨간색, error말고 다른 색이면 보라색
     const dialogType = {
       type: 'default',
+      modalName:type,
       title: '',
       subtitle: '',
       btns: []
