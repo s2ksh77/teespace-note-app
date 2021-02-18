@@ -9,12 +9,12 @@ var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
 var moment = require('moment-timezone');
 var Mark = require('mark.js');
-var html2pdf = require('html2pdf.js');
 var mobxReact = require('mobx-react');
 var styled = require('styled-components');
 var antd = require('antd');
 var reactDnd = require('react-dnd');
 var reactDndHtml5Backend = require('react-dnd-html5-backend');
+var html2pdf = require('html2pdf.js');
 require('antd/dist/antd.css');
 var tinymceReact = require('@tinymce/tinymce-react');
 var icons = require('@ant-design/icons');
@@ -44,8 +44,8 @@ function _interopNamespace(e) {
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
-var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
+var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -5064,990 +5064,6 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _observable$2));
 
-const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
-
-/*
-  Link Dialog 관련
-*/
-
-var changeLinkDialog = function changeLinkDialog() {
-  try {
-    var dialog = document.querySelector('.tox-dialog');
-    dialog.classList.add("custom-link-dialog");
-    changeLinkDialogFooter(dialog.querySelector('.tox-dialog__footer')); // 일단 버튼 위치 바꾸기
-
-    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header')); // saveBtn : disable하려고 넘겨준다
-
-    changeLinkDialogForm(dialog);
-  } catch (err) {
-    throw Error(err);
-  }
-};
-
-var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
-  header.classList.add("custom-dialog-header");
-  var title = header.querySelector('.tox-dialog__title');
-  title.classList.add("custom-dialog-title");
-  title.textContent = NoteStore.getI18n('insertLink');
-};
-
-var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
-  footer.classList.add("custom-dialog-footer");
-  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('custom-dialog-btns'); // 저장, 취소 버튼 위치 바껴야 한다
-
-  btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
-}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
-
-
-var renderErrorMark = function renderErrorMark(target) {
-  var img$1 = document.createElement('img');
-  img$1.src = img;
-  img$1.classList.add('note-link-form-error');
-  var tooltip = document.createElement('div');
-  tooltip.classList.add('note-link-error-tooltip');
-  target.appendChild(img$1);
-  target.appendChild(tooltip);
-  return {
-    img$: img$1,
-    tooltip$: tooltip
-  };
-}; // 1 : 텍스트를 입력해 주세요 메시지 띄우기
-
-
-var textCondition = function textCondition(value) {
-  return isFilled(value) ? {
-    result: true,
-    message: ""
-  } : {
-    result: false,
-    message: NoteStore.getI18n('enterText')
-  };
-};
-
-var urlSaveCondition = function urlSaveCondition(_value) {
-  if (!isFilled(_value)) return {
-    result: false,
-    message: NoteStore.getI18n('enterLink')
-  };
-
-  if (!GlobalVariable.isBasicPlan) {
-    if (isValidMailtoMail(_value)) return {
-      result: true,
-      message: ""
-    }; // pass
-
-    if (isValidMail(_value)) return {
-      result: false,
-      message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요."
-    }; // mailto 붙여달라고 메시지 띄우기
-  }
-
-  if (checkUrlValidation(_value)) return {
-    result: true,
-    message: ""
-  }; // pass
-
-  return {
-    result: false,
-    message: NoteStore.getI18n('invalidLink')
-  }; // 유효하지 않은 주소라고 메시지 띄우기
-}; // errorMark 관련된 함수
-// params : errorMark, errorCondition, textInput
-
-
-var renderValidation = function renderValidation(params) {
-  return function (e, targetValue) {
-    var type = params.type,
-        errorMark = params.errorMark,
-        errorCondition = params.errorCondition,
-        textInput = params.textInput;
-    var img$ = errorMark.img$,
-        tooltip$ = errorMark.tooltip$;
-    var resultObj = errorCondition(targetValue); // pass
-
-    if (resultObj.result) {
-      [img$, tooltip$].forEach(function (node) {
-        return node.classList.remove('note-show-element');
-      });
-    } // text필드 errorMark 보여주는건 focusOut일 때만
-    else if (type === 'text' && e.type === 'input') ; else {
-        tooltip$.textContent = resultObj["message"];
-        [img$, tooltip$].forEach(function (node) {
-          return node.classList.add('note-show-element');
-        });
-      } // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
-
-
-    if (isFilled(textInput.value)) {
-      _toConsumableArray(textInput.parentElement.querySelectorAll('.note-show-element')).forEach(function (node) {
-        return node.classList.remove('note-show-element');
-      });
-    }
-  };
-};
-
-var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
-  // 텍스트, 링크 순으로 바꿔주기
-  var form = dialog.querySelector('.tox-dialog__body .tox-form');
-  form.insertBefore(form.children[1], form.children[0]);
-  form.classList.add("custom-dialog-form");
-  var formStr = {
-    url: NoteStore.getI18n('link'),
-    text: NoteStore.getI18n('text')
-  };
-  var targetInputs$ = form.querySelectorAll('input');
-  var saveBtn = dialog.querySelector('.tox-dialog__footer button');
-
-  var handleInput = function handleInput(checkValidation) {
-    return function (e) {
-      if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value); // 두 input창이 비어있으면 saveBtn을 disable한다
-
-      if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {
-        saveBtn.setAttribute('disabled', true);
-        return;
-      } //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
-
-
-      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);else saveBtn.removeAttribute('disabled');
-    };
-  }; // string 바꿔주기, renderValidationErrorMark
-
-
-  _toConsumableArray(form.childNodes).forEach(function (child) {
-    var input$ = child.querySelector('input');
-    var type = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
-
-    child.querySelector('.tox-form__group label').textContent = formStr[type]; // errorMark 그려주고
-
-    var errorMark = renderErrorMark(input$.parentElement);
-    /*
-      유효성 검사해서 error mark 그렸다 뺐다하기
-    */
-
-    var params = {
-      type: type,
-      errorMark: errorMark,
-      errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput: targetInputs$[0] // 텍스트 input
-
-    }; // validation 함수 만들기
-
-    var renderItemValidation = renderValidation(params); // focus out 했을 때 동작한다
-
-    if (type === "text") {
-      // focusOut일 때만 동작해야해서
-      input$.addEventListener("focusout", handleInput(renderItemValidation)); // 다 지웠을 때도 인식해야 하고, 중간에 focus상태에서 text 쓸 때도 에러메시지 지워져야함
-
-      input$.addEventListener("input", handleInput(renderItemValidation));
-    } //url
-    else input$.addEventListener("input", handleInput(renderItemValidation));
-  }); // text input으로 focus
-
-
-  targetInputs$[0].focus();
-};
-/*
-  Link context Toolbar 관련
-  custimizing contextToolbar
-*/
-
-
-var changeButtonStyle = function changeButtonStyle(idx, count) {
-  var _toolbar$childNodes;
-
-  var linkToolbarStr = [NoteStore.getI18n('editLink'), NoteStore.getI18n('deleteLink'), NoteStore.getI18n('moveToLink')];
-  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
-  toolbar.classList.add('link-toolbar');
-  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
-
-  if (toolbar && target) {
-    var strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
-    target.appendChild(strNode);
-  } else if (count >= 50) return;else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
-  }
-}; // customToggleOpenLink에서는 isOnlyReadMode가 false : 수정모드에서 열려야 하는 메뉴라서
-// 읽기모드에서 a tag 클릭으로 들어온 경우 isOnlyReadMode : true
-
-var openLink = function openLink(_ref) {
-  var isOnlyReadMode = _ref.isOnlyReadMode,
-      url = _ref.url,
-      target = _ref.target;
-  if (isOnlyReadMode && !PageStore.isReadMode()) return;
-  if (!url) return;
-
-  if (isOpenMail(url)) {
-    NoteStore.setIsMailShare(true);
-    NoteStore.setMailReceiver([{
-      mailAddr: url.replace(/^(mailto:\s?)/g, ''),
-      displayName: null,
-      userId: null
-    }]);
-    return;
-  }
-
-  if (target !== '_blank') {
-    document.location.href = url;
-    return;
-  } // window.open(targetUrl);
-
-
-  var link = document.createElement('a');
-  link.href = url;
-  link.target = target;
-  link.rel = 'noopener';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}; // default autolink pattern
-// autolink_pattern:/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i,
-// 자동으로 mailto로 바꾸지 않는 경우
-// autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
-
-var customAutoLinkPattern = function customAutoLinkPattern() {
-  return GlobalVariable.isBasicPlan ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
-};
-
-var handleUpload = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var uploadArr;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            uploadArr = [];
-
-            if (!EditorStore$1.uploadDTO) {
-              _context.next = 6;
-              break;
-            }
-
-            EditorStore$1.setIsUploading(true);
-            uploadArr = mobx.toJS(EditorStore$1.uploadDTO).map(function (item) {
-              return EditorStore$1.createUploadMeta(item.uploadMeta, item.type);
-            });
-            _context.next = 6;
-            return Promise.all(uploadArr).then(function (results) {
-              if (EditorStore$1.uploadDTO.length === results.length) {
-                var _loop = function _loop(i) {
-                  (function (result) {
-                    if (result.id !== undefined) {
-                      var handleUploadProgress = function handleUploadProgress(e) {
-                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
-                        EditorStore$1.tempFileLayoutList[i].progress = e.loaded / totalLength;
-                        EditorStore$1.tempFileLayoutList[i].file_id = result.id;
-                      };
-
-                      EditorStore$1.createUploadStorage(result.id, EditorStore$1.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
-                        if (dto.resultMsg === 'Success') {
-                          if (result.type === 'image') EditorStore$1.createDriveElement('image', result.id, EditorStore$1.tempFileLayoutList[i].file_name + '.' + EditorStore$1.tempFileLayoutList[i].file_extension);
-                          EditorStore$1.tempFileLayoutList[i].progress = 0;
-                        } else if (dto.resultMsg === 'Fail') {
-                          EditorStore$1.failCount++;
-                          EditorStore$1.tempFileLayoutList[i].progress = 0;
-                          EditorStore$1.tempFileLayoutList[i].error = true;
-                        }
-
-                        EditorStore$1.processLength++;
-
-                        if (EditorStore$1.processLength == EditorStore$1.uploadLength) {
-                          EditorStore$1.uploadDTO = [];
-                          EditorStore$1.setProcessLength(0);
-                          EditorStore$1.setIsUploading(false);
-                          if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
-                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                              EditorStore$1.setFileList(dto.fileList);
-                              EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
-                              EditorStore$1.setProcessCount(0);
-                              EditorStore$1.setTempFileLayoutList([]);
-                            });
-                          }
-                        }
-                      });
-                    }
-                  })(results[i]);
-                };
-
-                for (var i = 0; i < results.length; i++) {
-                  _loop(i);
-                }
-              }
-            });
-
-          case 6:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function handleUpload() {
-    return _ref.apply(this, arguments);
-  };
-}();
-var driveSuccessCb = function driveSuccessCb(fileList) {
-  if (fileList) {
-    if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
-    EditorStore$1.setFileLength(fileList.length);
-    fileList.forEach(function (file) {
-      return EditorStore$1.addDriveFileList(file);
-    });
-    handleDriveCopy();
-    EditorStore$1.setIsAttatch(true);
-    EditorStore$1.setIsDrive(false);
-  }
-};
-var driveCancelCb = function driveCancelCb() {
-  EditorStore$1.setIsAttatch(true);
-  EditorStore$1.setIsDrive(false);
-  setTimeout(function () {
-    EditorStore$1.setIsAttatch(false);
-  }, 100);
-};
-
-var isValidFileLength = function isValidFileLength(fileList) {
-  if (fileList.length > 30) {
-    NoteStore.setModalInfo('failUpload');
-    return false;
-  }
-
-  return true;
-};
-
-var isValidFileSize = function isValidFileSize(fileList) {
-  var totalSize = 20000000000; // 20GB
-
-  var uploadSize = 0;
-  fileList.forEach(function (file) {
-    uploadSize += file.file_size;
-  });
-
-  if (uploadSize > totalSize) {
-    NoteStore.setModalInfo('sizefailUpload');
-    return false;
-  }
-
-  return true;
-};
-
-var isValidFileNameLength = function isValidFileNameLength(fileName) {
-  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
-
-  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
-
-  return true;
-};
-var handleDriveCopy = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var copyArr, resultArray;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            copyArr = [];
-            resultArray = [];
-
-            if (!EditorStore$1.driveFileList) {
-              _context2.next = 6;
-              break;
-            }
-
-            copyArr = mobx.toJS(EditorStore$1.driveFileList).map(function (item) {
-              return EditorStore$1.storageFileDeepCopy(item.file_id, item.type);
-            });
-            _context2.next = 6;
-            return Promise.all(copyArr).then(function (results) {
-              if (EditorStore$1.driveFileList.length === results.length) {
-                for (var i = 0; i < results.length; i++) {
-                  (function (result) {
-                    if (result.id !== undefined) resultArray.push(result.id);
-                  })(results[i]);
-                }
-
-                EditorStore$1.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
-                  if (dto.resultMsg === 'Success') {
-                    EditorStore$1.driveFileList = [];
-                    if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
-                      PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                        EditorStore$1.setFileList(dto.fileList);
-                        EditorStore$1.processCount = 0;
-                        EditorStore$1.setTempFileLayoutList([]);
-                      });
-                      EditorStore$1.setIsAttatch(false);
-                    }
-                  }
-                });
-              }
-            });
-
-          case 6:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2);
-  }));
-
-  return function handleDriveCopy() {
-    return _ref2.apply(this, arguments);
-  };
-}();
-var handleFileDelete = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return EditorStore$1.tinymce.dom.doc.images;
-
-          case 2:
-            imgTarget = _context3.sent;
-            fileTarget = document.querySelectorAll('div #fileLayout [id]');
-            imgArray = _toConsumableArray(imgTarget);
-            fileArray = _toConsumableArray(fileTarget);
-            deleteArr = [];
-            imgArray.forEach(function (img) {
-              return EditorStore$1.tempFileList.push(img.getAttribute('id'));
-            });
-            fileArray.forEach(function (file) {
-              return EditorStore$1.tempFileList.push(file.getAttribute('id'));
-            });
-            if (EditorStore$1.fileList) EditorStore$1.deleteFileList = EditorStore$1.fileList.filter(function (file) {
-              return !EditorStore$1.tempFileList.includes(file.file_id);
-            });
-
-            if (!EditorStore$1.deleteFileList) {
-              _context3.next = 21;
-              break;
-            }
-
-            deleteArr = mobx.toJS(EditorStore$1.deleteFileList).map(function (item) {
-              return EditorStore$1.deleteFile(item.file_id);
-            });
-            _context3.prev = 12;
-            _context3.next = 15;
-            return Promise.all(deleteArr).then(function () {
-              EditorStore$1.deleteFileList = [];
-              EditorStore$1.tempFileList = [];
-              PageStore.setContent(EditorStore$1.tinymce.getContent());
-            });
-
-          case 15:
-            _context3.next = 19;
-            break;
-
-          case 17:
-            _context3.prev = 17;
-            _context3.t0 = _context3["catch"](12);
-
-          case 19:
-            _context3.prev = 19;
-            return _context3.finish(19);
-
-          case 21:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, null, [[12, 17, 19, 21]]);
-  }));
-
-  return function handleFileDelete() {
-    return _ref3.apply(this, arguments);
-  };
-}();
-var downloadFile = function downloadFile(fileId) {
-  if (fileId) {
-    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
-    return;
-  }
-
-  var a = document.createElement("a");
-  document.body.appendChild(a);
-  a.style = "display: none";
-  a.href = EditorStore$1.tinymce.selection.getNode().src;
-  a.download = EditorStore$1.tinymce.selection.getNode().getAttribute('data-name');
-  a.click();
-  document.body.removeChild(a);
-};
-var exportData = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(isMailShare, type, exportId) {
-    var html;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            if (!(type === 'chapter')) {
-              _context4.next = 6;
-              break;
-            }
-
-            _context4.next = 3;
-            return getChapterHtml(exportId);
-
-          case 3:
-            _context4.t0 = _context4.sent;
-            _context4.next = 9;
-            break;
-
-          case 6:
-            _context4.next = 8;
-            return getPageHtml(exportId);
-
-          case 8:
-            _context4.t0 = _context4.sent;
-
-          case 9:
-            html = _context4.t0;
-
-            if (html) {
-              _context4.next = 12;
-              break;
-            }
-
-            return _context4.abrupt("return");
-
-          case 12:
-            makeExportElement(html);
-            exportDownloadPDF(isMailShare, type);
-
-          case 14:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4);
-  }));
-
-  return function exportData(_x, _x2, _x3) {
-    return _ref4.apply(this, arguments);
-  };
-}();
-var getChapterHtml = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(exportId) {
-    var html, _yield$NoteRepository, noteList;
-
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            html = '';
-            _context5.next = 3;
-            return NoteRepository$1.getChapterChildren(exportId);
-
-          case 3:
-            _yield$NoteRepository = _context5.sent;
-            noteList = _yield$NoteRepository.data.dto.noteList;
-
-            if (noteList.length > 0) {
-              noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
-              });
-            } else alert('하위에 속한 페이지가 없습니다.');
-
-            return _context5.abrupt("return", html);
-
-          case 7:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  }));
-
-  return function getChapterHtml(_x4) {
-    return _ref5.apply(this, arguments);
-  };
-}();
-var getPageHtml = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(exportId) {
-    var html, _yield$NoteRepository2, dto;
-
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            html = '';
-            _context6.next = 3;
-            return NoteRepository$1.getNoteInfoList(exportId);
-
-          case 3:
-            _yield$NoteRepository2 = _context6.sent;
-            dto = _yield$NoteRepository2.data.dto;
-            PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
-            return _context6.abrupt("return", html);
-
-          case 8:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6);
-  }));
-
-  return function getPageHtml(_x5) {
-    return _ref6.apply(this, arguments);
-  };
-}();
-var makeExportElement = function makeExportElement(html) {
-  var fragment = document.createElement('div');
-  fragment.style.visibility = 'visible';
-  fragment.style.opacity = 0;
-  fragment.style.width = 'fit-content';
-  fragment.setAttribute('id', 'exportTarget');
-  var targetDIV = document.createElement('div');
-  targetDIV.setAttribute('id', 'exportTargetDiv');
-  targetDIV.setAttribute('class', 'export');
-  targetDIV.innerHTML = html;
-  fragment.appendChild(targetDIV);
-  document.body.appendChild(fragment);
-};
-var exportDownloadPDF = function exportDownloadPDF(isMailShare, type) {
-  var element = document.getElementById('exportTargetDiv');
-  var opt = getExportOpt(type);
-  htmlToPdf(isMailShare, element, opt);
-};
-
-var getExportOpt = function getExportOpt(type) {
-  var opt = {
-    margin: 2,
-    filename: type === 'chapter' ? "".concat(ChapterStore.exportChapterTitle, ".pdf") : "".concat(PageStore.exportPageTitle, ".pdf"),
-    pagebreak: {
-      after: '.afterClass',
-      avoid: 'span'
-    },
-    image: {
-      type: 'jpeg',
-      quality: 0.98
-    },
-    jsPDF: {
-      unit: 'pt',
-      format: 'a4',
-      orientation: 'portrait'
-    }
-  };
-  return opt;
-};
-
-var htmlToPdf = function htmlToPdf(isMailShare, element, opt) {
-  if (!isMailShare) {
-    html2pdf__default['default'](element, opt).then(function () {
-      document.getElementById('exportTarget').remove();
-    });
-  } else {
-    html2pdf__default['default']().set(opt).from(element).toPdf().outputPdf('blob').then(function (blob) {
-      var pdf = new File([blob], opt.filename, {
-        type: blob.type
-      });
-      var fileObjs = [{
-        originFileObj: pdf,
-        name: opt.filename,
-        uid: '1',
-        type: 'application/pdf',
-        fileSize: pdf.size
-      }];
-      NoteStore.setMailShareFileObjs(fileObjs);
-      document.getElementById('exportTarget').remove();
-      NoteStore.setIsMailShare(true);
-    });
-  }
-};
-
-var downloadTxt = function downloadTxt(title, data) {
-  var link = document.createElement('a');
-  var mimeType = "text/plain;charset=utf-8";
-  link.setAttribute('download', "".concat(title, ".txt"));
-  link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
-  link.click();
-}; // txt로 내보내기 전에 setContent해줄 tempEditor init
-
-
-var createTempEditor = function createTempEditor() {
-  var frag = document.createElement('div');
-  frag.setAttribute('id', 'exportTxtParent');
-  var area = document.createElement('textarea');
-  area.setAttribute('id', 'exportTxt');
-  document.body.appendChild(frag);
-  frag.appendChild(area);
-  EditorStore$1.tempTinymce.editorManager.init({
-    target: area,
-    setup: function setup(editor) {
-      EditorStore$1.setTempTinymce(editor);
-    }
-  });
-  var targetEditor = EditorStore$1.tempTinymce.editorManager.get('exportTxt');
-  return targetEditor;
-};
-var getTxtFormat = function getTxtFormat(title, contents) {
-  var targetEditor = createTempEditor();
-  targetEditor.setContent(contents);
-  var exportText = targetEditor.getContent({
-    format: "text"
-  });
-  exportText = exportText.replace(/\n\n/g, '\n');
-  downloadTxt(title, exportText);
-  EditorStore$1.tempTinymce.remove('#exportTxt');
-  document.getElementById('exportTxtParent').remove();
-};
-var exportPageAsTxt = /*#__PURE__*/function () {
-  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(noteId) {
-    var response, dto, returnData;
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.next = 2;
-            return NoteRepository$1.getNoteInfoList(noteId);
-
-          case 2:
-            response = _context7.sent;
-            dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
-
-            returnData = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
-            getTxtFormat(dto.note_title, returnData);
-
-          case 6:
-          case "end":
-            return _context7.stop();
-        }
-      }
-    }, _callee7);
-  }));
-
-  return function exportPageAsTxt(_x6) {
-    return _ref7.apply(this, arguments);
-  };
-}();
-var exportChapterAsTxt = /*#__PURE__*/function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterTitle, chapterId) {
-    var returnData, _yield$NoteRepository3, noteList;
-
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            returnData = '';
-            _context8.next = 3;
-            return NoteRepository$1.getChapterChildren(chapterId);
-
-          case 3:
-            _yield$NoteRepository3 = _context8.sent;
-            noteList = _yield$NoteRepository3.data.dto.noteList;
-
-            if (!(noteList.length > 0)) {
-              _context8.next = 9;
-              break;
-            }
-
-            noteList.forEach(function (page, idx) {
-              returnData += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
-            });
-            _context8.next = 10;
-            break;
-
-          case 9:
-            return _context8.abrupt("return", alert('하위에 속한 페이지가 없습니다.'));
-
-          case 10:
-            getTxtFormat(chapterTitle, returnData);
-
-          case 11:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8);
-  }));
-
-  return function exportChapterAsTxt(_x7, _x8) {
-    return _ref8.apply(this, arguments);
-  };
-}();
-
-var handleClickLink = function handleClickLink(el) {
-  // e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
-  var href = el.getAttribute('href');
-  var target = el.getAttribute('target');
-  openLink({
-    isOnlyReadMode: true,
-    url: href,
-    target: target
-  });
-};
-
-var handleClickImg = function handleClickImg(el) {
-  var _el$getAttribute;
-
-  if (!PageStore.isReadMode()) return;
-  var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
-  if (file === undefined) return;
-  EditorStore$1.setPreviewFileMeta({
-    userId: NoteRepository$1.USER_ID,
-    channelId: NoteRepository$1.chId,
-    roomId: NoteRepository$1.WS_ID,
-    fileId: el.id,
-    fileName: file[0],
-    fileExtension: file[1]
-  });
-  EditorStore$1.setIsPreview(true);
-};
-
-var handleEditorContentsListener = function handleEditorContentsListener() {
-  if (EditorStore$1.tinymce) {
-    var _EditorStore$tinymce$;
-
-    var targetList = (_EditorStore$tinymce$ = EditorStore$1.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
-    var targetBody = EditorStore$1.tinymce.getBody();
-    EditorStore$1.setEditorDOM(targetBody);
-
-    if (targetList && targetList.length > 0) {
-      Array.from(targetList).forEach(function (el) {
-        if (el.getAttribute('hasListener')) return;
-        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
-        el.setAttribute('hasListener', true);
-      });
-    }
-
-    targetBody.addEventListener('click', handleUnselect);
-  }
-};
-var handleUnselect = function handleUnselect() {
-  if (EditorStore$1.selectFileElement !== '') {
-    EditorStore$1.setFileIndex('');
-    EditorStore$1.setFileElement('');
-  }
-
-  if (TagStore.selectTagIdx !== '') {
-    TagStore.setSelectTagIndex('');
-  }
-
-  if (PageStore.moveInfoMap.size > 1) {
-    PageStore.handleClickOutside();
-  }
-
-  if (ChapterStore.moveInfoMap.size > 1) {
-    ChapterStore.handleClickOutside();
-  } //ref 귀찮 - 임시 구현
-
-
-  var contextMenuList = document.querySelectorAll('div.ant-dropdown');
-
-  _toConsumableArray(contextMenuList).forEach(function (el) {
-    if (!el.classList.contains('ant-dropdown-hidden')) {
-      el.classList.add('ant-dropdown-hidden');
-      NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
-    }
-  });
-};
-var handleFileSync = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _context9.next = 2;
-            return handleFileDelete();
-
-          case 2:
-          case "end":
-            return _context9.stop();
-        }
-      }
-    }, _callee9);
-  }));
-
-  return function handleFileSync() {
-    return _ref9.apply(this, arguments);
-  };
-}();
-var openSaveDrive = function openSaveDrive() {
-  EditorStore$1.setIsSaveDrive(true);
-  EditorStore$1.setSaveDriveMeta();
-};
-var driveSaveSuccess = function driveSaveSuccess() {
-  EditorStore$1.setIsSaveDrive(false);
-  EditorStore$1.setIsAttatch(true);
-};
-var driveSaveCancel = function driveSaveCancel() {
-  EditorStore$1.setIsSaveDrive(false);
-}; // DriveUtils.getDriveFileInfo 참고
-
-var isImg = {
-  ext: ['apng', 'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'png', 'rle', 'die', 'raw'],
-  isPreview: true
-}; // 동영상 html 미지원
-
-var isVideoWithoutPreview = {
-  ext: ['mkv', 'avi', 'mpg', 'flv', 'wmv', 'asf', 'asx', 'ogm', '3gp', 'mov', 'dat', 'rm', 'mpe', 'mpeg'],
-  isPreview: false
-}; // 동영상 html 지원
-
-var isVideoWithPreview = {
-  ext: ['mp4', 'ogv', 'webm'],
-  isPreview: true
-}; // 오디오
-
-var isAudio = {
-  ext: ['mp3', 'wav', 'ogg', 'flac', 'wma', 'aac'],
-  isPreview: true
-}; // 오피스(파워포인트)
-
-var isPowerPoint = {
-  ext: ['ppt', 'pptx', 'tpt'],
-  isPreview: false
-}; // 오피스(워드)
-
-var isWord = {
-  ext: ['doc', 'docx', 'toc'],
-  isPreview: false
-}; // 오피스(엑셀)
-
-var isExcel = {
-  ext: ['xls', 'xlsx', 'tls', 'csv'],
-  isPreview: false
-}; // 오피스(한글)
-
-var isHangul = {
-  ext: ['hwp'],
-  isPreview: false
-};
-var isTxt = {
-  ext: ['txt'],
-  isPreview: false
-};
-var isPdf = {
-  ext: ['pdf'],
-  isPreview: false
-};
-var isZip = {
-  ext: ['zip', 'tar', 'rar', 'tgz', 'war', 'alz', 'ace', 'arc', 'arj', 'b64', 'bh', 'bhx', 'bin', 'bz2', 'cab', 'ear', 'enc', 'gz', 'ha', 'hqx', 'ice', 'img', 'jar', 'lha', 'lzh', 'mim', 'pak', 'uue', 'xxe', 'zoo'],
-  isPreview: false
-};
-var isEtc = {
-  ext: ['exe', 'psd', 'mui', 'dll'],
-  isPreview: false
-};
-var fileCategory = {
-  isImg: isImg,
-  isVideoWithoutPreview: isVideoWithoutPreview,
-  isVideoWithPreview: isVideoWithPreview,
-  isAudio: isAudio,
-  isPowerPoint: isPowerPoint,
-  isWord: isWord,
-  isExcel: isExcel,
-  isHangul: isHangul,
-  isTxt: isTxt,
-  isPdf: isPdf,
-  isZip: isZip,
-  isEtc: isEtc
-};
-
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
   open + target 컴포넌트 이름
@@ -6155,9 +5171,8 @@ var NoteMeta = {
           PageStore.handleSave();
           Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
             try {
-              var _logEvent = module.logEvent;
-
-              _logEvent('note', 'clickModifyBtn');
+              var logEvent = module.logEvent;
+              logEvent('note', 'clickModifyBtn');
             } catch (e) {
               console.error(e);
             }
@@ -6209,8 +5224,7 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setModalInfo(null);
-          EditorStore$1.setIsFileFilteredByNameLen(false);
-          if (EditorStore$1.uploadDTO.length === EditorStore$1.uploadLength) handleUpload();
+          EditorStore$1.setIsFileFilteredByNameLen(false); // if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
         });
         break;
     }
@@ -7418,9 +6432,9 @@ var TagTitleSearchContainer = styled__default['default'].div(_templateObject17()
   return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
 });
 
-const img$1 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/search%3c/title%3e %3cg id='Icon/common/search' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.6826%2c1 C16.0216%2c1 20.3646%2c5.375 20.3646%2c10.752 C20.3646%2c13.042 19.5726%2c15.145 18.2556%2c16.81 L18.2556%2c16.81 L22.1736%2c20.76 L22.7096%2c21.301 C23.0986%2c21.693 23.0966%2c22.326 22.7036%2c22.715 C22.5086%2c22.908 22.2546%2c23.005 21.9996%2c23.005 C21.7436%2c23.005 21.4856%2c22.906 21.2896%2c22.709 L21.2896%2c22.709 L17.8786%2c19.271 C17.8786%2c19.27 17.8776%2c19.269 17.8776%2c19.269 L17.8776%2c19.269 L16.8666%2c18.249 C15.1876%2c19.656 13.0326%2c20.504 10.6826%2c20.504 C5.3436%2c20.504 0.9996%2c16.129 0.9996%2c10.752 C0.9996%2c5.375 5.3436%2c1 10.6826%2c1 Z M10.6826%2c3 C6.4466%2c3 2.9996%2c6.478 2.9996%2c10.752 C2.9996%2c15.027 6.4466%2c18.504 10.6826%2c18.504 C14.9176%2c18.504 18.3646%2c15.027 18.3646%2c10.752 C18.3646%2c6.478 14.9176%2c3 10.6826%2c3 Z M10.284%2c4.5271 C10.837%2c4.5271 11.284%2c4.9751 11.284%2c5.5271 C11.284%2c6.0791 10.837%2c6.5271 10.284%2c6.5271 C8.197%2c6.5271 6.499%2c8.2421 6.499%2c10.3511 C6.499%2c10.9031 6.052%2c11.3511 5.499%2c11.3511 C4.946%2c11.3511 4.499%2c10.9031 4.499%2c10.3511 C4.499%2c7.1401 7.094%2c4.5271 10.284%2c4.5271 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/search%3c/title%3e %3cg id='Icon/common/search' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.6826%2c1 C16.0216%2c1 20.3646%2c5.375 20.3646%2c10.752 C20.3646%2c13.042 19.5726%2c15.145 18.2556%2c16.81 L18.2556%2c16.81 L22.1736%2c20.76 L22.7096%2c21.301 C23.0986%2c21.693 23.0966%2c22.326 22.7036%2c22.715 C22.5086%2c22.908 22.2546%2c23.005 21.9996%2c23.005 C21.7436%2c23.005 21.4856%2c22.906 21.2896%2c22.709 L21.2896%2c22.709 L17.8786%2c19.271 C17.8786%2c19.27 17.8776%2c19.269 17.8776%2c19.269 L17.8776%2c19.269 L16.8666%2c18.249 C15.1876%2c19.656 13.0326%2c20.504 10.6826%2c20.504 C5.3436%2c20.504 0.9996%2c16.129 0.9996%2c10.752 C0.9996%2c5.375 5.3436%2c1 10.6826%2c1 Z M10.6826%2c3 C6.4466%2c3 2.9996%2c6.478 2.9996%2c10.752 C2.9996%2c15.027 6.4466%2c18.504 10.6826%2c18.504 C14.9176%2c18.504 18.3646%2c15.027 18.3646%2c10.752 C18.3646%2c6.478 14.9176%2c3 10.6826%2c3 Z M10.284%2c4.5271 C10.837%2c4.5271 11.284%2c4.9751 11.284%2c5.5271 C11.284%2c6.0791 10.837%2c6.5271 10.284%2c6.5271 C8.197%2c6.5271 6.499%2c8.2421 6.499%2c10.3511 C6.499%2c10.9031 6.052%2c11.3511 5.499%2c11.3511 C4.946%2c11.3511 4.499%2c10.9031 4.499%2c10.3511 C4.499%2c7.1401 7.094%2c4.5271 10.284%2c4.5271 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-const img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
+const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
 
 function _templateObject36() {
   var data = _taggedTemplateLiteral(["\n  padding-right: 1.75rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
@@ -8062,11 +7076,11 @@ var TagChip = styled__default['default'](antd.Tag)(_templateObject18$1());
 var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject19$1());
 var TagChipNum = styled__default['default'].div(_templateObject20$1());
 
-const img$3 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/maximize%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/maximize' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.68519013%2c11.283815 L8.71618495%2c11.3148099 C9.10670925%2c11.7053342 9.10670925%2c12.3384991 8.71618495%2c12.7290234 L4.488%2c16.956 L7.15341653%2c16.9561667 C7.70570128%2c16.9561667 8.15341653%2c17.403882 8.15341653%2c17.9561667 L8.15341653%2c18 C8.15341653%2c18.5522847 7.70570128%2c19 7.15341653%2c19 L2%2c19 C1.44771525%2c19 1%2c18.5522847 1%2c18 L1%2c12.8465835 C1%2c12.2942987 1.44771525%2c11.8465835 2%2c11.8465835 L2.04383329%2c11.8465835 C2.59611804%2c11.8465835 3.04383329%2c12.2942987 3.04383329%2c12.8465835 L3.043%2c15.511 L7.27097657%2c11.283815 C7.66150086%2c10.8932908 8.29466584%2c10.8932908 8.68519013%2c11.283815 Z M18%2c1 C18.5522847%2c1 19%2c1.44771525 19%2c2 L19%2c7.15341653 C19%2c7.70570128 18.5522847%2c8.15341653 18%2c8.15341653 L17.9561667%2c8.15341653 C17.403882%2c8.15341653 16.9561667%2c7.70570128 16.9561667%2c7.15341653 L16.957%2c4.489 L12.7290234%2c8.71618495 C12.3384991%2c9.10670925 11.7053342%2c9.10670925 11.3148099%2c8.71618495 L11.283815%2c8.68519013 C10.8932908%2c8.29466584 10.8932908%2c7.66150086 11.283815%2c7.27097657 L15.512%2c3.044 L12.8465835%2c3.04383329 C12.2942987%2c3.04383329 11.8465835%2c2.59611804 11.8465835%2c2.04383329 L11.8465835%2c2 C11.8465835%2c1.44771525 12.2942987%2c1 12.8465835%2c1 L18%2c1 Z' id='Shape' fill='%237B7671'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$2 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/maximize%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/maximize' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.68519013%2c11.283815 L8.71618495%2c11.3148099 C9.10670925%2c11.7053342 9.10670925%2c12.3384991 8.71618495%2c12.7290234 L4.488%2c16.956 L7.15341653%2c16.9561667 C7.70570128%2c16.9561667 8.15341653%2c17.403882 8.15341653%2c17.9561667 L8.15341653%2c18 C8.15341653%2c18.5522847 7.70570128%2c19 7.15341653%2c19 L2%2c19 C1.44771525%2c19 1%2c18.5522847 1%2c18 L1%2c12.8465835 C1%2c12.2942987 1.44771525%2c11.8465835 2%2c11.8465835 L2.04383329%2c11.8465835 C2.59611804%2c11.8465835 3.04383329%2c12.2942987 3.04383329%2c12.8465835 L3.043%2c15.511 L7.27097657%2c11.283815 C7.66150086%2c10.8932908 8.29466584%2c10.8932908 8.68519013%2c11.283815 Z M18%2c1 C18.5522847%2c1 19%2c1.44771525 19%2c2 L19%2c7.15341653 C19%2c7.70570128 18.5522847%2c8.15341653 18%2c8.15341653 L17.9561667%2c8.15341653 C17.403882%2c8.15341653 16.9561667%2c7.70570128 16.9561667%2c7.15341653 L16.957%2c4.489 L12.7290234%2c8.71618495 C12.3384991%2c9.10670925 11.7053342%2c9.10670925 11.3148099%2c8.71618495 L11.283815%2c8.68519013 C10.8932908%2c8.29466584 10.8932908%2c7.66150086 11.283815%2c7.27097657 L15.512%2c3.044 L12.8465835%2c3.04383329 C12.2942987%2c3.04383329 11.8465835%2c2.59611804 11.8465835%2c2.04383329 L11.8465835%2c2 C11.8465835%2c1.44771525 12.2942987%2c1 12.8465835%2c1 L18%2c1 Z' id='Shape' fill='%237B7671'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-const img$4 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/minimize%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/minimize' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8%2c11 C8.55228475%2c11 9%2c11.4477153 9%2c12 L9%2c17.1534165 C9%2c17.7057013 8.55228475%2c18.1534165 8%2c18.1534165 L7.95616671%2c18.1534165 C7.40388196%2c18.1534165 6.95616671%2c17.7057013 6.95616671%2c17.1534165 L6.957%2c14.489 L2.72902343%2c18.716185 C2.33849914%2c19.1067092 1.70533416%2c19.1067092 1.31480987%2c18.716185 L1.28381505%2c18.6851901 C0.893290755%2c18.2946658 0.893290755%2c17.6615009 1.28381505%2c17.2709766 L5.512%2c13.044 L2.84658347%2c13.0438333 C2.29429872%2c13.0438333 1.84658347%2c12.596118 1.84658347%2c12.0438333 L1.84658347%2c12 C1.84658347%2c11.4477153 2.29429872%2c11 2.84658347%2c11 L8%2c11 Z M18.676112%2c1.29289322 L18.7071068%2c1.32388804 C19.0976311%2c1.71441233 19.0976311%2c2.34757731 18.7071068%2c2.7381016 L14.4789218%2c6.965 L17.1443384%2c6.96524488 C17.6966231%2c6.96524488 18.1443384%2c7.41296013 18.1443384%2c7.96524488 L18.1443384%2c8.00907817 C18.1443384%2c8.56136292 17.6966231%2c9.00907817 17.1443384%2c9.00907817 L11.9909218%2c9.00907817 C11.4386371%2c9.00907817 10.9909218%2c8.56136292 10.9909218%2c8.00907817 L10.9909218%2c2.85566164 C10.9909218%2c2.30337689 11.4386371%2c1.85566164 11.9909218%2c1.85566164 L12.0347551%2c1.85566164 C12.5870399%2c1.85566164 13.0347551%2c2.30337689 13.0347551%2c2.85566164 L13.0339218%2c5.52 L17.2618984%2c1.29289322 C17.6524227%2c0.902368927 18.2855877%2c0.902368927 18.676112%2c1.29289322 Z' id='Shape' fill='%237B7671'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$3 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/minimize%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/minimize' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8%2c11 C8.55228475%2c11 9%2c11.4477153 9%2c12 L9%2c17.1534165 C9%2c17.7057013 8.55228475%2c18.1534165 8%2c18.1534165 L7.95616671%2c18.1534165 C7.40388196%2c18.1534165 6.95616671%2c17.7057013 6.95616671%2c17.1534165 L6.957%2c14.489 L2.72902343%2c18.716185 C2.33849914%2c19.1067092 1.70533416%2c19.1067092 1.31480987%2c18.716185 L1.28381505%2c18.6851901 C0.893290755%2c18.2946658 0.893290755%2c17.6615009 1.28381505%2c17.2709766 L5.512%2c13.044 L2.84658347%2c13.0438333 C2.29429872%2c13.0438333 1.84658347%2c12.596118 1.84658347%2c12.0438333 L1.84658347%2c12 C1.84658347%2c11.4477153 2.29429872%2c11 2.84658347%2c11 L8%2c11 Z M18.676112%2c1.29289322 L18.7071068%2c1.32388804 C19.0976311%2c1.71441233 19.0976311%2c2.34757731 18.7071068%2c2.7381016 L14.4789218%2c6.965 L17.1443384%2c6.96524488 C17.6966231%2c6.96524488 18.1443384%2c7.41296013 18.1443384%2c7.96524488 L18.1443384%2c8.00907817 C18.1443384%2c8.56136292 17.6966231%2c9.00907817 17.1443384%2c9.00907817 L11.9909218%2c9.00907817 C11.4386371%2c9.00907817 10.9909218%2c8.56136292 10.9909218%2c8.00907817 L10.9909218%2c2.85566164 C10.9909218%2c2.30337689 11.4386371%2c1.85566164 11.9909218%2c1.85566164 L12.0347551%2c1.85566164 C12.5870399%2c1.85566164 13.0347551%2c2.30337689 13.0347551%2c2.85566164 L13.0339218%2c5.52 L17.2618984%2c1.29289322 C17.6524227%2c0.902368927 18.2855877%2c0.902368927 18.676112%2c1.29289322 Z' id='Shape' fill='%237B7671'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-const img$5 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/cancel%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/cancel' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10%2c0 C10.5522847%2c-1.01453063e-16 11%2c0.44771525 11%2c1 L11%2c9 L19%2c9 C19.5522847%2c9 20%2c9.44771525 20%2c10 C20%2c10.5522847 19.5522847%2c11 19%2c11 L11%2c11 L11%2c19 C11%2c19.5522847 10.5522847%2c20 10%2c20 C9.44771525%2c20 9%2c19.5522847 9%2c19 L9%2c10.999 L1%2c11 C0.44771525%2c11 0%2c10.5522847 0%2c10 C0%2c9.44771525 0.44771525%2c9 1%2c9 L9%2c8.999 L9%2c1 C9%2c0.44771525 9.44771525%2c1.01453063e-16 10%2c0 Z' id='Combined-Shape' fill='%237B7671' transform='translate(10.000000%2c 10.000000) rotate(45.000000) translate(-10.000000%2c -10.000000) '%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$4 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/cancel%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/cancel' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10%2c0 C10.5522847%2c-1.01453063e-16 11%2c0.44771525 11%2c1 L11%2c9 L19%2c9 C19.5522847%2c9 20%2c9.44771525 20%2c10 C20%2c10.5522847 19.5522847%2c11 19%2c11 L11%2c11 L11%2c19 C11%2c19.5522847 10.5522847%2c20 10%2c20 C9.44771525%2c20 9%2c19.5522847 9%2c19 L9%2c10.999 L1%2c11 C0.44771525%2c11 0%2c10.5522847 0%2c10 C0%2c9.44771525 0.44771525%2c9 1%2c9 L9%2c8.999 L9%2c1 C9%2c0.44771525 9.44771525%2c1.01453063e-16 10%2c0 Z' id='Combined-Shape' fill='%237B7671' transform='translate(10.000000%2c 10.000000) rotate(45.000000) translate(-10.000000%2c -10.000000) '%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var HeaderButtons = function HeaderButtons() {
   var _useNoteStore = useNoteStore(),
@@ -8084,10 +7098,10 @@ var HeaderButtons = function HeaderButtons() {
   var onChangeImg = function onChangeImg() {
     switch (NoteStore.layoutState) {
       case 'expand':
-        return img$4;
+        return img$3;
 
       default:
-        return img$3;
+        return img$2;
     }
   };
 
@@ -8130,13 +7144,13 @@ var HeaderButtons = function HeaderButtons() {
       src: onChangeImg(),
       onClick: handleLayoutState
     })), /*#__PURE__*/React__default['default'].createElement(ButtonDiv, null, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$5,
+      src: img$4,
       onClick: handleCancelBtn
     }))));
   });
 };
 
-const img$6 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$5 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/back%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/back' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M8.24324183%2c3.37313501 L8.33969387%2c3.45835187 C8.72518106%2c3.84608946 8.72499181%2c4.4724111 8.33927036%2c4.85991567 L4.218%2c8.99931234 L18%2c9 C18.5522847%2c9 19%2c9.44771525 19%2c10 C19%2c10.5522847 18.5522847%2c11 18%2c11 L4.385%2c10.9993123 L8.33927036%2c14.971772 C8.69532093%2c15.3294685 8.72287069%2c15.8906541 8.42180619%2c16.27984 L8.33969387%2c16.3733358 L8.24324183%2c16.4585527 C7.8567965%2c16.7576047 7.29908129%2c16.729051 6.94542227%2c16.3737571 L6.94542227%2c16.3737571 L1.28941504%2c10.6916033 C1.07740772%2c10.4786159 0.981870593%2c10.1934813 1.0028276%2c9.91547061 C0.981870593%2c9.63820631 1.07740772%2c9.35307172 1.28941504%2c9.14008433 L6.94542227%2c3.45793056 C7.29908129%2c3.10263665 7.8567965%2c3.07408296 8.24324183%2c3.37313501 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 function _templateObject$4() {
   var data = _taggedTemplateLiteral(["\n  margin-left: 0.69rem;\n"]);
@@ -8270,7 +7284,7 @@ var LNBHeader = function LNBHeader(_ref) {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTitleCover, null, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
       show: NoteStore.layoutState === 'collapse' && ChapterStore.isTagSearching
     }, /*#__PURE__*/React__default['default'].createElement(Button, {
-      src: img$6,
+      src: img$5,
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
       "data-btn": 'noteNewChapterBtn',
@@ -8282,11 +7296,11 @@ var LNBHeader = function LNBHeader(_ref) {
       type: "image",
       border: "0",
       alt: " ",
-      src: img$1,
+      src: img,
       isSearch: ChapterStore.searchStr !== "" || ChapterStore.isSearching ? true : false
     }), ChapterStore.isTagSearching ? /*#__PURE__*/React__default['default'].createElement(SearchTagChip, null, /*#__PURE__*/React__default['default'].createElement(TagText, null, ChapterStore.searchingTagName), /*#__PURE__*/React__default['default'].createElement(StyledCancelBtn, {
       onClick: cancelSearchingTagNote,
-      src: img$2,
+      src: img$1,
       visible: true
     })) : /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchInput, {
       ref: inputRef,
@@ -8298,7 +7312,7 @@ var LNBHeader = function LNBHeader(_ref) {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
       }
     }), /*#__PURE__*/React__default['default'].createElement(CancelBtn, {
-      src: img$2,
+      src: img$1,
       onClick: onClickCancelBtn,
       visible: !(!ChapterStore.isSearching && ChapterStore.searchStr === "" || ChapterStore.isTagSearching)
     })), NoteStore.layoutState === 'collapse' && /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null)));
@@ -8536,7 +7550,7 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
   }))));
 });
 
-const img$7 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/add_tag%3c/title%3e %3cg id='Icon/common/add_tag' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M9.9367%2c2.0313 C10.7577%2c2.0313 11.5697%2c2.2483 12.2827%2c2.6573 C12.7607%2c2.9323 12.9267%2c3.5443 12.6517%2c4.0223 C12.3757%2c4.5013 11.7647%2c4.6653 11.2857%2c4.3913 C10.8757%2c4.1563 10.4087%2c4.0313 9.9367%2c4.0313 L9.9367%2c4.0313 L6.7117%2c4.0313 C5.2167%2c4.0313 3.9997%2c5.2493 3.9997%2c6.7463 L3.9997%2c6.7463 L3.9997%2c9.9733 C3.9997%2c10.6883 4.2887%2c11.3873 4.7937%2c11.8923 L4.7937%2c11.8923 L12.0987%2c19.2023 C13.1247%2c20.2283 14.9097%2c20.2273 15.9327%2c19.2023 L15.9327%2c19.2023 L19.1587%2c15.9753 C19.9777%2c15.1553 20.1867%2c13.9043 19.6777%2c12.8633 C19.4357%2c12.3673 19.6407%2c11.7673 20.1367%2c11.5253 C20.6327%2c11.2823 21.2317%2c11.4883 21.4747%2c11.9843 C22.3587%2c13.7933 21.9957%2c15.9643 20.5737%2c17.3883 L20.5737%2c17.3883 L17.3477%2c20.6163 C16.4577%2c21.5063 15.2757%2c21.9983 14.0157%2c21.9983 C12.7567%2c21.9983 11.5737%2c21.5063 10.6837%2c20.6163 L10.6837%2c20.6163 L3.3797%2c13.3063 C2.5027%2c12.4293 1.9997%2c11.2143 1.9997%2c9.9733 L1.9997%2c9.9733 L1.9997%2c6.7463 C1.9997%2c4.1463 4.1137%2c2.0313 6.7117%2c2.0313 L6.7117%2c2.0313 Z M8.0488%2c5.7412 C9.3668%2c5.7412 10.4398%2c6.8132 10.4398%2c8.1332 C10.4398%2c9.4512 9.3668%2c10.5232 8.0488%2c10.5232 C6.7308%2c10.5232 5.6578%2c9.4512 5.6578%2c8.1332 C5.6578%2c6.8132 6.7308%2c5.7412 8.0488%2c5.7412 Z M18.5%2c0.9999 C19.053%2c0.9999 19.5%2c1.4469 19.5%2c1.9999 L19.5%2c1.9999 L19.5%2c4.5009 L22%2c4.5009 C22.553%2c4.5009 23%2c4.9479 23%2c5.5009 C23%2c6.0539 22.553%2c6.5009 22%2c6.5009 L22%2c6.5009 L19.5%2c6.5009 L19.5%2c9.0009 C19.5%2c9.5539 19.053%2c10.0009 18.5%2c10.0009 C17.947%2c10.0009 17.5%2c9.5539 17.5%2c9.0009 L17.5%2c9.0009 L17.5%2c6.5009 L15%2c6.5009 C14.447%2c6.5009 14%2c6.0539 14%2c5.5009 C14%2c4.9479 14.447%2c4.5009 15%2c4.5009 L15%2c4.5009 L17.5%2c4.5009 L17.5%2c1.9999 C17.5%2c1.4469 17.947%2c0.9999 18.5%2c0.9999 Z M8.0488%2c7.4402 C7.6678%2c7.4402 7.3578%2c7.7512 7.3578%2c8.1332 C7.3578%2c8.5132 7.6678%2c8.8242 8.0488%2c8.8242 C8.4298%2c8.8242 8.7398%2c8.5132 8.7398%2c8.1332 C8.7398%2c7.7512 8.4298%2c7.4402 8.0488%2c7.4402 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$6 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/add_tag%3c/title%3e %3cg id='Icon/common/add_tag' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M9.9367%2c2.0313 C10.7577%2c2.0313 11.5697%2c2.2483 12.2827%2c2.6573 C12.7607%2c2.9323 12.9267%2c3.5443 12.6517%2c4.0223 C12.3757%2c4.5013 11.7647%2c4.6653 11.2857%2c4.3913 C10.8757%2c4.1563 10.4087%2c4.0313 9.9367%2c4.0313 L9.9367%2c4.0313 L6.7117%2c4.0313 C5.2167%2c4.0313 3.9997%2c5.2493 3.9997%2c6.7463 L3.9997%2c6.7463 L3.9997%2c9.9733 C3.9997%2c10.6883 4.2887%2c11.3873 4.7937%2c11.8923 L4.7937%2c11.8923 L12.0987%2c19.2023 C13.1247%2c20.2283 14.9097%2c20.2273 15.9327%2c19.2023 L15.9327%2c19.2023 L19.1587%2c15.9753 C19.9777%2c15.1553 20.1867%2c13.9043 19.6777%2c12.8633 C19.4357%2c12.3673 19.6407%2c11.7673 20.1367%2c11.5253 C20.6327%2c11.2823 21.2317%2c11.4883 21.4747%2c11.9843 C22.3587%2c13.7933 21.9957%2c15.9643 20.5737%2c17.3883 L20.5737%2c17.3883 L17.3477%2c20.6163 C16.4577%2c21.5063 15.2757%2c21.9983 14.0157%2c21.9983 C12.7567%2c21.9983 11.5737%2c21.5063 10.6837%2c20.6163 L10.6837%2c20.6163 L3.3797%2c13.3063 C2.5027%2c12.4293 1.9997%2c11.2143 1.9997%2c9.9733 L1.9997%2c9.9733 L1.9997%2c6.7463 C1.9997%2c4.1463 4.1137%2c2.0313 6.7117%2c2.0313 L6.7117%2c2.0313 Z M8.0488%2c5.7412 C9.3668%2c5.7412 10.4398%2c6.8132 10.4398%2c8.1332 C10.4398%2c9.4512 9.3668%2c10.5232 8.0488%2c10.5232 C6.7308%2c10.5232 5.6578%2c9.4512 5.6578%2c8.1332 C5.6578%2c6.8132 6.7308%2c5.7412 8.0488%2c5.7412 Z M18.5%2c0.9999 C19.053%2c0.9999 19.5%2c1.4469 19.5%2c1.9999 L19.5%2c1.9999 L19.5%2c4.5009 L22%2c4.5009 C22.553%2c4.5009 23%2c4.9479 23%2c5.5009 C23%2c6.0539 22.553%2c6.5009 22%2c6.5009 L22%2c6.5009 L19.5%2c6.5009 L19.5%2c9.0009 C19.5%2c9.5539 19.053%2c10.0009 18.5%2c10.0009 C17.947%2c10.0009 17.5%2c9.5539 17.5%2c9.0009 L17.5%2c9.0009 L17.5%2c6.5009 L15%2c6.5009 C14.447%2c6.5009 14%2c6.0539 14%2c5.5009 C14%2c4.9479 14.447%2c4.5009 15%2c4.5009 L15%2c4.5009 L17.5%2c4.5009 L17.5%2c1.9999 C17.5%2c1.4469 17.947%2c0.9999 18.5%2c0.9999 Z M8.0488%2c7.4402 C7.6678%2c7.4402 7.3578%2c7.7512 7.3578%2c8.1332 C7.3578%2c8.5132 7.6678%2c8.8242 8.0488%2c8.8242 C8.4298%2c8.8242 8.7398%2c8.5132 8.7398%2c8.1332 C8.7398%2c7.7512 8.4298%2c7.4402 8.0488%2c7.4402 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 var LNBTag = /*#__PURE__*/React.memo(function (_ref) {
   var flexOrder = _ref.flexOrder;
@@ -8575,13 +7589,997 @@ var LNBTag = /*#__PURE__*/React.memo(function (_ref) {
       onClick: onClickTagMenuBtn
     }, /*#__PURE__*/React__default['default'].createElement(TagImg, {
       showTag: !NoteStore.showPage,
-      src: img$7,
+      src: img$6,
       alt: "tagImg"
     }), /*#__PURE__*/React__default['default'].createElement(TagTxt, null, NoteStore.getI18n('tag'))));
   });
 });
 
-const img$8 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/view_more%3c/title%3e %3cg id='Icon/common/view_more' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.5%2c16.6669 C13.329%2c16.6669 14%2c17.3379 14%2c18.1669 C14%2c18.9949 13.329%2c19.6669 12.5%2c19.6669 C11.671%2c19.6669 11%2c18.9949 11%2c18.1669 C11%2c17.3379 11.671%2c16.6669 12.5%2c16.6669 Z M12.5%2c10.3334 C13.329%2c10.3334 14%2c11.0044 14%2c11.8334 C14%2c12.6624 13.329%2c13.3334 12.5%2c13.3334 C11.671%2c13.3334 11%2c12.6624 11%2c11.8334 C11%2c11.0044 11.671%2c10.3334 12.5%2c10.3334 Z M12.5%2c3.9999 C13.329%2c3.9999 14%2c4.6719 14%2c5.4999 C14%2c6.3289 13.329%2c6.9999 12.5%2c6.9999 C11.671%2c6.9999 11%2c6.3289 11%2c5.4999 C11%2c4.6719 11.671%2c3.9999 12.5%2c3.9999 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+const img$7 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/view_more%3c/title%3e %3cg id='Icon/common/view_more' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.5%2c16.6669 C13.329%2c16.6669 14%2c17.3379 14%2c18.1669 C14%2c18.9949 13.329%2c19.6669 12.5%2c19.6669 C11.671%2c19.6669 11%2c18.9949 11%2c18.1669 C11%2c17.3379 11.671%2c16.6669 12.5%2c16.6669 Z M12.5%2c10.3334 C13.329%2c10.3334 14%2c11.0044 14%2c11.8334 C14%2c12.6624 13.329%2c13.3334 12.5%2c13.3334 C11.671%2c13.3334 11%2c12.6624 11%2c11.8334 C11%2c11.0044 11.671%2c10.3334 12.5%2c10.3334 Z M12.5%2c3.9999 C13.329%2c3.9999 14%2c4.6719 14%2c5.4999 C14%2c6.3289 13.329%2c6.9999 12.5%2c6.9999 C11.671%2c6.9999 11%2c6.3289 11%2c5.4999 C11%2c4.6719 11.671%2c3.9999 12.5%2c3.9999 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+
+const img$8 = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/system/exclamation%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cg id='Icon/system/exclamation' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3ccircle id='Oval' fill='%23FB3A3A' cx='10' cy='10' r='8'%3e%3c/circle%3e %3cpath d='M10%2c13 C10.5522847%2c13 11%2c13.4477153 11%2c14 C11%2c14.5522847 10.5522847%2c15 10%2c15 C9.44771525%2c15 9%2c14.5522847 9%2c14 C9%2c13.4477153 9.44771525%2c13 10%2c13 Z M10%2c5 C10.5522847%2c5 11%2c5.44771525 11%2c6 L11%2c11 C11%2c11.5522847 10.5522847%2c12 10%2c12 C9.44771525%2c12 9%2c11.5522847 9%2c11 L9%2c6 C9%2c5.44771525 9.44771525%2c5 10%2c5 Z' id='Combined-Shape' fill='white'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+
+/*
+  Link Dialog 관련
+*/
+
+var changeLinkDialog = function changeLinkDialog() {
+  try {
+    var dialog = document.querySelector('.tox-dialog');
+    dialog.classList.add("custom-link-dialog");
+    changeLinkDialogFooter(dialog.querySelector('.tox-dialog__footer')); // 일단 버튼 위치 바꾸기
+
+    changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header')); // saveBtn : disable하려고 넘겨준다
+
+    changeLinkDialogForm(dialog);
+  } catch (err) {
+    throw Error(err);
+  }
+};
+
+var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
+  header.classList.add("custom-dialog-header");
+  var title = header.querySelector('.tox-dialog__title');
+  title.classList.add("custom-dialog-title");
+  title.textContent = NoteStore.getI18n('insertLink');
+};
+
+var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
+  footer.classList.add("custom-dialog-footer");
+  var btnGroup = footer.querySelector('.tox-dialog__footer-end');
+  btnGroup.classList.add('custom-dialog-btns'); // 저장, 취소 버튼 위치 바껴야 한다
+
+  btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
+}; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
+
+
+var renderErrorMark = function renderErrorMark(target) {
+  var img = document.createElement('img');
+  img.src = img$8;
+  img.classList.add('note-link-form-error');
+  var tooltip = document.createElement('div');
+  tooltip.classList.add('note-link-error-tooltip');
+  target.appendChild(img);
+  target.appendChild(tooltip);
+  return {
+    img$: img,
+    tooltip$: tooltip
+  };
+}; // 1 : 텍스트를 입력해 주세요 메시지 띄우기
+
+
+var textCondition = function textCondition(value) {
+  return isFilled(value) ? {
+    result: true,
+    message: ""
+  } : {
+    result: false,
+    message: NoteStore.getI18n('enterText')
+  };
+};
+
+var urlSaveCondition = function urlSaveCondition(_value) {
+  if (!isFilled(_value)) return {
+    result: false,
+    message: NoteStore.getI18n('enterLink')
+  };
+
+  if (!GlobalVariable.isBasicPlan) {
+    if (isValidMailtoMail(_value)) return {
+      result: true,
+      message: ""
+    }; // pass
+
+    if (isValidMail(_value)) return {
+      result: false,
+      message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요."
+    }; // mailto 붙여달라고 메시지 띄우기
+  }
+
+  if (checkUrlValidation(_value)) return {
+    result: true,
+    message: ""
+  }; // pass
+
+  return {
+    result: false,
+    message: NoteStore.getI18n('invalidLink')
+  }; // 유효하지 않은 주소라고 메시지 띄우기
+}; // errorMark 관련된 함수
+// params : errorMark, errorCondition, textInput
+
+
+var renderValidation = function renderValidation(params) {
+  return function (e, targetValue) {
+    var type = params.type,
+        errorMark = params.errorMark,
+        errorCondition = params.errorCondition,
+        textInput = params.textInput;
+    var img$ = errorMark.img$,
+        tooltip$ = errorMark.tooltip$;
+    var resultObj = errorCondition(targetValue); // pass
+
+    if (resultObj.result) {
+      [img$, tooltip$].forEach(function (node) {
+        return node.classList.remove('note-show-element');
+      });
+    } // text필드 errorMark 보여주는건 focusOut일 때만
+    else if (type === 'text' && e.type === 'input') ; else {
+        tooltip$.textContent = resultObj["message"];
+        [img$, tooltip$].forEach(function (node) {
+          return node.classList.add('note-show-element');
+        });
+      } // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
+
+
+    if (isFilled(textInput.value)) {
+      _toConsumableArray(textInput.parentElement.querySelectorAll('.note-show-element')).forEach(function (node) {
+        return node.classList.remove('note-show-element');
+      });
+    }
+  };
+};
+
+var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
+  // 텍스트, 링크 순으로 바꿔주기
+  var form = dialog.querySelector('.tox-dialog__body .tox-form');
+  form.insertBefore(form.children[1], form.children[0]);
+  form.classList.add("custom-dialog-form");
+  var formStr = {
+    url: NoteStore.getI18n('link'),
+    text: NoteStore.getI18n('text')
+  };
+  var targetInputs$ = form.querySelectorAll('input');
+  var saveBtn = dialog.querySelector('.tox-dialog__footer button');
+
+  var handleInput = function handleInput(checkValidation) {
+    return function (e) {
+      if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value); // 두 input창이 비어있으면 saveBtn을 disable한다
+
+      if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {
+        saveBtn.setAttribute('disabled', true);
+        return;
+      } //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
+
+
+      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);else saveBtn.removeAttribute('disabled');
+    };
+  }; // string 바꿔주기, renderValidationErrorMark
+
+
+  _toConsumableArray(form.childNodes).forEach(function (child) {
+    var input$ = child.querySelector('input');
+    var type = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
+
+    child.querySelector('.tox-form__group label').textContent = formStr[type]; // errorMark 그려주고
+
+    var errorMark = renderErrorMark(input$.parentElement);
+    /*
+      유효성 검사해서 error mark 그렸다 뺐다하기
+    */
+
+    var params = {
+      type: type,
+      errorMark: errorMark,
+      errorCondition: type === "text" ? textCondition : urlSaveCondition,
+      textInput: targetInputs$[0] // 텍스트 input
+
+    }; // validation 함수 만들기
+
+    var renderItemValidation = renderValidation(params); // focus out 했을 때 동작한다
+
+    if (type === "text") {
+      // focusOut일 때만 동작해야해서
+      input$.addEventListener("focusout", handleInput(renderItemValidation)); // 다 지웠을 때도 인식해야 하고, 중간에 focus상태에서 text 쓸 때도 에러메시지 지워져야함
+
+      input$.addEventListener("input", handleInput(renderItemValidation));
+    } //url
+    else input$.addEventListener("input", handleInput(renderItemValidation));
+  }); // text input으로 focus
+
+
+  targetInputs$[0].focus();
+};
+/*
+  Link context Toolbar 관련
+  custimizing contextToolbar
+*/
+
+
+var changeButtonStyle = function changeButtonStyle(idx, count) {
+  var _toolbar$childNodes;
+
+  var linkToolbarStr = [NoteStore.getI18n('editLink'), NoteStore.getI18n('deleteLink'), NoteStore.getI18n('moveToLink')];
+  var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
+  toolbar.classList.add('link-toolbar');
+  var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
+
+  if (toolbar && target) {
+    var strNode = document.createElement('div');
+    strNode.textContent = linkToolbarStr[idx];
+    target.appendChild(strNode);
+  } else if (count >= 50) return;else {
+    setTimeout(changeButtonStyle, 50, idx, count + 1);
+  }
+}; // customToggleOpenLink에서는 isOnlyReadMode가 false : 수정모드에서 열려야 하는 메뉴라서
+// 읽기모드에서 a tag 클릭으로 들어온 경우 isOnlyReadMode : true
+
+var openLink = function openLink(_ref) {
+  var isOnlyReadMode = _ref.isOnlyReadMode,
+      url = _ref.url,
+      target = _ref.target;
+  if (isOnlyReadMode && !PageStore.isReadMode()) return;
+  if (!url) return;
+
+  if (isOpenMail(url)) {
+    NoteStore.setIsMailShare(true);
+    NoteStore.setMailReceiver([{
+      mailAddr: url.replace(/^(mailto:\s?)/g, ''),
+      displayName: null,
+      userId: null
+    }]);
+    return;
+  }
+
+  if (target !== '_blank') {
+    document.location.href = url;
+    return;
+  } // window.open(targetUrl);
+
+
+  var link = document.createElement('a');
+  link.href = url;
+  link.target = target;
+  link.rel = 'noopener';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}; // default autolink pattern
+// autolink_pattern:/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i,
+// 자동으로 mailto로 바꾸지 않는 경우
+// autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
+
+var customAutoLinkPattern = function customAutoLinkPattern() {
+  return GlobalVariable.isBasicPlan ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+};
+
+var handleUpload = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var uploadArr;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            uploadArr = [];
+
+            if (!EditorStore$1.uploadDTO) {
+              _context.next = 6;
+              break;
+            }
+
+            EditorStore$1.setIsUploading(true);
+            uploadArr = mobx.toJS(EditorStore$1.uploadDTO).map(function (item) {
+              return EditorStore$1.createUploadMeta(item.uploadMeta, item.type);
+            });
+            _context.next = 6;
+            return Promise.all(uploadArr).then(function (results) {
+              if (EditorStore$1.uploadDTO.length === results.length) {
+                var _loop = function _loop(i) {
+                  (function (result) {
+                    if (result.id !== undefined) {
+                      var handleUploadProgress = function handleUploadProgress(e) {
+                        var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
+                        EditorStore$1.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                        EditorStore$1.tempFileLayoutList[i].file_id = result.id;
+                      };
+
+                      EditorStore$1.createUploadStorage(result.id, EditorStore$1.uploadDTO[i].file, handleUploadProgress).then(function (dto) {
+                        if (dto.resultMsg === 'Success') {
+                          if (result.type === 'image') EditorStore$1.createDriveElement('image', result.id, EditorStore$1.tempFileLayoutList[i].file_name + '.' + EditorStore$1.tempFileLayoutList[i].file_extension);
+                          EditorStore$1.tempFileLayoutList[i].progress = 0;
+                        } else if (dto.resultMsg === 'Fail') {
+                          EditorStore$1.failCount++;
+                          EditorStore$1.tempFileLayoutList[i].progress = 0;
+                          EditorStore$1.tempFileLayoutList[i].error = true;
+                        }
+
+                        EditorStore$1.processLength++;
+
+                        if (EditorStore$1.processLength == EditorStore$1.uploadLength) {
+                          EditorStore$1.uploadDTO = [];
+                          EditorStore$1.setProcessLength(0);
+                          EditorStore$1.setIsUploading(false);
+                          if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
+                            PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                              EditorStore$1.setFileList(dto.fileList);
+                              EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
+                              EditorStore$1.setProcessCount(0);
+                              EditorStore$1.setTempFileLayoutList([]);
+                            });
+                          }
+                        }
+                      });
+                    }
+                  })(results[i]);
+                };
+
+                for (var i = 0; i < results.length; i++) {
+                  _loop(i);
+                }
+              }
+            });
+
+          case 6:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function handleUpload() {
+    return _ref.apply(this, arguments);
+  };
+}();
+var driveSuccessCb = function driveSuccessCb(fileList) {
+  if (fileList) {
+    if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
+    EditorStore$1.setFileLength(fileList.length);
+    fileList.forEach(function (file) {
+      return EditorStore$1.addDriveFileList(file);
+    });
+    handleDriveCopy();
+    EditorStore$1.setIsAttatch(true);
+    EditorStore$1.setIsDrive(false);
+  }
+};
+var driveCancelCb = function driveCancelCb() {
+  EditorStore$1.setIsAttatch(true);
+  EditorStore$1.setIsDrive(false);
+  setTimeout(function () {
+    EditorStore$1.setIsAttatch(false);
+  }, 100);
+};
+
+var isValidFileLength = function isValidFileLength(fileList) {
+  if (fileList.length > 30) {
+    NoteStore.setModalInfo('failUpload');
+    return false;
+  }
+
+  return true;
+};
+
+var isValidFileSize = function isValidFileSize(fileList) {
+  var totalSize = 20000000000; // 20GB
+
+  var uploadSize = 0;
+  fileList.forEach(function (file) {
+    uploadSize += file.file_size;
+  });
+
+  if (uploadSize > totalSize) {
+    NoteStore.setModalInfo('sizefailUpload');
+    return false;
+  }
+
+  return true;
+};
+
+var isValidFileNameLength = function isValidFileNameLength(fileName) {
+  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+
+  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+
+  return true;
+};
+var handleDriveCopy = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var copyArr, resultArray;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            copyArr = [];
+            resultArray = [];
+
+            if (!EditorStore$1.driveFileList) {
+              _context2.next = 6;
+              break;
+            }
+
+            copyArr = mobx.toJS(EditorStore$1.driveFileList).map(function (item) {
+              return EditorStore$1.storageFileDeepCopy(item.file_id, item.type);
+            });
+            _context2.next = 6;
+            return Promise.all(copyArr).then(function (results) {
+              if (EditorStore$1.driveFileList.length === results.length) {
+                for (var i = 0; i < results.length; i++) {
+                  (function (result) {
+                    if (result.id !== undefined) resultArray.push(result.id);
+                  })(results[i]);
+                }
+
+                EditorStore$1.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
+                  if (dto.resultMsg === 'Success') {
+                    EditorStore$1.driveFileList = [];
+                    if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
+                      PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+                        EditorStore$1.setFileList(dto.fileList);
+                        EditorStore$1.processCount = 0;
+                        EditorStore$1.setTempFileLayoutList([]);
+                      });
+                      EditorStore$1.setIsAttatch(false);
+                    }
+                  }
+                });
+              }
+            });
+
+          case 6:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function handleDriveCopy() {
+    return _ref2.apply(this, arguments);
+  };
+}();
+var handleFileDelete = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+    var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return EditorStore$1.tinymce.dom.doc.images;
+
+          case 2:
+            imgTarget = _context3.sent;
+            fileTarget = document.querySelectorAll('div #fileLayout [id]');
+            imgArray = _toConsumableArray(imgTarget);
+            fileArray = _toConsumableArray(fileTarget);
+            deleteArr = [];
+            imgArray.forEach(function (img) {
+              return EditorStore$1.tempFileList.push(img.getAttribute('id'));
+            });
+            fileArray.forEach(function (file) {
+              return EditorStore$1.tempFileList.push(file.getAttribute('id'));
+            });
+            if (EditorStore$1.fileList) EditorStore$1.deleteFileList = EditorStore$1.fileList.filter(function (file) {
+              return !EditorStore$1.tempFileList.includes(file.file_id);
+            });
+
+            if (!EditorStore$1.deleteFileList) {
+              _context3.next = 21;
+              break;
+            }
+
+            deleteArr = mobx.toJS(EditorStore$1.deleteFileList).map(function (item) {
+              return EditorStore$1.deleteFile(item.file_id);
+            });
+            _context3.prev = 12;
+            _context3.next = 15;
+            return Promise.all(deleteArr).then(function () {
+              EditorStore$1.deleteFileList = [];
+              EditorStore$1.tempFileList = [];
+              PageStore.setContent(EditorStore$1.tinymce.getContent());
+            });
+
+          case 15:
+            _context3.next = 19;
+            break;
+
+          case 17:
+            _context3.prev = 17;
+            _context3.t0 = _context3["catch"](12);
+
+          case 19:
+            _context3.prev = 19;
+            return _context3.finish(19);
+
+          case 21:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[12, 17, 19, 21]]);
+  }));
+
+  return function handleFileDelete() {
+    return _ref3.apply(this, arguments);
+  };
+}();
+var downloadFile = function downloadFile(fileId) {
+  if (fileId) {
+    window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
+    return;
+  }
+
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = EditorStore$1.tinymce.selection.getNode().src;
+  a.download = EditorStore$1.tinymce.selection.getNode().getAttribute('data-name');
+  a.click();
+  document.body.removeChild(a);
+};
+var exportData = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(isMailShare, type, exportId) {
+    var html;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            if (!(type === 'chapter')) {
+              _context4.next = 6;
+              break;
+            }
+
+            _context4.next = 3;
+            return getChapterHtml(exportId);
+
+          case 3:
+            _context4.t0 = _context4.sent;
+            _context4.next = 9;
+            break;
+
+          case 6:
+            _context4.next = 8;
+            return getPageHtml(exportId);
+
+          case 8:
+            _context4.t0 = _context4.sent;
+
+          case 9:
+            html = _context4.t0;
+
+            if (html) {
+              _context4.next = 12;
+              break;
+            }
+
+            return _context4.abrupt("return");
+
+          case 12:
+            makeExportElement(html);
+            exportDownloadPDF(isMailShare, type);
+
+          case 14:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function exportData(_x, _x2, _x3) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+var getChapterHtml = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(exportId) {
+    var html, _yield$NoteRepository, noteList;
+
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            html = '';
+            _context5.next = 3;
+            return NoteRepository$1.getChapterChildren(exportId);
+
+          case 3:
+            _yield$NoteRepository = _context5.sent;
+            noteList = _yield$NoteRepository.data.dto.noteList;
+
+            if (noteList.length > 0) {
+              noteList.forEach(function (page, idx) {
+                html += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+              });
+            } else alert('하위에 속한 페이지가 없습니다.');
+
+            return _context5.abrupt("return", html);
+
+          case 7:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
+
+  return function getChapterHtml(_x4) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+var getPageHtml = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(exportId) {
+    var html, _yield$NoteRepository2, dto;
+
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            html = '';
+            _context6.next = 3;
+            return NoteRepository$1.getNoteInfoList(exportId);
+
+          case 3:
+            _yield$NoteRepository2 = _context6.sent;
+            dto = _yield$NoteRepository2.data.dto;
+            PageStore.exportPageTitle = dto.note_title;
+            html = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            return _context6.abrupt("return", html);
+
+          case 8:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+
+  return function getPageHtml(_x5) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+var makeExportElement = function makeExportElement(html) {
+  var fragment = document.createElement('div');
+  fragment.style.visibility = 'visible';
+  fragment.style.opacity = 0;
+  fragment.style.width = 'fit-content';
+  fragment.setAttribute('id', 'exportTarget');
+  var targetDIV = document.createElement('div');
+  targetDIV.setAttribute('id', 'exportTargetDiv');
+  targetDIV.setAttribute('class', 'export');
+  targetDIV.innerHTML = html;
+  fragment.appendChild(targetDIV);
+  document.body.appendChild(fragment);
+};
+var exportDownloadPDF = function exportDownloadPDF(isMailShare, type) {
+  var element = document.getElementById('exportTargetDiv');
+  var opt = getExportOpt(type);
+  htmlToPdf(isMailShare, element, opt);
+};
+
+var getExportOpt = function getExportOpt(type) {
+  var opt = {
+    margin: 2,
+    filename: type === 'chapter' ? "".concat(ChapterStore.exportChapterTitle, ".pdf") : "".concat(PageStore.exportPageTitle, ".pdf"),
+    pagebreak: {
+      after: '.afterClass',
+      avoid: 'span'
+    },
+    image: {
+      type: 'jpeg',
+      quality: 0.98
+    },
+    jsPDF: {
+      unit: 'pt',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
+  return opt;
+};
+
+var htmlToPdf = function htmlToPdf(isMailShare, element, opt) {
+  if (!isMailShare) {
+    html2pdf__default['default'](element, opt).then(function () {
+      document.getElementById('exportTarget').remove();
+    });
+  } else {
+    html2pdf__default['default']().set(opt).from(element).toPdf().outputPdf('blob').then(function (blob) {
+      var pdf = new File([blob], opt.filename, {
+        type: blob.type
+      });
+      var fileObjs = [{
+        originFileObj: pdf,
+        name: opt.filename,
+        uid: '1',
+        type: 'application/pdf',
+        fileSize: pdf.size
+      }];
+      NoteStore.setMailShareFileObjs(fileObjs);
+      document.getElementById('exportTarget').remove();
+      NoteStore.setIsMailShare(true);
+    });
+  }
+};
+
+var downloadTxt = function downloadTxt(title, data) {
+  var link = document.createElement('a');
+  var mimeType = "text/plain;charset=utf-8";
+  link.setAttribute('download', "".concat(title, ".txt"));
+  link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
+  link.click();
+}; // txt로 내보내기 전에 setContent해줄 tempEditor init
+
+
+var createTempEditor = function createTempEditor() {
+  var frag = document.createElement('div');
+  frag.setAttribute('id', 'exportTxtParent');
+  var area = document.createElement('textarea');
+  area.setAttribute('id', 'exportTxt');
+  document.body.appendChild(frag);
+  frag.appendChild(area);
+  EditorStore$1.tempTinymce.editorManager.init({
+    target: area,
+    setup: function setup(editor) {
+      EditorStore$1.setTempTinymce(editor);
+    }
+  });
+  var targetEditor = EditorStore$1.tempTinymce.editorManager.get('exportTxt');
+  return targetEditor;
+};
+var getTxtFormat = function getTxtFormat(title, contents) {
+  var targetEditor = createTempEditor();
+  targetEditor.setContent(contents);
+  var exportText = targetEditor.getContent({
+    format: "text"
+  });
+  exportText = exportText.replace(/\n\n/g, '\n');
+  downloadTxt(title, exportText);
+  EditorStore$1.tempTinymce.remove('#exportTxt');
+  document.getElementById('exportTxtParent').remove();
+};
+var exportPageAsTxt = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(noteId) {
+    var response, dto, returnData;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return NoteRepository$1.getNoteInfoList(noteId);
+
+          case 2:
+            response = _context7.sent;
+            dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
+
+            returnData = "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
+            getTxtFormat(dto.note_title, returnData);
+
+          case 6:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+
+  return function exportPageAsTxt(_x6) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+var exportChapterAsTxt = /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterTitle, chapterId) {
+    var returnData, _yield$NoteRepository3, noteList;
+
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            returnData = '';
+            _context8.next = 3;
+            return NoteRepository$1.getChapterChildren(chapterId);
+
+          case 3:
+            _yield$NoteRepository3 = _context8.sent;
+            noteList = _yield$NoteRepository3.data.dto.noteList;
+
+            if (!(noteList.length > 0)) {
+              _context8.next = 9;
+              break;
+            }
+
+            noteList.forEach(function (page, idx) {
+              returnData += "<span style=\"font-size:24px;\">".concat(NoteStore.getI18n('title'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
+            });
+            _context8.next = 10;
+            break;
+
+          case 9:
+            return _context8.abrupt("return", alert('하위에 속한 페이지가 없습니다.'));
+
+          case 10:
+            getTxtFormat(chapterTitle, returnData);
+
+          case 11:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+
+  return function exportChapterAsTxt(_x7, _x8) {
+    return _ref8.apply(this, arguments);
+  };
+}();
+
+var handleClickLink = function handleClickLink(el) {
+  // e.preventDefault(); // Mail App 열리는걸 막을 수 없다...!
+  var href = el.getAttribute('href');
+  var target = el.getAttribute('target');
+  openLink({
+    isOnlyReadMode: true,
+    url: href,
+    target: target
+  });
+};
+
+var handleClickImg = function handleClickImg(el) {
+  var _el$getAttribute;
+
+  if (!PageStore.isReadMode()) return;
+  var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
+  if (file === undefined) return;
+  EditorStore$1.setPreviewFileMeta({
+    userId: NoteRepository$1.USER_ID,
+    channelId: NoteRepository$1.chId,
+    roomId: NoteRepository$1.WS_ID,
+    fileId: el.id,
+    fileName: file[0],
+    fileExtension: file[1]
+  });
+  EditorStore$1.setIsPreview(true);
+};
+
+var handleEditorContentsListener = function handleEditorContentsListener() {
+  if (EditorStore$1.tinymce) {
+    var _EditorStore$tinymce$;
+
+    var targetList = (_EditorStore$tinymce$ = EditorStore$1.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
+    var targetBody = EditorStore$1.tinymce.getBody();
+    EditorStore$1.setEditorDOM(targetBody);
+
+    if (targetList && targetList.length > 0) {
+      Array.from(targetList).forEach(function (el) {
+        if (el.getAttribute('hasListener')) return;
+        if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+        el.setAttribute('hasListener', true);
+      });
+    }
+
+    targetBody.addEventListener('click', handleUnselect);
+  }
+};
+var handleUnselect = function handleUnselect() {
+  if (EditorStore$1.selectFileElement !== '') {
+    EditorStore$1.setFileIndex('');
+    EditorStore$1.setFileElement('');
+  }
+
+  if (TagStore.selectTagIdx !== '') {
+    TagStore.setSelectTagIndex('');
+  }
+
+  if (PageStore.moveInfoMap.size > 1) {
+    PageStore.handleClickOutside();
+  }
+
+  if (ChapterStore.moveInfoMap.size > 1) {
+    ChapterStore.handleClickOutside();
+  } //ref 귀찮 - 임시 구현
+
+
+  var contextMenuList = document.querySelectorAll('div.ant-dropdown');
+
+  _toConsumableArray(contextMenuList).forEach(function (el) {
+    if (!el.classList.contains('ant-dropdown-hidden')) {
+      el.classList.add('ant-dropdown-hidden');
+      NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+    }
+  });
+};
+var handleFileSync = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.next = 2;
+            return handleFileDelete();
+
+          case 2:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9);
+  }));
+
+  return function handleFileSync() {
+    return _ref9.apply(this, arguments);
+  };
+}();
+var openSaveDrive = function openSaveDrive() {
+  EditorStore$1.setIsSaveDrive(true);
+  EditorStore$1.setSaveDriveMeta();
+};
+var driveSaveSuccess = function driveSaveSuccess() {
+  EditorStore$1.setIsSaveDrive(false);
+  EditorStore$1.setIsAttatch(true);
+};
+var driveSaveCancel = function driveSaveCancel() {
+  EditorStore$1.setIsSaveDrive(false);
+}; // DriveUtils.getDriveFileInfo 참고
+
+var isImg = {
+  ext: ['apng', 'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'png', 'rle', 'die', 'raw'],
+  isPreview: true
+}; // 동영상 html 미지원
+
+var isVideoWithoutPreview = {
+  ext: ['mkv', 'avi', 'mpg', 'flv', 'wmv', 'asf', 'asx', 'ogm', '3gp', 'mov', 'dat', 'rm', 'mpe', 'mpeg'],
+  isPreview: false
+}; // 동영상 html 지원
+
+var isVideoWithPreview = {
+  ext: ['mp4', 'ogv', 'webm'],
+  isPreview: true
+}; // 오디오
+
+var isAudio = {
+  ext: ['mp3', 'wav', 'ogg', 'flac', 'wma', 'aac'],
+  isPreview: true
+}; // 오피스(파워포인트)
+
+var isPowerPoint = {
+  ext: ['ppt', 'pptx', 'tpt'],
+  isPreview: false
+}; // 오피스(워드)
+
+var isWord = {
+  ext: ['doc', 'docx', 'toc'],
+  isPreview: false
+}; // 오피스(엑셀)
+
+var isExcel = {
+  ext: ['xls', 'xlsx', 'tls', 'csv'],
+  isPreview: false
+}; // 오피스(한글)
+
+var isHangul = {
+  ext: ['hwp'],
+  isPreview: false
+};
+var isTxt = {
+  ext: ['txt'],
+  isPreview: false
+};
+var isPdf = {
+  ext: ['pdf'],
+  isPreview: false
+};
+var isZip = {
+  ext: ['zip', 'tar', 'rar', 'tgz', 'war', 'alz', 'ace', 'arc', 'arj', 'b64', 'bh', 'bhx', 'bin', 'bz2', 'cab', 'ear', 'enc', 'gz', 'ha', 'hqx', 'ice', 'img', 'jar', 'lha', 'lzh', 'mim', 'pak', 'uue', 'xxe', 'zoo'],
+  isPreview: false
+};
+var isEtc = {
+  ext: ['exe', 'psd', 'mui', 'dll'],
+  isPreview: false
+};
+var fileCategory = {
+  isImg: isImg,
+  isVideoWithoutPreview: isVideoWithoutPreview,
+  isVideoWithPreview: isVideoWithPreview,
+  isAudio: isAudio,
+  isPowerPoint: isPowerPoint,
+  isWord: isWord,
+  isExcel: isExcel,
+  isHangul: isHangul,
+  isTxt: isTxt,
+  isPdf: isPdf,
+  isZip: isZip,
+  isEtc: isEtc
+};
 
 var SubMenu = antd.Menu.SubMenu,
     Item = antd.Menu.Item;
@@ -8838,7 +8836,7 @@ var ContextMenu = function ContextMenu(_ref) {
         if (!visible) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
       }
     }, /*#__PURE__*/React__default['default'].createElement(ContextMenuIconCover, null, /*#__PURE__*/React__default['default'].createElement(ContextMenuIcon, {
-      src: img$8
+      src: img$7
     })));
   });
 };
@@ -10022,7 +10020,7 @@ var EditorHeader = function EditorHeader() {
     }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName : PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
       onClick: handleSearchEditor
     }, /*#__PURE__*/React__default['default'].createElement(EditorSearchIcon, {
-      src: img$1
+      src: img
     }))), /*#__PURE__*/React__default['default'].createElement(HeaderDivider, null)));
   });
 };
@@ -10640,7 +10638,7 @@ var TagListContainer = function TagListContainer() {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(EditorTagCover, null, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
       title: !PageStore.isReadMode() ? NoteStore.getI18n('addTag') : NoteStore.getI18n('notavailableTag')
     }, /*#__PURE__*/React__default['default'].createElement(TagNewBtn, null, /*#__PURE__*/React__default['default'].createElement(TagNewBtnIcon, {
-      src: img$7,
+      src: img$6,
       onClick: onClickNewTagBtn
     }))), /*#__PURE__*/React__default['default'].createElement(AddTagForm, {
       show: TagStore.isNewTag,
@@ -11053,7 +11051,7 @@ var FileLayout = function FileLayout() {
           display: 'none'
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img$2,
+        src: img$1,
         onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')
       }))), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
         percent: item.progress * 100,
@@ -11107,7 +11105,7 @@ var FileLayout = function FileLayout() {
           display: 'none'
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img$2,
+        src: img$1,
         onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'uploaded')
       }))));
     })));
@@ -11946,7 +11944,7 @@ var TagHeader = function TagHeader() {
       type: "image",
       border: "0",
       alt: "tagSearchIcon",
-      src: img$1,
+      src: img,
       isSearch: activateSearchIcon ? true : false
     }), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchInput, {
       autocomplete: "off",
@@ -11957,7 +11955,7 @@ var TagHeader = function TagHeader() {
       onKeyDown: handleKeyDown,
       isSearch: activateSearchIcon ? true : false
     }), /*#__PURE__*/React__default['default'].createElement(CancelBtn, {
-      src: img$2,
+      src: img$1,
       visible: activateSearchIcon,
       onClick: onClickCancelBtn
     }))), /*#__PURE__*/React__default['default'].createElement(HeaderDivider, null)));
