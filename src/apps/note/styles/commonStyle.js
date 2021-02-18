@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Dropdown } from 'antd';
 
 export const HeaderButtonContainer = styled.div`
@@ -86,10 +86,21 @@ export const ButtonDiv = styled.div`
     margin-left: 0.5rem;
   }
 `
-
+// 1rem인 button
 export const Button = styled.img`
   width: 1rem;
   height: 1rem;
+  cursor:pointer;
+`;
+
+export const CancelBtn = styled.img`
+  width: 0.75rem;
+  height: 0.75rem;
+  cursor:pointer;
+  ${props =>
+    !props.visible &&
+      css`display:none;`
+  }
 `;
 
 // 돋보기모양 submit btn

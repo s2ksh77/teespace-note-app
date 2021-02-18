@@ -53,7 +53,7 @@ export const handleUpload = async () => {
                                             );
                                             EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
                                             EditorStore.setProcessCount(0);
-                                            EditorStore.tempFileLayoutList = [];
+                                            EditorStore.setTempFileLayoutList([]);
                                         });
                                     }
                                 }
@@ -134,7 +134,7 @@ export const handleDriveCopy = async () => {
                                     dto.fileList,
                                 );
                                 EditorStore.processCount = 0;
-                                EditorStore.tempFileLayoutList = [];
+                                EditorStore.setTempFileLayoutList([]);
                             });
                             EditorStore.setIsAttatch(false);
                         }

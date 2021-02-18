@@ -309,6 +309,10 @@ const EditorStore = observable({
     } else this.processCount = 0;
     if (!this.isFile) this.setIsFile(true);
   },
+  // []로 초기화하는 부분 debugging할 때 찾기 쉽도록 추가
+  setTempFileLayoutList(arr){
+    this.tempFileLayoutList = arr;
+  },
   setFileLength(length) {
     this.uploadLength = length;
   },
@@ -414,7 +418,7 @@ const EditorStore = observable({
       try {
         await Promise.all(deleteArr).then(() => {
           EditorStore.notSaveFileList = [];
-          if (EditorStore.tempFileLayoutList.length > 0) EditorStore.tempFileLayoutList = [];
+          if (EditorStore.tempFileLayoutList.length > 0) EditorStore.setTempFileLayoutList([]);
         })
       } catch (e) {
 

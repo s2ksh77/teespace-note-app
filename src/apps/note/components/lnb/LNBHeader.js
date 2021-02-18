@@ -9,7 +9,7 @@ import {
 import searchImg from '../../assets/search.svg';
 import { useObserver } from "mobx-react";
 import cancelImg from '../../assets/ts_cancel@3x.png';
-import { PreBtnWrapper, Button, SearchImgInput } from '../../styles/commonStyle';
+import { PreBtnWrapper, Button, CancelBtn, SearchImgInput } from '../../styles/commonStyle';
 import { SearchTagChip, TagText } from '../../styles/tagStyle';
 import HeaderButtons from "../common/buttons";
 import preImg from '../../assets/back.svg';
@@ -17,10 +17,8 @@ import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
 import styled from 'styled-components';
 
-const SearchCancelBtn = styled(Button)`
+const StyledCancelBtn = styled(CancelBtn)`
   margin-left: 0.69rem;
-  width: 0.75rem;
-  height: 0.75rem;
 `;
 
 const LNBHeader = ({ createNewChapter }) => {
@@ -87,7 +85,11 @@ const LNBHeader = ({ createNewChapter }) => {
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagText>{ChapterStore.searchingTagName}</TagText>
-              <SearchCancelBtn onClick={cancelSearchingTagNote} src={cancelImg} />
+              <StyledCancelBtn 
+                onClick={cancelSearchingTagNote} 
+                src={cancelImg}
+                visible={true}
+              />
             </SearchTagChip>
           ) :
             <LnbTitleSearchInput
@@ -96,8 +98,11 @@ const LNBHeader = ({ createNewChapter }) => {
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}
-          {((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)
-            ? null : <Button src={cancelImg} onClick={onClickCancelBtn} />}
+          <CancelBtn 
+            src={cancelImg} 
+            onClick={onClickCancelBtn} 
+            visible={!((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)} 
+          />
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
