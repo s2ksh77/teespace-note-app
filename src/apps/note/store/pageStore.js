@@ -617,8 +617,8 @@ const PageStore = observable({
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.processCount = 0;
-      EditorStore.tempFileLayoutList = [];
+      EditorStore.setProcessCount(0);      
+      EditorStore.setTempFileLayoutList([]);
     }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);

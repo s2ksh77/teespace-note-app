@@ -2669,6 +2669,8 @@ var EditorStore$1 = mobx.observable((_observable = {
   } else this.processCount = 0;
 
   if (!this.isFile) this.setIsFile(true);
+}), _defineProperty(_observable, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
+  this.tempFileLayoutList = arr;
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
@@ -2817,7 +2819,7 @@ var EditorStore$1 = mobx.observable((_observable = {
             _context8.next = 6;
             return Promise.all(deleteArr).then(function () {
               EditorStore$1.notSaveFileList = [];
-              if (EditorStore$1.tempFileLayoutList.length > 0) EditorStore$1.tempFileLayoutList = [];
+              if (EditorStore$1.tempFileLayoutList.length > 0) EditorStore$1.setTempFileLayoutList([]);
             });
 
           case 6:
@@ -3736,8 +3738,8 @@ var PageStore = mobx.observable((_observable$1 = {
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
 
     if (EditorStore$1.tempFileLayoutList.length > 0) {
-      EditorStore$1.processCount = 0;
-      EditorStore$1.tempFileLayoutList = [];
+      EditorStore$1.setProcessCount(0);
+      EditorStore$1.setTempFileLayoutList([]);
     }
 
     NoteStore.setShowModal(false);
@@ -5336,7 +5338,7 @@ var handleUpload = /*#__PURE__*/function () {
                               EditorStore$1.setFileList(dto.fileList);
                               EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
                               EditorStore$1.setProcessCount(0);
-                              EditorStore$1.tempFileLayoutList = [];
+                              EditorStore$1.setTempFileLayoutList([]);
                             });
                           }
                         }
@@ -5449,7 +5451,7 @@ var handleDriveCopy = /*#__PURE__*/function () {
                       PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
                         EditorStore$1.setFileList(dto.fileList);
                         EditorStore$1.processCount = 0;
-                        EditorStore$1.tempFileLayoutList = [];
+                        EditorStore$1.setTempFileLayoutList([]);
                       });
                       EditorStore$1.setIsAttatch(false);
                     }
