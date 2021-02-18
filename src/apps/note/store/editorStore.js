@@ -51,6 +51,7 @@ const EditorStore = observable({
   searchCurrentCount: 1,
   searchTotalCount: 0,
   searchValue: '',
+  isUploading:false,
   getTempTinymce() {
     return this.tempTinymce
   },
@@ -126,6 +127,15 @@ const EditorStore = observable({
   },
   setIsFileFilteredByNameLen(flag) {
     this.isFileFilteredByNameLen = flag;
+  },
+  setProcessLength(len){
+    this.processLength = len;
+  },
+  setProcessCount(count){
+    this.processCount = count;
+  },
+  setIsUploading(isUploading) {
+    this.isUploading = isUploading;
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {

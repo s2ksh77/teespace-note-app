@@ -14,6 +14,7 @@ import { isFilled } from './validators';
 export const handleUpload = async () => {
     let uploadArr = [];
     if (EditorStore.uploadDTO) {
+        EditorStore.setIsUploading(true);
         uploadArr = toJS(EditorStore.uploadDTO).map(item => {
             return EditorStore.createUploadMeta(item.uploadMeta, item.type);
         });
@@ -39,9 +40,11 @@ export const handleUpload = async () => {
                                     EditorStore.tempFileLayoutList[i].progress = 0;
                                     EditorStore.tempFileLayoutList[i].error = true;
                                 }
-                                EditorStore.processLength++
+                                EditorStore.processLength++;
                                 if (EditorStore.processLength == EditorStore.uploadLength) {
                                     EditorStore.uploadDTO = [];
+                                    EditorStore.setProcessLength(0);
+                                    EditorStore.setIsUploading(false);
                                     if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
                                     else if (EditorStore.failCount === 0) {
                                         PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
@@ -49,7 +52,7 @@ export const handleUpload = async () => {
                                                 dto.fileList,
                                             );
                                             EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
-                                            EditorStore.processCount = 0;
+                                            EditorStore.setProcessCount(0);
                                             EditorStore.tempFileLayoutList = [];
                                         });
                                     }
