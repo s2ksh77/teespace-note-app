@@ -448,10 +448,9 @@ const ChapterStore = observable({
   
   // localStorage에서 page 얻기
   getFirstPageFromChapter(chapterId) {
-    const items = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-    const chapter = items.find(chapter => chapter.id === chapterId);
+    const chapter = this.chapterList.find(chapter => chapter.id === chapterId);
     if (!chapter || chapter.children.length === 0) return null;
-    return chapter.children[0];
+    return chapter.children[0]?.id;
   },
 
   async createNoteChapter(chapterTitle, chapterColor) {
