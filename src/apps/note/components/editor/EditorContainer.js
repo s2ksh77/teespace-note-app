@@ -268,7 +268,7 @@ const EditorContainer = () => {
     // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
     if (EditorStore.tinymce && PageStore.currentPageData.note_id
       && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)){
-      EditorStore.tinymce?.setContent(PageStore.currentPageData.note_content);
+      EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
     }
   },[PageStore.currentPageData.note_id]);
 
