@@ -48,7 +48,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
             const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
             if (editingList.length === 1) {
               const res = await userStore.fetchProfile(editingList[0].is_edit);
-              PageStore.setEditingUserName(res.name);
+              PageStore.setEditingUserName(res.nick ? res.nick : res.name);
               NoteStore.setModalInfo('confirm');
             } else if (editingList.length > 1) {
               PageStore.setEditingUserCount(editingList.length);
@@ -64,7 +64,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
             NoteStore.setModalInfo('page');
           } else {
             const res = await userStore.fetchProfile(dto.is_edit);
-            PageStore.setEditingUserName(res.name);
+            PageStore.setEditingUserName(res.nick ? res.nick : res.name);
             NoteStore.setModalInfo('confirm');
           }
         })
