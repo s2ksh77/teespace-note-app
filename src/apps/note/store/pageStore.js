@@ -223,7 +223,6 @@ const PageStore = observable({
   setIsNewPage(isNew) {
     this.isNewPage = isNew;
   },
-
   getExportTitle() {
     return this.exportPageTitle;
   },
@@ -302,7 +301,7 @@ const PageStore = observable({
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
       this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
-      this.isNewPage = true;
+      this.setIsNewPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(dto.fileList);
       this.initializeBoxColor();
@@ -318,7 +317,7 @@ const PageStore = observable({
       NoteStore.setShowPage(true);
       EditorStore.tinymce?.undoManager?.clear();
       // getRng error가 나서 selection부터 체크
-      if (EditorStore.tinymce?.selection) EditorStore.tinymce?.focus();
+      if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
     });
   },
 
@@ -333,7 +332,7 @@ const PageStore = observable({
       } else {
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
-          this.isNewPage = false;
+          this.setIsNewPage(false);
           this.createPageId = '';
           this.setCurrentPageId('');
           ChapterStore.setCurrentChapterId('');
@@ -521,7 +520,7 @@ const PageStore = observable({
           }
         })
         .catch(e => console.error(e));
-      this.isNewPage = false;
+      this.setIsNewPage(false);
     }
   },
 
@@ -631,9 +630,6 @@ const PageStore = observable({
     if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
-  },
-  setIsNewPage(isNew) {
-    this.isNewPage = isNew;
   },
   getTitle() {
     const contentList = EditorStore.tinymce.getBody().children;
