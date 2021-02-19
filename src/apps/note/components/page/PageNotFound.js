@@ -13,8 +13,7 @@ import {
 // 페이지가 존재하지 않습니다
 const PageNotFound = ({ type }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
-  // 다국어지원 대비?
-  const str = (type === "page") ? "페이지" : "챕터";
+  const isPage = type === 'page';
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = () => {
@@ -26,9 +25,15 @@ const PageNotFound = ({ type }) => {
       <ContentHeader handleBackBtn={handleLayoutBtn} />
       <ContentBodyCover>
         <NoneContainer>
-          <NoneTitle>{type === 'page' ? NoteStore.getI18n('noPage') : NoteStore.getI18n('noChapter')}</NoneTitle>
+          <NoneTitle>
+            {isPage
+              ? NoteStore.getI18n('noPage') 
+              : NoteStore.getI18n('noChapter')}
+          </NoneTitle>
           <NoneText>
-            시작하려면 "새 {str} 추가" 버튼을 클릭하세요.
+            {isPage 
+              ? NoteStore.getI18n('clickNewPage') 
+              : NoteStore.getI18n('clickNewChapter')}
           </NoneText>
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>

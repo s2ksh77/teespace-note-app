@@ -352,7 +352,7 @@ const EditorContainer = () => {
 
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
-                tooltip: '이미지 첨부',
+                tooltip: NoteStore.getI18n('insertImages'),
                 onAction: function () {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
