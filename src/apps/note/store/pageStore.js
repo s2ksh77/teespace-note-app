@@ -18,7 +18,7 @@ const PageStore = observable({
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
-  createPageId: '',
+  createPageId: '', // web에서 안 씀
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -299,7 +299,6 @@ const PageStore = observable({
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
-      this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
       this.setIsNewPage(true);
       TagStore.setNoteTagList(dto.tagList);
@@ -333,14 +332,12 @@ const PageStore = observable({
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           this.setIsNewPage(false);
-          this.createPageId = '';
           this.setCurrentPageId('');
           ChapterStore.setCurrentChapterId('');
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
           if (currentChapter.children.length > 1) {
             const pageId = currentChapter.children[currentChapter.children.length - 2].id;
-            this.createPageId = '';
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           }
@@ -580,7 +577,7 @@ const PageStore = observable({
 
   async handleNoneEdit() {
     if (this.isNewPage) {
-      this.setDeletePageList({ note_id: this.createPageId });
+      this.setDeletePageList({ note_id: this.currentPageId });
       this.deleteNotePage();
     } else {
       if (this.otherEdit) return;
