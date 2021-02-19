@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import TagStore from './tagStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
@@ -97,6 +98,10 @@ const NoteStore = observable({
     ChapterStore.setCurrentChapterId('');
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
+    TagStore.setNoteTagList([]);
+    // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
+    TagStore.setAllSortedTagList([]);
+    TagStore.setSortedTagList([]);
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
