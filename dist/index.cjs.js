@@ -2033,29 +2033,32 @@ var TagStore = mobx.observable({
     this.setCurrentTagId(id);
     this.setCurrentTagValue(text);
   },
-  // 서버에서 받아와서 store 변수에 set하기
-  fetchAllSortedTagList: function fetchAllSortedTagList() {
+  // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
+  // 일련의 flow
+  fetchTagData: function fetchTagData() {
     var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      var _yield$NoteRepository6, tag_index_list_dto;
-
       return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
           switch (_context11.prev = _context11.next) {
             case 0:
-              _context11.next = 2;
-              return NoteRepository$1.getAllSortedTagList();
+              _context11.t0 = _this6;
+              _context11.next = 3;
+              return _this6.getAllsortedTagList();
 
-            case 2:
-              _yield$NoteRepository6 = _context11.sent;
-              tag_index_list_dto = _yield$NoteRepository6.data.dto.tag_index_list_dto;
+            case 3:
+              _context11.t1 = _context11.sent;
 
-              _this6.setAllSortedTagList(tag_index_list_dto);
+              _context11.t0.setAllSortedTagList.call(_context11.t0, _context11.t1);
 
-              return _context11.abrupt("return", _this6.allSortedTagList);
+              // 키-태그 pair obj
+              _this6.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
 
-            case 6:
+
+              _this6.categorizeTagObj();
+
+            case 7:
             case "end":
               return _context11.stop();
           }
@@ -2063,42 +2066,122 @@ var TagStore = mobx.observable({
       }, _callee11);
     }))();
   },
-  // 없어도 될 것 같음
-  // async getAllTagList() {
-  //   const res = await NoteRepository.getAllTagList();
-  //   const {data:{dto:{tagList}}} = res;
-  //   //{dto:{tagList:[0,1,2,3,4]}
-  //   this.allTagList = tagList;
-  //   const target = tagList.filter((item) => item.text.includes('번'));
-  //   return this.allTagList;
-  // },  
-  // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
-  // 일련의 flow
-  fetchTagData: function fetchTagData() {
-    var _this7 = this;
 
+  /**
+   * 정렬된 태그 리스트를 서버에서 가져온다.
+   */
+  getAllsortedTagList: function getAllsortedTagList() {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      var _yield$NoteRepository6, tag_index_list_dto;
+
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
               _context12.next = 2;
-              return _this7.fetchAllSortedTagList();
+              return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              // 키-태그 pair obj
-              _this7.createKeyTagPairObj(); // kor, eng, num, etc별 sort한 키
+              _yield$NoteRepository6 = _context12.sent;
+              tag_index_list_dto = _yield$NoteRepository6.data.dto.tag_index_list_dto;
+              return _context12.abrupt("return", tag_index_list_dto);
 
-
-              _this7.categorizeTagObj();
-
-            case 4:
+            case 5:
             case "end":
               return _context12.stop();
           }
         }
       }, _callee12);
     }))();
+  },
+
+  /**
+   * keyTagPairObj를 만든다.
+   * keyTagPairObj: {
+   *  "ㄱ": {
+   *    tagName1: { tagId: '', note_id: [] },
+   *    tagName2: { tagId: '', note_id: [] },
+   *  }
+   * }
+   */
+  createKeyTagPairObj: function createKeyTagPairObj() {
+    var results = {};
+    var tagKeySet = new Set();
+    this.allSortedTagList.forEach(function (item) {
+      var upperCaseKey = item.KEY.toUpperCase();
+      var resultObj = {}; // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
+
+      item.tag_indexdto.tagList.forEach(function (tag) {
+        tag.text = NoteUtil.decodeStr(tag.text);
+        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"].push(tag.note_id);else {
+          resultObj[tag.text] = {
+            id: tag.tag_id,
+            note_id: [tag.note_id]
+          };
+        }
+      });
+      results[upperCaseKey] = resultObj;
+      tagKeySet.add(upperCaseKey);
+    });
+    this.setKeyTagPairObj(results);
+    this.setTagKeyArr(_toConsumableArray(tagKeySet).sort());
+    return this.keyTagPairObj;
+  },
+  // kor, eng, num, etc별 sort한 키
+  categorizeTagObj: function categorizeTagObj() {
+    var _this7 = this;
+
+    this.setSortedTagList({});
+    var _sortedTagList = {}; // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
+
+    var korObj = {},
+        engObj = {},
+        numObj = {},
+        etcObj = {};
+
+    if (this.tagKeyArr.length > 0) {
+      this.tagKeyArr.forEach(function (key) {
+        if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
+          korObj[key] = _this7.keyTagPairObj[key];
+        } else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
+          // engObj[key] = this.keyTagPairObj[key];
+          engObj[key] = _this7.getEngTagObj(key);
+        } else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
+          numObj[key] = _this7.keyTagPairObj[key];
+        } else {
+          etcObj[key] = _this7.keyTagPairObj[key];
+        }
+      });
+
+      if (TagStore.isSearching) {
+        if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
+        if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
+        if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
+        if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
+      } else {
+        _sortedTagList["KOR"] = korObj;
+        _sortedTagList["ENG"] = engObj;
+        _sortedTagList["NUM"] = numObj;
+        _sortedTagList["ETC"] = etcObj;
+      }
+
+      this.setSortedTagList(_sortedTagList);
+    } else this.setSortedTagList([]);
+  },
+
+  /**
+   * 대소문자 구분 없이 Tag Name을 정렬한 Object를 반환한다.
+   * @param {string} key 
+   */
+  getEngTagObj: function getEngTagObj(key) {
+    // targetKeyObj: {tagName1:{tagId:'', note_id:[]}, tagName2:{tagId:'', note_id:[]}} 
+    var targetKeyObj = this.keyTagPairObj[key];
+    var sortedEngTags = Object.keys(targetKeyObj).sort(function (a, b) {
+      return a.toLowerCase() > b.toLowerCase() ? 1 : a.toLowerCase() < b.toLowerCase() ? -1 : 0;
+    }).reduce(function (obj, key) {
+      return obj[key] = targetKeyObj[key], obj;
+    }, {});
+    return sortedEngTags;
   },
   searchTag: function searchTag(str) {
     var _this8 = this;
@@ -2114,10 +2197,15 @@ var TagStore = mobx.observable({
 
               _this8.setSearchStr(str);
 
-              _context13.next = 5;
-              return _this8.fetchAllSortedTagList();
+              _context13.t0 = _this8;
+              _context13.next = 6;
+              return _this8.getAllsortedTagList();
 
-            case 5:
+            case 6:
+              _context13.t1 = _context13.sent;
+
+              _context13.t0.setAllSortedTagList.call(_context13.t0, _context13.t1);
+
               // 키-태그 pair obj
               _this8.createSearchResultObj(str); // kor, eng, num, etc별 sort한 키
 
@@ -2126,7 +2214,7 @@ var TagStore = mobx.observable({
 
               _this8.setIsSearchLoading(false);
 
-            case 8:
+            case 11:
             case "end":
               return _context13.stop();
           }
@@ -2164,100 +2252,6 @@ var TagStore = mobx.observable({
     this.setTagKeyArr(_toConsumableArray(_tagKeyArr.sort()));
     return this.keyTagPairObj;
   },
-  createKeyTagPairObj: function createKeyTagPairObj() {
-    /*
-      this.keyTagPairObj 만들기
-      item : KEY별로
-      this.keyTagPairObj = 
-      {"ㄱ" : {tagName1:{tagId:'', note_id:[]},
-               tagName2:{tagId:'', note_id:[]}}        
-      }
-      정렬 순서는 대소문자 구분하지 않음!
-    */
-    var results = {};
-    var _tagKeyArr = [];
-    this.allSortedTagList.forEach(function (item) {
-      var KEY = item.KEY;
-      var resultObj = {}; // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
-
-      item.tag_indexdto.tagList.forEach(function (tag) {
-        tag.text = NoteUtil.decodeStr(tag.text);
-        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"] = [].concat(_toConsumableArray(resultObj[tag.text]["note_id"]), [tag.note_id]);else {
-          resultObj[tag.text] = {
-            id: tag.tag_id,
-            note_id: [tag.note_id]
-          };
-        }
-      });
-      results[KEY.toUpperCase()] = resultObj;
-      if (_tagKeyArr.indexOf(KEY.toUpperCase()) === -1) _tagKeyArr.push(KEY.toUpperCase());
-    });
-    this.setKeyTagPairObj(_objectSpread2({}, results));
-    this.setTagKeyArr(_toConsumableArray(_tagKeyArr.sort()));
-    return this.keyTagPairObj;
-  },
-  getEngTagObj: function getEngTagObj(key) {
-    var sortedEngTags = {}; // targetKeyObj : {tagName1:{tagId:'', note_id:[]}, tagName2:{tagId:'', note_id:[]}} 
-
-    var targetKeyObj = this.keyTagPairObj[key];
-    var sortedTagName = Object.keys(targetKeyObj).sort(function (a, b) {
-      if (a.toLowerCase() > b.toLowerCase()) {
-        return 1; // 순서 바꾼다
-      }
-
-      if (a.toLowerCase() < b.toLowerCase()) {
-        return -1;
-      }
-
-      return 0;
-    }); // 영문 시작 태그 keyTagPairObj 다시 만들어주기
-
-    sortedTagName.forEach(function (tagName) {
-      sortedEngTags[tagName] = targetKeyObj[tagName];
-    });
-    return sortedEngTags;
-  },
-  // kor, eng, num, etc별 sort한 키
-  categorizeTagObj: function categorizeTagObj() {
-    var _this9 = this;
-
-    this.setSortedTagList({});
-    var _sortedTagList = {}; // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
-
-    var korObj = {},
-        engObj = {},
-        numObj = {},
-        etcObj = {};
-
-    if (this.tagKeyArr.length > 0) {
-      this.tagKeyArr.forEach(function (key) {
-        if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
-          korObj[key] = _this9.keyTagPairObj[key];
-        } else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
-          // engObj[key] = this.keyTagPairObj[key];
-          engObj[key] = _this9.getEngTagObj(key);
-        } else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-          numObj[key] = _this9.keyTagPairObj[key];
-        } else {
-          etcObj[key] = _this9.keyTagPairObj[key];
-        }
-      });
-
-      if (TagStore.isSearching) {
-        if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
-        if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
-        if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
-        if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
-      } else {
-        _sortedTagList["KOR"] = korObj;
-        _sortedTagList["ENG"] = engObj;
-        _sortedTagList["NUM"] = numObj;
-        _sortedTagList["ETC"] = etcObj;
-      }
-
-      this.setSortedTagList(_sortedTagList);
-    } else this.setSortedTagList([]);
-  },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
       var _yield$NoteRepository7, noteList;
@@ -2286,11 +2280,11 @@ var TagStore = mobx.observable({
     }))();
   },
   setEditCreateTag: function setEditCreateTag() {
-    var _this10 = this;
+    var _this9 = this;
 
     // add Tag List 갱신
     this.addTagList.forEach(function (tag, index) {
-      if (tag === TagStore.currentTagValue) _this10.addTagList[index] = TagStore.editTagValue;
+      if (tag === TagStore.currentTagValue) _this9.addTagList[index] = TagStore.editTagValue;
     }); // 현재 보여지는 List 갱신
 
     this.notetagList.forEach(function (tag) {
@@ -5511,7 +5505,7 @@ var languageSet = {
   },
   noPage: '페이지가 없습니다.',
   noChapter: '챕터가 없습니다.',
-  // clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
   clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
@@ -5569,6 +5563,7 @@ var languageSet = {
   usedTagName: '이미 있는 태그 이름입니다.',
   deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
   align: '정렬',
+  insertImages: '이미지 삽입',
   replaceImages: '이미지 교체',
   saveToDrive: 'Drive에 저장',
   saveToMyPC: '내 PC에 저장'
@@ -5621,8 +5616,8 @@ var languageSet$1 = {
   },
   noPage: 'No page exists.',
   noChapter: 'No chapter exists.',
-  // clickNewPage: '',
-  clickNewChapter: 'Click the "New Chapter" button to start a new chapter.',
+  clickNewPage: 'To create one, click "Add New Page".',
+  clickNewChapter: 'To create one, click "New Chapter".',
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
   searching: 'Searching ...',
@@ -5679,6 +5674,7 @@ var languageSet$1 = {
   usedTagName: 'The tag name already exists.',
   deletedNote: 'Failed to get the note because it has deleted.',
   align: 'Align',
+  insertImages: 'Insert Images',
   replaceImages: 'Replace Images',
   saveToDrive: 'Save to Drive',
   saveToMyPC: 'Save to My PC'
@@ -11382,6 +11378,22 @@ var EditorContainer = function EditorContainer() {
       GlobalVariable.setEditorWrapper(null);
     };
   }, [editorWrapperRef.current]);
+  /*
+    **새 챕터 생성 후 [+ 새 페이지] 버튼을 눌러 본문 작성한 뒤 다른 영역을 클릭 > 팝업창에서 저장 안함을 클릭하면 해당 페이지 화면이 그대로 유지되는 이슈
+    currentPageData는 서비스 받아올 때만 set하고 PageStore.noteContent는 editorChange 이벤트시 set하는데
+    새 노트에서 작성하다가 지우면 currentPageData는 여전히 <p><br></p> 였기 때문에 
+    새로 받아오는 노트 컨텐츠도 <p><br></p>인 경우 editor content가 안바뀌는 이슈 수정
+      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)
+  */
+
+  React.useEffect(function () {
+    // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
+    if (EditorStore.tinymce && PageStore.currentPageData.note_id && PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent) {
+      var _EditorStore$tinymce10;
+
+      (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : _EditorStore$tinymce10.setContent(PageStore.currentPageData.note_content);
+    }
+  }, [PageStore.currentPageData.note_id]);
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(EditorContainerWrapper, {
       ref: editorWrapperRef,
@@ -11482,7 +11494,7 @@ var EditorContainer = function EditorContainer() {
           });
           editor.ui.registry.addButton('insertImage', {
             icon: 'image',
-            tooltip: '이미지 첨부',
+            tooltip: NoteStore.getI18n('insertImages'),
             onAction: function onAction() {
               editor.editorUpload.uploadImages(handleFileBlob('image'));
             }
@@ -11716,10 +11728,9 @@ var PageNotFound = function PageNotFound(_ref) {
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
-      ChapterStore = _useNoteStore.ChapterStore; // 다국어지원 대비?
+      ChapterStore = _useNoteStore.ChapterStore;
 
-
-  var str = type === "page" ? "페이지" : "챕터"; // 뒤로 가기 버튼
+  var isPage = type === 'page'; // 뒤로 가기 버튼
 
   var handleLayoutBtn = function handleLayoutBtn() {
     NoteStore.setTargetLayout('LNB');
@@ -11728,7 +11739,7 @@ var PageNotFound = function PageNotFound(_ref) {
 
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
     handleBackBtn: handleLayoutBtn
-  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, type === 'page' ? NoteStore.getI18n('noPage') : NoteStore.getI18n('noChapter')), /*#__PURE__*/React__default['default'].createElement(NoneText, null, "\uC2DC\uC791\uD558\uB824\uBA74 \"\uC0C8 ", str, " \uCD94\uAC00\" \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
+  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, isPage ? NoteStore.getI18n('noPage') : NoteStore.getI18n('noChapter')), /*#__PURE__*/React__default['default'].createElement(NoneText, null, isPage ? NoteStore.getI18n('clickNewPage') : NoteStore.getI18n('clickNewChapter')), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
     src: img$v,
     alt: "page_not_found"
   }))));
