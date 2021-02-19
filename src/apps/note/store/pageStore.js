@@ -317,7 +317,8 @@ const PageStore = observable({
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
       EditorStore.tinymce?.undoManager?.clear();
-      EditorStore.tinymce?.focus();
+      // getRng error가 나서 selection부터 체크
+      if (EditorStore.tinymce?.selection) EditorStore.tinymce?.focus();
     });
   },
 
@@ -540,8 +541,11 @@ const PageStore = observable({
     this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
-      EditorStore.tinymce?.focus();
-      EditorStore.tinymce?.selection.setCursorLocation();
+      // focus에서 getRng error가 나서 selection부터 체크
+      if (EditorStore.tinymce?.selection) {
+        EditorStore.tinymce.focus();
+        EditorStore.tinymce.selection.setCursorLocation();
+      }
       this.initializeBoxColor();
     });
   },
