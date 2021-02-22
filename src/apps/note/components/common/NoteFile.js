@@ -105,9 +105,9 @@ const isValidFileSize = fileList => {
 }
 
 export const isValidFileNameLength = fileName => {
-  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
-  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
-  return true;
+    if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+    if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+    return true;
 }
 
 export const handleDriveCopy = async () => {
@@ -260,10 +260,28 @@ export const makeExportElement = html => {
     document.body.appendChild(fragment);
 };
 
-export const exportDownloadPDF = (isMailShare, type) => {
-    const element = document.getElementById('exportTargetDiv');
+const preloadingImage = (el) => {
+    el.setAttribute("onload", () => Promise.resolve())
+}
+
+export const exportDownloadPDF = async (isMailShare, type) => {
+    const imgElementList = document.getElementById('exportTargetDiv').querySelectorAll('img');
     const opt = getExportOpt(type);
-    htmlToPdf(isMailShare, element, opt);
+    let requests = [];
+    if (imgElementList && imgElementList.length > 0) {
+        requests = [...imgElementList].map(el => {
+            return preloadingImage(el)
+        })
+        setTimeout(async () => {
+            await Promise.all(requests).then(() => {
+                const element = document.getElementById('exportTargetDiv');
+                htmlToPdf(isMailShare, element, opt);
+            });
+        }, 1000)
+    } else {
+        const element = document.getElementById('exportTargetDiv');
+        htmlToPdf(isMailShare, element, opt);
+    }
 };
 
 const getExportOpt = type => {
@@ -274,8 +292,14 @@ const getExportOpt = type => {
                 ? `${ChapterStore.exportChapterTitle}.pdf`
                 : `${PageStore.exportPageTitle}.pdf`,
         pagebreak: { after: '.afterClass', avoid: 'span' },
-        image: { type: 'jpeg', quality: 0.98 },
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
+        image: { type: 'png', quality: 0.98 },
+        html2canvas: {
+            scale: 1,
+            letterRendering: true,
+            useCORS: true,
+            allowTaint: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', usePromise: true },
     };
 
     return opt;
