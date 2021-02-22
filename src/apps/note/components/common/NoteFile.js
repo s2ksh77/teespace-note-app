@@ -261,7 +261,9 @@ export const makeExportElement = html => {
 };
 
 const preloadingImage = (el) => {
-    el.setAttribute("onload", () => Promise.resolve())
+  return new Promise((resolve, reject) => {
+    el.onload = () => resolve();
+  })
 }
 
 export const exportDownloadPDF = async (isMailShare, type) => {
@@ -272,12 +274,12 @@ export const exportDownloadPDF = async (isMailShare, type) => {
         requests = [...imgElementList].map(el => {
             return preloadingImage(el)
         })
-        setTimeout(async () => {
+        // setTimeout(async () => {
             await Promise.all(requests).then(() => {
                 const element = document.getElementById('exportTargetDiv');
                 htmlToPdf(isMailShare, element, opt);
             });
-        }, 1000)
+        // }, 1000)
     } else {
         const element = document.getElementById('exportTargetDiv');
         htmlToPdf(isMailShare, element, opt);
