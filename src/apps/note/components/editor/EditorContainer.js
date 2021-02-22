@@ -308,7 +308,8 @@ const EditorContainer = () => {
               editor.on('init', () => {
                 // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
                 // init에도 useEffect 내용 추가
-                if (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent) {
+                if (PageStore.currentPageData.note_content && 
+                  (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
                   EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
                 }                
                 editor.focus();
