@@ -299,7 +299,8 @@ const getExportOpt = type => {
             scale: 1,
             letterRendering: true,
             useCORS: true,
-            allowTaint: true
+            allowTaint: true,
+            logging:false,
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', usePromise: true },
     };
