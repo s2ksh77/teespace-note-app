@@ -19,8 +19,6 @@ const TagStore = observable({
   editTagValue: "",
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
-  // key당 tagList
-  keyTagPairObj: {},
   // a,b,c 같은 키들만 담는다(render용)
   sortedTagList: {},
   // sortedTagList:{
@@ -29,7 +27,6 @@ const TagStore = observable({
   //   NUM:[],
   //   ETC:[]
   // },
-  tagKeyArr: [], // sort해서 그림
   // 검색 시작 ~ 검색 종료
   isSearching: false,
   // 태그 검색 시작 ~ 검색 결과 나오기까지
@@ -134,23 +131,11 @@ const TagStore = observable({
   setAllSortedTagList(tagList) {
     this.allSortedTagList = tagList;
   },
-  getKeyTagPairObj() {
-    return this.keyTagPairObj;
-  },
-  setKeyTagPairObj(obj) {
-    this.keyTagPairObj = obj;
-  },
   getSortedTagList() {
     return this.sortedTagList;
   },
   setSortedTagList(tagList) {
     this.sortedTagList = tagList;
-  },
-  getTagKeyArr() {
-    return this.tagKeyArr;
-  },
-  setTagKeyArr(arr) {
-    this.tagKeyArr = arr;
   },
   getIsSearching() {
     return this.isSearching;
