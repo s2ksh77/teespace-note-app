@@ -1,6 +1,3 @@
-import PageStore from "../store/pageStore";
-import EditorStore from "../store/editorStore";
-
 const languageSet = {
   newChapter: '새 챕터',
   page: '페이지',
