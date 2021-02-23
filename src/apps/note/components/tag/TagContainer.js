@@ -24,13 +24,17 @@ const TagContainer = () => {
 
   const renderContent = () => {
     if (TagStore.tagPanelLoading) return <div />;
-    if (TagStore.isSearchLoading) return <SearchingImg />;
-    // display할 태그가 있을 때
-    if (Object.keys(TagStore.sortedTagList).length > 0) return <TagContentContainer />;
-    // 태그가 없는데 search중 아닐 때
-    if (!TagStore.isSearching) return <TagNotFound />;
-    // 태그 선택 결과 없는 경우
-    return <SearchResultNotFound searchStr={TagStore.searchStr} />
+    // 검색 관련 rendering
+    if (TagStore.isSearching) {
+      if (TagStore.isSearchLoading) return <SearchingImg />;
+      // search는 검색 결과 없으면 KOR, ENG, NUM, ETC property가 없음
+      if (Object.keys(TagStore.sortedTagList).length > 0) return <TagContentContainer />;
+      // 태그 선택 결과 없는 경우
+      return <SearchResultNotFound searchStr={TagStore.searchStr} />
+    } 
+    // 초기 태그 화면 rendering
+    else if (TagStore.hasTag) return <TagContentContainer />;
+    return <TagNotFound />;
   }
 
   return useObserver(() => (

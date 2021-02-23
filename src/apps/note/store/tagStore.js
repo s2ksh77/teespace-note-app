@@ -33,6 +33,7 @@ const TagStore = observable({
   isSearchLoading: false,
   searchStr: "",
   tagPanelLoading: false,
+  hasTag:false,
   // tag가 있는 노트 가져오기
   async getTagNoteList(tagId) {
     const res = await NoteRepository.getTagNoteList(tagId);
@@ -161,7 +162,9 @@ const TagStore = observable({
   setTagPanelLoading(isLoading) {
     this.tagPanelLoading = isLoading;
   },
-
+  setHasTag(hasTag) {
+    this.hasTag = hasTag;
+  },
   async createTag(createTagList, noteId) {
     const createTagArr = createTagList.map(tag => {
       return {
@@ -256,6 +259,8 @@ const TagStore = observable({
   async fetchTagData() {
     this.setTagPanelLoading(true);
     this.setAllSortedTagList(await this.getAllsortedTagList());
+    if (!this.allSortedTagList.length) this.setHasTag(false);
+    else this.setHasTag(true);
     this.setSortedTagList(this.categorizeTagList(this.allSortedTagList, false));
     this.setTagPanelLoading(false);
   },
