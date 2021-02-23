@@ -41,6 +41,7 @@ const NoteStore = observable({
   toastText: '',
   i18nLanguage: 'ko',
   i18nKeyMap: '',
+  isExporting:false,
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -296,7 +297,9 @@ const NoteStore = observable({
   setDraggedOffset(offset) {
     this.draggedOffset = offset;
   },
-
+  setIsExporting(isExporting){
+    this.isExporting = isExporting;
+  },
   disableScroll(e) {
     e.preventDefault();
   },

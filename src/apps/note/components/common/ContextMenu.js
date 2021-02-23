@@ -84,12 +84,17 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
   const exportComponent = isMailShare => {
     const targetStore = store[noteType];
     if (!targetStore) return;
-
+    
+    // loading 화면 돌아가기 시작
+    NoteStore.setIsExporting(true);
     if (noteType === 'chapter') targetStore.setExportTitle(note.text);
     exportData(isMailShare, noteType, note.id);
   }
 
   const exportTxtComponent = () => {
+    // loading 화면 돌아가기 시작
+    NoteStore.setIsExporting(true);
+
     switch (noteType) {
       case 'chapter':
         exportChapterAsTxt(note.text, note.id);

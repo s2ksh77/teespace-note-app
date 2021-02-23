@@ -11,6 +11,7 @@ import foldImg from './assets/arrow_back_1.svg';
 import { useCoreStores, Toast, ComponentStore } from 'teespace-core';
 import DragPreview from "./components/common/DragPreview";
 import NoteModal from './components/common/NoteModal';
+import Overlay from './components/common/Overlay';
 import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
@@ -137,6 +138,7 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
           <TempEditor />
+          {NoteStore.isExporting && <Overlay />}
           {NoteStore.showModal && <NoteModal />}
           {NoteStore.isMailShare && <MailWriteModal
             uploadFiles={NoteStore.mailShareFileObjs}

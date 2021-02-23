@@ -311,6 +311,8 @@ const htmlToPdf = (isMailShare, element, opt) => {
     if (!isMailShare) {
         html2pdf(element, opt).then(() => {
             document.getElementById('exportTarget').remove();
+            // loading 화면 끝나요
+            NoteStore.setIsExporting(false);
         });
     }
     else {
@@ -319,6 +321,8 @@ const htmlToPdf = (isMailShare, element, opt) => {
             const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1', type: 'application/pdf', fileSize: pdf.size },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
+            // loading 화면 끝나요
+            NoteStore.setIsExporting(false);
             NoteStore.setIsMailShare(true);
         });
     }
@@ -356,7 +360,9 @@ export const getTxtFormat = (title, contents) => {
     let exportText = targetEditor.getContent({ format: "text" });
     exportText = exportText.replace(/\n\n/g, '\n');
     downloadTxt(title, exportText);
-    EditorStore.tempTinymce.remove('#exportTxt')
+    // loading 화면 끝나요   
+    NoteStore.setIsExporting(false);
+    EditorStore.tempTinymce.remove('#exportTxt'); 
     document.getElementById('exportTxtParent').remove();
 }
 
