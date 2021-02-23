@@ -268,17 +268,14 @@ const TagStore = observable({
   },
 
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
-  // 일련의 flow
   async fetchTagData() {
     this.setAllSortedTagList(await this.getAllsortedTagList());
-    // 키-태그 pair obj
-    this.createKeyTagPairObj();
-    // kor, eng, num, etc별 sort한 키
-    this.categorizeTagObj();
+    this.setSortedTagList(this.categorizeTagList(this.allSortedTagList, false));
   },
 
   /**
    * 정렬된 태그 리스트를 서버에서 가져온다.
+   * @return sorted tag list
    */
   async getAllsortedTagList() {
     const { 
@@ -288,88 +285,123 @@ const TagStore = observable({
   },
 
   /**
-   * keyTagPairObj를 만든다.
-   * keyTagPairObj: {
-   *  "ㄱ": {
-   *    tagName1: { tagId: '', note_id: [] },
-   *    tagName2: { tagId: '', note_id: [] },
-   *  }
-   * }
+   * tagList의 KEY를 KOR, ENG, NUM, ETC 중 하나로 categorize 한다.
+   * @param {Array} allTagsList 
+   * @param {boolean} isSearching
+   * @return categorized tag objects
    */
-  createKeyTagPairObj() {
-    const results = {};
-    const tagKeySet = new Set();
-    this.allSortedTagList.forEach((item) => {
+  categorizeTagList(allTagsList, isSearching) {
+    /**
+     * categorizedTagObjs: {
+     *   'KOR': { 'T': { tagText1: { tagId: '', note_id: [] }, tagText2: { tagId: '', note_id: [] }, } } }
+     *   ...
+     * }
+     */
+    const categorizedTagObjs = { 'KOR': {}, 'ENG': {}, 'NUM': {}, 'ETC': {} };
+    
+    allTagsList.forEach(item => {
       const upperCaseKey = item.KEY.toUpperCase();
-      const resultObj = {};
-      // 'ㄱ','ㄴ'... 해당 KEY에 속한 TAG LIST
-      item.tag_indexdto.tagList.forEach((tag) => {
-        tag.text = NoteUtil.decodeStr(tag.text);
-        if (resultObj.hasOwnProperty(tag.text)) resultObj[tag.text]["note_id"].push(tag.note_id);
-        else {
-          resultObj[tag.text] = {
-            id: tag.tag_id,
-            note_id: [tag.note_id]
-          }
-        }
-      })
-      results[upperCaseKey] = resultObj;
-      tagKeySet.add(upperCaseKey);
-    });
-    this.setKeyTagPairObj(results);
-    this.setTagKeyArr([...tagKeySet].sort());
-    return this.keyTagPairObj;
-  },
-
-  // kor, eng, num, etc별 sort한 키
-  categorizeTagObj() {
-    this.setSortedTagList({});
-    let _sortedTagList = {};
-    // sort하고 분류해서 koArr, engArr, numArr, etcArr은 sort 돼 있음
-    let korObj = {}, engObj = {}, numObj = {}, etcObj = {};
-    if (this.tagKeyArr.length > 0) {
-      this.tagKeyArr.forEach((key) => {
-        if (key.charCodeAt(0) >= 12593 && key.charCodeAt(0) < 55203) {
-          korObj[key] = this.keyTagPairObj[key];
-        }
-        else if (key.charCodeAt(0) > 64 && key.charCodeAt(0) < 123) {
-          // engObj[key] = this.keyTagPairObj[key];
-          engObj[key] = this.getEngTagObj(key);
-        }
-        else if (key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-          numObj[key] = this.keyTagPairObj[key];
-        }
-        else {
-          etcObj[key] = this.keyTagPairObj[key];
-        }
-      })
-
-      if (TagStore.isSearching) {
-        if (Object.keys(korObj).length > 0) _sortedTagList["KOR"] = korObj;
-        if (Object.keys(engObj).length > 0) _sortedTagList["ENG"] = engObj;
-        if (Object.keys(numObj).length > 0) _sortedTagList["NUM"] = numObj;
-        if (Object.keys(etcObj).length > 0) _sortedTagList["ETC"] = etcObj;
-      } else {
-        _sortedTagList["KOR"] = korObj;
-        _sortedTagList["ENG"] = engObj;
-        _sortedTagList["NUM"] = numObj;
-        _sortedTagList["ETC"] = etcObj;
+      const tagKeyCategory = this.getTagKeyCategory(upperCaseKey);
+      const tagList =
+        tagKeyCategory === 'ENG'
+          ? this.sortEngTagList(item.tag_indexdto.tagList)
+          : item.tag_indexdto.tagList;
+      let tagObjs = 
+        isSearching
+          ? this.getSearchTagObjs(tagList, this.searchStr)
+          : this.getTagObjs(tagList);
+      if (Object.keys(tagObjs).length > 0) {
+        categorizedTagObjs[tagKeyCategory][upperCaseKey] = tagObjs;
       }
-      this.setSortedTagList(_sortedTagList);
-    } else this.setSortedTagList([]);
+    });
+
+    if (isSearching) this.deleteEmptyCategory(categorizedTagObjs);
+
+    return categorizedTagObjs;
   },
 
   /**
-   * 대소문자 구분 없이 Tag Name을 정렬한 Object를 반환한다.
-   * @param {string} key 
+   * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
+   * @param {string} tagKey 
+   * @return category of tag
    */
-  getEngTagObj(key) {
-    // targetKeyObj: {tagName1:{tagId:'', note_id:[]}, tagName2:{tagId:'', note_id:[]}} 
-    const targetKeyObj = this.keyTagPairObj[key];
-    const sortedEngTags = Object.keys(targetKeyObj).sort((a, b) => (
-      a.toLowerCase() > b.toLowerCase() ? 1 : a.toLowerCase() < b.toLowerCase() ? -1 : 0
-    )).reduce((obj, key) => (obj[key] = targetKeyObj[key], obj), {});
-    return sortedEngTags;
+  getTagKeyCategory(tagKey) {
+    const charCode = tagKey.charCodeAt(0);
+    if (12593 <= charCode && charCode < 55203) return 'KOR';
+    else if (64 < charCode && charCode < 123) return 'ENG';
+    else if (48 <= charCode && charCode <= 57) return 'NUM';
+    else return 'ETC';
+  },
+
+  /**
+   * tag의 category가 english인 경우 대소문자 구분 없이 정렬하여 반환한다.
+   * @param {Array} tagList 
+   * @return sorted tag list
+   */
+  sortEngTagList(tagList) {
+    const sortedEngTagList = tagList.slice().sort((a, b) => 
+      a.text.toLowerCase() > b.text.toLowerCase() ? 1 : a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 0
+    );
+    return sortedEngTagList;
+  },
+
+  /**
+   * 동일한 KEY를 가지는 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
+   * @param {Array} tagList 
+   * @return tag objects with same key
+   */
+  getTagObjs(tagList) {
+    const tagObjs = tagList.reduce((obj, tag) => {
+      const tagText = NoteUtil.decodeStr(tag.text);
+      if (obj.hasOwnProperty(tagText)) {
+        obj[tagText]['note_id'].push(tag.note_id);
+      } else {
+        obj[tagText] = {
+          id: tag.tag_id,
+          note_id: [tag.note_id]
+        }
+      }
+      return obj;
+    }, {});
+
+    return tagObjs;
+  },
+
+  /**
+   * 동일한 KEY를 가지면서 searchTagText를 포함하는
+   * 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
+   * @param {Array} tagList 
+   * @param {string} searchTagText 
+   * @return tag objects with same key and search string
+   */
+  getSearchTagObjs(tagList, searchTagText) {
+    const searchTagObjs = tagList.reduce((obj, tag) => {
+      const tagText = NoteUtil.decodeStr(tag.text);
+      if (!tagText.toUpperCase().includes(searchTagText.toUpperCase())) return obj;
+      if (obj.hasOwnProperty(tagText)) {
+        obj[tagText]['note_id'].push(tag.note_id);
+      } else {
+        obj[tagText] = {
+          id: tag.tag_id,
+          note_id: [tag.note_id]
+        }
+      }
+      return obj;
+    }, {});
+
+    return searchTagObjs;
+  },
+
+  /**
+   * 인자로 들어온 object 내부에 빈 카테고리가 존재하는 경우
+   * 해당 카테고리를 object에서 삭제한다. 
+   * @param {Object} categorizedTagObjs 
+   */
+  deleteEmptyCategory(categorizedTagObjs) {
+    Object.entries(categorizedTagObjs).forEach(entry => {
+      const [key, value] = entry;
+      if (!Object.keys(value).length) delete categorizedTagObjs[key];
+    });
   },
 
   async searchTag(str) {
@@ -377,39 +409,8 @@ const TagStore = observable({
     this.setIsSearchLoading(true);
     this.setSearchStr(str);
     this.setAllSortedTagList(await this.getAllsortedTagList());
-    // 키-태그 pair obj
-    this.createSearchResultObj(str);
-    // kor, eng, num, etc별 sort한 키
-    this.categorizeTagObj();
+    this.setSortedTagList(this.categorizeTagList(this.allSortedTagList, true));
     this.setIsSearchLoading(false);
-  },
-  // search result용 KeyTagObj
-  createSearchResultObj(str) {
-    let results = {};
-    let _tagKeyArr = [];
-    this.allSortedTagList.forEach((item) => {
-      let KEY = item.KEY;
-      let resultKeyTags = {};
-      item.tag_indexdto.tagList.forEach((tag) => {
-        let tagName = NoteUtil.decodeStr(tag.text);
-        if (!tagName.toUpperCase().includes(str.toUpperCase())) return;
-        if (resultKeyTags.hasOwnProperty(tagName)) {
-          resultKeyTags[tagName]["note_id"].push(tag.note_id);
-        } else {
-          resultKeyTags[tagName] = {
-            id: tag.tag_id,
-            note_id: [tag.note_id]
-          }
-        }
-      })
-      if (Object.keys(resultKeyTags).length > 0) {
-        results[KEY.toUpperCase()] = resultKeyTags;
-        if (_tagKeyArr.indexOf(KEY.toUpperCase()) === -1) _tagKeyArr.push(KEY.toUpperCase());
-      }
-    })
-    this.setKeyTagPairObj({ ...results });
-    this.setTagKeyArr([..._tagKeyArr.sort()]);
-    return this.keyTagPairObj;
   },
   
   async setTagNoteSearchResult(tagId) {
