@@ -19,17 +19,12 @@ const TagContainer = () => {
   const { NoteStore, TagStore } = useNoteStore();
 
   useEffect(() => {
-    TagStore.fetchTagData();
-  }, []);
-
-  useEffect(() => {
     if (!NoteStore.showPage) TagStore.fetchTagData();
   }, [NoteStore.showPage]);
 
   const renderContent = () => {
+    if (TagStore.tagPanelLoading) return <div />;
     if (TagStore.isSearchLoading) return <SearchingImg />;
-    if (TagStore.tagPanelLoading) return <LoadingImgContainer />;
-
     // display할 태그가 있을 때
     if (Object.keys(TagStore.sortedTagList).length > 0) return <TagContentContainer />;
     // 태그가 없는데 search중 아닐 때

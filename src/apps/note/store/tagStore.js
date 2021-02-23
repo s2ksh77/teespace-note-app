@@ -254,8 +254,10 @@ const TagStore = observable({
 
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
   async fetchTagData() {
+    this.setTagPanelLoading(true);
     this.setAllSortedTagList(await this.getAllsortedTagList());
     this.setSortedTagList(this.categorizeTagList(this.allSortedTagList, false));
+    this.setTagPanelLoading(false);
   },
 
   /**

@@ -100,6 +100,7 @@ const NoteStore = observable({
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
     TagStore.setNoteTagList([]);
+    TagStore.setTagPanelLoading(true); // 처음에 '태그 없습니다' 페이지가 보이지 않아야 함!
     // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
     TagStore.setAllSortedTagList([]);
     TagStore.setSortedTagList([]);
