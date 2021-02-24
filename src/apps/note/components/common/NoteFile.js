@@ -11,6 +11,58 @@ import TagStore from '../../store/tagStore';
 import { isFilled } from './validators';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
+// export const handleUpload = async () => {
+//     if (EditorStore.uploadDTO) {
+//         EditorStore.setIsUploading(true);
+//         for (let i = 0; i < EditorStore.uploadDTO.length; i++) {
+//             (function (item) {
+//                 const handleUploadProgress = (e) => {
+//                     const totalLength = e.lengthComputable
+//                         ? e.total
+//                         : e.target.getResponseHeader('content-length') ||
+//                         e.target.getResponseHeader('x-decompressed-content-length');
+//                     EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+//                 }
+//                 EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource)
+//                     .then(async result => {
+//                         if (result.resultMsg === 'Success') {
+//                             if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+//                             EditorStore.tempFileLayoutList[i].progress = 0;
+//                             EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
+//                             await EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
+//                         } else if (dto.resultMsg === 'Fail') {
+//                             EditorStore.failCount++;
+//                             EditorStore.tempFileLayoutList[i].progress = 0;
+//                             EditorStore.tempFileLayoutList[i].error = true;
+//                         }
+//                         EditorStore.processLength++;
+//                         if (EditorStore.processLength == EditorStore.uploadLength) {
+//                             EditorStore.uploadDTO = [];
+//                             EditorStore.setProcessLength(0);
+//                             EditorStore.setIsUploading(false);
+//                             if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+//                             else if (EditorStore.failCount === 0) {
+//                                 PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+//                                     EditorStore.setFileList(
+//                                         dto.fileList,
+//                                     );
+//                                     EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+//                                     EditorStore.setProcessCount(0);
+//                                     EditorStore.setTempFileLayoutList([]);
+//                                 });
+//                             }
+//                         }
+//                     }).catch(e => {
+//                         if (e !== 'Network Error') {
+//                             EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
+//                             EditorStore.processLength++;
+//                         }
+//                     })
+//             })(EditorStore.uploadDTO[i])
+//         }
+//     }
+// }
+
 export const handleUpload = async () => {
     let uploadArr = [];
     if (EditorStore.uploadDTO) {
@@ -96,7 +148,7 @@ const isValidFileSize = fileList => {
     fileList.forEach(file => {
         uploadSize += file.file_size;
     })
-    
+
     if (uploadSize > totalSize) {
         NoteStore.setModalInfo('sizefailUpload');
         return false;
@@ -261,9 +313,9 @@ export const makeExportElement = html => {
 };
 
 const preloadingImage = (el) => {
-  return new Promise((resolve, reject) => {
-    el.onload = () => resolve();
-  })
+    return new Promise((resolve, reject) => {
+        el.onload = () => resolve();
+    })
 }
 
 export const exportDownloadPDF = async (isMailShare, type) => {
@@ -275,10 +327,10 @@ export const exportDownloadPDF = async (isMailShare, type) => {
             return preloadingImage(el)
         })
         // setTimeout(async () => {
-            await Promise.all(requests).then(() => {
-                const element = document.getElementById('exportTargetDiv');
-                htmlToPdf(isMailShare, element, opt);
-            });
+        await Promise.all(requests).then(() => {
+            const element = document.getElementById('exportTargetDiv');
+            htmlToPdf(isMailShare, element, opt);
+        });
         // }, 1000)
     } else {
         const element = document.getElementById('exportTargetDiv');
@@ -300,7 +352,7 @@ const getExportOpt = type => {
             letterRendering: true,
             useCORS: true,
             allowTaint: true,
-            logging:false,
+            logging: false,
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', usePromise: true },
     };
@@ -363,7 +415,7 @@ export const getTxtFormat = (title, contents) => {
     downloadTxt(title, exportText);
     // loading 화면 끝나요   
     NoteStore.setIsExporting(false);
-    EditorStore.tempTinymce.remove('#exportTxt'); 
+    EditorStore.tempTinymce.remove('#exportTxt');
     document.getElementById('exportTxtParent').remove();
 }
 

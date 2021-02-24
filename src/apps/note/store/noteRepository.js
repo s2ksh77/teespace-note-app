@@ -389,6 +389,29 @@ class NoteRepository {
     }
   }
 
+  /**
+   * 
+   * @param {*} file 
+   * @param {*} fileName 
+   * @param {*} fileExtension 
+   * @param {*} onUploadProgress 
+   * @param {*} cancelSource 
+   */
+
+  async uploadFileGW(file, fileName, fileExtension, onUploadProgress, cancelSource) {
+    return await API.post(`/gateway-api/upload?user_id=` + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension,
+      file, {
+      headers: { // pplication/x-www-form-urlencoded; charset=UTF-8
+        'content-type': 'multipart/form-data',
+      },
+      xhrFields: {
+        withCredentials: true,
+      },
+      onUploadProgress,
+      cancelToken: cancelSource.token,
+    });
+  }
+
   async deleteFile(deleteFileId) {
     try {
       return await API.put(`note-api/noteFile?action=Delete`, {

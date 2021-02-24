@@ -44,7 +44,7 @@ const EditorStore = observable({
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
-  isFileFilteredByNameLen:false,
+  isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
   failCount: 0,
@@ -52,7 +52,7 @@ const EditorStore = observable({
   searchCurrentCount: 1,
   searchTotalCount: 0,
   searchValue: '',
-  isUploading:false,
+  isUploading: false,
   getTempTinymce() {
     return this.tempTinymce
   },
@@ -129,10 +129,10 @@ const EditorStore = observable({
   setIsFileFilteredByNameLen(flag) {
     this.isFileFilteredByNameLen = flag;
   },
-  setProcessLength(len){
+  setProcessLength(len) {
     this.processLength = len;
   },
-  setProcessCount(count){
+  setProcessCount(count) {
     this.processCount = count;
   },
   setIsUploading(isUploading) {
@@ -154,6 +154,14 @@ const EditorStore = observable({
     } = await NoteRepository.createUploadStorage(fileId, file, handleProcess);
     return dto;
   },
+
+  async uploadFileGW(file, file_name, file_extension, handleProcess, cancelSource) {
+    const {
+      data: { dto },
+    } = await NoteRepository.uploadFileGW(file, file_name, file_extension, handleProcess, cancelSource);
+    return dto;
+  },
+
   uploadFile: async function (dto, file, index) {
     this.createUploadMeta(dto).then(dto => {
       if (dto.log_file_id) {
@@ -229,7 +237,7 @@ const EditorStore = observable({
       this.setIsFile(true);
       const { getUnixTime } = NoteUtil;
       // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
-      checkFile.sort((a,b) => getUnixTime(b['file_updated_at'])-getUnixTime(a['file_updated_at']));
+      checkFile.sort((a, b) => getUnixTime(b['file_updated_at']) - getUnixTime(a['file_updated_at']));
       this.setFileArray(checkFile);
     };
   },
@@ -259,6 +267,11 @@ const EditorStore = observable({
   },
   setUploadFileDTO(config, file, type) {
     const { fileName, fileExtension, fileSize } = config;
+    const gwMeta = {
+      file_name: fileName,
+      file_extension: fileExtension,
+      file_size: fileSize
+    }
     const uploadMeta = {
       "dto":
       {
@@ -296,10 +309,13 @@ const EditorStore = observable({
       "error": false
     }
     this.setTempFileList(tempMeta)
+    const cancelToken = API.CancelToken.source();
     const uploadArr = {
+      gwMeta,
       uploadMeta,
       file,
-      type
+      type,
+      cancelSource: cancelToken
     };
     this.setUploadDTO(uploadArr);
   },
@@ -314,7 +330,7 @@ const EditorStore = observable({
     if (!this.isFile) this.setIsFile(true);
   },
   // []로 초기화하는 부분 debugging할 때 찾기 쉽도록 추가
-  setTempFileLayoutList(arr){
+  setTempFileLayoutList(arr) {
     this.tempFileLayoutList = arr;
   },
   setFileLength(length) {
