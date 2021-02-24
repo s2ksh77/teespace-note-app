@@ -70,7 +70,7 @@ const EditorContainer = () => {
     initialMode();
   };
 
-  const handleFileHandler = (blobInfo, success, failure, progress) => {
+  const handleFileHandler = (blobInfo) => {
     let fileName = blobInfo.blob().name;
     let dotIndex = fileName.lastIndexOf('.');
     let fileExtension;
@@ -86,22 +86,8 @@ const EditorContainer = () => {
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob());
 
-    if (isImage) {
-      // const currentImg = EditorStore.getImgElement();
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'image');
-      // const tempArr = currentImg.getAttribute('src').split('/');
-      // const tempId = tempArr[tempArr.length - 1];
-      // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
-      // currentImg.setAttribute('temp-id', tempId);
-    }
-    else {
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'file');
-      // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
-      // const currentFile = document.getElementById(tempId);
-      // // 실제 업로드 data set
-      // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
-      // currentFile.setAttribute('temp-id', tempId);
-    }
+    EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, isImage ? 'image' : 'file');
+
     // 먼저 파일 이름 길이 체크하고 upload해야
     if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
     else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
@@ -148,20 +134,12 @@ const EditorContainer = () => {
       for (let i = 0; i < files.length; i++) {
         (function (file) {
           var reader = new FileReader();
-          // var isImage = EditorStore.readerIsImage(file.type);
           reader.onload = function () {
             var id = 'blobid' + (new Date()).getTime();
             var blobCache = EditorStore.tinymce.editorUpload.blobCache;
             var base64 = reader.result.split(',')[1];
-            // var baseUri = reader.result;
             var blobInfo = blobCache.create(id, file, base64, file.name);
             blobCache.add(blobInfo);
-            // if (isImage) {
-            //   var img = new Image();
-            //   img.setAttribute('src', reader.result);
-            //   img.setAttribute('data-name', file.name);
-            //   EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
-            // }
             handleFileHandler(blobInfo, { title: file.name });
           };
           reader.readAsDataURL(file);
@@ -262,13 +240,13 @@ const EditorContainer = () => {
     새로 받아오는 노트 컨텐츠도 <p><br></p>인 경우 editor content가 안바뀌는 이슈 수정
       && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)
   */
-  useEffect(()=>{
+  useEffect(() => {
     // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
     if (EditorStore.tinymce && PageStore.currentPageData.note_id
-      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)){
+      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
       EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
     }
-  },[PageStore.currentPageData.note_id]);
+  }, [PageStore.currentPageData.note_id]);
 
   return useObserver(() => (
     <>
@@ -308,10 +286,10 @@ const EditorContainer = () => {
               editor.on('init', () => {
                 // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
                 // init에도 useEffect 내용 추가
-                if (PageStore.currentPageData.note_content && 
+                if (PageStore.currentPageData.note_content &&
                   (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
                   EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
-                }                
+                }
                 editor.focus();
                 handleEditorContentsListener();
               })

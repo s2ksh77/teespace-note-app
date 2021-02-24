@@ -159,6 +159,7 @@ const PageStore = observable({
     return this.renameText;
   },
   setRenameText(pageText) {
+    if (pageText.length > 256) pageText = pageText.substring(0, 256);
     this.renameText = pageText;
   },
 
@@ -617,7 +618,7 @@ const PageStore = observable({
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);      
+      EditorStore.setProcessCount(0);
       EditorStore.setTempFileLayoutList([]);
     }
     NoteStore.setShowModal(false);
