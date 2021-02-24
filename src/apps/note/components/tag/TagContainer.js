@@ -23,7 +23,7 @@ const TagContainer = () => {
   }, [NoteStore.showPage]);
 
   const renderContent = () => {
-    if (TagStore.tagPanelLoading) return <div />;
+    if (TagStore.tagPanelLoading) return <div />; // 태그 데이터 가져오는 동안 흰 화면만 띄우기
     // 검색 관련 rendering
     if (TagStore.isSearching) {
       if (TagStore.isSearchLoading) return <SearchingImg />;
@@ -33,7 +33,7 @@ const TagContainer = () => {
       return <SearchResultNotFound searchStr={TagStore.searchStr} />
     } 
     // 초기 태그 화면 rendering
-    else if (TagStore.hasTag) return <TagContentContainer />;
+    else if (TagStore.allSortedTagList.length > 0) return <TagContentContainer />;
     return <TagNotFound />;
   }
 

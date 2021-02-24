@@ -50,12 +50,10 @@ export const handleWebsocket = (isWeb=true) => (message) => {
                 targetID = target.split(':')[0];
                 targetUSER = target.split(':')[1];
                 if (isWeb && targetUSER === loginUSER) return;
-                else {
-                    if (PageStore.getCurrentPageId() === targetID) {
-                        PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
-                    }
-                    ChapterStore.getNoteChapterList();
+                if (PageStore.getCurrentPageId() === targetID) {
+                    PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
                 }
+                ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.MOVE: // 서버에서 곧 넣을 예정
                 break;
