@@ -184,7 +184,7 @@ const NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = NoteStore.getI18n('otherEditing');
+        dialogType.subtitle = `${PageStore.editingUserName} 님이 수정 중 입니다.`;
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
