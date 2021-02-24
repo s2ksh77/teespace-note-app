@@ -39,6 +39,8 @@ const LNBContainer = () => {
     }
   };
   const handleEditMode = () => {
+    if (EditorStore.isUploading) {NoteStore.setModalInfo('uploadingFiles'); return;}
+    
     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
     if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
