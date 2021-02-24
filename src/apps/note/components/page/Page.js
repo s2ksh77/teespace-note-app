@@ -14,6 +14,7 @@ import {
 } from '../../styles/pageStyle';
 import { Tooltip } from 'antd';
 import NoteUtil from '../../NoteUtil';
+import { DRAG_TYPE } from '../../GlobalVariable';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -33,7 +34,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   };
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages' },
+    item: { id: page.id, type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE },
     begin: (monitor) => {
       if (!PageStore.moveInfoMap.get(page.id)) {
         PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
@@ -46,7 +47,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       NoteStore.setIsDragging(true);
 
       return {
-        type: page.type === 'note' ? 'Item:Note:Pages' : 'Item:Note:SharedPages',
+        type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
         data: [...PageStore.moveInfoMap].map(keyValue => {
           const item = keyValue[1].item;
           return {
@@ -62,7 +63,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       if (res && res.target === 'Platform:Room')
         PageStore.createNoteSharePage(res.targetData.id, item.data);
 
-      if (!res && item.type === 'Item:Note:SharedPages') NoteStore.setIsDragging(false);
+      if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
@@ -70,7 +71,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   });
 
   const [, drop] = useDrop({
-    accept: 'Item:Note:Pages',
+    accept: DRAG_TYPE.PAGE,
     drop: () => {
       PageStore.moveNotePage(chapter.id, chapterIdx, index);
     },

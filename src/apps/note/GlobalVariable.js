@@ -19,3 +19,10 @@ export const CHAPTER_TYPE = {
   SHARED_PAGE:'shared_page',
   SHARED:'shared'
 }
+
+export const DRAG_TYPE = {
+  CHAPTER:'Item:Note:Chapters',
+  PAGE: 'Item:Note:Pages',
+  SHARED_CHAPTER:'Item:Note:SharedChapters',
+  SHARED_PAGE: 'Item:Note:SharedPages'
+}

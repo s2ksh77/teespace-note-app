@@ -5,12 +5,13 @@ import { useDrop } from 'react-dnd';
 import Page from './Page';
 import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageStyle';
 import { logEvent } from 'teespace-core';
+import { DRAG_TYPE } from '../../GlobalVariable';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   const [, drop] = useDrop({
-    accept: 'Item:Note:Pages',
+    accept: DRAG_TYPE.PAGE,
     drop: () => {
       PageStore.moveNotePage(chapter.id, chapterIdx, chapter.children.length);
     },
