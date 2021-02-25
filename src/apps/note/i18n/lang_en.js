@@ -36,7 +36,7 @@ const languageSet = {
   clickNewChapter: 'To create one, click "New Chapter".',
   // unregisteredMember: `${}`,
   noSearchResult: 'No search results found.',
-  searching: 'Searching ...',
+  searching: 'Search is running.',
   searchContent: 'Search keyword',
   insertLink: 'insert Link',
   done: 'Done',

@@ -36,7 +36,7 @@ const languageSet = {
   clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
-  searching: '검색중 ...',
+  searching: '검색 실행 중입니다.',
   searchContent: '내용 검색',
   insertLink: '링크 삽입',
   done: '완료',
