@@ -73,7 +73,14 @@ const NoteMeta = {
         break;
       case 'page':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); if (EditorStore.fileList) { PageStore.deleteNotePage(); EditorStore.deleteAllFile(); } else PageStore.deleteNotePage(); })
+        eventList.push(function (e) {
+          e.stopPropagation();
+          if (PageStore.lastSharedPageParentId) {
+            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+            ChapterStore.deleteNoteChapter();
+          } else PageStore.deleteNotePage();
+          if (EditorStore.fileList) EditorStore.deleteAllFile();
+        })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'editCancel':

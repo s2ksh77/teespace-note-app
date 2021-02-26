@@ -198,6 +198,11 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
                     : chapter.children[index - 1].id
                   : ''
               }
+              lastSharedPageParentId={
+                chapter.type === 'shared_page' && chapter.children.length === 1
+                  ? chapter.id
+                  : ''
+              }
             />
           </PageTextContainer>
         </PageTextCover>
