@@ -2794,6 +2794,7 @@ var PageStore = mobx.observable((_observable$1 = {
   createParentIdx: '',
   deletePageList: [],
   selectablePageId: '',
+  lastSharedPageParentId: '',
   renameId: '',
   renamePrevText: '',
   renameText: '',
@@ -2907,6 +2908,12 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   setSelectablePageId: function setSelectablePageId(pageId) {
     this.selectablePageId = pageId;
+  },
+  getLastSharedPageParentId: function getLastSharedPageParentId() {
+    return this.lastSharedPageParentId;
+  },
+  setLastSharedPageParentId: function setLastSharedPageParentId(chapterId) {
+    this.lastSharedPageParentId = chapterId;
   },
   getRenameId: function getRenameId() {
     return this.renameId;
@@ -4323,7 +4330,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var _this3 = this;
 
   // chapterMap: {key: chapterId, value: chapterIndex on server}
-  // pageMap: {key: pageId, value: {parent: chapterIndex on server, idx: pageIndex on server}}
+  // pageMap: {key: pageId, value: {parent: chapterId, idx: pageIndex on server}}
   this.chapterMap.clear();
   this.pageMap.clear();
   normalChapters.forEach(function (chapter, i) {
@@ -4623,10 +4630,19 @@ var ChapterStore = mobx.observable((_observable$2 = {
     _this10.getNoteChapterList();
 
     if (_this10.currentChapterId === _this10.deleteChapterId) {
-      _this10.setCurrentChapterId(_this10.selectableChapterId);
+      var _selectableChapter$ch, _selectableChapter$ch2;
 
-      PageStore.setCurrentPageId(PageStore.selectablePageId);
-      PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+      // 임시 코드. 서버 수정된 후 변경 예정.
+      var currentChapterIdx = _this10.chapterList.findIndex(function (chapter) {
+        return chapter.id === _this10.currentChapterId;
+      });
+
+      var selectableChapter = currentChapterIdx === 0 ? _this10.chapterList[1] : _this10.chapterList[currentChapterIdx - 1];
+
+      _this10.setCurrentChapterId(selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id);
+
+      PageStore.setCurrentPageId(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id);
+      PageStore.fetchCurrentPageData(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch2 = selectableChapter.children[0]) === null || _selectableChapter$ch2 === void 0 ? void 0 : _selectableChapter$ch2.id);
 
       _this10.setMoveInfoMap(new Map([[_this10.currentChapterId, _this10.createMoveInfo(_this10.currentChapterId)]]));
 
@@ -5067,10 +5083,12 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
 
-          if (EditorStore.fileList) {
-            PageStore.deleteNotePage();
-            EditorStore.deleteAllFile();
+          if (PageStore.lastSharedPageParentId) {
+            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+            ChapterStore.deleteNoteChapter();
           } else PageStore.deleteNotePage();
+
+          if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
           e.stopPropagation();
