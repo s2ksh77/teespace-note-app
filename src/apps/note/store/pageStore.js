@@ -23,6 +23,7 @@ const PageStore = observable({
   createParentIdx: '',
   deletePageList: [],
   selectablePageId: '',
+  lastSharedPageParentId: '',
   renameId: '',
   renamePrevText: '',
   renameText: '',
@@ -141,6 +142,12 @@ const PageStore = observable({
   },
   setSelectablePageId(pageId) {
     this.selectablePageId = pageId;
+  },
+  getLastSharedPageParentId() {
+    return this.lastSharedPageParentId;
+  },
+  setLastSharedPageParentId(chapterId) {
+    this.lastSharedPageParentId = chapterId;
   },
 
   getRenameId() {

@@ -13,7 +13,7 @@ import { useCoreStores } from "teespace-core";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) => {
+const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, lastSharedPageParentId }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const store = {
@@ -61,6 +61,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId }) 
         PageStore.getNoteInfoList(note.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
             PageStore.setDeletePageList({ note_id: note.id });
+            PageStore.setLastSharedPageParentId(lastSharedPageParentId);
             NoteStore.setModalInfo('page');
           } else {
             const res = await userStore.fetchProfile(dto.is_edit);
