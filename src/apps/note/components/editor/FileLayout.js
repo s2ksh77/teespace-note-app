@@ -31,6 +31,7 @@ const FileLayout = () => {
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
     const [hoverFileIdx, setHoverFileIdx] = useState(null);
+    const [hoverTempIdx, setHoverTempIdx] = useState(null);
     const filebodyRef = useRef([]);
     const [isEllipsisActive, setIsEllipsisActive] = useState(false);
     // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
@@ -87,6 +88,12 @@ const FileLayout = () => {
     const handleLeaveIcon = () => {
         setHoverFileIdx(null);
         setHover(false);
+    }
+    const handleTempMouseHover = (idx) => {
+        setHoverTempIdx(idx)
+    }
+    const handleTempMouseLeave = (idx) => {
+        setHoverTempIdx(null);
     }
 
     const handleSelectFile = (e) => {
@@ -179,6 +186,7 @@ const FileLayout = () => {
             }
         }
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
+            // EditorStore.uploadDTO[index].cancelSource.cancel()
             EditorStore.tempFileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
                 if (dto.resultMsg === 'Success') {

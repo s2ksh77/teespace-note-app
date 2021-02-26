@@ -66,13 +66,11 @@ const EditorContainer = () => {
 
   const setNoteEditor = instance => {
     EditorStore.setEditor(instance);
-    // 첫 init 때 onChange가 불리지 않아서 setting...
-    PageStore.setContent(PageStore.currentPageData.note_content);
     // 첫 setup 으로 생성시 한번만 불림, instance 타이밍 이슈로 mode가 잘 안먹음
     initialMode();
   };
 
-  const handleFileHandler = (blobInfo, success, failure, progress) => {
+  const handleFileHandler = (blobInfo) => {
     let fileName = blobInfo.blob().name;
     let dotIndex = fileName.lastIndexOf('.');
     let fileExtension;
@@ -88,22 +86,8 @@ const EditorContainer = () => {
     if (isImage) fd.append('image', blobInfo.blob());
     else fd.append('file', blobInfo.blob());
 
-    if (isImage) {
-      // const currentImg = EditorStore.getImgElement();
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'image');
-      // const tempArr = currentImg.getAttribute('src').split('/');
-      // const tempId = tempArr[tempArr.length - 1];
-      // EditorStore.setUploadFileMeta('image', tempId, { fileName, fileExtension, fileSize }, fd, currentImg);
-      // currentImg.setAttribute('temp-id', tempId);
-    }
-    else {
-      EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, 'file');
-      // EditorStore.setTempFileMeta({ tempId, fileName, fileExtension, fileSize })
-      // const currentFile = document.getElementById(tempId);
-      // // 실제 업로드 data set
-      // EditorStore.setUploadFileMeta('file', tempId, { fileName, fileExtension, fileSize }, fd, currentFile);
-      // currentFile.setAttribute('temp-id', tempId);
-    }
+    EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, isImage ? 'image' : 'file');
+
     // 먼저 파일 이름 길이 체크하고 upload해야
     if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
     else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
@@ -150,20 +134,12 @@ const EditorContainer = () => {
       for (let i = 0; i < files.length; i++) {
         (function (file) {
           var reader = new FileReader();
-          // var isImage = EditorStore.readerIsImage(file.type);
           reader.onload = function () {
             var id = 'blobid' + (new Date()).getTime();
             var blobCache = EditorStore.tinymce.editorUpload.blobCache;
             var base64 = reader.result.split(',')[1];
-            // var baseUri = reader.result;
             var blobInfo = blobCache.create(id, file, base64, file.name);
             blobCache.add(blobInfo);
-            // if (isImage) {
-            //   var img = new Image();
-            //   img.setAttribute('src', reader.result);
-            //   img.setAttribute('data-name', file.name);
-            //   EditorStore.tinymce.execCommand('mceInsertContent', false, '<img src="' + img.src + '" data-name="' + file.name + '"/>');
-            // }
             handleFileHandler(blobInfo, { title: file.name });
           };
           reader.readAsDataURL(file);
@@ -257,6 +233,21 @@ const EditorContainer = () => {
     }
   }, [editorWrapperRef.current]);
 
+  /*
+    **새 챕터 생성 후 [+ 새 페이지] 버튼을 눌러 본문 작성한 뒤 다른 영역을 클릭 > 팝업창에서 저장 안함을 클릭하면 해당 페이지 화면이 그대로 유지되는 이슈
+    currentPageData는 서비스 받아올 때만 set하고 PageStore.noteContent는 editorChange 이벤트시 set하는데
+    새 노트에서 작성하다가 지우면 currentPageData는 여전히 <p><br></p> 였기 때문에 
+    새로 받아오는 노트 컨텐츠도 <p><br></p>인 경우 editor content가 안바뀌는 이슈 수정
+      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)
+  */
+  useEffect(() => {
+    // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
+    if (EditorStore.tinymce && PageStore.currentPageData.note_id
+      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
+      EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
+    }
+  }, [PageStore.currentPageData.note_id]);
+
   return useObserver(() => (
     <>
       <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()} isSearch={EditorStore.isSearch.toString()}>
@@ -293,6 +284,12 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
+                // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
+                // init에도 useEffect 내용 추가
+                if (PageStore.currentPageData.note_content &&
+                  (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
+                  EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
+                }
                 editor.focus();
                 handleEditorContentsListener();
               })
@@ -352,7 +349,7 @@ const EditorContainer = () => {
 
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
-                tooltip: '이미지 첨부',
+                tooltip: NoteStore.getI18n('insertImages'),
                 onAction: function () {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }

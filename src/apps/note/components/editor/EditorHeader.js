@@ -47,22 +47,17 @@ const EditorHeader = () => {
     if (EditorStore.isUploading) {
       NoteStore.setModalInfo('uploadingFiles');return;
     }
-    const {
-      target: { innerText },
-    } = e;
     EditorStore.setIsSearch(false);
     instance.unmark();
     EditorStore.tinymce?.undoManager?.clear();
-    if (innerText === NoteStore.getI18n('modify')) {
+    if (PageStore.isReadMode()) {
       if (PageStore.otherEdit) {
         const res = await userStore.fetchProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);
         NoteStore.setModalInfo('editingPage');
       }
-      else {
-        PageStore.noteEditStart(PageStore.currentPageData.note_id);
-      }
-    } else if (innerText === NoteStore.getI18n('save')) {
+      else PageStore.noteEditStart(PageStore.currentPageData.note_id);
+    } else {
       // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync()
         .then(() => PageStore.handleSave());
@@ -76,9 +71,6 @@ const EditorHeader = () => {
     } = e;
     PageStore.setTitle(value);
   };
-
-  const editBtnText =
-    PageStore.isReadMode() ? NoteStore.getI18n('modify') : NoteStore.getI18n('save');
 
   const handleSearchEditor = () => {
     EditorStore.isSearch ? EditorStore.setIsSearch(false) : EditorStore.setIsSearch(true)
@@ -99,7 +91,9 @@ const EditorHeader = () => {
         alignment={"center"}
       >
         <EditorHeaderContainer1>
-          <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>{editBtnText}</EditBtn>
+          <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
+            {PageStore.isReadMode() ? NoteStore.getI18n('modify') : NoteStore.getI18n('save')}
+          </EditBtn>
           <EditorTitle
             id="editorTitle"
             maxLength="200"

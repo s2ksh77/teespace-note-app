@@ -18,7 +18,7 @@ const PageStore = observable({
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
-  createPageId: '',
+  createPageId: '', // web에서 안 씀
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -159,6 +159,7 @@ const PageStore = observable({
     return this.renameText;
   },
   setRenameText(pageText) {
+    if (pageText.length > 256) pageText = pageText.substring(0, 256);
     this.renameText = pageText;
   },
 
@@ -223,7 +224,6 @@ const PageStore = observable({
   setIsNewPage(isNew) {
     this.isNewPage = isNew;
   },
-
   getExportTitle() {
     return this.exportPageTitle;
   },
@@ -300,9 +300,8 @@ const PageStore = observable({
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterId(dto.parent_notebook);
-      this.createPageId = dto.note_id;
       this.currentPageId = dto.note_id;
-      this.isNewPage = true;
+      this.setIsNewPage(true);
       TagStore.setNoteTagList(dto.tagList);
       EditorStore.setFileList(dto.fileList);
       this.initializeBoxColor();
@@ -317,7 +316,8 @@ const PageStore = observable({
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
       EditorStore.tinymce?.undoManager?.clear();
-      EditorStore.tinymce?.focus();
+      // getRng error가 나서 selection부터 체크
+      if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
     });
   },
 
@@ -332,15 +332,13 @@ const PageStore = observable({
       } else {
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
-          this.isNewPage = false;
-          this.createPageId = '';
+          this.setIsNewPage(false);
           this.setCurrentPageId('');
           ChapterStore.setCurrentChapterId('');
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
           if (currentChapter.children.length > 1) {
             const pageId = currentChapter.children[currentChapter.children.length - 2].id;
-            this.createPageId = '';
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           }
@@ -520,7 +518,7 @@ const PageStore = observable({
           }
         })
         .catch(e => console.error(e));
-      this.isNewPage = false;
+      this.setIsNewPage(false);
     }
   },
 
@@ -540,8 +538,11 @@ const PageStore = observable({
     this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
-      EditorStore.tinymce?.focus();
-      EditorStore.tinymce?.selection.setCursorLocation();
+      // focus에서 getRng error가 나서 selection부터 체크
+      if (EditorStore.tinymce?.selection) {
+        EditorStore.tinymce.focus();
+        EditorStore.tinymce.selection.setCursorLocation();
+      }
       this.initializeBoxColor();
     });
   },
@@ -577,7 +578,7 @@ const PageStore = observable({
 
   async handleNoneEdit() {
     if (this.isNewPage) {
-      this.setDeletePageList({ note_id: this.createPageId });
+      this.setDeletePageList({ note_id: this.currentPageId });
       this.deleteNotePage();
     } else {
       if (this.otherEdit) return;
@@ -617,7 +618,7 @@ const PageStore = observable({
     if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
     if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);      
+      EditorStore.setProcessCount(0);
       EditorStore.setTempFileLayoutList([]);
     }
     NoteStore.setShowModal(false);
@@ -627,9 +628,6 @@ const PageStore = observable({
     if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
-  },
-  setIsNewPage(isNew) {
-    this.isNewPage = isNew;
   },
   getTitle() {
     const contentList = EditorStore.tinymce.getBody().children;

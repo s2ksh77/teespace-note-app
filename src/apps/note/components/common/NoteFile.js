@@ -11,6 +11,58 @@ import TagStore from '../../store/tagStore';
 import { isFilled } from './validators';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
+// export const handleUpload = async () => {
+//     if (EditorStore.uploadDTO) {
+//         EditorStore.setIsUploading(true);
+//         for (let i = 0; i < EditorStore.uploadDTO.length; i++) {
+//             (function (item) {
+//                 const handleUploadProgress = (e) => {
+//                     const totalLength = e.lengthComputable
+//                         ? e.total
+//                         : e.target.getResponseHeader('content-length') ||
+//                         e.target.getResponseHeader('x-decompressed-content-length');
+//                     EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+//                 }
+//                 EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource)
+//                     .then(async result => {
+//                         if (result.resultMsg === 'Success') {
+//                             if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+//                             EditorStore.tempFileLayoutList[i].progress = 0;
+//                             EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
+//                             await EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
+//                         } else if (dto.resultMsg === 'Fail') {
+//                             EditorStore.failCount++;
+//                             EditorStore.tempFileLayoutList[i].progress = 0;
+//                             EditorStore.tempFileLayoutList[i].error = true;
+//                         }
+//                         EditorStore.processLength++;
+//                         if (EditorStore.processLength == EditorStore.uploadLength) {
+//                             EditorStore.uploadDTO = [];
+//                             EditorStore.setProcessLength(0);
+//                             EditorStore.setIsUploading(false);
+//                             if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+//                             else if (EditorStore.failCount === 0) {
+//                                 PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+//                                     EditorStore.setFileList(
+//                                         dto.fileList,
+//                                     );
+//                                     EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+//                                     EditorStore.setProcessCount(0);
+//                                     EditorStore.setTempFileLayoutList([]);
+//                                 });
+//                             }
+//                         }
+//                     }).catch(e => {
+//                         if (e !== 'Network Error') {
+//                             EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
+//                             EditorStore.processLength++;
+//                         }
+//                     })
+//             })(EditorStore.uploadDTO[i])
+//         }
+//     }
+// }
+
 export const handleUpload = async () => {
     let uploadArr = [];
     if (EditorStore.uploadDTO) {
@@ -96,7 +148,7 @@ const isValidFileSize = fileList => {
     fileList.forEach(file => {
         uploadSize += file.file_size;
     })
-    
+
     if (uploadSize > totalSize) {
         NoteStore.setModalInfo('sizefailUpload');
         return false;
@@ -105,9 +157,9 @@ const isValidFileSize = fileList => {
 }
 
 export const isValidFileNameLength = fileName => {
-  if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
-  if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
-  return true;
+    if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+    if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+    return true;
 }
 
 export const handleDriveCopy = async () => {
@@ -260,10 +312,30 @@ export const makeExportElement = html => {
     document.body.appendChild(fragment);
 };
 
-export const exportDownloadPDF = (isMailShare, type) => {
-    const element = document.getElementById('exportTargetDiv');
+const preloadingImage = (el) => {
+    return new Promise((resolve, reject) => {
+        el.onload = () => resolve();
+    })
+}
+
+export const exportDownloadPDF = async (isMailShare, type) => {
+    const imgElementList = document.getElementById('exportTargetDiv').querySelectorAll('img');
     const opt = getExportOpt(type);
-    htmlToPdf(isMailShare, element, opt);
+    let requests = [];
+    if (imgElementList && imgElementList.length > 0) {
+        requests = [...imgElementList].map(el => {
+            return preloadingImage(el)
+        })
+        // setTimeout(async () => {
+        await Promise.all(requests).then(() => {
+            const element = document.getElementById('exportTargetDiv');
+            htmlToPdf(isMailShare, element, opt);
+        });
+        // }, 1000)
+    } else {
+        const element = document.getElementById('exportTargetDiv');
+        htmlToPdf(isMailShare, element, opt);
+    }
 };
 
 const getExportOpt = type => {
@@ -274,8 +346,15 @@ const getExportOpt = type => {
                 ? `${ChapterStore.exportChapterTitle}.pdf`
                 : `${PageStore.exportPageTitle}.pdf`,
         pagebreak: { after: '.afterClass', avoid: 'span' },
-        image: { type: 'jpeg', quality: 0.98 },
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
+        image: { type: 'png', quality: 0.98 },
+        html2canvas: {
+            scale: 1,
+            letterRendering: true,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', usePromise: true },
     };
 
     return opt;
@@ -285,6 +364,8 @@ const htmlToPdf = (isMailShare, element, opt) => {
     if (!isMailShare) {
         html2pdf(element, opt).then(() => {
             document.getElementById('exportTarget').remove();
+            // loading 화면 끝나요
+            NoteStore.setIsExporting(false);
         });
     }
     else {
@@ -293,6 +374,8 @@ const htmlToPdf = (isMailShare, element, opt) => {
             const fileObjs = [{ originFileObj: pdf, name: opt.filename, uid: '1', type: 'application/pdf', fileSize: pdf.size },];
             NoteStore.setMailShareFileObjs(fileObjs);
             document.getElementById('exportTarget').remove();
+            // loading 화면 끝나요
+            NoteStore.setIsExporting(false);
             NoteStore.setIsMailShare(true);
         });
     }
@@ -330,7 +413,9 @@ export const getTxtFormat = (title, contents) => {
     let exportText = targetEditor.getContent({ format: "text" });
     exportText = exportText.replace(/\n\n/g, '\n');
     downloadTxt(title, exportText);
-    EditorStore.tempTinymce.remove('#exportTxt')
+    // loading 화면 끝나요   
+    NoteStore.setIsExporting(false);
+    EditorStore.tempTinymce.remove('#exportTxt');
     document.getElementById('exportTxtParent').remove();
 }
 

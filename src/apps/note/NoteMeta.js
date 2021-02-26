@@ -183,13 +183,13 @@ const NoteMeta = {
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = NoteStore.getI18n('otherEditing');
+        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = NoteStore.getI18n('unableDelte');
-        dialogType.subtitle = NoteStore.getI18n('othersEditing');
+        dialogType.subtitle = NoteStore.getI18n('othersEditing')(PageStore.editingUserCount);
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
@@ -212,7 +212,7 @@ const NoteMeta = {
         break;
       case 'editingPage':
         dialogType.title = NoteStore.getI18n('unableModify');
-        dialogType.subtitle = NoteStore.getI18n('otherEditing');
+        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
@@ -221,7 +221,7 @@ const NoteMeta = {
         break;
       case 'multiFileSomeFail':
         dialogType.title = NoteStore.getI18n('someFilesUploadFail');
-        dialogType.subtitle = NoteStore.getI18n('uploadFail');
+        dialogType.subtitle = NoteStore.getI18n('uploadFail')(EditorStore.uploadLength, EditorStore.failCount);
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':

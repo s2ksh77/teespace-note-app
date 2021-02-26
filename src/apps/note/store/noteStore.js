@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import TagStore from './tagStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
@@ -40,6 +41,7 @@ const NoteStore = observable({
   toastText: '',
   i18nLanguage: 'ko',
   i18nKeyMap: '',
+  isExporting:false,
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -97,6 +99,11 @@ const NoteStore = observable({
     ChapterStore.setCurrentChapterId('');
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
+    TagStore.setNoteTagList([]);
+    TagStore.setTagPanelLoading(true); // 처음에 '태그 없습니다' 페이지가 보이지 않아야 함!
+    // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
+    TagStore.setAllSortedTagList([]);
+    TagStore.setSortedTagList([]);
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
@@ -291,7 +298,9 @@ const NoteStore = observable({
   setDraggedOffset(offset) {
     this.draggedOffset = offset;
   },
-
+  setIsExporting(isExporting){
+    this.isExporting = isExporting;
+  },
   disableScroll(e) {
     e.preventDefault();
   },

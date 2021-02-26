@@ -9,12 +9,14 @@ import {
 import LNBHeader from "./LNBHeader";
 import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from "./LNBTag";
-import ChapterList from './ChapterList';
 import LNBSearchResult from './LNBSearchResult';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from "react-dnd-html5-backend";
 import SearchingImg from '../common/SearchingImg';
 import Chapter from "../chapter/Chapter";
+import NoteUtil from '../../NoteUtil';
+
+const { getChapterNumType } = NoteUtil;
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -39,6 +41,8 @@ const LNBContainer = () => {
     }
   };
   const handleEditMode = () => {
+    if (EditorStore.isUploading) {NoteStore.setModalInfo('uploadingFiles'); return;}
+
     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
     if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
     NoteStore.setModalInfo('editCancel');
@@ -84,21 +88,19 @@ const LNBContainer = () => {
             ? (ChapterStore.isLoadingSearchResult ? <SearchingImg /> : <LNBSearchResult />)
             : <DndProvider backend={HTML5Backend}>
               {ChapterStore.chapterList
-                .map((item, index) => (
-                  item.type === 'notebook' || item.type === 'default'
-                    ? <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />
-                    : item.type === 'shared_page'
-                      ? item.children.length > 0 && <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
-                      : <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />
-                ))}
+                .map((item, index) => {
+                  switch (getChapterNumType(item.type)) {
+                    case 0:case 1:// default, NOTEBOOK
+                      return <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />;
+                    case 2:// SHARED_PAGE
+                      if (item.children.length > 0) return <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />;
+                      break;
+                    case 3:
+                      return <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />;
+                    default:break;
+                  }
+                })}
               <LNBTag flexOrder={2} />
-              {/* {ChapterStore.sortedChapterList.roomChapterList.length > 0 ?
-                <ChapterList type={"roomChapterList"} isShared={false} /> : null}
-              <LNBTag />
-              {ChapterStore.sortedChapterList.sharedPageList.length > 0 && ChapterStore.sortedChapterList.sharedPageList[0]?.children.length > 0 ?
-                <ChapterList type={"sharedPageList"} isShared={true} /> : null}
-              {ChapterStore.sortedChapterList.sharedChapterList.length > 0 ?
-                <ChapterList type={"sharedChapterList"} isShared={true} /> : null} */}
             </DndProvider>}
         </LNBChapterCover>
       </LNBCover>

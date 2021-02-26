@@ -1,6 +1,3 @@
-import PageStore from "../store/pageStore";
-import EditorStore from "../store/editorStore";
-
 const languageSet = {
   newChapter: '새 챕터',
   page: '페이지',
@@ -17,8 +14,8 @@ const languageSet = {
   ok: '확인',
   unableModify: '수정할 수 없습니다.',
   unableDelte: '삭제 할 수 없습니다.',
-  otherEditing: `${PageStore.editingUserName} 님이 수정 중 입니다.`,
-  othersEditing: `${PageStore.editingUserCount}명이 수정 중입니다.`,
+  otherEditing: (userName) => `${userName} 님이 수정 중 입니다.`,
+  othersEditing: (count) => `${count}명이 수정 중입니다.`,
   pageDelete: '페이지를 삭제하시겠습니까?',
   chapterDelete: '챕터를 삭제하시겠습니까?',
   chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
@@ -35,11 +32,11 @@ const languageSet = {
   pageMove: (moveCnt) => `${moveCnt}개의 페이지가 이동하였습니다.`,
   noPage: '페이지가 없습니다.',
   noChapter: '챕터가 없습니다.',
-  // clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
   clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
   // unregisteredMember: `${}`,
   noSearchResult: '검색 결과가 없습니다.',
-  searching: '검색중 ...',
+  searching: '검색 실행 중입니다.',
   searchContent: '내용 검색',
   insertLink: '링크 삽입',
   done: '완료',
@@ -59,7 +56,7 @@ const languageSet = {
   countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
   lengthoverUpload: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
   someFilesUploadFail: '일부 파일이 업로드되지 못하였습니다.',
-  uploadFail: `(${EditorStore.uploadLength}개 항목 중 ${EditorStore.failCount}개 실패)`,
+  uploadFail: (uploadCnt, failCnt) => `(${uploadCnt}개 항목 중 ${failCnt}개 실패)`,
   selectedDelete: (fileName) => `선택한 ${fileName}을 삭제하시겠습니까?`,
   notRestore: '삭제 후에는 복구할 수 없습니다.',
   editCancel: '페이지를 저장하고 나가시겠습니까?',
@@ -91,6 +88,7 @@ const languageSet = {
   usedTagName: '이미 있는 태그 이름입니다.',
   deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
   align: '정렬',
+  insertImages: '이미지 삽입',
   replaceImages: '이미지 교체',
   saveToDrive: 'Drive에 저장',
   saveToMyPC: '내 PC에 저장',

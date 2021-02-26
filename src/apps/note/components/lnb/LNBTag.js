@@ -4,12 +4,13 @@ import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import tagImg from '../../assets/add_tag.svg';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
+import { DRAG_TYPE } from '../../GlobalVariable';
 
 const LNBTag = memo(({ flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const [, drop] = useDrop({
-    accept: 'Item:Note:Chapters',
+    accept: DRAG_TYPE.CHAPTER,
     drop: () => {
       ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
     },

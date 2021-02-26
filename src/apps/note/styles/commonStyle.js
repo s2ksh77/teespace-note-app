@@ -286,3 +286,19 @@ export const DraggedComponentTitle = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
+export const OverlayCover = styled.div`
+  position: fixed;
+  right:0;
+  bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-color: rgba(250,250,250,.7);
+  z-index: 1000;
+`;
+
+export const LoaderOverlay = styled.img`
+  width: 5rem;
+  height: 5rem;
+`;

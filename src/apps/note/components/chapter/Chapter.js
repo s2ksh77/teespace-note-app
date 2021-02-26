@@ -14,6 +14,7 @@ import {
 } from '../../styles/chpaterStyle';
 import shareImg from '../../assets/share_1.svg';
 import sharedPageImg from '../../assets/page_shared.svg';
+import {DRAG_TYPE} from '../../GlobalVariable';
 
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -28,7 +29,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   // 챕터를 다른 챕터 영역에 drop했을 때
   const [, drop] = useDrop({
-    accept: 'Item:Note:Chapters',
+    accept: DRAG_TYPE.CHAPTER,
     drop: () => {
       ChapterStore.moveChapter(index);
     },
@@ -40,7 +41,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   // 챕터를 drag했을 때 
   const [, drag, preview] = useDrag({
-    item: { id: chapter.id, type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters' },
+    item: { id: chapter.id, type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER },
     begin: (monitor) => {
       if (!ChapterStore.moveInfoMap.get(chapter.id)) {
         ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
@@ -53,7 +54,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       NoteStore.setIsDragging(true);
 
       return {
-        type: isShared ? 'Item:Note:SharedChapters' : 'Item:Note:Chapters',
+        type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
         data: [...ChapterStore.moveInfoMap].map(keyValue => {
           const item = keyValue[1].item;
           return {
@@ -69,7 +70,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       if (res && res.target === 'Platform:Room')
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
 
-      if (!res && item.type === 'Item:Note:SharedChapters') NoteStore.setIsDragging(false);
+      if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER) NoteStore.setIsDragging(false);
       ChapterStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
     },
@@ -77,7 +78,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   // 페이지를 drag하여 챕터에 drop 또는 hover했을 때
   const [, dropChapter] = useDrop({
-    accept: 'Item:Note:Pages',
+    accept: DRAG_TYPE.PAGE,
     drop: () => {
       PageStore.moveNotePage(chapter.id, index, 0);
     },

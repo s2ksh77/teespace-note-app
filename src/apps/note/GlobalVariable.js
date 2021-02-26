@@ -14,8 +14,15 @@ export default GlobalVariable;
 
 // 오타로 인한 버그 막기 및 타입 리스트 확인
 export const CHAPTER_TYPE = {
-  DEFUALT:'default',
+  DEFAULT:'default',
   NOTEBOOK:'notebook',
   SHARED_PAGE:'shared_page',
   SHARED:'shared'
+}
+
+export const DRAG_TYPE = {
+  CHAPTER:'Item:Note:Chapters',
+  PAGE: 'Item:Note:Pages',
+  SHARED_CHAPTER:'Item:Note:SharedChapters',
+  SHARED_PAGE: 'Item:Note:SharedPages'
 }

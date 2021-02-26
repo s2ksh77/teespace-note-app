@@ -24,8 +24,8 @@ export const handleWebsocket = (isWeb=true) => (message) => {
     if (message.NOTI_ETC) {
         const loginUSER = NoteRepository.USER_ID;
         const EVENT_CASE = message.NOTI_ETC.split(',')[0];
-        const targetID = message.NOTI_ETC.split(',')[1];
-        const targetUSER = message.NOTI_ETC.split(',')[2];
+        let targetID = message.NOTI_ETC.split(',')[1];
+        let targetUSER = message.NOTI_ETC.split(',')[2];
 
         switch (EVENT_CASE) {
             case EVENT_TYPE.CREATE:
@@ -46,13 +46,14 @@ export const handleWebsocket = (isWeb=true) => (message) => {
             case EVENT_TYPE.EDIT_DONE:
             case EVENT_TYPE.NONEDIT:
             case EVENT_TYPE.EDIT_START: // EDIT,NOTE_ID:USER_ID
+                const target = message.NOTI_ETC.split(',')[1];
+                targetID = target.split(':')[0];
+                targetUSER = target.split(':')[1];
                 if (isWeb && targetUSER === loginUSER) return;
-                else {
-                    if (PageStore.getCurrentPageId() === targetID) {
-                        PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
-                    }
-                    ChapterStore.getNoteChapterList();
+                if (PageStore.getCurrentPageId() === targetID) {
+                    PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
                 }
+                ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.MOVE: // 서버에서 곧 넣을 예정
                 break;

@@ -5,13 +5,15 @@ import {
   SearchLoadingImg
 } from '../../styles/commonStyle';
 import loadingImg from '../../assets/search_loading.svg';
+import useNoteStore from '../../store/useStore';
 
 const SearchingImg = () => {
+  const { NoteStore } = useNoteStore();
   return (
     <>
       <SearchLoadingContainer>
-        <SearchLoadingTxt>검색 실행중입니다.</SearchLoadingTxt>
-        <SearchLoadingImg src={loadingImg}/>
+        <SearchLoadingTxt>{NoteStore.getI18n('searching')}</SearchLoadingTxt>
+        <SearchLoadingImg src={loadingImg} />
       </SearchLoadingContainer>
     </>
   );
