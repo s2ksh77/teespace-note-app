@@ -6,6 +6,7 @@ import image from '@rollup/plugin-image';
 import visualizer from 'rollup-plugin-visualizer';
 import url from 'rollup-plugin-url';
 import json from '@rollup/plugin-json';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const extensions = ['.js', '.jsx'];
@@ -39,5 +40,6 @@ export default {
     image(),
     visualizer(),
     url(),
+    terser(),
   ],
 };
