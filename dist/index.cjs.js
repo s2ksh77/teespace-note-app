@@ -5225,81 +5225,81 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
-        dialogType.title = NoteStore.getI18n('chapterDelete');
-        dialogType.subtitle = NoteStore.getI18n('chapterChildrenDelete');
+        dialogType.title = 'chapterDelete';
+        dialogType.subtitle = 'chapterChildrenDelete';
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
-        dialogType.title = NoteStore.getI18n('pageDelete');
+        dialogType.title = 'pageDelete';
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = NoteStore.getI18n('othersEditing')(PageStore.editingUserCount);
+        dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'editCancel':
-        dialogType.title = NoteStore.getI18n('editCancel');
+        dialogType.title = 'editCancel';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'fileDelete':
         dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
-        dialogType.subtitle = NoteStore.getI18n('notRestore');
+        dialogType.subtitle = 'notRestore';
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'titleDuplicate':
-        dialogType.title = NoteStore.getI18n('duplicate');
-        dialogType.subtitle = NoteStore.getI18n('anotherName');
+        dialogType.title = 'duplicate';
+        dialogType.subtitle = 'anotherName';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'duplicateTagName':
-        dialogType.title = NoteStore.getI18n('usedTagName');
+        dialogType.title = 'usedTagName';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'editingPage':
-        dialogType.title = NoteStore.getI18n('unableModify');
         dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.title = 'unableModify';
         dialogType.btns = this.setBtns('editingPage');
         break;
 
       case 'deletedPage':
-        dialogType.title = NoteStore.getI18n('deletedNote');
+        dialogType.title = 'deletedNote';
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
-        dialogType.title = NoteStore.getI18n('someFilesUploadFail');
         dialogType.subtitle = NoteStore.getI18n('uploadFail')(EditorStore.uploadLength, EditorStore.failCount);
+        dialogType.title = 'someFilesUploadFail';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
       case 'sizefailUpload':
-        dialogType.title = NoteStore.getI18n('sizeoverUpload');
+        dialogType.title = 'sizeoverUpload';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
-        dialogType.title = NoteStore.getI18n('countoverUpload');
+        dialogType.title = 'countoverUpload';
         dialogType.btns = this.setBtns('failUpload');
         break;
 
       case 'failUploadByFileNameLen':
-        dialogType.title = NoteStore.getI18n('lengthoverUpload');
+        dialogType.title = 'lengthoverUpload';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5520,9 +5520,6 @@ var languageSet = {
   saveToDrive: 'Drive에 저장',
   saveToMyPC: '내 PC에 저장'
 };
-var ko = {
-  translation: languageSet
-};
 
 var languageSet$1 = {
   newChapter: 'New Chapter',
@@ -5637,9 +5634,6 @@ var languageSet$1 = {
   saveToDrive: 'Save to Drive',
   saveToMyPC: 'Save to My PC'
 };
-var en = {
-  translation: languageSet$1
-};
 
 var NoteStore = mobx.observable({
   noteIdFromTalk: '',
@@ -5748,10 +5742,10 @@ var NoteStore = mobx.observable({
 
     switch (this.i18nLanguage) {
       case 'ko':
-        return this.i18nKeyMap = ko.translation;
+        return this.i18nKeyMap = languageSet;
 
       case 'en':
-        return this.i18nKeyMap = en.translation;
+        return this.i18nKeyMap = languageSet$1;
     }
   },
   getI18n: function getI18n(key) {
