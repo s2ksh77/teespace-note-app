@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import useNoteStore from '../../store/useStore';
 import {
   SearchResultNotFoundCover,
   SearchKeyword,
@@ -7,9 +6,10 @@ import {
   NoSearchResultImg
 } from '../../styles/commonStyle';
 import noSearchResultImg from '../../assets/no_result.svg';
+import { useTranslation } from 'react-i18next';
 
 const SearchResultNotFound = ({ searchStr }) => {
-  const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const SearchResultNotFound = ({ searchStr }) => {
     <>
       <SearchResultNotFoundCover>
         <SearchKeyword>'{searchText}'</SearchKeyword>
-        <NoSearchResultTitle>{NoteStore.getI18n('noSearchResult')}</NoSearchResultTitle>
+        <NoSearchResultTitle>{t('noSearchResult')}</NoSearchResultTitle>
         <NoSearchResultImg src={noSearchResultImg} />
       </SearchResultNotFoundCover>
     </>

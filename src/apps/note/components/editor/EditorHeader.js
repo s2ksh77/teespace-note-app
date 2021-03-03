@@ -20,10 +20,12 @@ import { useCoreStores } from 'teespace-core';
 import searchImg from '../../assets/search.svg';
 import Mark from 'mark.js';
 import { logEvent } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore } = useCoreStores();
+  const { t } = useTranslation();
   const instance = new Mark(EditorStore.tinymce?.getBody());
 
   // 뒤로 가기 버튼
@@ -45,7 +47,7 @@ const EditorHeader = () => {
 
   const handleClickBtn = async e => {
     if (EditorStore.isUploading) {
-      NoteStore.setModalInfo('uploadingFiles');return;
+      NoteStore.setModalInfo('uploadingFiles'); return;
     }
     EditorStore.setIsSearch(false);
     instance.unmark();
@@ -92,12 +94,12 @@ const EditorHeader = () => {
       >
         <EditorHeaderContainer1>
           <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
-            {PageStore.isReadMode() ? NoteStore.getI18n('modify') : NoteStore.getI18n('save')}
+            {PageStore.isReadMode() ? t('modify') : t('save')}
           </EditBtn>
           <EditorTitle
             id="editorTitle"
             maxLength="200"
-            placeholder={NoteStore.getI18n('untitled')}
+            placeholder={t('untitled')}
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={!PageStore.isReadMode() ? false : true}

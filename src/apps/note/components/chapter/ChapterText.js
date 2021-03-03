@@ -12,9 +12,11 @@ import arrowTopIcon from '../../assets/arrow_top_1.svg';
 import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 import { Tooltip } from "antd";
 import NoteUtil from '../../NoteUtil';
+import { useTranslation } from "react-i18next";
 
 const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { ChapterStore } = useNoteStore();
+  const { t } = useTranslation();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   chapter.text = NoteUtil.decodeStr(chapter.text);
 
@@ -34,7 +36,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
                 : '2.63rem'
             }
           >
-            {chapter.type === 'shared_page' ? NoteStore.getI18n('receivedPage') : chapter.text}
+            {chapter.type === 'shared_page' ? t('receivedPage') : chapter.text}
           </ChapterTextSpan>
         </Tooltip>
         <ContextMenu

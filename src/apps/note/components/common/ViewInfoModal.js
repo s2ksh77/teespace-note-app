@@ -6,14 +6,16 @@ import {
   ModalSharedInfoContent,
 } from '../../styles/commonStyle';
 import useNoteStore from '../../store/useStore';
+import { useTranslation } from 'react-i18next';
 
 const ViewInfoModal = () => {
   const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
   const sharedInfo = [
-    { title: NoteStore.getI18n('forwardRoom'), content: sharedRoomName },
-    { title: NoteStore.getI18n('forwardMemeber'), content: sharedUserName },
-    { title: NoteStore.getI18n('forwardDate'), content: sharedDate }
+    { title: t('forwardRoom'), content: sharedRoomName },
+    { title: t('forwardMemeber'), content: sharedUserName },
+    { title: t('forwardDate'), content: sharedDate }
   ];
 
   return (

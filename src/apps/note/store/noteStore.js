@@ -111,15 +111,15 @@ const NoteStore = observable({
     this.i18nLanguage = lang;
     switch (this.i18nLanguage) {
       case 'ko':
-        return this.i18nKeyMap = ko.translation;
+        return this.i18nKeyMap = ko;
       case 'en':
-        return this.i18nKeyMap = en.translation;
+        return this.i18nKeyMap = en;
     }
   },
   getI18n(key) {
     return this.i18nKeyMap[key];
   },
-  addWWMSHandler(isWeb=true) {
+  addWWMSHandler(isWeb = true) {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
   },
   getNoteFileList() {

@@ -94,4 +94,4 @@ const languageSet = {
   saveToMyPC: '내 PC에 저장',
 };
 
-export default { translation: languageSet };
+export default languageSet;

@@ -15,6 +15,7 @@ import Overlay from './components/common/Overlay';
 import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
+import { initI18n } from './i18n/i18nInit';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
@@ -98,6 +99,7 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
   }
   useEffect(() => {
     NoteStore.initI18n(lang);
+    initI18n(lang);
   }, [lang])
 
   return useObserver(() => (

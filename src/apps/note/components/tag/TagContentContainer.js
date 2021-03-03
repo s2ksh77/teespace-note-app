@@ -7,6 +7,7 @@ import TagKeyChildren from './TagKeyChildren';
 import arrowUp from '../../assets/ts_arrow_up_line@3x.png';
 import arrowDown from '../../assets/ts_arrow_down_line@3x.png';
 import NoteStore from '../../store/noteStore';
+import { useTranslation } from 'react-i18next';
 
 const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
@@ -16,11 +17,12 @@ const customExpandIcon = props => {
 };
 
 const TagContentContainer = observer(() => {
+  const { t } = useTranslation();
   const categoryInfo = {
-    KOR: NoteStore.getI18n('korCategory'),
-    ENG: NoteStore.getI18n('engCategory'),
-    NUM: NoteStore.getI18n('numCategory'),
-    ETC: NoteStore.getI18n('etcCategory'),
+    KOR: t('korCategory'),
+    ENG: t('engCategory'),
+    NUM: t('numCategory'),
+    ETC: t('etcCategory'),
   };
 
   return (

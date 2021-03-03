@@ -33,6 +33,7 @@ import {
 import { ComponentStore, WaplSearch } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -41,7 +42,7 @@ window.addEventListener('beforeunload', function (e) {
 })
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
-
+  const { t } = useTranslation();
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   const FilePreview = ComponentStore.get('Drive:FilePreview');
   const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
@@ -255,13 +256,13 @@ const EditorContainer = () => {
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
-            <ReadModeText>{NoteStore.getI18n('readmode')}</ReadModeText>
+            <ReadModeText>{t('readmode')}</ReadModeText>
           </ReadModeContainer>) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <StyledWaplSearch
               onChange={handleSearchInputChange}
-              placeholder={NoteStore.getI18n('searchContent')}
+              placeholder={t('searchContent')}
               onEnterDown={handleSearchEditor}
               onClear={handleClearSearch}
               onSearchPrev={handleSearchPrev}
@@ -343,13 +344,13 @@ const EditorContainer = () => {
               // 정렬 그룹 버튼
               editor.ui.registry.addGroupToolbarButton('alignment', {
                 icon: 'align-center',
-                tooltip: NoteStore.getI18n('align'),
+                tooltip: t('align'),
                 items: 'alignleft aligncenter alignright alignjustify'
               });
 
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
-                tooltip: NoteStore.getI18n('insertImages'),
+                tooltip: t('insertImages'),
                 onAction: function () {
                   editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
@@ -366,19 +367,19 @@ const EditorContainer = () => {
               `);
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'fileIcon',
-                tooltip: NoteStore.getI18n('attachFile'),
+                tooltip: t('attachFile'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: NoteStore.getI18n('attachDrive'),
+                      text: t('attachDrive'),
                       onAction: function () {
                         EditorStore.setIsDrive(true);
                       }
                     },
                     {
                       type: 'menuitem',
-                      text: NoteStore.getI18n('attachLocal'),
+                      text: t('attachLocal'),
                       onAction: function () {
                         editor.editorUpload.uploadImages(handleFileBlob('file'))
                       }
@@ -434,7 +435,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('changeImage', {
                 icon: 'gallery',
-                tooltip: NoteStore.getI18n('replaceImages'),
+                tooltip: t('replaceImages'),
                 onAction: function (_) {
                   handleFileBlob('image');
                 }
@@ -443,12 +444,12 @@ const EditorContainer = () => {
               // 이미지 다운로드/삭제
               editor.ui.registry.addMenuButton('downloadImage', {
                 icon: 'save',
-                tooltip: NoteStore.getI18n('download'),
+                tooltip: t('download'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: NoteStore.getI18n('saveToDrive'),
+                      text: t('saveToDrive'),
                       onAction: function () {
                         const node = editor.selection.getNode();
                         let fileName = node.getAttribute('data-name');
@@ -464,7 +465,7 @@ const EditorContainer = () => {
                     },
                     {
                       type: 'menuitem',
-                      text: NoteStore.getI18n('saveToMyPC'),
+                      text: t('saveToMyPC'),
                       onAction: function () {
                         const id = editor.selection.getNode().id;
                         if (id) downloadFile(id);
@@ -477,7 +478,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('deleteImage', {
                 icon: 'remove',
-                tooltip: NoteStore.getI18n('delete'),
+                tooltip: t('delete'),
                 onAction: function () {
                   EditorStore.deleteImage();
                 },

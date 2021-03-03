@@ -16,6 +16,7 @@ import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
 import styled from 'styled-components';
+import { useTranslation } from "react-i18next";
 
 const StyledCancelBtn = styled(CancelBtn)`
   margin-left: 0.69rem;
@@ -23,6 +24,7 @@ const StyledCancelBtn = styled(CancelBtn)`
 
 const LNBHeader = ({ createNewChapter }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const { t } = useTranslation();
   const inputRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
 
@@ -78,15 +80,15 @@ const LNBHeader = ({ createNewChapter }) => {
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
         <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
-          {NoteStore.getI18n('newChapter')}
+          {t('newChapter')}
         </LnbTitleNewButton>
         <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false}>
           <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false} />
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagText>{ChapterStore.searchingTagName}</TagText>
-              <StyledCancelBtn 
-                onClick={cancelSearchingTagNote} 
+              <StyledCancelBtn
+                onClick={cancelSearchingTagNote}
                 src={cancelImg}
                 visible={true}
               />
@@ -94,14 +96,14 @@ const LNBHeader = ({ createNewChapter }) => {
           ) :
             <LnbTitleSearchInput
               ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
-              placeholder={ChapterStore.isTagSearching ? "" : NoteStore.getI18n('searchPageChapter')}
+              placeholder={ChapterStore.isTagSearching ? "" : t('searchPageChapter')}
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}
-          <CancelBtn 
-            src={cancelImg} 
-            onClick={onClickCancelBtn} 
-            visible={!((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)} 
+          <CancelBtn
+            src={cancelImg}
+            onClick={onClickCancelBtn}
+            visible={!((!ChapterStore.isSearching && ChapterStore.searchStr === "") || ChapterStore.isTagSearching)}
           />
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}

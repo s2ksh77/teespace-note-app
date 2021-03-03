@@ -5,10 +5,11 @@ import { useDrop } from 'react-dnd';
 import tagImg from '../../assets/add_tag.svg';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
 import { DRAG_TYPE } from '../../GlobalVariable';
+import { useTranslation } from 'react-i18next';
 
 const LNBTag = memo(({ flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-
+  const { t } = useTranslation();
   const [, drop] = useDrop({
     accept: DRAG_TYPE.CHAPTER,
     drop: () => {
@@ -48,7 +49,7 @@ const LNBTag = memo(({ flexOrder }) => {
           src={tagImg}
           alt="tagImg"
         />
-        <TagTxt>{NoteStore.getI18n('tag')}</TagTxt>
+        <TagTxt>{t('tag')}</TagTxt>
       </LnbTagContainer>
     </>
   ));

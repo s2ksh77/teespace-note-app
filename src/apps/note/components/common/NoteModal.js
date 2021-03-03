@@ -6,9 +6,11 @@ import { Modal } from 'antd';
 import ViewInfoModal from './ViewInfoModal';
 import ForwardModal from './ForwardModal';
 import { handleUpload } from './NoteFile';
+import { useTranslation } from 'react-i18next';
 
 const NoteModal = observer(() => {
   const { NoteStore, EditorStore } = useNoteStore();
+  const { t } = useTranslation();
   const { targetComponent, modalName, title, // Modal, Message 공통 prop
     type, subTitle, btns, // 이 줄은 Message, 아래줄은 Modal prop 
     className, handleCancel } = NoteStore.modalInfo;
@@ -27,15 +29,15 @@ const NoteModal = observer(() => {
         <Message
           visible={true}
           type={type}
-          title={title}
-          subtitle={subTitle}
+          title={t(title)}
+          subtitle={t(subTitle)}
           btns={btns}
         /> :
         <Modal
           visible={true}
-          title={title}
+          title={t(title)}
           centered
-          footer={(modalName === "viewInfo") && <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{NoteStore.getI18n('ok')}</Button>}
+          footer={(modalName === "viewInfo") && <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{t('ok')}</Button>}
           onCancel={handleCancel}
           wrapClassName={className}
         >
