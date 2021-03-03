@@ -11,9 +11,11 @@ import { useObserver } from 'mobx-react';
 import searchImg from '../../assets/search.svg';
 import { CancelBtn, SearchImgInput } from '../../styles/commonStyle';
 import cancelImg from '../../assets/ts_cancel@3x.png';
+import { useTranslation } from 'react-i18next';
 
 const TagHeader = () => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
+  const { t } = useTranslation();
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
   const activateSearchIcon = TagStore.isSearching || value !== "";
@@ -68,7 +70,7 @@ const TagHeader = () => {
               ref={inputRef}
               value={value}
               onChange={onChangeInput}
-              placeholder={NoteStore.getI18n('searchTag')}
+              placeholder={t('searchTag')}
               onKeyDown={handleKeyDown}
               isSearch={activateSearchIcon ? true : false}
             />

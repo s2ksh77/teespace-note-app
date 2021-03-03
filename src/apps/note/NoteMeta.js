@@ -3,12 +3,13 @@ import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
-
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
   open + target 컴포넌트 이름
 */
+
 const NoteMeta = {
+
   // antd modal prop 설정
   openModal(type) {
     return this.setModalConfig(type);
@@ -56,7 +57,7 @@ const NoteMeta = {
 
     return {
       targetComponent: "Message",
-      modalName:dialogType.modalName, // openMessage의 인자인 type
+      modalName: dialogType.modalName, // openMessage의 인자인 type
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
@@ -133,7 +134,7 @@ const NoteMeta = {
         break;
       // NoteFile을 import해야해서 NoeModal component에서 이벤트 추가함
       case 'failUploadByFileNameLen':
-        eventList.push(function (e) {});
+        eventList.push(function (e) { });
         break;
       default:
         break;
@@ -171,7 +172,7 @@ const NoteMeta = {
     // type이 error면 빨간색, error말고 다른 색이면 보라색
     const dialogType = {
       type: 'default',
-      modalName:type,
+      modalName: type,
       title: '',
       subtitle: '',
       btns: []
@@ -179,68 +180,68 @@ const NoteMeta = {
     // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
-        dialogType.title = NoteStore.getI18n('chapterDelete');
-        dialogType.subtitle = NoteStore.getI18n('chapterChildrenDelete');
+        dialogType.title = 'chapterDelete';
+        dialogType.subtitle = 'chapterChildrenDelete';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'page':
-        dialogType.title = NoteStore.getI18n('pageDelete');
+        dialogType.title = 'pageDelete';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = NoteStore.getI18n('unableDelte');
         dialogType.subtitle = NoteStore.getI18n('othersEditing')(PageStore.editingUserCount);
+        dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
-        dialogType.title = NoteStore.getI18n('editCancel');
+        dialogType.title = 'editCancel';
         dialogType.btns = this.setBtns(type);
         break;
       case 'fileDelete':
         dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
-        dialogType.subtitle = NoteStore.getI18n('notRestore');
+        dialogType.subtitle = 'notRestore';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'titleDuplicate':
-        dialogType.title = NoteStore.getI18n('duplicate');
-        dialogType.subtitle = NoteStore.getI18n('anotherName');
+        dialogType.title = 'duplicate';
+        dialogType.subtitle = 'anotherName';
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
-        dialogType.title = NoteStore.getI18n('usedTagName');
+        dialogType.title = 'usedTagName';
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
-        dialogType.title = NoteStore.getI18n('unableModify');
         dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.title = 'unableModify';
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
-        dialogType.title = NoteStore.getI18n('deletedNote');
+        dialogType.title = 'deletedNote';
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.title = NoteStore.getI18n('someFilesUploadFail');
         dialogType.subtitle = NoteStore.getI18n('uploadFail')(EditorStore.uploadLength, EditorStore.failCount);
+        dialogType.title = 'someFilesUploadFail';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
-        dialogType.title = NoteStore.getI18n('sizeoverUpload');
+        dialogType.title = 'sizeoverUpload';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
       case 'failUpload':
-        dialogType.title = NoteStore.getI18n('countoverUpload');
+        dialogType.title = 'countoverUpload';
         dialogType.btns = this.setBtns('failUpload');
         break;
       case 'failUploadByFileNameLen':
-        dialogType.title = NoteStore.getI18n('lengthoverUpload');
+        dialogType.title = 'lengthoverUpload';
         dialogType.btns = this.setBtns(type);
         break;
       case 'uploadingFiles':

@@ -15,11 +15,13 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import SearchingImg from '../common/SearchingImg';
 import Chapter from "../chapter/Chapter";
 import NoteUtil from '../../NoteUtil';
+import { useTranslation } from "react-i18next";
 
 const { getChapterNumType } = NoteUtil;
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const { t } = useTranslation();
   const LNBRef = useRef(null);
 
   const createNewChapter = async () => {
@@ -28,7 +30,7 @@ const LNBContainer = () => {
     if (!ChapterStore.isNewChapter) return;
     // 분기는 더 여러개 있어야하지만 우선 만드는걸로
     if (!ChapterStore.chapterNewTitle) {
-      ChapterStore.setChapterTitle(NoteStore.getI18n('newChapter'));
+      ChapterStore.setChapterTitle(t('newChapter'));
       await ChapterStore.createNoteChapter(
         ChapterStore.chapterNewTitle,
         ChapterStore.isNewChapterColor
@@ -41,7 +43,7 @@ const LNBContainer = () => {
     }
   };
   const handleEditMode = () => {
-    if (EditorStore.isUploading) {NoteStore.setModalInfo('uploadingFiles'); return;}
+    if (EditorStore.isUploading) { NoteStore.setModalInfo('uploadingFiles'); return; }
 
     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
     if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
@@ -90,14 +92,14 @@ const LNBContainer = () => {
               {ChapterStore.chapterList
                 .map((item, index) => {
                   switch (getChapterNumType(item.type)) {
-                    case 0:case 1:// default, NOTEBOOK
+                    case 0: case 1:// default, NOTEBOOK
                       return <Chapter key={item.id} chapter={item} index={index} flexOrder={1} isShared={false} />;
                     case 2:// SHARED_PAGE
                       if (item.children.length > 0) return <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />;
                       break;
                     case 3:
                       return <Chapter key={item.id} chapter={item} index={index} flexOrder={3} isShared={true} />;
-                    default:break;
+                    default: break;
                   }
                 })}
               <LNBTag flexOrder={2} />

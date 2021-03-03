@@ -17,9 +17,11 @@ import AddTagForm from './AddTagForm'
 import { isFilled, checkWhitespace } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
 import { logEvent } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
+  const { t } = useTranslation();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const tagList = useRef([]); // 모든 노트 태그 리스트 담을 것
   const tagListCover = useRef(null) // scroll 때문에 필요
@@ -178,7 +180,7 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Tooltip title={!PageStore.isReadMode() ? NoteStore.getI18n('addTag') : NoteStore.getI18n('notavailableTag')}>
+        <Tooltip title={!PageStore.isReadMode() ? t('addTag') : t('notavailableTag')}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>

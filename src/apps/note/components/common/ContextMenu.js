@@ -10,12 +10,14 @@ import viewMoreIcon from '../../assets/view_more.svg';
 import { Menu } from 'antd';
 import { exportData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
 import { useCoreStores } from "teespace-core";
+import { useTranslation } from "react-i18next";
 
 const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, lastSharedPageParentId }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
+  const { t } = useTranslation();
   const store = {
     'chapter': ChapterStore,
     'page': PageStore,
@@ -85,7 +87,7 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
   const exportComponent = isMailShare => {
     const targetStore = store[noteType];
     if (!targetStore) return;
-    
+
     // loading 화면 돌아가기 시작
     NoteStore.setIsExporting(true);
     if (noteType === 'chapter') targetStore.setExportTitle(note.text);
@@ -133,14 +135,14 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-      {note.type !== 'shared_page' 
-        && <Item key="0">{NoteStore.getI18n('rename')}</Item>}
-      <Item key="1">{NoteStore.getI18n('delete')}</Item>
-      <Item key="2">{NoteStore.getI18n('forward')}</Item>
-      {spaceStore.currentSpace?.plan !== 'BASIC' 
-        && <Item key="3">{NoteStore.getI18n('sendEmail')}</Item>}
-      <SubMenu 
-        title={NoteStore.getI18n('export')} 
+      {note.type !== 'shared_page'
+        && <Item key="0">{t('rename')}</Item>}
+      <Item key="1">{t('delete')}</Item>
+      <Item key="2">{t('forward')}</Item>
+      {spaceStore.currentSpace?.plan !== 'BASIC'
+        && <Item key="3">{t('sendEmail')}</Item>}
+      <SubMenu
+        title={t('export')}
         onTitleClick={handleSubMenuClick}
         disabled={
           noteType === 'chapter' && !note.children.length
@@ -148,11 +150,11 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
             : false
         }
       >
-        <Item key="4">{NoteStore.getI18n('pdfFormat')}</Item>
-        <Item key="5">{NoteStore.getI18n('txtFormat')}</Item>
+        <Item key="4">{t('pdfFormat')}</Item>
+        <Item key="5">{t('txtFormat')}</Item>
       </SubMenu>
       {note.type === 'shared'
-        && <Item key="6">{NoteStore.getI18n('viewInfo')}</Item>}
+        && <Item key="6">{t('viewInfo')}</Item>}
     </Menu>
   );
 

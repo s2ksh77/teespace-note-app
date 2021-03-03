@@ -6,6 +6,7 @@ import {
 import { ItemSelector, Button } from 'teespace-core';
 import useNoteStore from '../../store/useStore';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const StyledButtonGroup = styled(ButtonGroup)`
   margin: 1.25rem 0;
@@ -16,6 +17,7 @@ const AddMarginBtn = styled(Button)`
 
 const ForwardModal = ({ handleCancel }) => {
   const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   const [shareArraysCnt, setShareArraysCnt] = useState(false);
   const [tooltipStr, setTooltipStr] = useState(null);
 
@@ -37,7 +39,7 @@ const ForwardModal = ({ handleCancel }) => {
     <RoomShareCover>
       <ItemSelector
         isVisibleRoom={true}
-        placeholder={NoteStore.getI18n('selectFromList')}
+        placeholder={t('selectFromList')}
         onSelectChange={handleSelectChange}
       />
       <StyledButtonGroup>
@@ -49,10 +51,10 @@ const ForwardModal = ({ handleCancel }) => {
           onClick={handleShare}
           disabled={!shareArraysCnt}
         >
-          {NoteStore.getI18n('send')}
+          {t('send')}
           {shareArraysCnt > 0 && ` ${shareArraysCnt}`}
         </AddMarginBtn>
-        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>{NoteStore.getI18n('cancel')}</Button>
+        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>{t('cancel')}</Button>
       </StyledButtonGroup>
     </RoomShareCover>
   )

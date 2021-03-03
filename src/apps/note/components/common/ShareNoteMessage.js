@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   MessageCover,
   NoteTitle
@@ -9,6 +9,7 @@ import { isFilled } from './validators';
 import { Message, RoomStore, API } from 'teespace-core';
 import NoteRepository from '../../store/noteRepository';
 import NoteUtil from '../../NoteUtil';
+import { useTranslation } from 'react-i18next';
 
 //platform 코드 가져왔음
 const REM_UNIT = 16;
@@ -28,9 +29,8 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -43,7 +43,7 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   );
 };
 
-const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
+const ShareNoteMessage = ({ roomId, noteId, noteTitle }) => {
   /*
     test id
     1) 유효하지 않은 노트 id는 "123"
@@ -59,7 +59,8 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
   if (!noteId) return null;
 
   const history = useHistory();
-  const {NoteStore, PageStore} = useNoteStore();
+  const { NoteStore, PageStore } = useNoteStore();
+  const { t } = useTranslation();
   const [informDeleted, setInformDeleted] = useState(false);
   noteTitle = NoteUtil.decodeStr(noteTitle);
 
@@ -73,7 +74,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
   //   setImgSrc(noteImg);
   // }
 
-  const handleClickMessage = async (e) => { 
+  const handleClickMessage = async (e) => {
     // 해당 페이지 보고 있을 때(readMode, 수정 모드 모두) handleClickOutside editor 로직 타지 않도록
     e.stopPropagation();
     // 혹시나
@@ -83,7 +84,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
     // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
     // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
     if (isNoteApp && NoteStore.targetLayout !== "LNB") {
-      if (PageStore.currentPageId === noteId) return; 
+      if (PageStore.currentPageId === noteId) return;
       // 다른 페이지 수정중인 경우 Modal 띄우기   
       if (!PageStore.isReadMode()) {
         const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
@@ -92,11 +93,11 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
         return;
       }
     }
-    
+
     // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
     const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
     const {
-      data: { dto:noteInfo },
+      data: { dto: noteInfo },
     } = await API.Get(
       `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${targetChId}`,
     );
@@ -109,7 +110,7 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
 
     // 2. 노트앱 열기
     // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
-    if (!isNoteApp) {      
+    if (!isNoteApp) {
       history.push({
         pathname: history.location.pathname,
         search: `?sub=note`
@@ -126,17 +127,17 @@ const ShareNoteMessage = ({roomId, noteId, noteTitle}) => {
     <>
       <Message
         visible={informDeleted}
-        title={NoteStore.getI18n('deletedNote')}
+        title={t('deletedNote')}
         type="error"
         btns={[{
-          type : 'solid',
-          shape : 'round',
-          text : NoteStore.getI18n('ok'),
-          onClick : handleClick
+          type: 'solid',
+          shape: 'round',
+          text: t('ok'),
+          onClick: handleClick
         }]}
       />
       <MessageCover id="shareNoteMessage" onClick={handleClickMessage}>
-        <NoteActiveIcon/>
+        <NoteActiveIcon />
         <NoteTitle>{noteTitle}</NoteTitle>
       </MessageCover>
     </>

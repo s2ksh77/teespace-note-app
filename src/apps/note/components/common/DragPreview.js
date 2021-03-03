@@ -11,6 +11,7 @@ import {
 import { ChapterShareIcon } from '../../styles/chpaterStyle';
 import sharedPageIcon from '../../assets/page_shared.svg';
 import sharedIcon from '../../assets/share_1.svg';
+import { useTranslation } from 'react-i18next';
 
 let subscribedToOffsetChange = false;
 let dragPreviewRef = null;
@@ -31,6 +32,7 @@ const onOffsetChange = (monitor) => () => {
 
 const DragPreview = ({ items }) => {
   const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   const previewRef = useRef(null);
   const element = document.getElementById(items[0]?.id);
 
@@ -49,7 +51,7 @@ const DragPreview = ({ items }) => {
   }, [previewRef]);
 
   const renderChapterIcon = item => {
-    if (item.color) return <ChapterColor color={item.color} id={item.id}/>;
+    if (item.color) return <ChapterColor color={item.color} id={item.id} />;
     if (item.type === 'shared_page') return <ChapterShareIcon src={sharedPageIcon} />
     return <ChapterShareIcon src={sharedIcon} />
   };
@@ -58,7 +60,7 @@ const DragPreview = ({ items }) => {
     <DraggedComponentContainer ref={previewRef}>
       {items.map((item, idx) => {
         return (
-          <DraggedComponent 
+          <DraggedComponent
             key={idx}
             style={
               NoteStore.draggedType === 'chapter'
@@ -83,7 +85,7 @@ const DragPreview = ({ items }) => {
             }
           >
             {NoteStore.draggedType === 'chapter' && renderChapterIcon(item)}
-            <DraggedComponentTitle>{item.type === 'shared_page' ?  NoteStore.getI18n('receivedPage') : item.text}</DraggedComponentTitle>
+            <DraggedComponentTitle>{item.type === 'shared_page' ? t('receivedPage') : item.text}</DraggedComponentTitle>
           </DraggedComponent>
         )
       })}

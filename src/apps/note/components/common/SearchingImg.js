@@ -5,14 +5,14 @@ import {
   SearchLoadingImg
 } from '../../styles/commonStyle';
 import loadingImg from '../../assets/search_loading.svg';
-import useNoteStore from '../../store/useStore';
+import { useTranslation } from 'react-i18next';
 
 const SearchingImg = () => {
-  const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   return (
     <>
       <SearchLoadingContainer>
-        <SearchLoadingTxt>{NoteStore.getI18n('searching')}</SearchLoadingTxt>
+        <SearchLoadingTxt>{t('searching')}</SearchLoadingTxt>
         <SearchLoadingImg src={loadingImg} />
       </SearchLoadingContainer>
     </>

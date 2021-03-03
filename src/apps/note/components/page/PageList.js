@@ -6,10 +6,11 @@ import Page from './Page';
 import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageStyle';
 import { logEvent } from 'teespace-core';
 import { DRAG_TYPE } from '../../GlobalVariable';
+import { useTranslation } from 'react-i18next';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
-
+  const { t } = useTranslation();
   const [, drop] = useDrop({
     accept: DRAG_TYPE.PAGE,
     drop: () => {
@@ -76,7 +77,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
       >
         <PageMargin />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
-          <NewPageText>+ {NoteStore.getI18n('addNewPage')}</NewPageText>
+          <NewPageText>+ {t('addNewPage')}</NewPageText>
         </NewPageBtn>
       </NewPage>
     </>

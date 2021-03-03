@@ -7,16 +7,17 @@ import {
   NoneText,
   NoneImg
 } from '../../styles/commonStyle';
+import { useTranslation } from 'react-i18next';
 
 // 페이지가 존재하지 않습니다
 const TagNotFound = () => {
-  const { NoteStore } = useNoteStore();
+  const { t } = useTranslation();
 
   return (
     <>
       <NoneContainer>
-        <NoneTitle>{NoteStore.getI18n('noTagFound')}</NoneTitle>
-        <NoneText>{NoteStore.getI18n('notag')}</NoneText>
+        <NoneTitle>{t('noTagFound')}</NoneTitle>
+        <NoneText>{t('notag')}</NoneText>
         <NoneImg src={noPageImage} alt="tag_not_found" />
       </NoneContainer>
     </>

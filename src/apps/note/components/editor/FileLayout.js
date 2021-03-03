@@ -20,6 +20,7 @@ import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory }
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ComponentStore } from 'teespace-core';
 import styled from "styled-components";
+import { useTranslation } from 'react-i18next';
 
 const StyledMenu = styled(Menu)`
   width:6.69rem;
@@ -28,6 +29,7 @@ const StyledMenu = styled(Menu)`
 
 const FileLayout = () => {
     const { EditorStore, PageStore, NoteStore } = useNoteStore();
+    const { t } = useTranslation();
     const [hover, setHover] = useState(false);
     const [hoverFileId, setHoverFileId] = useState(null);
     const [hoverFileIdx, setHoverFileIdx] = useState(null);
@@ -222,8 +224,8 @@ const FileLayout = () => {
 
     const menu = (
         <StyledMenu onClick={onClickContextMenu}>
-            <Menu.Item key="0">{NoteStore.getI18n('saveToDrive')}</Menu.Item>
-            <Menu.Item key="1">{NoteStore.getI18n('saveToMyPC')}</Menu.Item>
+            <Menu.Item key="0">{t('saveToDrive')}</Menu.Item>
+            <Menu.Item key="1">{t('saveToMyPC')}</Menu.Item>
         </StyledMenu>
     );
 

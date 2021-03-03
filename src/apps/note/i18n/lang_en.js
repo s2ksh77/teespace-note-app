@@ -94,4 +94,4 @@ const languageSet = {
   saveToMyPC: 'Save to My PC',
 };
 
-export default { translation: languageSet };
+export default languageSet;

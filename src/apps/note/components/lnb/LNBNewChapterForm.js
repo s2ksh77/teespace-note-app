@@ -8,10 +8,13 @@ import {
   ChapterTitle,
 } from "../../styles/chpaterStyle";
 import { logEvent } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 
 const { NoteStore, ChapterStore } = useNoteStore();
+
 const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
   // return 전에 hook이 위치해야함
+  const { t } = useTranslation();
   const titleRef = useRef(null);
 
   const handleBlur = async (e) => {
@@ -60,7 +63,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
           <ChapterColor color={ChapterStore.isNewChapterColor} />
           <ChapterInput
             ref={titleRef}
-            placeholder={NoteStore.getI18n('newChapter')}
+            placeholder={t('newChapter')}
             maxLength="200"
             value={ChapterStore.chapterNewTitle}
             onChange={handleTitleInput}

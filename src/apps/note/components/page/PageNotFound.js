@@ -9,10 +9,12 @@ import {
   NoneText,
   NoneImg,
 } from '../../styles/commonStyle';
+import { useTranslation } from 'react-i18next';
 
 // 페이지가 존재하지 않습니다
 const PageNotFound = ({ type }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
+  const { t } = useTranslation();
   const isPage = type === 'page';
 
   // 뒤로 가기 버튼
@@ -27,13 +29,13 @@ const PageNotFound = ({ type }) => {
         <NoneContainer>
           <NoneTitle>
             {isPage
-              ? NoteStore.getI18n('noPage') 
-              : NoteStore.getI18n('noChapter')}
+              ? t('noPage')
+              : t('noChapter')}
           </NoneTitle>
           <NoneText>
-            {isPage 
-              ? NoteStore.getI18n('clickNewPage') 
-              : NoteStore.getI18n('clickNewChapter')}
+            {isPage
+              ? t('clickNewPage')
+              : t('clickNewChapter')}
           </NoneText>
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>
