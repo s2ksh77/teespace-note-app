@@ -69,7 +69,7 @@ export const ChapterTextInput = styled.input`
   display: flex;
   width: 100%;
   height: 100%;
-  padding-left: 1.69rem;
+  padding-left: ${(props) => props.paddingLeft};
   padding-right: 1.69rem;
   font-weight: 500;
   border: none;
