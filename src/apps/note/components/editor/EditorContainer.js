@@ -533,6 +533,8 @@ const EditorContainer = () => {
               //   args.node.appendChild(parent);
               // }
             },
+            autosave_interval: '20s',
+            autosave_prefix:`Note_autosave_${NoteStore.notechannel_id}`,
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
