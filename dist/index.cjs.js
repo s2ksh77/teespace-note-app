@@ -1502,11 +1502,11 @@ var NoteUtil = {
     var channelId = _ref2.channelId,
         chapterId = _ref2.chapterId,
         isFolded = _ref2.isFolded;
-    var item = localStorage.getItem("NoteSortData_".concat(channelId, "_shared"));
+    var item = localStorage.getItem("Note_sharedFoldedState_".concat(channelId));
     if (!item) return;
     item = JSON.parse(item, NoteUtil.reviver);
     item.set(chapterId, isFolded);
-    localStorage.setItem("NoteSortData_".concat(channelId, "_shared"), JSON.stringify(item, NoteUtil.replacer));
+    localStorage.setItem("Note_sharedFoldedState_".concat(channelId), JSON.stringify(item, NoteUtil.replacer));
   }
 };
 
@@ -4648,7 +4648,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
   }))();
 }), _defineProperty(_observable$2, "getSharedFoldedState", function getSharedFoldedState(sharedChapters) {
   if (sharedChapters.length === 0) return sharedChapters;
-  var item = localStorage.getItem("NoteSortData_".concat(NoteStore.notechannel_id, "_shared"));
+  var item = localStorage.getItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id));
   var newFoldedMap = new Map();
 
   if (!item) {
@@ -4666,7 +4666,7 @@ var ChapterStore = mobx.observable((_observable$2 = {
     });
   }
 
-  localStorage.setItem("NoteSortData_".concat(NoteStore.notechannel_id, "_shared"), JSON.stringify(newFoldedMap, NoteUtil.replacer));
+  localStorage.setItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id), JSON.stringify(newFoldedMap, NoteUtil.replacer));
   return sharedChapters;
 }), _defineProperty(_observable$2, "getFirstPageFromChapter", function getFirstPageFromChapter(chapterId) {
   var _chapter$children$;
