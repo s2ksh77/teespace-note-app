@@ -249,6 +249,11 @@ const EditorContainer = () => {
     }
   }, [PageStore.currentPageData.note_id]);
 
+  // Search Toggle 시 reset
+  useEffect(() => {
+    return () => setSearchValue('');
+  }, [EditorStore.isSearch]);
+
   return useObserver(() => (
     <>
       <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()} isSearch={EditorStore.isSearch.toString()}>
