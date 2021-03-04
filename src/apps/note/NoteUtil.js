@@ -43,7 +43,44 @@ const NoteUtil = {
     const [date=null,time=null,zone=null] = inputTime.split(' ');
     if ([date,time,zone].includes(null)) return null;
     return moment.tz(date+' '+time,zone).unix();
-  }
+  },
+
+  replacer(key, value) {
+    if (value instanceof Map) {
+      return {
+        dataType:'Map',
+        value: [...value] //Array.from(value.entries()).. iterator 객체
+      };
+    } else return value;
+  },
+  
+  reviver(key, value) {
+    if (typeof value === 'object' && value !==null && value.dataType === 'Map') return new Map(value.value);
+    return value; 
+  },
+  
+  setLocalChapterFoldedState({channelId, chapterId, isFolded, isShared}) {
+    if (isShared) {this.setLocalSharedFoldedState({channelId, chapterId, isFolded});return;}
+
+    let item = localStorage.getItem(`NoteSortData_${channelId}`);
+    if (!item) return;
+    item = JSON.parse(item);
+    const idx = item.findIndex(chapter=>chapter.id === chapterId);
+    if (idx === -1) return;
+    item[idx]["isFolded"] = isFolded;    
+    localStorage.setItem(`NoteSortData_${channelId}`, JSON.stringify(item))
+  },
+
+  setLocalSharedFoldedState({channelId, chapterId, isFolded}) {
+    let item = localStorage.getItem(`NoteSortData_${channelId}_shared`);
+    if (!item) return;
+    item = JSON.parse(item, NoteUtil.reviver);
+    item.set(chapterId, isFolded);
+    localStorage.setItem(
+      `NoteSortData_${channelId}_shared`, 
+      JSON.stringify(item, NoteUtil.replacer)
+    )
+  },
 }
 
 export default NoteUtil;
