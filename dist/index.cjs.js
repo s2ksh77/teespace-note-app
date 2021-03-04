@@ -2345,9 +2345,12 @@ var EditorStore = mobx.observable((_observable = {
     this.isPreview = flag;
   },
   setInitialSearchState: function setInitialSearchState() {
-    this.isSearch = false;
-    this.searchResultState = false;
-    this.searchValue = '';
+    this.isSearch = false; // 기존거에 initialSearch에 있던거 추가함
+
+    this.setSearchResultState(false);
+    this.setSearchValue('');
+    this.setSearchTotalCount(0);
+    this.setSearchCurrentCount(0);
   },
   setIsSearch: function setIsSearch(flag) {
     this.isSearch = flag;
