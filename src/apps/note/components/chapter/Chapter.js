@@ -215,6 +215,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
           {renderChapterIcon()}
           {ChapterStore.getRenameId() === id ? (
             <ChapterTextInput
+              paddingLeft={isShared ? '2.63rem' : '1.69rem'}
               maxLength="200"
               placeholder={ChapterStore.renamePrevText}
               value={ChapterStore.renameText}
