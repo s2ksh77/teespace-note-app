@@ -72,12 +72,12 @@ const NoteUtil = {
   },
 
   setLocalSharedFoldedState({channelId, chapterId, isFolded}) {
-    let item = localStorage.getItem(`NoteSortData_${channelId}_shared`);
+    let item = localStorage.getItem(`Note_sharedFoldedState_${channelId}`);
     if (!item) return;
     item = JSON.parse(item, NoteUtil.reviver);
     item.set(chapterId, isFolded);
     localStorage.setItem(
-      `NoteSortData_${channelId}_shared`, 
+      `Note_sharedFoldedState_${channelId}`, 
       JSON.stringify(item, NoteUtil.replacer)
     )
   },

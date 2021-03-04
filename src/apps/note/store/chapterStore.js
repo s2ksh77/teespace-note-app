@@ -457,7 +457,7 @@ const ChapterStore = observable({
   getSharedFoldedState(sharedChapters) {
     if (sharedChapters.length === 0) return sharedChapters;
 
-    let item = localStorage.getItem(`NoteSortData_${NoteStore.notechannel_id}_shared`);
+    let item = localStorage.getItem(`Note_sharedFoldedState_${NoteStore.notechannel_id}`);
     const newFoldedMap = new Map();
     if (!item) {
       // sharedChapters의 foldedState는 false로
@@ -475,7 +475,7 @@ const ChapterStore = observable({
     }
 
     localStorage.setItem(
-      `NoteSortData_${NoteStore.notechannel_id}_shared`, 
+      `Note_sharedFoldedState_${NoteStore.notechannel_id}`, 
       JSON.stringify(newFoldedMap, NoteUtil.replacer)
     )
     return sharedChapters;
