@@ -512,12 +512,6 @@ export const handleFileSync = async () => {
     await handleFileDelete();
 }
 
-export const handleImageListener = async () => {
-    if (EditorStore.tinymce && PageStore.isReadMode()) {
-        const targetImageList = await EditorStore.tinymce.dom.doc.images;
-    }
-}
-
 export const openSaveDrive = () => {
     EditorStore.setIsSaveDrive(true);
     EditorStore.setSaveDriveMeta();

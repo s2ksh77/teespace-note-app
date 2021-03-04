@@ -319,27 +319,33 @@ const ChapterStore = observable({
     });
   },
 
-  setLocalStorageItem(targetChannelId, tempChapterList) {
-    // tempChapterList: includes only [chapterType: notebook, default]
-    const item = [];
-    tempChapterList.forEach((chapter) => {
-      const children = [];
-      chapter.children.forEach((page) => children.push(page.id));
-      item.push({ id: chapter.id, children: children });
+  setLocalStorageItem(targetChannelId, normalChapters) {
+    // normalChapters: includes only [chapterType: notebook, default]
+    const newChapters = normalChapters.map(chapter=> {
+      chapter.isFolded = false;
+      return {
+        id : chapter.id,
+        children:chapter.children.map((page) => page.id),
+        isFolded:false
+      }
     });
-
-    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
+    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
   },
+
   // notebookList의 chapter.type은 default, notebook만 있음
-  applyDifference(targetChannelId, notebookList) {
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+  applyDifference(targetChannelId, normalChapters) {
+    let item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
 
     // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
     const createdChapterIds = [];
     let chapterIds = item.map((chapter) => chapter.id);
-    notebookList.forEach((chapter) => {
+    normalChapters.forEach((chapter) => {
       if (!chapterIds.includes(chapter.id)) {
-        createdChapterIds.push({ id: chapter.id, children: chapter.children.map((page) => page.id) });
+        createdChapterIds.push({ 
+          id: chapter.id, 
+          children: chapter.children.map((page) => page.id),
+          isFolded: false
+        });
       }
       else {
         const createdPageIds = [];
@@ -375,22 +381,19 @@ const ChapterStore = observable({
     localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
   },
 
-  getLocalStorageItem(targetChannelId, notebookList) {
+  getLocalOrderChapterList(targetChannelId, normalChapters) {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
 
-    const localChapterList = [];
-    item.forEach((chapter, idx) => {
+    return item.map((chapter) => {
       const chapterIdx = this.chapterMap.get(chapter.id);
-      localChapterList.push(notebookList[chapterIdx]);
-      const localPageList = [];
-      chapter.children.forEach((pageId) => {
-        const pageIdx = this.pageMap.get(pageId).idx;
-        localPageList.push(notebookList[chapterIdx].children[pageIdx]);
-      })
-      localChapterList[idx].children = localPageList;
-    });
-
-    return localChapterList;
+      return {
+        ...normalChapters[chapterIdx],
+        children: chapter.children.map((pageId) => 
+          normalChapters[chapterIdx].children[this.pageMap.get(pageId).idx]
+        ),
+        isFolded: chapter.isFolded ? chapter.isFolded : false
+      }
+    })
   },
 
   async checkDefaultChapterColor(notebookList) {
@@ -437,14 +440,45 @@ const ChapterStore = observable({
     this.sharedCnt = sharedChapters.length;
 
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+      // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
       this.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
     } else {
       this.applyDifference(NoteStore.getChannelId(), normalChapters);
-      normalChapters = this.getLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+      // isFolded state 추가
+      normalChapters = this.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
     }
+
+    sharedChapters = this.getSharedFoldedState(sharedChapters);
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
+  },
+
+  getSharedFoldedState(sharedChapters) {
+    if (sharedChapters.length === 0) return sharedChapters;
+
+    let item = localStorage.getItem(`NoteSortData_${NoteStore.notechannel_id}_shared`);
+    const newFoldedMap = new Map();
+    if (!item) {
+      // sharedChapters의 foldedState는 false로
+      sharedChapters.forEach((chapter) => {
+        newFoldedMap.set(chapter.id, false);
+        chapter.isFolded = false;
+      })     
+    } else {
+      item = JSON.parse(item, NoteUtil.reviver);
+      sharedChapters.forEach((chapter) => {
+        const value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        newFoldedMap.set(chapter.id, value);
+        chapter.isFolded = value;
+      })
+    }
+
+    localStorage.setItem(
+      `NoteSortData_${NoteStore.notechannel_id}_shared`, 
+      JSON.stringify(newFoldedMap, NoteUtil.replacer)
+    )
+    return sharedChapters;
   },
 
   // localStorage에서 page 얻기

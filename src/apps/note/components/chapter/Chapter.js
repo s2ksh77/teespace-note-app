@@ -15,10 +15,12 @@ import {
 import shareImg from '../../assets/share_1.svg';
 import sharedPageImg from '../../assets/page_shared.svg';
 import {DRAG_TYPE} from '../../GlobalVariable';
+import NoteUtil from '../../NoteUtil';
 
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const [isFolded, setIsFolded] = useState(false);
+  // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
+  const [isFolded, setIsFolded] = useState(chapter.isFolded ? chapter.isFolded : false);
 
   // 중복체크 후 다시 입력받기 위해 ref 추가
   const { id, text: title, color } = chapter;
@@ -162,6 +164,12 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   const handleFoldBtnClick = (e) => {
     e.stopPropagation();
+    NoteUtil.setLocalChapterFoldedState({
+      channelId:NoteStore.notechannel_id, 
+      chapterId:id, 
+      isFolded:!isFolded,
+      isShared
+    })
     setIsFolded(!isFolded);
   };
 
