@@ -33,6 +33,22 @@ function _interopNamespace(e) {
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
 
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -1443,6 +1459,54 @@ var NoteUtil = {
 
     if ([date, time, zone].includes(null)) return null;
     return moment__default['default'].tz(date + ' ' + time, zone).unix();
+  },
+  replacer: function replacer(key, value) {
+    if (value instanceof Map) {
+      return {
+        dataType: 'Map',
+        value: _toConsumableArray(value) //Array.from(value.entries()).. iterator 객체
+
+      };
+    } else return value;
+  },
+  reviver: function reviver(key, value) {
+    if (_typeof(value) === 'object' && value !== null && value.dataType === 'Map') return new Map(value.value);
+    return value;
+  },
+  setLocalChapterFoldedState: function setLocalChapterFoldedState(_ref) {
+    var channelId = _ref.channelId,
+        chapterId = _ref.chapterId,
+        isFolded = _ref.isFolded,
+        isShared = _ref.isShared;
+
+    if (isShared) {
+      this.setLocalSharedFoldedState({
+        channelId: channelId,
+        chapterId: chapterId,
+        isFolded: isFolded
+      });
+      return;
+    }
+
+    var item = localStorage.getItem("NoteSortData_".concat(channelId));
+    if (!item) return;
+    item = JSON.parse(item);
+    var idx = item.findIndex(function (chapter) {
+      return chapter.id === chapterId;
+    });
+    if (idx === -1) return;
+    item[idx]["isFolded"] = isFolded;
+    localStorage.setItem("NoteSortData_".concat(channelId), JSON.stringify(item));
+  },
+  setLocalSharedFoldedState: function setLocalSharedFoldedState(_ref2) {
+    var channelId = _ref2.channelId,
+        chapterId = _ref2.chapterId,
+        isFolded = _ref2.isFolded;
+    var item = localStorage.getItem("NoteSortData_".concat(channelId, "_shared"));
+    if (!item) return;
+    item = JSON.parse(item, NoteUtil.reviver);
+    item.set(chapterId, isFolded);
+    localStorage.setItem("NoteSortData_".concat(channelId, "_shared"), JSON.stringify(item, NoteUtil.replacer));
   }
 };
 
@@ -4343,21 +4407,20 @@ var ChapterStore = mobx.observable((_observable$2 = {
       });
     });
   });
-}), _defineProperty(_observable$2, "setLocalStorageItem", function setLocalStorageItem(targetChannelId, tempChapterList) {
-  // tempChapterList: includes only [chapterType: notebook, default]
-  var item = [];
-  tempChapterList.forEach(function (chapter) {
-    var children = [];
-    chapter.children.forEach(function (page) {
-      return children.push(page.id);
-    });
-    item.push({
+}), _defineProperty(_observable$2, "setLocalStorageItem", function setLocalStorageItem(targetChannelId, normalChapters) {
+  // normalChapters: includes only [chapterType: notebook, default]
+  var newChapters = normalChapters.map(function (chapter) {
+    chapter.isFolded = false;
+    return {
       id: chapter.id,
-      children: children
-    });
+      children: chapter.children.map(function (page) {
+        return page.id;
+      }),
+      isFolded: false
+    };
   });
-  localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
-}), _defineProperty(_observable$2, "applyDifference", function applyDifference(targetChannelId, notebookList) {
+  localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
+}), _defineProperty(_observable$2, "applyDifference", function applyDifference(targetChannelId, normalChapters) {
   var _this4 = this;
 
   var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId)); // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
@@ -4366,13 +4429,14 @@ var ChapterStore = mobx.observable((_observable$2 = {
   var chapterIds = item.map(function (chapter) {
     return chapter.id;
   });
-  notebookList.forEach(function (chapter) {
+  normalChapters.forEach(function (chapter) {
     if (!chapterIds.includes(chapter.id)) {
       createdChapterIds.push({
         id: chapter.id,
         children: chapter.children.map(function (page) {
           return page.id;
-        })
+        }),
+        isFolded: false
       });
     } else {
       var createdPageIds = [];
@@ -4405,24 +4469,20 @@ var ChapterStore = mobx.observable((_observable$2 = {
     }
   });
   localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
-}), _defineProperty(_observable$2, "getLocalStorageItem", function getLocalStorageItem(targetChannelId, notebookList) {
+}), _defineProperty(_observable$2, "getLocalOrderChapterList", function getLocalOrderChapterList(targetChannelId, normalChapters) {
   var _this5 = this;
 
   var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
-  var localChapterList = [];
-  item.forEach(function (chapter, idx) {
+  return item.map(function (chapter) {
     var chapterIdx = _this5.chapterMap.get(chapter.id);
 
-    localChapterList.push(notebookList[chapterIdx]);
-    var localPageList = [];
-    chapter.children.forEach(function (pageId) {
-      var pageIdx = _this5.pageMap.get(pageId).idx;
-
-      localPageList.push(notebookList[chapterIdx].children[pageIdx]);
+    return _objectSpread2(_objectSpread2({}, normalChapters[chapterIdx]), {}, {
+      children: chapter.children.map(function (pageId) {
+        return normalChapters[chapterIdx].children[_this5.pageMap.get(pageId).idx];
+      }),
+      isFolded: chapter.isFolded ? chapter.isFolded : false
     });
-    localChapterList[idx].children = localPageList;
   });
-  return localChapterList;
 }), _defineProperty(_observable$2, "checkDefaultChapterColor", function checkDefaultChapterColor(notebookList) {
   var _this6 = this;
 
@@ -4561,24 +4621,50 @@ var ChapterStore = mobx.observable((_observable$2 = {
             _this8.sharedCnt = sharedChapters.length;
 
             if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+              // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
               _this8.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
             } else {
-              _this8.applyDifference(NoteStore.getChannelId(), normalChapters);
+              _this8.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
 
-              normalChapters = _this8.getLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+
+              normalChapters = _this8.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
             }
+
+            sharedChapters = _this8.getSharedFoldedState(sharedChapters);
 
             _this8.setChapterList(normalChapters.concat(sharedChapters));
 
             return _context13.abrupt("return", _this8.chapterList);
 
-          case 14:
+          case 15:
           case "end":
             return _context13.stop();
         }
       }
     }, _callee13);
   }))();
+}), _defineProperty(_observable$2, "getSharedFoldedState", function getSharedFoldedState(sharedChapters) {
+  if (sharedChapters.length === 0) return sharedChapters;
+  var item = localStorage.getItem("NoteSortData_".concat(NoteStore.notechannel_id, "_shared"));
+  var newFoldedMap = new Map();
+
+  if (!item) {
+    // sharedChapters의 foldedState는 false로
+    sharedChapters.forEach(function (chapter) {
+      newFoldedMap.set(chapter.id, false);
+      chapter.isFolded = false;
+    });
+  } else {
+    item = JSON.parse(item, NoteUtil.reviver);
+    sharedChapters.forEach(function (chapter) {
+      var value = item.get(chapter.id) ? item.get(chapter.id) : false;
+      newFoldedMap.set(chapter.id, value);
+      chapter.isFolded = value;
+    });
+  }
+
+  localStorage.setItem("NoteSortData_".concat(NoteStore.notechannel_id, "_shared"), JSON.stringify(newFoldedMap, NoteUtil.replacer));
+  return sharedChapters;
 }), _defineProperty(_observable$2, "getFirstPageFromChapter", function getFirstPageFromChapter(chapterId) {
   var _chapter$children$;
 
