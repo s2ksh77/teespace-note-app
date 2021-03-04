@@ -50,6 +50,7 @@ const EditorHeader = () => {
       NoteStore.setModalInfo('uploadingFiles'); return;
     }
     EditorStore.setIsSearch(false);
+    initialSearch();
     instance.unmark();
     EditorStore.tinymce?.undoManager?.clear();
     if (PageStore.isReadMode()) {
