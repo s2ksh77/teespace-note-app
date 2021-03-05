@@ -8,6 +8,7 @@ import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
 import { UserStore } from 'teespace-core';
+import i18n from '../i18n/i18n';
 
 const PageStore = observable({
   noteInfoList: [],
@@ -302,7 +303,7 @@ const PageStore = observable({
   },
 
   createNotePage() {
-    this.createPage(NoteStore.getI18n('untitled'), null, this.createParent).then(dto => {
+    this.createPage(i18n.t('untitled'), null, this.createParent).then(dto => {
       EditorStore.setIsSearch(false);
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
@@ -314,7 +315,7 @@ const PageStore = observable({
       this.initializeBoxColor();
 
       dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(NoteStore.getI18n('untitled'));
+      dto.note_title = NoteUtil.decodeStr(i18n.t('untitled'));
       this.currentPageData = dto;
       this.noteTitle = '';
       this.prevModifiedUserName = this.currentPageData.user_name;
@@ -448,10 +449,10 @@ const PageStore = observable({
       await this.fetchCurrentPageData(sortedMovePages[0]);
 
       if (!moveCntToAnotherChapter) {
-        NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
+        NoteStore.setToastText(i18n.t('pageMove', { moveCnt: moveCntInSameChapter }));
       } else {
         ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
-        NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
+        NoteStore.setToastText(i18n.t('pageotherMove', { moveCnt: moveCnt, targetPage: ChapterStore.chapterList[moveTargetChapterIdx].text }));
       }
       NoteStore.setIsVisibleToast(true);
     } else { // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
@@ -474,7 +475,7 @@ const PageStore = observable({
     const m12Hour = mHour > 12 ? mHour - 12 : mHour;
 
     const hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    const basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
+    const basicDate = mHour < 12 ? i18n.t('amSameDay', { time: hhmm }) : i18n.t('pmSameDay', { time: hhmm });
 
     if (date === this.currentPageData.modified_date
       && mYear === curDate.getFullYear()
@@ -594,7 +595,7 @@ const PageStore = observable({
   },
 
   handleSave() {
-    if (this.noteTitle === '' || this.noteTitle === NoteStore.getI18n('untitled')) {
+    if (this.noteTitle === '' || this.noteTitle === i18n.t('untitled')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
       else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
@@ -604,7 +605,7 @@ const PageStore = observable({
           this.setTitle(EditorStore.fileLayoutList[0].file_name
             + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
-      } else this.setTitle(NoteStore.getI18n('untitled'));
+      } else this.setTitle(i18n.t('untitled'));
     }
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
       return c.charCodeAt(0) !== 65279;
@@ -659,7 +660,7 @@ const PageStore = observable({
   },
   // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
   _getTableTitle(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return NoteStore.getI18n('table');
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return i18n.t('table');
     // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
     const tdList = node.getElementsByTagName('td');
     for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
