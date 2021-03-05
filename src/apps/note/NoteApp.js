@@ -46,7 +46,6 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
     */
     if (isOtherRoom) {
       const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
-      const isBasicPlan = spaceStore.currentSpace?.plan === "Basic";
       const isBasicPlan = spaceStore.currentSpace?.plan === "BASIC";
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
       NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
