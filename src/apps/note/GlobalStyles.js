@@ -256,6 +256,32 @@ export const GlobalStyle = createGlobalStyle`
       margin-right: 1.5rem;
       padding-right: 1rem;
     }
+    ol {
+      display: block;
+      list-style-type: decimal;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 40px;
+    }
+    ul {
+      display: block;
+      list-style-type: disc;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 40px;
+    }
+    ::marker {
+      unicode-bidi: isolate;
+      font-variant-numeric: tabular-nums;
+      text-transform: none;
+      text-indent: 0px !important;
+      text-align: start !important;
+      text-align-last: start !important;
+    }
   }
   .afterClass{
     page-break-after:always;
