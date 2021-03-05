@@ -3,6 +3,7 @@ import NoteStore from '../../store/noteStore';
 import PageStore from '../../store/pageStore';
 import GlobalVariable from '../../GlobalVariable';
 import { isFilled, checkUrlValidation, isValidMailtoMail, isValidMail, isOpenMail } from '../common/validators.js';
+import i18n from '../../i18n/i18n';
 
 /*
   Link Dialog 관련
