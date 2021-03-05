@@ -6,6 +6,8 @@ var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
 var moment = require('moment-timezone');
+var i18next = require('i18next');
+var reactI18next = require('react-i18next');
 var Mark = require('mark.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -31,6 +33,7 @@ function _interopNamespace(e) {
 }
 
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
+var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
 
 function _typeof(obj) {
@@ -2845,6 +2848,223 @@ var EditorStore = mobx.observable((_observable = {
   }))();
 }), _observable));
 
+var languageSet = {
+  newChapter: '새 챕터',
+  page: '페이지',
+  chapter: '챕터',
+  searchPageChapter: '페이지, 챕터 검색',
+  addNewPage: '새 페이지 추가',
+  tag: '태그',
+  untitled: '(제목 없음)',
+  table: '(표)',
+  newPage: '새 페이지',
+  receivedPage: '전달받은 페이지',
+  duplicate: '중복된 이름이 있습니다.',
+  anotherName: '다른 이름을 입력해주세요.',
+  ok: '확인',
+  unableModify: '수정할 수 없습니다.',
+  unableDelte: '삭제 할 수 없습니다.',
+  otherEditing: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.",
+  othersEditing: "{{count}} \uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
+  pageDelete: '페이지를 삭제하시겠습니까?',
+  chapterDelete: '챕터를 삭제하시겠습니까?',
+  chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
+  delete: '삭제',
+  cancel: '취소',
+  modify: '수정',
+  download: '다운로드',
+  amSameDay: "\uC624\uC804 {{time}}",
+  pmSameDay: "\uC624\uD6C4 {{time}}",
+  readmode: '읽기 모드',
+  save: '저장',
+  pageotherMove: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}} \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  chapterMove: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  pageMove: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  noPage: '페이지가 없습니다.',
+  noChapter: '챕터가 없습니다.',
+  clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
+  // unregisteredMember: `${}`,
+  noSearchResult: '검색 결과가 없습니다.',
+  searching: '검색 실행 중입니다.',
+  searchContent: '내용 검색',
+  insertLink: '링크 삽입',
+  done: '완료',
+  enterText: '텍스트를 입력해 주세요.',
+  enterLink: '링크를 입력해 주세요.',
+  text: '텍스트',
+  link: '링크',
+  editLink: '링크 편집',
+  deleteLink: '링크 삭제',
+  moveToLink: '링크로 이동',
+  invalidLink: '해당 URL은 유효하지 않습니다.',
+  attachFile: '파일 첨부',
+  attachDrive: 'Drive에서 첨부',
+  attachLocal: '내 PC에서 첨부',
+  spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
+  countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
+  lengthoverUpload: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
+  someFilesUploadFail: '일부 파일이 업로드되지 못하였습니다.',
+  uploadFail: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
+  selectedDelete: "\uC120\uD0DD\uD55C {{fileName}}\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
+  notRestore: '삭제 후에는 복구할 수 없습니다.',
+  editCancel: '페이지를 저장하고 나가시겠습니까?',
+  notSave: '저장 안함',
+  rename: '이름 변경',
+  forward: '다른 룸으로 전달',
+  sendEmail: 'Mail로 전달',
+  export: '내보내기',
+  viewInfo: '정보 보기',
+  title: '제목',
+  forwardRoom: '출처 룸',
+  forwardMemeber: '전달한 멤버',
+  forwardDate: '전달 날짜',
+  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오전 ${hhmm}`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
+  selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
+  send: '전달',
+  pdfFormat: 'PDF 형식(.pdf)',
+  txtFormat: 'TXT 형식(.txt)',
+  korCategory: 'ㄱ~ㅎ',
+  engCategory: 'A~Z',
+  numCategory: '0~9',
+  etcCategory: '기타',
+  searchTag: '태그 검색',
+  noTagFound: '태그가 없습니다.',
+  notag: '페이지 하단에 태그를 입력하여 추가하세요.',
+  addTag: '태그 추가',
+  notavailableTag: '읽기모드에서는 추가할 수 없습니다.',
+  usedTagName: '이미 있는 태그 이름입니다.',
+  deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
+  align: '정렬',
+  insertImages: '이미지 삽입',
+  replaceImages: '이미지 교체',
+  saveToDrive: 'Drive에 저장',
+  saveToMyPC: '내 PC에 저장'
+};
+
+var languageSet$1 = {
+  newChapter: 'New Chapter',
+  page: 'page',
+  chapter: 'chapter',
+  searchPageChapter: 'Search page or chapter',
+  addNewPage: 'Add new page',
+  tag: 'Tag',
+  untitled: '(Untitled)',
+  table: '(Tables)',
+  newPage: 'New Page',
+  receivedPage: 'Page Received',
+  duplicate: 'Duplicate name exists',
+  anotherName: 'Enter another name.',
+  ok: 'OK',
+  unableModify: 'Unable to Modify.',
+  unableDelte: 'Unable to delete.',
+  otherEditing: "It is currently being modified by {{userName}}",
+  othersEditing: "It is currently being modified by {{count}} people",
+  pageDelete: 'Do you want to delete this page ?',
+  chapterDelete: 'Do you want to delete this chapter ?',
+  chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
+  delete: 'Delete',
+  cancel: 'Cancel',
+  modify: 'Modify',
+  download: 'Download',
+  amSameDay: "{{hhmm}} AM",
+  pmSameDay: "{{hhmm}} PM",
+  readmode: 'Read Mode',
+  save: 'Save',
+  pageotherMove: "{{moveCnt}} pages moved to {{targetPage}}",
+  chapterMove: "{{moveCnt}} chapters moved.",
+  pageMove: "{{moveCnt}} pages moved.",
+  noPage: 'No page exists.',
+  noChapter: 'No chapter exists.',
+  clickNewPage: 'To create one, click "Add New Page".',
+  clickNewChapter: 'To create one, click "New Chapter".',
+  // unregisteredMember: `${}`,
+  noSearchResult: 'No search results found.',
+  searching: 'Search is running.',
+  searchContent: 'Search keyword',
+  insertLink: 'insert Link',
+  done: 'Done',
+  enterText: 'Enter a text.',
+  enterLink: 'Enter a link.',
+  text: 'Text',
+  link: 'Link',
+  editLink: 'Modify',
+  deleteLink: 'Delete',
+  moveToLink: 'Move to Link',
+  invalidLink: 'The URL is not valid',
+  attachFile: 'Attach Files',
+  attachDrive: 'Attach from Drive',
+  attachLocal: 'Attach from My PC',
+  spaceStorageFull: 'There is not enough storage space to attach the file.',
+  sizeoverUpload: 'You can attach up to 20 GB files at a time.',
+  countoverUpload: 'You can attach up to 30 files at a time.',
+  lengthoverUpload: 'The name of the file cannot exceed the limit of 70 characters.',
+  someFilesUploadFail: 'Unable to upload some files.',
+  uploadFail: "({{failCnt}} out of {{uploadCnt}} failed)",
+  selectedDelete: "Do you want to delete the selected {{fileName}}",
+  notRestore: 'This action cannot be undone.',
+  editCancel: 'Do you want to save this page and exit?',
+  notSave: 'Not Save',
+  rename: 'Rename',
+  forward: 'Forward',
+  sendEmail: 'Send Email',
+  export: 'Export',
+  viewInfo: 'View Information',
+  title: 'Title',
+  forwardRoom: 'Room',
+  forwardMemeber: 'Memeber',
+  forwardDate: 'Date',
+  // amOtherDay: (yyyymmdd, hhmm) => `{{yyyymmdd} {{hhmm} AM`,
+  // pmOtherDay: (yyyymmdd, hhmm) => `{{yyyymmdd} {{hhmm} PM`,
+  selectFromList: 'Select people from the Friends/Members/Rooms list.',
+  send: 'Send',
+  pdfFormat: 'PDF Format(.pdf)',
+  txtFormat: 'TXT Format(.txt)',
+  korCategory: 'ㄱ-ㅎ',
+  engCategory: 'A-Z',
+  numCategory: '0-9',
+  etcCategory: 'Others',
+  searchTag: 'Search tag',
+  noTagFound: 'No tag found.',
+  notag: 'Enter a tag at the bottom of the page or choose one from the list.',
+  addTag: 'Add Tag',
+  notavailableTag: 'Cannot be added in read mode.',
+  usedTagName: 'The tag name already exists.',
+  deletedNote: 'Failed to get the note because it has deleted.',
+  align: 'Align',
+  insertImages: 'Insert Images',
+  replaceImages: 'Replace Images',
+  saveToDrive: 'Save to Drive',
+  saveToMyPC: 'Save to My PC'
+};
+
+var resources = {
+  ko: {
+    translation: languageSet
+  },
+  en: {
+    translation: languageSet$1
+  }
+};
+var i18n = i18next__default['default'].createInstance();
+i18n.use(reactI18next.initReactI18next).init({
+  debug: true,
+  resources: resources,
+  lng: 'ko',
+  fallbackLng: 'en',
+  ns: ['translation'],
+  defaultNS: 'translation',
+  keySeparator: false,
+  interpolation: {
+    escapeValue: false
+  },
+  react: {
+    useSuspense: false
+  }
+});
+
 var _observable$1;
 var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
@@ -3253,7 +3473,7 @@ var PageStore = mobx.observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage(NoteStore.getI18n('untitled'), null, this.createParent).then(function (dto) {
+    this.createPage(i18n.t('untitled'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
       EditorStore.setIsSearch(false);
@@ -3272,7 +3492,7 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.initializeBoxColor();
 
       dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(NoteStore.getI18n('untitled'));
+      dto.note_title = NoteUtil.decodeStr(i18n.t('untitled'));
       _this.currentPageData = dto;
       _this.noteTitle = '';
       _this.prevModifiedUserName = _this.currentPageData.user_name;
@@ -3463,10 +3683,15 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 20:
               if (!moveCntToAnotherChapter) {
-                NoteStore.setToastText(NoteStore.getI18n('pageMove')(moveCntInSameChapter));
+                NoteStore.setToastText(i18n.t('pageMove', {
+                  moveCnt: moveCntInSameChapter
+                }));
               } else {
                 ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
-                NoteStore.setToastText(NoteStore.getI18n('pageotherMove')(moveCnt, ChapterStore.chapterList[moveTargetChapterIdx].text));
+                NoteStore.setToastText(i18n.t('pageotherMove', {
+                  moveCnt: moveCnt,
+                  targetPage: ChapterStore.chapterList[moveTargetChapterIdx].text
+                }));
               }
 
               NoteStore.setIsVisibleToast(true);
@@ -3504,7 +3729,11 @@ var PageStore = mobx.observable((_observable$1 = {
 
     var m12Hour = mHour > 12 ? mHour - 12 : mHour;
     var hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    var basicDate = mHour < 12 ? NoteStore.getI18n('amSameDay')(hhmm) : NoteStore.getI18n('pmSameDay')(hhmm);
+    var basicDate = mHour < 12 ? i18n.t('amSameDay', {
+      time: hhmm
+    }) : i18n.t('pmSameDay', {
+      time: hhmm
+    });
 
     if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear() && !isSharedInfo) {
       // 같은 해
@@ -3722,14 +3951,14 @@ var PageStore = mobx.observable((_observable$1 = {
   handleSave: function handleSave() {
     var _EditorStore$tinymce5, _EditorStore$tinymce6;
 
-    if (this.noteTitle === '' || this.noteTitle === NoteStore.getI18n('untitled')) {
+    if (this.noteTitle === '' || this.noteTitle === i18n.t('untitled')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
           this.setTitle(EditorStore.tempFileLayoutList[0].file_name + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore.fileLayoutList.length > 0) {
           this.setTitle(EditorStore.fileLayoutList[0].file_name + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
-      } else this.setTitle(NoteStore.getI18n('untitled'));
+      } else this.setTitle(i18n.t('untitled'));
     }
 
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
@@ -3786,7 +4015,7 @@ var PageStore = mobx.observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return NoteStore.getI18n('table'); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return i18n.t('table'); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
   var tdList = node.getElementsByTagName('td');
 
@@ -4812,7 +5041,9 @@ var ChapterStore = mobx.observable((_observable$2 = {
       NoteStore.setIsDragging(false);
       if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this12.currentChapterId)]]));
       PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
-        NoteStore.setToastText(NoteStore.getI18n('chapterMove')(moveCnt));
+        NoteStore.setToastText(i18n.t('chapterMove', {
+          moveCnt: moveCnt
+        }));
         NoteStore.setIsVisibleToast(true);
       });
     });
@@ -5115,13 +5346,13 @@ var NoteMeta = {
     switch (type) {
       case "viewInfo":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: NoteStore.getI18n('viewInfo'),
+          title: i18n.t('viewInfo'),
           className: "viewInfoModal"
         });
 
       case "forward":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: NoteStore.getI18n('forward'),
+          title: i18n.t('forward'),
           className: "forwardModal"
         });
 
@@ -5261,20 +5492,20 @@ var NoteMeta = {
     var defaultBtn1 = {
       type: "solid",
       shape: shape,
-      text: NoteStore.getI18n('ok')
+      text: i18n.t('ok')
     }; // 버튼 한 개일 때랑 text 바꿔서 사용
 
     var defaultBtn2 = {
       type: "default",
       shape: shape,
-      text: NoteStore.getI18n('cancel')
+      text: i18n.t('cancel')
     };
 
     switch (type) {
       case 'delete':
         // chapter랑 page
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: NoteStore.getI18n('delete')
+          text: i18n.t('delete')
         }), defaultBtn2];
 
       case 'confirm':
@@ -5291,9 +5522,9 @@ var NoteMeta = {
 
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: NoteStore.getI18n('save')
+          text: i18n.t('save')
         }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: NoteStore.getI18n('notSave')
+          text: i18n.t('notSave')
         }), defaultBtn2];
 
       default:
@@ -5326,14 +5557,18 @@ var NoteMeta = {
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.subtitle = i18n.t('otherEditing', {
+          userName: PageStore.editingUserName
+        });
         dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.subtitle = NoteStore.getI18n('othersEditing')(PageStore.editingUserCount);
+        dialogType.subtitle = i18n.t('othersEditing', {
+          count: PageStore.editingUserCount
+        });
         dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
@@ -5344,7 +5579,9 @@ var NoteMeta = {
         break;
 
       case 'fileDelete':
-        dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
+        dialogType.title = i18n.t('selectedDelete', {
+          fileName: fileName
+        });
         dialogType.subtitle = 'notRestore';
         dialogType.btns = this.setBtns('delete');
         break;
@@ -5361,7 +5598,9 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
-        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.subtitle = i18n.t('otherEditing', {
+          userName: PageStore.editingUserName
+        });
         dialogType.title = 'unableModify';
         dialogType.btns = this.setBtns('editingPage');
         break;
@@ -5372,7 +5611,10 @@ var NoteMeta = {
         break;
 
       case 'multiFileSomeFail':
-        dialogType.subtitle = NoteStore.getI18n('uploadFail')(EditorStore.uploadLength, EditorStore.failCount);
+        dialogType.subtitle = i18n.t('uploadFail', {
+          uploadCnt: EditorStore.uploadLength,
+          failCnt: EditorStore.failCount
+        });
         dialogType.title = 'someFilesUploadFail';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
@@ -5496,234 +5738,6 @@ var handleWebsocket = function handleWebsocket() {
   };
 };
 
-var languageSet = {
-  newChapter: '새 챕터',
-  page: '페이지',
-  chapter: '챕터',
-  searchPageChapter: '페이지, 챕터 검색',
-  addNewPage: '새 페이지 추가',
-  tag: '태그',
-  untitled: '(제목 없음)',
-  table: '(표)',
-  newPage: '새 페이지',
-  receivedPage: '전달받은 페이지',
-  duplicate: '중복된 이름이 있습니다.',
-  anotherName: '다른 이름을 입력해주세요.',
-  ok: '확인',
-  unableModify: '수정할 수 없습니다.',
-  unableDelte: '삭제 할 수 없습니다.',
-  otherEditing: function otherEditing(userName) {
-    return "".concat(userName, " \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.");
-  },
-  othersEditing: function othersEditing(count) {
-    return "".concat(count, "\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.");
-  },
-  pageDelete: '페이지를 삭제하시겠습니까?',
-  chapterDelete: '챕터를 삭제하시겠습니까?',
-  chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
-  delete: '삭제',
-  cancel: '취소',
-  modify: '수정',
-  download: '다운로드',
-  amSameDay: function amSameDay(hhmm) {
-    return "\uC624\uC804 ".concat(hhmm);
-  },
-  pmSameDay: function pmSameDay(hhmm) {
-    return "\uC624\uD6C4 ".concat(hhmm);
-  },
-  readmode: '읽기 모드',
-  save: '저장',
-  pageotherMove: function pageotherMove(moveCnt, targetPage) {
-    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C ").concat(targetPage, " \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
-  },
-  chapterMove: function chapterMove(moveCnt) {
-    return "".concat(moveCnt, "\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
-  },
-  pageMove: function pageMove(moveCnt) {
-    return "".concat(moveCnt, "\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.");
-  },
-  noPage: '페이지가 없습니다.',
-  noChapter: '챕터가 없습니다.',
-  clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
-  clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
-  // unregisteredMember: `${}`,
-  noSearchResult: '검색 결과가 없습니다.',
-  searching: '검색 실행 중입니다.',
-  searchContent: '내용 검색',
-  insertLink: '링크 삽입',
-  done: '완료',
-  enterText: '텍스트를 입력해 주세요.',
-  enterLink: '링크를 입력해 주세요.',
-  text: '텍스트',
-  link: '링크',
-  editLink: '링크 편집',
-  deleteLink: '링크 삭제',
-  moveToLink: '링크로 이동',
-  invalidLink: '해당 URL은 유효하지 않습니다.',
-  attachFile: '파일 첨부',
-  attachDrive: 'Drive에서 첨부',
-  attachLocal: '내 PC에서 첨부',
-  spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
-  sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
-  countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
-  lengthoverUpload: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
-  someFilesUploadFail: '일부 파일이 업로드되지 못하였습니다.',
-  uploadFail: function uploadFail(uploadCnt, failCnt) {
-    return "(".concat(uploadCnt, "\uAC1C \uD56D\uBAA9 \uC911 ").concat(failCnt, "\uAC1C \uC2E4\uD328)");
-  },
-  selectedDelete: function selectedDelete(fileName) {
-    return "\uC120\uD0DD\uD55C ".concat(fileName, "\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
-  },
-  notRestore: '삭제 후에는 복구할 수 없습니다.',
-  editCancel: '페이지를 저장하고 나가시겠습니까?',
-  notSave: '저장 안함',
-  rename: '이름 변경',
-  forward: '다른 룸으로 전달',
-  sendEmail: 'Mail로 전달',
-  export: '내보내기',
-  viewInfo: '정보 보기',
-  title: '제목',
-  forwardRoom: '출처 룸',
-  forwardMemeber: '전달한 멤버',
-  forwardDate: '전달 날짜',
-  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오전 ${hhmm}`,
-  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
-  selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
-  send: '전달',
-  pdfFormat: 'PDF 형식(.pdf)',
-  txtFormat: 'TXT 형식(.txt)',
-  korCategory: 'ㄱ~ㅎ',
-  engCategory: 'A~Z',
-  numCategory: '0~9',
-  etcCategory: '기타',
-  searchTag: '태그 검색',
-  noTagFound: '태그가 없습니다.',
-  notag: '페이지 하단에 태그를 입력하여 추가하세요.',
-  addTag: '태그 추가',
-  notavailableTag: '읽기모드에서는 추가할 수 없습니다.',
-  usedTagName: '이미 있는 태그 이름입니다.',
-  deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
-  align: '정렬',
-  insertImages: '이미지 삽입',
-  replaceImages: '이미지 교체',
-  saveToDrive: 'Drive에 저장',
-  saveToMyPC: '내 PC에 저장'
-};
-
-var languageSet$1 = {
-  newChapter: 'New Chapter',
-  page: 'page',
-  chapter: 'chapter',
-  searchPageChapter: 'Search page or chapter',
-  addNewPage: 'Add new page',
-  tag: 'Tag',
-  untitled: '(Untitled)',
-  table: '(Tables)',
-  newPage: 'New Page',
-  receivedPage: 'Page Received',
-  duplicate: 'Duplicate name exists',
-  anotherName: 'Enter another name.',
-  ok: 'OK',
-  unableModify: 'Unable to Modify.',
-  unableDelte: 'Unable to delete.',
-  otherEditing: function otherEditing(userName) {
-    return "It is currently being modified by ".concat(userName);
-  },
-  othersEditing: function othersEditing(count) {
-    return "It is currently being modified by ".concat(count, " people");
-  },
-  pageDelete: 'Do you want to delete this page ?',
-  chapterDelete: 'Do you want to delete this chapter ?',
-  chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
-  delete: 'Delete',
-  cancel: 'Cancel',
-  modify: 'Modify',
-  download: 'Download',
-  amSameDay: function amSameDay(hhmm) {
-    return "".concat(hhmm, " AM");
-  },
-  pmSameDay: function pmSameDay(hhmm) {
-    return "".concat(hhmm, " PM");
-  },
-  readmode: 'Read Mode',
-  save: 'Save',
-  pageotherMove: function pageotherMove(moveCnt, targetPage) {
-    return "".concat(moveCnt, " pages moved to ").concat(targetPage);
-  },
-  chapterMove: function chapterMove(moveCnt) {
-    return "".concat(moveCnt, " chapters moved.");
-  },
-  pageMove: function pageMove(moveCnt) {
-    return "".concat(moveCnt, " pages moved.");
-  },
-  noPage: 'No page exists.',
-  noChapter: 'No chapter exists.',
-  clickNewPage: 'To create one, click "Add New Page".',
-  clickNewChapter: 'To create one, click "New Chapter".',
-  // unregisteredMember: `${}`,
-  noSearchResult: 'No search results found.',
-  searching: 'Search is running.',
-  searchContent: 'Search keyword',
-  insertLink: 'insert Link',
-  done: 'Done',
-  enterText: 'Enter a text.',
-  enterLink: 'Enter a link.',
-  text: 'Text',
-  link: 'Link',
-  editLink: 'Modify',
-  deleteLink: 'Delete',
-  moveToLink: 'Move to Link',
-  invalidLink: 'The URL is not valid',
-  attachFile: 'Attach Files',
-  attachDrive: 'Attach from Drive',
-  attachLocal: 'Attach from My PC',
-  spaceStorageFull: 'There is not enough storage space to attach the file.',
-  sizeoverUpload: 'You can attach up to 20 GB files at a time.',
-  countoverUpload: 'You can attach up to 30 files at a time.',
-  lengthoverUpload: 'The name of the file cannot exceed the limit of 70 characters.',
-  someFilesUploadFail: 'Unable to upload some files.',
-  uploadFail: function uploadFail(uploadCnt, failCnt) {
-    return "(".concat(failCnt, " out of ").concat(uploadCnt, " failed)");
-  },
-  selectedDelete: function selectedDelete(fileName) {
-    return "Do you want to delete the selected ".concat(fileName);
-  },
-  notRestore: 'This action cannot be undone.',
-  editCancel: 'Do you want to save this page and exit?',
-  notSave: 'Not Save',
-  rename: 'Rename',
-  forward: 'Forward',
-  sendEmail: 'Send Email',
-  export: 'Export',
-  viewInfo: 'View Information',
-  title: 'Title',
-  forwardRoom: 'Room',
-  forwardMemeber: 'Memeber',
-  forwardDate: 'Date',
-  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} AM`,
-  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} ${hhmm} PM`,
-  selectFromList: 'Select people from the Friends/Members/Rooms list.',
-  send: 'Send',
-  pdfFormat: 'PDF Format(.pdf)',
-  txtFormat: 'TXT Format(.txt)',
-  korCategory: 'ㄱ-ㅎ',
-  engCategory: 'A-Z',
-  numCategory: '0-9',
-  etcCategory: 'Others',
-  searchTag: 'Search tag',
-  noTagFound: 'No tag found.',
-  notag: 'Enter a tag at the bottom of the page or choose one from the list.',
-  addTag: 'Add Tag',
-  notavailableTag: 'Cannot be added in read mode.',
-  usedTagName: 'The tag name already exists.',
-  deletedNote: 'Failed to get the note because it has deleted.',
-  align: 'Align',
-  insertImages: 'Insert Images',
-  replaceImages: 'Replace Images',
-  saveToDrive: 'Save to Drive',
-  saveToMyPC: 'Save to My PC'
-};
-
 var NoteStore = mobx.observable({
   noteIdFromTalk: '',
   loadingNoteApp: true,
@@ -5825,20 +5839,8 @@ var NoteStore = mobx.observable({
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
-  initI18n: function initI18n() {
-    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'ko';
+  setI18nLanguage: function setI18nLanguage(lang) {
     this.i18nLanguage = lang;
-
-    switch (this.i18nLanguage) {
-      case 'ko':
-        return this.i18nKeyMap = languageSet;
-
-      case 'en':
-        return this.i18nKeyMap = languageSet$1;
-    }
-  },
-  getI18n: function getI18n(key) {
-    return this.i18nKeyMap[key];
   },
   addWWMSHandler: function addWWMSHandler() {
     var isWeb = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
