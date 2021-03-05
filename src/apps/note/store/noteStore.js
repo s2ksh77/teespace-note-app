@@ -6,7 +6,6 @@ import TagStore from './tagStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
-import { en, ko } from '../i18n';
 
 const NoteStore = observable({
   noteIdFromTalk: '',
@@ -41,7 +40,7 @@ const NoteStore = observable({
   toastText: '',
   i18nLanguage: 'ko',
   i18nKeyMap: '',
-  isExporting:false,
+  isExporting: false,
   getNoteIdFromTalk() {
     return this.noteIdFromTalk;
   },
@@ -107,17 +106,8 @@ const NoteStore = observable({
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
-  initI18n(lang = 'ko') {
+  setI18nLanguage(lang) {
     this.i18nLanguage = lang;
-    switch (this.i18nLanguage) {
-      case 'ko':
-        return this.i18nKeyMap = ko;
-      case 'en':
-        return this.i18nKeyMap = en;
-    }
-  },
-  getI18n(key) {
-    return this.i18nKeyMap[key];
   },
   addWWMSHandler(isWeb = true) {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
@@ -298,7 +288,7 @@ const NoteStore = observable({
   setDraggedOffset(offset) {
     this.draggedOffset = offset;
   },
-  setIsExporting(isExporting){
+  setIsExporting(isExporting) {
     this.isExporting = isExporting;
   },
   disableScroll(e) {

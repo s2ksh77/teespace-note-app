@@ -5,6 +5,7 @@ import PageStore from "./pageStore";
 import { checkNotDuplicate } from '../components/common/validators';
 import { CHAPTER_TYPE } from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
+import i18n from '../i18n/i18n';
 
 const ChapterStore = observable({
   chapterColor: "",
@@ -321,12 +322,12 @@ const ChapterStore = observable({
 
   setLocalStorageItem(targetChannelId, normalChapters) {
     // normalChapters: includes only [chapterType: notebook, default]
-    const newChapters = normalChapters.map(chapter=> {
+    const newChapters = normalChapters.map(chapter => {
       chapter.isFolded = false;
       return {
-        id : chapter.id,
-        children:chapter.children.map((page) => page.id),
-        isFolded:false
+        id: chapter.id,
+        children: chapter.children.map((page) => page.id),
+        isFolded: false
       }
     });
     localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
@@ -341,8 +342,8 @@ const ChapterStore = observable({
     let chapterIds = item.map((chapter) => chapter.id);
     normalChapters.forEach((chapter) => {
       if (!chapterIds.includes(chapter.id)) {
-        createdChapterIds.push({ 
-          id: chapter.id, 
+        createdChapterIds.push({
+          id: chapter.id,
           children: chapter.children.map((page) => page.id),
           isFolded: false
         });
@@ -388,7 +389,7 @@ const ChapterStore = observable({
       const chapterIdx = this.chapterMap.get(chapter.id);
       return {
         ...normalChapters[chapterIdx],
-        children: chapter.children.map((pageId) => 
+        children: chapter.children.map((pageId) =>
           normalChapters[chapterIdx].children[this.pageMap.get(pageId).idx]
         ),
         isFolded: chapter.isFolded ? chapter.isFolded : false
@@ -464,7 +465,7 @@ const ChapterStore = observable({
       sharedChapters.forEach((chapter) => {
         newFoldedMap.set(chapter.id, false);
         chapter.isFolded = false;
-      })     
+      })
     } else {
       item = JSON.parse(item, NoteUtil.reviver);
       sharedChapters.forEach((chapter) => {
@@ -475,7 +476,7 @@ const ChapterStore = observable({
     }
 
     localStorage.setItem(
-      `Note_sharedFoldedState_${NoteStore.notechannel_id}`, 
+      `Note_sharedFoldedState_${NoteStore.notechannel_id}`,
       JSON.stringify(newFoldedMap, NoteUtil.replacer)
     )
     return sharedChapters;
@@ -506,8 +507,8 @@ const ChapterStore = observable({
         // 임시 코드. 서버 수정된 후 변경 예정.
         const currentChapterIdx = this.chapterList.findIndex(chapter => chapter.id === this.currentChapterId);
         const selectableChapter =
-          currentChapterIdx === 0 
-            ? this.chapterList[1] 
+          currentChapterIdx === 0
+            ? this.chapterList[1]
             : this.chapterList[currentChapterIdx - 1];
         this.setCurrentChapterId(selectableChapter?.id);
         PageStore.setCurrentPageId(selectableChapter?.children[0]?.id);
@@ -584,7 +585,7 @@ const ChapterStore = observable({
         if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();
         else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
-          NoteStore.setToastText(NoteStore.getI18n('chapterMove')(moveCnt));
+          NoteStore.setToastText(i18n.t('chapterMove', { moveCnt: moveCnt }));
           NoteStore.setIsVisibleToast(true);
         });
       });

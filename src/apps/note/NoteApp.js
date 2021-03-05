@@ -15,11 +15,13 @@ import Overlay from './components/common/Overlay';
 import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
-import { initI18n } from './i18n/i18nInit';
+import { useTranslation, I18nextProvider } from 'react-i18next';
+import i18n from './i18n/i18n';
 
 // layoutState는 collapse, expand, close가 있다
-const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
+const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
+  const { i18n: i18Instance } = useTranslation();
   const { userStore, spaceStore, authStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
@@ -46,7 +48,6 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
     */
     if (isOtherRoom) {
       const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
-      const isBasicPlan = spaceStore.currentSpace?.plan === "Basic";
       const isBasicPlan = spaceStore.currentSpace?.plan === "BASIC";
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
       NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
@@ -99,59 +100,61 @@ const NoteApp = ({ layoutState, roomId, channelId, lang }) => {
     NoteStore.setMailReceiver([]);
   }
   useEffect(() => {
-    NoteStore.initI18n(lang);
-    initI18n(lang);
-  }, [lang])
+    NoteStore.setI18nLanguage(language);
+    if (language) i18Instance.changeLanguage(language);
+  }, [language])
 
   return useObserver(() => (
     <>
-      <GlobalStyle />
-      {NoteStore.loadingNoteApp ? <LoadingImgContainer /> :
-        <>
-          <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
-            <LNBContainer />
-          </LNB>
-          <Content
-            show={renderCondition('Content')}
-            onMouseOver={handleFoldBtn}
-            onMouseOut={handleFoldBtn}
-            isBorderLeft={NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded}
-          >
-            <FoldBtn
-              isExpanded={NoteStore.isContentExpanded}
-              show={(
-                NoteStore.showPage
-                && NoteStore.layoutState !== "collapse"
-                && NoteStore.isHoveredFoldBtnLine)}
-              onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
-              onClick={() => NoteStore.toggleIsContentExpanded()}
+      <I18nextProvider i18n={i18n}>
+        <GlobalStyle />
+        {NoteStore.loadingNoteApp ? <LoadingImgContainer /> :
+          <>
+            <LNB show={(!NoteStore.isContentExpanded && renderCondition('LNB'))}>
+              <LNBContainer />
+            </LNB>
+            <Content
+              show={renderCondition('Content')}
+              onMouseOver={handleFoldBtn}
+              onMouseOut={handleFoldBtn}
+              isBorderLeft={NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded}
             >
-              <FoldBtnImg src={foldImg} />
-            </FoldBtn>
-            <PageContainer />
-            <TagContainer />
-            {/* {NoteStore.showPage ? <PageContainer /> : <TagContainer />} */}
-          </Content>
-          <Toast
-            visible={NoteStore.isVisibleToast}
-            children={NoteStore.toastText}
-            onClose={() => NoteStore.setIsVisibleToast(false)}
-          />
-          {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
-            ? <DragPreview items={NoteStore.draggedItems} />
-            : null}
-          <TempEditor />
-          {NoteStore.isExporting && <Overlay />}
-          {NoteStore.showModal && <NoteModal />}
-          {NoteStore.isMailShare && <MailWriteModal
-            uploadFiles={NoteStore.mailShareFileObjs}
-            sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
-            toReceiver={NoteStore.mailReceiver}
-            onClose={handleCloseMailModal}
-            visible={true}
-            totalSize={NoteStore.mailShareFileObjs[0] ? NoteStore.mailShareFileObjs[0].fileSize : 0} />}
-        </>
-      }
+              <FoldBtn
+                isExpanded={NoteStore.isContentExpanded}
+                show={(
+                  NoteStore.showPage
+                  && NoteStore.layoutState !== "collapse"
+                  && NoteStore.isHoveredFoldBtnLine)}
+                onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
+                onClick={() => NoteStore.toggleIsContentExpanded()}
+              >
+                <FoldBtnImg src={foldImg} />
+              </FoldBtn>
+              <PageContainer />
+              <TagContainer />
+              {/* {NoteStore.showPage ? <PageContainer /> : <TagContainer />} */}
+            </Content>
+            <Toast
+              visible={NoteStore.isVisibleToast}
+              children={NoteStore.toastText}
+              onClose={() => NoteStore.setIsVisibleToast(false)}
+            />
+            {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
+              ? <DragPreview items={NoteStore.draggedItems} />
+              : null}
+            <TempEditor />
+            {NoteStore.isExporting && <Overlay />}
+            {NoteStore.showModal && <NoteModal />}
+            {NoteStore.isMailShare && <MailWriteModal
+              uploadFiles={NoteStore.mailShareFileObjs}
+              sender={{ mailAddr: NoteStore.userEmail, accountId: NoteStore.user_id }}
+              toReceiver={NoteStore.mailReceiver}
+              onClose={handleCloseMailModal}
+              visible={true}
+              totalSize={NoteStore.mailShareFileObjs[0] ? NoteStore.mailShareFileObjs[0].fileSize : 0} />}
+          </>
+        }
+      </I18nextProvider>
     </>
   ));
 };

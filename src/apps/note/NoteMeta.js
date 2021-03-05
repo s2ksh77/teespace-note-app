@@ -3,6 +3,7 @@ import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
+import i18n from './i18n/i18n';
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
   open + target 컴포넌트 이름
@@ -29,13 +30,13 @@ const NoteMeta = {
       case "viewInfo":
         return {
           ...initialConfig,
-          title: NoteStore.getI18n('viewInfo'),
+          title: i18n.t('viewInfo'),
           className: "viewInfoModal"
         }
       case "forward":
         return {
           ...initialConfig,
-          title: NoteStore.getI18n('forward'),
+          title: i18n.t('forward'),
           className: "forwardModal"
         }
       default:
@@ -143,12 +144,12 @@ const NoteMeta = {
   },
   setBtns(type) {
     const shape = "default";
-    const defaultBtn1 = { type: "solid", shape, text: NoteStore.getI18n('ok') }; // 버튼 한 개일 때랑 text 바꿔서 사용
-    const defaultBtn2 = { type: "default", shape, text: NoteStore.getI18n('cancel') };
+    const defaultBtn1 = { type: "solid", shape, text: i18n.t('ok') }; // 버튼 한 개일 때랑 text 바꿔서 사용
+    const defaultBtn2 = { type: "default", shape, text: i18n.t('cancel') };
 
     switch (type) {
       case 'delete': // chapter랑 page
-        return [{ ...defaultBtn1, text: NoteStore.getI18n('delete') }, defaultBtn2];
+        return [{ ...defaultBtn1, text: i18n.t('delete') }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -161,7 +162,7 @@ const NoteMeta = {
       case 'uploadingFiles':
         return [defaultBtn1];
       case 'editCancel':
-        return [{ ...defaultBtn1, text: NoteStore.getI18n('save') }, { ...defaultBtn1, text: NoteStore.getI18n('notSave') }, defaultBtn2];
+        return [{ ...defaultBtn1, text: i18n.t('save') }, { ...defaultBtn1, text: i18n.t('notSave') }, defaultBtn2];
       default:
         return;
     }
@@ -190,13 +191,13 @@ const NoteMeta = {
         break;
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.subtitle = i18n.t('otherEditing', { userName: PageStore.editingUserName });
         dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.subtitle = NoteStore.getI18n('othersEditing')(PageStore.editingUserCount);
+        dialogType.subtitle = i18n.t('othersEditing', { count: PageStore.editingUserCount });
         dialogType.title = 'unableDelte';
         dialogType.btns = this.setBtns(type);
         break;
@@ -205,7 +206,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'fileDelete':
-        dialogType.title = NoteStore.getI18n('selectedDelete')(fileName);
+        dialogType.title = i18n.t('selectedDelete', { fileName: fileName });
         dialogType.subtitle = 'notRestore';
         dialogType.btns = this.setBtns('delete');
         break;
@@ -219,7 +220,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
-        dialogType.subtitle = NoteStore.getI18n('otherEditing')(PageStore.editingUserName);
+        dialogType.subtitle = i18n.t('otherEditing', { userName: PageStore.editingUserName });
         dialogType.title = 'unableModify';
         dialogType.btns = this.setBtns('editingPage');
         break;
@@ -228,7 +229,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.subtitle = NoteStore.getI18n('uploadFail')(EditorStore.uploadLength, EditorStore.failCount);
+        dialogType.subtitle = i18n.t('uploadFail', { uploadCnt: EditorStore.uploadLength, failCnt: EditorStore.failCount });
         dialogType.title = 'someFilesUploadFail';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
