@@ -100,6 +100,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     NoteStore.setMailReceiver([]);
   }
   useEffect(() => {
+    NoteStore.setI18nLanguage(language);
     if (language) i18Instance.changeLanguage(language);
   }, [language])
 

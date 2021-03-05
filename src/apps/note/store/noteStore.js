@@ -106,6 +106,9 @@ const NoteStore = observable({
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
+  setI18nLanguage(lang) {
+    this.i18nLanguage = lang;
+  },
   addWWMSHandler(isWeb = true) {
     if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
   },
