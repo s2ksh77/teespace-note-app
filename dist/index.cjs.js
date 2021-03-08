@@ -3004,6 +3004,11 @@ var PageStore = mobx.observable((_observable$1 = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  editStatus: {
+    saving: false,
+    saved: false,
+    editing: false
+  },
   userNick: '',
   otherEdit: false,
   noteContent: '',
@@ -9291,7 +9296,7 @@ var EditorHeader = function EditorHeader() {
       onChange: handleTitleInput,
       disabled: !PageStore.isReadMode() ? false : true,
       autoComplete: "off"
-    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, PageStore.editStatus.saving ? /*#__PURE__*/React__default['default'].createElement("div", null, "\uC800\uC7A5\uC911...") : PageStore.editStatus.saved ? /*#__PURE__*/React__default['default'].createElement("div", null, "\uC800\uC7A5\uB418\uC5C8\uC2B5\uB2C8\uB2E4") : (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$h
     }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName : PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
       onClick: handleSearchEditor
@@ -10613,7 +10618,7 @@ var EditorContainer = function EditorContainer() {
           // }
 
         },
-        autosave_interval: '20s',
+        autosave_interval: '1s',
         autosave_prefix: "Note_autosave_".concat(NoteStore.notechannel_id),
         autolink_pattern: customAutoLinkPattern(),
         contextmenu: 'link-toolbar image imagetools table',

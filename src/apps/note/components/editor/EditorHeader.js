@@ -114,7 +114,13 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />}
+          {PageStore.editStatus.saving
+            ? <div>저장중...</div>
+            : (PageStore.editStatus.saved ? <div>저장되었습니다</div>
+                : (!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />
+              )
+          }
+          {/* {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />} */}
           <ModifiedUser>
             {!PageStore.isReadMode()
               ? (userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName)

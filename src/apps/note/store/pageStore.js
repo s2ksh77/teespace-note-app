@@ -14,6 +14,7 @@ const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
+  editStatus:{saving : false, saved:false,editing:false},
   userNick: '',
   otherEdit: false,
   noteContent: '',
