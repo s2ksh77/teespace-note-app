@@ -2433,9 +2433,12 @@ var EditorStore$1 = mobx.observable((_observable = {
     this.isPreview = flag;
   },
   setInitialSearchState: function setInitialSearchState() {
-    this.isSearch = false;
-    this.searchResultState = false;
-    this.searchValue = '';
+    this.isSearch = false; // 기존거에 initialSearch에 있던거 추가함
+
+    this.setSearchResultState(false);
+    this.setSearchValue('');
+    this.setSearchTotalCount(0);
+    this.setSearchCurrentCount(0);
   },
   setIsSearch: function setIsSearch(flag) {
     this.isSearch = flag;
@@ -5487,6 +5490,8 @@ var handleWebsocket = function handleWebsocket() {
       return;
     }
 
+    console.log(message);
+
     if (message.NOTI_ETC) {
       var loginUSER = NoteRepository$1.USER_ID;
       var EVENT_CASE = message.NOTI_ETC.split(',')[0];
@@ -5514,9 +5519,9 @@ var handleWebsocket = function handleWebsocket() {
         case EVENT_TYPE.NONEDIT:
         case EVENT_TYPE.EDIT_START:
           // EDIT,NOTE_ID:USER_ID
-          var target = message.NOTI_ETC.split(',')[1];
-          targetID = target.split(':')[0];
-          targetUSER = target.split(':')[1];
+          // const target = message.NOTI_ETC.split(',')[1];
+          // targetID = target.split(':')[0];
+          // targetUSER = target.split(':')[1];
           if (isWeb && targetUSER === loginUSER) return;
 
           if (PageStore.getCurrentPageId() === targetID) {
@@ -10077,7 +10082,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -10144,38 +10149,42 @@ var EditorHeader = function EditorHeader() {
           switch (_context.prev = _context.next) {
             case 0:
               if (!PageStore.isReadMode()) {
-                _context.next = 8;
+                _context.next = 7;
                 break;
               }
 
               EditorStore.setIsSearch(false);
-              ChapterStore.initSearchVar();
-              instance.unmark();
-              ChapterStore.getNoteChapterList();
+              initialSearch();
+
+              if (!ChapterStore.isTagSearching) {
+                ChapterStore.initSearchVar();
+                ChapterStore.getNoteChapterList();
+              }
+
               NoteStore.setTargetLayout('LNB');
-              _context.next = 16;
+              _context.next = 15;
               break;
 
-            case 8:
+            case 7:
               isUndoActive = (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.hasUndo();
 
               if (isUndoActive) {
-                _context.next = 15;
+                _context.next = 14;
                 break;
               }
 
-              _context.next = 12;
+              _context.next = 11;
               return PageStore.handleNoneEdit();
 
-            case 12:
+            case 11:
               NoteStore.setTargetLayout('LNB');
-              _context.next = 16;
+              _context.next = 15;
               break;
 
-            case 15:
+            case 14:
               NoteStore.setModalInfo('editCancel');
 
-            case 16:
+            case 15:
             case "end":
               return _context.stop();
           }
@@ -10207,46 +10216,45 @@ var EditorHeader = function EditorHeader() {
 
             case 3:
               EditorStore.setIsSearch(false);
-              instance.unmark();
               (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : (_EditorStore$tinymce4 = _EditorStore$tinymce3.undoManager) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.clear();
 
               if (!PageStore.isReadMode()) {
-                _context2.next = 18;
+                _context2.next = 17;
                 break;
               }
 
               if (!PageStore.otherEdit) {
-                _context2.next = 15;
+                _context2.next = 14;
                 break;
               }
 
-              _context2.next = 10;
+              _context2.next = 9;
               return userStore.fetchProfile(PageStore.getEditingUserID());
 
-            case 10:
+            case 9:
               res = _context2.sent;
               PageStore.setEditingUserName(res.nick ? res.nick : res.name);
               NoteStore.setModalInfo('editingPage');
-              _context2.next = 16;
+              _context2.next = 15;
               break;
 
-            case 15:
+            case 14:
               PageStore.noteEditStart(PageStore.currentPageData.note_id);
 
-            case 16:
-              _context2.next = 21;
+            case 15:
+              _context2.next = 20;
               break;
 
-            case 18:
-              _context2.next = 20;
+            case 17:
+              _context2.next = 19;
               return handleFileSync().then(function () {
                 return PageStore.handleSave();
               });
 
-            case 20:
+            case 19:
               teespaceCore.logEvent('note', 'clickModifyBtn');
 
-            case 21:
+            case 20:
             case "end":
               return _context2.stop();
           }
@@ -12618,7 +12626,7 @@ var NoteApp = function NoteApp(_ref) {
           userId = _userStore$myProfile.id,
           userName = _userStore$myProfile.name,
           userEmail = _userStore$myProfile.email;
-      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === "Basic"; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
+      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === "BASIC"; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
 
       NoteStore.init(roomId, channelId, userId, userName, userEmail, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {

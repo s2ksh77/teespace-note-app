@@ -30,9 +30,11 @@ const EditorHeader = () => {
   const handleLayoutBtn = async (e) => {
     if (PageStore.isReadMode()) {
       EditorStore.setIsSearch(false);
-      ChapterStore.initSearchVar();
-      instance.unmark();
-      ChapterStore.getNoteChapterList();
+      initialSearch();
+      if (!ChapterStore.isTagSearching) {
+        ChapterStore.initSearchVar();
+        ChapterStore.getNoteChapterList();
+      }
       NoteStore.setTargetLayout('LNB');
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
@@ -45,10 +47,9 @@ const EditorHeader = () => {
 
   const handleClickBtn = async e => {
     if (EditorStore.isUploading) {
-      NoteStore.setModalInfo('uploadingFiles');return;
+      NoteStore.setModalInfo('uploadingFiles'); return;
     }
     EditorStore.setIsSearch(false);
-    instance.unmark();
     EditorStore.tinymce?.undoManager?.clear();
     if (PageStore.isReadMode()) {
       if (PageStore.otherEdit) {
