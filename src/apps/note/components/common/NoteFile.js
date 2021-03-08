@@ -9,6 +9,7 @@ import PageStore from '../../store/pageStore';
 import EditorStore from '../../store/editorStore';
 import TagStore from '../../store/tagStore';
 import { isFilled } from './validators';
+import i18n from '../../i18n/i18n';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 // export const handleUpload = async () => {
