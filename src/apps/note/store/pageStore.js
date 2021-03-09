@@ -14,7 +14,7 @@ const PageStore = observable({
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
-  editStatus:{saving : false, saved:false,editing:false},
+  saveStatus:{saving : false, saved:false},
   userNick: '',
   otherEdit: false,
   noteContent: '',
@@ -52,6 +52,18 @@ const PageStore = observable({
   },
   setCurrentPageData(pageData) {
     this.currentPageData = pageData;
+  },
+  // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
+  set_CurrentPageData({note_content, user_name, modified_date,USER_ID}) {
+    if (note_content) this.currentPageData.note_content = note_content;    
+    if (user_name) this.currentPageData.user_name = user_name;
+    if (modified_date) this.currentPageData.modified_date = modified_date;
+    if (USER_ID) this.currentPageData.USER_ID = USER_ID;
+  },
+  // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
+  setSaveStatus({saving=false,saved=false}) {
+    this.saveStatus.saving = saving;
+    this.saveStatus.saved = saved;
   },
   getIsEdit() {
     return this.isEdit;
@@ -507,7 +519,6 @@ const PageStore = observable({
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
     dto.note_title = NoteUtil.decodeStr(dto.note_title);
-    this.noteInfoList = dto;
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
@@ -597,7 +608,66 @@ const PageStore = observable({
     }
   },
 
-  handleSave() {
+  getSaveDto(isAutoSave) {
+    return {
+      dto: {
+        note_id: this.currentPageData.note_id,
+        note_title: this.noteTitle,
+        note_content: this.noteContent ? this.noteContent : '<p><br></p>',
+        text_content: EditorStore.tinymce.getContent({ format: "text" }),
+        parent_notebook: this.currentPageData.parent_notebook,
+        is_edit: isAutoSave ? this.isEdit : '',
+        TYPE: 'EDIT_DONE',
+      }
+    }
+  },
+
+  // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
+  handleSave(isAutoSave=false) {
+    this.getNoteTitle();
+    const updateDTO = this.getSaveDto(isAutoSave);
+
+    if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
+    if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
+    if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
+    
+    if (isAutoSave) this.handleAutoSave(updateDTO);
+    else this.handleSaveBtn(updateDTO);
+  },
+
+  handleAutoSave(updateDTO) {
+    // currentPageData 갱신
+    this.setSaveStatus({saving:true});
+    this.editDone(updateDTO)
+      .then((dto) => {
+        this.setSaveStatus({saved:true});
+        const {note_content, user_name, modified_date,USER_ID} = dto;
+        this.set_CurrentPageData({note_content, user_name, modified_date,USER_ID});
+        this.modifiedDate = this.modifiedDateFormatting(modified_date);        
+        // 2초 후 수정 중 인터렉션으로 바꾸기
+        setTimeout(() => {
+          this.setSaveStatus({});
+        },2000);
+      })
+  },
+
+  handleSaveBtn(updateDTO) {
+    this.noteEditDone(updateDTO);
+    
+    if (EditorStore.tempFileLayoutList.length > 0) {
+      EditorStore.setProcessCount(0);
+      EditorStore.setTempFileLayoutList([]);
+    }
+    NoteStore.setShowModal(false);
+    EditorStore.setIsAttatch(false);
+    EditorStore.setInitialSearchState();
+    const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+    if (floatingMenu !== null) floatingMenu.click();
+    EditorStore.tinymce?.selection.setCursorLocation();
+    EditorStore.tinymce?.undoManager.clear();
+  },
+    
+  getNoteTitle() {
     if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
       else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
@@ -613,33 +683,9 @@ const PageStore = observable({
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
       return c.charCodeAt(0) !== 65279;
     }).join('');
-    const updateDTO = {
-      dto: {
-        note_id: this.currentPageData.note_id,
-        note_title: this.noteTitle,
-        note_content: this.noteContent ? this.noteContent : '<p><br></p>',
-        text_content: EditorStore.tinymce.getContent({ format: "text" }),
-        parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: '',
-        TYPE: 'EDIT_DONE',
-      },
-    };
-    this.noteEditDone(updateDTO);
-    if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
-    if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
-    if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
-    if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);
-      EditorStore.setTempFileLayoutList([]);
-    }
-    NoteStore.setShowModal(false);
-    EditorStore.setIsAttatch(false);
-    EditorStore.setInitialSearchState();
-    const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
-    if (floatingMenu !== null) floatingMenu.click();
-    EditorStore.tinymce?.selection.setCursorLocation();
-    EditorStore.tinymce?.undoManager.clear();
+    return this.noteTitle;
   },
+
   getTitle() {
     const contentList = EditorStore.tinymce.getBody().children;
     return this._getTitle(contentList);
