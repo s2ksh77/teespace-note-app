@@ -36,8 +36,11 @@ const EditorHeader = () => {
       if (!ChapterStore.isTagSearching) {
         ChapterStore.initSearchVar();
         ChapterStore.getNoteChapterList();
-      }      
-      NoteStore.setTargetLayout('LNB');
+        NoteStore.setTargetLayout('LNB');
+      } else {
+        NoteStore.setTargetLayout('Content');
+        NoteStore.setShowPage(false);
+      }
     } else {
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
       if (!isUndoActive) {
