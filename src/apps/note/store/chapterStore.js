@@ -339,24 +339,22 @@ const ChapterStore = observable({
 
     // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
     const createdChapterIds = [];
-    let chapterIds = item.map((chapter) => chapter.id);
+    let chapterIdxMap = item.reduce((m, chapter, idx) => m.set(chapter.id, idx), new Map());
     normalChapters.forEach((chapter) => {
-      if (!chapterIds.includes(chapter.id)) {
+      if (!chapterIdxMap.has(chapter.id)) {
         createdChapterIds.push({
           id: chapter.id,
           children: chapter.children.map((page) => page.id),
           isFolded: false
         });
-      }
-      else {
+      } else {
         const createdPageIds = [];
-        const chapterIdx = chapterIds.indexOf(chapter.id);
+        const chapterIdx = chapterIdxMap.get(chapter.id);
         chapter.children.slice().reverse().forEach((page) => {
           if (!item[chapterIdx].children.includes(page.id)) {
             createdPageIds.push(page.id);
           }
-        })
-
+        });
         item[chapterIdx].children = item[chapterIdx].children.concat(createdPageIds);
       }
     });
@@ -364,11 +362,10 @@ const ChapterStore = observable({
 
     // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
     item.slice().forEach((chapter) => {
-      chapterIds = item.map((chapter) => chapter.id);
+      chapterIdxMap = item.reduce((m, chapter, idx) => m.set(chapter.id, idx), new Map());
       if (this.chapterMap.get(chapter.id) === undefined) {
-        item.splice(chapterIds.indexOf(chapter.id), 1);
-      }
-      else {
+        item.splice(chapterIdxMap.get(chapter.id), 1);
+      } else {
         chapter.children.slice().forEach((pageId) => {
           const pageIds = chapter.children;
           if (this.pageMap.get(pageId) === undefined
