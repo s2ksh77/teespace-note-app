@@ -49,7 +49,7 @@ const HandleUploader = (props) => {
   const uploadProps = {
     beforeUpload: async (file, fileList) => {
       let uploadsize = 0;
-      let totalsize = 20000000000; // 20GB
+      let totalsize = 21474836480; // 20GB
 
       if (file === fileList[0]) {
         const filtered = fileList.filter(file => isValidFileNameLength(file.name));
