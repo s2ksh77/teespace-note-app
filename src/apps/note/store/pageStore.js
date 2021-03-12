@@ -349,6 +349,8 @@ const PageStore = observable({
             const pageId = currentChapter.children[currentChapter.children.length - 2].id;
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
+          } else {
+            this.setCurrentPageId('');
           }
         }
       }
