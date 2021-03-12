@@ -10,6 +10,7 @@ import {
   ReadModeText,
   editorContentCSS
 } from '../../styles/editorStyle';
+import { Button, Upload } from 'antd';
 import lockImg from '../../assets/lock.svg'
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
@@ -40,6 +41,67 @@ import { useTranslation } from 'react-i18next';
 window.addEventListener('beforeunload', function (e) {
   if (!PageStore.isReadMode()) PageStore.handleSave();
 })
+
+const HandleUploader = (props) => {
+  const { EditorStore, NoteStore } = useNoteStore();
+  const uploaderRef = useRef('');
+  const uploadProps = {
+    beforeUpload: async (file, fileList) => {
+      let uploadsize = 0;
+      let totalsize = 20000000000; // 20GB
+
+      if (file === fileList[0]) {
+        const filteredFiles = fileList.filter(file => isValidFileNameLength(file.name));
+        if (fileList.length !== filteredFiles.length) {
+          fileList = filteredFiles;
+          EditorStore.setIsFileFilteredByNameLen(true);
+          if (fileList.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
+        }
+        EditorStore.setFileLength(fileList.length);
+        if (EditorStore.uploadLength > 30) {
+          NoteStore.setModalInfo('failUpload');
+          return;
+        }
+
+        if (fileList) {
+          for (let i = 0; i < fileList.length; i++) {
+            uploadsize += fileList[i].size
+          }
+          if (uploadsize > totalsize) {
+            NoteStore.setModalInfo('sizefailUpload');
+            return;
+          }
+        }
+
+        for (let i = 0; i < fileList.length; i++) {
+          (function (file) {
+            const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
+            const type = (fileExtension && EditorStore.uploadFileIsImage(fileExtension)) ? 'image' : 'file';
+            EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, file, type);
+          })(fileList[i])
+        }
+
+        if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
+        else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
+      }
+
+      return false;
+    },
+    showUploadList: false,
+    multiple: true,
+  };
+  useEffect(() => {
+    EditorStore.setUploaderRef(uploaderRef.current)
+    return () => EditorStore.setUploaderRef('');
+  }, []);
+
+  return useObserver(() => (
+    <Upload {...uploadProps} accept={EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'}>
+      <Button ref={uploaderRef} />
+    </Upload>
+  ))
+}
+
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
@@ -71,84 +133,6 @@ const EditorContainer = () => {
     initialMode();
   };
 
-  const handleFileHandler = (blobInfo) => {
-    let fileName = blobInfo.blob().name;
-    let dotIndex = fileName.lastIndexOf('.');
-    let fileExtension;
-    let fileSize = blobInfo.blob().size;
-    let isImage;
-    if (dotIndex !== -1) {
-      fileExtension = fileName.substring(dotIndex + 1, fileName.length);
-      fileName = fileName.substring(0, dotIndex);
-    }
-
-    isImage = fileExtension && EditorStore.uploadFileIsImage(fileExtension);
-    const fd = new FormData();
-    if (isImage) fd.append('image', blobInfo.blob());
-    else fd.append('file', blobInfo.blob());
-
-    EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, fd, isImage ? 'image' : 'file');
-
-    // 먼저 파일 이름 길이 체크하고 upload해야
-    if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
-    else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
-  };
-
-  const handleFileBlob = (type) => {
-    var input = document.createElement('input');
-    if (type === 'image') {
-      input.setAttribute('type', 'file');
-      input.setAttribute('accept', ['image/*', 'video/*']);
-      input.setAttribute('multiple', true);
-    }
-    else {
-      input.setAttribute('type', 'file');
-      input.setAttribute('multiple', true);
-    }
-    input.onchange = function () {
-      let files = [...this.files];
-      let uploadsize = 0;
-      let totalsize = 20000000000; // 20GB
-      // 파일명 filtering
-      const filteredFiles = files.filter(file => isValidFileNameLength(file.name));
-      if (files.length !== filteredFiles.length) {
-        files = filteredFiles;
-        EditorStore.setIsFileFilteredByNameLen(true);
-        if (files.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
-      }
-
-      EditorStore.setFileLength(files.length);
-      if (EditorStore.uploadLength > 30) {
-        NoteStore.setModalInfo('failUpload');
-        return;
-      }
-
-      if (files) {
-        for (let i = 0; i < files.length; i++) {
-          uploadsize += files[i].size
-        }
-        if (uploadsize > totalsize) {
-          NoteStore.setModalInfo('sizefailUpload');
-          return;
-        }
-      }
-      for (let i = 0; i < files.length; i++) {
-        (function (file) {
-          var reader = new FileReader();
-          reader.onload = function () {
-            var id = 'blobid' + (new Date()).getTime();
-            var blobCache = EditorStore.tinymce.editorUpload.blobCache;
-            var base64 = reader.result.split(',')[1];
-            var blobInfo = blobCache.create(id, file, base64, file.name);
-            blobCache.add(blobInfo);
-            handleFileHandler(blobInfo, { title: file.name });
-          };
-          reader.readAsDataURL(file);
-        })(files[i])
-      }
-    };
-    input.click();
-  }
   const handleSearchInputChange = (value) => {
     EditorStore.setSearchValue(value);
   }
@@ -357,7 +341,9 @@ const EditorContainer = () => {
                 icon: 'image',
                 tooltip: t('insertImages'),
                 onAction: function () {
-                  editor.editorUpload.uploadImages(handleFileBlob('image'))
+                  EditorStore.setUploaderType('image');
+                  EditorStore.uploaderRef.click();
+                  // editor.editorUpload.uploadImages(handleFileBlob('image'))
                 }
               });
 
@@ -386,7 +372,9 @@ const EditorContainer = () => {
                       type: 'menuitem',
                       text: t('attachLocal'),
                       onAction: function () {
-                        editor.editorUpload.uploadImages(handleFileBlob('file'))
+                        // editor.editorUpload.uploadImages(handleFileBlob('file'))
+                        EditorStore.setUploaderType('file');
+                        EditorStore.uploaderRef.click();
                       }
                     }
                   ];
@@ -442,7 +430,8 @@ const EditorContainer = () => {
                 icon: 'gallery',
                 tooltip: t('replaceImages'),
                 onAction: function (_) {
-                  handleFileBlob('image');
+                  EditorStore.setUploaderType('image');
+                  EditorStore.uploaderRef.click();
                 }
               });
 
@@ -578,6 +567,7 @@ const EditorContainer = () => {
           file={EditorStore.saveDriveMeta}
           roomId={NoteRepository.WS_ID}
         />
+        <HandleUploader />
       </EditorContainerWrapper>
     </>
   ));

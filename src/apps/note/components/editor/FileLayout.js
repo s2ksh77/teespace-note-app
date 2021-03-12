@@ -188,22 +188,8 @@ const FileLayout = () => {
             }
         }
         if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
-            // EditorStore.uploadDTO[index].cancelSource.cancel()
+            EditorStore.uploadDTO[index].cancelSource.cancel()
             EditorStore.tempFileLayoutList[index].deleted = true;
-            await EditorStore.deleteFile(fileId).then(dto => {
-                if (dto.resultMsg === 'Success') {
-                    setTimeout(() => {
-                        EditorStore.tempFileLayoutList.splice(index, 1);
-                        EditorStore.isFileLength();
-                        removePostProcess();
-                    }, 1000);
-
-                } else if (dto.resultMsg === 'Fail') {
-                    EditorStore.tempFileLayoutList[index].deleted = undefined;
-                    EditorStore.tempFileLayoutList.splice(index, 1);
-                    removePostProcess();
-                }
-            });
         } else if (type === 'uploaded' && EditorStore.fileLayoutList.length > 0) {
             EditorStore.fileLayoutList[index].deleted = true;
             await EditorStore.deleteFile(fileId).then(dto => {
@@ -255,12 +241,12 @@ const FileLayout = () => {
                         })}
                         tabIndex={index}
                         closable={!PageStore.isReadMode()}
-                        onMouseEnter={handleMouseHover.bind(null, item.file_id)}
-                        onMouseLeave={handleMouseLeave}>
+                        onMouseEnter={handleTempMouseHover.bind(null, index)}
+                        onMouseLeave={handleTempMouseLeave}>
                         <FileContent>
                             <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter" onClick={handleClickDropDown(item.file_id)} >
                                 <FileDownloadIcon>
-                                    {hover && item.file_id === hoverFileId
+                                    {hover && index === hoverTempIdx
                                         ? (<FileDownloadBtn src={downloadBtn} />)
                                         : (<FileExtensionBtn src={fileExtension(item.file_extension)} />)}
                                 </FileDownloadIcon>
@@ -275,10 +261,10 @@ const FileLayout = () => {
                                 </FileDataName>
                                 <FileDataTime>
                                     <FileTime>{item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null}</FileTime>
-                                    <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'}</FileTime>
+                                    <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'}</FileTime>
                                 </FileDataTime>
                             </FileData>
-                            <FileClose style={!PageStore.isReadMode() && item.file_id === hoverFileId ? { display: 'flex' } : { display: 'none' }}>
+                            <FileClose style={!PageStore.isReadMode() && index === hoverTempIdx ? { display: 'flex' } : { display: 'none' }}>
                                 <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')} />
                             </FileClose>
                         </FileContent>

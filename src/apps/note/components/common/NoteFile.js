@@ -12,110 +12,55 @@ import { isFilled } from './validators';
 import i18n from '../../i18n/i18n';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
-// export const handleUpload = async () => {
-//     if (EditorStore.uploadDTO) {
-//         EditorStore.setIsUploading(true);
-//         for (let i = 0; i < EditorStore.uploadDTO.length; i++) {
-//             (function (item) {
-//                 const handleUploadProgress = (e) => {
-//                     const totalLength = e.lengthComputable
-//                         ? e.total
-//                         : e.target.getResponseHeader('content-length') ||
-//                         e.target.getResponseHeader('x-decompressed-content-length');
-//                     EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
-//                 }
-//                 EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource)
-//                     .then(async result => {
-//                         if (result.resultMsg === 'Success') {
-//                             if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
-//                             EditorStore.tempFileLayoutList[i].progress = 0;
-//                             EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
-//                             await EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
-//                         } else if (dto.resultMsg === 'Fail') {
-//                             EditorStore.failCount++;
-//                             EditorStore.tempFileLayoutList[i].progress = 0;
-//                             EditorStore.tempFileLayoutList[i].error = true;
-//                         }
-//                         EditorStore.processLength++;
-//                         if (EditorStore.processLength == EditorStore.uploadLength) {
-//                             EditorStore.uploadDTO = [];
-//                             EditorStore.setProcessLength(0);
-//                             EditorStore.setIsUploading(false);
-//                             if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
-//                             else if (EditorStore.failCount === 0) {
-//                                 PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-//                                     EditorStore.setFileList(
-//                                         dto.fileList,
-//                                     );
-//                                     EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
-//                                     EditorStore.setProcessCount(0);
-//                                     EditorStore.setTempFileLayoutList([]);
-//                                 });
-//                             }
-//                         }
-//                     }).catch(e => {
-//                         if (e !== 'Network Error') {
-//                             EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
-//                             EditorStore.processLength++;
-//                         }
-//                     })
-//             })(EditorStore.uploadDTO[i])
-//         }
-//     }
-// }
-
 export const handleUpload = async () => {
-    let uploadArr = [];
     if (EditorStore.uploadDTO) {
         EditorStore.setIsUploading(true);
-        uploadArr = toJS(EditorStore.uploadDTO).map(item => {
-            return EditorStore.createUploadMeta(item.uploadMeta, item.type);
-        });
-        await Promise.all(uploadArr).then(results => {
-            if (EditorStore.uploadDTO.length === results.length) {
-                for (let i = 0; i < results.length; i++) {
-                    (function (result) {
-                        if (result.id !== undefined) {
-                            const handleUploadProgress = (e) => {
-                                const totalLength = e.lengthComputable
-                                    ? e.total
-                                    : e.target.getResponseHeader('content-length') ||
-                                    e.target.getResponseHeader('x-decompressed-content-length');
-                                EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
-                                EditorStore.tempFileLayoutList[i].file_id = result.id;
-                            }
-                            EditorStore.createUploadStorage(result.id, EditorStore.uploadDTO[i].file, handleUploadProgress).then(dto => {
-                                if (dto.resultMsg === 'Success') {
-                                    if (result.type === 'image') EditorStore.createDriveElement('image', result.id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
-                                    EditorStore.tempFileLayoutList[i].progress = 0;
-                                } else if (dto.resultMsg === 'Fail') {
-                                    EditorStore.failCount++;
-                                    EditorStore.tempFileLayoutList[i].progress = 0;
-                                    EditorStore.tempFileLayoutList[i].error = true;
-                                }
-                                EditorStore.processLength++;
-                                if (EditorStore.processLength == EditorStore.uploadLength) {
-                                    EditorStore.uploadDTO = [];
-                                    EditorStore.setProcessLength(0);
-                                    EditorStore.setIsUploading(false);
-                                    if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
-                                    else if (EditorStore.failCount === 0) {
-                                        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-                                            EditorStore.setFileList(
-                                                dto.fileList,
-                                            );
-                                            EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
-                                            EditorStore.setProcessCount(0);
-                                            EditorStore.setTempFileLayoutList([]);
-                                        });
-                                    }
-                                }
-                            })
-                        }
-                    })(results[i])
+        for (let i = 0; i < EditorStore.uploadDTO.length; i++) {
+            (function (item) {
+                const handleUploadProgress = (e) => {
+                    const totalLength = e.lengthComputable
+                        ? e.total
+                        : e.target.getResponseHeader('content-length') ||
+                        e.target.getResponseHeader('x-decompressed-content-length');
+                    EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
                 }
-            }
-        })
+                EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource)
+                    .then(async result => {
+                        if (result.resultMsg === 'Success') {
+                            if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+                            EditorStore.tempFileLayoutList[i].progress = 0;
+                            EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
+                            await EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
+                        } else if (dto.resultMsg === 'Fail') {
+                            EditorStore.failCount++;
+                            EditorStore.tempFileLayoutList[i].progress = 0;
+                            EditorStore.tempFileLayoutList[i].error = true;
+                        }
+                        EditorStore.processLength++;
+                        if (EditorStore.processLength == EditorStore.uploadLength) {
+                            EditorStore.uploadDTO = [];
+                            EditorStore.setProcessLength(0);
+                            EditorStore.setIsUploading(false);
+                            if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
+                            else if (EditorStore.failCount === 0) {
+                                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                                    EditorStore.setFileList(
+                                        dto.fileList,
+                                    );
+                                    EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+                                    EditorStore.setProcessCount(0);
+                                    EditorStore.setTempFileLayoutList([]);
+                                });
+                            }
+                        }
+                    }).catch(e => {
+                        if (e !== 'Network Error') {
+                            EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
+                            EditorStore.processLength++;
+                        }
+                    })
+            })(EditorStore.uploadDTO[i])
+        }
     }
 }
 

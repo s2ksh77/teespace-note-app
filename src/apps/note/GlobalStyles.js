@@ -318,6 +318,9 @@ export const GlobalStyle = createGlobalStyle`
     border-top: 0px solid black !important;
     padding:1.75rem 0 !important;
   }
+  .ant-upload.ant-upload-select{
+    display: none;
+  }
 `;
 
 export const LNB = styled.div`
