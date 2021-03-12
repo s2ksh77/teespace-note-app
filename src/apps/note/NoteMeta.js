@@ -30,13 +30,13 @@ const NoteMeta = {
       case "viewInfo":
         return {
           ...initialConfig,
-          title: i18n.t('viewInfo'),
+          title: i18n.t('NOTE_DELIVER_CONTEXT_MENU_04'),
           className: "viewInfoModal"
         }
       case "forward":
         return {
           ...initialConfig,
-          title: i18n.t('forward'),
+          title: i18n.t('CM_FORWARD'),
           className: "forwardModal"
         }
       default:
@@ -144,12 +144,12 @@ const NoteMeta = {
   },
   setBtns(type) {
     const shape = "default";
-    const defaultBtn1 = { type: "solid", shape, text: i18n.t('ok') }; // 버튼 한 개일 때랑 text 바꿔서 사용
-    const defaultBtn2 = { type: "default", shape, text: i18n.t('cancel') };
+    const defaultBtn1 = { type: "solid", shape, text: i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_03') }; // 버튼 한 개일 때랑 text 바꿔서 사용
+    const defaultBtn2 = { type: "default", shape, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05') };
 
     switch (type) {
       case 'delete': // chapter랑 page
-        return [{ ...defaultBtn1, text: i18n.t('delete') }, defaultBtn2];
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04') }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -162,7 +162,7 @@ const NoteMeta = {
       case 'uploadingFiles':
         return [defaultBtn1];
       case 'editCancel':
-        return [{ ...defaultBtn1, text: i18n.t('save') }, { ...defaultBtn1, text: i18n.t('notSave') }, defaultBtn2];
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, { ...defaultBtn1, text: i18n.t('NOTE_EDIT_PAGE_COMPLETE_02') }, defaultBtn2];
       default:
         return;
     }
@@ -181,68 +181,63 @@ const NoteMeta = {
     // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
-        dialogType.title = 'chapterDelete';
-        dialogType.subtitle = 'chapterChildrenDelete';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
+        dialogType.subtitle = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_07';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'page':
-        dialogType.title = 'pageDelete';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
         dialogType.btns = this.setBtns('delete');
         break;
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('otherEditing', { userName: PageStore.editingUserName });
-        dialogType.title = 'unableDelte';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('othersEditing', { count: PageStore.editingUserCount });
-        dialogType.title = 'unableDelte';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', { count: PageStore.editingUserCount });
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
-        dialogType.title = 'editCancel';
+        dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
         dialogType.btns = this.setBtns(type);
         break;
-      case 'fileDelete':
-        dialogType.title = i18n.t('selectedDelete', { fileName: fileName });
-        dialogType.subtitle = 'notRestore';
-        dialogType.btns = this.setBtns('delete');
-        break;
       case 'titleDuplicate':
-        dialogType.title = 'duplicate';
-        dialogType.subtitle = 'anotherName';
+        dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
+        dialogType.subtitle = 'NOTE_PAGE_LIST_CREATE_N_CHPT_02';
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
-        dialogType.title = 'usedTagName';
+        dialogType.title = 'NOTE_EDIT_PAGE_ADD_TAG_01';
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
-        dialogType.subtitle = i18n.t('otherEditing', { userName: PageStore.editingUserName });
-        dialogType.title = 'unableModify';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
+        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
-        dialogType.title = 'deletedNote';
+        dialogType.title = 'TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01';
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.subtitle = i18n.t('uploadFail', { uploadCnt: EditorStore.uploadLength, failCnt: EditorStore.failCount });
-        dialogType.title = 'someFilesUploadFail';
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.uploadLength, failCnt: EditorStore.failCount });
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
-        dialogType.title = 'sizeoverUpload';
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_04';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
       case 'failUpload':
-        dialogType.title = 'countoverUpload';
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_05';
         dialogType.btns = this.setBtns('failUpload');
         break;
       case 'failUploadByFileNameLen':
-        dialogType.title = 'lengthoverUpload';
+        dialogType.title = 'DRIVE_UPLOAD_BTN_04';
         dialogType.btns = this.setBtns(type);
         break;
       case 'uploadingFiles':

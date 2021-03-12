@@ -101,12 +101,12 @@ const EditorHeader = () => {
       >
         <EditorHeaderContainer1>
           <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
-            {PageStore.isReadMode() ? t('modify') : t('save')}
+            {PageStore.isReadMode() ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01') : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
           </EditBtn>
           <EditorTitle
             id="editorTitle"
             maxLength="200"
-            placeholder={t('untitled')}
+            placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
             disabled={!PageStore.isReadMode() ? false : true}

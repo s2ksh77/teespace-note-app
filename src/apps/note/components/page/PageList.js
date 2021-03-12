@@ -77,7 +77,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
       >
         <PageMargin />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
-          <NewPageText>+ {t('addNewPage')}</NewPageText>
+          <NewPageText>+ {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}</NewPageText>
         </NewPageBtn>
       </NewPage>
     </>

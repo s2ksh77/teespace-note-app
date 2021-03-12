@@ -53,6 +53,8 @@ const EditorStore = observable({
   searchTotalCount: 0,
   searchValue: '',
   isUploading: false,
+  uploaderRef: '',
+  uploaderType: '',
   getTempTinymce() {
     return this.tempTinymce
   },
@@ -139,6 +141,13 @@ const EditorStore = observable({
   },
   setIsUploading(isUploading) {
     this.isUploading = isUploading;
+  },
+  setUploaderType(type) {
+    this.uploaderType = type;
+  },
+  setUploaderRef(ref) {
+    this.uploaderRef = ref;
+    console.log(toJS(this.uploaderRef))
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {
@@ -256,6 +265,17 @@ const EditorStore = observable({
   readerIsImage(type) {
     return type.includes('image/');
   },
+  getFileInfo(file) {
+    let fileName = file.name;
+    let dotIndex = fileName.lastIndexOf('.');
+    let fileExtension;
+    let fileSize = file.size;
+    if (dotIndex !== -1) {
+      fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+      fileName = fileName.substring(0, dotIndex);
+    }
+    return { fileName, fileExtension, fileSize };
+  },
   setFileIndex(idx) {
     this.selectFileIdx = idx;
   },
@@ -311,7 +331,7 @@ const EditorStore = observable({
       "error": false
     }
     this.setTempFileList(tempMeta)
-    const cancelToken = API.CancelToken.source();
+    const cancelToken = new API.CancelToken.source();
     const uploadArr = {
       gwMeta,
       uploadMeta,
@@ -326,7 +346,7 @@ const EditorStore = observable({
   },
   setTempFileList(target) {
     if (this.processCount !== this.uploadLength) {
-      this.tempFileLayoutList.unshift(target);
+      this.tempFileLayoutList.push(target);
       this.processCount++
     } else this.processCount = 0;
     if (!this.isFile) this.setIsFile(true);

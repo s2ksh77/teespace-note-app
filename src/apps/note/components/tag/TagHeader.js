@@ -70,7 +70,7 @@ const TagHeader = () => {
               ref={inputRef}
               value={value}
               onChange={onChangeInput}
-              placeholder={t('searchTag')}
+              placeholder={t('NOTE_TAG_TAG_MENU_05')}
               onKeyDown={handleKeyDown}
               isSearch={activateSearchIcon ? true : false}
             />

@@ -13,9 +13,9 @@ const ViewInfoModal = () => {
   const { t } = useTranslation();
   const { sharedRoomName, sharedUserName, sharedDate } = NoteStore.sharedInfo;
   const sharedInfo = [
-    { title: t('forwardRoom'), content: sharedRoomName },
-    { title: t('forwardMemeber'), content: sharedUserName },
-    { title: t('forwardDate'), content: sharedDate }
+    { title: t('NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01'), content: sharedRoomName },
+    { title: t('NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02'), content: sharedUserName },
+    { title: t('NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03'), content: sharedDate }
   ];
 
   return (

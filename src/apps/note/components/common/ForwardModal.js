@@ -39,7 +39,7 @@ const ForwardModal = ({ handleCancel }) => {
     <RoomShareCover>
       <ItemSelector
         isVisibleRoom={true}
-        placeholder={t('selectFromList')}
+        placeholder={t('NOTE_DELIVER_TO_ANOTHER_ROOM_05')}
         onSelectChange={handleSelectChange}
       />
       <StyledButtonGroup>
@@ -51,10 +51,10 @@ const ForwardModal = ({ handleCancel }) => {
           onClick={handleShare}
           disabled={!shareArraysCnt}
         >
-          {t('send')}
+          {t('NOTE_DELIVER_TO_ANOTHER_ROOM_07')}
           {shareArraysCnt > 0 && ` ${shareArraysCnt}`}
         </AddMarginBtn>
-        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>{t('cancel')}</Button>
+        <Button key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')}</Button>
       </StyledButtonGroup>
     </RoomShareCover>
   )

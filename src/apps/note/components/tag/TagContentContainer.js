@@ -19,10 +19,10 @@ const customExpandIcon = props => {
 const TagContentContainer = observer(() => {
   const { t } = useTranslation();
   const categoryInfo = {
-    KOR: t('korCategory'),
-    ENG: t('engCategory'),
-    NUM: t('numCategory'),
-    ETC: t('etcCategory'),
+    KOR: t('NOTE_TAG_TAG_MENU_01'),
+    ENG: t('NOTE_TAG_TAG_MENU_02'),
+    NUM: t('NOTE_TAG_TAG_MENU_03'),
+    ETC: t('NOTE_TAG_TAG_MENU_04'),
   };
 
   return (

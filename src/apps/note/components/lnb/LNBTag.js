@@ -49,7 +49,7 @@ const LNBTag = memo(({ flexOrder }) => {
           src={tagImg}
           alt="tagImg"
         />
-        <TagTxt>{t('tag')}</TagTxt>
+        <TagTxt>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</TagTxt>
       </LnbTagContainer>
     </>
   ));

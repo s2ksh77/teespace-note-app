@@ -12,7 +12,7 @@ const SearchingImg = () => {
   return (
     <>
       <SearchLoadingContainer>
-        <SearchLoadingTxt>{t('searching')}</SearchLoadingTxt>
+        <SearchLoadingTxt>{t('NOTE_EDIT_PAGE_SEARCH_02')}</SearchLoadingTxt>
         <SearchLoadingImg src={loadingImg} />
       </SearchLoadingContainer>
     </>

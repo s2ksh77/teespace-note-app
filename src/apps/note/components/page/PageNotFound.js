@@ -29,13 +29,13 @@ const PageNotFound = ({ type }) => {
         <NoneContainer>
           <NoneTitle>
             {isPage
-              ? t('noPage')
-              : t('noChapter')}
+              ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01')
+              : t('NOTE_PAGE_LIST_NO_CHPT_01')}
           </NoneTitle>
           <NoneText>
             {isPage
-              ? t('clickNewPage')
-              : t('clickNewChapter')}
+              ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02')
+              : t('NOTE_PAGE_LIST_NO_CHPT_02')}
           </NoneText>
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>

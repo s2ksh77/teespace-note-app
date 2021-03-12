@@ -182,7 +182,6 @@ const NoteStore = observable({
         break;
       case 'chapterconfirm':
       case 'confirm':
-      case 'fileDelete':
       case 'chapter':
       case 'page':
       case 'editCancel':

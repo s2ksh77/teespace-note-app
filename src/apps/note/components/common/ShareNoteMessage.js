@@ -127,12 +127,12 @@ const ShareNoteMessage = ({ roomId, noteId, noteTitle }) => {
     <>
       <Message
         visible={informDeleted}
-        title={t('deletedNote')}
+        title={t('TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01')}
         type="error"
         btns={[{
           type: 'solid',
           shape: 'round',
-          text: t('ok'),
+          text: t('NOTE_PAGE_LIST_CREATE_N_CHPT_03'),
           onClick: handleClick
         }]}
       />
