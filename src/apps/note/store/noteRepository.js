@@ -301,13 +301,13 @@ class NoteRepository {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
-          USER_ID: userId,
+          USER_ID: this.USER_ID,
           note_channel_id: this.chId,
           note_id: noteId,
           is_edit: '',
           parent_notebook: chapterId,
           TYPE: 'NONEDIT',
-          user_name: userName,
+          user_name: this.USER_NAME,
         },
       });
     } catch (e) {
