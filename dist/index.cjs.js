@@ -900,13 +900,13 @@ var NoteRepository = /*#__PURE__*/function () {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
-                    USER_ID: userId,
+                    USER_ID: this.USER_ID,
                     note_channel_id: this.chId,
                     note_id: noteId,
                     is_edit: '',
                     parent_notebook: chapterId,
                     TYPE: 'NONEDIT',
-                    user_name: userName
+                    user_name: this.USER_NAME
                   }
                 });
 
@@ -3634,6 +3634,8 @@ var PageStore = mobx.observable((_observable$1 = {
             _this2.setCurrentPageId(pageId);
 
             _this2.fetchCurrentPageData(pageId);
+          } else {
+            _this2.setCurrentPageId('');
           }
         }
       }
@@ -5782,9 +5784,6 @@ var handleWebsocket = function handleWebsocket() {
         case EVENT_TYPE.NONEDIT:
         case EVENT_TYPE.EDIT_START:
           // EDIT,NOTE_ID:USER_ID
-          var target = message.NOTI_ETC.split(',')[1];
-          targetID = target.split(':')[0];
-          targetUSER = target.split(':')[1];
           if (isWeb && targetUSER === loginUSER) return;
 
           if (PageStore.getCurrentPageId() === targetID) {
