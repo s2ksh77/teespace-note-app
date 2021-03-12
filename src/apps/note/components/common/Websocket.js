@@ -46,9 +46,6 @@ export const handleWebsocket = (isWeb=true) => (message) => {
             case EVENT_TYPE.EDIT_DONE:
             case EVENT_TYPE.NONEDIT:
             case EVENT_TYPE.EDIT_START: // EDIT,NOTE_ID:USER_ID
-                const target = message.NOTI_ETC.split(',')[1];
-                targetID = target.split(':')[0];
-                targetUSER = target.split(':')[1];
                 if (isWeb && targetUSER === loginUSER) return;
                 if (PageStore.getCurrentPageId() === targetID) {
                     PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
