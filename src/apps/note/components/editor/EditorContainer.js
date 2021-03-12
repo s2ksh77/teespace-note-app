@@ -484,7 +484,6 @@ const EditorContainer = () => {
             image_uploadtab: true,
             file_picker_types: 'image media',
             automatic_uploads: true,
-            file_picker_callback: handleFileBlob,
             default_link_target: '_blank',
             target_list: false,
             link_assume_external_targets: 'http',
