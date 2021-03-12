@@ -80,7 +80,7 @@ const LNBHeader = ({ createNewChapter }) => {
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
         <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
-          {t('newChapter')}
+          {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
         </LnbTitleNewButton>
         <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false}>
           <SearchImgInput type="image" border="0" alt=" " src={searchImg} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false} />
@@ -96,7 +96,7 @@ const LNBHeader = ({ createNewChapter }) => {
           ) :
             <LnbTitleSearchInput
               ref={inputRef} value={ChapterStore.searchStr} onChange={onChangeInput}
-              placeholder={ChapterStore.isTagSearching ? "" : t('searchPageChapter')}
+              placeholder={ChapterStore.isTagSearching ? "" : t('NOTE_PAGE_LIST_CMPNT_DEF_05')}
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => e.key === 'Escape' ? onClickCancelBtn() : null}
             />}

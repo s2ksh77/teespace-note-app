@@ -245,13 +245,13 @@ const EditorContainer = () => {
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
-            <ReadModeText>{t('readmode')}</ReadModeText>
+            <ReadModeText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}</ReadModeText>
           </ReadModeContainer>) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <StyledWaplSearch
               onChange={handleSearchInputChange}
-              placeholder={t('searchContent')}
+              placeholder={t('NOTE_EDIT_PAGE_SEARCH_03')}
               onEnterDown={handleSearchEditor}
               onClear={handleClearSearch}
               onSearchPrev={handleSearchPrev}
@@ -333,13 +333,13 @@ const EditorContainer = () => {
               // 정렬 그룹 버튼
               editor.ui.registry.addGroupToolbarButton('alignment', {
                 icon: 'align-center',
-                tooltip: t('align'),
+                tooltip: t('NOTE_EDIT_PAGE_MENUBAR_35'),
                 items: 'alignleft aligncenter alignright alignjustify'
               });
 
               editor.ui.registry.addButton('insertImage', {
                 icon: 'image',
-                tooltip: t('insertImages'),
+                tooltip: t('NOTE_EDIT_PAGE_MENUBAR_23'),
                 onAction: function () {
                   EditorStore.setUploaderType('image');
                   EditorStore.uploaderRef.click();
@@ -358,19 +358,19 @@ const EditorContainer = () => {
               `);
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'fileIcon',
-                tooltip: t('attachFile'),
+                tooltip: t('NOTE_EDIT_PAGE_MENUBAR_24'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: t('attachDrive'),
+                      text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
                       onAction: function () {
                         EditorStore.setIsDrive(true);
                       }
                     },
                     {
                       type: 'menuitem',
-                      text: t('attachLocal'),
+                      text: t('NOTE_EDIT_PAGE_ATTACH_FILE_02'),
                       onAction: function () {
                         // editor.editorUpload.uploadImages(handleFileBlob('file'))
                         EditorStore.setUploaderType('file');
@@ -428,7 +428,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('changeImage', {
                 icon: 'gallery',
-                tooltip: t('replaceImages'),
+                tooltip: t('NOTE_EDIT_PAGE_MENUBAR_30'),
                 onAction: function (_) {
                   EditorStore.setUploaderType('image');
                   EditorStore.uploaderRef.click();
@@ -438,12 +438,12 @@ const EditorContainer = () => {
               // 이미지 다운로드/삭제
               editor.ui.registry.addMenuButton('downloadImage', {
                 icon: 'save',
-                tooltip: t('download'),
+                tooltip: t('NOTE_EDIT_PAGE_MENUBAR_34'),
                 fetch: function (callback) {
                   var items = [
                     {
                       type: 'menuitem',
-                      text: t('saveToDrive'),
+                      text: t('NOTE_EDIT_PAGE_MENUBAR_32'),
                       onAction: function () {
                         const node = editor.selection.getNode();
                         let fileName = node.getAttribute('data-name');
@@ -459,7 +459,7 @@ const EditorContainer = () => {
                     },
                     {
                       type: 'menuitem',
-                      text: t('saveToMyPC'),
+                      text: t('NOTE_EDIT_PAGE_MENUBAR_33'),
                       onAction: function () {
                         const id = editor.selection.getNode().id;
                         if (id) downloadFile(id);
@@ -472,7 +472,7 @@ const EditorContainer = () => {
               });
               editor.ui.registry.addButton('deleteImage', {
                 icon: 'remove',
-                tooltip: t('delete'),
+                tooltip: t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04'),
                 onAction: function () {
                   EditorStore.deleteImage();
                 },

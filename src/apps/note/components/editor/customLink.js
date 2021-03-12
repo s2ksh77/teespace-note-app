@@ -23,7 +23,7 @@ const changeLinkDialogHeader = (header) => {
   header.classList.add("custom-dialog-header")
   const title = header.querySelector('.tox-dialog__title');
   title.classList.add("custom-dialog-title");
-  title.textContent = i18n.t('insertLink');
+  title.textContent = i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_01');
 }
 
 const changeLinkDialogFooter = (footer) => {
@@ -57,7 +57,7 @@ const urlSaveCondition = (_value) => {
     if (isValidMail(_value)) return { result: false, message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요." }; // mailto 붙여달라고 메시지 띄우기
   }
   if (checkUrlValidation(_value)) return { result: true, message: "" }; // pass
-  return { result: false, message: i18n.t('invalidLink') }; // 유효하지 않은 주소라고 메시지 띄우기
+  return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_06') }; // 유효하지 않은 주소라고 메시지 띄우기
 }
 
 // errorMark 관련된 함수
@@ -89,7 +89,7 @@ const changeLinkDialogForm = (dialog) => {
   form.insertBefore(form.children[1], form.children[0]);
   form.classList.add("custom-dialog-form");
 
-  const formStr = { url: i18n.t('link'), text: i18n.t('text') };
+  const formStr = { url: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_05'), text: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_04') };
   const targetInputs$ = form.querySelectorAll('input');
   const saveBtn = dialog.querySelector('.tox-dialog__footer button');
 
@@ -140,7 +140,7 @@ const changeLinkDialogForm = (dialog) => {
   custimizing contextToolbar
 */
 export const changeButtonStyle = (idx, count) => {
-  const linkToolbarStr = [i18n.t('editLink'), i18n.t('deleteLink'), i18n.t('moveToLink')]
+  const linkToolbarStr = [i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_07'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_08'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_09')]
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
   const target = toolbar.childNodes?.[idx];

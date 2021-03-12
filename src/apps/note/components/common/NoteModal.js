@@ -37,7 +37,7 @@ const NoteModal = observer(() => {
           visible={true}
           title={t(title)}
           centered
-          footer={(modalName === "viewInfo") && <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{t('ok')}</Button>}
+          footer={(modalName === "viewInfo") && <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')}</Button>}
           onCancel={handleCancel}
           wrapClassName={className}
         >

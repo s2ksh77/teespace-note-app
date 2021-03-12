@@ -210,8 +210,8 @@ const FileLayout = () => {
 
     const menu = (
         <StyledMenu onClick={onClickContextMenu}>
-            <Menu.Item key="0">{t('saveToDrive')}</Menu.Item>
-            <Menu.Item key="1">{t('saveToMyPC')}</Menu.Item>
+            <Menu.Item key="0">{t('NOTE_EDIT_PAGE_MENUBAR_32')}</Menu.Item>
+            <Menu.Item key="1">{t('NOTE_EDIT_PAGE_MENUBAR_33')}</Menu.Item>
         </StyledMenu>
     );
 

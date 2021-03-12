@@ -63,7 +63,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
           <ChapterColor color={ChapterStore.isNewChapterColor} />
           <ChapterInput
             ref={titleRef}
-            placeholder={t('newChapter')}
+            placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
             maxLength="200"
             value={ChapterStore.chapterNewTitle}
             onChange={handleTitleInput}

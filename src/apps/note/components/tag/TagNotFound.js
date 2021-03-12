@@ -16,8 +16,8 @@ const TagNotFound = () => {
   return (
     <>
       <NoneContainer>
-        <NoneTitle>{t('noTagFound')}</NoneTitle>
-        <NoneText>{t('notag')}</NoneText>
+        <NoneTitle>{t('NOTE_TAG_NO_CONTENTS_01')}</NoneTitle>
+        <NoneText>{t('NOTE_TAG_NO_CONTENTS_02')}</NoneText>
         <NoneImg src={noPageImage} alt="tag_not_found" />
       </NoneContainer>
     </>

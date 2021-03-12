@@ -20,7 +20,7 @@ const SearchResultNotFound = ({ searchStr }) => {
     <>
       <SearchResultNotFoundCover>
         <SearchKeyword>'{searchText}'</SearchKeyword>
-        <NoSearchResultTitle>{t('noSearchResult')}</NoSearchResultTitle>
+        <NoSearchResultTitle>{t('NOTE_EDIT_PAGE_SEARCH_01')}</NoSearchResultTitle>
         <NoSearchResultImg src={noSearchResultImg} />
       </SearchResultNotFoundCover>
     </>

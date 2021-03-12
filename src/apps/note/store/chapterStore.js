@@ -140,7 +140,7 @@ const ChapterStore = observable({
     this.chapterNewTitle = title;
   },
   // 사용자 input이 없을 때
-  // 웹에서 더이상 안씀!
+  // 웹에서 더이상 안씀! 모바일에서도 안씀!
   getNewChapterTitle() {
     const re = /^새 챕터 (\d+)$/gm;
     let chapterTitle, temp;
@@ -582,7 +582,7 @@ const ChapterStore = observable({
         if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();
         else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
-          NoteStore.setToastText(i18n.t('chapterMove', { moveCnt: moveCnt }));
+          NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', { moveCnt: moveCnt }));
           NoteStore.setIsVisibleToast(true);
         });
       });

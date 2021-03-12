@@ -136,13 +136,13 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       {note.type !== 'shared_page'
-        && <Item key="0">{t('rename')}</Item>}
-      <Item key="1">{t('delete')}</Item>
-      <Item key="2">{t('forward')}</Item>
+        && <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>}
+      <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
+      <Item key="2">{t('CM_FORWARD')}</Item>
       {spaceStore.currentSpace?.plan !== 'BASIC'
-        && <Item key="3">{t('sendEmail')}</Item>}
+        && <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>}
       <SubMenu
-        title={t('export')}
+        title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
         onTitleClick={handleSubMenuClick}
         disabled={
           noteType === 'chapter' && !note.children.length
@@ -150,11 +150,11 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
             : false
         }
       >
-        <Item key="4">{t('pdfFormat')}</Item>
-        <Item key="5">{t('txtFormat')}</Item>
+        <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
+        <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
       </SubMenu>
       {note.type === 'shared'
-        && <Item key="6">{t('viewInfo')}</Item>}
+        && <Item key="6">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>}
     </Menu>
   );
 

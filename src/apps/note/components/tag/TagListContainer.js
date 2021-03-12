@@ -180,7 +180,7 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Tooltip title={!PageStore.isReadMode() ? t('addTag') : t('notavailableTag')}>
+        <Tooltip title={!PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>

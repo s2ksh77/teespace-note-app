@@ -36,7 +36,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
                 : '2.63rem'
             }
           >
-            {chapter.type === 'shared_page' ? t('receivedPage') : chapter.text}
+            {chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text}
           </ChapterTextSpan>
         </Tooltip>
         <ContextMenu
