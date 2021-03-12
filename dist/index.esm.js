@@ -2267,6 +2267,8 @@ var EditorStore = observable((_observable = {
   searchTotalCount: 0,
   searchValue: '',
   isUploading: false,
+  uploaderRef: '',
+  uploaderType: '',
   getTempTinymce: function getTempTinymce() {
     return this.tempTinymce;
   },
@@ -2354,6 +2356,13 @@ var EditorStore = observable((_observable = {
   },
   setIsUploading: function setIsUploading(isUploading) {
     this.isUploading = isUploading;
+  },
+  setUploaderType: function setUploaderType(type) {
+    this.uploaderType = type;
+  },
+  setUploaderRef: function setUploaderRef(ref) {
+    this.uploaderRef = ref;
+    console.log(toJS(this.uploaderRef));
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
@@ -2573,6 +2582,22 @@ var EditorStore = observable((_observable = {
   return ImageExt.includes(ext.toLowerCase());
 }), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
+}), _defineProperty(_observable, "getFileInfo", function getFileInfo(file) {
+  var fileName = file.name;
+  var dotIndex = fileName.lastIndexOf('.');
+  var fileExtension;
+  var fileSize = file.size;
+
+  if (dotIndex !== -1) {
+    fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+    fileName = fileName.substring(0, dotIndex);
+  }
+
+  return {
+    fileName: fileName,
+    fileExtension: fileExtension,
+    fileSize: fileSize
+  };
 }), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
   this.selectFileIdx = idx;
 }), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
@@ -2626,7 +2651,7 @@ var EditorStore = observable((_observable = {
     "error": false
   };
   this.setTempFileList(tempMeta);
-  var cancelToken = API.CancelToken.source();
+  var cancelToken = new API.CancelToken.source();
   var uploadArr = {
     gwMeta: gwMeta,
     uploadMeta: uploadMeta,
@@ -2639,7 +2664,7 @@ var EditorStore = observable((_observable = {
   this.uploadDTO.push(meta);
 }), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
   if (this.processCount !== this.uploadLength) {
-    this.tempFileLayoutList.unshift(target);
+    this.tempFileLayoutList.push(target);
     this.processCount++;
   } else this.processCount = 0;
 
@@ -2819,195 +2844,267 @@ var EditorStore = observable((_observable = {
 }), _observable));
 
 var languageSet = {
-  newChapter: '새 챕터',
-  page: '페이지',
-  chapter: '챕터',
-  searchPageChapter: '페이지, 챕터 검색',
-  addNewPage: '새 페이지 추가',
-  tag: '태그',
-  untitled: '(제목 없음)',
-  table: '(표)',
-  newPage: '새 페이지',
-  receivedPage: '전달받은 페이지',
-  duplicate: '중복된 이름이 있습니다.',
-  anotherName: '다른 이름을 입력해주세요.',
-  ok: '확인',
-  unableModify: '수정할 수 없습니다.',
-  unableDelte: '삭제 할 수 없습니다.',
-  otherEditing: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.",
-  othersEditing: "{{count}} \uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
-  pageDelete: '페이지를 삭제하시겠습니까?',
-  chapterDelete: '챕터를 삭제하시겠습니까?',
-  chapterChildrenDelete: '챕터에 속한 페이지도 삭제됩니다.',
-  delete: '삭제',
-  cancel: '취소',
-  modify: '수정',
-  download: '다운로드',
-  amSameDay: "\uC624\uC804 {{time}}",
-  pmSameDay: "\uC624\uD6C4 {{time}}",
-  readmode: '읽기 모드',
-  save: '저장',
-  pageotherMove: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}} \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  chapterMove: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  pageMove: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  noPage: '페이지가 없습니다.',
-  noChapter: '챕터가 없습니다.',
-  clickNewPage: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
-  clickNewChapter: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
-  // unregisteredMember: `${}`,
-  noSearchResult: '검색 결과가 없습니다.',
-  searching: '검색 실행 중입니다.',
-  searchContent: '내용 검색',
-  insertLink: '링크 삽입',
-  done: '완료',
+  NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
+  NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
+  NOTE_PAGE_LIST_CMPNT_DEF_03: '(제목 없음)',
+  NOTE_PAGE_LIST_CMPNT_DEF_04: '새 페이지 추가',
+  NOTE_PAGE_LIST_CMPNT_DEF_05: '페이지, 챕터 검색',
+  NOTE_PAGE_LIST_CMPNT_DEF_06: '태그',
+  NOTE_PAGE_LIST_CMPNT_DEF_07: '전달받은 페이지',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_01: '중복된 이름이 있습니다.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_02: '다른 이름을 입력하세요.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_03: '확인',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: '삭제할 수 없습니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: '페이지를 삭제하시겠습니까?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지도 삭제됩니다.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_04: '저장',
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}} \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
+  NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
+  NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
+  NOTE_EDIT_PAGE_SEARCH_03: '내용 검색',
+  NOTE_EDIT_PAGE_INSERT_LINK_01: '링크 삽입',
+  NOTE_EDIT_PAGE_INSERT_LINK_02: '완료',
+  NOTE_EDIT_PAGE_INSERT_LINK_03: '텍스트를 입력하세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_04: '텍스트',
+  NOTE_EDIT_PAGE_INSERT_LINK_05: '링크',
+  NOTE_EDIT_PAGE_INSERT_LINK_06: '해당 URL은 유효하지 않습니다.',
+  NOTE_EDIT_PAGE_INSERT_LINK_07: '링크 편집',
+  NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
+  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
+  NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
+  NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_COMPLETE_02: '저장 안함',
+  NOTE_DELIVER_CONTEXT_MENU_01: '이름 변경',
+  NOTE_DELIVER_CONTEXT_MENU_02: 'Mail로 전달',
+  NOTE_DELIVER_CONTEXT_MENU_03: '내보내기',
+  NOTE_DELIVER_CONTEXT_MENU_04: '정보 보기',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: '출처 룸',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: '전달한 멤버',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: '전달 날짜',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_01: '별명 검색',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_02: '룸',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_03: '프렌즈',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_04: '나에게',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_05: '프렌즈/룸 목록에서\n선택해 주세요.',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_06: '룸 이름, 멤버 검색',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_07: '전달',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_08: '즐겨찾기',
+  NOTE_TAG_TAG_MENU_01: 'ㄱ~ㅎ',
+  NOTE_TAG_TAG_MENU_02: 'A~Z',
+  NOTE_TAG_TAG_MENU_03: '0~9',
+  NOTE_TAG_TAG_MENU_04: '기타',
+  NOTE_TAG_TAG_MENU_05: '태그 검색',
+  NOTE_TAG_NO_CONTENTS_01: '태그가 없습니다.',
+  NOTE_TAG_NO_CONTENTS_02: '페이지 하단에 태그를 입력하여 추가하세요.',
+  NOTE_EDIT_PAGE_MENUBAR_01: '실행 취소',
+  NOTE_EDIT_PAGE_MENUBAR_02: '다시 실행',
+  NOTE_EDIT_PAGE_MENUBAR_03: '본문 스타일',
+  NOTE_EDIT_PAGE_MENUBAR_04: '폰트 종류',
+  NOTE_EDIT_PAGE_MENUBAR_05: '폰트 크기',
+  NOTE_EDIT_PAGE_MENUBAR_06: '글자색',
+  NOTE_EDIT_PAGE_MENUBAR_07: '배경색',
+  NOTE_EDIT_PAGE_MENUBAR_08: '볼드체',
+  NOTE_EDIT_PAGE_MENUBAR_09: '이탤릭체',
+  NOTE_EDIT_PAGE_MENUBAR_10: '밑줄체',
+  NOTE_EDIT_PAGE_MENUBAR_11: '왼쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_12: '가운데 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_13: '오른쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_14: '양쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_15: '번호 매기기',
+  NOTE_EDIT_PAGE_MENUBAR_16: '글머리 기호',
+  NOTE_EDIT_PAGE_MENUBAR_17: '체크리스트',
+  NOTE_EDIT_PAGE_MENUBAR_18: '들여쓰기',
+  NOTE_EDIT_PAGE_MENUBAR_19: '내어쓰기',
+  NOTE_EDIT_PAGE_MENUBAR_20: '구분선',
+  NOTE_EDIT_PAGE_MENUBAR_21: '표',
+  NOTE_EDIT_PAGE_MENUBAR_22: '현재 시간 입력',
+  NOTE_EDIT_PAGE_MENUBAR_23: '이미지 삽입',
+  NOTE_EDIT_PAGE_MENUBAR_24: '파일 첨부',
+  NOTE_EDIT_PAGE_MENUBAR_25: '반시계 방향 90도 회전',
+  NOTE_EDIT_PAGE_MENUBAR_26: '시계 방향 90도 회전',
+  NOTE_EDIT_PAGE_MENUBAR_27: '상하 반전',
+  NOTE_EDIT_PAGE_MENUBAR_28: '좌우 반전',
+  NOTE_EDIT_PAGE_MENUBAR_29: '이미지 편집',
+  NOTE_EDIT_PAGE_MENUBAR_30: '이미지 교체',
+  NOTE_EDIT_PAGE_MENUBAR_31: '취소선',
+  NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
+  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 있는 태그 이름입니다.',
+  NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
+  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
+  NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
+  NOTE_EDIT_PAGE_MENUBAR_33: '내 PC에 저장',
+  NOTE_EDIT_PAGE_MENUBAR_34: '다운로드',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "{{count}} \uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF 형식(.pdf)',
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
+  NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.￦n취소 후 페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_INSERT_LINK_10: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: '',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: '',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: '',
+  NOTE_EDIT_PAGE_CANT_EDIT_01: '수정할 수 없습니다.',
+  NOTE_ADD_TAGS_01: '태그 추가',
+  NOTE_ADD_TAGS_02: '읽기모드에서는 추가할 수 없습니다.',
+  NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
+  CM_FORWARD: '다른 룸으로 전달',
+  TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: '노트가 삭제되어 불러올 수 없습니다.',
+  DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
+  NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
+  NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
+  NOTE_EXPORT_TITLE: '제목',
   enterText: '텍스트를 입력해 주세요.',
-  enterLink: '링크를 입력해 주세요.',
-  text: '텍스트',
-  link: '링크',
-  editLink: '링크 편집',
-  deleteLink: '링크 삭제',
-  moveToLink: '링크로 이동',
-  invalidLink: '해당 URL은 유효하지 않습니다.',
-  attachFile: '파일 첨부',
-  attachDrive: 'Drive에서 첨부',
-  attachLocal: '내 PC에서 첨부',
-  spaceStorageFull: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
-  sizeoverUpload: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
-  countoverUpload: '파일 첨부는 한 번에 30개까지 가능합니다.',
-  lengthoverUpload: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
-  someFilesUploadFail: '일부 파일이 업로드되지 못하였습니다.',
-  uploadFail: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
-  selectedDelete: "\uC120\uD0DD\uD55C {{fileName}}\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
-  notRestore: '삭제 후에는 복구할 수 없습니다.',
-  editCancel: '페이지를 저장하고 나가시겠습니까?',
-  notSave: '저장 안함',
-  rename: '이름 변경',
-  forward: '다른 룸으로 전달',
-  sendEmail: 'Mail로 전달',
-  export: '내보내기',
-  viewInfo: '정보 보기',
-  title: '제목',
-  forwardRoom: '출처 룸',
-  forwardMemeber: '전달한 멤버',
-  forwardDate: '전달 날짜',
-  // amOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오전 ${hhmm}`,
-  // pmOtherDay: (yyyymmdd, hhmm) => `${yyyymmdd} 오후 ${hhmm}`,
-  selectFromList: '프렌즈/구성원/룸 목록에서\n 선택해 주세요.',
-  send: '전달',
-  pdfFormat: 'PDF 형식(.pdf)',
-  txtFormat: 'TXT 형식(.txt)',
-  korCategory: 'ㄱ~ㅎ',
-  engCategory: 'A~Z',
-  numCategory: '0~9',
-  etcCategory: '기타',
-  searchTag: '태그 검색',
-  noTagFound: '태그가 없습니다.',
-  notag: '페이지 하단에 태그를 입력하여 추가하세요.',
-  addTag: '태그 추가',
-  notavailableTag: '읽기모드에서는 추가할 수 없습니다.',
-  usedTagName: '이미 있는 태그 이름입니다.',
-  deletedNote: '노트가 삭제되어 불러올 수 없습니다.',
-  align: '정렬',
-  insertImages: '이미지 삽입',
-  replaceImages: '이미지 교체',
-  saveToDrive: 'Drive에 저장',
-  saveToMyPC: '내 PC에 저장'
+  enterLink: '링크를 입력해 주세요.'
 };
 
 var languageSet$1 = {
-  newChapter: 'New Chapter',
-  page: 'page',
-  chapter: 'chapter',
-  searchPageChapter: 'Search page or chapter',
-  addNewPage: 'Add new page',
-  tag: 'Tag',
-  untitled: '(Untitled)',
-  table: '(Tables)',
-  newPage: 'New Page',
-  receivedPage: 'Page Received',
-  duplicate: 'Duplicate name exists',
-  anotherName: 'Enter another name.',
-  ok: 'OK',
-  unableModify: 'Unable to Modify.',
-  unableDelte: 'Unable to delete.',
-  otherEditing: "It is currently being modified by {{userName}}",
-  othersEditing: "It is currently being modified by {{count}} people",
-  pageDelete: 'Do you want to delete this page ?',
-  chapterDelete: 'Do you want to delete this chapter ?',
-  chapterChildrenDelete: 'The pages that belong to the chapter are also deleted.',
-  delete: 'Delete',
-  cancel: 'Cancel',
-  modify: 'Modify',
-  download: 'Download',
-  amSameDay: "{{hhmm}} AM",
-  pmSameDay: "{{hhmm}} PM",
-  readmode: 'Read Mode',
-  save: 'Save',
-  pageotherMove: "{{moveCnt}} pages moved to {{targetPage}}",
-  chapterMove: "{{moveCnt}} chapters moved.",
-  pageMove: "{{moveCnt}} pages moved.",
-  noPage: 'No page exists.',
-  noChapter: 'No chapter exists.',
-  clickNewPage: 'To create one, click "Add New Page".',
-  clickNewChapter: 'To create one, click "New Chapter".',
-  // unregisteredMember: `${}`,
-  noSearchResult: 'No search results found.',
-  searching: 'Search is running.',
-  searchContent: 'Search keyword',
-  insertLink: 'insert Link',
-  done: 'Done',
-  enterText: 'Enter a text.',
-  enterLink: 'Enter a link.',
-  text: 'Text',
-  link: 'Link',
-  editLink: 'Modify',
-  deleteLink: 'Delete',
-  moveToLink: 'Move to Link',
-  invalidLink: 'The URL is not valid',
-  attachFile: 'Attach Files',
-  attachDrive: 'Attach from Drive',
-  attachLocal: 'Attach from My PC',
-  spaceStorageFull: 'There is not enough storage space to attach the file.',
-  sizeoverUpload: 'You can attach up to 20 GB files at a time.',
-  countoverUpload: 'You can attach up to 30 files at a time.',
-  lengthoverUpload: 'The name of the file cannot exceed the limit of 70 characters.',
-  someFilesUploadFail: 'Unable to upload some files.',
-  uploadFail: "({{failCnt}} out of {{uploadCnt}} failed)",
-  selectedDelete: "Do you want to delete the selected {{fileName}}",
-  notRestore: 'This action cannot be undone.',
-  editCancel: 'Do you want to save this page and exit?',
-  notSave: 'Not Save',
-  rename: 'Rename',
-  forward: 'Forward',
-  sendEmail: 'Send Email',
-  export: 'Export',
-  viewInfo: 'View Information',
-  title: 'Title',
-  forwardRoom: 'Room',
-  forwardMemeber: 'Memeber',
-  forwardDate: 'Date',
-  // amOtherDay: (yyyymmdd, hhmm) => `{{yyyymmdd} {{hhmm} AM`,
-  // pmOtherDay: (yyyymmdd, hhmm) => `{{yyyymmdd} {{hhmm} PM`,
-  selectFromList: 'Select people from the Friends/Members/Rooms list.',
-  send: 'Send',
-  pdfFormat: 'PDF Format(.pdf)',
-  txtFormat: 'TXT Format(.txt)',
-  korCategory: 'ㄱ-ㅎ',
-  engCategory: 'A-Z',
-  numCategory: '0-9',
-  etcCategory: 'Others',
-  searchTag: 'Search tag',
-  noTagFound: 'No tag found.',
-  notag: 'Enter a tag at the bottom of the page or choose one from the list.',
-  addTag: 'Add Tag',
-  notavailableTag: 'Cannot be added in read mode.',
-  usedTagName: 'The tag name already exists.',
-  deletedNote: 'Failed to get the note because it has deleted.',
-  align: 'Align',
-  insertImages: 'Insert Images',
-  replaceImages: 'Replace Images',
-  saveToDrive: 'Save to Drive',
-  saveToMyPC: 'Save to My PC'
+  NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
+  NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
+  NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
+  NOTE_PAGE_LIST_CMPNT_DEF_04: 'Add New Page',
+  NOTE_PAGE_LIST_CMPNT_DEF_05: 'Search page or chapter',
+  NOTE_PAGE_LIST_CMPNT_DEF_06: 'Tag',
+  NOTE_PAGE_LIST_CMPNT_DEF_07: 'Page Received',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_01: 'Duplicate name exists',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_02: 'Enter another name.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_03: 'OK',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: 'Unable to delete.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "It is currently being modified by {{userName}}",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: 'Do you want to delete this page?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: 'Delete',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: 'Cancel',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: 'Do you want to delete this chapter?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages that belong to the chapter are also deleted.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click the Modify button to modify.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_04: 'Save',
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}} pages moved to {{targetPage}}",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}} chapters moved.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}} pages moved.",
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: 'No page exists.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click "Add New Page".',
+  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(Unregistered Member)',
+  NOTE_EDIT_PAGE_SEARCH_01: 'No search results found.',
+  NOTE_EDIT_PAGE_SEARCH_02: 'Searching...',
+  NOTE_EDIT_PAGE_SEARCH_03: 'Search key word',
+  NOTE_EDIT_PAGE_INSERT_LINK_01: 'Insert Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_02: 'Done',
+  NOTE_EDIT_PAGE_INSERT_LINK_03: 'Enter a text.',
+  NOTE_EDIT_PAGE_INSERT_LINK_04: 'Text',
+  NOTE_EDIT_PAGE_INSERT_LINK_05: 'Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_06: 'The URL is not valid.',
+  NOTE_EDIT_PAGE_INSERT_LINK_07: 'Modify',
+  NOTE_EDIT_PAGE_INSERT_LINK_08: 'Delete',
+  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Attach from Drive',
+  NOTE_EDIT_PAGE_ATTACH_FILE_02: 'Attach from My PC',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: 'There is not enough storage space to attach the file.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_04: 'You can attach up to 20 GB files at a time.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_05: 'You can attach up to 30 files at a time.',
+  NOTE_EDIT_PAGE_COMPLETE_01: 'Do you want to save this page and exit?',
+  NOTE_EDIT_PAGE_COMPLETE_02: 'Not Save',
+  NOTE_DELIVER_CONTEXT_MENU_01: 'Rename',
+  NOTE_DELIVER_CONTEXT_MENU_02: 'Send Email',
+  NOTE_DELIVER_CONTEXT_MENU_03: 'Export to PDF',
+  NOTE_DELIVER_CONTEXT_MENU_04: 'View Information',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: 'Room',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: 'Member',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: 'Date',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_01: 'Search nickname',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_02: 'Rooms',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_03: 'Friends',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_04: 'My Room',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_05: 'Select people from the Friends/Rooms list.',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_06: 'Search room name or member',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_07: 'Send',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_08: 'Favorites',
+  NOTE_TAG_TAG_MENU_01: 'ㄱ-ㅎ',
+  NOTE_TAG_TAG_MENU_02: 'A-Z',
+  NOTE_TAG_TAG_MENU_03: '0-9',
+  NOTE_TAG_TAG_MENU_04: 'Others',
+  NOTE_TAG_TAG_MENU_05: 'Search tag',
+  NOTE_TAG_NO_CONTENTS_01: 'No tag found.',
+  NOTE_TAG_NO_CONTENTS_02: 'Enter a tag at the bottom of the page or choose one from the list.',
+  NOTE_EDIT_PAGE_MENUBAR_01: 'Undo',
+  NOTE_EDIT_PAGE_MENUBAR_02: 'Redo',
+  NOTE_EDIT_PAGE_MENUBAR_03: 'Body Style',
+  NOTE_EDIT_PAGE_MENUBAR_04: 'Font Type',
+  NOTE_EDIT_PAGE_MENUBAR_05: 'Font Size',
+  NOTE_EDIT_PAGE_MENUBAR_06: 'Character Color',
+  NOTE_EDIT_PAGE_MENUBAR_07: 'Background Color',
+  NOTE_EDIT_PAGE_MENUBAR_08: 'Bold',
+  NOTE_EDIT_PAGE_MENUBAR_09: 'Italics',
+  NOTE_EDIT_PAGE_MENUBAR_10: 'Underline',
+  NOTE_EDIT_PAGE_MENUBAR_11: 'Left',
+  NOTE_EDIT_PAGE_MENUBAR_12: 'Middle',
+  NOTE_EDIT_PAGE_MENUBAR_13: 'Right',
+  NOTE_EDIT_PAGE_MENUBAR_14: 'Both',
+  NOTE_EDIT_PAGE_MENUBAR_15: 'Numbering',
+  NOTE_EDIT_PAGE_MENUBAR_16: 'Bullet Point',
+  NOTE_EDIT_PAGE_MENUBAR_17: 'Checklist',
+  NOTE_EDIT_PAGE_MENUBAR_18: 'Indent',
+  NOTE_EDIT_PAGE_MENUBAR_19: 'Outdent',
+  NOTE_EDIT_PAGE_MENUBAR_20: 'Delimiter',
+  NOTE_EDIT_PAGE_MENUBAR_21: 'Tables',
+  NOTE_EDIT_PAGE_MENUBAR_22: 'Enter the Current time',
+  NOTE_EDIT_PAGE_MENUBAR_23: 'Insert Images/Videos',
+  NOTE_EDIT_PAGE_MENUBAR_24: 'Attach Files',
+  NOTE_EDIT_PAGE_MENUBAR_25: 'Rotate by 90 Degrees Counterclockwise',
+  NOTE_EDIT_PAGE_MENUBAR_26: 'Rotate by 90 Degrees Clockwise',
+  NOTE_EDIT_PAGE_MENUBAR_27: 'Flip Vertically',
+  NOTE_EDIT_PAGE_MENUBAR_28: 'Flip Horizontally',
+  NOTE_EDIT_PAGE_MENUBAR_29: 'Edit Images',
+  NOTE_EDIT_PAGE_MENUBAR_30: 'Replace Images',
+  NOTE_EDIT_PAGE_MENUBAR_31: 'Strikethrough',
+  NOTE_EDIT_PAGE_INSERT_LINK_09: 'Move to Link',
+  NOTE_EDIT_PAGE_ADD_TAG_01: 'The tag name already exists.',
+  NOTE_PAGE_LIST_NO_CHPT_01: 'No chapter exists.',
+  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click "New Chapter".',
+  NOTE_EDIT_PAGE_MENUBAR_32: 'Save to Drive',
+  NOTE_EDIT_PAGE_MENUBAR_33: 'Save to My PC',
+  NOTE_EDIT_PAGE_MENUBAR_34: 'Download',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "It is currently being modified by {{count}} people",
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF Format(.pdf)',
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT Format(.txt)',
+  NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.￦nDo you want to save and exit?',
+  NOTE_EDIT_PAGE_INSERT_LINK_10: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: '',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: '',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: '',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: '',
+  NOTE_EDIT_PAGE_CANT_EDIT_01: 'Unable to Modify.',
+  NOTE_ADD_TAGS_01: 'Add Tag',
+  NOTE_ADD_TAGS_02: 'Cannot be added in read mode.',
+  NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
+  CM_FORWARD: 'Forward',
+  TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: 'Failed to get the note because it has deleted.',
+  DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
+  NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
+  NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
+  NOTE_EXPORT_TITLE: 'Title',
+  enterText: 'Enter a Text.',
+  enterLink: 'Enter a link.'
 };
 
 var resources = {
@@ -3443,7 +3540,7 @@ var PageStore = observable((_observable$1 = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage(i18n.t('untitled'), null, this.createParent).then(function (dto) {
+    this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
       EditorStore.setIsSearch(false);
@@ -3462,7 +3559,7 @@ var PageStore = observable((_observable$1 = {
       _this.initializeBoxColor();
 
       dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(i18n.t('untitled'));
+      dto.note_title = NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
       _this.currentPageData = dto;
       _this.noteTitle = '';
       _this.prevModifiedUserName = _this.currentPageData.user_name;
@@ -3653,12 +3750,12 @@ var PageStore = observable((_observable$1 = {
 
             case 20:
               if (!moveCntToAnotherChapter) {
-                NoteStore.setToastText(i18n.t('pageMove', {
+                NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_03', {
                   moveCnt: moveCntInSameChapter
                 }));
               } else {
                 ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
-                NoteStore.setToastText(i18n.t('pageotherMove', {
+                NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_01', {
                   moveCnt: moveCnt,
                   targetPage: ChapterStore.chapterList[moveTargetChapterIdx].text
                 }));
@@ -3699,9 +3796,9 @@ var PageStore = observable((_observable$1 = {
 
     var m12Hour = mHour > 12 ? mHour - 12 : mHour;
     var hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    var basicDate = mHour < 12 ? i18n.t('amSameDay', {
+    var basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', {
       time: hhmm
-    }) : i18n.t('pmSameDay', {
+    }) : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', {
       time: hhmm
     });
 
@@ -3921,14 +4018,14 @@ var PageStore = observable((_observable$1 = {
   handleSave: function handleSave() {
     var _EditorStore$tinymce5, _EditorStore$tinymce6;
 
-    if (this.noteTitle === '' || this.noteTitle === i18n.t('untitled')) {
+    if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
       if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
         if (EditorStore.tempFileLayoutList.length > 0) {
           this.setTitle(EditorStore.tempFileLayoutList[0].file_name + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
         } else if (EditorStore.fileLayoutList.length > 0) {
           this.setTitle(EditorStore.fileLayoutList[0].file_name + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
-      } else this.setTitle(i18n.t('untitled'));
+      } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
     }
 
     this.noteTitle = [].filter.call(this.noteTitle, function (c) {
@@ -3985,7 +4082,7 @@ var PageStore = observable((_observable$1 = {
     }
   }
 }), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return i18n.t('table'); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
+  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")"); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
   var tdList = node.getElementsByTagName('td');
 
@@ -4248,7 +4345,7 @@ var ChapterStore = observable((_observable$2 = {
     this.chapterNewTitle = title;
   },
   // 사용자 input이 없을 때
-  // 웹에서 더이상 안씀!
+  // 웹에서 더이상 안씀! 모바일에서도 안씀!
   getNewChapterTitle: function getNewChapterTitle() {
     var re = /^새 챕터 (\d+)$/gm;
     var chapterTitle, temp;
@@ -5011,7 +5108,7 @@ var ChapterStore = observable((_observable$2 = {
       NoteStore.setIsDragging(false);
       if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this12.currentChapterId)]]));
       PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
-        NoteStore.setToastText(i18n.t('chapterMove', {
+        NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', {
           moveCnt: moveCnt
         }));
         NoteStore.setIsVisibleToast(true);
@@ -5316,13 +5413,13 @@ var NoteMeta = {
     switch (type) {
       case "viewInfo":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: i18n.t('viewInfo'),
+          title: i18n.t('NOTE_DELIVER_CONTEXT_MENU_04'),
           className: "viewInfoModal"
         });
 
       case "forward":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: i18n.t('forward'),
+          title: i18n.t('CM_FORWARD'),
           className: "forwardModal"
         });
 
@@ -5462,20 +5559,20 @@ var NoteMeta = {
     var defaultBtn1 = {
       type: "solid",
       shape: shape,
-      text: i18n.t('ok')
+      text: i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')
     }; // 버튼 한 개일 때랑 text 바꿔서 사용
 
     var defaultBtn2 = {
       type: "default",
       shape: shape,
-      text: i18n.t('cancel')
+      text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')
     };
 
     switch (type) {
       case 'delete':
         // chapter랑 page
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('delete')
+          text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')
         }), defaultBtn2];
 
       case 'confirm':
@@ -5492,9 +5589,9 @@ var NoteMeta = {
 
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('save')
+          text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
         }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('notSave')
+          text: i18n.t('NOTE_EDIT_PAGE_COMPLETE_02')
         }), defaultBtn2];
 
       default:
@@ -5515,92 +5612,84 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
-        dialogType.title = 'chapterDelete';
-        dialogType.subtitle = 'chapterChildrenDelete';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
+        dialogType.subtitle = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_07';
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
-        dialogType.title = 'pageDelete';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('otherEditing', {
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'unableDelte';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('othersEditing', {
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: PageStore.editingUserCount
         });
-        dialogType.title = 'unableDelte';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'editCancel':
-        dialogType.title = 'editCancel';
+        dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
         dialogType.btns = this.setBtns(type);
         break;
 
-      case 'fileDelete':
-        dialogType.title = i18n.t('selectedDelete', {
-          fileName: fileName
-        });
-        dialogType.subtitle = 'notRestore';
-        dialogType.btns = this.setBtns('delete');
-        break;
-
       case 'titleDuplicate':
-        dialogType.title = 'duplicate';
-        dialogType.subtitle = 'anotherName';
+        dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
+        dialogType.subtitle = 'NOTE_PAGE_LIST_CREATE_N_CHPT_02';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'duplicateTagName':
-        dialogType.title = 'usedTagName';
+        dialogType.title = 'NOTE_EDIT_PAGE_ADD_TAG_01';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'editingPage':
-        dialogType.subtitle = i18n.t('otherEditing', {
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'unableModify';
+        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.btns = this.setBtns('editingPage');
         break;
 
       case 'deletedPage':
-        dialogType.title = 'deletedNote';
+        dialogType.title = 'TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01';
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
-        dialogType.subtitle = i18n.t('uploadFail', {
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
           uploadCnt: EditorStore.uploadLength,
           failCnt: EditorStore.failCount
         });
-        dialogType.title = 'someFilesUploadFail';
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
       case 'sizefailUpload':
-        dialogType.title = 'sizeoverUpload';
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_04';
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
-        dialogType.title = 'countoverUpload';
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_05';
         dialogType.btns = this.setBtns('failUpload');
         break;
 
       case 'failUploadByFileNameLen':
-        dialogType.title = 'lengthoverUpload';
+        dialogType.title = 'DRIVE_UPLOAD_BTN_04';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5888,7 +5977,6 @@ var NoteStore = observable({
 
       case 'chapterconfirm':
       case 'confirm':
-      case 'fileDelete':
       case 'chapter':
       case 'page':
       case 'editCancel':
