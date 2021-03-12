@@ -58,6 +58,8 @@ const EditorHeader = () => {
     initialSearch();
     EditorStore.tinymce?.undoManager?.clear();
     if (PageStore.isReadMode()) {
+      // 수정모드 진입시 lnb 검색 결과 초기화
+      if (NoteStore.layoutState !== "collapse") ChapterStore.initSearchVar();
       if (PageStore.otherEdit) {
         const res = await userStore.fetchProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);

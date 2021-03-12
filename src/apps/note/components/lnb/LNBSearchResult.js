@@ -36,6 +36,7 @@ const LNBSearchResult = () => {
 
   const onClickPageBtn = (pageId) => async () => {
     if (!PageStore.isReadMode()) return;
+    if (NoteStore.layoutState === "collapse") ChapterStore.initSearchVar();
     PageStore.fetchCurrentPageData(pageId).then(() => {
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
