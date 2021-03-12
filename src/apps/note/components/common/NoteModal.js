@@ -18,7 +18,6 @@ const NoteModal = observer(() => {
   if (modalName === 'failUploadByFileNameLen') {
     btns[0].onClick = (e) => {
       e.stopPropagation(); NoteStore.setModalInfo(null);
-      EditorStore.setIsFileFilteredByNameLen(false);
       if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
     };
   }

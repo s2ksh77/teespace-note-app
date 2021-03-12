@@ -45,27 +45,27 @@ window.addEventListener('beforeunload', function (e) {
 const HandleUploader = (props) => {
   const { EditorStore, NoteStore } = useNoteStore();
   const uploaderRef = useRef('');
+
   const uploadProps = {
     beforeUpload: async (file, fileList) => {
       let uploadsize = 0;
       let totalsize = 20000000000; // 20GB
 
       if (file === fileList[0]) {
-        const filteredFiles = fileList.filter(file => isValidFileNameLength(file.name));
-        if (fileList.length !== filteredFiles.length) {
-          fileList = filteredFiles;
-          EditorStore.setIsFileFilteredByNameLen(true);
-          if (fileList.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
+        const filtered = fileList.filter(file => isValidFileNameLength(file.name));
+        if (fileList.length !== filtered.length) {
+          if (filtered.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
         }
-        EditorStore.setFileLength(fileList.length);
+        EditorStore.setFileLength(filtered.length);
+        
         if (EditorStore.uploadLength > 30) {
           NoteStore.setModalInfo('failUpload');
           return;
         }
 
-        if (fileList) {
-          for (let i = 0; i < fileList.length; i++) {
-            uploadsize += fileList[i].size
+        if (filtered) {
+          for (let i = 0; i < filtered.length; i++) {
+            uploadsize += filtered[i].size
           }
           if (uploadsize > totalsize) {
             NoteStore.setModalInfo('sizefailUpload');
@@ -73,15 +73,14 @@ const HandleUploader = (props) => {
           }
         }
 
-        for (let i = 0; i < fileList.length; i++) {
+        for (let i = 0; i < filtered.length; i++) {
           (function (file) {
             const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
             const type = (fileExtension && EditorStore.uploadFileIsImage(fileExtension)) ? 'image' : 'file';
             EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, file, type);
-          })(fileList[i])
+          })(filtered[i])
         }
-
-        if (EditorStore.isFileFilteredByNameLen) NoteStore.setModalInfo('failUploadByFileNameLen');
+        if (fileList.length !== filtered.length) NoteStore.setModalInfo('failUploadByFileNameLen');
         else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
       }
 

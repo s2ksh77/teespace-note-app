@@ -104,7 +104,9 @@ const isValidFileSize = fileList => {
 
 export const isValidFileNameLength = fileName => {
     if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
-    if (fileName.split('.')[0].length > 70) return false; // 파일명 70자 초과는 invalid
+    // 혹시 확장자가 없는 경우 대비
+    const targetIdx = fileName.lastIndexOf('.')!==-1 ? fileName.lastIndexOf('.') : fileName.length;
+    if (fileName.slice(0,targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
     return true;
 }
 
