@@ -329,17 +329,28 @@ const EditorContainer = () => {
               });
 
               editor.on('keydown', (e) => {
-                const target = getAnchorElement();
-                if (target && e.code === "Space") {
-                  const curCaretPosition = editor.selection.getRng().endOffset;
-                  const _length = target.textContent.length;
-                  // anchor tag앞에 caret 놓으면 getAnchorElement() === null
-                  if (curCaretPosition === _length - 1) {
+                switch (e.code) {
+                  case "Tab":
                     e.preventDefault();
                     e.stopPropagation();
-                    target.insertAdjacentHTML('afterend', '&nbsp;')
-                    editor.selection.setCursorLocation(target.nextSibling, 1);
-                  }
+                    if (e.shiftKey) editor.execCommand('Outdent');
+                    else editor.execCommand('Indent');
+                    break;
+                  case "Space":
+                    const target = getAnchorElement();
+                    if (target) {
+                      const curCaretPosition = editor.selection.getRng().endOffset;
+                      const _length = target.textContent.length;
+                      // anchor tag앞에 caret 놓으면 getAnchorElement() === null
+                      if (curCaretPosition === _length - 1) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        target.insertAdjacentHTML('afterend', '&nbsp;')
+                        editor.selection.setCursorLocation(target.nextSibling, 1);
+                      }
+                    }
+                    break;
+                  default:break;
                 }
               })
 
