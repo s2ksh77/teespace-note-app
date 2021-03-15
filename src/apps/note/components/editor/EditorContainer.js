@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
+import { handleFileSync } from '../common/NoteFile';
 import EditorHeader from './EditorHeader';
 import {
   EditorContainerWrapper,
@@ -236,6 +237,19 @@ const EditorContainer = () => {
   useEffect(() => {
     return () => setSearchValue('');
   }, [EditorStore.isSearch]);
+
+  // auto save
+  useEffect(() => {
+    if (!PageStore.isReadMode()) {
+      let id = setInterval(() => {
+        PageStore.handleSave(true);
+      }, 10000);
+      return () => {
+        console.log('clearInterval');
+        clearInterval(id);
+      }
+    }
+  }, [PageStore.isReadMode()]);
 
   return useObserver(() => (
     <>
@@ -533,6 +547,8 @@ const EditorContainer = () => {
               //   args.node.appendChild(parent);
               // }
             },
+            autosave_interval: '1s',
+            autosave_prefix:`Note_autosave_${NoteStore.notechannel_id}`,
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells

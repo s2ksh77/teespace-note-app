@@ -7,6 +7,7 @@ import {
   EditorTitle,
   EditorHeaderContainer2,
   EditingImg,
+  AutoSaveMsg,
   ModifiedUser,
   ModifiedTime,
   EditorSearchIconDiv,
@@ -114,7 +115,13 @@ const EditorHeader = () => {
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />}
+          {PageStore.saveStatus.saving
+            ? <AutoSaveMsg>저장중...</AutoSaveMsg>
+            : (PageStore.saveStatus.saved ? <AutoSaveMsg>저장되었습니다</AutoSaveMsg>
+                : (!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />
+              )
+          }
+          {/* {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />} */}
           <ModifiedUser>
             {!PageStore.isReadMode()
               ? (userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName)

@@ -283,11 +283,13 @@ class NoteRepository {
   }
 
   async editDone(updateDto) {
+    const today = new Date();
     updateDto.dto.WS_ID = this.WS_ID;
     updateDto.dto.note_channel_id = this.chId;
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
+    updateDto.dto.modified_date= `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
     try {
       return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {

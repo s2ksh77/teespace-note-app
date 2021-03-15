@@ -193,6 +193,7 @@ const TagStore = observable({
       }
     });
     const { data: { dto } } = await NoteRepository.updateTag(updateTagArray);
+    this.setUpdateTagList([]);
     return dto;
   },
 
@@ -220,6 +221,7 @@ const TagStore = observable({
       }
     });
     const { data: { dto } } = await NoteRepository.updateTag(updateTagArr);
+    this.setUpdateTagList([]);
     return dto;
   },
   async fetchNoteTagList(noteId) {

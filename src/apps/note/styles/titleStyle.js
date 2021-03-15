@@ -82,6 +82,8 @@ export const ModifiedUser = styled.span`
   padding: 0 0.38rem 0 0 !important;
 `;
 
+export const AutoSaveMsg = ModifiedUser;
+
 export const ModifiedTime = styled.span`
   width: auto;
   height: auto;
