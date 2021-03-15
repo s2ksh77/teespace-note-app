@@ -44,6 +44,7 @@ const EditorStore = observable({
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
+  totalUploadLength: '',
   isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
@@ -147,7 +148,6 @@ const EditorStore = observable({
   },
   setUploaderRef(ref) {
     this.uploaderRef = ref;
-    console.log(toJS(this.uploaderRef))
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {
@@ -357,6 +357,9 @@ const EditorStore = observable({
   },
   setFileLength(length) {
     this.uploadLength = length;
+  },
+  setTotalUploadLength(length) {
+    this.totalUploadLength = length;
   },
   // 하위 File Layout 에 Temp로 그리기 위한 용도
   getTempTimeFormat() {

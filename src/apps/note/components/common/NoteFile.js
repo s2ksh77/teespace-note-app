@@ -23,6 +23,7 @@ export const handleUpload = async () => {
                         : e.target.getResponseHeader('content-length') ||
                         e.target.getResponseHeader('x-decompressed-content-length');
                     EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                    EditorStore.tempFileLayoutList[i].status = 'pending';
                 }
                 EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource)
                     .then(async result => {
@@ -30,38 +31,54 @@ export const handleUpload = async () => {
                             if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
                             EditorStore.tempFileLayoutList[i].progress = 0;
                             EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
+                            EditorStore.tempFileLayoutList[i].status = 'uploaded';
                             await EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
                         } else if (dto.resultMsg === 'Fail') {
-                            EditorStore.failCount++;
+                            EditorStore.failCount += 1;
                             EditorStore.tempFileLayoutList[i].progress = 0;
                             EditorStore.tempFileLayoutList[i].error = true;
+                            EditorStore.tempFileLayoutList[i].status = 'failed';
                         }
-                        EditorStore.processLength++;
+                        EditorStore.processLength += 1;
                         if (EditorStore.processLength == EditorStore.uploadLength) {
                             EditorStore.uploadDTO = [];
                             EditorStore.setProcessLength(0);
                             EditorStore.setIsUploading(false);
-                            if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
-                            else if (EditorStore.failCount === 0) {
-                                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-                                    EditorStore.setFileList(
-                                        dto.fileList,
-                                    );
-                                    EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
-                                    EditorStore.setProcessCount(0);
-                                    EditorStore.setTempFileLayoutList([]);
-                                });
-                            }
+                            if (EditorStore.failCount > 0) {
+                                NoteStore.setModalInfo('multiFileSomeFail');
+                                initialFileList();
+                            } else if (EditorStore.failCount === 0) initialFileList();
                         }
                     }).catch(e => {
                         if (e !== 'Network Error') {
                             EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
-                            EditorStore.processLength++;
+                            EditorStore.failCount += 1;
+                            EditorStore.processLength += 1;
+                            EditorStore.tempFileLayoutList[i].status = 'canceled'
+
+                            const hasPending = EditorStore.tempFileLayoutList.some(file => file['status'] === 'pending');
+                            if (!hasPending) { // 업로드 중인것이 하나도 없을 때
+                                EditorStore.uploadDTO = [];
+                                EditorStore.setProcessLength(0);
+                                EditorStore.setIsUploading(false);
+                                if (EditorStore.failCount > 0) { NoteStore.setModalInfo('multiFileSomeFail'); }
+                                initialFileList();
+                            }
                         }
                     })
             })(EditorStore.uploadDTO[i])
         }
     }
+}
+const initialFileList = () => {
+    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+        EditorStore.setFileList(
+            dto.fileList,
+        );
+        EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+        EditorStore.setProcessCount(0);
+        EditorStore.setTempFileLayoutList([]);
+    });
 }
 
 export const driveSuccessCb = (fileList) => {
@@ -105,8 +122,8 @@ const isValidFileSize = fileList => {
 export const isValidFileNameLength = fileName => {
     if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
     // 혹시 확장자가 없는 경우 대비
-    const targetIdx = fileName.lastIndexOf('.')!==-1 ? fileName.lastIndexOf('.') : fileName.length;
-    if (fileName.slice(0,targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
+    const targetIdx = fileName.lastIndexOf('.') !== -1 ? fileName.lastIndexOf('.') : fileName.length;
+    if (fileName.slice(0, targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
     return true;
 }
 

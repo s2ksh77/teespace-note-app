@@ -57,8 +57,9 @@ const HandleUploader = (props) => {
         if (fileList.length !== filtered.length) {
           if (filtered.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
         }
+        EditorStore.setTotalUploadLength(fileList.length); // 실패가 되어도 전체 선택한 length 필요
         EditorStore.setFileLength(filtered.length);
-        
+
         if (EditorStore.uploadLength > 30) {
           NoteStore.setModalInfo('failUpload');
           return;
@@ -81,7 +82,10 @@ const HandleUploader = (props) => {
             EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, file, type);
           })(filtered[i])
         }
-        if (fileList.length !== filtered.length) NoteStore.setModalInfo('failUploadByFileNameLen');
+        if (fileList.length !== filtered.length) {
+          EditorStore.failCount = fileList.length - filtered.length;
+          NoteStore.setModalInfo('failUploadByFileNameLen');
+        }
         else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
       }
 
@@ -559,7 +563,7 @@ const EditorContainer = () => {
               // }
             },
             autosave_interval: '1s',
-            autosave_prefix:`Note_autosave_${NoteStore.notechannel_id}`,
+            autosave_prefix: `Note_autosave_${NoteStore.notechannel_id}`,
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
