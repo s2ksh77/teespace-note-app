@@ -2301,6 +2301,7 @@ var EditorStore = mobx.observable((_observable = {
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
+  totalUploadLength: '',
   isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
@@ -2405,7 +2406,6 @@ var EditorStore = mobx.observable((_observable = {
   },
   setUploaderRef: function setUploaderRef(ref) {
     this.uploaderRef = ref;
-    console.log(mobx.toJS(this.uploaderRef));
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
@@ -2716,6 +2716,8 @@ var EditorStore = mobx.observable((_observable = {
   this.tempFileLayoutList = arr;
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
+}), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
+  this.totalUploadLength = length;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
@@ -5783,7 +5785,7 @@ var NoteMeta = {
 
       case 'multiFileSomeFail':
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
-          uploadCnt: EditorStore.uploadLength,
+          uploadCnt: EditorStore.totalUploadLength,
           failCnt: EditorStore.failCount
         });
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
