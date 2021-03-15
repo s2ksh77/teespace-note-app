@@ -511,7 +511,7 @@ const EditorContainer = () => {
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
             toolbar_drawer: false,
-            paste_data_images: true, // add images by drag and drop
+            // paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {
               const target = args.node.textContent;
               if (checkUrlValidation(target)) {
