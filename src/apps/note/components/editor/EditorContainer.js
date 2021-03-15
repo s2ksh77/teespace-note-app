@@ -243,9 +243,9 @@ const EditorContainer = () => {
     if (!PageStore.isReadMode()) {
       let id = setInterval(() => {
         PageStore.handleSave(true);
-      }, 10000);
+      }, 60000);
       return () => {
-        console.log('clearInterval');
+        // console.log('clearInterval');
         clearInterval(id);
       }
     }
