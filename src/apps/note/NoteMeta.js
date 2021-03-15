@@ -224,7 +224,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.uploadLength, failCnt: EditorStore.failCount });
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.totalUploadLength, failCnt: EditorStore.failCount });
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
