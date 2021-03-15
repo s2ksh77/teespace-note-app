@@ -675,6 +675,7 @@ const ChapterStore = observable({
         ws_id: NoteRepository.WS_ID,
         note_channel_id: NoteRepository.chId,
         text: chapter.text,
+        color: chapter.color,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
         shared_room_name: NoteRepository.WS_ID,
