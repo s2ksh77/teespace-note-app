@@ -29,7 +29,7 @@ const NoteModal = observer(() => {
           visible={true}
           type={type}
           title={t(title)}
-          subtitle={t(subTitle)}
+          subtitle={subTitle}
           btns={btns}
         /> :
         <Modal

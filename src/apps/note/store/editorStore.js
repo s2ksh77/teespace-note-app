@@ -140,6 +140,9 @@ const EditorStore = observable({
   setProcessCount(count) {
     this.processCount = count;
   },
+  setFailCount(count) {
+    this.failCount = count
+  },
   setIsUploading(isUploading) {
     this.isUploading = isUploading;
   },
