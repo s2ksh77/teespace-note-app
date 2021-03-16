@@ -216,7 +216,7 @@ const NoteStore = observable({
       sharedRoomName: (
         sharedRoom
           ? (sharedRoom.isMyRoom
-            ? this.userName
+            ? (nick ? nick : name)
             : sharedRoom.name)
           : (nick ? nick : name) // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
       ),
