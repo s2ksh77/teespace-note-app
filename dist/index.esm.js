@@ -4005,7 +4005,7 @@ var PageStore = observable((_observable$1 = {
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName, this.prevModifiedUserId).then(function (dto) {
       var _EditorStore$tinymce4;
 
-      _this9.fetchNoteInfoList(dto.note_id);
+      _this9.fetchCurrentPageData(dto.note_id);
 
       var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
       if (floatingMenu !== null) floatingMenu.click();
@@ -6124,7 +6124,7 @@ var NoteStore = observable({
               name = _yield$UserStore$getP.name;
               nick = _yield$UserStore$getP.nick;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? nick ? nick : name : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
                 ,
                 sharedUserName: nick ? nick : name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
