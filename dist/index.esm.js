@@ -2368,6 +2368,9 @@ var EditorStore = observable((_observable = {
   setProcessCount: function setProcessCount(count) {
     this.processCount = count;
   },
+  setFailCount: function setFailCount(count) {
+    this.failCount = count;
+  },
   setIsUploading: function setIsUploading(isUploading) {
     this.isUploading = isUploading;
   },
@@ -5697,7 +5700,7 @@ var NoteMeta = {
     switch (type) {
       case 'chapter':
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_07';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
@@ -5708,19 +5711,19 @@ var NoteMeta = {
 
       case 'confirm':
         dialogType.type = 'info';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: PageStore.editingUserCount
         });
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5731,7 +5734,7 @@ var NoteMeta = {
 
       case 'titleDuplicate':
         dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_CREATE_N_CHPT_02';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_02');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5741,10 +5744,10 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
+        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.btns = this.setBtns('editingPage');
         break;
 
@@ -5754,11 +5757,12 @@ var NoteMeta = {
         break;
 
       case 'multiFileSomeFail':
+        debugger;
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
           uploadCnt: EditorStore.totalUploadLength,
           failCnt: EditorStore.failCount
         });
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
