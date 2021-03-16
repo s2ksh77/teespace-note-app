@@ -182,7 +182,7 @@ const NoteMeta = {
     switch (type) {
       case 'chapter':
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_07';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'page':
@@ -191,14 +191,14 @@ const NoteMeta = {
         break;
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', { count: PageStore.editingUserCount });
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', { count: PageStore.editingUserCount });
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
@@ -207,7 +207,7 @@ const NoteMeta = {
         break;
       case 'titleDuplicate':
         dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_CREATE_N_CHPT_02';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_02');
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
@@ -215,8 +215,8 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
         dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
@@ -224,8 +224,9 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
-        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.totalUploadLength, failCnt: EditorStore.failCount });
+        debugger;
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.totalUploadLength, failCnt: EditorStore.failCount });
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
