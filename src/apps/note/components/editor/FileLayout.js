@@ -261,7 +261,7 @@ const FileLayout = () => {
                                 <FileDataTime>
                                     <FileTime>{item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null}</FileTime>
                                     <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'}</FileTime>
-                                    <FileProgress>{(item.progress * 100).toFixed(1) + '%'}</FileProgress>
+                                    <FileProgress>{(item.progress * 100).toFixed(1) !== '0.0' ? (item.progress * 100).toFixed(1) + '%' : ''}</FileProgress>
                                 </FileDataTime>
                                 <ProgressWrapper>
                                     {item.progress ? <Progress
