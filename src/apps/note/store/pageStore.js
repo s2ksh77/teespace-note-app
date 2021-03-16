@@ -588,7 +588,8 @@ const PageStore = observable({
       this.prevModifiedUserName,
       this.prevModifiedUserId).then(
         (dto) => {
-          this.fetchNoteInfoList(dto.note_id);
+          this.fetchCurrentPageData(dto.note_id);
+
           const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
           if (floatingMenu !== null) floatingMenu.click();
           EditorStore.tinymce?.setContent(this.currentPageData.note_content);
