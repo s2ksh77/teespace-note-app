@@ -77,6 +77,7 @@ const initialFileList = () => {
         );
         EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
         EditorStore.setProcessCount(0);
+        EditorStore.setFailCount(0);
         EditorStore.setTempFileLayoutList([]);
     });
 }

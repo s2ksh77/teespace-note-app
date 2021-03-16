@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn, FileErrorIcon, ProgressWrapper } from '../../styles/editorStyle';
+import { FileBodyLayout, FileBody, FileContent, FileDownloadIcon, FileExtensionIcon, FileData, FileClose, FileCloseBtn, FileDataName, FileName, FileDataTime, FileTime, FileDownloadBtn, FileExtensionBtn, FileErrorIcon, ProgressWrapper, FileProgress } from '../../styles/editorStyle';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png'
@@ -16,9 +16,8 @@ import hangul from '../../assets/hangul.svg';
 import video from '../../assets/movie.svg';
 import audio from '../../assets/audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
-import { downloadFile, handleDriveSave, openSaveDrive, saveDrive, fileCategory } from '../common/NoteFile';
+import { downloadFile, openSaveDrive, fileCategory } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { ComponentStore } from 'teespace-core';
 import styled from "styled-components";
 import { useTranslation } from 'react-i18next';
 
@@ -262,21 +261,22 @@ const FileLayout = () => {
                                 <FileDataTime>
                                     <FileTime>{item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null}</FileTime>
                                     <FileTime>{item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'}</FileTime>
+                                    <FileProgress>{(item.progress * 100).toFixed(1) + '%'}</FileProgress>
                                 </FileDataTime>
+                                <ProgressWrapper>
+                                    {item.progress ? <Progress
+                                        percent={item.progress * 100}
+                                        showInfo={false}
+                                        strokeWidth={'0.25rem'}
+                                        trailColor="#E3E4E9"
+                                        strokeColor="#232D3B"
+                                    /> : null}
+                                </ProgressWrapper>
                             </FileData>
                             <FileClose style={!PageStore.isReadMode() && index === hoverTempIdx ? { display: 'flex' } : { display: 'none' }}>
                                 <FileCloseBtn src={cancelBtn} onClick={handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')} />
                             </FileClose>
                         </FileContent>
-                        <ProgressWrapper>
-                            {item.progress ? <Progress
-                                percent={item.progress * 100}
-                                showInfo={false}
-                                strokeWidth={'0.25rem'}
-                                trailColor="#E3E4E9"
-                                strokeColor="#6C56E5"
-                            /> : null}
-                        </ProgressWrapper>
                     </FileBody> : null
                 ))}
                 {EditorStore.fileLayoutList.map((item, index) => (

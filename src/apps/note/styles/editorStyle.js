@@ -169,8 +169,8 @@ export const FileErrorIcon = styled.div`
 
 export const ProgressWrapper = styled.div` 
   width: 100%;
-  top: -0.5rem !important;
   position: relative !important;
+  display: flex;
 `
 
 export const FileExtensionIcon = styled.div`
@@ -233,7 +233,7 @@ export const FileName = styled.div`
   }
 `
 export const FileDataTime = styled.div`
-  display: inline-block;
+  display: flex;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -253,6 +253,18 @@ export const FileTime = styled.div`
   white-space: nowrap;
   color:#888D96;
 `
+export const FileProgress = styled.div`
+  background-color: inherit;
+  line-height: 0.9375rem;
+  display: flex;
+  font-size: 0.63rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color:#888D96;
+  margin-left: auto;
+`
+
 
 export const FileClose = styled.div`
   display: flex;
@@ -261,7 +273,7 @@ export const FileClose = styled.div`
   color: #000000;
   cursor: pointer;
   border-radius: 0.5rem;
-  align-items: center;
+  align-items: top;
 `
 
 export const FileCloseBtn = styled.img`

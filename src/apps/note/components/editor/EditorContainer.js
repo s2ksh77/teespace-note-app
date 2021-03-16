@@ -354,7 +354,7 @@ const EditorContainer = () => {
                       }
                     }
                     break;
-                  default:break;
+                  default: break;
                 }
               })
 
