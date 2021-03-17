@@ -2990,7 +2990,9 @@ var languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
   NOTE_EXPORT_TITLE: '제목',
   enterText: '텍스트를 입력해 주세요.',
-  enterLink: '링크를 입력해 주세요.'
+  enterLink: '링크를 입력해 주세요.',
+  saving: '저장중...',
+  hasBeenSaved: '저장되었습니다'
 };
 
 var languageSet$1 = {
@@ -3122,7 +3124,9 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title',
   enterText: 'Enter a Text.',
-  enterLink: 'Enter a link.'
+  enterLink: 'Enter a link.',
+  saving: 'Saving...',
+  hasBeenSaved: 'Has Been Saved'
 };
 
 var resources = {
@@ -5101,19 +5105,10 @@ var ChapterStore = observable((_observable$2 = {
     _this10.getNoteChapterList();
 
     if (_this10.currentChapterId === _this10.deleteChapterId) {
-      var _selectableChapter$ch, _selectableChapter$ch2;
+      _this10.setCurrentChapterId(_this10.selectableChapterId);
 
-      // 임시 코드. 서버 수정된 후 변경 예정.
-      var currentChapterIdx = _this10.chapterList.findIndex(function (chapter) {
-        return chapter.id === _this10.currentChapterId;
-      });
-
-      var selectableChapter = currentChapterIdx === 0 ? _this10.chapterList[1] : _this10.chapterList[currentChapterIdx - 1];
-
-      _this10.setCurrentChapterId(selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id);
-
-      PageStore.setCurrentPageId(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id);
-      PageStore.fetchCurrentPageData(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch2 = selectableChapter.children[0]) === null || _selectableChapter$ch2 === void 0 ? void 0 : _selectableChapter$ch2.id);
+      PageStore.setCurrentPageId(PageStore.selectablePageId);
+      PageStore.fetchCurrentPageData(PageStore.selectablePageId);
 
       _this10.setMoveInfoMap(new Map([[_this10.currentChapterId, _this10.createMoveInfo(_this10.currentChapterId)]]));
 
@@ -5559,6 +5554,7 @@ var NoteMeta = {
 
           if (PageStore.lastSharedPageParentId) {
             ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+            PageStore.setLastSharedPageParentId('');
             ChapterStore.deleteNoteChapter();
           } else PageStore.deleteNotePage();
 
