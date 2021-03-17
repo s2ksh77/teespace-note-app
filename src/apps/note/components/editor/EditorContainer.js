@@ -522,7 +522,8 @@ const EditorContainer = () => {
             extended_valid_elements: 'a[href|target=_blank]',
             quickbars_insert_toolbar: false,
             quickbars_image_toolbar: false,
-            quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough | link',
+            // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
+            quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
             toolbar_drawer: false,
