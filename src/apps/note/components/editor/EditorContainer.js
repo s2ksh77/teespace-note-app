@@ -528,6 +528,9 @@ const EditorContainer = () => {
             toolbar_drawer: false,
             // paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {
+              // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
+              EditorStore.tinymce?.undoManager?.add();
+              
               const target = args.node.textContent;
               if (checkUrlValidation(target)) {
                 let temp = document.createElement('a');

@@ -131,6 +131,9 @@ const languageSet = {
     
     enterText: 'Enter a Text.',
     enterLink: 'Enter a link.',
+
+    saving : 'Saving...',
+    hasBeenSaved : 'Has Been Saved',
 };
 
 export default languageSet;

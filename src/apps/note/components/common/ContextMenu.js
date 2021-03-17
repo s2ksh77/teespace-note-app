@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, lastSharedPageParentId }) => {
+const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, spaceStore } = useCoreStores();
   const { t } = useTranslation();
@@ -39,31 +39,36 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
    * 챕터/페이지를 삭제한다.
    */
   const deleteComponent = async () => {
-    ChapterStore.setSelectableChapterId(selectableChapterId);
-    PageStore.setSelectablePageId(selectablePageId);
-
     switch (noteType) {
       case 'chapter':
         ChapterStore.setDeleteChapterId(note.id);
         ChapterStore.getChapterChildren(note.id).then(async dto => {
-          if (dto.noteList.length > 0) {
-            const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
-            if (editingList.length === 1) {
-              const res = await userStore.fetchProfile(editingList[0].is_edit);
-              PageStore.setEditingUserName(res.nick ? res.nick : res.name);
-              NoteStore.setModalInfo('confirm');
-            } else if (editingList.length > 1) {
-              PageStore.setEditingUserCount(editingList.length);
-              NoteStore.setModalInfo('chapterconfirm');
-            } else NoteStore.setModalInfo('chapter');
-          } else NoteStore.setModalInfo('chapter');
+          const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
+          if (editingList.length === 1) {
+            const res = await userStore.fetchProfile(editingList[0].is_edit);
+            PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+            NoteStore.setModalInfo('confirm');
+          } else if (editingList.length > 1) {
+            PageStore.setEditingUserCount(editingList.length);
+            NoteStore.setModalInfo('chapterconfirm');
+          } else { 
+            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
+            NoteStore.setModalInfo('chapter');
+          }
         });
         break;
       case 'page':
         PageStore.getNoteInfoList(note.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
             PageStore.setDeletePageList({ note_id: note.id });
-            PageStore.setLastSharedPageParentId(lastSharedPageParentId);
+            if (PageStore.currentPageId === note.id) {
+              if (parent.type === 'shared_page' && parent.children.length === 1) {
+                setSelectableIdOfChapter();
+                PageStore.setLastSharedPageParentId(parent.id);
+              } else {
+                setSelectableIdOfPage();
+              }
+            }
             NoteStore.setModalInfo('page');
           } else {
             const res = await userStore.fetchProfile(dto.is_edit);
@@ -75,6 +80,27 @@ const ContextMenu = ({ noteType, note, selectableChapterId, selectablePageId, la
       default:
         break;
     }
+  };
+
+  const setSelectableIdOfChapter = () => {
+    const selectableChapter =
+      chapterIdx > 0
+        ? ChapterStore.chapterList[chapterIdx - 1]
+        : ChapterStore.chapterList[1];
+    const selectableChapterId = selectableChapter?.id;
+    const selectablePageId = selectableChapter?.children[0]?.id;
+    
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
+  const setSelectableIdOfPage = () => {
+    const selectablePageId =
+      pageIdx > 0
+        ? parent.children[pageIdx - 1]?.id
+        : parent.children[1]?.id;
+
+    PageStore.setSelectablePageId(selectablePageId);
   };
 
   const shareComponent = () => {

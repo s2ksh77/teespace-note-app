@@ -191,18 +191,9 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             <ContextMenu
               noteType={'page'}
               note={page}
-              selectablePageId={
-                chapter.children.length > 1
-                  ? index === 0
-                    ? chapter.children[1].id
-                    : chapter.children[index - 1].id
-                  : ''
-              }
-              lastSharedPageParentId={
-                chapter.type === 'shared_page' && chapter.children.length === 1
-                  ? chapter.id
-                  : ''
-              }
+              chapterIdx={chapterIdx}
+              pageIdx={index}
+              parent={chapter}
             />
           </PageTextContainer>
         </PageTextCover>
