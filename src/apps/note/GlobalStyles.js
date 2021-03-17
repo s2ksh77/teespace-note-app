@@ -321,6 +321,16 @@ export const GlobalStyle = createGlobalStyle`
   .ant-upload.ant-upload-select{
     display: none;
   }
+  .x-todo li {
+    list-style:none;
+  }
+  .x-todo-box {
+    position: relative; 
+    left: -24px;
+  }
+  .x-todo-box input{
+    position: absolute;
+  }
 `;
 
 export const LNB = styled.div`
