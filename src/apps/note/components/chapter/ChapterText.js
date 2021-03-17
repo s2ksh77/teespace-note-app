@@ -42,24 +42,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
         <ContextMenu
           noteType={"chapter"}
           note={chapter}
-          selectableChapterId={
-            ChapterStore.chapterList.length > 1
-              ? index === 0
-                ? ChapterStore.chapterList[1].id
-                : ChapterStore.chapterList[index - 1].id
-              : ''
-          }
-          selectablePageId={
-            ChapterStore.chapterList.length > 1
-              ? index === 0
-                ? ChapterStore.chapterList[1].children.length > 0
-                  ? ChapterStore.chapterList[1].children[0].id
-                  : ''
-                : ChapterStore.chapterList[index - 1].children.length > 0
-                  ? ChapterStore.chapterList[index - 1].children[0].id
-                  : ''
-              : ''
-          }
+          chapterIdx={index}
         />
       </ChapterTitle>
       <ChapterFolderBtn onClick={handleFoldBtnClick}>

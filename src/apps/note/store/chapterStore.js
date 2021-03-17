@@ -501,15 +501,9 @@ const ChapterStore = observable({
     this.deleteChapter(this.deleteChapterId).then(() => {
       this.getNoteChapterList();
       if (this.currentChapterId === this.deleteChapterId) {
-        // 임시 코드. 서버 수정된 후 변경 예정.
-        const currentChapterIdx = this.chapterList.findIndex(chapter => chapter.id === this.currentChapterId);
-        const selectableChapter =
-          currentChapterIdx === 0
-            ? this.chapterList[1]
-            : this.chapterList[currentChapterIdx - 1];
-        this.setCurrentChapterId(selectableChapter?.id);
-        PageStore.setCurrentPageId(selectableChapter?.children[0]?.id);
-        PageStore.fetchCurrentPageData(selectableChapter?.children[0]?.id);
+        this.setCurrentChapterId(this.selectableChapterId);
+        PageStore.setCurrentPageId(PageStore.selectablePageId);
+        PageStore.fetchCurrentPageData(PageStore.selectablePageId);
         this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
         PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
       }
