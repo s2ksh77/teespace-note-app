@@ -132,7 +132,7 @@ const languageSet = {
     enterText: 'Enter a Text.',
     enterLink: 'Enter a link.',
 
-    saving : 'Saving...',
+    saving : 'Saving',
     hasBeenSaved : 'Has Been Saved',
 };
 

@@ -73,16 +73,16 @@ export const EditingImg = styled.img`
 `;
 
 export const ModifiedUser = styled.span`
-  width: auto;
-  height: auto;
   color: rgb(0, 0, 0);
   font-size: 0.6875rem;
-  border-width: 0px;
-  border-style: solid;
   padding: 0 0.38rem 0 0 !important;
 `;
 
-export const AutoSaveMsg = ModifiedUser;
+export const AutoSaveMsg = styled.span`
+  color: #2E6360 ;
+  font-size: 0.6875rem;
+  margin-right:${props=>props.isSaving ? "0.63rem" : "0.31rem"};
+`;
 
 export const ModifiedTime = styled.span`
   width: auto;
