@@ -2612,7 +2612,7 @@ var EditorStore = mobx.observable((_observable = {
     var getUnixTime = NoteUtil.getUnixTime; // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
 
     checkFile.sort(function (a, b) {
-      return getUnixTime(b['file_updated_at']) - getUnixTime(a['file_updated_at']);
+      return getUnixTime(b['created_at']) - getUnixTime(a['created_at']);
     });
     this.setFileArray(checkFile);
   }
