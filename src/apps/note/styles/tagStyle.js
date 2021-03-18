@@ -99,7 +99,7 @@ export const LnbTagContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  border-bottom: 0.0625rem solid #dadada;
+  border-bottom: 0.0625rem solid #eeedeb;
   margin: 0 0.81rem;
   order: ${props => props.order};
   color: ${props => props.color || ''};
@@ -113,7 +113,7 @@ export const TagImg = styled.img`
   position:absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
 `;
 
 export const TagTxt = styled.div`

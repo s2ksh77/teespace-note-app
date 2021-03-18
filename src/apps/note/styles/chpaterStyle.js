@@ -25,7 +25,7 @@ export const ChapterCover = styled.div`
   margin: 4px 0 4px 0;
   align-items: center;
   font-weight: 500;
-  border-bottom: 0.0625rem solid #dadada;
+  border-bottom: 0.0625rem solid #eeedeb;
   &:hover .ellipsisBtn {
     visibility: visible;
   }
@@ -43,7 +43,7 @@ export const ChapterShareIcon = styled.img`
   position: absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
 `
 
 export const ColorCover = styled.span`
