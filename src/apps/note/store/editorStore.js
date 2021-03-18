@@ -251,7 +251,7 @@ const EditorStore = observable({
       this.setIsFile(true);
       const { getUnixTime } = NoteUtil;
       // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
-      checkFile.sort((a, b) => getUnixTime(b['file_updated_at']) - getUnixTime(a['file_updated_at']));
+      checkFile.sort((a, b) => getUnixTime(b['created_at']) - getUnixTime(a['created_at']));
       this.setFileArray(checkFile);
     };
   },
