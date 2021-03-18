@@ -116,7 +116,7 @@ const EditorHeader = () => {
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
           {PageStore.saveStatus.saving
-            ? <AutoSaveMsg>{t('saving')}</AutoSaveMsg>
+            ? <AutoSaveMsg isSaving={true}>{t('saving')}</AutoSaveMsg>
             : (PageStore.saveStatus.saved ? <AutoSaveMsg>{t('hasBeenSaved')}</AutoSaveMsg>
                 : (!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />
               )
