@@ -76,6 +76,14 @@ export const ReadModeText = styled.span`
   font-size: 0.75rem;
 `;
 
+export const ReadModeSubText = styled.span`
+  margin-left: 0.63rem;
+  color: #A3A3A3;
+  font-size: 0.75rem;
+  display: flex;
+  font-size: 0.75rem;
+`;
+
 export const FoldBtn = styled.div`
   width: 0.94rem;
   height: 2.06rem;

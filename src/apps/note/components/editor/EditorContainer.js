@@ -9,6 +9,7 @@ import {
   ReadModeContainer,
   ReadModeIcon,
   ReadModeText,
+  ReadModeSubText,
   editorContentCSS
 } from '../../styles/editorStyle';
 import { Button, Upload } from 'antd';
@@ -263,6 +264,7 @@ const EditorContainer = () => {
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
             <ReadModeText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}</ReadModeText>
+            <ReadModeSubText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}</ReadModeSubText>
           </ReadModeContainer>) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
