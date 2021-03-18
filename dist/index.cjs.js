@@ -3021,8 +3021,8 @@ var languageSet = {
   NOTE_EXPORT_TITLE: '제목',
   enterText: '텍스트를 입력해 주세요.',
   enterLink: '링크를 입력해 주세요.',
-  saving: '저장중...',
-  hasBeenSaved: '저장되었습니다'
+  saving: '저장중',
+  hasBeenSaved: '저장되었습니다.'
 };
 
 var languageSet$1 = {
@@ -3155,7 +3155,7 @@ var languageSet$1 = {
   NOTE_EXPORT_TITLE: 'Title',
   enterText: 'Enter a Text.',
   enterLink: 'Enter a link.',
-  saving: 'Saving...',
+  saving: 'Saving',
   hasBeenSaved: 'Has Been Saved'
 };
 
