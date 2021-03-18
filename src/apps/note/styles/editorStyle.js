@@ -300,6 +300,14 @@ export const editorContentCSS = `
   a, img {
     cursor:pointer;
   }
+  ::selection {
+    background: #35A57A; /* WebKit/Blink Browsers */
+    color:#ffffff;
+  }
+  ::-moz-selection {
+    background: #35A57A; /* Gecko Browsers */
+    color:#ffffff;
+  }
   ::-webkit-scrollbar {
     width: 0.375rem;
     height: 0.625rem;
