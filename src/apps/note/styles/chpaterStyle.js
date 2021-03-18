@@ -96,12 +96,26 @@ export const ChapterTitle = styled.span`
 `;
 
 export const ChapterTextSpan = styled.span`
-  width: calc(100% - 3.5rem);
+  width: fit-content;
+  max-width: calc(100% - 3.5rem);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: normal;
   margin-left: ${props => props.marginLeft};
+`;
+
+// margin-right는 vertical menu 때문에 가려지지 않도록 추가
+export const NewNoteMark = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  background-color: #DC4547;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 0.25rem;
+  margin-top: -0.5rem;
+  margin-right:${props => props.isChapter ? "2rem" : ""};
 `;
 
 export const ChapterFolderBtn = styled.span`

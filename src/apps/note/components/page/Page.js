@@ -4,6 +4,7 @@ import useNoteStore from '../../store/useStore';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
 import ContextMenu from '../common/ContextMenu';
+import { NewNoteMark } from '../../styles/chpaterStyle';
 import {
   PageCover,
   PageMargin,
@@ -15,6 +16,7 @@ import {
 import { Tooltip } from 'antd';
 import NoteUtil from '../../NoteUtil';
 import { DRAG_TYPE } from '../../GlobalVariable';
+import moment from 'moment-timezone';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -188,6 +190,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             >
               <PageText onMouseOver={handleTooltip}>{page.text}</PageText>
             </Tooltip>
+            {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
             <ContextMenu
               noteType={'page'}
               note={page}
