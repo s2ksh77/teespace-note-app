@@ -501,6 +501,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 return teespaceCore.API.post("note-api/notebooks", {
                   dto: {
                     id: '',
+                    ws_id: this.WS_ID,
                     note_channel_id: this.chId,
                     text: chapterTitle,
                     children: [],
@@ -547,7 +548,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context7.prev = 0;
                 _context7.next = 3;
-                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
+                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID, "&ws_id=").concat(this.WS_ID));
 
               case 3:
                 _yield$API$delete = _context7.sent;
@@ -590,6 +591,7 @@ var NoteRepository = /*#__PURE__*/function () {
                     USER_ID: this.USER_ID,
                     color: color,
                     id: chapterId,
+                    ws_id: this.WS_ID,
                     note_channel_id: this.chId,
                     parent_notebook: '',
                     text: chapterTitle,
@@ -1768,7 +1770,8 @@ var TagStore = mobx.observable({
               createTagArr = createTagList.map(function (tag) {
                 return {
                   text: tag,
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context4.next = 3;
@@ -1804,7 +1807,8 @@ var TagStore = mobx.observable({
               deleteTagList.forEach(function (tag) {
                 deleteTagArray.push({
                   tag_id: tag,
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 });
               });
               _context5.next = 4;
@@ -1839,7 +1843,8 @@ var TagStore = mobx.observable({
               updateTagArray = updateTagList.map(function (tag) {
                 return {
                   tag_id: tag.tag_id,
-                  text: tag.text
+                  text: tag.text,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context6.next = 3;
@@ -1880,7 +1885,8 @@ var TagStore = mobx.observable({
               createTagArr = createTagList.map(function (tag) {
                 return {
                   text: NoteUtil.encodeStr(tag),
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context7.next = 3;
@@ -1915,7 +1921,8 @@ var TagStore = mobx.observable({
               updateTagArr = updateTagList.map(function (tag) {
                 return {
                   tag_id: tag.tag_id,
-                  text: NoteUtil.encodeStr(tag.text)
+                  text: NoteUtil.encodeStr(tag.text),
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context8.next = 3;
@@ -2755,7 +2762,8 @@ var EditorStore = mobx.observable((_observable = {
             fileArray.forEach(function (file) {
               createCopyArray.push({
                 note_id: noteId,
-                file_id: file
+                file_id: file,
+                WS_ID: NoteRepository$1.WS_ID
               });
             });
             _context7.next = 4;
