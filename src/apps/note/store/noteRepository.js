@@ -141,6 +141,7 @@ class NoteRepository {
       const { data } = await API.post(`note-api/notebooks`, {
         dto: {
           id: '',
+          ws_id: this.WS_ID,
           note_channel_id: this.chId,
           text: chapterTitle,
           children: [],
@@ -158,7 +159,7 @@ class NoteRepository {
 
   async deleteChapter(chapterId) {
     try {
-      const { data } = await API.delete(`note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}`);
+      const { data } = await API.delete(`note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`);
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -173,6 +174,7 @@ class NoteRepository {
           USER_ID: this.USER_ID,
           color: color,
           id: chapterId,
+          ws_id: this.WS_ID,
           note_channel_id: this.chId,
           parent_notebook: '',
           text: chapterTitle,
@@ -289,7 +291,7 @@ class NoteRepository {
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
-    updateDto.dto.modified_date= `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
+    updateDto.dto.modified_date = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
     try {
       return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {
