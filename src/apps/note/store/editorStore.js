@@ -399,6 +399,7 @@ const EditorStore = observable({
       createCopyArray.push({
         note_id: noteId,
         file_id: file,
+        WS_ID: NoteRepository.WS_ID
       })
     })
     const {
