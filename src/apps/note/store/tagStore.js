@@ -166,6 +166,7 @@ const TagStore = observable({
       return {
         text: tag,
         note_id: noteId,
+        WS_ID: NoteRepository.WS_ID
       }
     });
     const { data: { dto } } = await NoteRepository.createTag(createTagArr);
@@ -178,6 +179,7 @@ const TagStore = observable({
       deleteTagArray.push({
         tag_id: tag,
         note_id: noteId,
+        WS_ID: NoteRepository.WS_ID
       })
     });
     const { data: { dto } } = await NoteRepository.deleteTag(deleteTagArray);
@@ -190,6 +192,7 @@ const TagStore = observable({
       return {
         tag_id: tag.tag_id,
         text: tag.text,
+        WS_ID: NoteRepository.WS_ID
       }
     });
     const { data: { dto } } = await NoteRepository.updateTag(updateTagArray);
@@ -207,6 +210,7 @@ const TagStore = observable({
       return {
         text: NoteUtil.encodeStr(tag),
         note_id: noteId,
+        WS_ID: NoteRepository.WS_ID
       }
     });
     const { data: { dto } } = await NoteRepository.createTag(createTagArr);
@@ -218,6 +222,7 @@ const TagStore = observable({
       return {
         tag_id: tag.tag_id,
         text: NoteUtil.encodeStr(tag.text),
+        WS_ID: NoteRepository.WS_ID
       }
     });
     const { data: { dto } } = await NoteRepository.updateTag(updateTagArr);
@@ -266,7 +271,7 @@ const TagStore = observable({
    * @return sorted tag list
    */
   async getAllsortedTagList() {
-    const { 
+    const {
       data: { dto: { tag_index_list_dto } }
     } = await NoteRepository.getAllSortedTagList();
     return tag_index_list_dto;
@@ -286,7 +291,7 @@ const TagStore = observable({
      * }
      */
     const categorizedTagObjs = { 'KOR': {}, 'ENG': {}, 'NUM': {}, 'ETC': {} };
-    
+
     allTagsList.forEach(item => {
       const upperCaseKey = item.KEY.toUpperCase();
       const tagKeyCategory = this.getTagKeyCategory(upperCaseKey);
@@ -294,7 +299,7 @@ const TagStore = observable({
         tagKeyCategory === 'ENG'
           ? this.sortEngTagList(item.tag_indexdto.tagList)
           : item.tag_indexdto.tagList;
-      let tagObjs = 
+      let tagObjs =
         isSearching
           ? this.getSearchTagObjs(tagList, this.searchStr)
           : this.getTagObjs(tagList);
@@ -327,7 +332,7 @@ const TagStore = observable({
    * @return sorted tag list
    */
   sortEngTagList(tagList) {
-    const sortedEngTagList = tagList.slice().sort((a, b) => 
+    const sortedEngTagList = tagList.slice().sort((a, b) =>
       a.text.toLowerCase() > b.text.toLowerCase() ? 1 : a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 0
     );
     return sortedEngTagList;
@@ -400,7 +405,7 @@ const TagStore = observable({
     this.setSortedTagList(this.categorizeTagList(this.allSortedTagList, true));
     this.setIsSearchLoading(false);
   },
-  
+
   async setTagNoteSearchResult(tagId) {
     const { data: {
       dto: {
