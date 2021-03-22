@@ -15,7 +15,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@tinymce/tinymce-react": "^3.6.1",
+    "@tinymce/tinymce-react": "~3.8.2",
     "antd": "^4.6.3",
     "autobind-decorator": "^2.4.0",
     "axios": "^0.20.0",
