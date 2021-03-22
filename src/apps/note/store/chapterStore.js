@@ -129,9 +129,6 @@ const ChapterStore = observable({
   setChapterListChildren(chapterId) {
     this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
   },
-  getChapterChildren() {
-    return this.chapterChildren;
-  },
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
     if (flag === false) this.setChapterTitle('');
