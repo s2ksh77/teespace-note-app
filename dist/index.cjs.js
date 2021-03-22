@@ -603,6 +603,7 @@ var NoteRepository = /*#__PURE__*/function () {
                 return teespaceCore.API.post("note-api/notebooks", {
                   dto: {
                     id: '',
+                    ws_id: this.WS_ID,
                     note_channel_id: this.chId,
                     text: chapterTitle,
                     children: [],
@@ -649,7 +650,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context7.prev = 0;
                 _context7.next = 3;
-                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID));
+                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID, "&ws_id=").concat(this.WS_ID));
 
               case 3:
                 _yield$API$delete = _context7.sent;
@@ -692,6 +693,7 @@ var NoteRepository = /*#__PURE__*/function () {
                     USER_ID: this.USER_ID,
                     color: color,
                     id: chapterId,
+                    ws_id: this.WS_ID,
                     note_channel_id: this.chId,
                     parent_notebook: '',
                     text: chapterTitle,
@@ -1938,7 +1940,8 @@ var TagStore = mobx.observable({
               createTagArr = createTagList.map(function (tag) {
                 return {
                   text: tag,
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context4.next = 3;
@@ -1974,7 +1977,8 @@ var TagStore = mobx.observable({
               deleteTagList.forEach(function (tag) {
                 deleteTagArray.push({
                   tag_id: tag,
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 });
               });
               _context5.next = 4;
@@ -2009,7 +2013,8 @@ var TagStore = mobx.observable({
               updateTagArray = updateTagList.map(function (tag) {
                 return {
                   tag_id: tag.tag_id,
-                  text: tag.text
+                  text: tag.text,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context6.next = 3;
@@ -2050,7 +2055,8 @@ var TagStore = mobx.observable({
               createTagArr = createTagList.map(function (tag) {
                 return {
                   text: NoteUtil.encodeStr(tag),
-                  note_id: noteId
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context7.next = 3;
@@ -2085,7 +2091,8 @@ var TagStore = mobx.observable({
               updateTagArr = updateTagList.map(function (tag) {
                 return {
                   tag_id: tag.tag_id,
-                  text: NoteUtil.encodeStr(tag.text)
+                  text: NoteUtil.encodeStr(tag.text),
+                  WS_ID: NoteRepository$1.WS_ID
                 };
               });
               _context8.next = 3;
@@ -2471,6 +2478,7 @@ var EditorStore$1 = mobx.observable((_observable = {
   fileSize: "",
   fileExtension: "",
   uploadLength: '',
+  totalUploadLength: '',
   isFileFilteredByNameLen: false,
   processLength: 0,
   processCount: 0,
@@ -2567,6 +2575,9 @@ var EditorStore$1 = mobx.observable((_observable = {
   setProcessCount: function setProcessCount(count) {
     this.processCount = count;
   },
+  setFailCount: function setFailCount(count) {
+    this.failCount = count;
+  },
   setIsUploading: function setIsUploading(isUploading) {
     this.isUploading = isUploading;
   },
@@ -2575,7 +2586,6 @@ var EditorStore$1 = mobx.observable((_observable = {
   },
   setUploaderRef: function setUploaderRef(ref) {
     this.uploaderRef = ref;
-    console.log(mobx.toJS(this.uploaderRef));
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
@@ -2779,7 +2789,7 @@ var EditorStore$1 = mobx.observable((_observable = {
     var getUnixTime = NoteUtil.getUnixTime; // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
 
     checkFile.sort(function (a, b) {
-      return getUnixTime(b['file_updated_at']) - getUnixTime(a['file_updated_at']);
+      return getUnixTime(b['created_at']) - getUnixTime(a['created_at']);
     });
     this.setFileArray(checkFile);
   }
@@ -2886,6 +2896,8 @@ var EditorStore$1 = mobx.observable((_observable = {
   this.tempFileLayoutList = arr;
 }), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
+}), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
+  this.totalUploadLength = length;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
@@ -2920,7 +2932,8 @@ var EditorStore$1 = mobx.observable((_observable = {
             fileArray.forEach(function (file) {
               createCopyArray.push({
                 note_id: noteId,
-                file_id: file
+                file_id: file,
+                WS_ID: NoteRepository$1.WS_ID
               });
             });
             _context7.next = 4;
@@ -3185,7 +3198,9 @@ var languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
   NOTE_EXPORT_TITLE: '제목',
   enterText: '텍스트를 입력해 주세요.',
-  enterLink: '링크를 입력해 주세요.'
+  enterLink: '링크를 입력해 주세요.',
+  saving: '저장중',
+  hasBeenSaved: '저장되었습니다.'
 };
 
 var languageSet$1 = {
@@ -3317,7 +3332,9 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title',
   enterText: 'Enter a Text.',
-  enterLink: 'Enter a link.'
+  enterLink: 'Enter a link.',
+  saving: 'Saving',
+  hasBeenSaved: 'Has Been Saved'
 };
 
 var resources = {
@@ -4203,7 +4220,7 @@ var PageStore = mobx.observable((_observable$1 = {
     this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName, this.prevModifiedUserId).then(function (dto) {
       var _EditorStore$tinymce4;
 
-      _this9.fetchNoteInfoList(dto.note_id);
+      _this9.fetchCurrentPageData(dto.note_id);
 
       var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
       if (floatingMenu !== null) floatingMenu.click();
@@ -5296,19 +5313,10 @@ var ChapterStore = mobx.observable((_observable$2 = {
     _this10.getNoteChapterList();
 
     if (_this10.currentChapterId === _this10.deleteChapterId) {
-      var _selectableChapter$ch, _selectableChapter$ch2;
+      _this10.setCurrentChapterId(_this10.selectableChapterId);
 
-      // 임시 코드. 서버 수정된 후 변경 예정.
-      var currentChapterIdx = _this10.chapterList.findIndex(function (chapter) {
-        return chapter.id === _this10.currentChapterId;
-      });
-
-      var selectableChapter = currentChapterIdx === 0 ? _this10.chapterList[1] : _this10.chapterList[currentChapterIdx - 1];
-
-      _this10.setCurrentChapterId(selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id);
-
-      PageStore.setCurrentPageId(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id);
-      PageStore.fetchCurrentPageData(selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch2 = selectableChapter.children[0]) === null || _selectableChapter$ch2 === void 0 ? void 0 : _selectableChapter$ch2.id);
+      PageStore.setCurrentPageId(PageStore.selectablePageId);
+      PageStore.fetchCurrentPageData(PageStore.selectablePageId);
 
       _this10.setMoveInfoMap(new Map([[_this10.currentChapterId, _this10.createMoveInfo(_this10.currentChapterId)]]));
 
@@ -5754,6 +5762,7 @@ var NoteMeta = {
 
           if (PageStore.lastSharedPageParentId) {
             ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+            PageStore.setLastSharedPageParentId('');
             ChapterStore.deleteNoteChapter();
           } else PageStore.deleteNotePage();
 
@@ -5895,7 +5904,7 @@ var NoteMeta = {
     switch (type) {
       case 'chapter':
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_07';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
@@ -5906,19 +5915,19 @@ var NoteMeta = {
 
       case 'confirm':
         dialogType.type = 'info';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'chapterconfirm':
         dialogType.type = 'info';
+        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: PageStore.editingUserCount
         });
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5929,7 +5938,7 @@ var NoteMeta = {
 
       case 'titleDuplicate':
         dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
-        dialogType.subtitle = 'NOTE_PAGE_LIST_CREATE_N_CHPT_02';
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_02');
         dialogType.btns = this.setBtns(type);
         break;
 
@@ -5939,10 +5948,10 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
+        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
-        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
         dialogType.btns = this.setBtns('editingPage');
         break;
 
@@ -5952,11 +5961,11 @@ var NoteMeta = {
         break;
 
       case 'multiFileSomeFail':
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
-          uploadCnt: EditorStore$1.uploadLength,
+          uploadCnt: EditorStore$1.totalUploadLength,
           failCnt: EditorStore$1.failCount
         });
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
 
@@ -6322,7 +6331,7 @@ var NoteStore = mobx.observable({
               name = _yield$UserStore$getP.name;
               nick = _yield$UserStore$getP.nick;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? _this.userName : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? nick ? nick : name : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
                 ,
                 sharedUserName: nick ? nick : name,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
@@ -6618,8 +6627,18 @@ var PageSearchResultPageTitle = styled__default['default'].div(_templateObject10
 var PageSearchResultChapterTitle = styled__default['default'].div(_templateObject11());
 var SearchResultBotttom = styled__default['default'].div(_templateObject12());
 
-function _templateObject17() {
+function _templateObject18() {
   var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  background-color: ", "\n  border: ", "\n"]);
+
+  _templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject17() {
+  var data = _taggedTemplateLiteral(["\n  display:", ";\n  margin-left:auto;\n"]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -6629,7 +6648,7 @@ function _templateObject17() {
 }
 
 function _templateObject16() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  margin-left:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n  line-height: 1;\n"]);
 
   _templateObject16 = function _templateObject16() {
     return data;
@@ -6639,7 +6658,7 @@ function _templateObject16() {
 }
 
 function _templateObject15() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n  line-height: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
 
   _templateObject15 = function _templateObject15() {
     return data;
@@ -6649,7 +6668,7 @@ function _templateObject15() {
 }
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", "\n  border: ", "\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -6659,7 +6678,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", "\n  border: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -6669,7 +6688,7 @@ function _templateObject13() {
 }
 
 function _templateObject12$1() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;\n  height: 3rem;\n  padding: 0 0.75rem 0 1rem;\n  align-items: center;\n  border-bottom: 1px solid #dadada;\n  box-sizing: border-box;\n"]);
 
   _templateObject12$1 = function _templateObject12() {
     return data;
@@ -6679,7 +6698,7 @@ function _templateObject12$1() {
 }
 
 function _templateObject11$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;\n  height: 3rem;\n  padding: 0 0.75rem 0 1rem;\n  align-items: center;\n  border-bottom: 1px solid #dadada;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);\n"]);
 
   _templateObject11$1 = function _templateObject11() {
     return data;
@@ -6689,7 +6708,7 @@ function _templateObject11$1() {
 }
 
 function _templateObject10$1() {
-  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
 
   _templateObject10$1 = function _templateObject10() {
     return data;
@@ -6699,7 +6718,7 @@ function _templateObject10$1() {
 }
 
 function _templateObject9$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0.38rem !important;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
 
   _templateObject9$1 = function _templateObject9() {
     return data;
@@ -6709,7 +6728,7 @@ function _templateObject9$1() {
 }
 
 function _templateObject8$1() {
-  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-left: 1px solid #d8d8d8 !important;\n  padding: 0 0.38rem !important;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  color: #2E6360 ;\n  font-size: 0.6875rem;\n  margin-right:", ";\n"]);
 
   _templateObject8$1 = function _templateObject8() {
     return data;
@@ -6719,7 +6738,7 @@ function _templateObject8$1() {
 }
 
 function _templateObject7$1() {
-  var data = _taggedTemplateLiteral(["\n  width: auto;\n  height: auto;\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  border-width: 0px;\n  border-style: solid;\n  padding: 0 0.38rem 0 0 !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  color: rgb(0, 0, 0);\n  font-size: 0.6875rem;\n  padding: 0 0.38rem 0 0 !important;\n"]);
 
   _templateObject7$1 = function _templateObject7() {
     return data;
@@ -6795,25 +6814,27 @@ var EditorHeaderContainer2 = styled__default['default'].div(_templateObject4$1()
 var HeaderDivider = styled__default['default'].div(_templateObject5$1());
 var EditingImg = styled__default['default'].img(_templateObject6$1());
 var ModifiedUser = styled__default['default'].span(_templateObject7$1());
-var AutoSaveMsg = ModifiedUser;
-var ModifiedTime = styled__default['default'].span(_templateObject8$1());
-var EditorSearchIconDiv = styled__default['default'].div(_templateObject9$1());
-var EditorSearchIcon = styled__default['default'].img(_templateObject10$1());
-var LnbTitleCover = styled__default['default'].div(_templateObject11$1());
-var LnbTitleNewButton = styled__default['default'].button(_templateObject12$1());
-var LnbTitleSearchContainer = styled__default['default'].form(_templateObject13(), function (props) {
+var AutoSaveMsg = styled__default['default'].span(_templateObject8$1(), function (props) {
+  return props.isSaving ? "0.63rem" : "0.31rem";
+});
+var ModifiedTime = styled__default['default'].span(_templateObject9$1());
+var EditorSearchIconDiv = styled__default['default'].div(_templateObject10$1());
+var EditorSearchIcon = styled__default['default'].img(_templateObject11$1());
+var LnbTitleCover = styled__default['default'].div(_templateObject12$1());
+var LnbTitleNewButton = styled__default['default'].button(_templateObject13());
+var LnbTitleSearchContainer = styled__default['default'].form(_templateObject14(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "#F7F4EF";
 }, function (props) {
   return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
 });
-var LnbTitleSearchIcon = styled__default['default'].button(_templateObject14());
-var LnbTitleSearchInput = styled__default['default'].input(_templateObject15(), function (props) {
+var LnbTitleSearchIcon = styled__default['default'].button(_templateObject15());
+var LnbTitleSearchInput = styled__default['default'].input(_templateObject16(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "inherit;";
 });
-var TagSearchForm = styled__default['default'].form(_templateObject16(), function (props) {
+var TagSearchForm = styled__default['default'].form(_templateObject17(), function (props) {
   return props.show ? "block" : "none";
 });
-var TagTitleSearchContainer = styled__default['default'].div(_templateObject17(), function (props) {
+var TagTitleSearchContainer = styled__default['default'].div(_templateObject18(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "#F7F4EF;";
 }, function (props) {
   return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
@@ -7023,10 +7044,10 @@ function _templateObject19() {
   return data;
 }
 
-function _templateObject18() {
+function _templateObject18$1() {
   var data = _taggedTemplateLiteral(["\n  position: absolute;\n  right: ", ";\n  display: flex;\n  visibility: hidden;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  cursor: pointer;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
 
-  _templateObject18 = function _templateObject18() {
+  _templateObject18$1 = function _templateObject18() {
     return data;
   };
 
@@ -7232,7 +7253,7 @@ var SearchResultNotFoundCover = styled__default['default'].div(_templateObject14
 var SearchKeyword = styled__default['default'].span(_templateObject15$1());
 var NoSearchResultTitle = styled__default['default'].span(_templateObject16$1());
 var NoSearchResultImg = styled__default['default'].img(_templateObject17$1());
-var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject18(), function (props) {
+var ContextMenuCover = styled__default['default'](antd.Dropdown)(_templateObject18$1(), function (props) {
   return props.right;
 });
 var ContextMenuIconCover = styled__default['default'].span(_templateObject19());
@@ -7277,10 +7298,10 @@ function _templateObject19$1() {
   return data;
 }
 
-function _templateObject18$1() {
+function _templateObject18$2() {
   var data = _taggedTemplateLiteral(["\n  min-width: fit-content;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  margin-bottom: 0.4375rem;\n  margin-top: 0.4375rem;\n  margin-right: 0.38rem;\n  color: #3B3B3B;\n  font-size: 0.81rem;\n  font-weight: 400;\n  border-radius: 1.563rem;\n  text-overflow: ellipsis;\n  overflow:hidden;\n  height: 1.88rem;\n  z-index: 1;\n  float: left;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: #F7F4EF;\n  border: 1px solid transparent;\n  border-radius: 25px;\n  padding: 0 0.63rem;\n  transition-duration: 0s;\n  &:hover{\n    color: #000000;\n    border: 1px solid #7B7671;\n    background-color: #EBE6DF;\n  }\n"]);
 
-  _templateObject18$1 = function _templateObject18() {
+  _templateObject18$2 = function _templateObject18() {
     return data;
   };
 
@@ -7481,7 +7502,7 @@ var TagKeyContainer = styled__default['default'].div(_templateObject16$2());
 var TagChipGroup = styled__default['default'].div(_templateObject17$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 
-var TagChip = styled__default['default'](antd.Tag)(_templateObject18$1());
+var TagChip = styled__default['default'](antd.Tag)(_templateObject18$2());
 var SearchTagChip = styled__default['default'](antd.Tag)(_templateObject19$1());
 var TagChipNum = styled__default['default'].div(_templateObject20$1());
 
@@ -7731,8 +7752,18 @@ var LNBHeader = function LNBHeader(_ref) {
   });
 };
 
-function _templateObject11$4() {
+function _templateObject12$4() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.81rem !important;\n  color: #000000 !important;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  align-self: center;\n  border: 0rem !important;\n  background-color: transparent !important;\n  padding-left: 1.69rem;\n  // padding-right: 0.3125rem;\n  &::placeholder {\n    color: #D0D0D0;\n  }\n  &::selection {\n    background: #F2EFEC;\n    color: #000000;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+
+  _templateObject12$4 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11$4() {
+  var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);\n"]);
 
   _templateObject11$4 = function _templateObject11() {
     return data;
@@ -7742,7 +7773,7 @@ function _templateObject11$4() {
 }
 
 function _templateObject10$4() {
-  var data = _taggedTemplateLiteral(["\n  width: 1rem;\n  height: 1rem;\n  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  margin-left: 0.15rem;\n  cursor: pointer;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
 
   _templateObject10$4 = function _templateObject10() {
     return data;
@@ -7752,7 +7783,7 @@ function _templateObject10$4() {
 }
 
 function _templateObject9$4() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.5rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  border-radius: 0.38rem;\n  align-items: center;\n  justify-content: center;\n  margin-left: 0.15rem;\n  cursor: pointer;\n  &:hover {\n    background-color: rgba(235, 230, 223, 1);\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  background-color: #DC4547;\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  margin-left: 0.25rem;\n  margin-top: -0.5rem;\n  margin-right:", ";\n"]);
 
   _templateObject9$4 = function _templateObject9() {
     return data;
@@ -7762,7 +7793,7 @@ function _templateObject9$4() {
 }
 
 function _templateObject8$4() {
-  var data = _taggedTemplateLiteral(["\n  width: calc(100% - 3.5rem);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: normal;\n  margin-left: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: fit-content;\n  max-width: calc(100% - 3.5rem);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: normal;\n  margin-left: ", ";\n"]);
 
   _templateObject8$4 = function _templateObject8() {
     return data;
@@ -7857,10 +7888,14 @@ var ChapterTextInput = styled__default['default'].input(_templateObject6$4(), fu
 var ChapterTitle = styled__default['default'].span(_templateObject7$4());
 var ChapterTextSpan = styled__default['default'].span(_templateObject8$4(), function (props) {
   return props.marginLeft;
+}); // margin-right는 vertical menu 때문에 가려지지 않도록 추가
+
+var NewNoteMark = styled__default['default'].div(_templateObject9$4(), function (props) {
+  return props.isChapter ? "2rem" : "";
 });
-var ChapterFolderBtn = styled__default['default'].span(_templateObject9$4());
-var ChapterFoldBtnIcon = styled__default['default'].img(_templateObject10$4());
-var ChapterInput = styled__default['default'].input(_templateObject11$4());
+var ChapterFolderBtn = styled__default['default'].span(_templateObject10$4());
+var ChapterFoldBtnIcon = styled__default['default'].img(_templateObject11$4());
+var ChapterInput = styled__default['default'].input(_templateObject12$4());
 
 var ChapterColor = function ChapterColor(_ref) {
   var color = _ref.color;
@@ -8424,6 +8459,7 @@ var handleUpload = /*#__PURE__*/function () {
                   var handleUploadProgress = function handleUploadProgress(e) {
                     var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
                     EditorStore$1.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                    EditorStore$1.tempFileLayoutList[i].status = 'pending';
                   };
 
                   EditorStore$1.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource).then( /*#__PURE__*/function () {
@@ -8433,45 +8469,44 @@ var handleUpload = /*#__PURE__*/function () {
                           switch (_context.prev = _context.next) {
                             case 0:
                               if (!(result.resultMsg === 'Success')) {
-                                _context.next = 8;
+                                _context.next = 9;
                                 break;
                               }
 
                               if (item.type === 'image') EditorStore$1.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore$1.tempFileLayoutList[i].file_name + '.' + EditorStore$1.tempFileLayoutList[i].file_extension);
                               EditorStore$1.tempFileLayoutList[i].progress = 0;
                               EditorStore$1.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
-                              _context.next = 6;
+                              EditorStore$1.tempFileLayoutList[i].status = 'uploaded';
+                              _context.next = 7;
                               return EditorStore$1.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
 
-                            case 6:
-                              _context.next = 9;
+                            case 7:
+                              _context.next = 10;
                               break;
 
-                            case 8:
+                            case 9:
                               if (dto.resultMsg === 'Fail') {
-                                EditorStore$1.failCount++;
+                                EditorStore$1.failCount += 1;
                                 EditorStore$1.tempFileLayoutList[i].progress = 0;
                                 EditorStore$1.tempFileLayoutList[i].error = true;
+                                EditorStore$1.tempFileLayoutList[i].status = 'failed';
                               }
 
-                            case 9:
-                              EditorStore$1.processLength++;
+                            case 10:
+                              EditorStore$1.processLength += 1;
 
                               if (EditorStore$1.processLength == EditorStore$1.uploadLength) {
                                 EditorStore$1.uploadDTO = [];
                                 EditorStore$1.setProcessLength(0);
                                 EditorStore$1.setIsUploading(false);
-                                if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
-                                  PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                                    EditorStore$1.setFileList(dto.fileList);
-                                    EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
-                                    EditorStore$1.setProcessCount(0);
-                                    EditorStore$1.setTempFileLayoutList([]);
-                                  });
-                                }
+
+                                if (EditorStore$1.failCount > 0) {
+                                  NoteStore.setModalInfo('multiFileSomeFail');
+                                  initialFileList();
+                                } else if (EditorStore$1.failCount === 0) initialFileList();
                               }
 
-                            case 11:
+                            case 12:
                             case "end":
                               return _context.stop();
                           }
@@ -8485,7 +8520,25 @@ var handleUpload = /*#__PURE__*/function () {
                   }()).catch(function (e) {
                     if (e !== 'Network Error') {
                       EditorStore$1.tempFileLayoutList[i].error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
-                      EditorStore$1.processLength++;
+                      EditorStore$1.failCount += 1;
+                      EditorStore$1.processLength += 1;
+                      EditorStore$1.tempFileLayoutList[i].status = 'canceled';
+                      var hasPending = EditorStore$1.tempFileLayoutList.some(function (file) {
+                        return file['status'] === 'pending';
+                      });
+
+                      if (!hasPending) {
+                        // 업로드 중인것이 하나도 없을 때
+                        EditorStore$1.uploadDTO = [];
+                        EditorStore$1.setProcessLength(0);
+                        EditorStore$1.setIsUploading(false);
+
+                        if (EditorStore$1.failCount > 0) {
+                          NoteStore.setModalInfo('multiFileSomeFail');
+                        }
+
+                        initialFileList();
+                      }
                     }
                   });
                 })(EditorStore$1.uploadDTO[i]);
@@ -8508,6 +8561,17 @@ var handleUpload = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
+
+var initialFileList = function initialFileList() {
+  PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+    EditorStore$1.setFileList(dto.fileList);
+    EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
+    EditorStore$1.setProcessCount(0);
+    EditorStore$1.setFailCount(0);
+    EditorStore$1.setTempFileLayoutList([]);
+  });
+};
+
 var driveSuccessCb = function driveSuccessCb(fileList) {
   if (fileList) {
     if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
@@ -9242,9 +9306,9 @@ var ContextMenu = function ContextMenu(_ref) {
 
   var noteType = _ref.noteType,
       note = _ref.note,
-      selectableChapterId = _ref.selectableChapterId,
-      selectablePageId = _ref.selectablePageId,
-      lastSharedPageParentId = _ref.lastSharedPageParentId;
+      chapterIdx = _ref.chapterIdx,
+      pageIdx = _ref.pageIdx,
+      parent = _ref.parent;
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
@@ -9284,13 +9348,11 @@ var ContextMenu = function ContextMenu(_ref) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              ChapterStore.setSelectableChapterId(selectableChapterId);
-              PageStore.setSelectablePageId(selectablePageId);
               _context3.t0 = noteType;
-              _context3.next = _context3.t0 === 'chapter' ? 5 : _context3.t0 === 'page' ? 8 : 10;
+              _context3.next = _context3.t0 === 'chapter' ? 3 : _context3.t0 === 'page' ? 6 : 8;
               break;
 
-            case 5:
+            case 3:
               ChapterStore.setDeleteChapterId(note.id);
               ChapterStore.getChapterChildren(note.id).then( /*#__PURE__*/function () {
                 var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dto) {
@@ -9299,44 +9361,35 @@ var ContextMenu = function ContextMenu(_ref) {
                     while (1) {
                       switch (_context.prev = _context.next) {
                         case 0:
-                          if (!(dto.noteList.length > 0)) {
-                            _context.next = 13;
-                            break;
-                          }
-
                           editingList = dto.noteList.filter(function (note) {
                             return note.is_edit !== null && note.is_edit !== '';
                           });
 
                           if (!(editingList.length === 1)) {
-                            _context.next = 10;
+                            _context.next = 9;
                             break;
                           }
 
-                          _context.next = 5;
+                          _context.next = 4;
                           return userStore.fetchProfile(editingList[0].is_edit);
 
-                        case 5:
+                        case 4:
                           res = _context.sent;
                           PageStore.setEditingUserName(res.nick ? res.nick : res.name);
                           NoteStore.setModalInfo('confirm');
-                          _context.next = 11;
+                          _context.next = 10;
                           break;
 
-                        case 10:
+                        case 9:
                           if (editingList.length > 1) {
                             PageStore.setEditingUserCount(editingList.length);
                             NoteStore.setModalInfo('chapterconfirm');
-                          } else NoteStore.setModalInfo('chapter');
+                          } else {
+                            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
+                            NoteStore.setModalInfo('chapter');
+                          }
 
-                        case 11:
-                          _context.next = 14;
-                          break;
-
-                        case 13:
-                          NoteStore.setModalInfo('chapter');
-
-                        case 14:
+                        case 10:
                         case "end":
                           return _context.stop();
                       }
@@ -9348,9 +9401,9 @@ var ContextMenu = function ContextMenu(_ref) {
                   return _ref3.apply(this, arguments);
                 };
               }());
-              return _context3.abrupt("break", 11);
+              return _context3.abrupt("break", 9);
 
-            case 8:
+            case 6:
               PageStore.getNoteInfoList(note.id).then( /*#__PURE__*/function () {
                 var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto) {
                   var res;
@@ -9366,7 +9419,16 @@ var ContextMenu = function ContextMenu(_ref) {
                           PageStore.setDeletePageList({
                             note_id: note.id
                           });
-                          PageStore.setLastSharedPageParentId(lastSharedPageParentId);
+
+                          if (PageStore.currentPageId === note.id) {
+                            if (parent.type === 'shared_page' && parent.children.length === 1) {
+                              setSelectableIdOfChapter();
+                              PageStore.setLastSharedPageParentId(parent.id);
+                            } else {
+                              setSelectableIdOfPage();
+                            }
+                          }
+
                           NoteStore.setModalInfo('page');
                           _context2.next = 11;
                           break;
@@ -9392,12 +9454,12 @@ var ContextMenu = function ContextMenu(_ref) {
                   return _ref4.apply(this, arguments);
                 };
               }());
-              return _context3.abrupt("break", 11);
+              return _context3.abrupt("break", 9);
 
-            case 10:
-              return _context3.abrupt("break", 11);
+            case 8:
+              return _context3.abrupt("break", 9);
 
-            case 11:
+            case 9:
             case "end":
               return _context3.stop();
           }
@@ -9409,6 +9471,23 @@ var ContextMenu = function ContextMenu(_ref) {
       return _ref2.apply(this, arguments);
     };
   }();
+
+  var setSelectableIdOfChapter = function setSelectableIdOfChapter() {
+    var _selectableChapter$ch;
+
+    var selectableChapter = chapterIdx > 0 ? ChapterStore.chapterList[chapterIdx - 1] : ChapterStore.chapterList[1];
+    var selectableChapterId = selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id;
+    var selectablePageId = selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id;
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
+  var setSelectableIdOfPage = function setSelectableIdOfPage() {
+    var _parent$children, _parent$children$;
+
+    var selectablePageId = pageIdx > 0 ? (_parent$children = parent.children[pageIdx - 1]) === null || _parent$children === void 0 ? void 0 : _parent$children.id : (_parent$children$ = parent.children[1]) === null || _parent$children$ === void 0 ? void 0 : _parent$children$.id;
+    PageStore.setSelectablePageId(selectablePageId);
+  };
 
   var shareComponent = function shareComponent() {
     NoteStore.setShareNoteType(noteType);
@@ -9514,9 +9593,6 @@ var ChapterText = function ChapterText(_ref) {
       handleFoldBtnClick = _ref.handleFoldBtnClick,
       isFolded = _ref.isFolded;
 
-  var _useNoteStore = useNoteStore(),
-      ChapterStore = _useNoteStore.ChapterStore;
-
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
 
@@ -9541,8 +9617,7 @@ var ChapterText = function ChapterText(_ref) {
     }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text)), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
       noteType: "chapter",
       note: chapter,
-      selectableChapterId: ChapterStore.chapterList.length > 1 ? index === 0 ? ChapterStore.chapterList[1].id : ChapterStore.chapterList[index - 1].id : '',
-      selectablePageId: ChapterStore.chapterList.length > 1 ? index === 0 ? ChapterStore.chapterList[1].children.length > 0 ? ChapterStore.chapterList[1].children[0].id : '' : ChapterStore.chapterList[index - 1].children.length > 0 ? ChapterStore.chapterList[index - 1].children[0].id : '' : ''
+      chapterIdx: index
     })), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, {
       onClick: handleFoldBtnClick
     }, /*#__PURE__*/React__default['default'].createElement(ChapterFoldBtnIcon, {
@@ -9612,7 +9687,7 @@ function _templateObject6$5() {
 }
 
 function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 1.75rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  display: flex;\n  padding-right: 2rem;\n  box-sizing: border-box;\n  border-radius: 0.31rem;\n  align-items: center;\n  &:hover:not(.ellipsisBtn){\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active:not(.ellipsisBtn) {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject5$5 = function _templateObject5() {
     return data;
@@ -9835,8 +9910,9 @@ var Page = function Page(_ref) {
     }, page.text)), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
       noteType: 'page',
       note: page,
-      selectablePageId: chapter.children.length > 1 ? index === 0 ? chapter.children[1].id : chapter.children[index - 1].id : '',
-      lastSharedPageParentId: chapter.type === 'shared_page' && chapter.children.length === 1 ? chapter.id : ''
+      chapterIdx: chapterIdx,
+      pageIdx: index,
+      parent: chapter
     }))));
   });
 };
@@ -10352,7 +10428,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .ant-upload.ant-upload-select{\n    display: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -10580,7 +10656,9 @@ var EditorHeader = function EditorHeader() {
       onChange: handleTitleInput,
       disabled: !PageStore.isReadMode() ? false : true,
       autoComplete: "off"
-    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, PageStore.saveStatus.saving ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, null, "\uC800\uC7A5\uC911...") : PageStore.saveStatus.saved ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, null, "\uC800\uC7A5\uB418\uC5C8\uC2B5\uB2C8\uB2E4") : (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, PageStore.saveStatus.saving ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, {
+      isSaving: true
+    }, t('saving')) : PageStore.saveStatus.saved ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, null, t('hasBeenSaved')) : (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$h
     }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName : PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
       onClick: handleSearchEditor
@@ -10590,8 +10668,28 @@ var EditorHeader = function EditorHeader() {
   });
 };
 
-function _templateObject33$1() {
+function _templateObject35$1() {
   var data = _taggedTemplateLiteral(["\n  width: 0.56rem;\n  height: 0.56rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
+
+  _templateObject35$1 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject34$1() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: top;\n"]);
+
+  _templateObject34$1 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject33$1() {
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: flex;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n  margin-left: auto;\n"]);
 
   _templateObject33$1 = function _templateObject33() {
     return data;
@@ -10601,7 +10699,7 @@ function _templateObject33$1() {
 }
 
 function _templateObject32$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
 
   _templateObject32$1 = function _templateObject32() {
     return data;
@@ -10611,7 +10709,7 @@ function _templateObject32$1() {
 }
 
 function _templateObject31$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
 
   _templateObject31$1 = function _templateObject31() {
     return data;
@@ -10621,7 +10719,7 @@ function _templateObject31$1() {
 }
 
 function _templateObject30$1() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
 
   _templateObject30$1 = function _templateObject30() {
     return data;
@@ -10631,7 +10729,7 @@ function _templateObject30$1() {
 }
 
 function _templateObject29$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject29$1 = function _templateObject29() {
     return data;
@@ -10641,7 +10739,7 @@ function _templateObject29$1() {
 }
 
 function _templateObject28$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
 
   _templateObject28$1 = function _templateObject28() {
     return data;
@@ -10651,7 +10749,7 @@ function _templateObject28$1() {
 }
 
 function _templateObject27$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
 
   _templateObject27$1 = function _templateObject27() {
     return data;
@@ -10671,7 +10769,7 @@ function _templateObject26$1() {
 }
 
 function _templateObject25$1() {
-  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
 
   _templateObject25$1 = function _templateObject25() {
     return data;
@@ -10681,7 +10779,7 @@ function _templateObject25$1() {
 }
 
 function _templateObject24$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
+  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"]);
 
   _templateObject24$1 = function _templateObject24() {
     return data;
@@ -10691,7 +10789,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  top: -0.5rem !important;\n  position: relative !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
@@ -10701,7 +10799,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
@@ -10711,7 +10809,7 @@ function _templateObject22$1() {
 }
 
 function _templateObject21$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
 
   _templateObject21$1 = function _templateObject21() {
     return data;
@@ -10721,7 +10819,7 @@ function _templateObject21$1() {
 }
 
 function _templateObject20$2() {
-  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
 
   _templateObject20$2 = function _templateObject20() {
     return data;
@@ -10731,7 +10829,7 @@ function _templateObject20$2() {
 }
 
 function _templateObject19$2() {
-  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
+  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
 
   _templateObject19$2 = function _templateObject19() {
     return data;
@@ -10740,10 +10838,10 @@ function _templateObject19$2() {
   return data;
 }
 
-function _templateObject18$2() {
-  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
+function _templateObject18$3() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
-  _templateObject18$2 = function _templateObject18() {
+  _templateObject18$3 = function _templateObject18() {
     return data;
   };
 
@@ -10751,7 +10849,7 @@ function _templateObject18$2() {
 }
 
 function _templateObject17$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
 
   _templateObject17$3 = function _templateObject17() {
     return data;
@@ -10761,7 +10859,7 @@ function _templateObject17$3() {
 }
 
 function _templateObject16$3() {
-  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
 
   _templateObject16$3 = function _templateObject16() {
     return data;
@@ -10771,7 +10869,7 @@ function _templateObject16$3() {
 }
 
 function _templateObject15$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
 
   _templateObject15$3 = function _templateObject15() {
     return data;
@@ -10781,7 +10879,7 @@ function _templateObject15$3() {
 }
 
 function _templateObject14$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.63rem;\n  color: #A3A3A3;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject14$3 = function _templateObject14() {
     return data;
@@ -10800,10 +10898,10 @@ function _templateObject13$3() {
   return data;
 }
 
-function _templateObject12$4() {
+function _templateObject12$5() {
   var data = _taggedTemplateLiteral(["\n  margin-left: 16px;\n"]);
 
-  _templateObject12$4 = function _templateObject12() {
+  _templateObject12$5 = function _templateObject12() {
     return data;
   };
 
@@ -10939,36 +11037,38 @@ var EditorContainerWrapper = styled__default['default'].div(_templateObject$8(),
   return props.isFile === "true" && props.mode === "false" && props.isSearch === "true" && styled.css(_templateObject10$6());
 });
 var ReadModeContainer = styled__default['default'].div(_templateObject11$6());
-var ReadModeIcon = styled__default['default'].img(_templateObject12$4());
+var ReadModeIcon = styled__default['default'].img(_templateObject12$5());
 var ReadModeText = styled__default['default'].span(_templateObject13$3());
-var FoldBtn = styled__default['default'].div(_templateObject14$3(), function (props) {
+var ReadModeSubText = styled__default['default'].span(_templateObject14$3());
+var FoldBtn = styled__default['default'].div(_templateObject15$3(), function (props) {
   return props.show ? "flex" : "none";
 }, function (props) {
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
 });
-var FoldBtnImg = styled__default['default'].img(_templateObject15$3());
-var FileBodyLayout = styled__default['default'].div(_templateObject16$3());
-var FileBody = styled__default['default'].div(_templateObject17$3(), function (props) {
-  return props.closable ? styled.css(_templateObject18$2()) : styled.css(_templateObject19$2());
+var FoldBtnImg = styled__default['default'].img(_templateObject16$3());
+var FileBodyLayout = styled__default['default'].div(_templateObject17$3());
+var FileBody = styled__default['default'].div(_templateObject18$3(), function (props) {
+  return props.closable ? styled.css(_templateObject19$2()) : styled.css(_templateObject20$2());
 });
-var FileContent = styled__default['default'].div(_templateObject20$2());
-var FileDownloadIcon = styled__default['default'].div(_templateObject21$1());
-var FileErrorIcon = styled__default['default'].div(_templateObject22$1());
-var ProgressWrapper = styled__default['default'].div(_templateObject23$1());
-var FileExtensionIcon = styled__default['default'].div(_templateObject24$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
+var FileContent = styled__default['default'].div(_templateObject21$1());
+var FileDownloadIcon = styled__default['default'].div(_templateObject22$1());
+var FileErrorIcon = styled__default['default'].div(_templateObject23$1());
+var ProgressWrapper = styled__default['default'].div(_templateObject24$1());
+var FileExtensionIcon = styled__default['default'].div(_templateObject25$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 
-var FileDownloadBtn = styled__default['default'].img(_templateObject25$1());
-var FileExtensionBtn = styled__default['default'].img(_templateObject26$1());
-var FileData = styled__default['default'].div(_templateObject27$1(), function (props) {
+var FileDownloadBtn = styled__default['default'].img(_templateObject26$1());
+var FileExtensionBtn = styled__default['default'].img(_templateObject27$1());
+var FileData = styled__default['default'].div(_templateObject28$1(), function (props) {
   return props.mode === "true" ? "" : "9.5rem";
 });
-var FileDataName = styled__default['default'].div(_templateObject28$1());
-var FileName = styled__default['default'].div(_templateObject29$1());
-var FileDataTime = styled__default['default'].div(_templateObject30$1());
-var FileTime = styled__default['default'].div(_templateObject31$1());
-var FileClose = styled__default['default'].div(_templateObject32$1());
-var FileCloseBtn = styled__default['default'].img(_templateObject33$1());
-var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
+var FileDataName = styled__default['default'].div(_templateObject29$1());
+var FileName = styled__default['default'].div(_templateObject30$1());
+var FileDataTime = styled__default['default'].div(_templateObject31$1());
+var FileTime = styled__default['default'].div(_templateObject32$1());
+var FileProgress = styled__default['default'].div(_templateObject33$1());
+var FileClose = styled__default['default'].div(_templateObject34$1());
+var FileCloseBtn = styled__default['default'].img(_templateObject35$1());
+var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::selection {\n    background: #35A57A; /* WebKit/Blink Browsers */\n    color:#ffffff;\n  }\n  ::-moz-selection {\n    background: #35A57A; /* Gecko Browsers */\n    color:#ffffff;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
 
 const img$i = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
@@ -11612,7 +11712,13 @@ var FileLayout = function FileLayout() {
         src: fileExtension(item.file_extension)
       }))), item.error ? /*#__PURE__*/React__default['default'].createElement(FileErrorIcon, null, /*#__PURE__*/React__default['default'].createElement(icons.ExclamationCircleFilled, null)) : null, /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: onClickFileName.bind(null, item)
-      }, item.file_name, item.file_extension && ".".concat(item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }, item.file_name, item.file_extension && ".".concat(item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'), /*#__PURE__*/React__default['default'].createElement(FileProgress, null, (item.progress * 100).toFixed(1) !== '0.0' ? (item.progress * 100).toFixed(1) + '%' : '')), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
+        percent: item.progress * 100,
+        showInfo: false,
+        strokeWidth: '0.25rem',
+        trailColor: "#E3E4E9",
+        strokeColor: "#232D3B"
+      }) : null)), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && index === hoverTempIdx ? {
           display: 'flex'
         } : {
@@ -11621,13 +11727,7 @@ var FileLayout = function FileLayout() {
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
         src: img$1,
         onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')
-      }))), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
-        percent: item.progress * 100,
-        showInfo: false,
-        strokeWidth: '0.25rem',
-        trailColor: "#E3E4E9",
-        strokeColor: "#6C56E5"
-      }) : null)) : null;
+      })))) : null;
     }), EditorStore.fileLayoutList.map(function (item, index) {
       return /*#__PURE__*/React__default['default'].createElement(FileBody, {
         id: item.file_id ? item.file_id : item.user_context_2,
@@ -11714,7 +11814,7 @@ var HandleUploader = function HandleUploader(props) {
                 totalsize = 21474836480; // 20GB
 
                 if (!(file === fileList[0])) {
-                  _context.next = 20;
+                  _context.next = 21;
                   break;
                 }
 
@@ -11738,19 +11838,21 @@ var HandleUploader = function HandleUploader(props) {
               case 8:
 
               case 9:
+                EditorStore.setTotalUploadLength(fileList.length); // 실패가 되어도 전체 선택한 length 필요
+
                 EditorStore.setFileLength(filtered.length);
 
                 if (!(EditorStore.uploadLength > 30)) {
-                  _context.next = 13;
+                  _context.next = 14;
                   break;
                 }
 
                 NoteStore.setModalInfo('failUpload');
                 return _context.abrupt("return");
 
-              case 13:
+              case 14:
                 if (!filtered) {
-                  _context.next = 18;
+                  _context.next = 19;
                   break;
                 }
 
@@ -11759,14 +11861,14 @@ var HandleUploader = function HandleUploader(props) {
                 }
 
                 if (!(uploadsize > totalsize)) {
-                  _context.next = 18;
+                  _context.next = 19;
                   break;
                 }
 
                 NoteStore.setModalInfo('sizefailUpload');
                 return _context.abrupt("return");
 
-              case 18:
+              case 19:
                 for (_i = 0; _i < filtered.length; _i++) {
                   (function (file) {
                     var _EditorStore$getFileI = EditorStore.getFileInfo(file),
@@ -11783,12 +11885,15 @@ var HandleUploader = function HandleUploader(props) {
                   })(filtered[_i]);
                 }
 
-                if (fileList.length !== filtered.length) NoteStore.setModalInfo('failUploadByFileNameLen');else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
-
-              case 20:
-                return _context.abrupt("return", false);
+                if (fileList.length !== filtered.length) {
+                  EditorStore.failCount = fileList.length - filtered.length;
+                  NoteStore.setModalInfo('failUploadByFileNameLen');
+                } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
 
               case 21:
+                return _context.abrupt("return", false);
+
+              case 22:
               case "end":
                 return _context.stop();
             }
@@ -11997,7 +12102,7 @@ var EditorContainer = function EditorContainer() {
       }
     }, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
       src: img$i
-    }), /*#__PURE__*/React__default['default'].createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02'))) : null, EditorStore.isSearch ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
+    }), /*#__PURE__*/React__default['default'].createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : null, EditorStore.isSearch ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
       style: {
         display: 'flex'
       }
@@ -12069,18 +12174,29 @@ var EditorContainer = function EditorContainer() {
             handleUnselect();
           });
           editor.on('keydown', function (e) {
-            var target = getAnchorElement();
-
-            if (target && e.code === "Space") {
-              var curCaretPosition = editor.selection.getRng().endOffset;
-              var _length = target.textContent.length; // anchor tag앞에 caret 놓으면 getAnchorElement() === null
-
-              if (curCaretPosition === _length - 1) {
+            switch (e.code) {
+              case "Tab":
                 e.preventDefault();
                 e.stopPropagation();
-                target.insertAdjacentHTML('afterend', '&nbsp;');
-                editor.selection.setCursorLocation(target.nextSibling, 1);
-              }
+                if (e.shiftKey) editor.execCommand('Outdent');else editor.execCommand('Indent');
+                break;
+
+              case "Space":
+                var target = getAnchorElement();
+
+                if (target) {
+                  var curCaretPosition = editor.selection.getRng().endOffset;
+                  var _length = target.textContent.length; // anchor tag앞에 caret 놓으면 getAnchorElement() === null
+
+                  if (curCaretPosition === _length - 1) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.insertAdjacentHTML('afterend', '&nbsp;');
+                    editor.selection.setCursorLocation(target.nextSibling, 1);
+                  }
+                }
+
+                break;
             }
           }); // 정렬 그룹 버튼
 
@@ -12239,13 +12355,17 @@ var EditorContainer = function EditorContainer() {
         extended_valid_elements: 'a[href|target=_blank]',
         quickbars_insert_toolbar: false,
         quickbars_image_toolbar: false,
-        quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough | link',
+        // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
+        quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
         language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
         toolbar_drawer: false,
-        paste_data_images: true,
-        // add images by drag and drop
+        // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
+          var _EditorStore$tinymce10, _EditorStore$tinymce11;
+
+          // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
+          (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : (_EditorStore$tinymce11 = _EditorStore$tinymce10.undoManager) === null || _EditorStore$tinymce11 === void 0 ? void 0 : _EditorStore$tinymce11.add();
           var target = args.node.textContent;
 
           if (checkUrlValidation(target)) {
@@ -12869,7 +12989,7 @@ var NoteModal = mobxReact.observer(function () {
     visible: true,
     type: type,
     title: t(title),
-    subtitle: t(subTitle),
+    subtitle: subTitle,
     btns: btns
   }) : /*#__PURE__*/React__default['default'].createElement(antd.Modal, {
     visible: true,
@@ -13417,7 +13537,7 @@ var beforeRoute = function beforeRoute(location) {
       PageStore.handleNoneEdit();
       return false;
     } else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;else if (pathname === '/logout') return true;else {
-      NoteStore.setModalInfo('NOTE_EDIT_PAGE_COMPLETE_01');
+      NoteStore.setModalInfo('editCancel');
       return false;
     }
   } else return true;
