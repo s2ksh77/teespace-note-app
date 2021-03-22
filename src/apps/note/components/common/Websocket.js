@@ -22,32 +22,27 @@ export const handleWebsocket = (isWeb=true) => (message) => {
         return;
     }
     if (message.NOTI_ETC) {
-        const loginUSER = NoteRepository.USER_ID;
-        const EVENT_CASE = message.NOTI_ETC.split(',')[0];
-        let targetID = message.NOTI_ETC.split(',')[1];
-        let targetUSER = message.NOTI_ETC.split(',')[2];
+        const loginUserId = NoteRepository.USER_ID;
+        const [eventType, targetId, parentId, targetUserId] = message.NOTI_ETC.split(',');
 
-        switch (EVENT_CASE) {
+        switch (eventType) {
             case EVENT_TYPE.CREATE:
-                if (isWeb && targetUSER === loginUSER) return;
-                else ChapterStore.getNoteChapterList();
+                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.DELETE:
-                if (isWeb && targetUSER === loginUSER) return;
-                else {
-                    if (PageStore.getCurrentPageId() === targetID) {
-                        ChapterStore.setCurrentChapterId(ChapterStore.getCurrentChapterId());
-                        ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
-                    }
-                    ChapterStore.getNoteChapterList();
+                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (PageStore.getCurrentPageId() === targetId) {
+                    ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
                 }
+                ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.UPDATE:
             case EVENT_TYPE.EDIT_DONE:
             case EVENT_TYPE.NONEDIT:
-            case EVENT_TYPE.EDIT_START: // EDIT,NOTE_ID:USER_ID
-                if (isWeb && targetUSER === loginUSER) return;
-                if (PageStore.getCurrentPageId() === targetID) {
+            case EVENT_TYPE.EDIT_START:
+                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (PageStore.getCurrentPageId() === targetId) {
                     PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
                 }
                 ChapterStore.getNoteChapterList();
@@ -56,26 +51,22 @@ export const handleWebsocket = (isWeb=true) => (message) => {
                 break;
             case EVENT_TYPE.CHAPTER_CREATE:
             case EVENT_TYPE.CHAPTER_RENAME:
-                if (isWeb && targetUSER === loginUSER) return;
-                else {
-                    ChapterStore.getNoteChapterList();
-                }
+                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.CHAPTER_DELETE:
-                if (isWeb && targetUSER === loginUSER) return;
-                else {
-                    if (ChapterStore.getCurrentChapterId() === targetID) {
-                        ChapterStore.getNoteChapterList();
-                        setTimeout(() => {
-                            if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
-                                const firstChapter = ChapterStore.chapterList[0];
-                                ChapterStore.setCurrentChapterId(firstChapter.id);
-                                if (firstChapter.children && firstChapter.children.length > 0) {
-                                    PageStore.fetchCurrentPageData(firstChapter.children[0].id);
-                                } else PageStore.setCurrentPageId('');
-                            } else NoteStore.setShowPage(false);
-                        }, 200)
-                    } else ChapterStore.getNoteChapterList();
+                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                ChapterStore.getNoteChapterList();
+                if (ChapterStore.getCurrentChapterId() === targetId) {
+                    setTimeout(() => {
+                        if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
+                            const firstChapter = ChapterStore.chapterList[0];
+                            ChapterStore.setCurrentChapterId(firstChapter.id);
+                            if (firstChapter.children && firstChapter.children.length > 0) {
+                                PageStore.fetchCurrentPageData(firstChapter.children[0].id);
+                            } else PageStore.setCurrentPageId('');
+                        } else NoteStore.setShowPage(false);
+                    }, 200)
                 }
                 break;
         }
