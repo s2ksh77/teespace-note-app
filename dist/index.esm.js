@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, memo, useState, useCallback, useMemo, useLayoutEffect } from 'react';
+import { initReactI18next, useTranslation, I18nextProvider } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { observable, toJS } from 'mobx';
 import { API, UserStore, WWMS, RoomStore, EventBus, logEvent, useCoreStores, WaplSearch, ComponentStore, Button as Button$2, ItemSelector, Message, Toast } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
-import { initReactI18next, useTranslation, I18nextProvider } from 'react-i18next';
 import Mark from 'mark.js';
 import { useObserver, observer, Observer } from 'mobx-react';
 import styled, { css, createGlobalStyle } from 'styled-components';
@@ -13086,7 +13086,7 @@ var NoteApp = function NoteApp(_ref) {
       EditorStore = _useNoteStore.EditorStore;
 
   var _useTranslation = useTranslation(),
-      i18Instance = _useTranslation.i18n;
+      i18n = _useTranslation.i18n;
 
   var _useCoreStores = useCoreStores(),
       userStore = _useCoreStores.userStore,
@@ -13198,12 +13198,10 @@ var NoteApp = function NoteApp(_ref) {
 
   useEffect(function () {
     NoteStore.setI18nLanguage(language);
-    if (language) i18Instance.changeLanguage(language);
+    if (language) i18n.changeLanguage(language);
   }, [language]);
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(I18nextProvider, {
-      i18n: i18n
-    }, /*#__PURE__*/React.createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React.createElement(LoadingImgContainer, null) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNB, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React.createElement(LoadingImgContainer, null) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNB, {
       show: !NoteStore.isContentExpanded && renderCondition('LNB')
     }, /*#__PURE__*/React.createElement(LNBContainer, null)), /*#__PURE__*/React.createElement(Content, {
       show: renderCondition('Content'),
@@ -13239,8 +13237,23 @@ var NoteApp = function NoteApp(_ref) {
       onClose: handleCloseMailModal,
       visible: true,
       totalSize: NoteStore.mailShareFileObjs[0] ? NoteStore.mailShareFileObjs[0].fileSize : 0
-    }))));
+    })));
   });
+};
+
+var NoteApp$1 = function NoteApp$1(_ref) {
+  var layoutState = _ref.layoutState,
+      roomId = _ref.roomId,
+      channelId = _ref.channelId,
+      language = _ref.language;
+  return /*#__PURE__*/React.createElement(I18nextProvider, {
+    i18n: i18n
+  }, /*#__PURE__*/React.createElement(NoteApp, {
+    layoutState: layoutState,
+    roomId: roomId,
+    channelId: channelId,
+    language: language
+  }));
 };
 
 const img$y = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='40px' height='40px' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/app_planet/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cdefs%3e %3ccircle id='path-1' cx='20' cy='20' r='20'%3e%3c/circle%3e %3cfilter x='-20.0%25' y='-20.0%25' width='140.0%25' height='140.0%25' filterUnits='objectBoundingBox' id='filter-3'%3e %3cfeOffset dx='0' dy='0' in='SourceAlpha' result='shadowOffsetOuter1'%3e%3c/feOffset%3e %3cfeGaussianBlur stdDeviation='1' in='shadowOffsetOuter1' result='shadowBlurOuter1'%3e%3c/feGaussianBlur%3e %3cfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.449221193 0 0 0 0 0.738507699 0 0 0 1 0' type='matrix' in='shadowBlurOuter1' result='shadowMatrixOuter1'%3e%3c/feColorMatrix%3e %3cfeMerge%3e %3cfeMergeNode in='shadowMatrixOuter1'%3e%3c/feMergeNode%3e %3cfeMergeNode in='SourceGraphic'%3e%3c/feMergeNode%3e %3c/feMerge%3e %3c/filter%3e %3c/defs%3e %3cg id='Icon/app_planet/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cg id='Group-2'%3e %3cg id='Group'%3e %3cmask id='mask-2' fill='white'%3e %3cuse xlink:href='%23path-1'%3e%3c/use%3e %3c/mask%3e %3cuse id='Oval' fill='%231EA8DF' xlink:href='%23path-1'%3e%3c/use%3e %3cpath d='M30.2674864%2c28.5651163 C32.1620013%2c28.8180521 35.8459876%2c28.1984249 38.2583669%2c27.9221149 C38.4371898%2c27.9016328 37.0788036%2c31.4377876 33.5358043%2c34.71428 C32.2764541%2c35.8789009 30.4660944%2c37.0683765 28.104725%2c38.2827069 C23.3480717%2c34.5292361 19.411693%2c32.4983871 16.295589%2c32.19016 C13.1794849%2c31.8819329 9.96579532%2c32.7915871 6.65452026%2c34.9191225 C6.07508216%2c34.3513228 5.66080219%2c33.9456821 5.41168034%2c33.7022004 C5.16255849%2c33.4587187 4.83170318%2c33.0689329 4.4191144%2c32.5328432 C6.61342804%2c29.1075672 10.4653048%2c27.0323459 15.9747446%2c26.3071794 C18.9157904%2c25.9200715 26.5120008%2c28.0637232 30.2674864%2c28.5651163 Z M36.2762913%2c8.40504532 C37.6298473%2c10.2563194 38.6529185%2c12.5003954 39.3455047%2c15.1372733 C40.038091%2c17.7741512 40.1657587%2c20.2053072 39.7285078%2c22.4307411 C38.015963%2c23.075421 36.0450505%2c23.3738791 33.8157703%2c23.3261155 C30.47185%2c23.2544701 27.302747%2c19.6880702 29.2957788%2c17.6745606 C30.6244667%2c16.3322209 32.9513042%2c13.2423825 36.2762913%2c8.40504532 Z M11.3133953%2c2.0686971 C18.4620509%2c-1.24913664 25.3877558%2c-0.576045104 32.0905098%2c4.08797172 C31.1587485%2c6.85505728 28.5638835%2c9.37616389 24.3059148%2c11.6512916 C20.3303252%2c13.7755377 16.2434004%2c12.9639842 11.6381726%2c14.0629582 C7.08121503%2c15.1504132 3.20351857%2c17.5672385 0.00508325094%2c21.3134341 C-0.0380355602%2c18.5142376 0.193162974%2c16.3144293 0.698678854%2c14.7140091 C2.68300461%2c8.43180305 6.15333106%2c4.46358591 11.3133953%2c2.0686971 Z' id='Combined-Shape' fill='%23008CC8' mask='url(%23mask-2)'%3e%3c/path%3e %3ccircle id='Oval-Copy-3' fill='%231EA8DF' style='mix-blend-mode: screen%3b' opacity='0.597470238' mask='url(%23mask-2)' cx='20' cy='10' r='20'%3e%3c/circle%3e %3cellipse id='Oval' fill='white' opacity='0.6' mask='url(%23mask-2)' transform='translate(10.652552%2c 7.029764) scale(-1%2c 1) rotate(35.000000) translate(-10.652552%2c -7.029764) ' cx='10.6525516' cy='7.02976381' rx='7' ry='2.5'%3e%3c/ellipse%3e %3c/g%3e %3c/g%3e %3cg id='note-2' filter='url(%23filter-3)' transform='translate(10.000000%2c 10.000000)'%3e %3cg id='note'%3e %3crect id='Rectangle' fill='white' x='2' y='0' width='18' height='20' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='8' y='5' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='8' y='9' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='8' y='13' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='0' y='5' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='0' y='9' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='0' y='13' width='6' height='2' rx='1'%3e%3c/rect%3e %3c/g%3e %3c/g%3e %3c/g%3e%3c/svg%3e";
@@ -13569,4 +13582,4 @@ var beforeRoute = function beforeRoute(location) {
   } else return true;
 };
 
-export { NoteApp, NoteIcon, beforeRoute, initApp, useNoteStore };
+export { NoteApp$1 as NoteApp, NoteIcon, beforeRoute, initApp, useNoteStore };
