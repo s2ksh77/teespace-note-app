@@ -121,6 +121,7 @@ class NoteRepository {
       const { data } = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
           id: chapterId,
+          ws_id: this.WS_ID,
           color: targetColor
         }
       })
