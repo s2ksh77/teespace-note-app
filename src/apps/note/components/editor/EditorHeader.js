@@ -22,6 +22,7 @@ import searchImg from '../../assets/search.svg';
 import Mark from 'mark.js';
 import { logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { checkMaxLength } from '../common/validators';
 
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -75,12 +76,7 @@ const EditorHeader = () => {
     }
   };
 
-  const handleTitleInput = e => {
-    const {
-      target: { value },
-    } = e;
-    PageStore.setTitle(value);
-  };
+  const handleTitleInput = e => PageStore.setTitle(checkMaxLength(e));
 
   const handleSearchEditor = () => {
     EditorStore.isSearch ? EditorStore.setIsSearch(false) : EditorStore.setIsSearch(true)

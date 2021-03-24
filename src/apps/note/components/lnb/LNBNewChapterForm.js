@@ -9,6 +9,7 @@ import {
 } from "../../styles/chpaterStyle";
 import { logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { checkMaxLength } from '../common/validators';
 
 const { NoteStore, ChapterStore } = useNoteStore();
 
@@ -29,9 +30,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
     logEvent('note', 'clickNewChapterBtn');
   }
 
-  const handleTitleInput = ({ target: { value } }) => {
-    ChapterStore.setChapterTitle(value);
-  };
+  const handleTitleInput = (e) => ChapterStore.setChapterTitle(checkMaxLength(e));
 
   const handleKeyDown = (event) => {
     switch (event.key) {
