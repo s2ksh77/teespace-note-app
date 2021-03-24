@@ -16,6 +16,7 @@ import shareImg from '../../assets/share_1.svg';
 import sharedPageImg from '../../assets/page_shared.svg';
 import {DRAG_TYPE} from '../../GlobalVariable';
 import NoteUtil from '../../NoteUtil';
+import { checkMaxLength } from '../common/validators';
 
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -96,12 +97,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const handleChapterName = (e) => {
-    const {
-      target: { value },
-    } = e;
-    ChapterStore.setRenameText(value);
-  };
+  const handleChapterName = (e) => ChapterStore.setRenameText(checkMaxLength(e));
 
   const handleChapterTextInput = (isEscape) => () => {
     // escape면 원래대로 돌아가기

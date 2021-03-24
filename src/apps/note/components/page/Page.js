@@ -17,6 +17,7 @@ import { Tooltip } from 'antd';
 import NoteUtil from '../../NoteUtil';
 import { DRAG_TYPE } from '../../GlobalVariable';
 import moment from 'moment-timezone';
+import { checkMaxLength } from '../common/validators';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -105,12 +106,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     onClick(page.id);
   }, [page]);
 
-  const handlePageName = (e) => {
-    const {
-      target: { value },
-    } = e;
-    PageStore.setRenameText(value);
-  };
+  const handlePageName = (e) => PageStore.setRenameText(checkMaxLength(e));
 
   const handlePageTextInput = (isEscape) => {
     if (!isEscape) {

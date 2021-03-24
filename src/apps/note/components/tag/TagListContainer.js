@@ -14,7 +14,7 @@ import { EditorTagCover } from '../../styles/tagStyle';
 import tagImage from '../../assets/add_tag.svg';
 import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
-import { isFilled, checkWhitespace } from '../common/validators';
+import { isFilled, checkWhitespace, checkMaxLength } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
 import { logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
@@ -59,12 +59,8 @@ const TagListContainer = () => {
     TagStore.setEditTagValue(text);
     TagStore.setEditTagIndex(index); // input창을 보여줄지 말지
   };
-  const handleChangeName = e => {
-    const {
-      target: { value },
-    } = e;
-    TagStore.setEditTagValue(value);
-  };
+
+  const handleChangeName = e => TagStore.setEditTagValue(checkMaxLength(e));
 
   const updateNoteTagList = () => {
     TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;

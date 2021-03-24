@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import { TagInput } from '../../styles/tagStyle';
-import {checkWhitespace} from '../common/validators';
+import {checkWhitespace, checkMaxLength} from '../common/validators';
 import useNoteStore from '../../store/useStore';
 
 const AddTagForm = ({show, toggleTagInput}) => {
   const { NoteStore, TagStore } = useNoteStore(); 
   const [value, setValue] = useState('');
-  if (!show) return null;  
-  const handleTagInput = e => {
-    setValue(e.target.value);
-  };
+  if (!show) return null;
+
+  const handleTagInput = e => setValue(checkMaxLength(e));
   
   const handleBlurTagInput = () => {
     if (!checkWhitespace(value)) {

@@ -126,6 +126,7 @@ export const LnbTitleNewButton = styled.button`
   display: flex;
   width: 4.5rem;
   height: 1.88rem;
+  line-height: 100%;
   margin-right: 0.63rem;
   color: #ffffff;
   font-size: 0.75rem;

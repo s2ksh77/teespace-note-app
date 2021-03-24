@@ -2,6 +2,13 @@ import {isNil, isEmpty} from 'ramda';
 import NoteUtil from '../../NoteUtil';
 import GlobalVariable from '../../GlobalVariable';
 
+export const checkMaxLength = (e) => {
+  let _value = e.target.value;
+  if (e.target.getAttribute('maxlength') && (_value.length > e.target.getAttribute('maxlength'))) {
+    _value = _value.slice(0,e.target.getAttribute('maxlength'));
+  }
+  return _value;
+}
 // evernote도 http://ksdjflaskd.sdflksjdlfk 링크 처리함
 const urlRegex = new RegExp(
   /^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}/im
