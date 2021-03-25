@@ -38,7 +38,7 @@ const NoteStore = observable({
   mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
-  i18nLanguage: 'ko',
+  i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
   getNoteIdFromTalk() {
