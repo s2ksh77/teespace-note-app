@@ -6175,7 +6175,7 @@ var NoteStore = mobx.observable({
   mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
-  i18nLanguage: 'ko',
+  i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -8892,7 +8892,7 @@ var getChapterHtml = /*#__PURE__*/function () {
 
             if (noteList.length > 0) {
               noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
               });
             } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -8926,7 +8926,7 @@ var getPageHtml = /*#__PURE__*/function () {
             _yield$NoteRepository2 = _context7.sent;
             dto = _yield$NoteRepository2.data.dto;
             PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
             return _context7.abrupt("return", html);
 
           case 8:
@@ -9119,7 +9119,7 @@ var exportPageAsTxt = /*#__PURE__*/function () {
             response = _context9.sent;
             dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
 
-            returnData = "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
+            returnData = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
             getTxtFormat(dto.note_title, returnData);
 
           case 6:
@@ -9156,7 +9156,7 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
             }
 
             noteList.forEach(function (page, idx) {
-              returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
+              returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
             });
             _context10.next = 10;
             break;
@@ -12418,7 +12418,7 @@ var EditorContainer = function EditorContainer() {
         // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
         quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-        language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
+        language: NoteStore.i18nLanguage === 'ko-KR' ? 'ko_KR' : NoteStore.i18nLanguage,
         toolbar_drawer: false,
         // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
