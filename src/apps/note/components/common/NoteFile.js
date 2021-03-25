@@ -244,7 +244,7 @@ export const getChapterHtml = async exportId => {
 
     if (noteList.length > 0) {
         noteList.forEach((page, idx) => {
-            html += `<span style="font-size:24px;">${i18n.t('title')} : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
+            html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${page.note_title}</span><br>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
         })
     } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -258,7 +258,7 @@ export const getPageHtml = async exportId => {
     } = await NoteRepository.getNoteInfoList(exportId);
 
     PageStore.exportPageTitle = dto.note_title;
-    html = `<span style="font-size:24px;">${i18n.t('title')} : ${dto.note_title}</span><br>${dto.note_content}`
+    html = `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${dto.note_title}</span><br>${dto.note_content}`
 
     return html;
 };
@@ -391,7 +391,7 @@ export const exportPageAsTxt = async (noteId) => {
         data: { dto },
     } = response;
     // PageStore.exportPageTitle = dto.note_title
-    let returnData = `<span style="font-size:24px;">${i18n.t('title')} : ${dto.note_title}</span><br />${dto.note_content}`;
+    let returnData = `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${dto.note_title}</span><br />${dto.note_content}`;
 
     getTxtFormat(dto.note_title, returnData);
 }
@@ -401,7 +401,7 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     const { data: { dto: { noteList } } } = await NoteRepository.getChapterChildren(chapterId);
     if (noteList.length > 0) {
         noteList.forEach((page, idx) => {
-            returnData += `<span style="font-size:24px;">${i18n.t('title')} : ${page.note_title}</span>
+            returnData += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${page.note_title}</span>
       <br />
       ${page.note_content}
       ${(idx === (noteList.length - 1)) ? '' : '<br />'}`
