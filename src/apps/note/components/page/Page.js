@@ -61,10 +61,14 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         }),
       };
     },
-    end: (item, monitor) => {
+    end: async (item, monitor) => {
       const res = monitor.getDropResult();
-      if (res && res.target === 'Platform:Room')
+      if (res && res.target === 'Platform:Friend') {
+        const roomInfo = await res.findRoom();
+        PageStore.createNoteSharePage(roomInfo.id, item.data);
+      } else if (res && res.target === 'Platform:Room') {
         PageStore.createNoteSharePage(res.targetData.id, item.data);
+      }
 
       if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
       PageStore.setDragEnterPageIdx('');

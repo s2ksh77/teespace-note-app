@@ -68,10 +68,14 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         }),
       };
     },
-    end: (item, monitor) => {
+    end: async (item, monitor) => {
       const res = monitor.getDropResult();
-      if (res && res.target === 'Platform:Room')
+      if (res && res.target === 'Platform:Friend') {
+        const roomInfo = await res.findRoom();
+        ChapterStore.createNoteShareChapter(roomInfo.id, item.data);
+      } else if (res && res.target === 'Platform:Room') {
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
+      }
 
       if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER) NoteStore.setIsDragging(false);
       ChapterStore.setDragEnterChapterIdx('');
