@@ -42,6 +42,7 @@ const HeaderButtons = () => {
 
   const handleCancelBtn = e => {
     if (!PageStore.isReadMode()) {
+      if (EditorStore.isUploading) { NoteStore.setModalInfo('uploadingFiles'); return; }
       if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) { PageStore.handleNoneEdit(); return; }
       NoteStore.setModalInfo('editCancel'); return;
     }

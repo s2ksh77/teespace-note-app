@@ -44,6 +44,7 @@ const EditorHeader = () => {
         NoteStore.setShowPage(false);
       }
     } else {
+      if (EditorStore.isUploading) { NoteStore.setModalInfo('uploadingFiles'); return; }
       const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
       if (!isUndoActive) {
         await PageStore.handleNoneEdit();
