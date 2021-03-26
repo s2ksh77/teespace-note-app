@@ -112,6 +112,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
             <LNBContainer />
           </LNB>
           <Content
+            id="note-content"
             show={renderCondition('Content')}
             onMouseOver={handleFoldBtn}
             onMouseOut={handleFoldBtn}
