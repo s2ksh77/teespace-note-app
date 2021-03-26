@@ -318,7 +318,7 @@ export const GlobalStyle = createGlobalStyle`
     border-top: 0px solid black !important;
     padding:1.75rem 0 !important;
   }
-  .ant-upload.ant-upload-select{
+  #note-content .ant-upload.ant-upload-select{
     display: none;
   }
   .x-todo li {
