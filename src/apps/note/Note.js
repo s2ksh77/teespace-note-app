@@ -7,7 +7,7 @@ import i18n from './i18n/i18n';
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     return (
         <I18nextProvider i18n={i18n}>
-            <Note id="Note" layoutState={layoutState} roomId={roomId} channelId={channelId} language={language} />
+            <Note layoutState={layoutState} roomId={roomId} channelId={channelId} language={language} />
         </I18nextProvider>
     )
 }
