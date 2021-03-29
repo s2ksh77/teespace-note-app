@@ -124,8 +124,10 @@ export const LnbTitleCover = styled.div`
 export const LnbTitleNewButton = styled.button`
   align-items: center;
   display: flex;
-  width: 4.5rem;
+  width: ${props => props.language === 'en' ? 'fit-content' : '4.5rem'};
   height: 1.88rem;
+  padding-left: 12px;
+  padding-right: 12px;
   line-height: 100%;
   margin-right: 0.63rem;
   color: #ffffff;
