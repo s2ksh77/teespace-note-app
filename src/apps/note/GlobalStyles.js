@@ -163,6 +163,9 @@ export const GlobalStyle = createGlobalStyle`
     width:100% !important;
     justify-content : flex-start !important;
   }
+  .link-toolbar button .link-toolbar-btn {
+    margin-left: 0.5rem;
+  }
   .note-show-element{
     display:flex !important;
   }

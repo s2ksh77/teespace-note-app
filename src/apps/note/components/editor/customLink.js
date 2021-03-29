@@ -152,18 +152,18 @@ const changeLinkDialogForm = (dialog) => {
   Link context Toolbar 관련
   custimizing contextToolbar
 */
-export const changeButtonStyle = (idx, count) => {
-  const linkToolbarStr = [i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_07'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_08'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_09')]
+export const changeButtonStyle = ({str, idx, count}) => {
   const toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
   const target = toolbar.childNodes?.[idx];
   if (toolbar && target) {
     const strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
+    strNode.textContent = str;
+    strNode.classList.add('link-toolbar-btn');
     target.appendChild(strNode);
   } else if (count >= 50) return;
   else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
+    setTimeout(changeButtonStyle, 50, str, idx, count + 1);
   }
 }
 
