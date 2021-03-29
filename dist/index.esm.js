@@ -3213,11 +3213,9 @@ var PageStore = observable((_observable$1 = {
   },
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
   set_CurrentPageData: function set_CurrentPageData(_ref) {
-    var note_content = _ref.note_content,
-        user_name = _ref.user_name,
+    var user_name = _ref.user_name,
         modified_date = _ref.modified_date,
         USER_ID = _ref.USER_ID;
-    if (note_content) this.currentPageData.note_content = note_content;
     if (user_name) this.currentPageData.user_name = user_name;
     if (modified_date) this.currentPageData.modified_date = modified_date;
     if (USER_ID) this.currentPageData.USER_ID = USER_ID;
@@ -4108,13 +4106,11 @@ var PageStore = observable((_observable$1 = {
         saved: true
       });
 
-      var note_content = dto.note_content,
-          user_name = dto.user_name,
+      var user_name = dto.user_name,
           modified_date = dto.modified_date,
           USER_ID = dto.USER_ID;
 
       _this11.set_CurrentPageData({
-        note_content: note_content,
         user_name: user_name,
         modified_date: modified_date,
         USER_ID: USER_ID
