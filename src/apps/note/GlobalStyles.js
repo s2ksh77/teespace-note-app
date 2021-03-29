@@ -286,6 +286,9 @@ export const GlobalStyle = createGlobalStyle`
   .afterClass{
     page-break-after:always;
   }
+  .ant-dropdown-menu {
+    min-width: 7rem;
+  }
   .ant-dropdown-menu-submenu-title {
     padding: 0.1875rem 0.75rem;
     font-size: 0.75rem;
