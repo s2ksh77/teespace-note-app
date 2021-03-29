@@ -449,7 +449,6 @@ const EditorContainer = () => {
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
                 onAction: function (_) {
-                  debugger
                   openLink({ isOnlyReadMode: false, url: getAnchorElement()?.href, target: '_blank' });
                 },
                 onSetup: function (api) {
