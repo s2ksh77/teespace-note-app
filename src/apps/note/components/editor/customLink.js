@@ -29,7 +29,8 @@ const changeLinkDialogHeader = (header) => {
 const changeLinkDialogFooter = (footer) => {
   footer.classList.add("custom-dialog-footer");
   const btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('custom-dialog-btns')
+  btnGroup.classList.add('custom-dialog-btns');
+  [...btnGroup.children].forEach((btn,idx) => btn.setAttribute('id', 'custom-link-'+['cancel','save'][idx]));
   // 저장, 취소 버튼 위치 바껴야 한다
   btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
 }
@@ -83,6 +84,16 @@ const renderValidation = (params) => (e, targetValue) => {
   }
 }
 
+const disableSaveBtn = (saveBtn) => {
+  saveBtn.setAttribute('disabled', true);
+  saveBtn.classList.add('disabled-btn');
+}
+
+const activateSaveBtn = (saveBtn) => {
+  saveBtn.removeAttribute('disabled');
+  saveBtn.classList.remove('disabled-btn');
+}
+
 const changeLinkDialogForm = (dialog) => {
   // 텍스트, 링크 순으로 바꿔주기
   const form = dialog.querySelector('.tox-dialog__body .tox-form');
@@ -91,15 +102,17 @@ const changeLinkDialogForm = (dialog) => {
 
   const formStr = { url: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_05'), text: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_04') };
   const targetInputs$ = form.querySelectorAll('input');
-  const saveBtn = dialog.querySelector('.tox-dialog__footer button');
+  const saveBtn = dialog.querySelector('.custom-dialog-btns #custom-link-save');
+  // 링크 삽입시도시 disable, 기존 링크창은 활성화
+  if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) disableSaveBtn(saveBtn);
 
   const handleInput = (checkValidation) => (e) => {
     if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value);
     // 두 input창이 비어있으면 saveBtn을 disable한다
-    if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) { saveBtn.setAttribute('disabled', true); return; }
+    if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {disableSaveBtn(saveBtn);return;}
     //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
-    if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);
-    else saveBtn.removeAttribute('disabled');
+    if (form.querySelectorAll(".note-link-form-error.note-show-element").length) disableSaveBtn(saveBtn);
+    else activateSaveBtn(saveBtn);
   }
 
   // string 바꿔주기, renderValidationErrorMark
@@ -117,7 +130,7 @@ const changeLinkDialogForm = (dialog) => {
       type,
       errorMark,
       errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput: targetInputs$[0] // 텍스트 input
+      textInput: targetInputs$[0] // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
     };
     // validation 함수 만들기
     const renderItemValidation = renderValidation(params);

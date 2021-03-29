@@ -24,24 +24,23 @@ var icons = require('@ant-design/icons');
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
-  if (e && e.__esModule) { return e; } else {
-    var n = Object.create(null);
-    if (e) {
-      Object.keys(e).forEach(function (k) {
-        if (k !== 'default') {
-          var d = Object.getOwnPropertyDescriptor(e, k);
-          Object.defineProperty(n, k, d.get ? d : {
-            enumerable: true,
-            get: function () {
-              return e[k];
-            }
-          });
-        }
-      });
-    }
-    n['default'] = e;
-    return Object.freeze(n);
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () {
+            return e[k];
+          }
+        });
+      }
+    });
   }
+  n['default'] = e;
+  return Object.freeze(n);
 }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
@@ -1626,6 +1625,16 @@ var NoteUtil = {
     localStorage.setItem("Note_sharedFoldedState_".concat(channelId), JSON.stringify(item, NoteUtil.replacer));
   }
 };
+
+var checkMaxLength = function checkMaxLength(e) {
+  var _value = e.target.value;
+
+  if (e.target.getAttribute('maxlength') && _value.length > e.target.getAttribute('maxlength')) {
+    _value = _value.slice(0, e.target.getAttribute('maxlength'));
+  }
+
+  return _value;
+}; // evernote도 http://ksdjflaskd.sdflksjdlfk 링크 처리함
 
 var urlRegex = new RegExp(/^(http(s)?:\/\/|www.)([a-z0-9\w\-]+\.)+([a-z0-9]{0,})(?:[\/\.\?\%\&\+\~\#\=\-\!\:]\w{0,}){0,}/im); // http가 있을 때는 뒤에 .com 같은거 검사 안하고 유효성 판별
 // 혹시 나중에 안되는거 있으면 이거 테스트해보기
@@ -3823,7 +3832,7 @@ var PageStore = mobx.observable((_observable$1 = {
       NoteStore.setShowPage(true);
       (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear(); // getRng error가 나서 selection부터 체크
 
-      if ((_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.selection) EditorStore$1.tinymce.focus();
+      if ((_EditorStore$tinymce2 = EditorStore$1.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore$1.tinymce.focus();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -4192,7 +4201,7 @@ var PageStore = mobx.observable((_observable$1 = {
       _this7.fetchNoteInfoList(dto.note_id); // focus에서 getRng error가 나서 selection부터 체크
 
 
-      if ((_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.selection) {
+      if ((_EditorStore$tinymce3 = EditorStore$1.tinymce) !== null && _EditorStore$tinymce3 !== void 0 && _EditorStore$tinymce3.selection) {
         EditorStore$1.tinymce.focus();
         EditorStore$1.tinymce.selection.setCursorLocation();
       }
@@ -6175,7 +6184,7 @@ var NoteStore = mobx.observable({
   mailReceiver: [],
   isVisibleToast: false,
   toastText: '',
-  i18nLanguage: 'ko',
+  i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
   getNoteIdFromTalk: function getNoteIdFromTalk() {
@@ -6734,7 +6743,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: ", ";\n  height: 1.88rem;\n  padding-left: 12px;\n  padding-right: 12px;\n  line-height: 100%;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -6877,7 +6886,9 @@ var ModifiedTime = styled__default['default'].span(_templateObject9$1());
 var EditorSearchIconDiv = styled__default['default'].div(_templateObject10$1());
 var EditorSearchIcon = styled__default['default'].img(_templateObject11$1());
 var LnbTitleCover = styled__default['default'].div(_templateObject12$1());
-var LnbTitleNewButton = styled__default['default'].button(_templateObject13());
+var LnbTitleNewButton = styled__default['default'].button(_templateObject13(), function (props) {
+  return props.language === 'en' ? 'fit-content' : '4.5rem';
+});
 var LnbTitleSearchContainer = styled__default['default'].form(_templateObject14(), function (props) {
   return props.isSearch ? "#FFFFFF;" : "#F7F4EF";
 }, function (props) {
@@ -7610,6 +7621,11 @@ var HeaderButtons = function HeaderButtons() {
 
   var handleCancelBtn = function handleCancelBtn(e) {
     if (!PageStore.isReadMode()) {
+      if (EditorStore.isUploading) {
+        NoteStore.setModalInfo('uploadingFiles');
+        return;
+      }
+
       if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) {
         PageStore.handleNoneEdit();
         return;
@@ -7776,6 +7792,7 @@ var LNBHeader = function LNBHeader(_ref) {
       src: img$5,
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
+      language: NoteStore.i18nLanguage,
       "data-btn": 'noteNewChapterBtn',
       onClick: handleNewChapterClick
     }, t('NOTE_PAGE_LIST_CMPNT_DEF_01')), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchContainer, {
@@ -8020,9 +8037,8 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
     };
   }();
 
-  var handleTitleInput = function handleTitleInput(_ref3) {
-    var value = _ref3.target.value;
-    ChapterStore$1.setChapterTitle(value);
+  var handleTitleInput = function handleTitleInput(e) {
+    return ChapterStore$1.setChapterTitle(checkMaxLength(e));
   };
 
   var handleKeyDown = function handleKeyDown(event) {
@@ -8287,7 +8303,12 @@ var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
 var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
   footer.classList.add("custom-dialog-footer");
   var btnGroup = footer.querySelector('.tox-dialog__footer-end');
-  btnGroup.classList.add('custom-dialog-btns'); // 저장, 취소 버튼 위치 바껴야 한다
+  btnGroup.classList.add('custom-dialog-btns');
+
+  _toConsumableArray(btnGroup.children).forEach(function (btn, idx) {
+    return btn.setAttribute('id', 'custom-link-' + ['cancel', 'save'][idx]);
+  }); // 저장, 취소 버튼 위치 바껴야 한다
+
 
   btnGroup.insertBefore(btnGroup.children[1], btnGroup.children[0]);
 }; // tinyMCE dialog에 끼워넣는거라 react로 안 짬
@@ -8380,6 +8401,16 @@ var renderValidation = function renderValidation(params) {
   };
 };
 
+var disableSaveBtn = function disableSaveBtn(saveBtn) {
+  saveBtn.setAttribute('disabled', true);
+  saveBtn.classList.add('disabled-btn');
+};
+
+var activateSaveBtn = function activateSaveBtn(saveBtn) {
+  saveBtn.removeAttribute('disabled');
+  saveBtn.classList.remove('disabled-btn');
+};
+
 var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
   // 텍스트, 링크 순으로 바꿔주기
   var form = dialog.querySelector('.tox-dialog__body .tox-form');
@@ -8390,19 +8421,21 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
     text: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_04')
   };
   var targetInputs$ = form.querySelectorAll('input');
-  var saveBtn = dialog.querySelector('.tox-dialog__footer button');
+  var saveBtn = dialog.querySelector('.custom-dialog-btns #custom-link-save'); // 링크 삽입시도시 disable, 기존 링크창은 활성화
+
+  if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) disableSaveBtn(saveBtn);
 
   var handleInput = function handleInput(checkValidation) {
     return function (e) {
       if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value); // 두 input창이 비어있으면 saveBtn을 disable한다
 
       if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {
-        saveBtn.setAttribute('disabled', true);
+        disableSaveBtn(saveBtn);
         return;
       } //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
 
 
-      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) saveBtn.setAttribute('disabled', true);else saveBtn.removeAttribute('disabled');
+      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) disableSaveBtn(saveBtn);else activateSaveBtn(saveBtn);
     };
   }; // string 바꿔주기, renderValidationErrorMark
 
@@ -8422,7 +8455,7 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
       type: type,
       errorMark: errorMark,
       errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput: targetInputs$[0] // 텍스트 input
+      textInput: targetInputs$[0] // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
 
     }; // validation 함수 만들기
 
@@ -8892,7 +8925,7 @@ var getChapterHtml = /*#__PURE__*/function () {
 
             if (noteList.length > 0) {
               noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
               });
             } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -8926,7 +8959,7 @@ var getPageHtml = /*#__PURE__*/function () {
             _yield$NoteRepository2 = _context7.sent;
             dto = _yield$NoteRepository2.data.dto;
             PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
             return _context7.abrupt("return", html);
 
           case 8:
@@ -9119,7 +9152,7 @@ var exportPageAsTxt = /*#__PURE__*/function () {
             response = _context9.sent;
             dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
 
-            returnData = "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
+            returnData = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
             getTxtFormat(dto.note_title, returnData);
 
           case 6:
@@ -9156,7 +9189,7 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
             }
 
             noteList.forEach(function (page, idx) {
-              returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('title'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
+              returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
             });
             _context10.next = 10;
             break;
@@ -9868,14 +9901,54 @@ var Page = function Page(_ref) {
         })
       };
     },
-    end: function end(item, monitor) {
-      var res = monitor.getDropResult();
-      if (res && res.target === 'Platform:Room') PageStore.createNoteSharePage(res.targetData.id, item.data);
-      if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
-      PageStore.setDragEnterPageIdx('');
-      PageStore.setDragEnterChapterIdx('');
-      NoteStore.setDraggedOffset({});
-    }
+    end: function () {
+      var _end = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item, monitor) {
+        var res, roomInfo;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                res = monitor.getDropResult();
+
+                if (!(res && res.target === 'Platform:Friend')) {
+                  _context.next = 8;
+                  break;
+                }
+
+                _context.next = 4;
+                return res.findRoom();
+
+              case 4:
+                roomInfo = _context.sent;
+                PageStore.createNoteSharePage(roomInfo.id, item.data);
+                _context.next = 9;
+                break;
+
+              case 8:
+                if (res && res.target === 'Platform:Room') {
+                  PageStore.createNoteSharePage(res.targetData.id, item.data);
+                }
+
+              case 9:
+                if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
+                PageStore.setDragEnterPageIdx('');
+                PageStore.setDragEnterChapterIdx('');
+                NoteStore.setDraggedOffset({});
+
+              case 13:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      function end(_x, _x2) {
+        return _end.apply(this, arguments);
+      }
+
+      return end;
+    }()
   }),
       _useDrag2 = _slicedToArray(_useDrag, 3),
       drag = _useDrag2[1],
@@ -9915,8 +9988,7 @@ var Page = function Page(_ref) {
   }, [page]);
 
   var handlePageName = function handlePageName(e) {
-    var value = e.target.value;
-    PageStore.setRenameText(value);
+    return PageStore.setRenameText(checkMaxLength(e));
   };
 
   var handlePageTextInput = function handlePageTextInput(isEscape) {
@@ -10143,13 +10215,53 @@ var Chapter = function Chapter(_ref) {
         })
       };
     },
-    end: function end(item, monitor) {
-      var res = monitor.getDropResult();
-      if (res && res.target === 'Platform:Room') ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
-      if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER) NoteStore.setIsDragging(false);
-      ChapterStore.setDragEnterChapterIdx('');
-      NoteStore.setDraggedOffset({});
-    }
+    end: function () {
+      var _end = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item, monitor) {
+        var res, roomInfo;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                res = monitor.getDropResult();
+
+                if (!(res && res.target === 'Platform:Friend')) {
+                  _context.next = 8;
+                  break;
+                }
+
+                _context.next = 4;
+                return res.findRoom();
+
+              case 4:
+                roomInfo = _context.sent;
+                ChapterStore.createNoteShareChapter(roomInfo.id, item.data);
+                _context.next = 9;
+                break;
+
+              case 8:
+                if (res && res.target === 'Platform:Room') {
+                  ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
+                }
+
+              case 9:
+                if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER) NoteStore.setIsDragging(false);
+                ChapterStore.setDragEnterChapterIdx('');
+                NoteStore.setDraggedOffset({});
+
+              case 12:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      function end(_x, _x2) {
+        return _end.apply(this, arguments);
+      }
+
+      return end;
+    }()
   }),
       _useDrag2 = _slicedToArray(_useDrag, 3),
       drag = _useDrag2[1],
@@ -10176,8 +10288,7 @@ var Chapter = function Chapter(_ref) {
   }, []);
 
   var handleChapterName = function handleChapterName(e) {
-    var value = e.target.value;
-    ChapterStore.setRenameText(value);
+    return ChapterStore.setRenameText(checkMaxLength(e));
   };
 
   var handleChapterTextInput = function handleChapterTextInput(isEscape) {
@@ -10488,7 +10599,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n  }\n  .custom-dialog-btns button:nth-child(1) {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns button:nth-child(2) {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n    border:0 !important;\n  }\n  .custom-dialog-btns #custom-link-save {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns #custom-link-save:hover {\n    background-color: #4C535D !important;\n  }\n  .custom-dialog-btns #custom-link-save.disabled-btn {\n    background-color: #CCCCCC !important;\n  }\n  .custom-dialog-btns #custom-link-cancel {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .custom-dialog-btns #custom-link-cancel:hover {\n    border:1px solid #232D3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -10574,29 +10685,38 @@ var EditorHeader = function EditorHeader() {
                 NoteStore.setShowPage(false);
               }
 
-              _context.next = 14;
+              _context.next = 17;
               break;
 
             case 6:
-              isUndoActive = (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.hasUndo();
-
-              if (isUndoActive) {
-                _context.next = 13;
+              if (!EditorStore.isUploading) {
+                _context.next = 9;
                 break;
               }
 
-              _context.next = 10;
+              NoteStore.setModalInfo('uploadingFiles');
+              return _context.abrupt("return");
+
+            case 9:
+              isUndoActive = (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.hasUndo();
+
+              if (isUndoActive) {
+                _context.next = 16;
+                break;
+              }
+
+              _context.next = 13;
               return PageStore.handleNoneEdit();
 
-            case 10:
+            case 13:
               NoteStore.setTargetLayout('LNB');
-              _context.next = 14;
+              _context.next = 17;
               break;
 
-            case 13:
+            case 16:
               NoteStore.setModalInfo('editCancel');
 
-            case 14:
+            case 17:
             case "end":
               return _context.stop();
           }
@@ -10684,8 +10804,7 @@ var EditorHeader = function EditorHeader() {
   }();
 
   var handleTitleInput = function handleTitleInput(e) {
-    var value = e.target.value;
-    PageStore.setTitle(value);
+    return PageStore.setTitle(checkMaxLength(e));
   };
 
   var handleSearchEditor = function handleSearchEditor() {
@@ -11148,7 +11267,7 @@ var AddTagForm = function AddTagForm(_ref) {
   if (!show) return null;
 
   var handleTagInput = function handleTagInput(e) {
-    setValue(e.target.value);
+    return setValue(checkMaxLength(e));
   };
 
   var handleBlurTagInput = function handleBlurTagInput() {
@@ -11251,8 +11370,7 @@ var TagListContainer = function TagListContainer() {
   };
 
   var handleChangeName = function handleChangeName(e) {
-    var value = e.target.value;
-    TagStore.setEditTagValue(value);
+    return TagStore.setEditTagValue(checkMaxLength(e));
   };
 
   var updateNoteTagList = function updateNoteTagList() {
@@ -12418,7 +12536,7 @@ var EditorContainer = function EditorContainer() {
         // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
         quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-        language: NoteStore.i18nLanguage === 'ko' ? 'ko_KR' : NoteStore.i18nLanguage,
+        language: NoteStore.i18nLanguage === 'ko-KR' ? 'ko_KR' : NoteStore.i18nLanguage,
         toolbar_drawer: false,
         // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
@@ -13238,6 +13356,7 @@ var NoteApp = function NoteApp(_ref) {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
       show: !NoteStore.isContentExpanded && renderCondition('LNB')
     }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), /*#__PURE__*/React__default['default'].createElement(Content, {
+      id: "note-content",
       show: renderCondition('Content'),
       onMouseOver: handleFoldBtn,
       onMouseOut: handleFoldBtn,
@@ -13422,7 +13541,7 @@ var NoteActiveIcon = function NoteActiveIcon(_ref) {
   })));
 };
 
-var ShareNoteMessage = function ShareNoteMessage(_ref2) {
+var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
   var roomId = _ref2.roomId,
       noteId = _ref2.noteId,
       noteTitle = _ref2.noteTitle;
@@ -13581,6 +13700,19 @@ var ShareNoteMessage = function ShareNoteMessage(_ref2) {
     onClick: handleClickMessage
   }, /*#__PURE__*/React__default['default'].createElement(NoteActiveIcon, null), /*#__PURE__*/React__default['default'].createElement(NoteTitle, null, noteTitle)));
 };
+
+function ShareNoteMessage(_ref) {
+  var roomId = _ref.roomId,
+      noteId = _ref.noteId,
+      noteTitle = _ref.noteTitle;
+  return /*#__PURE__*/React__default['default'].createElement(reactI18next.I18nextProvider, {
+    i18n: i18n
+  }, /*#__PURE__*/React__default['default'].createElement(ShareNoteMessageContent, {
+    roomId: roomId,
+    noteId: noteId,
+    noteTitle: noteTitle
+  }));
+}
 
 var initApp = function initApp() {
   teespaceCore.ComponentStore.register('Note:ShareNoteMessage', ShareNoteMessage);
