@@ -135,15 +135,25 @@ export const GlobalStyle = createGlobalStyle`
     width:4.5rem !important;
     height:1.88rem !important;
     font-size:0.75rem !important;
+    border:0 !important;
   }
-  .custom-dialog-btns button:nth-child(1) {
+  .custom-dialog-btns #custom-link-save {
     background-color: #232D3B !important;
     color: white !important;
   }
-  .custom-dialog-btns button:nth-child(2) {
+  .custom-dialog-btns #custom-link-save:hover {
+    background-color: #4C535D !important;
+  }
+  .custom-dialog-btns #custom-link-save.disabled-btn {
+    background-color: #CCCCCC !important;
+  }
+  .custom-dialog-btns #custom-link-cancel {
     background-color:#FFFFFF !important;
     border: 1px solid #D0CCC7 !important;
     color: #3B3B3B !important;
+  }
+  .custom-dialog-btns #custom-link-cancel:hover {
+    border:1px solid #232D3B !important;
   }
   .link-toolbar {
     flex-direction:column !important;
@@ -285,6 +295,9 @@ export const GlobalStyle = createGlobalStyle`
   }
   .afterClass{
     page-break-after:always;
+  }
+  .ant-dropdown-menu {
+    min-width: 7rem;
   }
   .ant-dropdown-menu-submenu-title {
     padding: 0.1875rem 0.75rem;
