@@ -54,8 +54,7 @@ const PageStore = observable({
     this.currentPageData = pageData;
   },
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
-  set_CurrentPageData({note_content, user_name, modified_date,USER_ID}) {
-    if (note_content) this.currentPageData.note_content = note_content;    
+  set_CurrentPageData({user_name, modified_date,USER_ID}) {   
     if (user_name) this.currentPageData.user_name = user_name;
     if (modified_date) this.currentPageData.modified_date = modified_date;
     if (USER_ID) this.currentPageData.USER_ID = USER_ID;
@@ -642,8 +641,8 @@ const PageStore = observable({
     this.editDone(updateDTO)
       .then((dto) => {
         this.setSaveStatus({saved:true});
-        const {note_content, user_name, modified_date,USER_ID} = dto;
-        this.set_CurrentPageData({note_content, user_name, modified_date,USER_ID});
+        const {user_name, modified_date,USER_ID} = dto;
+        this.set_CurrentPageData({user_name, modified_date,USER_ID});
         this.modifiedDate = this.modifiedDateFormatting(modified_date);        
         // 2초 후 수정 중 인터렉션으로 바꾸기
         setTimeout(() => {

@@ -426,7 +426,11 @@ const EditorContainer = () => {
                 },
                 onSetup: function (api) {
                   // 텍스트 블록 선택했을 때 링크 말고 다른 menu도 떠서 블록선택 안했을 때만 보이게 하기
-                  if (editor.selection.isCollapsed()) changeButtonStyle(0, 0);
+                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_07'), 
+                    idx: 0,
+                    count: 0
+                  });
                 }
               });
               editor.ui.registry.addToggleButton('customToggleUnLink', {
@@ -435,7 +439,11 @@ const EditorContainer = () => {
                   editor.execCommand('Unlink');
                 },
                 onSetup: function (api) {
-                  if (editor.selection.isCollapsed()) changeButtonStyle(1, 0);
+                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_08'), 
+                    idx: 1,
+                    count: 0
+                  });
                 }
               });
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
@@ -446,7 +454,11 @@ const EditorContainer = () => {
                 onSetup: function (api) {
                   const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
                   if (!targetUrl) api.setDisabled(true)
-                  if (editor.selection.isCollapsed()) changeButtonStyle(2, 0);
+                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_09'), 
+                    idx: 2,
+                    count: 0
+                  });
                 }
               });
               // l-click하면 나오는 메뉴
