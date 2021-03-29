@@ -211,6 +211,71 @@ export const GlobalStyle = createGlobalStyle`
     outline:none;
   }
   .tox-statusbar{ display :none !important; }
+
+  .tox .tox-dialog.custom-link-dialog {
+    max-width: 24.38rem;
+    border: 0;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);
+  }
+  
+  .tox .tox-dialog__header.custom-dialog-header {
+    position: relative;
+    padding: 0;
+    height: 2.69rem;
+    justify-content: center;
+  }
+
+  .tox .tox-dialog__title.custom-dialog-title {
+    font-family: 'Noto Sans KR';
+    font-weight: 500;
+    font-size: 0.88rem;
+  }
+
+  .tox .tox-dialog__header.custom-dialog-header .tox-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0;
+    width: 2.69rem;
+    height: 2.69rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {
+    padding: 1rem;
+  }
+
+  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {
+    font-size: 0.81rem;
+    font-weight: 500;
+  }
+
+ .tox .tox-dialog.custom-link-dialog .tox-textfield {
+  border-color: #d0ccc7;
+ }
+ .tox .tox-dialog.custom-link-dialog .tox-textfield:focus {
+   border-color: #7B7671;
+ }
+
+ .tox .tox-dialog__footer.custom-dialog-footer {
+   padding: 0;
+   border-top: 1px solid #DDD9D4;
+ }
+
+ .tox .custom-dialog-btns.tox-button {
+   border-color: transparent;
+   width: 4.5rem;
+   height: 1.88rem;
+ }
+
   .export {
     table { 
       max-width: 770px;
