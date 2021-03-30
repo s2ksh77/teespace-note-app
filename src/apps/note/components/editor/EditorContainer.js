@@ -426,7 +426,7 @@ const EditorContainer = () => {
                 },
                 onSetup: function (api) {
                   // 텍스트 블록 선택했을 때 링크 말고 다른 menu도 떠서 블록선택 안했을 때만 보이게 하기
-                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                  changeButtonStyle({
                     str: t('NOTE_EDIT_PAGE_INSERT_LINK_07'), 
                     idx: 0,
                     count: 0
@@ -439,7 +439,7 @@ const EditorContainer = () => {
                   editor.execCommand('Unlink');
                 },
                 onSetup: function (api) {
-                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                  changeButtonStyle({
                     str: t('NOTE_EDIT_PAGE_INSERT_LINK_08'), 
                     idx: 1,
                     count: 0
@@ -453,13 +453,21 @@ const EditorContainer = () => {
                 },
                 onSetup: function (api) {
                   const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
-                  if (!targetUrl) api.setDisabled(true)
-                  if (editor.selection.isCollapsed()) changeButtonStyle({
+                  if (!targetUrl) api.setDisabled(true);
+                  changeButtonStyle({
                     str: t('NOTE_EDIT_PAGE_INSERT_LINK_09'), 
                     idx: 2,
                     count: 0
                   });
                 }
+              });
+              // l-click하면 나오는 메뉴
+              editor.ui.registry.addContextToolbar('textselection', {
+                predicate: function(node) {
+                  return  !editor.selection.isCollapsed() && !isAnchorElement(node);
+                },
+                items: 'forecolor backcolor | bold italic underline strikethrough | link',
+                position: 'selection'
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
@@ -537,7 +545,7 @@ const EditorContainer = () => {
             quickbars_insert_toolbar: false,
             quickbars_image_toolbar: false,
             // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
-            quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
+            quickbars_selection_toolbar: false,
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: NoteStore.i18nLanguage,
             toolbar_drawer: false,
