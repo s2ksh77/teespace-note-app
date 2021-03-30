@@ -539,7 +539,7 @@ const EditorContainer = () => {
             // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
             quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
             imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-            language: NoteStore.i18nLanguage === 'ko-KR' ? 'ko_KR' : NoteStore.i18nLanguage,
+            language: NoteStore.i18nLanguage,
             toolbar_drawer: false,
             // paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {
