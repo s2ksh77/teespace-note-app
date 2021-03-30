@@ -124,7 +124,7 @@ export const LnbTitleCover = styled.div`
 export const LnbTitleNewButton = styled.button`
   align-items: center;
   display: flex;
-  width: ${props => props.language === 'en' ? 'fit-content' : '4.5rem'};
+  width: fit-content;
   height: 1.88rem;
   padding-left: 12px;
   padding-right: 12px;
@@ -136,7 +136,7 @@ export const LnbTitleNewButton = styled.button`
   border: 0px solid #ffffff;
   border-radius: 0.25rem;
   background-color: #232D3B;
-  min-width:3rem;
+  min-width:4.5rem;
   &:hover {
     background-color: #4C535D;
     cursor: pointer;

@@ -79,7 +79,7 @@ const LNBHeader = ({ createNewChapter }) => {
         >
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
-        <LnbTitleNewButton language={NoteStore.i18nLanguage} data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
+        <LnbTitleNewButton data-btn={'noteNewChapterBtn'} onClick={handleNewChapterClick}>
           {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
         </LnbTitleNewButton>
         <LnbTitleSearchContainer onSubmit={onSubmitSearchBtn} isSearch={(ChapterStore.searchStr !== "" || ChapterStore.isSearching) ? true : false}>

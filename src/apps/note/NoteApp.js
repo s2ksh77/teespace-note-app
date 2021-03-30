@@ -99,8 +99,11 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     NoteStore.setMailReceiver([]);
   }
   useEffect(() => {
-    NoteStore.setI18nLanguage(language);
-    if (language) i18n.changeLanguage(language);
+    if (!language) return;
+    const editorLanguage = language === 'en' ? language : 'ko_KR';
+    NoteStore.setI18nLanguage(editorLanguage);
+    if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
+    i18n.changeLanguage(language);
   }, [language])
 
   return useObserver(() => (
