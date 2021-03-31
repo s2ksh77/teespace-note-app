@@ -130,9 +130,6 @@ const languageSet = {
     NOTE_EDIT_PAGE_UPDATE_TIME_01: `{{time}} AM`,
     NOTE_EDIT_PAGE_UPDATE_TIME_02: `{{time}} PM`,
     NOTE_EXPORT_TITLE: 'Title',
-
-    saving : 'Saving',
-    hasBeenSaved : 'Has Been Saved',
 };
 
 export default languageSet;

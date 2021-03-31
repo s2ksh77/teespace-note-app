@@ -20,7 +20,7 @@ const languageSet = {
     NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
     NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
     NOTE_PAGE_LIST_ADD_NEW_PGE_04: '저장',
-    NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: `{{moveCnt}}개의 페이지를 {{targetPage}}으로 이동하였습니다.`,
+    NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: `{{moveCnt}}개의 페이지를 {{targetPage}}(으)로 이동하였습니다.`,
     NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: `{{moveCnt}}개의 챕터가 이동하였습니다.`,
     NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: `{{moveCnt}}개의 페이지가 이동하였습니다.`,
     NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
