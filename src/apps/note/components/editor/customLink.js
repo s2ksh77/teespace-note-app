@@ -49,13 +49,13 @@ const renderErrorMark = (target) => {
 
 // 1 : 텍스트를 입력해 주세요 메시지 띄우기
 const textCondition = (value) =>
-  isFilled(value) ? { result: true, message: "" } : { result: false, message: i18n.t('enterText') };
+  isFilled(value) ? { result: true, message: "" } : { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_11') };
 
 const urlSaveCondition = (_value) => {
-  if (!isFilled(_value)) return { result: false, message: i18n.t('enterLink') };
+  if (!isFilled(_value)) return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_12') };
   if (!GlobalVariable.isBasicPlan) {
     if (isValidMailtoMail(_value)) return { result: true, message: "" }; // pass
-    if (isValidMail(_value)) return { result: false, message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요." }; // mailto 붙여달라고 메시지 띄우기
+    if (isValidMail(_value)) return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_13') }; // mailto 붙여달라고 메시지 띄우기
   }
   if (checkUrlValidation(_value)) return { result: true, message: "" }; // pass
   return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_06') }; // 유효하지 않은 주소라고 메시지 띄우기

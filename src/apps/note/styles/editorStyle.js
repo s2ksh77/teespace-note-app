@@ -8,50 +8,56 @@ export const EditorContainerWrapper = styled.div`
   height:100%;
   .tox-tinymce{
     border-left: 0px solid black;
+    border-color: #DDD9D4;
   }
-  ${props => (props.mode === "false" && props.isSearch === "false") && css`
+  ${props => (!props.isReadMode && !props.isSearch) && css`
     .tox-editor-header{
      display:block;
     }
   `}
-  ${props => (props.mode === "false" && props.isSearch === "true") && css`
+  ${props => (!props.isReadMode && props.isSearch) && css`
     .tox-editor-header{
      display:none;
     }
   `}
-  ${props => props.mode === "true" && css`
+  ${props => props.isReadMode && css`
     .tox-editor-header{
       display:none;
     }
   `}
-  ${props => (props.isFile === "false" && props.mode === "true") && css`
+  ${props => !props.isReadMode && css`
     .tox-tinymce{
-      height: calc(100% - 8.8rem) !important;
+      border-left: 0.1px solid transparent;
     }
   `}
-  ${props => (props.isFile === "true" && props.mode === "true") && css`
-    .tox-tinymce{
-      height: calc(100% - 13rem) !important;
+  ${props => (!props.isFile && props.isReadMode) && css`
+    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, EditorTagCover
+      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;
     }
   `}
-  ${props => (props.isFile === "false" && props.mode === "false" && props.isSearch === "false") && css`
-    .tox-tinymce{
-      height: calc(100% - 6rem) !important;
+  ${props => (props.isFile && props.isReadMode) && css`
+    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, FileBodyLayout, EditorTagCover
+      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;
     }
   `}
-  ${props => (props.isFile === "false" && props.mode === "false" && props.isSearch === "true") && css`
-    .tox-tinymce{
-      height: calc(100% - 8.8rem) !important;
+  ${props => (!props.isFile && !props.isReadMode && !props.isSearch) && css`
+    .tox-tinymce{ // ContentHeaderCover, EditorTagCover
+      height: calc(100% - 3rem - 2.81rem) !important;
     }
   `}
-  ${props => (props.isFile === "true" && props.mode === "false" && props.isSearch === "false") && css`
-    .tox-tinymce{
-      height: calc(100% - 10.1rem) !important;
+  ${props => (!props.isFile && !props.isReadMode && props.isSearch) && css`
+    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), EditorTagCover
+      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;
     }
   `}
-  ${props => (props.isFile === "true" && props.mode === "false" && props.isSearch === "true") && css`
-    .tox-tinymce{
-      height: calc(100% - 12.9rem) !important;
+  ${props => (props.isFile && !props.isReadMode && !props.isSearch) && css`
+    .tox-tinymce{ // ContentHeaderCover, FileBodyLayout, EditorTagCover
+      height: calc(100% - 3rem - 4.19rem - 2.81rem) !important;
+    }
+  `}
+  ${props => (props.isFile && !props.isReadMode && props.isSearch) && css`
+    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), FileBodyLayout, EditorTagCover
+      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;
     }
   `}
 `;
@@ -59,7 +65,7 @@ export const EditorContainerWrapper = styled.div`
 export const ReadModeContainer = styled.div`
   width: 100%;
   height: 2.81rem;
-  border-top: 1px solid rgb(218, 218, 218);
+  border-top: 1px solid #DDD9D4;
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -114,8 +120,7 @@ export const FileBodyLayout = styled.div`
   display : flex;
   align-items: center;
   height: 4.19rem;
-  border-top: 0px solid #dadada;
-  border-bottom: 1px solid #dadada;
+  border-bottom: 1px solid #DDD9D4;
   overflow: hidden;
   box-sizing :border-box;
   padding: 0rem 0.5rem;
