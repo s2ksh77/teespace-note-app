@@ -153,7 +153,7 @@ export const LnbTitleSearchContainer = styled.form`
   width: 14.81rem;
   height: 1.88rem;
   border-radius: 6px;
-  border: 0rem solid #c6ced6;
+  border: 1px solid transparent;
   background-color: #F7F4EF;
   &:focus-within {
     background: #FFFFFF;
@@ -163,8 +163,8 @@ export const LnbTitleSearchContainer = styled.form`
   margin: auto 0;
   flex:1;
   min-width:10.6rem;
-  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "#F7F4EF")}
-  border: ${props => (props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;")}
+  background-color: ${props => (props.isSearch ? "#FFFFFF" : "#F7F4EF")};
+  border: ${props => (props.isSearch ? "1px solid #7B7671" : "1px solid transparent")};
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -192,8 +192,10 @@ export const LnbTitleSearchInput = styled.input`
     background: #FFFFFF;
     outline: none;
   }
+  &::placeholder {
+    color: #C9C4BE;
+  }
   background-color: ${props => (props.isSearch ? "#FFFFFF;" : "inherit;")}
-  line-height: 1;
 `;
 
 export const TagSearchForm = styled.form`
