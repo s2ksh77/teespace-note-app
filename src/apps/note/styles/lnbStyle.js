@@ -21,6 +21,7 @@ export const LNBChapterCover = styled.div`
   height: 100%;
   display:flex;
   flex-direction: column;
+  border-top: 1px solid #DDD9D4;
 `;
 
 export const LNBNewChapter = styled.div`

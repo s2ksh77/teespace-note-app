@@ -11,7 +11,7 @@ export const TagContainerCover = styled.div`
 export const EditorTagCover = styled.div`
   white-space: nowrap;
   width: calc(100% - 0px);
-  height: 2.94rem;
+  height: 2.81rem;
   border-width: 0px;
   border-style: solid;
   vertical-align: top;

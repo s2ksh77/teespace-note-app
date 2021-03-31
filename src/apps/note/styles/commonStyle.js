@@ -8,16 +8,13 @@ export const HeaderButtonContainer = styled.div`
 `;
 
 export const ContentHeaderCover = styled.div`
-  height: ${props => props.borderBottom ?
-    "3rem" : "2.938rem"};
+  height: 3rem;
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: row;
   padding: 0 0.75rem 0 1rem;
   box-sizing: border-box;
-  border-bottom: ${props => props.borderBottom ?
-    "1px solid #dadada" : ""};
 `;
 
 export const PreBtnWrapper = styled.div`
@@ -41,6 +38,7 @@ export const ContentBodyCover = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1.25rem 0.75rem;
+  border-top: 1px solid #DDD9D4;
 `;
 
 export const NoneContainer = styled.div`

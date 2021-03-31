@@ -258,7 +258,7 @@ const EditorContainer = () => {
 
   return useObserver(() => (
     <>
-      <EditorContainerWrapper ref={editorWrapperRef} mode={PageStore.isReadMode().toString()} isFile={EditorStore.isFile.toString()} isSearch={EditorStore.isSearch.toString()}>
+      <EditorContainerWrapper ref={editorWrapperRef} isReadMode={PageStore.isReadMode()} isFile={EditorStore.isFile} isSearch={EditorStore.isSearch}>
         <EditorHeader />
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
