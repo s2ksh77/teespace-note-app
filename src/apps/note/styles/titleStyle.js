@@ -192,6 +192,9 @@ export const LnbTitleSearchInput = styled.input`
     background: #FFFFFF;
     outline: none;
   }
+  &::placeholder {
+    color: #C9C4BE;
+  }
   background-color: ${props => (props.isSearch ? "#FFFFFF;" : "inherit;")}
   line-height: 1;
 `;
