@@ -271,11 +271,12 @@ const EditorStore = observable({
   getFileInfo(file) {
     let fileName = file.name;
     let dotIndex = fileName.lastIndexOf('.');
-    let fileExtension;
+    let fileExtension = "";
     let fileSize = file.size;
-    if (dotIndex !== -1) {
-      fileExtension = fileName.substring(dotIndex + 1, fileName.length);
-      fileName = fileName.substring(0, dotIndex);
+    // 확장자 없으면 file.type === ""
+    if (file.type && dotIndex !== -1) {
+      fileExtension = fileName.slice(dotIndex + 1);
+      fileName = fileName.slice(0, dotIndex);
     }
     return { fileName, fileExtension, fileSize };
   },
