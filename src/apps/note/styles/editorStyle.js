@@ -25,6 +25,11 @@ export const EditorContainerWrapper = styled.div`
       display:none;
     }
   `}
+  ${props => !props.isReadMode && css`
+    .tox-tinymce{
+      border-left: 0.1px solid transparent;
+    }
+  `}
   ${props => (!props.isFile && props.isReadMode) && css`
     .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, EditorTagCover
       height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;
