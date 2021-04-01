@@ -105,21 +105,6 @@ const NoteMeta = {
             })
             .catch(e => console.error(e));
         });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          if (PageStore.isNewPage) PageStore.handleNoneEdit();
-          else {
-            if (EditorStore.notSaveFileList.length > 0) {
-              EditorStore.notSaveFileDelete().then(() => {
-                PageStore.noteNoneEdit(PageStore.currentPageId);
-                EditorStore.tinymce?.undoManager.clear();
-              });
-            } else {
-              PageStore.noteNoneEdit(PageStore.currentPageId);
-              EditorStore.tinymce?.undoManager.clear();
-            }
-          }
-        });
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'confirm':
@@ -163,7 +148,7 @@ const NoteMeta = {
       case 'uploadingFiles':
         return [defaultBtn1];
       case 'editCancel':
-        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, { ...defaultBtn1, text: i18n.t('NOTE_EDIT_PAGE_COMPLETE_02') }, defaultBtn2];
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, defaultBtn2];
       default:
         return;
     }
@@ -203,6 +188,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'editCancel':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
         dialogType.btns = this.setBtns(type);
         break;
