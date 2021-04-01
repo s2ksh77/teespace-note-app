@@ -3168,7 +3168,7 @@ var PageStore = observable((_observable$1 = {
     saving: false,
     saved: false
   },
-  userNick: '',
+  displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -3896,7 +3896,7 @@ var PageStore = observable((_observable$1 = {
 
             case 9:
               userProfile = _context10.sent;
-              if (userProfile) _this5.userNick = userProfile.nick;
+              if (userProfile) _this5.displayName = userProfile.displayName;
 
             case 11:
               _this5.setCurrentPageId(dto.note_id);
