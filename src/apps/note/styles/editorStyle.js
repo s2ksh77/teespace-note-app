@@ -359,4 +359,5 @@ export const editorContentCSS = `
   mark.searchselected{
     background-color: #FFD200 !important;
   }
+  .tox-notification { display: none !important }
 `

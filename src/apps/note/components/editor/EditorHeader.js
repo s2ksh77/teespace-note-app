@@ -121,8 +121,8 @@ const EditorHeader = () => {
           {/* {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />} */}
           <ModifiedUser>
             {!PageStore.isReadMode()
-              ? (userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName)
-              : (PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name)}
+              ? (userStore.myProfile.displayName)
+              : (PageStore.displayName)}
           </ModifiedUser>
           <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
           <EditorSearchIconDiv onClick={handleSearchEditor}>

@@ -15,7 +15,7 @@ const PageStore = observable({
   currentPageData: [],
   isEdit: '',
   saveStatus:{saving : false, saved:false},
-  userNick: '',
+  displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -512,7 +512,7 @@ const PageStore = observable({
 
     if (dto.USER_ID) {
       const userProfile = await UserStore.fetchProfile(dto.USER_ID);
-      if (userProfile) this.userNick = userProfile.nick;
+      if (userProfile) this.displayName = userProfile.displayName;
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
