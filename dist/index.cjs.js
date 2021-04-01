@@ -3011,7 +3011,7 @@ var languageSet = {
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
   NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.￦n취소 후 페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n취소 후 페이지를 저장하고 나가시겠습니까?',
   NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
@@ -3143,7 +3143,7 @@ var languageSet$1 = {
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT Format(.txt)',
   NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\nDo you want to save and exit?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
   NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
@@ -3696,7 +3696,7 @@ var PageStore = mobx.observable((_observable$1 = {
   renameNotePage: function renameNotePage(chapterId) {
     var _this3 = this;
 
-    this.renamePage(this.renameId, this.renameText, chapterId).then(function (dto) {
+    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(function (dto) {
       if (_this3.moveInfoMap.get(dto.note_id)) {
         _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -4099,7 +4099,7 @@ var PageStore = mobx.observable((_observable$1 = {
     return {
       dto: {
         note_id: this.currentPageData.note_id,
-        note_title: this.noteTitle,
+        note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({
           format: "text"
@@ -5110,24 +5110,26 @@ var ChapterStore = mobx.observable({
     if (!chapter || chapter.children.length === 0) return null;
     return (_chapter$children$ = chapter.children[0]) === null || _chapter$children$ === void 0 ? void 0 : _chapter$children$.id;
   },
-  createNoteChapter: function createNoteChapter(chapterTitle, chapterColor) {
+  createNoteChapter: function createNoteChapter() {
     var _this9 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var notbookList;
+      var trimmedChapterTitle, notbookList;
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
           switch (_context14.prev = _context14.next) {
             case 0:
-              _context14.next = 2;
-              return _this9.createChapter(chapterTitle, chapterColor);
+              trimmedChapterTitle = _this9.chapterNewTitle.trim();
+              _this9.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
+              _context14.next = 4;
+              return _this9.createChapter(_this9.chapterNewTitle, _this9.isNewChapterColor);
 
-            case 2:
+            case 4:
               notbookList = _context14.sent;
-              _context14.next = 5;
+              _context14.next = 7;
               return _this9.getNoteChapterList();
 
-            case 5:
+            case 7:
               _this9.setCurrentChapterId(notbookList.id);
 
               PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -5139,7 +5141,7 @@ var ChapterStore = mobx.observable({
 
               PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this9.currentChapterId)]]));
 
-            case 11:
+            case 13:
             case "end":
               return _context14.stop();
           }
@@ -5171,7 +5173,7 @@ var ChapterStore = mobx.observable({
   renameNoteChapter: function renameNoteChapter(color) {
     var _this11 = this;
 
-    this.renameChapter(this.renameId, this.renameText, color).then(function (dto) {
+    this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
       if (_this11.moveInfoMap.get(dto.id)) _this11.moveInfoMap.get(dto.id).item.text = dto.text;
 
       _this11.getNoteChapterList();
@@ -5676,24 +5678,6 @@ var NoteMeta = {
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
-            if (EditorStore.notSaveFileList.length > 0) {
-              EditorStore.notSaveFileDelete().then(function () {
-                var _EditorStore$tinymce2;
-
-                PageStore.noteNoneEdit(PageStore.currentPageId);
-                (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
-              });
-            } else {
-              var _EditorStore$tinymce3;
-
-              PageStore.noteNoneEdit(PageStore.currentPageId);
-              (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
-            }
-          }
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
           NoteStore.setModalInfo(null);
         });
         break;
@@ -5758,8 +5742,6 @@ var NoteMeta = {
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
-        }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('NOTE_EDIT_PAGE_COMPLETE_02')
         }), defaultBtn2];
 
       default:
@@ -5809,6 +5791,7 @@ var NoteMeta = {
         break;
 
       case 'editCancel':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
         dialogType.btns = this.setBtns(type);
         break;
