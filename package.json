@@ -38,13 +38,13 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#mobile_build_210331_1810"
   },
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop-rn",
-    "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#mobile_build_210331_1810",
+    "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#mobile_build_210331_1810"
   },
   "scripts": {
     "start": "craco start",
