@@ -28,19 +28,7 @@ const LNBContainer = () => {
     // dialog 클릭시 blur이벤트 동작
     if (NoteStore.showModal) return;
     if (!ChapterStore.isNewChapter) return;
-    // 분기는 더 여러개 있어야하지만 우선 만드는걸로
-    if (!ChapterStore.chapterNewTitle) {
-      ChapterStore.setChapterTitle(t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
-      await ChapterStore.createNoteChapter(
-        ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
-      );
-    } else {
-      await ChapterStore.createNoteChapter(
-        ChapterStore.chapterNewTitle,
-        ChapterStore.isNewChapterColor
-      );
-    }
+    await ChapterStore.createNoteChapter();
   };
   const handleEditMode = () => {
     if (EditorStore.isUploading) { NoteStore.setModalInfo('uploadingFiles'); return; }
