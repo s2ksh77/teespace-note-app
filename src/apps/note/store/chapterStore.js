@@ -483,8 +483,10 @@ const ChapterStore = observable({
     return chapter.children[0]?.id;
   },
 
-  async createNoteChapter(chapterTitle, chapterColor) {
-    const notbookList = await this.createChapter(chapterTitle, chapterColor);
+  async createNoteChapter() { 
+    const trimmedChapterTitle = this.chapterNewTitle.trim();
+    this.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
+    const notbookList = await this.createChapter(this.chapterNewTitle, this.isNewChapterColor);
     await this.getNoteChapterList();
     this.setCurrentChapterId(notbookList.id);
     PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -510,7 +512,7 @@ const ChapterStore = observable({
   },
 
   renameNoteChapter(color) {
-    this.renameChapter(this.renameId, this.renameText, color).then(dto => {
+    this.renameChapter(this.renameId, this.renameText.trim(), color).then(dto => {
       if (this.moveInfoMap.get(dto.id)) this.moveInfoMap.get(dto.id).item.text = dto.text;
       this.getNoteChapterList();
     });

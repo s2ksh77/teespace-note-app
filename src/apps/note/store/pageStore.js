@@ -372,7 +372,7 @@ const PageStore = observable({
   },
 
   renameNotePage(chapterId) {
-    this.renamePage(this.renameId, this.renameText, chapterId).then(dto => {
+    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(dto => {
       if (this.moveInfoMap.get(dto.note_id)) {
         this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -612,7 +612,7 @@ const PageStore = observable({
     return {
       dto: {
         note_id: this.currentPageData.note_id,
-        note_title: this.noteTitle,
+        note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: "text" }),
         parent_notebook: this.currentPageData.parent_notebook,
