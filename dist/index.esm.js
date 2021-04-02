@@ -2981,7 +2981,8 @@ var languageSet = {
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
   NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n취소 후 페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: "업로드 완료된 파일은 페이지에 저장됩니다.",
   NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
@@ -3114,6 +3115,7 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
   NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
@@ -5623,6 +5625,7 @@ var NoteMeta = {
         });
         break;
 
+      case 'uploadingFiles':
       case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -5661,7 +5664,6 @@ var NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'fileOpenMail':
-      case 'uploadingFiles':
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setModalInfo(null);
@@ -5706,9 +5708,9 @@ var NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
-      case 'uploadingFiles':
         return [defaultBtn1];
 
+      case 'uploadingFiles':
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
@@ -5732,12 +5734,14 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
         dialogType.btns = this.setBtns('delete');
         break;
@@ -5815,8 +5819,8 @@ var NoteMeta = {
         break;
 
       case 'uploadingFiles':
-        dialogType.title = '업로드 중인 파일이 있습니다.'; // 아직 기능이 완벽하게 구현 안된거라 i18n은 기능 구현 후
-
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
     }
 
