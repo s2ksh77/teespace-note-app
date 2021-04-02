@@ -110,6 +110,7 @@ const languageSet = {
     NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
     NOTE_EDIT_PAGE_ATTACH_FILE_07: `({{failCnt}} out of {{uploadCnt}} failed)`,
     NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
+    NOTE_EDIT_PAGE_ATTACH_FILE_09 : 'The uploaded file is saved on the page.',
     NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
     NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
     NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',

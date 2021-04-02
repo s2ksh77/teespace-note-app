@@ -86,6 +86,7 @@ const NoteMeta = {
         })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'uploadingFiles':
       case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -116,7 +117,6 @@ const NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'fileOpenMail':
-      case 'uploadingFiles':
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       // NoteFile을 import해야해서 NoeModal component에서 이벤트 추가함
@@ -145,8 +145,8 @@ const NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
-      case 'uploadingFiles':
         return [defaultBtn1];
+      case 'uploadingFiles':
       case 'editCancel':
         return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, defaultBtn2];
       default:
@@ -167,11 +167,13 @@ const NoteMeta = {
     // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'page':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
         dialogType.btns = this.setBtns('delete');
         break;
@@ -228,7 +230,8 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'uploadingFiles':
-        dialogType.title = '업로드 중인 파일이 있습니다.'; // 아직 기능이 완벽하게 구현 안된거라 i18n은 기능 구현 후
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
       default:
         break;
