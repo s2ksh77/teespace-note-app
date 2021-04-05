@@ -1389,7 +1389,7 @@ var NoteRepository = /*#__PURE__*/function () {
 var NoteRepository$1 = new NoteRepository();
 
 var GlobalVariable = {
-  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
+  apiKey: "90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3",
   editorWrapper: null,
   isBasicPlan: false,
   setEditorWrapper: function setEditorWrapper(ref) {
@@ -4787,7 +4787,7 @@ var ChapterStore = mobx.observable({
       }, _callee9);
     }))();
   },
-  getSearchList: function getSearchList() {
+  getSearchList: function getSearchList(searchStr) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var _yield$NoteRepository10, dto;
 
@@ -4796,7 +4796,7 @@ var ChapterStore = mobx.observable({
           switch (_context10.prev = _context10.next) {
             case 0:
               _context10.next = 2;
-              return NoteRepository$1.getSearchList(ChapterStore.searchStr);
+              return NoteRepository$1.getSearchList(searchStr || ChapterStore.searchStr);
 
             case 2:
               _yield$NoteRepository10 = _context10.sent;
@@ -5318,7 +5318,7 @@ var ChapterStore = mobx.observable({
 
               _this14.setIsLoadingSearchResult(true);
 
-              _this14.getSearchList().then(function (dto) {
+              _this14.getSearchList(_this14.searchStr.trim()).then(function (dto) {
                 _this14.setSearchResult({
                   chapter: dto.chapterList,
                   page: dto.pageList
@@ -5350,7 +5350,7 @@ var ChapterStore = mobx.observable({
               // await this.getSearchResult();
 
 
-              _this15.getSearchList().then(function (dto) {
+              _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
                 if (dto.pageList && dto.pageList.length > 0) {
                   dto.pageList.map(function (page) {
                     _this15.getChapterInfoList(page.parent_notebook).then(function (dto) {
