@@ -1,0 +1,15 @@
+[ignore]
+.*/tests/.*
+.*/dist/.*
+.*/public/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+esproposal.decorators=ignore
+
+[strict]

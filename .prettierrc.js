@@ -7,4 +7,6 @@ module.exports = {
   printWidth: 80,
   arrowParens: 'avoid',
   eol: 'lf',
+  bracketSpacing: true,
+  jsxBracketSameLine: false
 };
