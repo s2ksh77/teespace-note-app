@@ -292,10 +292,10 @@ const ChapterStore = observable({
     } = await NoteRepository.getChapterInfoList(chapterId);
     return dto;
   },
-  async getSearchList() {
+  async getSearchList(searchStr) {
     const {
       data: { dto },
-    } = await NoteRepository.getSearchList(ChapterStore.searchStr);
+    } = await NoteRepository.getSearchList(searchStr || ChapterStore.searchStr);
     return dto;
   },
 
@@ -614,7 +614,7 @@ const ChapterStore = observable({
   async getSearchResult() { // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
     this.setIsSearching(true);
     this.setIsLoadingSearchResult(true);
-    this.getSearchList().then(dto => {
+    this.getSearchList(this.searchStr.trim()).then(dto => {
       this.setSearchResult({
         chapter: dto.chapterList,
         page: dto.pageList
@@ -627,7 +627,7 @@ const ChapterStore = observable({
     this.setIsSearching(true); // 검색 결과 출력 종료까지임
     this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
     // await this.getSearchResult();
-    this.getSearchList().then(dto => {
+    this.getSearchList(this.searchStr.trim()).then(dto => {
       if (dto.pageList && dto.pageList.length > 0) {
         dto.pageList.map(page => {
           this.getChapterInfoList(page.parent_notebook).then(dto => {

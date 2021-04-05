@@ -52,7 +52,7 @@ const LNBSearchResult = () => {
     <>
       {(ChapterStore.searchResult?.["chapter"] === null &&
         ChapterStore.searchResult?.["page"] === null)
-        ? <SearchResultNotFound searchStr={ChapterStore.searchStr} /> :
+        ? <SearchResultNotFound searchStr={ChapterStore.searchStr.trim()} /> :
         <>
           {ChapterStore.searchResult?.["chapter"]?.map((chapter) => {
             return (

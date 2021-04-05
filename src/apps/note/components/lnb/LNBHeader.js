@@ -49,7 +49,7 @@ const LNBHeader = ({ createNewChapter }) => {
 
   const onSubmitSearchBtn = async (e) => {
     e.preventDefault();
-    if (ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr)) return;
+    if (ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr.trim())) return;
     await ChapterStore.getSearchResult();
     inputRef.current.focus();
   }
