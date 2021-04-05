@@ -29,7 +29,7 @@ const TagHeader = () => {
 
   const onSubmitForm = e => {
     e.preventDefault();
-    TagStore.searchTag(value);
+    TagStore.searchTag(value.trim());
     inputRef.current.focus();
   };
 
