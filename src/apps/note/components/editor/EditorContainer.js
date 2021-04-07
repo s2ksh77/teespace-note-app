@@ -10,16 +10,21 @@ import {
   ReadModeIcon,
   ReadModeText,
   ReadModeSubText,
-  editorContentCSS
+  editorContentCSS,
 } from '../../styles/editorStyle';
 import { Button, Upload } from 'antd';
-import lockImg from '../../assets/lock.svg'
+import lockImg from '../../assets/lock.svg';
 import TagListContainer from '../tag/TagListContainer';
 import { Editor } from '@tinymce/tinymce-react';
 import FileLayout from './FileLayout';
 import GlobalVariable from '../../GlobalVariable';
-import { checkUrlValidation, isOpenLink } from '../common/validators.js'
-import { changeLinkDialog, changeButtonStyle, openLink, customAutoLinkPattern } from './customLink.js'
+import { checkUrlValidation, isOpenLink } from '../common/validators.js';
+import {
+  changeLinkDialog,
+  changeButtonStyle,
+  openLink,
+  customAutoLinkPattern,
+} from './customLink.js';
 import PageStore from '../../store/pageStore';
 import {
   downloadFile,
@@ -31,20 +36,27 @@ import {
   handleUnselect,
   handleUpload,
   openSaveDrive,
-  isValidFileNameLength
+  isValidFileNameLength,
 } from '../common/NoteFile';
 import { ComponentStore, WaplSearch } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import EditorStore from '../../store/editorStore';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
 window.addEventListener('beforeunload', function (e) {
   if (!PageStore.isReadMode()) PageStore.handleSave();
-})
+});
 
-const HandleUploader = (props) => {
+document.addEventListener('visibilitychange', () => {
+  if (!PageStore.isReadMode() && document.visibilityState === 'hidden') {
+    EditorStore.setVisiblityState('hidden');
+  }
+});
+
+const HandleUploader = props => {
   const { EditorStore, NoteStore } = useNoteStore();
   const uploaderRef = useRef('');
 
@@ -54,9 +66,14 @@ const HandleUploader = (props) => {
       let totalsize = 21474836480; // 20GB
 
       if (file === fileList[0]) {
-        const filtered = fileList.filter(file => isValidFileNameLength(file.name));
+        const filtered = fileList.filter(file =>
+          isValidFileNameLength(file.name),
+        );
         if (fileList.length !== filtered.length) {
-          if (filtered.length === 0) { NoteStore.setModalInfo('failUploadByFileNameLen'); return };
+          if (filtered.length === 0) {
+            NoteStore.setModalInfo('failUploadByFileNameLen');
+            return;
+          }
         }
         EditorStore.setTotalUploadLength(fileList.length); // 실패가 되어도 전체 선택한 length 필요
         EditorStore.setFileLength(filtered.length);
@@ -68,7 +85,7 @@ const HandleUploader = (props) => {
 
         if (filtered) {
           for (let i = 0; i < filtered.length; i++) {
-            uploadsize += filtered[i].size
+            uploadsize += filtered[i].size;
           }
           if (uploadsize > totalsize) {
             NoteStore.setModalInfo('sizefailUpload');
@@ -78,16 +95,27 @@ const HandleUploader = (props) => {
 
         for (let i = 0; i < filtered.length; i++) {
           (function (file) {
-            const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
-            const type = (fileExtension && EditorStore.uploadFileIsImage(fileExtension)) ? 'image' : 'file';
-            EditorStore.setUploadFileDTO({ fileName, fileExtension, fileSize }, file, type);
-          })(filtered[i])
+            const {
+              fileName,
+              fileExtension,
+              fileSize,
+            } = EditorStore.getFileInfo(file);
+            const type =
+              fileExtension && EditorStore.uploadFileIsImage(fileExtension)
+                ? 'image'
+                : 'file';
+            EditorStore.setUploadFileDTO(
+              { fileName, fileExtension, fileSize },
+              file,
+              type,
+            );
+          })(filtered[i]);
         }
         if (fileList.length !== filtered.length) {
           EditorStore.failCount = fileList.length - filtered.length;
           NoteStore.setModalInfo('failUploadByFileNameLen');
-        }
-        else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
+        } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength)
+          handleUpload();
       }
 
       return false;
@@ -96,16 +124,21 @@ const HandleUploader = (props) => {
     multiple: true,
   };
   useEffect(() => {
-    EditorStore.setUploaderRef(uploaderRef.current)
+    EditorStore.setUploaderRef(uploaderRef.current);
     return () => EditorStore.setUploaderRef('');
   }, []);
 
   return useObserver(() => (
-    <Upload {...uploadProps} accept={EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'}>
+    <Upload
+      {...uploadProps}
+      accept={
+        EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'
+      }
+    >
       <Button ref={uploaderRef} />
     </Upload>
-  ))
-}
+  ));
+};
 
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
@@ -120,16 +153,21 @@ const EditorContainer = () => {
 
   const [searchValue, setSearchValue] = useState('');
   const instanceOption = {
-    "accuracy": {
-      "value": "partially",
-      "limiters": []
+    accuracy: {
+      value: 'partially',
+      limiters: [],
     },
-    "done": function (count) {
+    done: function (count) {
       EditorStore.setSearchTotalCount(count);
-    }
+    },
   };
   const getEditorContent = content => {
-    PageStore.setContent(content);
+    if (
+      EditorStore.visiblityState === 'hidden' &&
+      document.visibilityState === 'visible'
+    )
+      return;
+    else PageStore.setContent(content);
   };
 
   const setNoteEditor = instance => {
@@ -138,9 +176,9 @@ const EditorContainer = () => {
     initialMode();
   };
 
-  const handleSearchInputChange = (value) => {
+  const handleSearchInputChange = value => {
     EditorStore.setSearchValue(value);
-  }
+  };
 
   const handleSearchEditor = () => {
     if (searchValue === EditorStore.searchValue) {
@@ -150,14 +188,17 @@ const EditorContainer = () => {
       setSearchValue(EditorStore.searchValue);
       instance.mark(EditorStore.searchValue, instanceOption);
       eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
-      if (EditorStore.searchTotalCount === 0) EditorStore.setSearchCurrentCount(0);
+      if (EditorStore.searchTotalCount === 0)
+        EditorStore.setSearchCurrentCount(0);
       else {
         EditorStore.setSearchCurrentCount(1);
-        eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+        eleArr[EditorStore.searchCurrentCount - 1].classList.add(
+          'searchselected',
+        );
       }
       EditorStore.setSearchResultState(true);
     }
-  }
+  };
 
   const handleClearSearch = () => {
     EditorStore.setSearchValue('');
@@ -165,45 +206,55 @@ const EditorContainer = () => {
     EditorStore.setIsSearch(false);
     EditorStore.setSearchResultState(false);
     instance.unmark();
-  }
+  };
   const handleSearchPrev = () => {
     if (EditorStore.searchTotalCount === 0) return;
     else {
       if (EditorStore.searchCurrentCount > 1) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
+          'searchselected',
+        );
         EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount - 1);
-      }
-      else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+      } else {
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
+          'searchselected',
+        );
         EditorStore.setSearchCurrentCount(EditorStore.searchTotalCount);
       }
       eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add(
+        'searchselected',
+      );
     }
-  }
+  };
 
   const handleSearchNext = () => {
     if (EditorStore.searchTotalCount === 0) return;
     else {
       if (EditorStore.searchCurrentCount < EditorStore.searchTotalCount) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
+          'searchselected',
+        );
         EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount + 1);
       } else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
+          'searchselected',
+        );
         EditorStore.setSearchCurrentCount(1);
       }
       eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add(
+        'searchselected',
+      );
     }
-  }
+  };
 
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       EditorStore.tinymce?.setMode('readonly');
       EditorStore.editor?.addEventListener('click', handleUnselect);
-    }
-    else {
+    } else {
       EditorStore.tinymce?.setMode('design');
       EditorStore.editor?.removeEventListener('click', handleUnselect);
     }
@@ -220,7 +271,7 @@ const EditorContainer = () => {
     }
     return () => {
       GlobalVariable.setEditorWrapper(null);
-    }
+    };
   }, [editorWrapperRef.current]);
 
   /*
@@ -232,8 +283,11 @@ const EditorContainer = () => {
   */
   useEffect(() => {
     // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
-    if (EditorStore.tinymce && PageStore.currentPageData.note_id
-      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
+    if (
+      EditorStore.tinymce &&
+      PageStore.currentPageData.note_id &&
+      PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent
+    ) {
       EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
     }
   }, [PageStore.currentPageData.note_id]);
@@ -252,20 +306,28 @@ const EditorContainer = () => {
       return () => {
         // console.log('clearInterval');
         clearInterval(id);
-      }
+      };
     }
   }, [PageStore.isReadMode()]);
 
   return useObserver(() => (
     <>
-      <EditorContainerWrapper ref={editorWrapperRef} isReadMode={PageStore.isReadMode()} isFile={EditorStore.isFile} isSearch={EditorStore.isSearch}>
+      <EditorContainerWrapper
+        ref={editorWrapperRef}
+        isReadMode={PageStore.isReadMode()}
+        isFile={EditorStore.isFile}
+        isSearch={EditorStore.isSearch}
+      >
         <EditorHeader />
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
             <ReadModeText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}</ReadModeText>
-            <ReadModeSubText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}</ReadModeSubText>
-          </ReadModeContainer>) : null}
+            <ReadModeSubText>
+              {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
+            </ReadModeSubText>
+          </ReadModeContainer>
+        ) : null}
         {EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <StyledWaplSearch
@@ -275,12 +337,13 @@ const EditorContainer = () => {
               onClear={handleClearSearch}
               onSearchPrev={handleSearchPrev}
               onSearchNext={handleSearchNext}
-              className=''
+              className=""
               isCountExist={EditorStore.searchResultState ? true : false}
               SearchNumber={EditorStore.searchCurrentCount}
               TotalNumber={EditorStore.searchTotalCount}
             />
-          </ReadModeContainer>) : null}
+          </ReadModeContainer>
+        ) : null}
         <Editor
           id="noteEditor"
           value={PageStore.currentPageData.note_content}
@@ -295,25 +358,32 @@ const EditorContainer = () => {
               editor.on('init', () => {
                 // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
                 // init에도 useEffect 내용 추가
-                if (PageStore.currentPageData.note_content &&
-                  (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)) {
-                  EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
+                if (
+                  PageStore.currentPageData.note_content &&
+                  PageStore.currentPageData.note_content !==
+                    EditorStore.tinymce.getContent
+                ) {
+                  EditorStore.tinymce.setContent(
+                    PageStore.currentPageData.note_content,
+                  );
                 }
                 editor.focus();
                 handleEditorContentsListener();
-              })
+              });
               editor.on('PostProcess', () => {
                 handleEditorContentsListener();
-              })
+              });
               // fired when a dialog has been opend
-              editor.on('OpenWindow', (e) => {
+              editor.on('OpenWindow', e => {
                 try {
                   // link dialog 열렸을 때
                   if (Object.keys(e.dialog.getData()).includes('url')) {
                     changeLinkDialog();
                   }
-                } catch (err) { console.log(err) }
-              })
+                } catch (err) {
+                  console.log(err);
+                }
+              });
               editor.on('NodeChange', function (e) {
                 if (e.element.children[0] !== undefined) {
                   if (e.element.children[0].tagName === 'IMG') {
@@ -322,10 +392,11 @@ const EditorContainer = () => {
                 }
                 // url invalid면 red highlighting
                 if (isAnchorElement(e.element)) {
-                  if (!isOpenLink(e.element.href)) {  // url이거나 basic plan 아니면서 메일인 경우
-                    e.element.classList.add('note-invalidUrl')
+                  if (!isOpenLink(e.element.href)) {
+                    // url이거나 basic plan 아니면서 메일인 경우
+                    e.element.classList.add('note-invalidUrl');
                   } else {
-                    e.element.classList.remove('note-invalidUrl')
+                    e.element.classList.remove('note-invalidUrl');
                   }
                 }
               });
@@ -334,37 +405,42 @@ const EditorContainer = () => {
                 handleUnselect();
               });
 
-              editor.on('keydown', (e) => {
+              editor.on('keydown', e => {
                 switch (e.code) {
-                  case "Tab":
+                  case 'Tab':
                     e.preventDefault();
                     e.stopPropagation();
                     if (e.shiftKey) editor.execCommand('Outdent');
                     else editor.execCommand('Indent');
                     break;
-                  case "Space":
+                  case 'Space':
                     const target = getAnchorElement();
                     if (target) {
-                      const curCaretPosition = editor.selection.getRng().endOffset;
+                      const curCaretPosition = editor.selection.getRng()
+                        .endOffset;
                       const _length = target.textContent.length;
                       // anchor tag앞에 caret 놓으면 getAnchorElement() === null
                       if (curCaretPosition === _length - 1) {
                         e.preventDefault();
                         e.stopPropagation();
-                        target.insertAdjacentHTML('afterend', '&nbsp;')
-                        editor.selection.setCursorLocation(target.nextSibling, 1);
+                        target.insertAdjacentHTML('afterend', '&nbsp;');
+                        editor.selection.setCursorLocation(
+                          target.nextSibling,
+                          1,
+                        );
                       }
                     }
                     break;
-                  default: break;
+                  default:
+                    break;
                 }
-              })
+              });
 
               // 정렬 그룹 버튼
               editor.ui.registry.addGroupToolbarButton('alignment', {
                 icon: 'align-center',
                 tooltip: t('NOTE_EDIT_PAGE_MENUBAR_35'),
-                items: 'alignleft aligncenter alignright alignjustify'
+                items: 'alignleft aligncenter alignright alignjustify',
               });
 
               editor.ui.registry.addButton('insertImage', {
@@ -374,10 +450,12 @@ const EditorContainer = () => {
                   EditorStore.setUploaderType('image');
                   EditorStore.uploaderRef.click();
                   // editor.editorUpload.uploadImages(handleFileBlob('image'))
-                }
+                },
               });
 
-              editor.ui.registry.addIcon('fileIcon', `
+              editor.ui.registry.addIcon(
+                'fileIcon',
+                `
                 <?xml version="1.0" encoding="UTF-8"?>
                 <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
@@ -385,7 +463,8 @@ const EditorContainer = () => {
                         <path d="M16.2531062,9.4970085 L9.68131059,16.1137765 C8.44870863,17.3548135 6.36532803,17.2775531 5.03811517,15.9412578 C3.71044964,14.6045067 3.63371435,12.506869 4.86631631,11.2658321 L12.5598106,3.51968926 C13.2837555,2.79079022 14.5101025,2.83947794 15.2927597,3.6274911 C16.075417,4.41550426 16.1233211,5.64978765 15.3993762,6.37868669 L8.93712984,12.8851558 C8.72184198,13.1019169 8.35343399,13.0827134 8.11533237,12.8429824 C7.87677808,12.6027956 7.85815776,12.2323223 8.07344562,12.0155612 L13.4137633,6.63869838 C13.818021,6.23167424 13.8231955,5.57696759 13.4253208,5.17637015 C13.0274461,4.77577271 12.3771893,4.78098258 11.9729316,5.18800672 L6.63261392,10.5648695 C5.6599822,11.5441572 5.7080297,13.1866593 6.74101052,14.2267091 C7.77353867,15.2663031 9.40487715,15.3146794 10.3775089,14.3353917 L16.8397553,7.82892259 C18.3214954,6.33704257 18.2441654,3.83164057 16.6670816,2.24376443 C15.0899978,0.655888293 12.6016244,0.578029109 11.1198843,2.06990913 L3.42638994,9.81605192 C1.43554145,11.8205243 1.5417026,15.1892806 3.66334199,17.3254389 C5.78452871,19.4611414 9.13084112,19.5684848 11.1216896,17.5640124 L17.6934852,10.9472444 C18.0976159,10.5403481 18.1027888,9.88584718 17.7050391,9.4853756 C17.3072894,9.08490401 16.6572369,9.09011224 16.2531062,9.4970085 Z" id="Fill-1" fill="#000000"></path>
                     </g>
                 </svg>
-              `);
+              `,
+              );
               editor.ui.registry.addMenuButton('insertfile', {
                 icon: 'fileIcon',
                 tooltip: t('NOTE_EDIT_PAGE_MENUBAR_24'),
@@ -396,7 +475,7 @@ const EditorContainer = () => {
                       text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
                       onAction: function () {
                         EditorStore.setIsDrive(true);
-                      }
+                      },
                     },
                     {
                       type: 'menuitem',
@@ -405,11 +484,11 @@ const EditorContainer = () => {
                         // editor.editorUpload.uploadImages(handleFileBlob('file'))
                         EditorStore.setUploaderType('file');
                         EditorStore.uploaderRef.click();
-                      }
-                    }
+                      },
+                    },
                   ];
                   callback(items);
-                }
+                },
               });
               var isAnchorElement = function (node) {
                 return node.nodeName.toLowerCase() === 'a' && node.href;
@@ -427,11 +506,11 @@ const EditorContainer = () => {
                 onSetup: function (api) {
                   // 텍스트 블록 선택했을 때 링크 말고 다른 menu도 떠서 블록선택 안했을 때만 보이게 하기
                   changeButtonStyle({
-                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_07'), 
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_07'),
                     idx: 0,
-                    count: 0
+                    count: 0,
                   });
-                }
+                },
               });
               editor.ui.registry.addToggleButton('customToggleUnLink', {
                 icon: 'unlink',
@@ -440,41 +519,51 @@ const EditorContainer = () => {
                 },
                 onSetup: function (api) {
                   changeButtonStyle({
-                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_08'), 
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_08'),
                     idx: 1,
-                    count: 0
+                    count: 0,
                   });
-                }
+                },
               });
               editor.ui.registry.addToggleButton('customToggleOpenLink', {
                 icon: 'new-tab',
                 onAction: function (_) {
-                  openLink({ isOnlyReadMode: false, url: getAnchorElement()?.href, target: '_blank' });
+                  openLink({
+                    isOnlyReadMode: false,
+                    url: getAnchorElement()?.href,
+                    target: '_blank',
+                  });
                 },
                 onSetup: function (api) {
-                  const targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
+                  const targetUrl = getAnchorElement()
+                    ? isOpenLink(getAnchorElement().href)
+                    : null;
                   if (!targetUrl) api.setDisabled(true);
                   changeButtonStyle({
-                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_09'), 
+                    str: t('NOTE_EDIT_PAGE_INSERT_LINK_09'),
                     idx: 2,
-                    count: 0
+                    count: 0,
                   });
-                }
+                },
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('textselection', {
-                predicate: function(node) {
-                  return  !editor.selection.isCollapsed() && !isAnchorElement(node);
+                predicate: function (node) {
+                  return (
+                    !editor.selection.isCollapsed() && !isAnchorElement(node)
+                  );
                 },
-                items: 'forecolor backcolor | bold italic underline strikethrough | link',
-                position: 'selection'
+                items:
+                  'forecolor backcolor | bold italic underline strikethrough | link',
+                position: 'selection',
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
                 predicate: isAnchorElement,
-                items: 'customToggleLink customToggleUnLink customToggleOpenLink',
+                items:
+                  'customToggleLink customToggleUnLink customToggleOpenLink',
                 position: 'selection',
-                scope: 'node'
+                scope: 'node',
               });
               editor.ui.registry.addButton('changeImage', {
                 icon: 'gallery',
@@ -482,7 +571,7 @@ const EditorContainer = () => {
                 onAction: function (_) {
                   EditorStore.setUploaderType('image');
                   EditorStore.uploaderRef.click();
-                }
+                },
               });
 
               // 이미지 다운로드/삭제
@@ -497,15 +586,22 @@ const EditorContainer = () => {
                       onAction: function () {
                         const node = editor.selection.getNode();
                         let fileName = node.getAttribute('data-name');
-                        let fileExtension
+                        let fileExtension;
                         let dotIndex = fileName.lastIndexOf('.');
                         if (dotIndex !== -1) {
-                          fileExtension = fileName.substring(dotIndex + 1, fileName.length);
+                          fileExtension = fileName.substring(
+                            dotIndex + 1,
+                            fileName.length,
+                          );
                           fileName = fileName.substring(0, dotIndex);
                         }
-                        EditorStore.setSaveFileMeta(node.id, fileExtension, fileName);
+                        EditorStore.setSaveFileMeta(
+                          node.id,
+                          fileExtension,
+                          fileName,
+                        );
                         openSaveDrive();
-                      }
+                      },
                     },
                     {
                       type: 'menuitem',
@@ -514,11 +610,11 @@ const EditorContainer = () => {
                         const id = editor.selection.getNode().id;
                         if (id) downloadFile(id);
                         else downloadFile();
-                      }
-                    }
+                      },
+                    },
                   ];
                   callback(items);
-                }
+                },
               });
               editor.ui.registry.addButton('deleteImage', {
                 icon: 'remove',
@@ -546,14 +642,15 @@ const EditorContainer = () => {
             quickbars_image_toolbar: false,
             // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
             quickbars_selection_toolbar: false,
-            imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
+            imagetools_toolbar:
+              'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: NoteStore.i18nLanguage,
             toolbar_drawer: false,
             // paste_data_images: true, // add images by drag and drop
             paste_postprocess: function (plugin, args) {
               // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
               EditorStore.tinymce?.undoManager?.add();
-              
+
               const target = args.node.textContent;
               if (checkUrlValidation(target)) {
                 let temp = document.createElement('a');
@@ -579,7 +676,7 @@ const EditorContainer = () => {
               //       const $pbr = document.createElement('p');
               //       $pbr.appendChild(node);
               //       parent.appendChild($pbr);
-              //     } 
+              //     }
               //     else if ((idx+1) === self.length) {
               //       temp.appendChild(node);
               //       parent.appendChild(temp);
@@ -593,7 +690,7 @@ const EditorContainer = () => {
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
-            content_style: editorContentCSS
+            content_style: editorContentCSS,
           }}
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
@@ -602,19 +699,19 @@ const EditorContainer = () => {
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         <TagListContainer />
-        <DriveAttachModal visible={EditorStore.isDrive}
+        <DriveAttachModal
+          visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}
           cancelCallback={driveCancelCb}
           roomId={NoteRepository.WS_ID}
         />
-        {EditorStore.isPreview
-          ? <FilePreview
+        {EditorStore.isPreview ? (
+          <FilePreview
             visible={EditorStore.isPreview}
             fileMeta={EditorStore.previewFileMeta}
             handleClose={() => EditorStore.setIsPreview(false)}
           />
-          : null
-        }
+        ) : null}
         <DriveSaveModal
           visible={EditorStore.isSaveDrive}
           successCallback={driveSaveSuccess}
@@ -632,15 +729,15 @@ export default EditorContainer;
 
 const StyledWaplSearch = styled(WaplSearch)`
   width: 100%;
-  background-color: #F7F4EF;
+  background-color: #f7f4ef;
   margin: 0 0.438rem;
   border-bottom: 0rem solid #17202b;
   border-radius: 0.375rem;
-  &:hover:not(:focus-within){
-    background-color: #F7F4EF !important;
+  &:hover:not(:focus-within) {
+    background-color: #f7f4ef !important;
   }
   &:focus-within {
-    background-color: #FFFFFF;
-    border: 1px solid #7B7671;
+    background-color: #ffffff;
+    border: 1px solid #7b7671;
   }
-`
+`;

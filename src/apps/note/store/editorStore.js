@@ -1,5 +1,5 @@
 import { observable, toJS } from 'mobx';
-import NoteRepository from './noteRepository'
+import NoteRepository from './noteRepository';
 import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
@@ -11,7 +11,7 @@ const EditorStore = observable({
   contents: '',
   tinymce: null,
   editor: null,
-  uploadFile: "",
+  uploadFile: '',
   imgElement: '',
   isFile: false,
   isDrive: false,
@@ -40,9 +40,9 @@ const EditorStore = observable({
   saveFileId: '',
   saveFileExt: '',
   saveFileName: '',
-  fileName: "",
-  fileSize: "",
-  fileExtension: "",
+  fileName: '',
+  fileSize: '',
+  fileExtension: '',
   uploadLength: '',
   totalUploadLength: '',
   isFileFilteredByNameLen: false,
@@ -56,8 +56,9 @@ const EditorStore = observable({
   isUploading: false,
   uploaderRef: '',
   uploaderType: '',
+  visiblityState: '',
   getTempTinymce() {
-    return this.tempTinymce
+    return this.tempTinymce;
   },
   setTempTinymce(editor) {
     this.tempTinymce = editor;
@@ -78,7 +79,7 @@ const EditorStore = observable({
     this.editor = el;
   },
   getEditorDOM() {
-    return this.editor
+    return this.editor;
   },
   setImgElement(element) {
     this.imgElement = element;
@@ -97,7 +98,7 @@ const EditorStore = observable({
       file_id: this.saveFileId,
       file_extension: this.saveFileExt,
       file_name: this.saveFileName,
-    }
+    };
     this.saveDriveMeta = saveMeta;
   },
   setIsAttatch(flag) {
@@ -117,7 +118,7 @@ const EditorStore = observable({
     this.isSearch = flag;
   },
   setSearchValue(value) {
-    this.searchValue = value
+    this.searchValue = value;
   },
   setSearchTotalCount(count) {
     this.searchTotalCount = count;
@@ -141,7 +142,7 @@ const EditorStore = observable({
     this.processCount = count;
   },
   setFailCount(count) {
-    this.failCount = count
+    this.failCount = count;
   },
   setIsUploading(isUploading) {
     this.isUploading = isUploading;
@@ -151,6 +152,9 @@ const EditorStore = observable({
   },
   setUploaderRef(ref) {
     this.uploaderRef = ref;
+  },
+  setVisiblityState(flag) {
+    this.visiblityState = flag;
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {
@@ -169,10 +173,22 @@ const EditorStore = observable({
     return dto;
   },
 
-  async uploadFileGW(file, file_name, file_extension, handleProcess, cancelSource) {
+  async uploadFileGW(
+    file,
+    file_name,
+    file_extension,
+    handleProcess,
+    cancelSource,
+  ) {
     const {
       data: { dto },
-    } = await NoteRepository.uploadFileGW(file, file_name, file_extension, handleProcess, cancelSource);
+    } = await NoteRepository.uploadFileGW(
+      file,
+      file_name,
+      file_extension,
+      handleProcess,
+      cancelSource,
+    );
     return dto;
   },
 
@@ -180,20 +196,19 @@ const EditorStore = observable({
     this.createUploadMeta(dto).then(dto => {
       if (dto.log_file_id) {
         this.createUploadStorage(dto.log_file_id, file).then(dto => {
-          if (dto.resultMsg === "Success") {
+          if (dto.resultMsg === 'Success') {
             const returnID = dto.storageFileInfoList[0].file_id;
             const returnIndex = index;
             return returnID;
           } else {
-
           }
-        })
+        });
       }
-    })
+    });
   },
   //storagemanager 없어서 임시
   setDownLoadFileId(fileId) {
-    this.downloadFileId = fileId
+    this.downloadFileId = fileId;
   },
   setSaveFileMeta(fileId, fileExt, fileName) {
     this.saveFileId = fileId;
@@ -210,16 +225,18 @@ const EditorStore = observable({
   async deleteFile(deleteId) {
     const {
       data: { dto },
-    } = await NoteRepository.deleteFile(deleteId)
+    } = await NoteRepository.deleteFile(deleteId);
     return dto;
   },
   async deleteAllFile() {
     await NoteRepository.deleteAllFile(this.fileList).then(response => {
-      const { data: { dto } } = response;
+      const {
+        data: { dto },
+      } = response;
       if (dto.resultMsg === 'Success') {
         ChapterStore.getNoteChapterList();
       }
-    })
+    });
   },
   setFileList(fileList) {
     this.fileList = fileList;
@@ -236,10 +253,14 @@ const EditorStore = observable({
   },
   // not image 파일 첨부 영역을 위함
   checkFile() {
-    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
+    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
     let checkFile;
     if (this.fileList) {
-      checkFile = this.fileList.filter(file => !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase()))
+      checkFile = this.fileList.filter(
+        file =>
+          !file.file_extension ||
+          !ImageExt.includes(file.file_extension.toLowerCase()),
+      );
     }
     if (checkFile === undefined) {
       this.setIsFile(false);
@@ -251,18 +272,21 @@ const EditorStore = observable({
       this.setIsFile(true);
       const { getUnixTime } = NoteUtil;
       // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
-      checkFile.sort((a, b) => getUnixTime(b['created_at']) - getUnixTime(a['created_at']));
+      checkFile.sort(
+        (a, b) => getUnixTime(b['created_at']) - getUnixTime(a['created_at']),
+      );
       this.setFileArray(checkFile);
-    };
+    }
   },
   isFileLength() {
-    const temp = this.tempFileLayoutList.filter(file => file.type === 'file').length;
+    const temp = this.tempFileLayoutList.filter(file => file.type === 'file')
+      .length;
     const uploaded = this.fileLayoutList.length;
     const totalLength = temp + uploaded;
     if (totalLength === 0) this.setIsFile(false);
   },
   uploadFileIsImage(ext) {
-    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png']
+    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
     return ImageExt.includes(ext.toLowerCase());
   },
   readerIsImage(type) {
@@ -271,7 +295,7 @@ const EditorStore = observable({
   getFileInfo(file) {
     let fileName = file.name;
     let dotIndex = fileName.lastIndexOf('.');
-    let fileExtension = "";
+    let fileExtension = '';
     let fileSize = file.size;
     // 확장자 없으면 file.type === ""
     if (file.type && dotIndex !== -1) {
@@ -284,7 +308,7 @@ const EditorStore = observable({
     this.selectFileIdx = idx;
   },
   setFileElement(element) {
-    this.selectFileElement = element
+    this.selectFileElement = element;
   },
   setDeleteFileConfig(id, name, index) {
     this.deleteFileId = id;
@@ -296,52 +320,51 @@ const EditorStore = observable({
     const gwMeta = {
       file_name: fileName,
       file_extension: fileExtension,
-      file_size: fileSize
-    }
+      file_size: fileSize,
+    };
     const uploadMeta = {
-      "dto":
-      {
-        "workspace_id": NoteRepository.WS_ID,
-        "channel_id": NoteRepository.chId,
-        "storageFileInfo": {
-          "user_id": NoteRepository.USER_ID,
-          "file_last_update_user_id": NoteRepository.USER_ID,
-          "file_id": '',
-          "file_name": fileName,
-          "file_extension": fileExtension,
-          "file_created_at": '',
-          "file_updated_at": '',
-          "file_size": fileSize,
-          "user_context_1": PageStore.currentPageId,
-          "user_context_2": '',
-          "user_context_3": ''
-        }
-      }
+      dto: {
+        workspace_id: NoteRepository.WS_ID,
+        channel_id: NoteRepository.chId,
+        storageFileInfo: {
+          user_id: NoteRepository.USER_ID,
+          file_last_update_user_id: NoteRepository.USER_ID,
+          file_id: '',
+          file_name: fileName,
+          file_extension: fileExtension,
+          file_created_at: '',
+          file_updated_at: '',
+          file_size: fileSize,
+          user_context_1: PageStore.currentPageId,
+          user_context_2: '',
+          user_context_3: '',
+        },
+      },
     };
     const tempMeta = {
-      "user_id": NoteRepository.USER_ID,
-      "file_last_update_user_id": NoteRepository.USER_ID,
-      "file_id": '',
-      "file_name": fileName,
-      "file_extension": fileExtension,
-      "file_created_at": '',
-      "file_updated_at": this.getTempTimeFormat(),
-      "file_size": fileSize,
-      "user_context_1": '',
-      "user_context_2": '',
-      "user_context_3": '',
-      "progress": 0,
-      "type": type,
-      "error": false
-    }
-    this.setTempFileList(tempMeta)
+      user_id: NoteRepository.USER_ID,
+      file_last_update_user_id: NoteRepository.USER_ID,
+      file_id: '',
+      file_name: fileName,
+      file_extension: fileExtension,
+      file_created_at: '',
+      file_updated_at: this.getTempTimeFormat(),
+      file_size: fileSize,
+      user_context_1: '',
+      user_context_2: '',
+      user_context_3: '',
+      progress: 0,
+      type: type,
+      error: false,
+    };
+    this.setTempFileList(tempMeta);
     const cancelToken = new API.CancelToken.source();
     const uploadArr = {
       gwMeta,
       uploadMeta,
       file,
       type,
-      cancelSource: cancelToken
+      cancelSource: cancelToken,
     };
     this.setUploadDTO(uploadArr);
   },
@@ -351,7 +374,7 @@ const EditorStore = observable({
   setTempFileList(target) {
     if (this.processCount !== this.uploadLength) {
       this.tempFileLayoutList.push(target);
-      this.processCount++
+      this.processCount++;
     } else this.processCount = 0;
     if (!this.isFile) this.setIsFile(true);
   },
@@ -369,16 +392,18 @@ const EditorStore = observable({
   getTempTimeFormat() {
     let date = new Date();
     let year = date.getFullYear();
-    let month = (1 + date.getMonth());
+    let month = 1 + date.getMonth();
     month = month >= 10 ? month : '0' + month;
     let day = date.getDate();
     day = day >= 10 ? day : '0' + day;
-    let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    let time =
+      date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return year + '-' + month + '-' + day + ' ' + time;
   },
   convertFileSize(bytes) {
     if (bytes == 0) return '0 Bytes';
-    let k = 1000, dm = 2,
+    let k = 1000,
+      dm = 2,
       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
       i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
@@ -392,17 +417,17 @@ const EditorStore = observable({
   },
   /**
    * drive에서 받은 file_id 들의 array
-   * @param {*} fileArray 
-  */
+   * @param {*} fileArray
+   */
   async createFileMeta(fileArray, noteId) {
     const createCopyArray = [];
     fileArray.forEach(file => {
       createCopyArray.push({
         note_id: noteId,
         file_id: file,
-        WS_ID: NoteRepository.WS_ID
-      })
-    })
+        WS_ID: NoteRepository.WS_ID,
+      });
+    });
     const {
       data: { dto },
     } = await NoteRepository.createFileMeta(createCopyArray);
@@ -410,39 +435,64 @@ const EditorStore = observable({
   },
   async storageFileDeepCopy(fileId, type) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.storageFileDeepCopy(fileId);
     if (dto.resultMsg === 'Success') {
-      const { file_id, file_name, file_extension, file_updated_at, file_size } = dto.storageFileInfoList[0];
-      const isImage = (type === 'image') ? true : false;
+      const {
+        file_id,
+        file_name,
+        file_extension,
+        file_updated_at,
+        file_size,
+      } = dto.storageFileInfoList[0];
+      const isImage = type === 'image' ? true : false;
       const tempMeta = {
-        "user_id": NoteRepository.USER_ID,
-        "file_last_update_user_id": NoteRepository.USER_ID,
-        "file_id": file_id,
-        "file_name": file_name,
-        "file_extension": file_extension,
-        "file_created_at": '',
-        "file_updated_at": file_updated_at,
-        "file_size": file_size,
-        "user_context_1": '',
-        "user_context_2": '',
-        "user_context_3": '',
-        "progress": 0,
-        "type": isImage ? 'image' : 'file',
-        "error": false
-      }
+        user_id: NoteRepository.USER_ID,
+        file_last_update_user_id: NoteRepository.USER_ID,
+        file_id: file_id,
+        file_name: file_name,
+        file_extension: file_extension,
+        file_created_at: '',
+        file_updated_at: file_updated_at,
+        file_size: file_size,
+        user_context_1: '',
+        user_context_2: '',
+        user_context_3: '',
+        progress: 0,
+        type: isImage ? 'image' : 'file',
+        error: false,
+      };
       this.setTempFileList(tempMeta);
-      if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
+      if (isImage)
+        EditorStore.createDriveElement(
+          'image',
+          file_id,
+          file_name + '.' + file_extension,
+        );
       return { id: file_id, type: type };
     } else {
       EditorStore.failCount++;
-    };
+    }
   },
   createDriveElement(type, fileId, fileName) {
     const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
     switch (type) {
       case 'image':
-        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
+        EditorStore.tinymce.execCommand(
+          'mceInsertContent',
+          false,
+          '<img id="' +
+            fileId +
+            '" src="' +
+            targetSRC +
+            '" data-name="' +
+            fileName +
+            '"data-mce-src="' +
+            targetSRC +
+            '"crossorigin="' +
+            '*' +
+            '"/>',
+        );
         break;
       case 'video':
         EditorStore.tinymce.insertContent(
@@ -452,7 +502,7 @@ const EditorStore = observable({
                 <source src=${targetSRC} />
               </video>
             </span>
-          </p>`
+          </p>`,
         );
         break;
       default:
@@ -463,20 +513,19 @@ const EditorStore = observable({
     let deleteArr = [];
     if (EditorStore.notSaveFileList.length > 0) {
       deleteArr = toJS(EditorStore.notSaveFileList).map(item => {
-        return EditorStore.deleteFile(item.file_id)
-      })
+        return EditorStore.deleteFile(item.file_id);
+      });
       try {
         await Promise.all(deleteArr).then(() => {
           EditorStore.notSaveFileList = [];
-          if (EditorStore.tempFileLayoutList.length > 0) EditorStore.setTempFileLayoutList([]);
-        })
+          if (EditorStore.tempFileLayoutList.length > 0)
+            EditorStore.setTempFileLayoutList([]);
+        });
       } catch (e) {
-
       } finally {
-
       }
     }
-  }
+  },
 });
 
 export default EditorStore;
