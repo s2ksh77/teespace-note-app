@@ -1490,7 +1490,7 @@ var NoteRepository = /*#__PURE__*/function () {
 var NoteRepository$1 = new NoteRepository();
 
 var GlobalVariable = {
-  apiKey: "d9c90nmok7sq2sil8caz8cwbm4akovrprt6tc67ac0y7my81",
+  apiKey: "90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3",
   editorWrapper: null,
   isBasicPlan: false,
   setEditorWrapper: function setEditorWrapper(ref) {
@@ -2455,7 +2455,7 @@ var EditorStore$1 = mobx.observable((_observable = {
   contents: '',
   tinymce: null,
   editor: null,
-  uploadFile: "",
+  uploadFile: '',
   imgElement: '',
   isFile: false,
   isDrive: false,
@@ -2484,9 +2484,9 @@ var EditorStore$1 = mobx.observable((_observable = {
   saveFileId: '',
   saveFileExt: '',
   saveFileName: '',
-  fileName: "",
-  fileSize: "",
-  fileExtension: "",
+  fileName: '',
+  fileSize: '',
+  fileExtension: '',
   uploadLength: '',
   totalUploadLength: '',
   isFileFilteredByNameLen: false,
@@ -2500,6 +2500,7 @@ var EditorStore$1 = mobx.observable((_observable = {
   isUploading: false,
   uploaderRef: '',
   uploaderType: '',
+  visiblityState: '',
   getTempTinymce: function getTempTinymce() {
     return this.tempTinymce;
   },
@@ -2597,6 +2598,9 @@ var EditorStore$1 = mobx.observable((_observable = {
   setUploaderRef: function setUploaderRef(ref) {
     this.uploaderRef = ref;
   },
+  setVisiblityState: function setVisiblityState(flag) {
+    this.visiblityState = flag;
+  },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2690,7 +2694,7 @@ var EditorStore$1 = mobx.observable((_observable = {
             this.createUploadMeta(dto).then(function (dto) {
               if (dto.log_file_id) {
                 _this.createUploadStorage(dto.log_file_id, file).then(function (dto) {
-                  if (dto.resultMsg === "Success") {
+                  if (dto.resultMsg === 'Success') {
                     var returnID = dto.storageFileInfoList[0].file_id;
                     return returnID;
                   }
@@ -2818,12 +2822,12 @@ var EditorStore$1 = mobx.observable((_observable = {
 }), _defineProperty(_observable, "getFileInfo", function getFileInfo(file) {
   var fileName = file.name;
   var dotIndex = fileName.lastIndexOf('.');
-  var fileExtension;
-  var fileSize = file.size;
+  var fileExtension = '';
+  var fileSize = file.size; // 확장자 없으면 file.type === ""
 
-  if (dotIndex !== -1) {
-    fileExtension = fileName.substring(dotIndex + 1, fileName.length);
-    fileName = fileName.substring(0, dotIndex);
+  if (file.type && dotIndex !== -1) {
+    fileExtension = fileName.slice(dotIndex + 1);
+    fileName = fileName.slice(0, dotIndex);
   }
 
   return {
@@ -2849,39 +2853,39 @@ var EditorStore$1 = mobx.observable((_observable = {
     file_size: fileSize
   };
   var uploadMeta = {
-    "dto": {
-      "workspace_id": NoteRepository$1.WS_ID,
-      "channel_id": NoteRepository$1.chId,
-      "storageFileInfo": {
-        "user_id": NoteRepository$1.USER_ID,
-        "file_last_update_user_id": NoteRepository$1.USER_ID,
-        "file_id": '',
-        "file_name": fileName,
-        "file_extension": fileExtension,
-        "file_created_at": '',
-        "file_updated_at": '',
-        "file_size": fileSize,
-        "user_context_1": PageStore.currentPageId,
-        "user_context_2": '',
-        "user_context_3": ''
+    dto: {
+      workspace_id: NoteRepository$1.WS_ID,
+      channel_id: NoteRepository$1.chId,
+      storageFileInfo: {
+        user_id: NoteRepository$1.USER_ID,
+        file_last_update_user_id: NoteRepository$1.USER_ID,
+        file_id: '',
+        file_name: fileName,
+        file_extension: fileExtension,
+        file_created_at: '',
+        file_updated_at: '',
+        file_size: fileSize,
+        user_context_1: PageStore.currentPageId,
+        user_context_2: '',
+        user_context_3: ''
       }
     }
   };
   var tempMeta = {
-    "user_id": NoteRepository$1.USER_ID,
-    "file_last_update_user_id": NoteRepository$1.USER_ID,
-    "file_id": '',
-    "file_name": fileName,
-    "file_extension": fileExtension,
-    "file_created_at": '',
-    "file_updated_at": this.getTempTimeFormat(),
-    "file_size": fileSize,
-    "user_context_1": '',
-    "user_context_2": '',
-    "user_context_3": '',
-    "progress": 0,
-    "type": type,
-    "error": false
+    user_id: NoteRepository$1.USER_ID,
+    file_last_update_user_id: NoteRepository$1.USER_ID,
+    file_id: '',
+    file_name: fileName,
+    file_extension: fileExtension,
+    file_created_at: '',
+    file_updated_at: this.getTempTimeFormat(),
+    file_size: fileSize,
+    user_context_1: '',
+    user_context_2: '',
+    user_context_3: '',
+    progress: 0,
+    type: type,
+    error: false
   };
   this.setTempFileList(tempMeta);
   var cancelToken = new teespaceCore.API.CancelToken.source();
@@ -2986,20 +2990,20 @@ var EditorStore$1 = mobx.observable((_observable = {
             _dto$storageFileInfoL = dto.storageFileInfoList[0], file_id = _dto$storageFileInfoL.file_id, file_name = _dto$storageFileInfoL.file_name, file_extension = _dto$storageFileInfoL.file_extension, file_updated_at = _dto$storageFileInfoL.file_updated_at, file_size = _dto$storageFileInfoL.file_size;
             isImage = type === 'image' ? true : false;
             tempMeta = {
-              "user_id": NoteRepository$1.USER_ID,
-              "file_last_update_user_id": NoteRepository$1.USER_ID,
-              "file_id": file_id,
-              "file_name": file_name,
-              "file_extension": file_extension,
-              "file_created_at": '',
-              "file_updated_at": file_updated_at,
-              "file_size": file_size,
-              "user_context_1": '',
-              "user_context_2": '',
-              "user_context_3": '',
-              "progress": 0,
-              "type": isImage ? 'image' : 'file',
-              "error": false
+              user_id: NoteRepository$1.USER_ID,
+              file_last_update_user_id: NoteRepository$1.USER_ID,
+              file_id: file_id,
+              file_name: file_name,
+              file_extension: file_extension,
+              file_created_at: '',
+              file_updated_at: file_updated_at,
+              file_size: file_size,
+              user_context_1: '',
+              user_context_2: '',
+              user_context_3: '',
+              progress: 0,
+              type: isImage ? 'image' : 'file',
+              error: false
             };
 
             _this3.setTempFileList(tempMeta);
@@ -3014,8 +3018,6 @@ var EditorStore$1 = mobx.observable((_observable = {
             EditorStore$1.failCount++;
 
           case 14:
-
-          case 15:
           case "end":
             return _context8.stop();
         }
@@ -3091,7 +3093,7 @@ var languageSet = {
   NOTE_PAGE_LIST_CREATE_N_CHPT_02: '다른 이름을 입력하세요.',
   NOTE_PAGE_LIST_CREATE_N_CHPT_03: '확인',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_01: '삭제할 수 없습니다.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911 \uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_DEL_PGE_CHPT_03: '페이지를 삭제하시겠습니까?',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
@@ -3101,11 +3103,11 @@ var languageSet = {
   NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
   NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_04: '저장',
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}} \uC73C\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}}(\uC73C)\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 "새 페이지 추가" 버튼을 클릭하세요.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 \'새 페이지 추가\' 버튼을 클릭하세요.',
   NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
   NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
   NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
@@ -3124,7 +3126,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
   NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_COMPLETE_02: '저장 안함',
+  NOTE_EDIT_PAGE_COMPLETE_02: '저장 안 함',
   NOTE_DELIVER_CONTEXT_MENU_01: '이름 변경',
   NOTE_DELIVER_CONTEXT_MENU_02: 'Mail로 전달',
   NOTE_DELIVER_CONTEXT_MENU_03: '내보내기',
@@ -3181,36 +3183,35 @@ var languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
   NOTE_EDIT_PAGE_ADD_TAG_01: '이미 있는 태그 이름입니다.',
   NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
-  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 "새 챕터" 버튼을 클릭하세요.',
+  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 \'새 챕터\' 버튼을 클릭하세요.',
   NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
   NOTE_EDIT_PAGE_MENUBAR_33: '내 PC에 저장',
   NOTE_EDIT_PAGE_MENUBAR_34: '다운로드',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "{{count}} \uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "{{count}}\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF 형식(.pdf)',
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
   NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.￦n취소 후 페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_INSERT_LINK_10: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_11: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_12: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: '',
-  NOTE_EDIT_PAGE_AUTO_SAVE_01: '',
-  NOTE_EDIT_PAGE_AUTO_SAVE_02: '',
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: "업로드 완료된 파일은 페이지에 저장됩니다.",
+  NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: '이메일의 경우, 앞에 \'mailto:\'를 붙여주세요.',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: '저장 중',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: '저장되었습니다.',
   NOTE_EDIT_PAGE_CANT_EDIT_01: '수정할 수 없습니다.',
   NOTE_ADD_TAGS_01: '태그 추가',
-  NOTE_ADD_TAGS_02: '읽기모드에서는 추가할 수 없습니다.',
+  NOTE_ADD_TAGS_02: '읽기 모드에서는 태그 추가를 할 수 없습니다.',
   NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
+  NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
+  NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
   CM_FORWARD: '다른 룸으로 전달',
   TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: '노트가 삭제되어 불러올 수 없습니다.',
   DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
-  NOTE_EXPORT_TITLE: '제목',
-  enterText: '텍스트를 입력해 주세요.',
-  enterLink: '링크를 입력해 주세요.',
-  saving: '저장중',
-  hasBeenSaved: '저장되었습니다.'
+  NOTE_EXPORT_TITLE: '제목'
 };
 
 var languageSet$1 = {
@@ -3221,7 +3222,7 @@ var languageSet$1 = {
   NOTE_PAGE_LIST_CMPNT_DEF_05: 'Search page or chapter',
   NOTE_PAGE_LIST_CMPNT_DEF_06: 'Tag',
   NOTE_PAGE_LIST_CMPNT_DEF_07: 'Page Received',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_01: 'Duplicate name exists',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_01: 'Duplicate name exists.',
   NOTE_PAGE_LIST_CREATE_N_CHPT_02: 'Enter another name.',
   NOTE_PAGE_LIST_CREATE_N_CHPT_03: 'OK',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_01: 'Unable to delete.',
@@ -3233,25 +3234,25 @@ var languageSet$1 = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages that belong to the chapter are also deleted.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
   NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click the Modify button to modify.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click Modify to edit this page.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_04: 'Save',
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}} pages moved to {{targetPage}}",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}} pages moved to {{targetPage}}.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}} chapters moved.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}} pages moved.",
   NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: 'No page exists.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click "Add New Page".',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click \'Add New Page\'.',
   NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(Unregistered Member)',
   NOTE_EDIT_PAGE_SEARCH_01: 'No search results found.',
   NOTE_EDIT_PAGE_SEARCH_02: 'Searching...',
-  NOTE_EDIT_PAGE_SEARCH_03: 'Search key word',
+  NOTE_EDIT_PAGE_SEARCH_03: 'Search keyword',
   NOTE_EDIT_PAGE_INSERT_LINK_01: 'Insert Link',
   NOTE_EDIT_PAGE_INSERT_LINK_02: 'Done',
   NOTE_EDIT_PAGE_INSERT_LINK_03: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_04: 'Text',
   NOTE_EDIT_PAGE_INSERT_LINK_05: 'Link',
   NOTE_EDIT_PAGE_INSERT_LINK_06: 'The URL is not valid.',
-  NOTE_EDIT_PAGE_INSERT_LINK_07: 'Modify',
-  NOTE_EDIT_PAGE_INSERT_LINK_08: 'Delete',
+  NOTE_EDIT_PAGE_INSERT_LINK_07: 'Edit Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_08: 'Delete Link',
   NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Attach from Drive',
   NOTE_EDIT_PAGE_ATTACH_FILE_02: 'Attach from My PC',
   NOTE_EDIT_PAGE_ATTACH_FILE_03: 'There is not enough storage space to attach the file.',
@@ -3261,7 +3262,7 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_COMPLETE_02: 'Not Save',
   NOTE_DELIVER_CONTEXT_MENU_01: 'Rename',
   NOTE_DELIVER_CONTEXT_MENU_02: 'Send Email',
-  NOTE_DELIVER_CONTEXT_MENU_03: 'Export to PDF',
+  NOTE_DELIVER_CONTEXT_MENU_03: 'Export',
   NOTE_DELIVER_CONTEXT_MENU_04: 'View Information',
   NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: 'Room',
   NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: 'Member',
@@ -3269,7 +3270,7 @@ var languageSet$1 = {
   NOTE_DELIVER_TO_ANOTHER_ROOM_01: 'Search nickname',
   NOTE_DELIVER_TO_ANOTHER_ROOM_02: 'Rooms',
   NOTE_DELIVER_TO_ANOTHER_ROOM_03: 'Friends',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_04: 'My Room',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_04: 'Me',
   NOTE_DELIVER_TO_ANOTHER_ROOM_05: 'Select people from the Friends/Rooms list.',
   NOTE_DELIVER_TO_ANOTHER_ROOM_06: 'Search room name or member',
   NOTE_DELIVER_TO_ANOTHER_ROOM_07: 'Send',
@@ -3302,49 +3303,48 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_MENUBAR_19: 'Outdent',
   NOTE_EDIT_PAGE_MENUBAR_20: 'Delimiter',
   NOTE_EDIT_PAGE_MENUBAR_21: 'Tables',
-  NOTE_EDIT_PAGE_MENUBAR_22: 'Enter the Current time',
+  NOTE_EDIT_PAGE_MENUBAR_22: 'Enter Current time',
   NOTE_EDIT_PAGE_MENUBAR_23: 'Insert Images/Videos',
   NOTE_EDIT_PAGE_MENUBAR_24: 'Attach Files',
   NOTE_EDIT_PAGE_MENUBAR_25: 'Rotate by 90 Degrees Counterclockwise',
   NOTE_EDIT_PAGE_MENUBAR_26: 'Rotate by 90 Degrees Clockwise',
   NOTE_EDIT_PAGE_MENUBAR_27: 'Flip Vertically',
   NOTE_EDIT_PAGE_MENUBAR_28: 'Flip Horizontally',
-  NOTE_EDIT_PAGE_MENUBAR_29: 'Edit Images',
-  NOTE_EDIT_PAGE_MENUBAR_30: 'Replace Images',
+  NOTE_EDIT_PAGE_MENUBAR_29: 'Edit Image',
+  NOTE_EDIT_PAGE_MENUBAR_30: 'Replace Image',
   NOTE_EDIT_PAGE_MENUBAR_31: 'Strikethrough',
   NOTE_EDIT_PAGE_INSERT_LINK_09: 'Move to Link',
   NOTE_EDIT_PAGE_ADD_TAG_01: 'The tag name already exists.',
   NOTE_PAGE_LIST_NO_CHPT_01: 'No chapter exists.',
-  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click "New Chapter".',
+  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click \'New Chapter\'.',
   NOTE_EDIT_PAGE_MENUBAR_32: 'Save to Drive',
   NOTE_EDIT_PAGE_MENUBAR_33: 'Save to My PC',
   NOTE_EDIT_PAGE_MENUBAR_34: 'Download',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "It is currently being modified by {{count}} people",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "It is currently being modified by {{count}}.",
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF Format(.pdf)',
   NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT Format(.txt)',
   NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.￦nDo you want to save and exit?',
-  NOTE_EDIT_PAGE_INSERT_LINK_10: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_11: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_12: '',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: '',
-  NOTE_EDIT_PAGE_AUTO_SAVE_01: '',
-  NOTE_EDIT_PAGE_AUTO_SAVE_02: '',
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
+  NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: 'Add \'mailto:\' in an email.',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: 'Saving…',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: 'Page saved.',
   NOTE_EDIT_PAGE_CANT_EDIT_01: 'Unable to Modify.',
   NOTE_ADD_TAGS_01: 'Add Tag',
-  NOTE_ADD_TAGS_02: 'Cannot be added in read mode.',
+  NOTE_ADD_TAGS_02: 'You cannot add tags in read mode.',
   NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
+  NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
+  NOTE_GUEST_02: 'This feature is not available to guests.',
   CM_FORWARD: 'Forward',
   TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: 'Failed to get the note because it has deleted.',
   DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
-  NOTE_EXPORT_TITLE: 'Title',
-  enterText: 'Enter a Text.',
-  enterLink: 'Enter a link.',
-  saving: 'Saving',
-  hasBeenSaved: 'Has Been Saved'
+  NOTE_EXPORT_TITLE: 'Title'
 };
 
 var resources = {
@@ -3381,7 +3381,7 @@ var PageStore = mobx.observable((_observable$1 = {
     saving: false,
     saved: false
   },
-  userNick: '',
+  displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -3422,11 +3422,9 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
   set_CurrentPageData: function set_CurrentPageData(_ref) {
-    var note_content = _ref.note_content,
-        user_name = _ref.user_name,
+    var user_name = _ref.user_name,
         modified_date = _ref.modified_date,
         USER_ID = _ref.USER_ID;
-    if (note_content) this.currentPageData.note_content = note_content;
     if (user_name) this.currentPageData.user_name = user_name;
     if (modified_date) this.currentPageData.modified_date = modified_date;
     if (USER_ID) this.currentPageData.USER_ID = USER_ID;
@@ -3881,7 +3879,7 @@ var PageStore = mobx.observable((_observable$1 = {
   renameNotePage: function renameNotePage(chapterId) {
     var _this3 = this;
 
-    this.renamePage(this.renameId, this.renameText, chapterId).then(function (dto) {
+    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(function (dto) {
       if (_this3.moveInfoMap.get(dto.note_id)) {
         _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -4111,7 +4109,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
             case 9:
               userProfile = _context10.sent;
-              if (userProfile) _this5.userNick = userProfile.nick;
+              if (userProfile) _this5.displayName = userProfile.displayName;
 
             case 11:
               _this5.setCurrentPageId(dto.note_id);
@@ -4284,7 +4282,7 @@ var PageStore = mobx.observable((_observable$1 = {
     return {
       dto: {
         note_id: this.currentPageData.note_id,
-        note_title: this.noteTitle,
+        note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore$1.tinymce.getContent({
           format: "text"
@@ -4317,13 +4315,11 @@ var PageStore = mobx.observable((_observable$1 = {
         saved: true
       });
 
-      var note_content = dto.note_content,
-          user_name = dto.user_name,
+      var user_name = dto.user_name,
           modified_date = dto.modified_date,
           USER_ID = dto.USER_ID;
 
       _this11.set_CurrentPageData({
-        note_content: note_content,
         user_name: user_name,
         modified_date: modified_date,
         USER_ID: USER_ID
@@ -4972,7 +4968,7 @@ var ChapterStore = mobx.observable({
       }, _callee9);
     }))();
   },
-  getSearchList: function getSearchList() {
+  getSearchList: function getSearchList(searchStr) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var _yield$NoteRepository10, dto;
 
@@ -4981,7 +4977,7 @@ var ChapterStore = mobx.observable({
           switch (_context10.prev = _context10.next) {
             case 0:
               _context10.next = 2;
-              return NoteRepository$1.getSearchList(ChapterStore.searchStr);
+              return NoteRepository$1.getSearchList(searchStr || ChapterStore.searchStr);
 
             case 2:
               _yield$NoteRepository10 = _context10.sent;
@@ -5297,24 +5293,26 @@ var ChapterStore = mobx.observable({
     if (!chapter || chapter.children.length === 0) return null;
     return (_chapter$children$ = chapter.children[0]) === null || _chapter$children$ === void 0 ? void 0 : _chapter$children$.id;
   },
-  createNoteChapter: function createNoteChapter(chapterTitle, chapterColor) {
+  createNoteChapter: function createNoteChapter() {
     var _this9 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var notbookList;
+      var trimmedChapterTitle, notbookList;
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
           switch (_context14.prev = _context14.next) {
             case 0:
-              _context14.next = 2;
-              return _this9.createChapter(chapterTitle, chapterColor);
+              trimmedChapterTitle = _this9.chapterNewTitle.trim();
+              _this9.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
+              _context14.next = 4;
+              return _this9.createChapter(_this9.chapterNewTitle, _this9.isNewChapterColor);
 
-            case 2:
+            case 4:
               notbookList = _context14.sent;
-              _context14.next = 5;
+              _context14.next = 7;
               return _this9.getNoteChapterList();
 
-            case 5:
+            case 7:
               _this9.setCurrentChapterId(notbookList.id);
 
               PageStore.setCurrentPageId(notbookList.children[0].id);
@@ -5326,7 +5324,7 @@ var ChapterStore = mobx.observable({
 
               PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this9.currentChapterId)]]));
 
-            case 11:
+            case 13:
             case "end":
               return _context14.stop();
           }
@@ -5358,7 +5356,7 @@ var ChapterStore = mobx.observable({
   renameNoteChapter: function renameNoteChapter(color) {
     var _this11 = this;
 
-    this.renameChapter(this.renameId, this.renameText, color).then(function (dto) {
+    this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
       if (_this11.moveInfoMap.get(dto.id)) _this11.moveInfoMap.get(dto.id).item.text = dto.text;
 
       _this11.getNoteChapterList();
@@ -5501,7 +5499,7 @@ var ChapterStore = mobx.observable({
 
               _this14.setIsLoadingSearchResult(true);
 
-              _this14.getSearchList().then(function (dto) {
+              _this14.getSearchList(_this14.searchStr.trim()).then(function (dto) {
                 _this14.setSearchResult({
                   chapter: dto.chapterList,
                   page: dto.pageList
@@ -5533,7 +5531,7 @@ var ChapterStore = mobx.observable({
               // await this.getSearchResult();
 
 
-              _this15.getSearchList().then(function (dto) {
+              _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
                 if (dto.pageList && dto.pageList.length > 0) {
                   dto.pageList.map(function (page) {
                     _this15.getChapterInfoList(page.parent_notebook).then(function (dto) {
@@ -5838,6 +5836,7 @@ var NoteMeta = {
         });
         break;
 
+      case 'uploadingFiles':
       case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -5863,24 +5862,6 @@ var NoteMeta = {
         });
         eventList.push(function (e) {
           e.stopPropagation();
-          if (PageStore.isNewPage) PageStore.handleNoneEdit();else {
-            if (EditorStore$1.notSaveFileList.length > 0) {
-              EditorStore$1.notSaveFileDelete().then(function () {
-                var _EditorStore$tinymce2;
-
-                PageStore.noteNoneEdit(PageStore.currentPageId);
-                (_EditorStore$tinymce2 = EditorStore$1.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.clear();
-              });
-            } else {
-              var _EditorStore$tinymce3;
-
-              PageStore.noteNoneEdit(PageStore.currentPageId);
-              (_EditorStore$tinymce3 = EditorStore$1.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.undoManager.clear();
-            }
-          }
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
           NoteStore.setModalInfo(null);
         });
         break;
@@ -5894,7 +5875,6 @@ var NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'fileOpenMail':
-      case 'uploadingFiles':
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setModalInfo(null);
@@ -5939,14 +5919,12 @@ var NoteMeta = {
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
-      case 'uploadingFiles':
         return [defaultBtn1];
 
+      case 'uploadingFiles':
       case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
-        }), _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('NOTE_EDIT_PAGE_COMPLETE_02')
         }), defaultBtn2];
 
       default:
@@ -5967,12 +5945,14 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
         dialogType.btns = this.setBtns('delete');
         break;
@@ -5996,6 +5976,7 @@ var NoteMeta = {
         break;
 
       case 'editCancel':
+        dialogType.type = 'error';
         dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
         dialogType.btns = this.setBtns(type);
         break;
@@ -6049,8 +6030,8 @@ var NoteMeta = {
         break;
 
       case 'uploadingFiles':
-        dialogType.title = '업로드 중인 파일이 있습니다.'; // 아직 기능이 완벽하게 구현 안된거라 i18n은 기능 구현 후
-
+        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
     }
 
@@ -6634,7 +6615,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n  position:relative;\n  user-select: none;\n  margin: 0rem 0.81rem;\n  padding: 0rem;\n  display: flex;\n  line-height: 100% !important;\n  font-size: 0.8125rem;\n  width: auto;\n  height: 2.81rem;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:relative;\n  user-select: none;\n  margin: 0rem 0.81rem;\n  padding: 0rem;\n  display: flex;\n  line-height: 100% !important;\n  font-size: 0.8125rem;\n  width: auto;\n  height: 2.81rem;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #eeedeb;\n"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -6644,7 +6625,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n  overflow-y: auto;\n  overflow-x: hidden;\n  height: 100%;\n  display:flex;\n  flex-direction: column;\n"]);
+  var data = _taggedTemplateLiteral(["\n  overflow-y: auto;\n  overflow-x: hidden;\n  height: 100%;\n  display:flex;\n  flex-direction: column;\n  border-top: 1px solid #DDD9D4;\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -6713,7 +6694,7 @@ function _templateObject17() {
 }
 
 function _templateObject16() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  background-color: ", "\n  line-height: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  &::placeholder {\n    color: #C9C4BE;\n  }\n  background-color: ", "\n"]);
 
   _templateObject16 = function _templateObject16() {
     return data;
@@ -6733,7 +6714,7 @@ function _templateObject15() {
 }
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", "\n  border: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 1px solid transparent;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", ";\n  border: ", ";\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -6743,7 +6724,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: ", ";\n  height: 1.88rem;\n  padding-left: 12px;\n  padding-right: 12px;\n  line-height: 100%;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:3rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: fit-content;\n  height: 1.88rem;\n  padding-left: 12px;\n  padding-right: 12px;\n  line-height: 100%;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:4.5rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -6753,7 +6734,7 @@ function _templateObject13() {
 }
 
 function _templateObject12$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;\n  height: 3rem;\n  padding: 0 0.75rem 0 1rem;\n  align-items: center;\n  border-bottom: 1px solid #dadada;\n  box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;\n  height: 3rem;\n  padding: 0 0.75rem 0 1rem;\n  align-items: center;\n  box-sizing: border-box;\n"]);
 
   _templateObject12$1 = function _templateObject12() {
     return data;
@@ -6886,13 +6867,11 @@ var ModifiedTime = styled__default['default'].span(_templateObject9$1());
 var EditorSearchIconDiv = styled__default['default'].div(_templateObject10$1());
 var EditorSearchIcon = styled__default['default'].img(_templateObject11$1());
 var LnbTitleCover = styled__default['default'].div(_templateObject12$1());
-var LnbTitleNewButton = styled__default['default'].button(_templateObject13(), function (props) {
-  return props.language === 'en' ? 'fit-content' : '4.5rem';
-});
+var LnbTitleNewButton = styled__default['default'].button(_templateObject13());
 var LnbTitleSearchContainer = styled__default['default'].form(_templateObject14(), function (props) {
-  return props.isSearch ? "#FFFFFF;" : "#F7F4EF";
+  return props.isSearch ? "#FFFFFF" : "#F7F4EF";
 }, function (props) {
-  return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
+  return props.isSearch ? "1px solid #7B7671" : "1px solid transparent";
 });
 var LnbTitleSearchIcon = styled__default['default'].button(_templateObject15());
 var LnbTitleSearchInput = styled__default['default'].input(_templateObject16(), function (props) {
@@ -7252,7 +7231,7 @@ function _templateObject5$2() {
 }
 
 function _templateObject4$2() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: calc(100% - 3rem);\n  overflow: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 1.25rem 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: calc(100% - 3rem);\n  overflow: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 1.25rem 0.75rem;\n  border-top: 1px solid #DDD9D4;\n"]);
 
   _templateObject4$2 = function _templateObject4() {
     return data;
@@ -7272,7 +7251,7 @@ function _templateObject3$2() {
 }
 
 function _templateObject2$2() {
-  var data = _taggedTemplateLiteral(["\n  height: ", ";\n  width: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  padding: 0 0.75rem 0 1rem;\n  box-sizing: border-box;\n  border-bottom: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 3rem;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  padding: 0 0.75rem 0 1rem;\n  box-sizing: border-box;\n"]);
 
   _templateObject2$2 = function _templateObject2() {
     return data;
@@ -7293,11 +7272,7 @@ function _templateObject$2() {
 var HeaderButtonContainer = styled__default['default'].div(_templateObject$2(), function (props) {
   return props.layoutState === "collapse" && props.targetLayout === "LNB" ? "0.75rem" : "0rem";
 });
-var ContentHeaderCover = styled__default['default'].div(_templateObject2$2(), function (props) {
-  return props.borderBottom ? "3rem" : "2.938rem";
-}, function (props) {
-  return props.borderBottom ? "1px solid #dadada" : "";
-});
+var ContentHeaderCover = styled__default['default'].div(_templateObject2$2());
 var PreBtnWrapper = styled__default['default'].div(_templateObject3$2(), function (props) {
   return props.show ? "flex" : "none";
 });
@@ -7436,7 +7411,7 @@ function _templateObject12$3() {
 }
 
 function _templateObject11$3() {
-  var data = _taggedTemplateLiteral(["\n  position:absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);\n"]);
 
   _templateObject11$3 = function _templateObject11() {
     return data;
@@ -7446,7 +7421,7 @@ function _templateObject11$3() {
 }
 
 function _templateObject10$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  min-height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #dadada;\n  margin: 0 0.81rem;\n  order: ", ";\n  color: ", ";\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  position: relative;\n  width: calc(100% - 1.62rem);\n  height: 2.81rem;\n  min-height: 2.81rem;\n  padding: 0rem 0.81rem 0rem 0rem;\n  font-size: 0.81rem;\n  cursor: pointer;\n  border-bottom: 0.0625rem solid #eeedeb;\n  margin: 0 0.81rem;\n  order: ", ";\n  color: ", ";\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n"]);
 
   _templateObject10$3 = function _templateObject10() {
     return data;
@@ -7526,7 +7501,7 @@ function _templateObject3$3() {
 }
 
 function _templateObject2$3() {
-  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: calc(100% - 0px);\n  height: 2.94rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: calc(100% - 0px);\n  height: 2.81rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n"]);
 
   _templateObject2$3 = function _templateObject2() {
     return data;
@@ -7741,7 +7716,7 @@ var LNBHeader = function LNBHeader(_ref) {
             case 0:
               e.preventDefault();
 
-              if (!(ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr))) {
+              if (!(ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr.trim()))) {
                 _context2.next = 3;
                 break;
               }
@@ -7792,7 +7767,6 @@ var LNBHeader = function LNBHeader(_ref) {
       src: img$5,
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
-      language: NoteStore.i18nLanguage,
       "data-btn": 'noteNewChapterBtn',
       onClick: handleNewChapterClick
     }, t('NOTE_PAGE_LIST_CMPNT_DEF_01')), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchContainer, {
@@ -7916,7 +7890,7 @@ function _templateObject4$4() {
 }
 
 function _templateObject3$4() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(48%) sepia(1%) saturate(1703%) hue-rotate(349deg) brightness(96%) contrast(88%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);\n"]);
 
   _templateObject3$4 = function _templateObject3() {
     return data;
@@ -7926,7 +7900,7 @@ function _templateObject3$4() {
 }
 
 function _templateObject2$4() {
-  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  margin: 4px 0 4px 0;\n  align-items: center;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #dadada;\n  &:hover .ellipsisBtn {\n    visibility: visible;\n  }\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active {\n    background-color: #FFFFFF;\n    border-radius: unset;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: 2.81rem;\n  display: flex;\n  margin: 4px 0 4px 0;\n  align-items: center;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #eeedeb;\n  &:hover .ellipsisBtn {\n    visibility: visible;\n  }\n  &:hover {\n    background-color: #FAF8F7;\n    border-radius: 0.31rem;\n  }\n  &:active {\n    background-color: #FFFFFF;\n    border-radius: unset;\n  }\n"]);
 
   _templateObject2$4 = function _templateObject2() {
     return data;
@@ -8236,7 +8210,7 @@ var LNBSearchResult = function LNBSearchResult() {
     var _ChapterStore$searchR, _ChapterStore$searchR2, _ChapterStore$searchR3, _ChapterStore$searchR4, _ChapterStore$searchR5, _ChapterStore$searchR6;
 
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, ((_ChapterStore$searchR = ChapterStore.searchResult) === null || _ChapterStore$searchR === void 0 ? void 0 : _ChapterStore$searchR["chapter"]) === null && ((_ChapterStore$searchR2 = ChapterStore.searchResult) === null || _ChapterStore$searchR2 === void 0 ? void 0 : _ChapterStore$searchR2["page"]) === null ? /*#__PURE__*/React__default['default'].createElement(SearchResultNotFound, {
-      searchStr: ChapterStore.searchStr
+      searchStr: ChapterStore.searchStr.trim()
     }) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, (_ChapterStore$searchR3 = ChapterStore.searchResult) === null || _ChapterStore$searchR3 === void 0 ? void 0 : (_ChapterStore$searchR4 = _ChapterStore$searchR3["chapter"]) === null || _ChapterStore$searchR4 === void 0 ? void 0 : _ChapterStore$searchR4.map(function (chapter) {
       return /*#__PURE__*/React__default['default'].createElement(ChapterSearchResult, {
         key: chapter.id,
@@ -8335,14 +8309,14 @@ var textCondition = function textCondition(value) {
     message: ""
   } : {
     result: false,
-    message: i18n.t('enterText')
+    message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_11')
   };
 };
 
 var urlSaveCondition = function urlSaveCondition(_value) {
   if (!isFilled(_value)) return {
     result: false,
-    message: i18n.t('enterLink')
+    message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_12')
   };
 
   if (!GlobalVariable.isBasicPlan) {
@@ -8353,7 +8327,7 @@ var urlSaveCondition = function urlSaveCondition(_value) {
 
     if (isValidMail(_value)) return {
       result: false,
-      message: "이메일의 경우, 앞에 'mailto:'를 붙여주세요."
+      message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_13')
     }; // mailto 붙여달라고 메시지 띄우기
   }
 
@@ -8479,28 +8453,31 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
 */
 
 
-var changeButtonStyle = function changeButtonStyle(idx, count) {
+var changeButtonStyle = function changeButtonStyle(_ref) {
   var _toolbar$childNodes;
 
-  var linkToolbarStr = [i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_07'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_08'), i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_09')];
+  var str = _ref.str,
+      idx = _ref.idx,
+      count = _ref.count;
   var toolbar = document.querySelector('.tox-pop__dialog div.tox-toolbar__group');
   toolbar.classList.add('link-toolbar');
   var target = (_toolbar$childNodes = toolbar.childNodes) === null || _toolbar$childNodes === void 0 ? void 0 : _toolbar$childNodes[idx];
 
   if (toolbar && target) {
     var strNode = document.createElement('div');
-    strNode.textContent = linkToolbarStr[idx];
+    strNode.textContent = str;
+    strNode.classList.add('link-toolbar-btn');
     target.appendChild(strNode);
   } else if (count >= 50) return;else {
-    setTimeout(changeButtonStyle, 50, idx, count + 1);
+    setTimeout(changeButtonStyle, 50, str, idx, count + 1);
   }
 }; // customToggleOpenLink에서는 isOnlyReadMode가 false : 수정모드에서 열려야 하는 메뉴라서
 // 읽기모드에서 a tag 클릭으로 들어온 경우 isOnlyReadMode : true
 
-var openLink = function openLink(_ref) {
-  var isOnlyReadMode = _ref.isOnlyReadMode,
-      url = _ref.url,
-      target = _ref.target;
+var openLink = function openLink(_ref2) {
+  var isOnlyReadMode = _ref2.isOnlyReadMode,
+      url = _ref2.url,
+      target = _ref2.target;
   if (isOnlyReadMode && !PageStore.isReadMode()) return;
   if (!url) return;
 
@@ -8925,7 +8902,7 @@ var getChapterHtml = /*#__PURE__*/function () {
 
             if (noteList.length > 0) {
               noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><br>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
+                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><p><br></p>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
               });
             } else alert('하위에 속한 페이지가 없습니다.');
 
@@ -8959,7 +8936,7 @@ var getPageHtml = /*#__PURE__*/function () {
             _yield$NoteRepository2 = _context7.sent;
             dto = _yield$NoteRepository2.data.dto;
             PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br>").concat(dto.note_content);
+            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><p><br></p>").concat(dto.note_content);
             return _context7.abrupt("return", html);
 
           case 8:
@@ -10441,24 +10418,10 @@ var LNBContainer = function LNBContainer() {
               return _context.abrupt("return");
 
             case 4:
-              if (ChapterStore.chapterNewTitle) {
-                _context.next = 10;
-                break;
-              }
+              _context.next = 6;
+              return ChapterStore.createNoteChapter();
 
-              ChapterStore.setChapterTitle(t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
-              _context.next = 8;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
-
-            case 8:
-              _context.next = 12;
-              break;
-
-            case 10:
-              _context.next = 12;
-              return ChapterStore.createNoteChapter(ChapterStore.chapterNewTitle, ChapterStore.isNewChapterColor);
-
-            case 12:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -10599,7 +10562,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n    border:0 !important;\n  }\n  .custom-dialog-btns #custom-link-save {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns #custom-link-save:hover {\n    background-color: #4C535D !important;\n  }\n  .custom-dialog-btns #custom-link-save.disabled-btn {\n    background-color: #CCCCCC !important;\n  }\n  .custom-dialog-btns #custom-link-cancel {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .custom-dialog-btns #custom-link-cancel:hover {\n    border:1px solid #232D3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:18rem !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n    border:0 !important;\n  }\n  .custom-dialog-btns #custom-link-save {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns #custom-link-save:hover {\n    background-color: #4C535D !important;\n  }\n  .custom-dialog-btns #custom-link-save.disabled-btn {\n    background-color: #CCCCCC !important;\n  }\n  .custom-dialog-btns #custom-link-cancel {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .custom-dialog-btns #custom-link-cancel:hover {\n    border:1px solid #232D3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .link-toolbar button .link-toolbar-btn {\n    margin-left: 0.5rem;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n\n  .tox .tox-dialog.custom-link-dialog {\n    max-width: 24.38rem;\n    border: 0;\n    border-radius: 0.25rem;\n    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);\n  }\n  \n  .tox .tox-dialog__header.custom-dialog-header {\n    position: relative;\n    padding: 0;\n    height: 2.69rem;\n    justify-content: center;\n  }\n\n  .tox .tox-dialog__title.custom-dialog-title {\n    font-family: 'Noto Sans KR';\n    font-weight: 500;\n    font-size: 0.88rem;\n  }\n\n  .tox .tox-dialog__header.custom-dialog-header .tox-button {\n    position: absolute;\n    right: 0;\n    top: 0;\n    padding: 0;\n    width: 2.69rem;\n    height: 2.69rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n  }\n  \n  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {\n    background-color: transparent;\n    border-color: transparent;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {\n    padding: 1rem;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {\n    font-size: 0.81rem;\n    font-weight: 500;\n  }\n\n .tox .tox-dialog.custom-link-dialog .tox-textfield {\n  border-color: #d0ccc7;\n }\n .tox .tox-dialog.custom-link-dialog .tox-textfield:focus {\n   border-color: #7B7671;\n }\n\n .tox .tox-dialog__footer.custom-dialog-footer {\n   padding: 0;\n   border-top: 1px solid #DDD9D4;\n }\n\n .tox .custom-dialog-btns.tox-button {\n   border-color: transparent;\n   width: 4.5rem;\n   height: 1.88rem;\n }\n\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -10837,9 +10800,9 @@ var EditorHeader = function EditorHeader() {
       autoComplete: "off"
     })), /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer2, null, PageStore.saveStatus.saving ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, {
       isSaving: true
-    }, t('saving')) : PageStore.saveStatus.saved ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, null, t('hasBeenSaved')) : (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
+    }, t('NOTE_EDIT_PAGE_AUTO_SAVE_01')) : PageStore.saveStatus.saved ? /*#__PURE__*/React__default['default'].createElement(AutoSaveMsg, null, t('NOTE_EDIT_PAGE_AUTO_SAVE_02')) : (!PageStore.isReadMode() || PageStore.otherEdit) && /*#__PURE__*/React__default['default'].createElement(EditingImg, {
       src: img$h
-    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.nick ? userStore.myProfile.nick : NoteStore.userName : PageStore.userNick ? PageStore.userNick : PageStore.currentPageData.user_name), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
+    }), /*#__PURE__*/React__default['default'].createElement(ModifiedUser, null, !PageStore.isReadMode() ? userStore.myProfile.displayName : PageStore.displayName), /*#__PURE__*/React__default['default'].createElement(ModifiedTime, null, PageStore.modifiedDate), /*#__PURE__*/React__default['default'].createElement(EditorSearchIconDiv, {
       onClick: handleSearchEditor
     }, /*#__PURE__*/React__default['default'].createElement(EditorSearchIcon, {
       src: img
@@ -10847,8 +10810,18 @@ var EditorHeader = function EditorHeader() {
   });
 };
 
-function _templateObject35$1() {
+function _templateObject36$1() {
   var data = _taggedTemplateLiteral(["\n  width: 0.56rem;\n  height: 0.56rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
+
+  _templateObject36$1 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject35$1() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: top;\n"]);
 
   _templateObject35$1 = function _templateObject35() {
     return data;
@@ -10858,7 +10831,7 @@ function _templateObject35$1() {
 }
 
 function _templateObject34$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: top;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: flex;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n  margin-left: auto;\n"]);
 
   _templateObject34$1 = function _templateObject34() {
     return data;
@@ -10868,7 +10841,7 @@ function _templateObject34$1() {
 }
 
 function _templateObject33$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: flex;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n  margin-left: auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
 
   _templateObject33$1 = function _templateObject33() {
     return data;
@@ -10878,7 +10851,7 @@ function _templateObject33$1() {
 }
 
 function _templateObject32$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
 
   _templateObject32$1 = function _templateObject32() {
     return data;
@@ -10888,7 +10861,7 @@ function _templateObject32$1() {
 }
 
 function _templateObject31$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
 
   _templateObject31$1 = function _templateObject31() {
     return data;
@@ -10898,7 +10871,7 @@ function _templateObject31$1() {
 }
 
 function _templateObject30$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject30$1 = function _templateObject30() {
     return data;
@@ -10908,7 +10881,7 @@ function _templateObject30$1() {
 }
 
 function _templateObject29$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
 
   _templateObject29$1 = function _templateObject29() {
     return data;
@@ -10918,7 +10891,7 @@ function _templateObject29$1() {
 }
 
 function _templateObject28$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
 
   _templateObject28$1 = function _templateObject28() {
     return data;
@@ -10938,7 +10911,7 @@ function _templateObject27$1() {
 }
 
 function _templateObject26$1() {
-  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
 
   _templateObject26$1 = function _templateObject26() {
     return data;
@@ -10948,7 +10921,7 @@ function _templateObject26$1() {
 }
 
 function _templateObject25$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
+  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"]);
 
   _templateObject25$1 = function _templateObject25() {
     return data;
@@ -10958,7 +10931,7 @@ function _templateObject25$1() {
 }
 
 function _templateObject24$1() {
-  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject24$1 = function _templateObject24() {
     return data;
@@ -10968,7 +10941,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
@@ -10978,7 +10951,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
@@ -10988,7 +10961,7 @@ function _templateObject22$1() {
 }
 
 function _templateObject21$1() {
-  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
 
   _templateObject21$1 = function _templateObject21() {
     return data;
@@ -10998,7 +10971,7 @@ function _templateObject21$1() {
 }
 
 function _templateObject20$2() {
-  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
+  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
 
   _templateObject20$2 = function _templateObject20() {
     return data;
@@ -11008,7 +10981,7 @@ function _templateObject20$2() {
 }
 
 function _templateObject19$2() {
-  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
   _templateObject19$2 = function _templateObject19() {
     return data;
@@ -11018,7 +10991,7 @@ function _templateObject19$2() {
 }
 
 function _templateObject18$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-bottom: 1px solid #DDD9D4;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
 
   _templateObject18$3 = function _templateObject18() {
     return data;
@@ -11028,7 +11001,7 @@ function _templateObject18$3() {
 }
 
 function _templateObject17$3() {
-  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-top: 0px solid #dadada;\n  border-bottom: 1px solid #dadada;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
 
   _templateObject17$3 = function _templateObject17() {
     return data;
@@ -11038,7 +11011,7 @@ function _templateObject17$3() {
 }
 
 function _templateObject16$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
 
   _templateObject16$3 = function _templateObject16() {
     return data;
@@ -11048,7 +11021,7 @@ function _templateObject16$3() {
 }
 
 function _templateObject15$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.63rem;\n  color: #A3A3A3;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject15$3 = function _templateObject15() {
     return data;
@@ -11058,7 +11031,7 @@ function _templateObject15$3() {
 }
 
 function _templateObject14$3() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 0.63rem;\n  color: #A3A3A3;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject14$3 = function _templateObject14() {
     return data;
@@ -11068,7 +11041,7 @@ function _templateObject14$3() {
 }
 
 function _templateObject13$3() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 16px;\n"]);
 
   _templateObject13$3 = function _templateObject13() {
     return data;
@@ -11078,7 +11051,7 @@ function _templateObject13$3() {
 }
 
 function _templateObject12$5() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 16px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid #DDD9D4;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
   _templateObject12$5 = function _templateObject12() {
     return data;
@@ -11088,7 +11061,7 @@ function _templateObject12$5() {
 }
 
 function _templateObject11$6() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid rgb(218, 218, 218);\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject11$6 = function _templateObject11() {
     return data;
@@ -11098,7 +11071,7 @@ function _templateObject11$6() {
 }
 
 function _templateObject10$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 12.9rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject10$6 = function _templateObject10() {
     return data;
@@ -11108,7 +11081,7 @@ function _templateObject10$6() {
 }
 
 function _templateObject9$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 10.1rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject9$6 = function _templateObject9() {
     return data;
@@ -11118,7 +11091,7 @@ function _templateObject9$6() {
 }
 
 function _templateObject8$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 8.8rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject8$6 = function _templateObject8() {
     return data;
@@ -11128,7 +11101,7 @@ function _templateObject8$6() {
 }
 
 function _templateObject7$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 6rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject7$6 = function _templateObject7() {
     return data;
@@ -11138,7 +11111,7 @@ function _templateObject7$6() {
 }
 
 function _templateObject6$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 13rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;\n    }\n  "]);
 
   _templateObject6$6 = function _templateObject6() {
     return data;
@@ -11148,7 +11121,7 @@ function _templateObject6$6() {
 }
 
 function _templateObject5$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      height: calc(100% - 8.8rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{\n      border-left: 0.1px solid transparent;\n    }\n  "]);
 
   _templateObject5$6 = function _templateObject5() {
     return data;
@@ -11188,7 +11161,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$8() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  flex-direction:column;\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  flex-direction:column;\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n    border-color: #DDD9D4;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$8 = function _templateObject() {
     return data;
@@ -11197,57 +11170,59 @@ function _templateObject$8() {
   return data;
 }
 var EditorContainerWrapper = styled__default['default'].div(_templateObject$8(), function (props) {
-  return props.mode === "false" && props.isSearch === "false" && styled.css(_templateObject2$7());
+  return !props.isReadMode && !props.isSearch && styled.css(_templateObject2$7());
 }, function (props) {
-  return props.mode === "false" && props.isSearch === "true" && styled.css(_templateObject3$7());
+  return !props.isReadMode && props.isSearch && styled.css(_templateObject3$7());
 }, function (props) {
-  return props.mode === "true" && styled.css(_templateObject4$7());
+  return props.isReadMode && styled.css(_templateObject4$7());
 }, function (props) {
-  return props.isFile === "false" && props.mode === "true" && styled.css(_templateObject5$6());
+  return !props.isReadMode && styled.css(_templateObject5$6());
 }, function (props) {
-  return props.isFile === "true" && props.mode === "true" && styled.css(_templateObject6$6());
+  return !props.isFile && props.isReadMode && styled.css(_templateObject6$6());
 }, function (props) {
-  return props.isFile === "false" && props.mode === "false" && props.isSearch === "false" && styled.css(_templateObject7$6());
+  return props.isFile && props.isReadMode && styled.css(_templateObject7$6());
 }, function (props) {
-  return props.isFile === "false" && props.mode === "false" && props.isSearch === "true" && styled.css(_templateObject8$6());
+  return !props.isFile && !props.isReadMode && !props.isSearch && styled.css(_templateObject8$6());
 }, function (props) {
-  return props.isFile === "true" && props.mode === "false" && props.isSearch === "false" && styled.css(_templateObject9$6());
+  return !props.isFile && !props.isReadMode && props.isSearch && styled.css(_templateObject9$6());
 }, function (props) {
-  return props.isFile === "true" && props.mode === "false" && props.isSearch === "true" && styled.css(_templateObject10$6());
+  return props.isFile && !props.isReadMode && !props.isSearch && styled.css(_templateObject10$6());
+}, function (props) {
+  return props.isFile && !props.isReadMode && props.isSearch && styled.css(_templateObject11$6());
 });
-var ReadModeContainer = styled__default['default'].div(_templateObject11$6());
-var ReadModeIcon = styled__default['default'].img(_templateObject12$5());
-var ReadModeText = styled__default['default'].span(_templateObject13$3());
-var ReadModeSubText = styled__default['default'].span(_templateObject14$3());
-var FoldBtn = styled__default['default'].div(_templateObject15$3(), function (props) {
+var ReadModeContainer = styled__default['default'].div(_templateObject12$5());
+var ReadModeIcon = styled__default['default'].img(_templateObject13$3());
+var ReadModeText = styled__default['default'].span(_templateObject14$3());
+var ReadModeSubText = styled__default['default'].span(_templateObject15$3());
+var FoldBtn = styled__default['default'].div(_templateObject16$3(), function (props) {
   return props.show ? "flex" : "none";
 }, function (props) {
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
 });
-var FoldBtnImg = styled__default['default'].img(_templateObject16$3());
-var FileBodyLayout = styled__default['default'].div(_templateObject17$3());
-var FileBody = styled__default['default'].div(_templateObject18$3(), function (props) {
-  return props.closable ? styled.css(_templateObject19$2()) : styled.css(_templateObject20$2());
+var FoldBtnImg = styled__default['default'].img(_templateObject17$3());
+var FileBodyLayout = styled__default['default'].div(_templateObject18$3());
+var FileBody = styled__default['default'].div(_templateObject19$2(), function (props) {
+  return props.closable ? styled.css(_templateObject20$2()) : styled.css(_templateObject21$1());
 });
-var FileContent = styled__default['default'].div(_templateObject21$1());
-var FileDownloadIcon = styled__default['default'].div(_templateObject22$1());
-var FileErrorIcon = styled__default['default'].div(_templateObject23$1());
-var ProgressWrapper = styled__default['default'].div(_templateObject24$1());
-var FileExtensionIcon = styled__default['default'].div(_templateObject25$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
+var FileContent = styled__default['default'].div(_templateObject22$1());
+var FileDownloadIcon = styled__default['default'].div(_templateObject23$1());
+var FileErrorIcon = styled__default['default'].div(_templateObject24$1());
+var ProgressWrapper = styled__default['default'].div(_templateObject25$1());
+var FileExtensionIcon = styled__default['default'].div(_templateObject26$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 
-var FileDownloadBtn = styled__default['default'].img(_templateObject26$1());
-var FileExtensionBtn = styled__default['default'].img(_templateObject27$1());
-var FileData = styled__default['default'].div(_templateObject28$1(), function (props) {
+var FileDownloadBtn = styled__default['default'].img(_templateObject27$1());
+var FileExtensionBtn = styled__default['default'].img(_templateObject28$1());
+var FileData = styled__default['default'].div(_templateObject29$1(), function (props) {
   return props.mode === "true" ? "" : "9.5rem";
 });
-var FileDataName = styled__default['default'].div(_templateObject29$1());
-var FileName = styled__default['default'].div(_templateObject30$1());
-var FileDataTime = styled__default['default'].div(_templateObject31$1());
-var FileTime = styled__default['default'].div(_templateObject32$1());
-var FileProgress = styled__default['default'].div(_templateObject33$1());
-var FileClose = styled__default['default'].div(_templateObject34$1());
-var FileCloseBtn = styled__default['default'].img(_templateObject35$1());
-var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::selection {\n    background: #35A57A; /* WebKit/Blink Browsers */\n    color:#ffffff;\n  }\n  ::-moz-selection {\n    background: #35A57A; /* Gecko Browsers */\n    color:#ffffff;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n";
+var FileDataName = styled__default['default'].div(_templateObject30$1());
+var FileName = styled__default['default'].div(_templateObject31$1());
+var FileDataTime = styled__default['default'].div(_templateObject32$1());
+var FileTime = styled__default['default'].div(_templateObject33$1());
+var FileProgress = styled__default['default'].div(_templateObject34$1());
+var FileClose = styled__default['default'].div(_templateObject35$1());
+var FileCloseBtn = styled__default['default'].img(_templateObject36$1());
+var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::selection {\n    background: #35A57A; /* WebKit/Blink Browsers */\n    color:#ffffff;\n  }\n  ::-moz-selection {\n    background: #35A57A; /* Gecko Browsers */\n    color:#ffffff;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n  .tox-notification { display: none !important }\n";
 
 const img$i = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
@@ -11959,7 +11934,7 @@ var FileLayout = function FileLayout() {
 };
 
 function _templateObject$a() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  background-color: #F7F4EF;\n  margin: 0 0.438rem;\n  border-bottom: 0rem solid #17202b;\n  border-radius: 0.375rem;\n  &:hover:not(:focus-within){\n    background-color: #F7F4EF !important;\n  }\n  &:focus-within {\n    background-color: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  background-color: #f7f4ef;\n  margin: 0 0.438rem;\n  border-bottom: 0rem solid #17202b;\n  border-radius: 0.375rem;\n  &:hover:not(:focus-within) {\n    background-color: #f7f4ef !important;\n  }\n  &:focus-within {\n    background-color: #ffffff;\n    border: 1px solid #7b7671;\n  }\n"]);
 
   _templateObject$a = function _templateObject() {
     return data;
@@ -11971,6 +11946,11 @@ function _templateObject$a() {
 
 window.addEventListener('beforeunload', function (e) {
   if (!PageStore.isReadMode()) PageStore.handleSave();
+});
+document.addEventListener('visibilitychange', function () {
+  if (!PageStore.isReadMode() && document.visibilityState === 'hidden') {
+    EditorStore$1.setVisiblityState('hidden');
+  }
 });
 
 var HandleUploader = function HandleUploader(props) {
@@ -11992,7 +11972,7 @@ var HandleUploader = function HandleUploader(props) {
                 totalsize = 21474836480; // 20GB
 
                 if (!(file === fileList[0])) {
-                  _context.next = 21;
+                  _context.next = 20;
                   break;
                 }
 
@@ -12001,7 +11981,7 @@ var HandleUploader = function HandleUploader(props) {
                 });
 
                 if (!(fileList.length !== filtered.length)) {
-                  _context.next = 9;
+                  _context.next = 8;
                   break;
                 }
 
@@ -12014,23 +11994,21 @@ var HandleUploader = function HandleUploader(props) {
                 return _context.abrupt("return");
 
               case 8:
-
-              case 9:
                 EditorStore.setTotalUploadLength(fileList.length); // 실패가 되어도 전체 선택한 length 필요
 
                 EditorStore.setFileLength(filtered.length);
 
                 if (!(EditorStore.uploadLength > 30)) {
-                  _context.next = 14;
+                  _context.next = 13;
                   break;
                 }
 
                 NoteStore.setModalInfo('failUpload');
                 return _context.abrupt("return");
 
-              case 14:
+              case 13:
                 if (!filtered) {
-                  _context.next = 19;
+                  _context.next = 18;
                   break;
                 }
 
@@ -12039,14 +12017,14 @@ var HandleUploader = function HandleUploader(props) {
                 }
 
                 if (!(uploadsize > totalsize)) {
-                  _context.next = 19;
+                  _context.next = 18;
                   break;
                 }
 
                 NoteStore.setModalInfo('sizefailUpload');
                 return _context.abrupt("return");
 
-              case 19:
+              case 18:
                 for (_i = 0; _i < filtered.length; _i++) {
                   (function (file) {
                     var _EditorStore$getFileI = EditorStore.getFileInfo(file),
@@ -12068,10 +12046,10 @@ var HandleUploader = function HandleUploader(props) {
                   NoteStore.setModalInfo('failUploadByFileNameLen');
                 } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
 
-              case 21:
+              case 20:
                 return _context.abrupt("return", false);
 
-              case 22:
+              case 21:
               case "end":
                 return _context.stop();
             }
@@ -12127,17 +12105,17 @@ var EditorContainer = function EditorContainer() {
       setSearchValue = _useState2[1];
 
   var instanceOption = {
-    "accuracy": {
-      "value": "partially",
-      "limiters": []
+    accuracy: {
+      value: 'partially',
+      limiters: []
     },
-    "done": function done(count) {
+    done: function done(count) {
       EditorStore.setSearchTotalCount(count);
     }
   };
 
   var getEditorContent = function getEditorContent(content) {
-    PageStore.setContent(content);
+    if (EditorStore.visiblityState === 'hidden' && document.visibilityState === 'visible') return;else PageStore.setContent(content);
   };
 
   var setNoteEditor = function setNoteEditor(instance) {
@@ -12271,9 +12249,9 @@ var EditorContainer = function EditorContainer() {
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(EditorContainerWrapper, {
       ref: editorWrapperRef,
-      mode: PageStore.isReadMode().toString(),
-      isFile: EditorStore.isFile.toString(),
-      isSearch: EditorStore.isSearch.toString()
+      isReadMode: PageStore.isReadMode(),
+      isFile: EditorStore.isFile,
+      isSearch: EditorStore.isSearch
     }, /*#__PURE__*/React__default['default'].createElement(EditorHeader, null), PageStore.isReadMode() && !EditorStore.isSearch ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
       style: {
         display: 'flex'
@@ -12353,13 +12331,13 @@ var EditorContainer = function EditorContainer() {
           });
           editor.on('keydown', function (e) {
             switch (e.code) {
-              case "Tab":
+              case 'Tab':
                 e.preventDefault();
                 e.stopPropagation();
                 if (e.shiftKey) editor.execCommand('Outdent');else editor.execCommand('Indent');
                 break;
 
-              case "Space":
+              case 'Space':
                 var target = getAnchorElement();
 
                 if (target) {
@@ -12431,7 +12409,11 @@ var EditorContainer = function EditorContainer() {
             },
             onSetup: function onSetup(api) {
               // 텍스트 블록 선택했을 때 링크 말고 다른 menu도 떠서 블록선택 안했을 때만 보이게 하기
-              if (editor.selection.isCollapsed()) changeButtonStyle(0, 0);
+              changeButtonStyle({
+                str: t('NOTE_EDIT_PAGE_INSERT_LINK_07'),
+                idx: 0,
+                count: 0
+              });
             }
           });
           editor.ui.registry.addToggleButton('customToggleUnLink', {
@@ -12440,7 +12422,11 @@ var EditorContainer = function EditorContainer() {
               editor.execCommand('Unlink');
             },
             onSetup: function onSetup(api) {
-              if (editor.selection.isCollapsed()) changeButtonStyle(1, 0);
+              changeButtonStyle({
+                str: t('NOTE_EDIT_PAGE_INSERT_LINK_08'),
+                idx: 1,
+                count: 0
+              });
             }
           });
           editor.ui.registry.addToggleButton('customToggleOpenLink', {
@@ -12457,8 +12443,20 @@ var EditorContainer = function EditorContainer() {
             onSetup: function onSetup(api) {
               var targetUrl = getAnchorElement() ? isOpenLink(getAnchorElement().href) : null;
               if (!targetUrl) api.setDisabled(true);
-              if (editor.selection.isCollapsed()) changeButtonStyle(2, 0);
+              changeButtonStyle({
+                str: t('NOTE_EDIT_PAGE_INSERT_LINK_09'),
+                idx: 2,
+                count: 0
+              });
             }
+          }); // l-click하면 나오는 메뉴
+
+          editor.ui.registry.addContextToolbar('textselection', {
+            predicate: function predicate(node) {
+              return !editor.selection.isCollapsed() && !isAnchorElement(node);
+            },
+            items: 'forecolor backcolor | bold italic underline strikethrough | link',
+            position: 'selection'
           }); // l-click하면 나오는 메뉴
 
           editor.ui.registry.addContextToolbar('link-toolbar', {
@@ -12534,9 +12532,9 @@ var EditorContainer = function EditorContainer() {
         quickbars_insert_toolbar: false,
         quickbars_image_toolbar: false,
         // 링크 있는 부분을 textSelection하면 에디터 설정상 링크 메뉴3개가 추가돼서 맨 뒤 링크메뉴 제거함
-        quickbars_selection_toolbar: 'forecolor backcolor | bold italic underline strikethrough',
+        quickbars_selection_toolbar: false,
         imagetools_toolbar: 'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
-        language: NoteStore.i18nLanguage === 'ko-KR' ? 'ko_KR' : NoteStore.i18nLanguage,
+        language: NoteStore.i18nLanguage,
         toolbar_drawer: false,
         // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
@@ -12569,7 +12567,7 @@ var EditorContainer = function EditorContainer() {
           //       const $pbr = document.createElement('p');
           //       $pbr.appendChild(node);
           //       parent.appendChild($pbr);
-          //     } 
+          //     }
           //     else if ((idx+1) === self.length) {
           //       temp.appendChild(node);
           //       parent.appendChild(temp);
@@ -12826,7 +12824,7 @@ var TagHeader = function TagHeader() {
 
   var onSubmitForm = function onSubmitForm(e) {
     e.preventDefault();
-    TagStore.searchTag(value);
+    TagStore.searchTag(value.trim());
     inputRef.current.focus();
   };
 
@@ -13349,8 +13347,11 @@ var NoteApp = function NoteApp(_ref) {
   };
 
   React.useEffect(function () {
-    NoteStore.setI18nLanguage(language);
-    if (language) i18n.changeLanguage(language);
+    if (!language) return;
+    var editorLanguage = language === 'en' ? language : 'ko_KR';
+    NoteStore.setI18nLanguage(editorLanguage);
+    if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
+    i18n.changeLanguage(language);
   }, [language]);
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
