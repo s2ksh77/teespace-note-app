@@ -4,10 +4,10 @@ import autobind from 'autobind-decorator';
 @autobind
 class ChapterModel {
   @observable
-  USER_ID: string;
+  userId: string;
 
   @observable
-  children: Array<String>;
+  pageList: Array<String>;
 
   @observable
   color: string;
@@ -16,37 +16,37 @@ class ChapterModel {
   id: string;
 
   @observable
-  modified_date: string;
+  modDate: string;
 
   @observable
-  note_channel_id: string;
+  chId: string;
 
   @observable
-  shared_date: string;
+  sharedDate: string;
 
   @observable
-  shared_room_name: string;
+  shareRoomId: string;
 
   @observable
-  shared_user_id: string;
+  shareUserId: string;
 
   @observable
-  target_channel_id: string;
+  targetChId: string;
 
   @observable
-  target_workspace_id: string;
+  targetRoomId: string;
 
   @observable
-  text: string;
+  name: string;
 
   @observable
   type: string;
 
   @observable
-  user_name: string;
+  userName: string;
 
   @observable
-  ws_id: string;
+  roomId: string;
 
   constructor(data: Object) {
     this.setValues(data);
@@ -59,7 +59,7 @@ class ChapterModel {
 
   @action
   setRoomId(data: string) {
-    this.ws_id = data;
+    this.roomId = data;
   }
 
   @action
@@ -69,12 +69,12 @@ class ChapterModel {
 
   @action
   setUserId(data: string) {
-    this.USER_ID = data;
+    this.userId = data;
   }
 
   @action
   setChildren(data: Array<String>) {
-    this.children = data;
+    this.pageList = data;
   }
 
   @action
@@ -89,48 +89,124 @@ class ChapterModel {
 
   @action
   setModifiedDate(data: string) {
-    this.modified_date = data;
+    this.modDate = data;
   }
 
   @action
   setNoteChannelId(data: string) {
-    this.note_channel_id = data;
+    this.chId = data;
   }
 
   @action
   setSharedDate(data: string) {
-    this.shared_date = data;
+    this.sharedDate = data;
   }
 
   @action
   setSharedRoomName(data: string) {
-    this.shared_room_name = data;
+    this.shareRoomId = data;
   }
 
   @action
   setSharedUserId(data: string) {
-    this.shared_user_id = data;
+    this.shareUserId = data;
   }
 
   @action
   setTargetChId(data: string) {
-    this.target_channel_id = data;
+    this.targetChId = data;
   }
 
   @action
   setTargetRoomId(data: string) {
-    this.target_workspace_id = data;
+    this.targetRoomId = data;
   }
 
   @action
   setChapterText(data: string) {
-    this.text = data;
+    this.name = data;
   }
 
   @action
   setUserName(data: string) {
-    this.user_name = data;
+    this.userName = data;
   }
 }
 
 export default ChapterModel;
+
+export const convertChapterObjToModel = (
+  obj: $Shape<ChapterInfo>,
+): ?$Shape<ChapterInfo> => {
+  if (obj.USER_ID) {
+    return {
+      userId: obj.USER_ID,
+    };
+  }
+  if (obj.children) {
+    return {
+      pageList: obj.children,
+    };
+  }
+  if (obj.color) {
+    return {
+      color: obj.color,
+    };
+  }
+  if (obj.id) {
+    return {
+      id: obj.id,
+    };
+  }
+  if (obj.modified_date) {
+    return {
+      modDate: obj.modified_date,
+    };
+  }
+  if (obj.note_channel_id) {
+    return {
+      chId: obj.note_channel_id,
+    };
+  }
+  if (obj.shared_date) {
+    return {
+      sharedDate: obj.shared_date,
+    };
+  }
+  if (obj.shared_room_name) {
+    return {
+      shareRoomId: obj.shared_room_name,
+    };
+  }
+  if (obj.shared_user_id) {
+    return {
+      shareUserId: obj.shared_user_id,
+    };
+  }
+  if (obj.target_channel_id) {
+    return {
+      targetChId: obj.target_channel_id,
+    };
+  }
+  if (obj.target_workspace_id) {
+    return {
+      targetRoomId: obj.target_workspace_id,
+    };
+  }
+  if (obj.text) {
+    return {
+      name: obj.text,
+    };
+  }
+  if (obj.user_name) {
+    return {
+      userName: obj.user_name,
+    };
+  }
+  if (obj.ws_id) {
+    return {
+      roomId: obj.ws_id,
+    };
+  }
+  return '';
+};

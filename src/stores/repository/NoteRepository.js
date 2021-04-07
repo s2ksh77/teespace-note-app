@@ -1,16 +1,47 @@
 import { API } from 'teespace-core';
-import ChapterModel from '../model/ChapterModel';
+import ChapterModel, { convertChapterObjToModel } from '../model/ChapterModel';
+import { convertPageObjToModel } from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
 // @flow
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 
+const convertChapterObj = (dtoObj: ChapterInfoDTO): ChapterInfo => {
+  const result: $Shape<ChapterInfo> = {};
+
+  Object.keys(dtoObj).forEach(key => {
+    if ({}.hasOwnProperty.call(dtoObj, key)) {
+      const obj = {};
+      obj[key] = dtoObj[key];
+      Object.assign(result, convertChapterObjToModel({ ...obj }));
+    }
+  });
+  return result;
+};
+const convertPageObj = (dtoObj: PageInfoDTO): PageInfo => {
+  const result: $Shape<PageInfo> = {};
+
+  Object.keys(dtoObj).forEach(key => {
+    if ({}.hasOwnProperty.call(dtoObj, key)) {
+      const obj = {};
+      obj[key] = dtoObj[key];
+      Object.assign(result, convertPageObjToModel({ ...obj }));
+    }
+  });
+  return result;
+};
+
 class NoteRepository {
   async getChapterList(): Promise<?Array<$Shape<ChapterInfo>>> {
     try {
-      return await API.get(
+      const response = await API.get(
         `note-api/noteChapter?action=List&note_channel_id=${NoteStore.chId}`,
       );
+      return response
+        ? response.data.dto.notbookList.map(chapter =>
+            convertChapterObj(chapter),
+          )
+        : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -18,9 +49,10 @@ class NoteRepository {
 
   async getNoteInfoList(noteId: string): Promise<?Array<$Shape<PageInfo>>> {
     try {
-      return await API.Get(
-        `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${this.chId}`,
+      const response = await API.Get(
+        `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${NoteStore.chId}`,
       );
+      return response ? convertPageObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }

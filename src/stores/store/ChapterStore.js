@@ -1,19 +1,18 @@
 import { action, computed, observable } from 'mobx';
-import ChapterModel from '../model/ChapterModel';
+import ChapterModel, { convertModelToDto } from '../model/ChapterModel';
+import PageModel from '../model/PageModel';
 import NoteRepository from '../repository/NoteRepository';
 // @flow
 class ChapterStore {
   chapterList: [];
 
   async fetchChapterList() {
-    const {
-      data: {
-        dto: { notbookList },
-      },
-    } = await NoteRepository.getChapterList();
-    console.log(notbookList);
-    this.chapterList = notbookList.map(chapter => new ChapterModel(chapter));
+    const res = await NoteRepository.getChapterList();
+    this.chapterList = res.map(chapter => new ChapterModel(chapter));
     console.log(this.chapterList);
+    // 테스트용
+    // const test = await NoteRepository.getNoteInfoList();
+    // console.log(new PageModel(test));
   }
 }
 

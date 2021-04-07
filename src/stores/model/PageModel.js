@@ -3,228 +3,338 @@ import autobind from 'autobind-decorator';
 
 @autobind
 class PageModel {
-    @observable
-    CH_TYPE : string;
-  
-    @observable
-    TYPE : string;
-  
-    @observable
-    USER_ID : string;
-  
-    @observable
-    WS_ID : string;
-  
-    @observable
-    color : string;
-  
-    @observable
-    created_date : string;
-  
-    @observable
-    deleted_date : string;
-  
-    @observable
-    fileList : Array<FileInfo>;
-  
-    @observable
-    file_deleted_at : string;
-  
-    @observable
-    file_extension : string;
+  @observable
+  chType: string;
 
-    @observable
-    file_name : string;
+  @observable
+  type: string;
 
-    @observable
-    file_size : string;
+  @observable
+  userId: string;
 
-    @observable
-    is_edit : string;
-    
-    @observable
-    messenger_id : string;
-    
-    @observable
-    modified_date : string;
-    
-    @observable
-    note_channel_id : string;
-    
-    @observable
-    note_content : string;
-    
-    @observable
-    note_id : string;
-    
-    @observable
-    note_title : string;
-    
-    @observable
-    parent_notebook : string;
-    
-    @observable
-    resultMsg : string;
-    
-    @observable
-    shared_room_name : string;
-    
-    @observable
-    shared_user_id : string;
-    
-    @observable
-    tagList : Array<TagInfo>;
-    
-    @observable
-    target_channel_id : string;
-    
-    @observable
-    target_workspace_id : string;
-    
-    @observable
-    text : string;
-    
-    @observable
-    text_content : string;
+  @observable
+  roomId: string;
 
-    @observable
-    user_name : string;
-  
-    constructor(data: Object) {
-      this.setValues(data);
-    }
+  @observable
+  chapterColor: string;
 
-    @action
-    setValues(data: Object) {
-      set(this, data);
-    }
+  @observable
+  createDate: string;
 
-    @action
-    setChType(data: string) {
-      this.CH_TYPE = data;
-    }
-  
-    @action
-    setType(data: string) {
-      this.TYPE = data;
-    }
+  @observable
+  deleteDate: string;
 
-    @action
-    setRoomId(data: string) {
-      this.WS_ID = data;
-    }
+  @observable
+  fileList: Array<FileInfo>;
 
-    @action
-    setUserId(data: string) {
-      this.USER_ID = data;
-    }
+  @observable
+  file_deleted_at: string;
 
-    @action
-    setUserId(data: string) {
-      this.USER_ID = data;
-    }
+  @observable
+  file_extension: string;
 
-    @action
-    setColor(data: string) {
-      this.color = data;
-    }
-    @action
-    setCreatedDate(data: string) {
-      this.created_date = data;
-    }
-    @action
-    setDeletedDate(data: string) {
-      this.deleted_date = data;
-    }
-    @action
-    setFileList(data: Array<FileInfo>) {
-      this.fileList = data;
-    }
-    @action
-    setFileDeletedAt(data: string) {
-      this.file_deleted_at = data;
-    }
-    @action
-    setFileExtension(data: string) {
-      this.file_extension = data;
-    }
-    @action
-    setFileName(data: string) {
-      this.file_name = data;
-    }
-    @action
-    setFileSize(data: string) {
-      this.file_size = data;
-    }
-    @action
-    // setFileUpdatedAt(data: string) {
-    //   this.file_updated_at = data;
-    // }
-    @action
-    setIsEdit(data: string) {
-      this.is_edit = data;
-    }
-    @action
-    setMessengerId(data: string) {
-      this.messenger_id = data;
-    }
-    @action
-    setModifiedDate(data: string) {
-      this.modified_date = data;
-    }
-    @action
-    setNoteChannelId(data: string) {
-      this.note_channel_id = data;
-    }
-    @action
-    setNoteContent(data: string) {
-      this.note_content = data;
-    }
-    @action
-    setNoteId(data: string) {
-      this.note_id = data;
-    }
-    @action
-    setNoteTitle(data: string) {
-      this.note_title = data;
-    }
-    @action
-    setChapterId(data: string) {
-      this.parent_notebook = data;
-    }
-    @action
-    setSharedRoomName(data: string) {
-      this.shared_room_name = data;
-    }
-    @action
-    setSharedUserId(data: string) {
-      this.shared_user_id = data;
-    }
-    @action
-    setTagList(data: Array<TagInfo>) {
-      this.tagList = data;
-    }
-    @action
-    setTargetChId(data: string) {
-      this.target_channel_id = data;
-    }
-    @action
-    setTargetRoomId(data: string) {
-      this.target_workspace_id = data;
-    }
-    @action
-    setChapterText(data: string) {
-      this.text = data;
-    }
-    @action
-    setTextContent(data: string) {
-      this.text_content = data;
-    }
-    @action
-    setUserName(data: string) {
-      this.user_name = data;
-    }
-  
+  @observable
+  file_name: string;
+
+  @observable
+  file_size: string;
+
+  @observable
+  is_edit: string;
+
+  @observable
+  messengerId: string;
+
+  @observable
+  modDate: string;
+
+  @observable
+  chId: string;
+
+  @observable
+  content: string;
+
+  @observable
+  id: string;
+
+  @observable
+  name: string;
+
+  @observable
+  chapterId: string;
+
+  @observable
+  resultMsg: string;
+
+  @observable
+  shareRoomId: string;
+
+  @observable
+  shareUserId: string;
+
+  @observable
+  tagList: Array<TagInfo>;
+
+  @observable
+  targetChId: string;
+
+  @observable
+  targetRoomId: string;
+
+  @observable
+  chapterName: string;
+
+  @observable
+  textContent: string;
+
+  @observable
+  userName: string;
+
+  constructor(data: Object) {
+    this.setValues(data);
+  }
+
+  @action
+  setValues(data: Object) {
+    set(this, data);
+  }
+
+  @action
+  setChType(data: string) {
+    this.chType = data;
+  }
+
+  @action
+  setType(data: string) {
+    this.type = data;
+  }
+
+  @action
+  setRoomId(data: string) {
+    this.roomId = data;
+  }
+
+  @action
+  setUserId(data: string) {
+    this.userId = data;
+  }
+
+  @action
+  setColor(data: string) {
+    this.chapterColor = data;
+  }
+  @action
+  setCreatedDate(data: string) {
+    this.createDate = data;
+  }
+  @action
+  setDeletedDate(data: string) {
+    this.deleteDate = data;
+  }
+  @action
+  setFileList(data: Array<FileInfo>) {
+    this.fileList = data;
+  }
+  @action
+  setFileDeletedAt(data: string) {
+    this.file_deleted_at = data;
+  }
+  @action
+  setFileExtension(data: string) {
+    this.file_extension = data;
+  }
+  @action
+  setFileName(data: string) {
+    this.file_name = data;
+  }
+  @action
+  setFileSize(data: string) {
+    this.file_size = data;
+  }
+  @action
+  // setFileUpdatedAt(data: string) {
+  //   this.file_updated_at = data;
+  // }
+  @action
+  setIsEdit(data: string) {
+    this.is_edit = data;
+  }
+  @action
+  setMessengerId(data: string) {
+    this.messengerId = data;
+  }
+  @action
+  setModifiedDate(data: string) {
+    this.modDate = data;
+  }
+  @action
+  setNoteChannelId(data: string) {
+    this.chId = data;
+  }
+  @action
+  setNoteContent(data: string) {
+    this.content = data;
+  }
+  @action
+  setNoteId(data: string) {
+    this.id = data;
+  }
+  @action
+  setNoteTitle(data: string) {
+    this.name = data;
+  }
+  @action
+  setChapterId(data: string) {
+    this.chapterId = data;
+  }
+  @action
+  setSharedRoomId(data: string) {
+    this.shareRoomId = data;
+  }
+  @action
+  setSharedUserId(data: string) {
+    this.shareUserId = data;
+  }
+  @action
+  setTagList(data: Array<TagInfo>) {
+    this.tagList = data;
+  }
+  @action
+  setTargetChId(data: string) {
+    this.targetChId = data;
+  }
+  @action
+  setTargetRoomId(data: string) {
+    this.targetRoomId = data;
+  }
+  @action
+  setChapterText(data: string) {
+    this.chapterName = data;
+  }
+  @action
+  setTextContent(data: string) {
+    this.textContent = data;
+  }
+  @action
+  setUserName(data: string) {
+    this.userName = data;
+  }
 }
 
 export default PageModel;
+
+export const convertPageObjToModel = (
+  obj: $Shape<PageInfo>,
+): ?$Shape<PageInfo> => {
+  if (obj.USER_ID) {
+    return {
+      userId: obj.USER_ID,
+    };
+  }
+  if (obj.CH_TYPE) {
+    return {
+      chType: obj.CH_TYPE,
+    };
+  }
+  if (obj.color) {
+    return {
+      chapterColor: obj.color,
+    };
+  }
+  if (obj.note_id) {
+    return {
+      id: obj.note_id,
+    };
+  }
+  if (obj.note_title) {
+    return {
+      name: obj.note_title,
+    };
+  }
+  if (obj.note_content) {
+    return {
+      content: obj.note_content,
+    };
+  }
+  if (obj.text_content) {
+    return {
+      textContent: obj.text_content,
+    };
+  }
+  if (obj.parent_notebook) {
+    return {
+      chapterId: obj.parent_notebook,
+    };
+  }
+  if (obj.is_edit) {
+    return {
+      is_edit: obj.is_edit,
+    };
+  }
+  if (obj.fileList) {
+    return {
+      fileList: obj.fileList,
+    };
+  }
+  if (obj.tagList) {
+    return {
+      tagList: obj.tagList,
+    };
+  }
+  if (obj.messenger_id) {
+    return {
+      messengerId: obj.messenger_id,
+    };
+  }
+  if (obj.modified_date) {
+    return {
+      modDate: obj.modified_date,
+    };
+  }
+  if (obj.note_channel_id) {
+    return {
+      chId: obj.note_channel_id,
+    };
+  }
+  if (obj.shared_date) {
+    return {
+      sharedDate: obj.shared_date,
+    };
+  }
+  if (obj.shared_room_name) {
+    return {
+      shareRoomId: obj.shared_room_name,
+    };
+  }
+  if (obj.shared_user_id) {
+    return {
+      shareUserId: obj.shared_user_id,
+    };
+  }
+  if (obj.target_channel_id) {
+    return {
+      targetChId: obj.target_channel_id,
+    };
+  }
+  if (obj.target_workspace_id) {
+    return {
+      targetRoomId: obj.target_workspace_id,
+    };
+  }
+  if (obj.text) {
+    return {
+      chapterName: obj.text,
+    };
+  }
+  if (obj.user_name) {
+    return {
+      userName: obj.user_name,
+    };
+  }
+  if (obj.WS_ID) {
+    return {
+      roomId: obj.WS_ID,
+    };
+  }
+  return '';
+};
