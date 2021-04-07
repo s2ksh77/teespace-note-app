@@ -1,22 +1,20 @@
-import { observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import ChapterModel from '../model/ChapterModel';
 import NoteRepository from '../repository/NoteRepository';
+// @flow
+class ChapterStore {
+  chapterList: [];
 
-const ChapterStore = observable({
-  chapterList: [],
-
-  async fetchChapterList(chId: string) {
-    console.log(chId);
+  async fetchChapterList() {
     const {
       data: {
         dto: { notbookList },
       },
-    } = await NoteRepository.getChapterList(chId);
+    } = await NoteRepository.getChapterList();
     console.log(notbookList);
     this.chapterList = notbookList.map(chapter => new ChapterModel(chapter));
-
     console.log(this.chapterList);
-  },
-});
+  }
+}
 
-export default ChapterStore;
+export default new ChapterStore();

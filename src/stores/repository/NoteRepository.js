@@ -1,5 +1,6 @@
 import { API } from 'teespace-core';
 import ChapterModel from '../model/ChapterModel';
+import NoteStore from '../store/NoteStore';
 // @flow
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
@@ -8,7 +9,7 @@ class NoteRepository {
   async getChapterList(): Promise<?Array<$Shape<ChapterInfo>>> {
     try {
       return await API.get(
-        `note-api/noteChapter?action=List&note_channel_id=${this.chId}`,
+        `note-api/noteChapter?action=List&note_channel_id=${NoteStore.chId}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
