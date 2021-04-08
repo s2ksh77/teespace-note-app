@@ -223,6 +223,10 @@ class PageModel {
 
 export default PageModel;
 
+/**
+ * @param ServerObj to PageInfo mapping
+ * @returns PageModel
+ */
 export const convertPageObjToModel = (
   obj: $Shape<PageInfo>,
 ): ?$Shape<PageInfo> => {
@@ -334,6 +338,126 @@ export const convertPageObjToModel = (
   if (obj.WS_ID) {
     return {
       roomId: obj.WS_ID,
+    };
+  }
+  return '';
+};
+
+/**
+ * @param PageModel to ServerObj mapping
+ * @returns ServerObj
+ */
+export const convertPageModelToObj = (
+  model: $Shape<PageInfo>,
+): ?$Shape<PageInfoDto> => {
+  if (model.userId) {
+    return {
+      USER_ID: model.userId,
+    };
+  }
+  if (model.chType) {
+    return {
+      CH_TYPE: model.chType,
+    };
+  }
+  if (model.chapterColor) {
+    return {
+      color: model.chapterColor,
+    };
+  }
+  if (model.id) {
+    return {
+      note_id: model.id,
+    };
+  }
+  if (model.name) {
+    return {
+      note_title: model.name,
+    };
+  }
+  if (model.content) {
+    return {
+      note_content: model.content,
+    };
+  }
+  if (model.textContent) {
+    return {
+      text_content: model.textContent,
+    };
+  }
+  if (model.chapterId) {
+    return {
+      parent_notebook: model.chapterId,
+    };
+  }
+  if (model.is_edit) {
+    return {
+      is_edit: model.is_edit,
+    };
+  }
+  if (model.fileList) {
+    return {
+      fileList: model.fileList,
+    };
+  }
+  if (model.tagList) {
+    return {
+      tagList: model.tagList,
+    };
+  }
+  if (model.messengerId) {
+    return {
+      messenger_id: model.messengerId,
+    };
+  }
+  if (model.modDate) {
+    return {
+      modified_date: model.modDate,
+    };
+  }
+  if (model.chId) {
+    return {
+      note_channel_id: model.chId,
+    };
+  }
+  if (model.sharedDate) {
+    return {
+      shared_date: model.sharedDate,
+    };
+  }
+  if (model.shareRoomId) {
+    return {
+      shared_room_name: model.shareRoomId,
+    };
+  }
+  if (model.shareUserId) {
+    return {
+      shared_user_id: model.shareUserId,
+    };
+  }
+  if (model.targetChId) {
+    return {
+      target_channel_id: model.targetChId,
+    };
+  }
+  if (model.targetRoomId) {
+    return {
+      target_workspace_id: model.targetRoomId,
+    };
+  }
+  if (model.chapterName) {
+    return {
+      text: model.chapterName,
+    };
+  }
+  if (model.userName) {
+    return {
+      user_name: model.userName,
+    };
+  }
+  if (model.roomId) {
+    return {
+      WS_ID: model.roomId,
     };
   }
   return '';

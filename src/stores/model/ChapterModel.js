@@ -135,9 +135,13 @@ class ChapterModel {
 
 export default ChapterModel;
 
+/**
+ * @param ServerObj to ChapterInfo mapping
+ * @returns ChapterModel
+ */
 export const convertChapterObjToModel = (
   obj: $Shape<ChapterInfo>,
-): ?$Shape<ChapterInfo> => {
+): ?$Shape<ChapterModel> => {
   if (obj.USER_ID) {
     return {
       userId: obj.USER_ID,
@@ -206,6 +210,86 @@ export const convertChapterObjToModel = (
   if (obj.ws_id) {
     return {
       roomId: obj.ws_id,
+    };
+  }
+  return '';
+};
+
+/**
+ * @param ChapterModel to ServerObj mapping
+ * @returns ServerObj
+ */
+export const convertChapterModelToObj = (
+  model: $Shape<ChapterInfo>,
+): ?$Shape<ChapterInfoDto> => {
+  if (model.userId) {
+    return {
+      USER_ID: model.userId,
+    };
+  }
+  if (model.pageList) {
+    return {
+      children: model.pageList,
+    };
+  }
+  if (model.color) {
+    return {
+      color: model.color,
+    };
+  }
+  if (model.id) {
+    return {
+      id: model.id,
+    };
+  }
+  if (model.modDate) {
+    return {
+      modified_date: model.modDate,
+    };
+  }
+  if (model.note_channel_id) {
+    return {
+      chId: model.note_channel_id,
+    };
+  }
+  if (model.sharedDate) {
+    return {
+      shared_date: model.sharedDate,
+    };
+  }
+  if (model.shareRoomId) {
+    return {
+      shared_room_name: model.shareRoomId,
+    };
+  }
+  if (model.shareUserId) {
+    return {
+      shared_user_id: model.shareUserId,
+    };
+  }
+  if (model.targetChId) {
+    return {
+      target_channel_id: model.targetChId,
+    };
+  }
+  if (model.targetRoomId) {
+    return {
+      target_workspace_id: model.targetRoomId,
+    };
+  }
+  if (model.name) {
+    return {
+      text: model.name,
+    };
+  }
+  if (model.userName) {
+    return {
+      user_name: model.userName,
+    };
+  }
+  if (model.roomId) {
+    return {
+      ws_id: model.roomId,
     };
   }
   return '';
