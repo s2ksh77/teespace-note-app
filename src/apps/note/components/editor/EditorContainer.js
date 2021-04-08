@@ -162,12 +162,14 @@ const EditorContainer = () => {
     },
   };
   const getEditorContent = content => {
-    if (
-      EditorStore.visiblityState === 'hidden' &&
-      document.visibilityState === 'visible'
-    )
-      return;
-    else PageStore.setContent(content);
+    // TODO TAB 변경시 Content마음대로 바뀌는 이슈
+    // if (
+    //   EditorStore.visiblityState === 'hidden' &&
+    //   document.visibilityState === 'visible'
+    // )
+    //   return;
+    // else
+    PageStore.setContent(content);
   };
 
   const setNoteEditor = instance => {
