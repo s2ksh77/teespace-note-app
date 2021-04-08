@@ -1,6 +1,8 @@
 import { API } from 'teespace-core';
-import ChapterModel, { convertChapterObjToModel } from '../model/ChapterModel';
-import { convertPageObjToModel } from '../model/PageModel';
+import ChapterModel, {
+  convertChapterObjToModel as chapterConverter,
+} from '../model/ChapterModel';
+import { convertPageObjToModel as pageConverter } from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
 // @flow
 /* eslint-disable class-methods-use-this */
@@ -13,7 +15,7 @@ const convertChapterObj = (dtoObj: ChapterInfoDTO): ChapterInfo => {
     if ({}.hasOwnProperty.call(dtoObj, key)) {
       const obj = {};
       obj[key] = dtoObj[key];
-      Object.assign(result, convertChapterObjToModel({ ...obj }));
+      Object.assign(result, chapterConverter({ ...obj }));
     }
   });
   return result;
@@ -25,7 +27,7 @@ const convertPageObj = (dtoObj: PageInfoDTO): PageInfo => {
     if ({}.hasOwnProperty.call(dtoObj, key)) {
       const obj = {};
       obj[key] = dtoObj[key];
-      Object.assign(result, convertPageObjToModel({ ...obj }));
+      Object.assign(result, pageConverter({ ...obj }));
     }
   });
   return result;
