@@ -406,7 +406,7 @@ const EditorContainer = () => {
               });
 
               editor.on('keydown', e => {
-                switch (e.code) {
+                switch (e.code && e.key) {
                   case 'Tab':
                     e.preventDefault();
                     e.stopPropagation();

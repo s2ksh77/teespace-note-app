@@ -12297,7 +12297,7 @@ var EditorContainer = function EditorContainer() {
             handleUnselect();
           });
           editor.on('keydown', function (e) {
-            switch (e.code) {
+            switch (e.code && e.key) {
               case 'Tab':
                 e.preventDefault();
                 e.stopPropagation();
