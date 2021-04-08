@@ -2,14 +2,14 @@ import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
-const ShareNoteMessageContent = () => {
+const LNBHeader = () => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
     <>
-      <div> ShareNoteMessageContent </div>
+      <div> LNBHeader </div>
     </>
   ));
 };
 
-export default ShareNoteMessageContent;
+export default LNBHeader;
