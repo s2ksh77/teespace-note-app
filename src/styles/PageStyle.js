@@ -84,23 +84,22 @@ export const PageTextContainer = styled.span`
   box-sizing: border-box;
   border-radius: 0.31rem;
   align-items: center;
-  &:hover:not(.ellipsisBtn){
-    background-color: #FAF8F7;
+  &:hover:not(.ellipsisBtn) {
+    background-color: #faf8f7;
     border-radius: 0.31rem;
   }
   &:active:not(.ellipsisBtn) {
-    background-color: #F2EFEC;
+    background-color: #f2efec;
   }
 `;
 
 export const NewPage = styled.span`
-  display: ${props => props.show ? "flex" : "none"};
+  display: ${props => (props.show ? 'flex' : 'none')};
   height: 2.81rem;
 `;
 
-
 export const EllipsisIcon = styled.i`
-  background-image: url("../Assets/view_more.png");
+  background-image: url('../Assets/view_more.png');
   color: #75757f;
   width: 100%;
   height: 100%;

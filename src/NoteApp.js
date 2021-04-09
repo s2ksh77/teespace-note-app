@@ -5,6 +5,10 @@ import { useCoreStores } from 'teespace-core';
 import ChapterStore from './stores/store/ChapterStore';
 import useNoteStore from './stores/useNoteStore';
 
+import LNB from './components/LNB';
+import Content from './components/Content';
+import { ContentWrapper, ContentFoldButton } from './styles/EditorStyle';
+
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   const { NoteStore } = useNoteStore();
   const { userStore, spaceStore, authStore } = useCoreStores();
@@ -23,7 +27,11 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
 
   return useObserver(() => (
     <>
-      <div> Hello ~</div>
+      <LNB />
+      <ContentWrapper>
+        <ContentFoldButton />
+        <Content />
+      </ContentWrapper>
     </>
   ));
 };
