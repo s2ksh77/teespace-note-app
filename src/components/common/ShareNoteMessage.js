@@ -1,16 +1,24 @@
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n/i18n';
-import ShareNoteMessageContent from './ShareNoteMessageContent.js';
+import ShareNoteMessageContent from './ShareNoteMessageContent';
 
-export default function ShareNoteMessage({ roomId, noteId, noteTitle }) {
+// @flow
+type Props = {
+  roomId: string,
+  noteId: string,
+  noteTitle: string,
+};
+
+export default function ShareNoteMessage(props: Props) {
+  const { roomId, noteId, noteTitle } = props;
   return (
     <I18nextProvider i18n={i18n}>
-      {/* <ShareNoteMessageContent
-          roomId={roomId}
-          noteId={noteId}
-          noteTitle={noteTitle}
-      /> */}
+      <ShareNoteMessageContent
+        roomId={roomId}
+        noteId={noteId}
+        noteTitle={noteTitle}
+      />
     </I18nextProvider>
   );
 }
