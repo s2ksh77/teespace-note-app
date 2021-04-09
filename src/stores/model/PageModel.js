@@ -1,8 +1,10 @@
+/* eslint-disable import/no-cycle */
 import { observable, action, set, computed } from 'mobx';
 import autobind from 'autobind-decorator';
-import NoteStore from '../store/NoteStore';
 import { UserStore } from 'teespace-core';
+import NoteStore from '../store/NoteStore';
 
+// @flow
 @autobind
 class PageModel {
   @observable
@@ -30,16 +32,16 @@ class PageModel {
   fileList: Array<FileInfo>;
 
   @observable
-  file_deleted_at: string;
+  fileDeletedAt: string;
 
   @observable
-  file_extension: string;
+  fileExtension: string;
 
   @observable
-  file_name: string;
+  fileName: string;
 
   @observable
-  file_size: string;
+  fileSize: string;
 
   @observable
   editingUserId: string;
@@ -125,34 +127,42 @@ class PageModel {
   setColor(data: string) {
     this.chapterColor = data;
   }
+
   @action
   setCreatedDate(data: string) {
     this.createDate = data;
   }
+
   @action
   setDeletedDate(data: string) {
     this.deleteDate = data;
   }
+
   @action
   setFileList(data: Array<FileInfo>) {
     this.fileList = data;
   }
+
   @action
   setFileDeletedAt(data: string) {
     this.file_deleted_at = data;
   }
+
   @action
   setFileExtension(data: string) {
     this.file_extension = data;
   }
+
   @action
   setFileName(data: string) {
     this.file_name = data;
   }
+
   @action
   setFileSize(data: string) {
     this.file_size = data;
   }
+
   @action
   // setFileUpdatedAt(data: string) {
   //   this.file_updated_at = data;
@@ -161,62 +171,77 @@ class PageModel {
   setIsEdit(data: string) {
     this.editingUserId = data;
   }
+
   @action
   setMessengerId(data: string) {
     this.messengerId = data;
   }
+
   @action
   setModifiedDate(data: string) {
     this.modDate = data;
   }
+
   @action
   setNoteChannelId(data: string) {
     this.chId = data;
   }
+
   @action
   setNoteContent(data: string) {
     this.content = data;
   }
+
   @action
   setNoteId(data: string) {
     this.id = data;
   }
+
   @action
   setNoteTitle(data: string) {
     this.name = data;
   }
+
   @action
   setChapterId(data: string) {
     this.chapterId = data;
   }
+
   @action
   setSharedRoomId(data: string) {
     this.shareRoomId = data;
   }
+
   @action
   setSharedUserId(data: string) {
     this.shareUserId = data;
   }
+
   @action
   setTagList(data: Array<TagInfo>) {
     this.tagList = data;
   }
+
   @action
   setTargetChId(data: string) {
     this.targetChId = data;
   }
+
   @action
   setTargetRoomId(data: string) {
     this.targetRoomId = data;
   }
+
   @action
   setChapterText(data: string) {
     this.chapterName = data;
   }
+
   @action
   setTextContent(data: string) {
     this.textContent = data;
   }
+
   @action
   setUserName(data: string) {
     this.userName = data;
@@ -225,17 +250,14 @@ class PageModel {
   @computed
   isReadMode() {
     if (this.editingUserId === null || this.editingUserId === '') return true;
-    else if (
-      this.editingUserId !== null &&
-      NoteStore.userId === this.editingUserId
-    )
+    if (this.editingUserId !== null && NoteStore.userId === this.editingUserId)
       return false;
-    else {
-      // PageStore.setOtherEditUserID(this.editingUserId);
-      return true;
-    }
+
+    // PageStore.setOtherEditUserID(this.editingUserId);
+    return true;
   }
 
+  // eslint-disable-next-line consistent-return
   async getDisplayName() {
     const userProfile = await UserStore.fetchProfile(this.lastUserId);
     if (userProfile) return userProfile.displayName;

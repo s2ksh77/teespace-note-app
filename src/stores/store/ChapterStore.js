@@ -1,11 +1,13 @@
-import { action, computed, observable } from 'mobx';
-import ChapterModel, { convertModelToDto } from '../model/ChapterModel';
-import PageModel from '../model/PageModel';
+/* eslint-disable import/no-cycle */
+import { action, observable } from 'mobx';
+import ChapterModel from '../model/ChapterModel';
 import NoteRepository from '../repository/NoteRepository';
 // @flow
 class ChapterStore {
-  chapterList: [];
+  @observable
+  chapterList: $Shape<Array<ChapterModel>> = [];
 
+  @action
   async fetchChapterList() {
     const res = await NoteRepository.getChapterList();
     this.chapterList = res.map(chapter => new ChapterModel(chapter));

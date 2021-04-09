@@ -1,6 +1,7 @@
-import { observable, action, set, computed } from 'mobx';
+import { observable, action, set } from 'mobx';
 import autobind from 'autobind-decorator';
 
+// @flow
 @autobind
 class ChapterModel {
   @observable
