@@ -1,15 +1,16 @@
 import React from 'react';
-import { useObserver } from 'mobx-react';
-import useNoteStore from '../../stores/useNoteStore';
+import LoadingImg from '../../assets/wapl_loading.gif';
+import { CenterContent } from '../../GlobalStyles';
+import { WaplLoadingImg } from '../../styles/CommonStyle';
 
 const LoadingContent = () => {
-  const { NoteStore } = useNoteStore();
-
-  return useObserver(() => (
+  return (
     <>
-      <div> LoadingContent </div>
+      <CenterContent>
+        <WaplLoadingImg src={LoadingImg} alt="LoadingImg" />
+      </CenterContent>
     </>
-  ));
+  );
 };
 
 export default LoadingContent;

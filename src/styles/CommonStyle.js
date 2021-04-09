@@ -6,7 +6,10 @@ import { Dropdown } from 'antd';
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"};
+  margin-left: ${props =>
+    props.layoutState === 'collapse' && props.targetLayout === 'LNB'
+      ? '0.75rem'
+      : '0rem'};
 `;
 
 export const ContentHeaderCover = styled.div`
@@ -20,12 +23,12 @@ export const ContentHeaderCover = styled.div`
 `;
 
 export const PreBtnWrapper = styled.div`
-  display: ${props => (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
   margin-right: 0.5rem;
-  cursor:pointer;
+  cursor: pointer;
   padding: 8px;
-  &:hover{
+  &:hover {
     background: #ebe6df;
     border-radius: 0.25rem;
     cursor: pointer;
@@ -40,7 +43,7 @@ export const ContentBodyCover = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1.25rem 0.75rem;
-  border-top: 1px solid #DDD9D4;
+  border-top: 1px solid #ddd9d4;
 `;
 
 export const NoneContainer = styled.div`
@@ -71,21 +74,28 @@ export const NoneText = styled.span`
 export const NoneImg = styled.img`
   width: 8.13rem;
   margin-top: 1.25rem;
-`
+`;
 export const ButtonDiv = styled.div`
   display: flex;
   align-items: center;
   padding: 0 0.25rem;
   height: 1.5rem;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background: #ebe6df;
     border-radius: 0.25rem;
   }
   & + div {
     margin-left: 0.5rem;
   }
-`
+`;
+
+// 1rem인 button
+export const Button = styled.img`
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+`;
 
 // 돋보기모양 submit btn
 export const SearchImgInput = styled.input`
@@ -93,7 +103,10 @@ export const SearchImgInput = styled.input`
     height: 1rem;
     cursor:pointer;
     margin-right:0.43rem;
-    filter: ${props => (props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);")}
+    filter: ${props =>
+      props.isSearch
+        ? 'invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);'
+        : 'invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);'}
     &:hover{
       filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);
     }
@@ -122,7 +135,7 @@ export const NoSearchResultTitle = styled.span`
 `;
 
 export const NoSearchResultImg = styled.img`
-  width:8.13rem;
+  width: 8.13rem;
 `;
 
 export const ContextMenuCover = styled(Dropdown)`
@@ -147,7 +160,8 @@ export const ContextMenuIconCover = styled.span``;
 export const ContextMenuIcon = styled.img`
   width: 1rem;
   height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
+    brightness(98%) contrast(84%);
 `;
 
 // ShareNoteMessage
@@ -159,10 +173,10 @@ export const MessageCover = styled.div`
   display: flex;
   padding: 0.69rem 0.75rem;
   box-sizing: border-box;
-  border: 1px solid #DDD9D4;
+  border: 1px solid #ddd9d4;
   cursor: pointer;
   &:hover {
-    text-decoration:underline;
+    text-decoration: underline;
   }
 `;
 
@@ -172,7 +186,7 @@ export const NoteTitle = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size:0.75rem;
+  font-size: 0.75rem;
   align-self: center;
   padding-left: 0.75rem;
 `;
@@ -191,12 +205,12 @@ export const ModalSharedInfoContainer = styled.div`
 
 export const ModalSharedInfoCover = styled.div`
   display: flex;
-  align-items:flex-start;
+  align-items: flex-start;
   margin-bottom: 0.75rem;
 `;
 
 export const ModalSharedInfoTitle = styled.span`
-  display:inline-flex;
+  display: inline-flex;
   width: 7rem;
   float: left;
   color: #000000;
@@ -237,13 +251,13 @@ export const SearchLoadingImg = styled.img`
 `;
 
 export const WaplLoadingImg = styled.img`
-  width:4.06rem;
-  margin:auto;
+  width: 4.06rem;
+  margin: auto;
 `;
 
 export const RightAligned = styled.div`
-  display:flex;
-  margin-left:auto;
+  display: flex;
+  margin-left: auto;
 `;
 
 export const DraggedComponentContainer = styled.div`
@@ -252,7 +266,7 @@ export const DraggedComponentContainer = styled.div`
   position: absolute;
   align-items: center;
   font-size: 0.81rem;
-  z-index:20;
+  z-index: 20;
 `;
 
 export const DraggedComponent = styled.div`
@@ -260,7 +274,7 @@ export const DraggedComponent = styled.div`
   height: 2.81rem;
   align-items: center;
   padding-left: 1.25rem;
-  background-color: rgba(242,239,236,0.6);
+  background-color: rgba(242, 239, 236, 0.6);
   border-radius: 0.31rem;
 `;
 
@@ -273,12 +287,12 @@ export const DraggedComponentTitle = styled.span`
 
 export const OverlayCover = styled.div`
   position: fixed;
-  right:0;
-  bottom:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background-color: rgba(250,250,250,.7);
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(250, 250, 250, 0.7);
   z-index: 1000;
 `;
 

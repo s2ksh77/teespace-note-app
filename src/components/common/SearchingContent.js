@@ -1,15 +1,22 @@
 import React from 'react';
-import { useObserver } from 'mobx-react';
-import useNoteStore from '../../stores/useNoteStore';
+import { useTranslation } from 'react-i18next';
+import {
+  SearchLoadingContainer,
+  SearchLoadingTxt,
+  SearchLoadingImg,
+} from '../../styles/CommonStyle';
+import loadingImg from '../../assets/search_loading.svg';
 
 const SearchingContent = () => {
-  const { NoteStore } = useNoteStore();
-
-  return useObserver(() => (
+  const { t } = useTranslation();
+  return (
     <>
-      <div> SearchingContent </div>
+      <SearchLoadingContainer>
+        <SearchLoadingTxt>{t('NOTE_EDIT_PAGE_SEARCH_02')}</SearchLoadingTxt>
+        <SearchLoadingImg src={loadingImg} />
+      </SearchLoadingContainer>
     </>
-  ));
+  );
 };
 
 export default SearchingContent;
