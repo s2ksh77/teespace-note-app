@@ -1,5 +1,7 @@
 import { observable, action, set, computed } from 'mobx';
 import autobind from 'autobind-decorator';
+import NoteStore from '../store/NoteStore';
+import { UserStore } from 'teespace-core';
 
 @autobind
 class PageModel {
@@ -10,7 +12,7 @@ class PageModel {
   type: string;
 
   @observable
-  userId: string;
+  lastUserId: string;
 
   @observable
   roomId: string;
@@ -40,7 +42,7 @@ class PageModel {
   file_size: string;
 
   @observable
-  is_edit: string;
+  editingUserId: string;
 
   @observable
   messengerId: string;
@@ -116,7 +118,7 @@ class PageModel {
 
   @action
   setUserId(data: string) {
-    this.userId = data;
+    this.lastUserId = data;
   }
 
   @action
@@ -157,7 +159,7 @@ class PageModel {
   // }
   @action
   setIsEdit(data: string) {
-    this.is_edit = data;
+    this.editingUserId = data;
   }
   @action
   setMessengerId(data: string) {
@@ -219,6 +221,25 @@ class PageModel {
   setUserName(data: string) {
     this.userName = data;
   }
+
+  @computed
+  isReadMode() {
+    if (this.editingUserId === null || this.editingUserId === '') return true;
+    else if (
+      this.editingUserId !== null &&
+      NoteStore.userId === this.editingUserId
+    )
+      return false;
+    else {
+      // PageStore.setOtherEditUserID(this.editingUserId);
+      return true;
+    }
+  }
+
+  async getDisplayName() {
+    const userProfile = await UserStore.fetchProfile(this.lastUserId);
+    if (userProfile) return userProfile.displayName;
+  }
 }
 
 export default PageModel;
@@ -232,7 +253,7 @@ export const convertPageObjToModel = (
 ): ?$Shape<PageInfo> => {
   if (obj.USER_ID) {
     return {
-      userId: obj.USER_ID,
+      lastUserId: obj.USER_ID,
     };
   }
   if (obj.CH_TYPE) {
@@ -272,7 +293,7 @@ export const convertPageObjToModel = (
   }
   if (obj.is_edit) {
     return {
-      is_edit: obj.is_edit,
+      editingUserId: obj.is_edit,
     };
   }
   if (obj.fileList) {
@@ -350,9 +371,9 @@ export const convertPageObjToModel = (
 export const convertPageModelToObj = (
   model: $Shape<PageInfo>,
 ): ?$Shape<PageInfoDto> => {
-  if (model.userId) {
+  if (model.lastUserId) {
     return {
-      USER_ID: model.userId,
+      USER_ID: model.lastUserId,
     };
   }
   if (model.chType) {
@@ -390,9 +411,9 @@ export const convertPageModelToObj = (
       parent_notebook: model.chapterId,
     };
   }
-  if (model.is_edit) {
+  if (model.editingUserId) {
     return {
-      is_edit: model.is_edit,
+      is_edit: model.editingUserId,
     };
   }
   if (model.fileList) {
