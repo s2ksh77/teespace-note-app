@@ -495,6 +495,9 @@ const EditorContainer = () => {
               var isAnchorElement = function (node) {
                 return node.nodeName.toLowerCase() === 'a' && node.href;
               };
+              const isImageElement = node => {
+                return node.nodeName === 'IMG';
+              };
 
               var getAnchorElement = function () {
                 var node = editor.selection.getNode();
@@ -549,10 +552,13 @@ const EditorContainer = () => {
                 },
               });
               // l-click하면 나오는 메뉴
+              // 블록 선택했을 때(커서만 깜빡일 때 X) && a태그 아닐 때 && 이미지 아닐 때
               editor.ui.registry.addContextToolbar('textselection', {
                 predicate: function (node) {
                   return (
-                    !editor.selection.isCollapsed() && !isAnchorElement(node)
+                    !editor.selection.isCollapsed() &&
+                    !isAnchorElement(node) &&
+                    !isImageElement(node)
                   );
                 },
                 items:
