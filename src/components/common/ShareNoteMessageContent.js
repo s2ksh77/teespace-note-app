@@ -3,9 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Message, RoomStore, API } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { MessageCover, NoteTitle } from '../../styles/CommonStyle';
-import { isFilled } from './validators';
 import NoteRepository from '../../stores/repository/NoteRepository';
-import NoteUtil from '../../NoteUtil';
 
 import useNoteStore from '../../stores/useNoteStore';
 
@@ -57,7 +55,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
   // if (!noteId) noteId = "0e27f084-1088-4110-bbf1-73817f1662ef"
 
   const history = useHistory();
-  const { NoteStore, PageStore } = useNoteStore();
+  const { NoteStore } = useNoteStore();
   const { t } = useTranslation();
   const [informDeleted, setInformDeleted] = useState(false);
   if (!noteId) return null;
@@ -81,35 +79,35 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
     const isNoteApp = history.location.search === '?sub=note';
     // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
     // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
-    if (isNoteApp && NoteStore.targetLayout !== 'LNB') {
-      if (PageStore.currentPageId === noteId) return;
-      // 다른 페이지 수정중인 경우 Modal 띄우기
-      if (!PageStore.isReadMode()) {
-        const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-        if (!isUndoActive && !PageStore.otherEdit) {
-          PageStore.handleNoneEdit();
-          return;
-        }
-        NoteStore.setModalInfo('editCancel');
-        return;
-      }
-    }
+    // if (isNoteApp && NoteStore.targetLayout !== 'LNB') {
+    //   if (PageStore.currentPageId === noteId) return;
+    //   // 다른 페이지 수정중인 경우 Modal 띄우기
+    //   if (!PageStore.isReadMode()) {
+    //     const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
+    //     if (!isUndoActive && !PageStore.otherEdit) {
+    //       PageStore.handleNoneEdit();
+    //       return;
+    //     }
+    //     NoteStore.setModalInfo('editCancel');
+    //     return;
+    //   }
+    // }
 
     // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
     const targetChId = RoomStore.getChannelIds({ roomId })[
       NoteRepository.CH_TYPE
     ];
-    const {
-      data: { dto: noteInfo },
-    } = await API.Get(
-      `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${targetChId}`,
-    );
+    // const {
+    //   data: { dto: noteInfo },
+    // } = await API.Get(
+    //   `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${targetChId}`,
+    // );
 
-    if (!noteInfo || !isFilled(noteInfo.note_id)) {
-      // 아직 모달을 띄울 수 없음
-      setInformDeleted(true);
-      return;
-    }
+    // if (!noteInfo || !isFilled(noteInfo.note_id)) {
+    //   // 아직 모달을 띄울 수 없음
+    //   setInformDeleted(true);
+    //   return;
+    // }
 
     // 2. 노트앱 열기
     // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다

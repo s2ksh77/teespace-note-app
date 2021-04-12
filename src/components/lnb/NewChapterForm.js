@@ -5,11 +5,7 @@ import useNoteStore from '../../stores/useNoteStore';
 const NewChaperForm = () => {
   const { NoteStore } = useNoteStore();
 
-  return useObserver(() => (
-    <>
-      <div> NewChaperForm </div>
-    </>
-  ));
+  return useObserver(() => <></>);
 };
 
 export default NewChaperForm;

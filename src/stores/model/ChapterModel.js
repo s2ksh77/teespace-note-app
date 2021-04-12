@@ -1,5 +1,7 @@
 import { observable, action, set } from 'mobx';
 import autobind from 'autobind-decorator';
+import { convertPageObjToModel } from './PageModel';
+import NoteUtil from '../../utils/NoteUtil';
 
 // @flow
 @autobind
@@ -15,6 +17,9 @@ class ChapterModel {
 
   @observable
   id: string;
+
+  @observable
+  type: string;
 
   @observable
   modDate: string;
@@ -39,9 +44,6 @@ class ChapterModel {
 
   @observable
   name: string;
-
-  @observable
-  type: string;
 
   @observable
   userName: string;
@@ -163,6 +165,11 @@ export const convertChapterObjToModel = (
       id: obj.id,
     };
   }
+  if (obj.type) {
+    return {
+      type: obj.type,
+    };
+  }
   if (obj.modified_date) {
     return {
       modDate: obj.modified_date,
@@ -241,6 +248,11 @@ export const convertChapterModelToObj = (
   if (model.id) {
     return {
       id: model.id,
+    };
+  }
+  if (model.type) {
+    return {
+      type: model.type,
     };
   }
   if (model.modDate) {

@@ -59,7 +59,8 @@ export const ChapterShareIcon = styled.img`
   position: absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)
+    brightness(96%) contrast(87%);
 `;
 
 export const ChapterTitle = styled.span`
@@ -72,6 +73,7 @@ export const ChapterTitle = styled.span`
   align-items: center;
   cursor: pointer;
   max-width: calc(100% - 1.93rem);
+  margin-left: 1.69rem;
 `;
 
 export const ChapterTitleInput = styled.input`
@@ -108,13 +110,13 @@ export const ChapterTextSpan = styled.span`
 export const NewNoteMark = styled.div`
   display: flex;
   flex-shrink: 0;
-  background-color: #DC4547;
+  background-color: #dc4547;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   margin-left: 0.25rem;
   margin-top: -0.5rem;
-  margin-right:${props => props.isChapter ? "2rem" : ""};
+  margin-right: ${props => (props.isChapter ? '2rem' : '')};
 `;
 
 export const ChapterFolderBtn = styled.span`
@@ -135,7 +137,8 @@ export const ChapterFolderBtn = styled.span`
 export const ChapterFoldBtnIcon = styled.img`
   width: 1rem;
   height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
+    brightness(98%) contrast(84%);
 `;
 
 export const ChapterInput = styled.input`
@@ -150,10 +153,10 @@ export const ChapterInput = styled.input`
   padding-left: 1.69rem;
   // padding-right: 0.3125rem;
   &::placeholder {
-    color: #D0D0D0;
+    color: #d0d0d0;
   }
   &::selection {
-    background: #F2EFEC;
+    background: #f2efec;
     color: #000000;
   }
   &:focus {

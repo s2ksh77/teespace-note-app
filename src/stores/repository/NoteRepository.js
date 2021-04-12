@@ -60,12 +60,13 @@ class NoteRepository {
     }
   }
 
-  getNoteTagList(noteId: string): Promise<any> {
-    return API.Get(
+  async fetchNoteTagList(noteId: string): Promise<any> {
+    const response = await API.Get(
       `note-api/tag?action=List&note_id=${noteId}&t=${new Date()
         .getTime()
         .toString()}`,
     );
+    return response ? convertTagObj(response.data.dto.tagList) : [];
   }
 
   // 태그 컨텐츠 관련
@@ -74,15 +75,16 @@ class NoteRepository {
   //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
-  async getAllSortedTagList() {
-    return await API.Get(
+  async fetchTagSortedList() {
+    const response = await API.Get(
       `note-api/tagSort?action=List&note_channel_id=${
         this.chId
       }&t=${new Date().getTime().toString()}`,
     );
+    return response;
   }
 
-  getTagNoteList({
+  async fetchTagNoteList({
     USER_ID,
     tagId,
     chId,
@@ -91,29 +93,38 @@ class NoteRepository {
     tagId: string,
     chId: string,
   }): Promise<any> {
-    return API.Get(
+    const response = await API.Get(
       `note-api/tagnote?action=List&tag_id=${tagId}&USER_ID=${USER_ID}
         &note_channel_id=${this.chId}`,
     );
+    return response ? convertPageObj(response.data.dto.noteList) : [];
   }
 
   async getChapterChildren(chapterId: string): Promise<String> {
     try {
-      return await API.Get(
+      const response = await API.Get(
         `note-api/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
       );
+      return response ? convertChapterObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
 
-  getChapterInfoList(chapterId: string): Promise<String> {
-    return API.Get(`note-api/chaptershare?action=List&id=${chapterId}`);
+  async getChapterInfoList(chapterId: string): Promise<String> {
+    const response = await API.Get(
+      `note-api/chaptershare?action=List&id=${chapterId}`,
+    );
+    return response ? convertChapterObj(response.data.dto) : [];
   }
 
-  getChapterColor(chapterId: string): Promise<String> {
-    return API.get(`note-api/chaptershare?action=List&id=${chapterId}`);
+  async getChapterColor(chapterId: string): Promise<String> {
+    const response = await API.get(
+      `note-api/chaptershare?action=List&id=${chapterId}`,
+    );
+    return response ? convertChapterObj(response.data.dto) : [];
   }
+
   async updateChapterColor({
     chapterId,
     targetColor,
@@ -122,21 +133,24 @@ class NoteRepository {
     targetColor: string,
   }): Promise<any> {
     try {
-      const { data } = await API.put(`note-api/notebooks?action=Update`, {
+      const response = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
           id: chapterId,
           ws_id: this.WS_ID,
           color: targetColor,
         },
       });
-      return data;
+      return response ? convertChapterObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
 
   getChapterText(chapterId: string): Promise<String> {
-    return API.get(`note-api/chaptershare?action=List&id=${chapterId}`);
+    const response = API.get(
+      `note-api/chaptershare?action=List&id=${chapterId}`,
+    );
+    return response;
   }
 
   async createChapter({
@@ -147,7 +161,7 @@ class NoteRepository {
     chapterColor: string,
   }): Promise<any> {
     try {
-      const { data } = await API.post(`note-api/notebooks`, {
+      const response = await API.post(`note-api/notebooks`, {
         dto: {
           id: '',
           ws_id: this.WS_ID,
@@ -160,7 +174,7 @@ class NoteRepository {
           color: chapterColor,
         },
       });
-      return data;
+      return response ? convertChapterObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -168,10 +182,10 @@ class NoteRepository {
 
   async deleteChapter(chapterId: string): Promise<String> {
     try {
-      const { data } = await API.delete(
+      const response = await API.delete(
         `note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`,
       );
-      return data;
+      return response ? convertChapterObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -187,10 +201,10 @@ class NoteRepository {
     color: string,
   }): Promise<any> {
     try {
-      const { data } = await API.put(`note-api/notebooks?action=Update`, {
+      const response = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
           USER_ID: this.USER_ID,
-          color: color,
+          color,
           id: chapterId,
           ws_id: this.WS_ID,
           note_channel_id: this.chId,
@@ -199,7 +213,7 @@ class NoteRepository {
           user_name: this.USER_NAME,
         },
       });
-      return data;
+      return response ? convertChapterObj(response.data.dto) : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -216,7 +230,7 @@ class NoteRepository {
   }): Promise<any> {
     try {
       const today = new Date();
-      return API.Post(`note-api/note`, {
+      const response = API.Post(`note-api/note`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -227,11 +241,12 @@ class NoteRepository {
           note_channel_id: this.chId,
           user_name: this.USER_NAME,
           note_title: pageName,
-          note_content: pageContent ? pageContent : '',
+          note_content: pageContent || '',
           is_edit: this.USER_ID,
           parent_notebook: chapterId,
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -245,11 +260,12 @@ class NoteRepository {
       page.user_name = this.USER_NAME;
     });
     try {
-      return await API.Post(`note-api/note?action=Delete`, {
+      const response = await API.Post(`note-api/note?action=Delete`, {
         dto: {
           noteList: pageList,
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -265,7 +281,7 @@ class NoteRepository {
     chapterId: string,
   }): Promise<any> {
     try {
-      return await API.Put(`note-api/note?action=Update`, {
+      const response = await API.Put(`note-api/note?action=Update`, {
         dto: {
           CH_TYPE: 'CHN0003',
           TYPE: 'RENAME',
@@ -277,6 +293,7 @@ class NoteRepository {
           parent_notebook: chapterId,
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -290,7 +307,7 @@ class NoteRepository {
     chapterId: string,
   }): Promise<any> {
     try {
-      return await API.Put(`note-api/note?action=Update`, {
+      const response = await API.Put(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -301,6 +318,7 @@ class NoteRepository {
           TYPE: 'MOVE',
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -314,7 +332,7 @@ class NoteRepository {
     chapterId: string,
   }): Promise<any> {
     try {
-      return await API.post(`note-api/note?action=Update`, {
+      const response = await API.post(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -327,6 +345,7 @@ class NoteRepository {
           TYPE: 'EDIT_START',
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -343,7 +362,8 @@ class NoteRepository {
       today.getMonth() + 1
     }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
     try {
-      return await API.post(`note-api/note?action=Update`, updateDto);
+      const response = await API.post(`note-api/note?action=Update`, updateDto);
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -361,7 +381,7 @@ class NoteRepository {
     userId: string,
   }): Promise<any> {
     try {
-      return await API.post(`note-api/note?action=Update`, {
+      const response = await API.post(`note-api/note?action=Update`, {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
@@ -374,39 +394,46 @@ class NoteRepository {
           user_name: this.USER_NAME,
         },
       });
+      return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
+
   async createTag(targetList: Array<String>): Promise<Array<String>> {
     try {
-      return await API.post(`note-api/tag`, {
+      const response = await API.post(`note-api/tag`, {
         dto: {
           tagList: targetList,
         },
       });
+      return response ? convertTagObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
+
   async deleteTag(targetList: Array<String>): Promise<Array<String>> {
     try {
-      return await API.post(`note-api/tag?action=Delete`, {
+      const response = await API.post(`note-api/tag?action=Delete`, {
         dto: {
           tagList: targetList,
         },
       });
+      return response ? convertTagObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
+
   async updateTag(targetList: Array<String>): Promise<Array<String>> {
     try {
-      return await API.post(`note-api/tag?action=Update`, {
+      const response = await API.post(`note-api/tag?action=Update`, {
         dto: {
           tagList: targetList,
         },
       });
+      return response ? convertTagObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -415,7 +442,7 @@ class NoteRepository {
   async storageFileDeepCopy(fileId: string): Promise<any> {
     const targetSRC = `Storage/StorageFile?action=Copy&Type=Deep`;
     try {
-      return await API.put(targetSRC, {
+      const response = await API.put(targetSRC, {
         dto: {
           workspace_id: this.WS_ID,
           channel_id: this.chId,
@@ -425,6 +452,7 @@ class NoteRepository {
           },
         },
       });
+      return response;
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -432,33 +460,8 @@ class NoteRepository {
 
   async createUploadMeta(dto: Object): Promise<Object> {
     try {
-      return await API.post('note-api/noteFile', dto);
-    } catch (e) {
-      throw Error(JSON.stringify(e));
-    }
-  }
-  async createUploadStorage(fileId, file, onUploadProgress) {
-    try {
-      return await API.post(
-        `Storage/StorageFile?action=Create&fileID=` +
-          fileId +
-          '&workspaceID=' +
-          this.WS_ID +
-          '&channelID=' +
-          this.chId +
-          '&userID=' +
-          this.USER_ID,
-        file,
-        {
-          headers: {
-            'content-type': 'multipart/form-data',
-          },
-          xhrFields: {
-            withCredentials: true,
-          },
-          onUploadProgress,
-        },
-      );
+      const response = await API.post('note-api/noteFile', dto);
+      return response;
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -487,16 +490,7 @@ class NoteRepository {
     cancelSource: any,
   }) {
     return await API.post(
-      `/gateway-api/upload?user_id=` +
-        this.USER_ID +
-        '&ws_id=' +
-        this.WS_ID +
-        '&ch_id=' +
-        this.chId +
-        '&file_name=' +
-        fileName +
-        '&file_extension=' +
-        fileExtension,
+      `/gateway-api/upload?user_id=${this.USER_ID}&ws_id=${this.WS_ID}&ch_id=${this.chId}&file_name=${fileName}&file_extension=${fileExtension}`,
       file,
       {
         headers: {
@@ -538,7 +532,7 @@ class NoteRepository {
   }
 
   deleteAllFile(fileList: Array<String>): Promise<any> {
-    let deleteFileList = [];
+    const deleteFileList = [];
     if (fileList) {
       fileList.map(file => deleteFileList.push(file.file_id));
       return API.put(`Storage/StorageFile?action=MultiDelete`, {
@@ -549,9 +543,8 @@ class NoteRepository {
           user_id: this.USER_ID,
         },
       });
-    } else {
-      return Promise.resolve();
     }
+    return Promise.resolve();
   }
 
   createShareChapter(chapterList: Array<String>): Promise<Array<String>> {
@@ -561,6 +554,7 @@ class NoteRepository {
       },
     });
   }
+
   createSharePage(pageList: Array<String>): Promise<Array<String>> {
     return API.post(`note-api/noteshare`, {
       dto: {
@@ -568,6 +562,7 @@ class NoteRepository {
       },
     });
   }
+
   async getSearchList(searchKey: string): Promise<any> {
     try {
       return await API.post(`note-api/noteSearch?action=List`, {
@@ -580,6 +575,7 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+
   async createFileMeta(targetList: Array<String>): Promise<Array<String>> {
     return await API.post(`note-api/noteFileMeta`, {
       dto: {

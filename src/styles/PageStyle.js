@@ -45,7 +45,7 @@ export const PageTitleInput = styled.input`
 
 export const NewPageButton = styled.p`
   width: 100%;
-  height: 100%;
+  height: 2.81rem;
   display: flex;
   padding-left: 1.25rem;
   cursor: pointer;

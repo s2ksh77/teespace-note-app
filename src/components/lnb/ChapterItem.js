@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
@@ -12,16 +12,16 @@ import {
 } from '../../styles/ChapterStyle';
 import PageList from './PageList';
 
-const ChapterItem = () => {
+const ChapterItem = ({ chapter }) => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
     <ChapterContainer>
       <ChapterWrapper>
-        <ChapterColor />
-        <ChapterTitle />
+        <ChapterColor color={chapter.color} background={chapter.color} />
+        <ChapterTitle>{chapter.name}</ChapterTitle>
       </ChapterWrapper>
-      <PageList />
+      <PageList page={chapter.pageList} />
     </ChapterContainer>
   ));
 };

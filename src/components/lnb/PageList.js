@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
-
 import PageItem from './PageItem';
 import { NewPageButton, NewPageText } from '../../styles/PageStyle';
 
-const PageList = ({ chapter }) => {
+const PageList = ({ page }) => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
     <>
-      {chapter.children.map((item, index) => (
-        <PageItem />
+      {page.map((item, index) => (
+        <PageItem key={item.id} page={item} />
       ))}
       <NewPageButton>
-        <NewPageText />
+        <NewPageText>+ 새 페이지 추가</NewPageText>
       </NewPageButton>
     </>
   ));
