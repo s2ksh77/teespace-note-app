@@ -12,25 +12,74 @@ export const LNBBodyContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
-  display:flex;
+  display: flex;
   flex-direction: column;
-  border-top: 1px solid #DDD9D4;
+  border-top: 1px solid #ddd9d4;
+`;
+
+export const ContextMenuWrapper = styled.div`
+  position: absolute;
+  right: 0.3rem;
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  visibility: hidden;
+  cursor: pointer;
+  border-radius: 0.38rem;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background-color: rgba(235, 230, 223, 1);
+  }
+`;
+
+export const ContextMenuIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
+    brightness(98%) contrast(84%);
+`;
+
+export const LNBTagWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: calc(100% - 1.62rem);
+  min-height: 2.81rem;
+  padding: 0rem 0.81rem 0rem 1rem;
+  font-size: 0.81rem;
+  cursor: pointer;
+  border-bottom: 0.0625rem solid #eeedeb;
+  margin: 0 0.81rem;
+  order: 2;
+  &:hover {
+    background-color: #faf8f7;
+    border-radius: 0.31rem;
+  }
+`;
+
+export const LNBTagIcon = styled.img`
+  width: 1rem;
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)
+    brightness(96%) contrast(87%);
+`;
+
+export const LNBTagText = styled.div`
+  font-weight: 500;
+  margin-left: 0.63rem;
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
 
 export const LNBEditModeCover = styled.div`
-  display: ${props => props.mode === "true" ? "none" : "flex"};
+  display: ${props => (props.mode === 'true' ? 'none' : 'flex')};
   width: inherit;
   height: 100%;
   position: absolute;
   z-index: 1;
-`
-
-
+`;
 
 export const LNBNewChapter = styled.div`
-  position:relative;
+  position: relative;
   user-select: none;
   margin: 0rem 0.81rem;
   padding: 0rem;
@@ -45,19 +94,19 @@ export const LNBNewChapter = styled.div`
 
 // search 관련
 export const ChapterSearchResult = styled.div`
-  position:relative;
-  width:calc(100% - 1.5rem);
-  height:3.81rem;
-  margin:0 0.75rem;
+  position: relative;
+  width: calc(100% - 1.5rem);
+  height: 3.81rem;
+  margin: 0 0.75rem;
   padding: 0.75rem 1.69rem;
-  display:flex;
-  flex-direction:row;
-  align-items:center;
-  cursor:pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
   &:hover {
-    background-color: #FAF8F7;
+    background-color: #faf8f7;
   }
-`
+`;
 export const ChapterSearchShareIcon = styled.img`
   position: relative;
   width: 0.8rem;
@@ -65,11 +114,12 @@ export const ChapterSearchShareIcon = styled.img`
   display: flex;
   align-items: center;
   justify-content: center;
-  left :-10px;
-  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%) contrast(85%);
-`
+  left: -10px;
+  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg)
+    brightness(95%) contrast(85%);
+`;
 export const ChapterSearchResultColor = styled.div`
-  background-color:${props => props.backgroundColor};
+  background-color: ${props => props.backgroundColor};
   width: 0.25rem;
   height: 2.19rem;
   align-self: center;
@@ -88,22 +138,22 @@ export const ChapterSearchResultTitle = styled.div`
   white-space: nowrap;
 `;
 export const PageSearchResult = styled.div`
-  position:relative;
-  width:calc(100% - 1.5rem);
-  height:3.81rem;
-  margin:0 0.75rem;
+  position: relative;
+  width: calc(100% - 1.5rem);
+  height: 3.81rem;
+  margin: 0 0.75rem;
   padding: 0.75rem 1.69rem;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-around;
-  cursor:pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: pointer;
   &:hover {
-    background-color: #FAF8F7;
+    background-color: #faf8f7;
   }
   text-overflow: ellipsis;
   white-space: nowrap;
-  background-color:${props=>props.isSelected ? '#F2EFEC' : ''};
-`
+  background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
+`;
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.8125rem;
   text-overflow: ellipsis;
@@ -112,18 +162,18 @@ export const PageSearchResultPageTitle = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`
+`;
 
 export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
-  color: #888D96;
+  color: #888d96;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`
+`;
 
 export const SearchResultBotttom = styled.div`
-  border-bottom: 1px solid #E3E7EB;
+  border-bottom: 1px solid #e3e7eb;
   position: absolute;
   left: 1.69rem;
   right: 1.69rem;

@@ -24,10 +24,11 @@ export const ChapterWrapper = styled.div`
   height: 2.81rem;
   display: flex;
   margin: 4px 0 4px 0;
+  padding-left: 1.69rem;
   align-items: center;
   font-weight: 500;
   border-bottom: 0.0625rem solid #eeedeb;
-  &:hover .ellipsisBtn {
+  &:hover .contextMenu {
     visibility: visible;
   }
   &:hover {
@@ -42,13 +43,13 @@ export const ChapterWrapper = styled.div`
 
 export const ChapterColor = styled.span`
   position: absolute;
+  left: 0.19rem;
   display: flex;
-  width: 0.25rem;
-  height: 2.19rem;
-  left: 0;
+  width: 0.38rem;
+  height: 2.5rem;
   align-items: center;
   align-self: center;
-  border-radius: 0.13rem / 0.13rem;
+  border-radius: 10px;
   margin: 0.31rem 0;
   color: ${props => props.color};
   background: ${props => props.background};
@@ -65,15 +66,10 @@ export const ChapterShareIcon = styled.img`
 
 export const ChapterTitle = styled.span`
   position: relative;
-  display: flex;
-  flex: auto;
-  width: 100%;
-  height: 100%;
   font-weight: 500;
   align-items: center;
   cursor: pointer;
   max-width: calc(100% - 1.93rem);
-  margin-left: 1.69rem;
 `;
 
 export const ChapterTitleInput = styled.input`

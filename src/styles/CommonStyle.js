@@ -138,32 +138,6 @@ export const NoSearchResultImg = styled.img`
   width: 8.13rem;
 `;
 
-export const ContextMenuCover = styled(Dropdown)`
-  position: absolute;
-  right: ${props => props.right};
-  display: flex;
-  visibility: hidden;
-  flex: 0 0 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-  border-radius: 0.38rem;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background-color: rgba(235, 230, 223, 1);
-  }
-`;
-
-export const ContextMenuIconCover = styled.span``;
-
-export const ContextMenuIcon = styled.img`
-  width: 1rem;
-  height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
-    brightness(98%) contrast(84%);
-`;
-
 // ShareNoteMessage
 export const MessageCover = styled.div`
   border-radius: 0.75rem;

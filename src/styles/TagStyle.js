@@ -118,8 +118,8 @@ export const TagNewBtn = styled.div`
 `;
 
 export const PanelArrow = styled.img`
-  width:0.8rem;
-  bottom:1rem;
+  width: 0.8rem;
+  bottom: 1rem;
 `;
 
 export const TagList = styled.div`
@@ -133,7 +133,7 @@ export const TagList = styled.div`
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;
   height: 1.25rem;
-  user-drag: none; 
+  user-drag: none;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;
@@ -155,58 +155,25 @@ export const TagInput = styled.input`
   height: 1.88rem;
   margin-right: 0.38rem;
   border-radius: 1.563rem;
-  padding:0 0.75rem;
-  border: 0.0625rem solid #7B7671;
+  padding: 0 0.75rem;
+  border: 0.0625rem solid #7b7671;
   background-color: #ffffff;
   font-size: 0.81rem;
   color: #000000;
   outline: none;
 `;
 
-// lnbTag
-export const LnbTagContainer = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  width: calc(100% - 1.62rem);
-  height: 2.81rem;
-  min-height: 2.81rem;
-  padding: 0rem 0.81rem 0rem 0rem;
-  font-size: 0.81rem;
-  cursor: pointer;
-  border-bottom: 0.0625rem solid #eeedeb;
-  margin: 0 0.81rem;
-  order: ${props => props.order};
-  color: ${props => props.color || ''};
-  &:hover {
-    background-color: #FAF8F7;
-    border-radius: 0.31rem;
-  }
-`;
-
-export const TagImg = styled.img`
-  position:absolute;
-  width: 1rem;
-  left: 1rem;
-  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
-`;
-
-export const TagTxt = styled.div`
-  font-weight: 500;
-  margin-left: 2.63rem;
-`;
-
 export const TagChipGroup = styled.div`
-  display:flex;
-  width:100%;
-  flex-wrap:wrap;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 export const SearchTagChip = styled(Tag)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding:0 0.63rem;
+  padding: 0 0.63rem;
   height: calc(100% - 0.26rem);
   width: fit-content;
   max-width: calc(100% - 1.88rem) !important;
@@ -215,11 +182,11 @@ export const SearchTagChip = styled(Tag)`
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: #F7F4EF;
+  background-color: #f7f4ef;
   border-radius: 25px;
-  border: 0px solid #7B7671;
-  &:hover{
+  border: 0px solid #7b7671;
+  &:hover {
     color: #000000;
-    background-color: #EBE6DF;
+    background-color: #ebe6df;
   }
 `;

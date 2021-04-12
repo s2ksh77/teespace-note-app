@@ -2,21 +2,23 @@ import styled from 'styled-components';
 
 export const PageWrapper = styled.li`
   display: flex;
-  width: 100%;
   height: 2.81rem;
+  margin-left: 1.875rem;
+  padding-left: 1.25rem;
+  align-items: center;
   cursor: pointer;
-  &:hover .ellipsisBtn {
+  &:hover .contextMenu {
     visibility: visible;
+  }
+  &:hover:not(.contextMenu) {
+    background-color: #faf8f7;
+    border-radius: 0.31rem;
   }
 `;
 
 export const PageTitle = styled.a`
-  display: inline-block;
   cursor: pointer;
-  margin-left: 1.25rem;
-  line-height: 1.1rem;
   color: #000000 !important;
-  align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -44,10 +46,11 @@ export const PageTitleInput = styled.input`
 `;
 
 export const NewPageButton = styled.p`
-  width: 100%;
   height: 2.81rem;
   display: flex;
+  margin-left: 1.875rem;
   padding-left: 1.25rem;
+  align-items: center;
   cursor: pointer;
   border-radius: 0.31rem;
   &:hover {
@@ -56,11 +59,6 @@ export const NewPageButton = styled.p`
   &:active {
     background-color: #f2efec;
   }
-`;
-
-export const NewPageText = styled.span`
-  cursor: pointer;
-  align-self: center;
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
