@@ -3,6 +3,7 @@ import NoteRepository from './noteRepository';
 import { API } from 'teespace-core';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
+import TagStore from './tagStore';
 import NoteStore from './noteStore';
 import NoteUtil from '../NoteUtil';
 
@@ -525,6 +526,26 @@ const EditorStore = observable({
       } finally {
       }
     }
+  },
+  isEditCancelOpen() {
+    // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?
+    const { isEmpty } = NoteUtil;
+    if (this.tinymce?.undoManager?.hasUndo()) return true;
+    if (
+      PageStore.isNewPage &&
+      isEmpty(TagStore.notetagList) &&
+      isEmpty(this.tempFileLayoutList) &&
+      isEmpty(this.fileLayoutList)
+    )
+      return false;
+    if (
+      !PageStore.isNewPage &&
+      isEmpty(TagStore.addTagList) &&
+      isEmpty(TagStore.updateTagList) &&
+      isEmpty(TagStore.removeTagList)
+    )
+      return false;
+    return true;
   },
 });
 
