@@ -410,6 +410,12 @@ const EditorContainer = () => {
               editor.on('keydown', e => {
                 switch (e.code && e.key) {
                   case 'Tab':
+                    // 이미 있는 ul,li는 원래 기능써야함
+                    if (
+                      editor.selection?.getNode()?.closest('li') ||
+                      editor.selection?.getNode()?.querySelector('li')
+                    )
+                      break;
                     e.preventDefault();
                     e.stopPropagation();
                     if (e.shiftKey) editor.execCommand('Outdent');
