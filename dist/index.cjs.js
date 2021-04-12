@@ -1493,11 +1493,15 @@ var GlobalVariable = {
   apiKey: "90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3",
   editorWrapper: null,
   isBasicPlan: false,
+  isMailApp: false,
   setEditorWrapper: function setEditorWrapper(ref) {
     this.editorWrapper = ref;
   },
   setIsBasicPlan: function setIsBasicPlan(isBasicPlan) {
     this.isBasicPlan = isBasicPlan;
+  },
+  setIsMailApp: function setIsMailApp(isMailApp) {
+    this.isMailApp = isMailApp;
   }
 };
 
@@ -1532,9 +1536,9 @@ var NoteUtil = {
         if (cur === pre) return cur;
         pre = cur;
       }
-    } // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다. 
-    // 이때 decode가 완료된것으로 보이므로 그대로 return한다
-    catch (e) {
+    } catch (e) {
+      // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다.
+      // 이때 decode가 완료된것으로 보이므로 그대로 return한다
       return pre;
     }
   },
@@ -1611,7 +1615,7 @@ var NoteUtil = {
       return chapter.id === chapterId;
     });
     if (idx === -1) return;
-    item[idx]["isFolded"] = isFolded;
+    item[idx]['isFolded'] = isFolded;
     localStorage.setItem("NoteSortData_".concat(channelId), JSON.stringify(item));
   },
   setLocalSharedFoldedState: function setLocalSharedFoldedState(_ref2) {
@@ -1623,6 +1627,9 @@ var NoteUtil = {
     item = JSON.parse(item, NoteUtil.reviver);
     item.set(chapterId, isFolded);
     localStorage.setItem("Note_sharedFoldedState_".concat(channelId), JSON.stringify(item, NoteUtil.replacer));
+  },
+  isEmpty: function isEmpty(arr) {
+    return (arr === null || arr === void 0 ? void 0 : arr.length) === 0 ? true : false;
   }
 };
 
@@ -1695,7 +1702,7 @@ var checkUrlValidation = function checkUrlValidation(inputValue) {
 }; // export const 
 
 var isOpenMail = function isOpenMail(inputVal) {
-  return !GlobalVariable.isBasicPlan && isValidMail(inputVal);
+  return GlobalVariable.isMailApp && isValidMail(inputVal);
 };
 var isOpenLink = function isOpenLink(inputVal) {
   return checkUrlValidation(inputVal) || isOpenMail(inputVal);
@@ -1723,15 +1730,15 @@ var TagStore = mobx.observable({
   // note에 딸린 tagList
   notetagList: [],
   isNewTag: false,
-  tagText: "",
+  tagText: '',
   addTagList: [],
   removeTagList: [],
   updateTagList: [],
-  currentTagId: "",
-  currentTagValue: "",
+  currentTagId: '',
+  currentTagValue: '',
   selectTagIdx: '',
-  editTagIndex: "",
-  editTagValue: "",
+  editTagIndex: '',
+  editTagValue: '',
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // a,b,c 같은 키들만 담는다(render용)
@@ -1746,7 +1753,7 @@ var TagStore = mobx.observable({
   isSearching: false,
   // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearchLoading: false,
-  searchStr: "",
+  searchStr: '',
   tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
@@ -2250,7 +2257,7 @@ var TagStore = mobx.observable({
 
   /**
    * tagList의 KEY를 KOR, ENG, NUM, ETC 중 하나로 categorize 한다.
-   * @param {Array} allTagsList 
+   * @param {Array} allTagsList
    * @param {boolean} isSearching
    * @return categorized tag objects
    */
@@ -2264,10 +2271,10 @@ var TagStore = mobx.observable({
      * }
      */
     var categorizedTagObjs = {
-      'KOR': {},
-      'ENG': {},
-      'NUM': {},
-      'ETC': {}
+      KOR: {},
+      ENG: {},
+      NUM: {},
+      ETC: {}
     };
     allTagsList.forEach(function (item) {
       var upperCaseKey = item.KEY.toUpperCase();
@@ -2287,7 +2294,7 @@ var TagStore = mobx.observable({
 
   /**
    * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
-   * @param {string} tagKey 
+   * @param {string} tagKey
    * @return category of tag
    */
   getTagKeyCategory: function getTagKeyCategory(tagKey) {
@@ -2297,7 +2304,7 @@ var TagStore = mobx.observable({
 
   /**
    * tag의 category가 english인 경우 대소문자 구분 없이 정렬하여 반환한다.
-   * @param {Array} tagList 
+   * @param {Array} tagList
    * @return sorted tag list
    */
   sortEngTagList: function sortEngTagList(tagList) {
@@ -2309,7 +2316,7 @@ var TagStore = mobx.observable({
 
   /**
    * 동일한 KEY를 가지는 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
-   * @param {Array} tagList 
+   * @param {Array} tagList
    * @return tag objects with same key
    */
   getTagObjs: function getTagObjs(tagList) {
@@ -2333,8 +2340,8 @@ var TagStore = mobx.observable({
   /**
    * 동일한 KEY를 가지면서 searchTagText를 포함하는
    * 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
-   * @param {Array} tagList 
-   * @param {string} searchTagText 
+   * @param {Array} tagList
+   * @param {string} searchTagText
    * @return tag objects with same key and search string
    */
   getSearchTagObjs: function getSearchTagObjs(tagList, searchTagText) {
@@ -2358,8 +2365,8 @@ var TagStore = mobx.observable({
 
   /**
    * 인자로 들어온 object 내부에 빈 카테고리가 존재하는 경우
-   * 해당 카테고리를 object에서 삭제한다. 
-   * @param {Object} categorizedTagObjs 
+   * 해당 카테고리를 object에서 삭제한다.
+   * @param {Object} categorizedTagObjs
    */
   deleteEmptyCategory: function deleteEmptyCategory(categorizedTagObjs) {
     Object.entries(categorizedTagObjs).forEach(function (entry) {
@@ -2450,7 +2457,7 @@ var TagStore = mobx.observable({
 });
 
 var _observable;
-var EditorStore$1 = mobx.observable((_observable = {
+var EditorStore = mobx.observable((_observable = {
   tempTinymce: null,
   contents: '',
   tinymce: null,
@@ -3008,14 +3015,14 @@ var EditorStore$1 = mobx.observable((_observable = {
 
             _this3.setTempFileList(tempMeta);
 
-            if (isImage) EditorStore$1.createDriveElement('image', file_id, file_name + '.' + file_extension);
+            if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
             return _context8.abrupt("return", {
               id: file_id,
               type: type
             });
 
           case 13:
-            EditorStore$1.failCount++;
+            EditorStore.failCount++;
 
           case 14:
           case "end":
@@ -3029,11 +3036,11 @@ var EditorStore$1 = mobx.observable((_observable = {
 
   switch (type) {
     case 'image':
-      EditorStore$1.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
+      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
       break;
 
     case 'video':
-      EditorStore$1.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
+      EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
       break;
   }
 }), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
@@ -3045,19 +3052,19 @@ var EditorStore$1 = mobx.observable((_observable = {
           case 0:
             deleteArr = [];
 
-            if (!(EditorStore$1.notSaveFileList.length > 0)) {
+            if (!(EditorStore.notSaveFileList.length > 0)) {
               _context9.next = 12;
               break;
             }
 
-            deleteArr = mobx.toJS(EditorStore$1.notSaveFileList).map(function (item) {
-              return EditorStore$1.deleteFile(item.file_id);
+            deleteArr = mobx.toJS(EditorStore.notSaveFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
             });
             _context9.prev = 3;
             _context9.next = 6;
             return Promise.all(deleteArr).then(function () {
-              EditorStore$1.notSaveFileList = [];
-              if (EditorStore$1.tempFileLayoutList.length > 0) EditorStore$1.setTempFileLayoutList([]);
+              EditorStore.notSaveFileList = [];
+              if (EditorStore.tempFileLayoutList.length > 0) EditorStore.setTempFileLayoutList([]);
             });
 
           case 6:
@@ -3079,6 +3086,15 @@ var EditorStore$1 = mobx.observable((_observable = {
       }
     }, _callee9, null, [[3, 8, 10, 12]]);
   }))();
+}), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
+  var _this$tinymce, _this$tinymce$undoMan;
+
+  // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?
+  var isEmpty = NoteUtil.isEmpty;
+  if ((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) return true;
+  if (PageStore.isNewPage && isEmpty(TagStore.notetagList) && isEmpty(this.tempFileLayoutList) && isEmpty(this.fileLayoutList)) return false;
+  if (!PageStore.isNewPage && isEmpty(TagStore.addTagList) && isEmpty(TagStore.updateTagList) && isEmpty(TagStore.removeTagList)) return false;
+  return true;
 }), _observable));
 
 var languageSet = {
@@ -3805,7 +3821,7 @@ var PageStore = mobx.observable((_observable$1 = {
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
-      EditorStore$1.setIsSearch(false);
+      EditorStore.setIsSearch(false);
 
       _this.setIsEdit(dto.is_edit);
 
@@ -3816,7 +3832,7 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.setIsNewPage(true);
 
       TagStore.setNoteTagList(dto.tagList);
-      EditorStore$1.setFileList(dto.fileList);
+      EditorStore.setFileList(dto.fileList);
 
       _this.initializeBoxColor();
 
@@ -3828,9 +3844,9 @@ var PageStore = mobx.observable((_observable$1 = {
       _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
-      (_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear(); // getRng error가 나서 selection부터 체크
+      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear(); // getRng error가 나서 selection부터 체크
 
-      if ((_EditorStore$tinymce2 = EditorStore$1.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore$1.tinymce.focus();
+      if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
     });
   },
   deleteNotePage: function deleteNotePage() {
@@ -4121,7 +4137,7 @@ var PageStore = mobx.observable((_observable$1 = {
               _this5.isEdit = dto.is_edit;
               _this5.noteTitle = dto.note_title;
               _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
-              EditorStore$1.setFileList(dto.fileList);
+              EditorStore.setFileList(dto.fileList);
 
               if (_this5.isNewPage) {
                 ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
@@ -4199,9 +4215,9 @@ var PageStore = mobx.observable((_observable$1 = {
       _this7.fetchNoteInfoList(dto.note_id); // focus에서 getRng error가 나서 selection부터 체크
 
 
-      if ((_EditorStore$tinymce3 = EditorStore$1.tinymce) !== null && _EditorStore$tinymce3 !== void 0 && _EditorStore$tinymce3.selection) {
-        EditorStore$1.tinymce.focus();
-        EditorStore$1.tinymce.selection.setCursorLocation();
+      if ((_EditorStore$tinymce3 = EditorStore.tinymce) !== null && _EditorStore$tinymce3 !== void 0 && _EditorStore$tinymce3.selection) {
+        EditorStore.tinymce.focus();
+        EditorStore.tinymce.selection.setCursorLocation();
       }
 
       _this7.initializeBoxColor();
@@ -4232,9 +4248,9 @@ var PageStore = mobx.observable((_observable$1 = {
 
       var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
       if (floatingMenu !== null) floatingMenu.click();
-      (_EditorStore$tinymce4 = EditorStore$1.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.currentPageData.note_content);
       NoteStore.setShowModal(false);
-      EditorStore$1.setIsSearch(false);
+      EditorStore.setIsSearch(false);
     });
   },
   handleNoneEdit: function handleNoneEdit() {
@@ -4284,7 +4300,7 @@ var PageStore = mobx.observable((_observable$1 = {
         note_id: this.currentPageData.note_id,
         note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
-        text_content: EditorStore$1.tinymce.getContent({
+        text_content: EditorStore.tinymce.getContent({
           format: "text"
         }),
         parent_notebook: this.currentPageData.parent_notebook,
@@ -4337,26 +4353,26 @@ var PageStore = mobx.observable((_observable$1 = {
 
     this.noteEditDone(updateDTO);
 
-    if (EditorStore$1.tempFileLayoutList.length > 0) {
-      EditorStore$1.setProcessCount(0);
-      EditorStore$1.setTempFileLayoutList([]);
+    if (EditorStore.tempFileLayoutList.length > 0) {
+      EditorStore.setProcessCount(0);
+      EditorStore.setTempFileLayoutList([]);
     }
 
     NoteStore.setShowModal(false);
-    EditorStore$1.setIsAttatch(false);
-    EditorStore$1.setInitialSearchState();
+    EditorStore.setIsAttatch(false);
+    EditorStore.setInitialSearchState();
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce5 = EditorStore$1.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.selection.setCursorLocation();
-    (_EditorStore$tinymce6 = EditorStore$1.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.undoManager.clear();
+    (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.selection.setCursorLocation();
+    (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.undoManager.clear();
   },
   getNoteTitle: function getNoteTitle() {
     if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore$1.tempFileLayoutList.length > 0 || EditorStore$1.fileLayoutList.length > 0)) {
-        if (EditorStore$1.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.tempFileLayoutList[0].file_name + (EditorStore$1.tempFileLayoutList[0].file_extension ? '.' + EditorStore$1.tempFileLayoutList[0].file_extension : ''));
-        } else if (EditorStore$1.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore$1.fileLayoutList[0].file_name + (EditorStore$1.fileLayoutList[0].file_extension ? '.' + EditorStore$1.fileLayoutList[0].file_extension : ''));
+      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
+        if (EditorStore.tempFileLayoutList.length > 0) {
+          this.setTitle(EditorStore.tempFileLayoutList[0].file_name + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
+        } else if (EditorStore.fileLayoutList.length > 0) {
+          this.setTitle(EditorStore.fileLayoutList[0].file_name + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
         }
       } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
     }
@@ -4367,7 +4383,7 @@ var PageStore = mobx.observable((_observable$1 = {
     return this.noteTitle;
   }
 }, _defineProperty(_observable$1, "getTitle", function getTitle() {
-  var contentList = EditorStore$1.tinymce.getBody().children;
+  var contentList = EditorStore.tinymce.getBody().children;
   return this._getTitle(contentList);
 }), _defineProperty(_observable$1, "_getTitle", function _getTitle(contentList) {
   if (contentList) {
@@ -5828,7 +5844,7 @@ var NoteMeta = {
             ChapterStore.deleteNoteChapter();
           } else PageStore.deleteNotePage();
 
-          if (EditorStore$1.fileList) EditorStore$1.deleteAllFile();
+          if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -5841,10 +5857,10 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
 
-          if (EditorStore$1.isSearch) {
+          if (EditorStore.isSearch) {
             var _EditorStore$tinymce;
 
-            var instance = new Mark__default['default']((_EditorStore$tinymce = EditorStore$1.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.getBody());
+            var instance = new Mark__default['default']((_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.getBody());
             instance.unmark();
           }
 
@@ -5933,7 +5949,7 @@ var NoteMeta = {
   },
   setMessageInfoConfig: function setMessageInfoConfig(type) {
     // const userName = '';
-    var fileName = EditorStore$1.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
+    var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
     var dialogType = {
       type: 'default',
@@ -6008,8 +6024,8 @@ var NoteMeta = {
       case 'multiFileSomeFail':
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
-          uploadCnt: EditorStore$1.totalUploadLength,
-          failCnt: EditorStore$1.failCount
+          uploadCnt: EditorStore.totalUploadLength,
+          failCnt: EditorStore.failCount
         });
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
@@ -6530,7 +6546,7 @@ var useNoteStore = function useNoteStore() {
     ChapterStore: ChapterStore,
     TagStore: TagStore,
     PageStore: PageStore,
-    EditorStore: EditorStore$1
+    EditorStore: EditorStore
   };
 };
 
@@ -7601,12 +7617,12 @@ var HeaderButtons = function HeaderButtons() {
         return;
       }
 
-      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) {
-        PageStore.handleNoneEdit();
+      if (EditorStore.isEditCancelOpen()) {
+        NoteStore.setModalInfo('editCancel');
         return;
       }
 
-      NoteStore.setModalInfo('editCancel');
+      PageStore.handleNoneEdit();
       return;
     }
 
@@ -8319,7 +8335,7 @@ var urlSaveCondition = function urlSaveCondition(_value) {
     message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_12')
   };
 
-  if (!GlobalVariable.isBasicPlan) {
+  if (GlobalVariable.isMailApp) {
     if (isValidMailtoMail(_value)) return {
       result: true,
       message: ""
@@ -8510,7 +8526,7 @@ var openLink = function openLink(_ref2) {
 // autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
 
 var customAutoLinkPattern = function customAutoLinkPattern() {
-  return GlobalVariable.isBasicPlan ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+  return !GlobalVariable.isMailApp ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 };
 
 var handleUpload = /*#__PURE__*/function () {
@@ -8521,18 +8537,18 @@ var handleUpload = /*#__PURE__*/function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            if (EditorStore$1.uploadDTO) {
-              EditorStore$1.setIsUploading(true);
+            if (EditorStore.uploadDTO) {
+              EditorStore.setIsUploading(true);
 
               _loop = function _loop(i) {
                 (function (item) {
                   var handleUploadProgress = function handleUploadProgress(e) {
                     var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
-                    EditorStore$1.tempFileLayoutList[i].progress = e.loaded / totalLength;
-                    EditorStore$1.tempFileLayoutList[i].status = 'pending';
+                    EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
+                    EditorStore.tempFileLayoutList[i].status = 'pending';
                   };
 
-                  EditorStore$1.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource).then( /*#__PURE__*/function () {
+                  EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource).then( /*#__PURE__*/function () {
                     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(result) {
                       return regeneratorRuntime.wrap(function _callee$(_context) {
                         while (1) {
@@ -8543,12 +8559,12 @@ var handleUpload = /*#__PURE__*/function () {
                                 break;
                               }
 
-                              if (item.type === 'image') EditorStore$1.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore$1.tempFileLayoutList[i].file_name + '.' + EditorStore$1.tempFileLayoutList[i].file_extension);
-                              EditorStore$1.tempFileLayoutList[i].progress = 0;
-                              EditorStore$1.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
-                              EditorStore$1.tempFileLayoutList[i].status = 'uploaded';
+                              if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
+                              EditorStore.tempFileLayoutList[i].progress = 0;
+                              EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
+                              EditorStore.tempFileLayoutList[i].status = 'uploaded';
                               _context.next = 7;
-                              return EditorStore$1.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
+                              return EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
 
                             case 7:
                               _context.next = 10;
@@ -8556,24 +8572,24 @@ var handleUpload = /*#__PURE__*/function () {
 
                             case 9:
                               if (dto.resultMsg === 'Fail') {
-                                EditorStore$1.failCount += 1;
-                                EditorStore$1.tempFileLayoutList[i].progress = 0;
-                                EditorStore$1.tempFileLayoutList[i].error = true;
-                                EditorStore$1.tempFileLayoutList[i].status = 'failed';
+                                EditorStore.failCount += 1;
+                                EditorStore.tempFileLayoutList[i].progress = 0;
+                                EditorStore.tempFileLayoutList[i].error = true;
+                                EditorStore.tempFileLayoutList[i].status = 'failed';
                               }
 
                             case 10:
-                              EditorStore$1.processLength += 1;
+                              EditorStore.processLength += 1;
 
-                              if (EditorStore$1.processLength == EditorStore$1.uploadLength) {
-                                EditorStore$1.uploadDTO = [];
-                                EditorStore$1.setProcessLength(0);
-                                EditorStore$1.setIsUploading(false);
+                              if (EditorStore.processLength == EditorStore.uploadLength) {
+                                EditorStore.uploadDTO = [];
+                                EditorStore.setProcessLength(0);
+                                EditorStore.setIsUploading(false);
 
-                                if (EditorStore$1.failCount > 0) {
+                                if (EditorStore.failCount > 0) {
                                   NoteStore.setModalInfo('multiFileSomeFail');
                                   initialFileList();
-                                } else if (EditorStore$1.failCount === 0) initialFileList();
+                                } else if (EditorStore.failCount === 0) initialFileList();
                               }
 
                             case 12:
@@ -8589,21 +8605,21 @@ var handleUpload = /*#__PURE__*/function () {
                     };
                   }()).catch(function (e) {
                     if (e !== 'Network Error') {
-                      EditorStore$1.tempFileLayoutList[i].error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
-                      EditorStore$1.failCount += 1;
-                      EditorStore$1.processLength += 1;
-                      EditorStore$1.tempFileLayoutList[i].status = 'canceled';
-                      var hasPending = EditorStore$1.tempFileLayoutList.some(function (file) {
+                      EditorStore.tempFileLayoutList[i].error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
+                      EditorStore.failCount += 1;
+                      EditorStore.processLength += 1;
+                      EditorStore.tempFileLayoutList[i].status = 'canceled';
+                      var hasPending = EditorStore.tempFileLayoutList.some(function (file) {
                         return file['status'] === 'pending';
                       });
 
                       if (!hasPending) {
                         // 업로드 중인것이 하나도 없을 때
-                        EditorStore$1.uploadDTO = [];
-                        EditorStore$1.setProcessLength(0);
-                        EditorStore$1.setIsUploading(false);
+                        EditorStore.uploadDTO = [];
+                        EditorStore.setProcessLength(0);
+                        EditorStore.setIsUploading(false);
 
-                        if (EditorStore$1.failCount > 0) {
+                        if (EditorStore.failCount > 0) {
                           NoteStore.setModalInfo('multiFileSomeFail');
                         }
 
@@ -8611,10 +8627,10 @@ var handleUpload = /*#__PURE__*/function () {
                       }
                     }
                   });
-                })(EditorStore$1.uploadDTO[i]);
+                })(EditorStore.uploadDTO[i]);
               };
 
-              for (i = 0; i < EditorStore$1.uploadDTO.length; i++) {
+              for (i = 0; i < EditorStore.uploadDTO.length; i++) {
                 _loop(i);
               }
             }
@@ -8634,31 +8650,31 @@ var handleUpload = /*#__PURE__*/function () {
 
 var initialFileList = function initialFileList() {
   PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-    EditorStore$1.setFileList(dto.fileList);
-    EditorStore$1.notSaveFileList = EditorStore$1.tempFileLayoutList;
-    EditorStore$1.setProcessCount(0);
-    EditorStore$1.setFailCount(0);
-    EditorStore$1.setTempFileLayoutList([]);
+    EditorStore.setFileList(dto.fileList);
+    EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+    EditorStore.setProcessCount(0);
+    EditorStore.setFailCount(0);
+    EditorStore.setTempFileLayoutList([]);
   });
 };
 
 var driveSuccessCb = function driveSuccessCb(fileList) {
   if (fileList) {
     if (!isValidFileLength(fileList) || !isValidFileSize(fileList)) return;
-    EditorStore$1.setFileLength(fileList.length);
+    EditorStore.setFileLength(fileList.length);
     fileList.forEach(function (file) {
-      return EditorStore$1.addDriveFileList(file);
+      return EditorStore.addDriveFileList(file);
     });
     handleDriveCopy();
-    EditorStore$1.setIsAttatch(true);
-    EditorStore$1.setIsDrive(false);
+    EditorStore.setIsAttatch(true);
+    EditorStore.setIsDrive(false);
   }
 };
 var driveCancelCb = function driveCancelCb() {
-  EditorStore$1.setIsAttatch(true);
-  EditorStore$1.setIsDrive(false);
+  EditorStore.setIsAttatch(true);
+  EditorStore.setIsDrive(false);
   setTimeout(function () {
-    EditorStore$1.setIsAttatch(false);
+    EditorStore.setIsAttatch(false);
   }, 100);
 };
 
@@ -8706,33 +8722,33 @@ var handleDriveCopy = /*#__PURE__*/function () {
             copyArr = [];
             resultArray = [];
 
-            if (!EditorStore$1.driveFileList) {
+            if (!EditorStore.driveFileList) {
               _context3.next = 6;
               break;
             }
 
-            copyArr = mobx.toJS(EditorStore$1.driveFileList).map(function (item) {
-              return EditorStore$1.storageFileDeepCopy(item.file_id, item.type);
+            copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
+              return EditorStore.storageFileDeepCopy(item.file_id, item.type);
             });
             _context3.next = 6;
             return Promise.all(copyArr).then(function (results) {
-              if (EditorStore$1.driveFileList.length === results.length) {
+              if (EditorStore.driveFileList.length === results.length) {
                 for (var i = 0; i < results.length; i++) {
                   (function (result) {
                     if (result.id !== undefined) resultArray.push(result.id);
                   })(results[i]);
                 }
 
-                EditorStore$1.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
+                EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(function (dto) {
                   if (dto.resultMsg === 'Success') {
-                    EditorStore$1.driveFileList = [];
-                    if (EditorStore$1.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore$1.failCount === 0) {
+                    EditorStore.driveFileList = [];
+                    if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');else if (EditorStore.failCount === 0) {
                       PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-                        EditorStore$1.setFileList(dto.fileList);
-                        EditorStore$1.processCount = 0;
-                        EditorStore$1.setTempFileLayoutList([]);
+                        EditorStore.setFileList(dto.fileList);
+                        EditorStore.processCount = 0;
+                        EditorStore.setTempFileLayoutList([]);
                       });
-                      EditorStore$1.setIsAttatch(false);
+                      EditorStore.setIsAttatch(false);
                     }
                   }
                 });
@@ -8759,7 +8775,7 @@ var handleFileDelete = /*#__PURE__*/function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return EditorStore$1.tinymce.dom.doc.images;
+            return EditorStore.tinymce.dom.doc.images;
 
           case 2:
             imgTarget = _context4.sent;
@@ -8768,29 +8784,29 @@ var handleFileDelete = /*#__PURE__*/function () {
             fileArray = _toConsumableArray(fileTarget);
             deleteArr = [];
             imgArray.forEach(function (img) {
-              return EditorStore$1.tempFileList.push(img.getAttribute('id'));
+              return EditorStore.tempFileList.push(img.getAttribute('id'));
             });
             fileArray.forEach(function (file) {
-              return EditorStore$1.tempFileList.push(file.getAttribute('id'));
+              return EditorStore.tempFileList.push(file.getAttribute('id'));
             });
-            if (EditorStore$1.fileList) EditorStore$1.deleteFileList = EditorStore$1.fileList.filter(function (file) {
-              return !EditorStore$1.tempFileList.includes(file.file_id);
+            if (EditorStore.fileList) EditorStore.deleteFileList = EditorStore.fileList.filter(function (file) {
+              return !EditorStore.tempFileList.includes(file.file_id);
             });
 
-            if (!EditorStore$1.deleteFileList) {
+            if (!EditorStore.deleteFileList) {
               _context4.next = 21;
               break;
             }
 
-            deleteArr = mobx.toJS(EditorStore$1.deleteFileList).map(function (item) {
-              return EditorStore$1.deleteFile(item.file_id);
+            deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
+              return EditorStore.deleteFile(item.file_id);
             });
             _context4.prev = 12;
             _context4.next = 15;
             return Promise.all(deleteArr).then(function () {
-              EditorStore$1.deleteFileList = [];
-              EditorStore$1.tempFileList = [];
-              PageStore.setContent(EditorStore$1.tinymce.getContent());
+              EditorStore.deleteFileList = [];
+              EditorStore.tempFileList = [];
+              PageStore.setContent(EditorStore.tinymce.getContent());
             });
 
           case 15:
@@ -8826,8 +8842,8 @@ var downloadFile = function downloadFile(fileId) {
   var a = document.createElement("a");
   document.body.appendChild(a);
   a.style = "display: none";
-  a.href = EditorStore$1.tinymce.selection.getNode().src;
-  a.download = EditorStore$1.tinymce.selection.getNode().getAttribute('data-name');
+  a.href = EditorStore.tinymce.selection.getNode().src;
+  a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
   a.click();
   document.body.removeChild(a);
 };
@@ -9093,13 +9109,13 @@ var createTempEditor = function createTempEditor() {
   area.setAttribute('id', 'exportTxt');
   document.body.appendChild(frag);
   frag.appendChild(area);
-  EditorStore$1.tempTinymce.editorManager.init({
+  EditorStore.tempTinymce.editorManager.init({
     target: area,
     setup: function setup(editor) {
-      EditorStore$1.setTempTinymce(editor);
+      EditorStore.setTempTinymce(editor);
     }
   });
-  var targetEditor = EditorStore$1.tempTinymce.editorManager.get('exportTxt');
+  var targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
   return targetEditor;
 };
 var getTxtFormat = function getTxtFormat(title, contents) {
@@ -9112,7 +9128,7 @@ var getTxtFormat = function getTxtFormat(title, contents) {
   downloadTxt(title, exportText); // loading 화면 끝나요   
 
   NoteStore.setIsExporting(false);
-  EditorStore$1.tempTinymce.remove('#exportTxt');
+  EditorStore.tempTinymce.remove('#exportTxt');
   document.getElementById('exportTxtParent').remove();
 };
 var exportPageAsTxt = /*#__PURE__*/function () {
@@ -9207,7 +9223,7 @@ var handleClickImg = function handleClickImg(el) {
   if (!PageStore.isReadMode()) return;
   var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
   if (file === undefined) return;
-  EditorStore$1.setPreviewFileMeta({
+  EditorStore.setPreviewFileMeta({
     userId: NoteRepository$1.USER_ID,
     channelId: NoteRepository$1.chId,
     roomId: NoteRepository$1.WS_ID,
@@ -9215,16 +9231,16 @@ var handleClickImg = function handleClickImg(el) {
     fileName: file[0],
     fileExtension: file[1]
   });
-  EditorStore$1.setIsPreview(true);
+  EditorStore.setIsPreview(true);
 };
 
 var handleEditorContentsListener = function handleEditorContentsListener() {
-  if (EditorStore$1.tinymce) {
+  if (EditorStore.tinymce) {
     var _EditorStore$tinymce$;
 
-    var targetList = (_EditorStore$tinymce$ = EditorStore$1.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
-    var targetBody = EditorStore$1.tinymce.getBody();
-    EditorStore$1.setEditorDOM(targetBody);
+    var targetList = (_EditorStore$tinymce$ = EditorStore.tinymce.getBody()) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.querySelectorAll(['a', 'img']);
+    var targetBody = EditorStore.tinymce.getBody();
+    EditorStore.setEditorDOM(targetBody);
 
     if (targetList && targetList.length > 0) {
       Array.from(targetList).forEach(function (el) {
@@ -9238,9 +9254,9 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
   }
 };
 var handleUnselect = function handleUnselect() {
-  if (EditorStore$1.selectFileElement !== '') {
-    EditorStore$1.setFileIndex('');
-    EditorStore$1.setFileElement('');
+  if (EditorStore.selectFileElement !== '') {
+    EditorStore.setFileIndex('');
+    EditorStore.setFileElement('');
   }
 
   if (TagStore.selectTagIdx !== '') {
@@ -9287,15 +9303,15 @@ var handleFileSync = /*#__PURE__*/function () {
   };
 }();
 var openSaveDrive = function openSaveDrive() {
-  EditorStore$1.setIsSaveDrive(true);
-  EditorStore$1.setSaveDriveMeta();
+  EditorStore.setIsSaveDrive(true);
+  EditorStore.setSaveDriveMeta();
 };
 var driveSaveSuccess = function driveSaveSuccess() {
-  EditorStore$1.setIsSaveDrive(false);
-  EditorStore$1.setIsAttatch(true);
+  EditorStore.setIsSaveDrive(false);
+  EditorStore.setIsAttatch(true);
 };
 var driveSaveCancel = function driveSaveCancel() {
-  EditorStore$1.setIsSaveDrive(false);
+  EditorStore.setIsSaveDrive(false);
 }; // DriveUtils.getDriveFileInfo 참고
 
 var isImg = {
@@ -9372,8 +9388,6 @@ var SubMenu = antd.Menu.SubMenu,
     Item = antd.Menu.Item;
 
 var ContextMenu = function ContextMenu(_ref) {
-  var _spaceStore$currentSp;
-
   var noteType = _ref.noteType,
       note = _ref.note,
       chapterIdx = _ref.chapterIdx,
@@ -9386,8 +9400,7 @@ var ContextMenu = function ContextMenu(_ref) {
       PageStore = _useNoteStore.PageStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      userStore = _useCoreStores.userStore,
-      spaceStore = _useCoreStores.spaceStore;
+      userStore = _useCoreStores.userStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -9620,7 +9633,7 @@ var ContextMenu = function ContextMenu(_ref) {
     key: "1"
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "2"
-  }, t('CM_FORWARD')), ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) !== 'BASIC' && /*#__PURE__*/React__default['default'].createElement(Item, {
+  }, t('CM_FORWARD')), GlobalVariable.isMailApp && /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "3"
   }, t('NOTE_DELIVER_CONTEXT_MENU_02')), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
     title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
@@ -10435,16 +10448,12 @@ var LNBContainer = function LNBContainer() {
   }();
 
   var handleEditMode = function handleEditMode() {
-    var _EditorStore$tinymce;
-
     if (EditorStore.isUploading) {
       NoteStore.setModalInfo('uploadingFiles');
       return;
     }
 
-    var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
-
-    if (!isUndoActive && !PageStore.otherEdit) {
+    if (!EditorStore.isEditCancelOpen()) {
       PageStore.handleNoneEdit();
       return;
     }
@@ -10625,8 +10634,6 @@ var EditorHeader = function EditorHeader() {
 
   var handleLayoutBtn = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      var _EditorStore$tinymce2, isUndoActive;
-
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -10648,7 +10655,7 @@ var EditorHeader = function EditorHeader() {
                 NoteStore.setShowPage(false);
               }
 
-              _context.next = 17;
+              _context.next = 15;
               break;
 
             case 6:
@@ -10661,25 +10668,22 @@ var EditorHeader = function EditorHeader() {
               return _context.abrupt("return");
 
             case 9:
-              isUndoActive = (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : _EditorStore$tinymce2.undoManager.hasUndo();
-
-              if (isUndoActive) {
-                _context.next = 16;
+              if (EditorStore.isEditCancelOpen()) {
+                _context.next = 14;
                 break;
               }
 
-              _context.next = 13;
+              _context.next = 12;
               return PageStore.handleNoneEdit();
 
-            case 13:
+            case 12:
               NoteStore.setTargetLayout('LNB');
-              _context.next = 17;
-              break;
+              return _context.abrupt("return");
 
-            case 16:
+            case 14:
               NoteStore.setModalInfo('editCancel');
 
-            case 17:
+            case 15:
             case "end":
               return _context.stop();
           }
@@ -10694,7 +10698,7 @@ var EditorHeader = function EditorHeader() {
 
   var handleClickBtn = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-      var _EditorStore$tinymce3, _EditorStore$tinymce4;
+      var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
       var res;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -10712,7 +10716,7 @@ var EditorHeader = function EditorHeader() {
             case 3:
               EditorStore.setIsSearch(false);
               initialSearch();
-              (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : (_EditorStore$tinymce4 = _EditorStore$tinymce3.undoManager) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.clear();
+              (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : (_EditorStore$tinymce3 = _EditorStore$tinymce2.undoManager) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.clear();
 
               if (!PageStore.isReadMode()) {
                 _context2.next = 19;
@@ -10720,7 +10724,7 @@ var EditorHeader = function EditorHeader() {
               }
 
               // 수정모드 진입시 lnb 검색 결과 초기화
-              if (NoteStore.layoutState !== "collapse") ChapterStore.initSearchVar();
+              if (NoteStore.layoutState !== 'collapse') ChapterStore.initSearchVar();
 
               if (!PageStore.otherEdit) {
                 _context2.next = 16;
@@ -10786,7 +10790,7 @@ var EditorHeader = function EditorHeader() {
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
       handleBackBtn: handleLayoutBtn,
-      alignment: "center"
+      alignment: 'center'
     }, /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer1, null, /*#__PURE__*/React__default['default'].createElement(EditBtn, {
       "data-btn": "editorEditBtn",
       onClick: handleClickBtn
@@ -11522,7 +11526,7 @@ const img$s = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 const img$t = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/attachment/audio%3c/title%3e %3cg id='Icon/attachment/audio' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M17.014%2c0.9997 C20.314%2c0.9997 23%2c3.6857 23%2c6.9867 L23%2c6.9867 L23%2c17.0137 C23%2c20.3147 20.314%2c22.9997 17.014%2c22.9997 L17.014%2c22.9997 L6.986%2c22.9997 C3.686%2c22.9997 1%2c20.3147 1%2c17.0137 L1%2c17.0137 L1%2c6.9867 C1%2c3.6857 3.686%2c0.9997 6.986%2c0.9997 L6.986%2c0.9997 Z M17.014%2c2.9997 L6.986%2c2.9997 C4.788%2c2.9997 3%2c4.7877 3%2c6.9867 L3%2c6.9867 L3%2c17.0137 C3%2c19.2117 4.788%2c20.9997 6.986%2c20.9997 L6.986%2c20.9997 L17.014%2c20.9997 C19.212%2c20.9997 21%2c19.2117 21%2c17.0137 L21%2c17.0137 L21%2c6.9867 C21%2c4.7877 19.212%2c2.9997 17.014%2c2.9997 L17.014%2c2.9997 Z M13.167%2c5.9265 C14.095%2c5.6175 15.078%2c5.7675 15.869%2c6.3385 C16.661%2c6.9095 17.115%2c7.7955 17.115%2c8.7725 L17.115%2c8.7725 L17.115%2c13.9985 C17.115%2c14.0715 17.089%2c14.1345 17.074%2c14.2035 C17.095%2c14.3375 17.115%2c14.4725 17.115%2c14.6135 C17.115%2c16.0555 15.942%2c17.2285 14.5%2c17.2285 C13.058%2c17.2285 11.885%2c16.0555 11.885%2c14.6135 C11.885%2c13.1705 13.058%2c11.9985 14.5%2c11.9985 C14.713%2c11.9985 14.917%2c12.0305 15.115%2c12.0795 L15.115%2c12.0795 L15.115%2c8.7725 C15.115%2c8.4475 14.964%2c8.1515 14.7%2c7.9605 C14.437%2c7.7715 14.109%2c7.7245 13.8%2c7.8235 L13.8%2c7.8235 L11.8%2c8.4905 C11.391%2c8.6265 11.115%2c9.0085 11.115%2c9.4395 L11.115%2c9.4395 L11.115%2c14.9985 C11.115%2c15.0715 11.089%2c15.1345 11.074%2c15.2035 C11.095%2c15.3375 11.115%2c15.4725 11.115%2c15.6135 C11.115%2c17.0555 9.942%2c18.2285 8.5%2c18.2285 C7.058%2c18.2285 5.885%2c17.0555 5.885%2c15.6135 C5.885%2c14.1705 7.058%2c12.9985 8.5%2c12.9985 C8.713%2c12.9985 8.917%2c13.0305 9.115%2c13.0795 L9.115%2c13.0795 L9.115%2c9.4395 C9.115%2c8.1465 9.939%2c7.0015 11.167%2c6.5935 L11.167%2c6.5935 Z M8.5%2c14.9985 C8.161%2c14.9985 7.885%2c15.2745 7.885%2c15.6135 C7.885%2c15.9525 8.161%2c16.2285 8.5%2c16.2285 C8.839%2c16.2285 9.115%2c15.9525 9.115%2c15.6135 C9.115%2c15.2745 8.839%2c14.9985 8.5%2c14.9985 Z M14.5%2c13.9985 C14.161%2c13.9985 13.885%2c14.2745 13.885%2c14.6135 C13.885%2c14.9525 14.161%2c15.2285 14.5%2c15.2285 C14.839%2c15.2285 15.115%2c14.9525 15.115%2c14.6135 C15.115%2c14.2745 14.839%2c13.9985 14.5%2c13.9985 Z' id='Combined-Shape' fill='%23009F92'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 function _templateObject$9() {
-  var data = _taggedTemplateLiteral(["\n  width:6.69rem;\n  border-radius: 5px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 6.69rem;\n  border-radius: 5px;\n"]);
 
   _templateObject$9 = function _templateObject() {
     return data;
@@ -11536,6 +11540,9 @@ var FileLayout = function FileLayout() {
   var _useNoteStore = useNoteStore(),
       EditorStore = _useNoteStore.EditorStore,
       PageStore = _useNoteStore.PageStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      configStore = _useCoreStores.configStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -11655,7 +11662,7 @@ var FileLayout = function FileLayout() {
     if (!filebodyRef.current.includes(target.closest('.noteFile'))) {
       EditorStore.setFileIndex('');
       EditorStore.setFileElement('');
-      document.removeEventListener("click", handleSelectFile);
+      document.removeEventListener('click', handleSelectFile);
     }
   };
 
@@ -11663,7 +11670,7 @@ var FileLayout = function FileLayout() {
     EditorStore.setFileElement(filebodyRef.current[index]);
     EditorStore.selectFileElement.focus();
     EditorStore.selectFileElement.scrollIntoView(false);
-    if (EditorStore.selectFileIdx === '') document.addEventListener("click", handleSelectFile);
+    if (EditorStore.selectFileIdx === '') document.addEventListener('click', handleSelectFile);
     if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);else {
       EditorStore.setFileIndex('');
       EditorStore.setFileElement('');
@@ -11728,7 +11735,7 @@ var FileLayout = function FileLayout() {
     var cat = Object.keys(fileCategory).find(function (cat) {
       return fileCategory[cat]['ext'].includes(extension);
     });
-    var isPreviewFile = cat && fileCategory[cat]["isPreview"]; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+    var isPreviewFile = cat && fileCategory[cat]['isPreview']; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
 
     if (!PageStore.isReadMode() && !isPreviewFile) return;
 
@@ -11758,9 +11765,9 @@ var FileLayout = function FileLayout() {
                 if (EditorStore.isFile) {
                   var _filebodyRef$current;
 
-                  EditorStore.setFileIndex(""); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
+                  EditorStore.setFileIndex(''); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
 
-                  if (type === "uploaded") (_filebodyRef$current = filebodyRef.current[index > 0 ? index - 1 : 0]) === null || _filebodyRef$current === void 0 ? void 0 : _filebodyRef$current.click();
+                  if (type === 'uploaded') (_filebodyRef$current = filebodyRef.current[index > 0 ? index - 1 : 0]) === null || _filebodyRef$current === void 0 ? void 0 : _filebodyRef$current.click();
                 } else {
                   try {
                     // 불안해서 넣는 try catch문
@@ -11818,14 +11825,14 @@ var FileLayout = function FileLayout() {
 
   var menu = /*#__PURE__*/React__default['default'].createElement(StyledMenu, {
     onClick: onClickContextMenu
-  }, /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+  }, configStore.isActivateComponent('Note', 'FileLayout:SaveToDrive') ? /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "0"
-  }, t('NOTE_EDIT_PAGE_MENUBAR_32')), /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
+  }, t('NOTE_EDIT_PAGE_MENUBAR_32')) : '', /*#__PURE__*/React__default['default'].createElement(antd.Menu.Item, {
     key: "1"
   }, t('NOTE_EDIT_PAGE_MENUBAR_33')));
   React.useEffect(function () {
     return function () {
-      document.removeEventListener("click", handleSelectFile);
+      document.removeEventListener('click', handleSelectFile);
     };
   }, []);
 
@@ -11848,7 +11855,7 @@ var FileLayout = function FileLayout() {
         onKeyDown: handleKeyDownFile({
           fileId: item.file_id ? item.file_id : item.user_context_2,
           index: index,
-          type: "temp"
+          type: 'temp'
         }),
         tabIndex: index,
         closable: !PageStore.isReadMode(),
@@ -11895,7 +11902,7 @@ var FileLayout = function FileLayout() {
         onKeyDown: handleKeyDownFile({
           fileId: item.file_id ? item.file_id : item.user_context_2,
           index: index,
-          type: "uploaded"
+          type: 'uploaded'
         }),
         tabIndex: index,
         closable: !PageStore.isReadMode()
@@ -11949,7 +11956,7 @@ window.addEventListener('beforeunload', function (e) {
 });
 document.addEventListener('visibilitychange', function () {
   if (!PageStore.isReadMode() && document.visibilityState === 'hidden') {
-    EditorStore$1.setVisiblityState('hidden');
+    EditorStore.setVisiblityState('hidden');
   }
 });
 
@@ -12088,6 +12095,9 @@ var EditorContainer = function EditorContainer() {
       NoteStore = _useNoteStore2.NoteStore,
       PageStore = _useNoteStore2.PageStore,
       EditorStore = _useNoteStore2.EditorStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      configStore = _useCoreStores.configStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -12337,8 +12347,12 @@ var EditorContainer = function EditorContainer() {
             handleUnselect();
           });
           editor.on('keydown', function (e) {
+            var _editor$selection, _editor$selection$get, _editor$selection2, _editor$selection2$ge;
+
             switch (e.code && e.key) {
               case 'Tab':
+                // 이미 있는 ul,li는 원래 기능써야함
+                if ((_editor$selection = editor.selection) !== null && _editor$selection !== void 0 && (_editor$selection$get = _editor$selection.getNode()) !== null && _editor$selection$get !== void 0 && _editor$selection$get.closest('li') || (_editor$selection2 = editor.selection) !== null && _editor$selection2 !== void 0 && (_editor$selection2$ge = _editor$selection2.getNode()) !== null && _editor$selection2$ge !== void 0 && _editor$selection2$ge.querySelector('li')) break;
                 e.preventDefault();
                 e.stopPropagation();
                 if (e.shiftKey) editor.execCommand('Outdent');else editor.execCommand('Indent');
@@ -12381,13 +12395,13 @@ var EditorContainer = function EditorContainer() {
             icon: 'fileIcon',
             tooltip: t('NOTE_EDIT_PAGE_MENUBAR_24'),
             fetch: function fetch(callback) {
-              var items = [{
+              var items = [configStore.isActivateComponent('Note', 'EditorContainer:InsertFileButton') ? {
                 type: 'menuitem',
                 text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
                 onAction: function onAction() {
                   EditorStore.setIsDrive(true);
                 }
-              }, {
+              } : '', {
                 type: 'menuitem',
                 text: t('NOTE_EDIT_PAGE_ATTACH_FILE_02'),
                 onAction: function onAction() {
@@ -12402,6 +12416,10 @@ var EditorContainer = function EditorContainer() {
 
           var isAnchorElement = function isAnchorElement(node) {
             return node.nodeName.toLowerCase() === 'a' && node.href;
+          };
+
+          var isImageElement = function isImageElement(node) {
+            return node.nodeName === 'IMG';
           };
 
           var getAnchorElement = function getAnchorElement() {
@@ -12457,10 +12475,11 @@ var EditorContainer = function EditorContainer() {
               });
             }
           }); // l-click하면 나오는 메뉴
+          // 블록 선택했을 때(커서만 깜빡일 때 X) && a태그 아닐 때 && 이미지 아닐 때
 
           editor.ui.registry.addContextToolbar('textselection', {
             predicate: function predicate(node) {
-              return !editor.selection.isCollapsed() && !isAnchorElement(node);
+              return !editor.selection.isCollapsed() && !isAnchorElement(node) && !isImageElement(node);
             },
             items: 'forecolor backcolor | bold italic underline strikethrough | link',
             position: 'selection'
@@ -12485,7 +12504,7 @@ var EditorContainer = function EditorContainer() {
             icon: 'save',
             tooltip: t('NOTE_EDIT_PAGE_MENUBAR_34'),
             fetch: function fetch(callback) {
-              var items = [{
+              var items = [configStore.isActivateComponent('Note', 'EditorContainer:SaveToDrive') ? {
                 type: 'menuitem',
                 text: t('NOTE_EDIT_PAGE_MENUBAR_32'),
                 onAction: function onAction() {
@@ -12502,7 +12521,7 @@ var EditorContainer = function EditorContainer() {
                   EditorStore.setSaveFileMeta(node.id, fileExtension, fileName);
                   openSaveDrive();
                 }
-              }, {
+              } : '', {
                 type: 'menuitem',
                 text: t('NOTE_EDIT_PAGE_MENUBAR_33'),
                 onAction: function onAction() {
@@ -13225,7 +13244,7 @@ var TempEditor = function TempEditor() {
     apiKey: GlobalVariable.apiKey,
     init: {
       setup: function setup(editor) {
-        EditorStore$1.setTempTinymce(editor);
+        EditorStore.setTempTinymce(editor);
       }
     }
   }));
@@ -13248,7 +13267,8 @@ var NoteApp = function NoteApp(_ref) {
   var _useCoreStores = teespaceCore.useCoreStores(),
       userStore = _useCoreStores.userStore,
       spaceStore = _useCoreStores.spaceStore,
-      authStore = _useCoreStores.authStore;
+      authStore = _useCoreStores.authStore,
+      configStore = _useCoreStores.configStore;
 
   var renderCondition = function renderCondition(target) {
     return !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -13291,6 +13311,7 @@ var NoteApp = function NoteApp(_ref) {
             switch (_context.prev = _context.next) {
               case 0:
                 GlobalVariable.setIsBasicPlan(isBasicPlan);
+                GlobalVariable.setIsMailApp(!isBasicPlan && configStore.isActivateComponent('Note', 'customLink:openLink'));
                 NoteStore.addWWMSHandler(authStore.sessionInfo.deviceType === 'PC' ? true : false); // PC인지 아닌지
                 // 깜빡임 방지위해 만든 변수
 
@@ -13298,13 +13319,13 @@ var NoteApp = function NoteApp(_ref) {
                 NoteStore.initVariables();
 
                 if (channelId) {
-                  _context.next = 8;
+                  _context.next = 9;
                   break;
                 }
 
                 return _context.abrupt("return");
 
-              case 8:
+              case 9:
                 if (NoteStore.noteIdFromTalk) NoteStore.openNote(NoteStore.noteIdFromTalk);else if (layoutState === 'collapse') {
                   // lnb는 따로 로딩 화면 X
                   ChapterStore.getNoteChapterList();
@@ -13314,7 +13335,7 @@ var NoteApp = function NoteApp(_ref) {
                   NoteStore.setTargetLayout(null);
                 }
 
-              case 9:
+              case 10:
               case "end":
                 return _context.stop();
             }
@@ -13592,7 +13613,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
 
   var handleClickMessage = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      var isNoteApp, _EditorStore$tinymce, isUndoActive, targetChId, _yield$API$Get, noteInfo;
+      var isNoteApp, targetChId, _yield$API$Get, noteInfo;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -13609,11 +13630,11 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
               return _context.abrupt("return");
 
             case 3:
-              isNoteApp = history.location.search === "?sub=note"; // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
+              isNoteApp = history.location.search === '?sub=note'; // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
               // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
 
-              if (!(isNoteApp && NoteStore.targetLayout !== "LNB")) {
-                _context.next = 14;
+              if (!(isNoteApp && NoteStore.targetLayout !== 'LNB')) {
+                _context.next = 13;
                 break;
               }
 
@@ -13626,38 +13647,36 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
 
             case 7:
               if (PageStore.isReadMode()) {
-                _context.next = 14;
+                _context.next = 13;
                 break;
               }
 
-              isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
-
-              if (!(!isUndoActive && !PageStore.otherEdit)) {
-                _context.next = 12;
+              if (EditorStore.isEditCancelOpen()) {
+                _context.next = 11;
                 break;
               }
 
               PageStore.handleNoneEdit();
               return _context.abrupt("return");
 
-            case 12:
+            case 11:
               NoteStore.setModalInfo('editCancel');
               return _context.abrupt("return");
 
-            case 14:
+            case 13:
               // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
               targetChId = teespaceCore.RoomStore.getChannelIds({
                 roomId: roomId
               })[NoteRepository$1.CH_TYPE];
-              _context.next = 17;
+              _context.next = 16;
               return teespaceCore.API.Get("note-api/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(targetChId));
 
-            case 17:
+            case 16:
               _yield$API$Get = _context.sent;
               noteInfo = _yield$API$Get.data.dto;
 
               if (!(!noteInfo || !isFilled(noteInfo.note_id))) {
-                _context.next = 22;
+                _context.next = 21;
                 break;
               }
 
@@ -13665,7 +13684,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
               setInformDeleted(true);
               return _context.abrupt("return");
 
-            case 22:
+            case 21:
               // 2. 노트앱 열기
               // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
               if (!isNoteApp) {
@@ -13676,7 +13695,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
                 NoteStore.setNoteIdFromTalk(noteId);
               } else NoteStore.openNote(noteId);
 
-            case 23:
+            case 22:
             case "end":
               return _context.stop();
           }
@@ -13734,26 +13753,23 @@ var beforeRoute = function beforeRoute(location) {
 
   var targetApp = location.search,
       pathname = location.pathname;
+  if (PageStore.isReadMode()) return true;
 
-  if (!PageStore.isReadMode()) {
-    var _EditorStore$tinymce;
+  if (EditorStore.isUploading) {
+    NoteStore.setModalInfo('uploadingFiles');
+    return false;
+  }
 
-    if (EditorStore.isUploading) {
-      NoteStore.setModalInfo('uploadingFiles');
-      return false;
-    }
+  if (!EditorStore.isEditCancelOpen()) {
+    PageStore.handleNoneEdit();
+    return false;
+  }
 
-    var locationRoomId = pathname.split('/')[2];
-    var isUndoActive = (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : _EditorStore$tinymce.undoManager.hasUndo();
-
-    if (!isUndoActive && !PageStore.otherEdit) {
-      PageStore.handleNoneEdit();
-      return false;
-    } else if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;else if (pathname === '/logout') return true;else {
-      NoteStore.setModalInfo('editCancel');
-      return false;
-    }
-  } else return true;
+  var locationRoomId = pathname.split('/')[2];
+  if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
+  if (pathname === '/logout') return true;
+  NoteStore.setModalInfo('editCancel');
+  return false;
 };
 
 exports.NoteApp = NoteApp$1;

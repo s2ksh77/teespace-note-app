@@ -53,7 +53,7 @@ const textCondition = (value) =>
 
 const urlSaveCondition = (_value) => {
   if (!isFilled(_value)) return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_12') };
-  if (!GlobalVariable.isBasicPlan) {
+  if (GlobalVariable.isMailApp) {
     if (isValidMailtoMail(_value)) return { result: true, message: "" }; // pass
     if (isValidMail(_value)) return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_13') }; // mailto 붙여달라고 메시지 띄우기
   }
@@ -202,7 +202,7 @@ export const openLink = ({ isOnlyReadMode, url, target }) => {
 // 자동으로 mailto로 바꾸지 않는 경우
 // autolink_pattern: /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i,
 export const customAutoLinkPattern = () => {
-  return GlobalVariable.isBasicPlan
+  return !GlobalVariable.isMailApp
     ? /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i
     : /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 }
