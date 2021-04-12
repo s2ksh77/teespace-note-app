@@ -5,7 +5,11 @@ import useNoteStore from '../../store/useStore';
 import ExpandImg from '../../assets/ts_maximize.svg';
 import CollapseImg from '../../assets/ts_minimize.svg';
 import cancel from '../../assets/ts_cancel.svg';
-import { HeaderButtonContainer, Button, ButtonDiv } from '../../styles/commonStyle';
+import {
+  HeaderButtonContainer,
+  Button,
+  ButtonDiv,
+} from '../../styles/commonStyle';
 
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
@@ -33,7 +37,8 @@ const HeaderButtons = () => {
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
-        if (NoteStore.targetLayout === 'Content') ChapterStore.getNoteChapterList();
+        if (NoteStore.targetLayout === 'Content')
+          ChapterStore.getNoteChapterList();
         else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
         NoteStore.setTargetLayout(null);
         break;
@@ -42,16 +47,26 @@ const HeaderButtons = () => {
 
   const handleCancelBtn = e => {
     if (!PageStore.isReadMode()) {
-      if (EditorStore.isUploading) { NoteStore.setModalInfo('uploadingFiles'); return; }
-      if (EditorStore.tinymce && !EditorStore.tinymce.undoManager.hasUndo()) { PageStore.handleNoneEdit(); return; }
-      NoteStore.setModalInfo('editCancel'); return;
+      if (EditorStore.isUploading) {
+        NoteStore.setModalInfo('uploadingFiles');
+        return;
+      }
+      if (EditorStore.isEditCancelOpen()) {
+        NoteStore.setModalInfo('editCancel');
+        return;
+      }
+      PageStore.handleNoneEdit();
+      return;
     }
     EventBus.dispatch('onLayoutClose');
   };
 
   return useObserver(() => (
     <>
-      <HeaderButtonContainer layoutState={NoteStore.layoutState} targetLayout={NoteStore.targetLayout}>
+      <HeaderButtonContainer
+        layoutState={NoteStore.layoutState}
+        targetLayout={NoteStore.targetLayout}
+      >
         <ButtonDiv>
           <Button src={onChangeImg()} onClick={handleLayoutState} />
         </ButtonDiv>

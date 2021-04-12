@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  MessageCover,
-  NoteTitle
-} from '../../styles/commonStyle';
+import { MessageCover, NoteTitle } from '../../styles/commonStyle';
 import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
 import { isFilled } from './validators';
@@ -10,6 +7,7 @@ import { Message, RoomStore, API } from 'teespace-core';
 import NoteRepository from '../../store/noteRepository';
 import NoteUtil from '../../NoteUtil';
 import { useTranslation } from 'react-i18next';
+import EditorStore from '../../store/editorStore';
 
 //platform 코드 가져왔음
 const REM_UNIT = 16;
@@ -29,8 +27,9 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
-          })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+          (height * REM_UNIT) / defaultHeight
+        })`}
         fillRule="evenodd"
       >
         <path
@@ -74,28 +73,32 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
   //   setImgSrc(noteImg);
   // }
 
-  const handleClickMessage = async (e) => {
+  const handleClickMessage = async e => {
     // 해당 페이지 보고 있을 때(readMode, 수정 모드 모두) handleClickOutside editor 로직 타지 않도록
     e.stopPropagation();
     // 혹시나
     if (!history) return;
 
-    const isNoteApp = history.location.search === "?sub=note";
+    const isNoteApp = history.location.search === '?sub=note';
     // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
     // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
-    if (isNoteApp && NoteStore.targetLayout !== "LNB") {
+    if (isNoteApp && NoteStore.targetLayout !== 'LNB') {
       if (PageStore.currentPageId === noteId) return;
-      // 다른 페이지 수정중인 경우 Modal 띄우기   
+      // 다른 페이지 수정중인 경우 Modal 띄우기
       if (!PageStore.isReadMode()) {
-        const isUndoActive = EditorStore.tinymce?.undoManager.hasUndo();
-        if (!isUndoActive && !PageStore.otherEdit) { PageStore.handleNoneEdit(); return; }
+        if (!EditorStore.isEditCancelOpen()) {
+          PageStore.handleNoneEdit();
+          return;
+        }
         NoteStore.setModalInfo('editCancel');
         return;
       }
     }
 
     // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
-    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
+    const targetChId = RoomStore.getChannelIds({ roomId })[
+      NoteRepository.CH_TYPE
+    ];
     const {
       data: { dto: noteInfo },
     } = await API.Get(
@@ -113,15 +116,15 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
     if (!isNoteApp) {
       history.push({
         pathname: history.location.pathname,
-        search: `?sub=note`
+        search: `?sub=note`,
       });
       NoteStore.setNoteIdFromTalk(noteId);
     } else NoteStore.openNote(noteId);
-  }
+  };
 
   const handleClick = () => {
     setInformDeleted(false);
-  }
+  };
 
   return (
     <>
@@ -129,19 +132,21 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
         visible={informDeleted}
         title={t('TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01')}
         type="error"
-        btns={[{
-          type: 'solid',
-          shape: 'round',
-          text: t('NOTE_PAGE_LIST_CREATE_N_CHPT_03'),
-          onClick: handleClick
-        }]}
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: t('NOTE_PAGE_LIST_CREATE_N_CHPT_03'),
+            onClick: handleClick,
+          },
+        ]}
       />
       <MessageCover id="shareNoteMessage" onClick={handleClickMessage}>
         <NoteActiveIcon />
         <NoteTitle>{noteTitle}</NoteTitle>
       </MessageCover>
     </>
-  )
-}
+  );
+};
 
 export default ShareNoteMessageContent;
