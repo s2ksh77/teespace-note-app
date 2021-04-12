@@ -3,7 +3,7 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
 import { PageWrapper, PageTitle, PageTitleInput } from '../../styles/PageStyle';
-import ContextMenu from './Contextmenu';
+import ContextMenu from './ContextMenu';
 
 const PageItem = ({ page }) => {
   const { NoteStore } = useNoteStore();

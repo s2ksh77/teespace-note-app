@@ -12,9 +12,7 @@ const PageList = ({ page }) => {
       {page.map((item, index) => (
         <PageItem key={item.id} page={item} />
       ))}
-      <NewPageButton>
-        <NewPageText>+ 새 페이지 추가</NewPageText>
-      </NewPageButton>
+      <NewPageButton>+ 새 페이지 추가</NewPageButton>
     </>
   ));
 };

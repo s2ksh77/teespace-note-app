@@ -10,6 +10,7 @@ import {
   ChapterTitle,
   ChapterTitleInput,
 } from '../../styles/ChapterStyle';
+import ContextMenu from './ContextMenu';
 import PageList from './PageList';
 
 const ChapterItem = ({ chapter }) => {
@@ -20,6 +21,7 @@ const ChapterItem = ({ chapter }) => {
       <ChapterWrapper>
         <ChapterColor color={chapter.color} background={chapter.color} />
         <ChapterTitle>{chapter.name}</ChapterTitle>
+        <ContextMenu />
       </ChapterWrapper>
       <PageList page={chapter.pageList} />
     </ChapterContainer>
