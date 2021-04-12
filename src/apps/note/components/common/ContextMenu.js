@@ -11,12 +11,13 @@ import { Menu } from 'antd';
 import { exportData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
 import { useCoreStores } from "teespace-core";
 import { useTranslation } from "react-i18next";
+import GlobalVariable from "../../GlobalVariable";
 
 const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const { t } = useTranslation();
   const store = {
     'chapter': ChapterStore,
@@ -165,7 +166,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         && <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>}
       <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
       <Item key="2">{t('CM_FORWARD')}</Item>
-      {spaceStore.currentSpace?.plan !== 'BASIC'
+      { GlobalVariable.isMailApp
         && <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>}
       <SubMenu
         title={t('NOTE_DELIVER_CONTEXT_MENU_03')}

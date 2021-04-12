@@ -53,7 +53,7 @@ export const checkUrlValidation = (inputValue) => {
 }
 
 // export const 
-export const isOpenMail = (inputVal) => !GlobalVariable.isBasicPlan && isValidMail(inputVal);
+export const isOpenMail = (inputVal) => GlobalVariable.isMailApp && isValidMail(inputVal);
 export const isOpenLink = (inputVal) => checkUrlValidation(inputVal) || isOpenMail(inputVal);
 
 // true : valid, false : invalid

@@ -38,7 +38,7 @@ import {
   openSaveDrive,
   isValidFileNameLength,
 } from '../common/NoteFile';
-import { ComponentStore, WaplSearch } from 'teespace-core';
+import { ComponentStore, useCoreStores, WaplSearch } from 'teespace-core';
 import Mark from 'mark.js';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -142,6 +142,7 @@ const HandleUploader = props => {
 
 const EditorContainer = () => {
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { configStore } = useCoreStores();
   const { t } = useTranslation();
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   const FilePreview = ComponentStore.get('Drive:FilePreview');
@@ -478,13 +479,18 @@ const EditorContainer = () => {
                 tooltip: t('NOTE_EDIT_PAGE_MENUBAR_24'),
                 fetch: function (callback) {
                   var items = [
-                    {
-                      type: 'menuitem',
-                      text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
-                      onAction: function () {
-                        EditorStore.setIsDrive(true);
-                      },
-                    },
+                    configStore.isActivateComponent(
+                      'Note',
+                      'EditorContainer:InsertFileButton',
+                    )
+                      ? {
+                          type: 'menuitem',
+                          text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
+                          onAction: function () {
+                            EditorStore.setIsDrive(true);
+                          },
+                        }
+                      : '',
                     {
                       type: 'menuitem',
                       text: t('NOTE_EDIT_PAGE_ATTACH_FILE_02'),
@@ -594,29 +600,34 @@ const EditorContainer = () => {
                 tooltip: t('NOTE_EDIT_PAGE_MENUBAR_34'),
                 fetch: function (callback) {
                   var items = [
-                    {
-                      type: 'menuitem',
-                      text: t('NOTE_EDIT_PAGE_MENUBAR_32'),
-                      onAction: function () {
-                        const node = editor.selection.getNode();
-                        let fileName = node.getAttribute('data-name');
-                        let fileExtension;
-                        let dotIndex = fileName.lastIndexOf('.');
-                        if (dotIndex !== -1) {
-                          fileExtension = fileName.substring(
-                            dotIndex + 1,
-                            fileName.length,
-                          );
-                          fileName = fileName.substring(0, dotIndex);
+                    configStore.isActivateComponent(
+                      'Note',
+                      'EditorContainer:SaveToDrive',
+                    )
+                      ? {
+                          type: 'menuitem',
+                          text: t('NOTE_EDIT_PAGE_MENUBAR_32'),
+                          onAction: function () {
+                            const node = editor.selection.getNode();
+                            let fileName = node.getAttribute('data-name');
+                            let fileExtension;
+                            let dotIndex = fileName.lastIndexOf('.');
+                            if (dotIndex !== -1) {
+                              fileExtension = fileName.substring(
+                                dotIndex + 1,
+                                fileName.length,
+                              );
+                              fileName = fileName.substring(0, dotIndex);
+                            }
+                            EditorStore.setSaveFileMeta(
+                              node.id,
+                              fileExtension,
+                              fileName,
+                            );
+                            openSaveDrive();
+                          },
                         }
-                        EditorStore.setSaveFileMeta(
-                          node.id,
-                          fileExtension,
-                          fileName,
-                        );
-                        openSaveDrive();
-                      },
-                    },
+                      : '',
                     {
                       type: 'menuitem',
                       text: t('NOTE_EDIT_PAGE_MENUBAR_33'),

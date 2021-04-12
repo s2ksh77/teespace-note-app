@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
   const { i18n } = useTranslation();
-  const { userStore, spaceStore, authStore } = useCoreStores();
+  const { userStore, spaceStore, authStore, configStore } = useCoreStores();
   const renderCondition = target => !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
   const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
@@ -51,6 +51,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
       NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
         GlobalVariable.setIsBasicPlan(isBasicPlan);
+        GlobalVariable.setIsMailApp(!isBasicPlan && configStore.isActivateComponent('Note', 'customLink:openLink'));
         NoteStore.addWWMSHandler((authStore.sessionInfo.deviceType === 'PC') ? true : false); // PC인지 아닌지
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);
