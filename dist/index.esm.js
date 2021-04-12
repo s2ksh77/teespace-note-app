@@ -1395,9 +1395,9 @@ var NoteUtil = {
         if (cur === pre) return cur;
         pre = cur;
       }
-    } // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다. 
-    // 이때 decode가 완료된것으로 보이므로 그대로 return한다
-    catch (e) {
+    } catch (e) {
+      // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다.
+      // 이때 decode가 완료된것으로 보이므로 그대로 return한다
       return pre;
     }
   },
@@ -1474,7 +1474,7 @@ var NoteUtil = {
       return chapter.id === chapterId;
     });
     if (idx === -1) return;
-    item[idx]["isFolded"] = isFolded;
+    item[idx]['isFolded'] = isFolded;
     localStorage.setItem("NoteSortData_".concat(channelId), JSON.stringify(item));
   },
   setLocalSharedFoldedState: function setLocalSharedFoldedState(_ref2) {
@@ -1486,6 +1486,9 @@ var NoteUtil = {
     item = JSON.parse(item, NoteUtil.reviver);
     item.set(chapterId, isFolded);
     localStorage.setItem("Note_sharedFoldedState_".concat(channelId), JSON.stringify(item, NoteUtil.replacer));
+  },
+  isEmpty: function isEmpty(arr) {
+    return (arr === null || arr === void 0 ? void 0 : arr.length) === 0 ? true : false;
   }
 };
 
@@ -1514,15 +1517,15 @@ var TagStore = observable({
   // note에 딸린 tagList
   notetagList: [],
   isNewTag: false,
-  tagText: "",
+  tagText: '',
   addTagList: [],
   removeTagList: [],
   updateTagList: [],
-  currentTagId: "",
-  currentTagValue: "",
+  currentTagId: '',
+  currentTagValue: '',
   selectTagIdx: '',
-  editTagIndex: "",
-  editTagValue: "",
+  editTagIndex: '',
+  editTagValue: '',
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // a,b,c 같은 키들만 담는다(render용)
@@ -1537,7 +1540,7 @@ var TagStore = observable({
   isSearching: false,
   // 태그 검색 시작 ~ 검색 결과 나오기까지
   isSearchLoading: false,
-  searchStr: "",
+  searchStr: '',
   tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
@@ -2041,7 +2044,7 @@ var TagStore = observable({
 
   /**
    * tagList의 KEY를 KOR, ENG, NUM, ETC 중 하나로 categorize 한다.
-   * @param {Array} allTagsList 
+   * @param {Array} allTagsList
    * @param {boolean} isSearching
    * @return categorized tag objects
    */
@@ -2055,10 +2058,10 @@ var TagStore = observable({
      * }
      */
     var categorizedTagObjs = {
-      'KOR': {},
-      'ENG': {},
-      'NUM': {},
-      'ETC': {}
+      KOR: {},
+      ENG: {},
+      NUM: {},
+      ETC: {}
     };
     allTagsList.forEach(function (item) {
       var upperCaseKey = item.KEY.toUpperCase();
@@ -2078,7 +2081,7 @@ var TagStore = observable({
 
   /**
    * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
-   * @param {string} tagKey 
+   * @param {string} tagKey
    * @return category of tag
    */
   getTagKeyCategory: function getTagKeyCategory(tagKey) {
@@ -2088,7 +2091,7 @@ var TagStore = observable({
 
   /**
    * tag의 category가 english인 경우 대소문자 구분 없이 정렬하여 반환한다.
-   * @param {Array} tagList 
+   * @param {Array} tagList
    * @return sorted tag list
    */
   sortEngTagList: function sortEngTagList(tagList) {
@@ -2100,7 +2103,7 @@ var TagStore = observable({
 
   /**
    * 동일한 KEY를 가지는 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
-   * @param {Array} tagList 
+   * @param {Array} tagList
    * @return tag objects with same key
    */
   getTagObjs: function getTagObjs(tagList) {
@@ -2124,8 +2127,8 @@ var TagStore = observable({
   /**
    * 동일한 KEY를 가지면서 searchTagText를 포함하는
    * 다양한 tagText의 tagId, noteIds를 담고 있는 Object를 반환한다.
-   * @param {Array} tagList 
-   * @param {string} searchTagText 
+   * @param {Array} tagList
+   * @param {string} searchTagText
    * @return tag objects with same key and search string
    */
   getSearchTagObjs: function getSearchTagObjs(tagList, searchTagText) {
@@ -2149,8 +2152,8 @@ var TagStore = observable({
 
   /**
    * 인자로 들어온 object 내부에 빈 카테고리가 존재하는 경우
-   * 해당 카테고리를 object에서 삭제한다. 
-   * @param {Object} categorizedTagObjs 
+   * 해당 카테고리를 object에서 삭제한다.
+   * @param {Object} categorizedTagObjs
    */
   deleteEmptyCategory: function deleteEmptyCategory(categorizedTagObjs) {
     Object.entries(categorizedTagObjs).forEach(function (entry) {
@@ -2870,6 +2873,15 @@ var EditorStore = observable((_observable = {
       }
     }, _callee9, null, [[3, 8, 10, 12]]);
   }))();
+}), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
+  var _this$tinymce, _this$tinymce$undoMan;
+
+  // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?
+  var isEmpty = NoteUtil.isEmpty;
+  if ((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) return true;
+  if (PageStore.isNewPage && isEmpty(TagStore.notetagList) && isEmpty(this.tempFileLayoutList) && isEmpty(this.fileLayoutList)) return false;
+  if (!PageStore.isNewPage && isEmpty(TagStore.addTagList) && isEmpty(TagStore.updateTagList) && isEmpty(TagStore.removeTagList)) return false;
+  return true;
 }), _observable));
 
 var languageSet = {
