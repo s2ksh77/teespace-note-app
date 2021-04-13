@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
+import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
 import ChapterColor from '../chapter/ChapterColor';
@@ -20,6 +21,7 @@ import { checkMaxLength } from '../common/validators';
 
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { authStore } = useCoreStores();
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(chapter.isFolded ? chapter.isFolded : false);
 
@@ -46,6 +48,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const [, drag, preview] = useDrag({
     item: { id: chapter.id, type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER },
     begin: (monitor) => {
+      console.log(authStore.hasPermission('noteShareChapter', 'C'))
       if (!ChapterStore.moveInfoMap.get(chapter.id)) {
         ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
         ChapterStore.setIsCtrlKeyDown(false);
@@ -204,7 +207,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
                 : '')
           }
           ref={
-            !ChapterStore.renameId
+            authStore.hasPermission('noteShareChapter', 'C') && !ChapterStore.renameId
               ? (!isShared
                 ? (node) => drag(dropChapter(node))
                 : drag)
