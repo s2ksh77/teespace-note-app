@@ -58,6 +58,7 @@ const EditorStore = observable({
   uploaderRef: '',
   uploaderType: '',
   visiblityState: '',
+  uploadFileCancelStatus: false,
   getTempTinymce() {
     return this.tempTinymce;
   },
@@ -526,6 +527,16 @@ const EditorStore = observable({
       } finally {
       }
     }
+  },
+  async uploadingFileallCancel(){
+    await Promise.all(EditorStore.uploadDTO.map((file,idx) => {
+      if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
+        EditorStore.tempFileLayoutList[idx].deleted = true;
+        return file?.cancelSource?.cancel();
+      }
+    })).then(()=> {
+      this.uploadFileCancelStatus = true;
+    })
   },
   isEditCancelOpen() {
     // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?

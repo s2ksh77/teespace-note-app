@@ -106,7 +106,7 @@ export const GlobalStyle = createGlobalStyle`
     color: #000000 !important;
   }
   .custom-link-dialog {
-    height:18rem !important;
+    height:auto !important;
   }
   .custom-dialog-title {
     font-weight: bold !important;

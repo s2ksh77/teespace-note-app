@@ -51,6 +51,7 @@ export const handleUpload = async () => {
                         }
                     }).catch(e => {
                         if (e !== 'Network Error') {
+                            if(!EditorStore.tempFileLayoutList[i]) return;
                             EditorStore.tempFileLayoutList[i].error = API.isCancel(e) ? API.isCancel(e) : true;
                             EditorStore.failCount += 1;
                             EditorStore.processLength += 1;
@@ -71,15 +72,25 @@ export const handleUpload = async () => {
     }
 }
 const initialFileList = () => {
-    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-        EditorStore.setFileList(
-            dto.fileList,
-        );
+    if(EditorStore.uploadFileCancelStatus) {
+        PageStore.handleSave();
+        EditorStore.uploadFileCancelStatus = false;
         EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
         EditorStore.setProcessCount(0);
         EditorStore.setFailCount(0);
         EditorStore.setTempFileLayoutList([]);
-    });
+    }else{
+        PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+            EditorStore.setFileList(
+                dto.fileList,
+            );
+            EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+            EditorStore.setProcessCount(0);
+            EditorStore.setFailCount(0);
+            EditorStore.setTempFileLayoutList([]);
+        }); 
+    }
+    
 }
 
 export const driveSuccessCb = (fileList) => {

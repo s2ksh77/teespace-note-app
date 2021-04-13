@@ -78,8 +78,9 @@ const renderValidation = (params) => (e, targetValue) => {
     tooltip$.textContent = resultObj["message"];
     [img$, tooltip$].forEach((node) => node.classList.add('note-show-element'));
   }
+  // multiline일 때 textInput 없음
   // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
-  if (isFilled(textInput.value)) {
+  if (textInput && isFilled(textInput.value)) {
     [...textInput.parentElement.querySelectorAll('.note-show-element')].forEach((node) => node.classList.remove('note-show-element'));
   }
 }
@@ -94,22 +95,29 @@ const activateSaveBtn = (saveBtn) => {
   saveBtn.classList.remove('disabled-btn');
 }
 
+const isEmpty = (targetInputs$) => {
+  for (const input of targetInputs$) {
+    if (!isFilled(input.value)) return true;
+  }
+  return false;
+}
+
 const changeLinkDialogForm = (dialog) => {
   // 텍스트, 링크 순으로 바꿔주기
-  const form = dialog.querySelector('.tox-dialog__body .tox-form');
-  form.insertBefore(form.children[1], form.children[0]);
+  const form = dialog.querySelector('.tox-dialog__body .tox-form');  
   form.classList.add("custom-dialog-form");
-
   const formStr = { url: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_05'), text: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_04') };
-  const targetInputs$ = form.querySelectorAll('input');
   const saveBtn = dialog.querySelector('.custom-dialog-btns #custom-link-save');
-  // 링크 삽입시도시 disable, 기존 링크창은 활성화
-  if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) disableSaveBtn(saveBtn);
+  const targetInputs$ = form.querySelectorAll('input');
+  if (form.children.length > 1) {
+    form.insertBefore(form.children[1], form.children[0]);
+  }
+  if (isEmpty(targetInputs$)) disableSaveBtn(saveBtn);
 
   const handleInput = (checkValidation) => (e) => {
     if (typeof checkValidation === 'function') checkValidation(e, e.currentTarget.value);
     // 두 input창이 비어있으면 saveBtn을 disable한다
-    if (!isFilled(targetInputs$[0].value) || !isFilled(targetInputs$[1].value)) {disableSaveBtn(saveBtn);return;}
+    if (isEmpty(targetInputs$)) {disableSaveBtn(saveBtn);return;}
     //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
     if (form.querySelectorAll(".note-link-form-error.note-show-element").length) disableSaveBtn(saveBtn);
     else activateSaveBtn(saveBtn);
@@ -130,7 +138,7 @@ const changeLinkDialogForm = (dialog) => {
       type,
       errorMark,
       errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput: targetInputs$[0] // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
+      textInput: form.childNodes.length > 1 ? targetInputs$[0] : null// 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
     };
     // validation 함수 만들기
     const renderItemValidation = renderValidation(params);
