@@ -18,14 +18,13 @@ export const LNBBodyContainer = styled.div`
 `;
 
 export const ContextMenuWrapper = styled.div`
-  position: absolute;
-  right: 0.3rem;
   display: flex;
   width: 1.5rem;
   height: 1.5rem;
   visibility: hidden;
   cursor: pointer;
   border-radius: 0.38rem;
+  margin-right: 0.15rem;
   align-items: center;
   justify-content: center;
   &:hover {

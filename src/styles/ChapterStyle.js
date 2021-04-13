@@ -28,6 +28,7 @@ export const ChapterWrapper = styled.div`
   align-items: center;
   font-weight: 500;
   border-bottom: 0.0625rem solid #eeedeb;
+  cursor: pointer;
   &:hover .contextMenu {
     visibility: visible;
   }
@@ -68,8 +69,12 @@ export const ChapterTitle = styled.span`
   position: relative;
   font-weight: 500;
   align-items: center;
-  cursor: pointer;
-  max-width: calc(100% - 1.93rem);
+  margin-right: 0.3rem;
+  min-width: calc(100% - 4.05rem);
+  max-width: calc(100% - 4.05rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const ChapterTitleInput = styled.input`
@@ -88,6 +93,27 @@ export const ChapterTitleInput = styled.input`
     background: #f2efec;
     color: #000000;
   }
+`;
+
+export const ChapterFoldButton = styled.span`
+  display: flex;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.38rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    background-color: #eae6e0;
+  }
+`;
+
+export const ChapterFoldButtonIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
+    brightness(98%) contrast(84%);
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
@@ -113,28 +139,6 @@ export const NewNoteMark = styled.div`
   margin-left: 0.25rem;
   margin-top: -0.5rem;
   margin-right: ${props => (props.isChapter ? '2rem' : '')};
-`;
-
-export const ChapterFolderBtn = styled.span`
-  display: flex;
-  flex: 0 0 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 0.38rem;
-  align-items: center;
-  justify-content: center;
-  margin-left: 0.15rem;
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(235, 230, 223, 1);
-  }
-`;
-
-export const ChapterFoldBtnIcon = styled.img`
-  width: 1rem;
-  height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
-    brightness(98%) contrast(84%);
 `;
 
 export const ChapterInput = styled.input`

@@ -9,9 +9,13 @@ import {
   ChapterShareIcon,
   ChapterTitle,
   ChapterTitleInput,
+  ChapterFoldButton,
+  ChapterFoldButtonIcon,
 } from '../../styles/ChapterStyle';
 import ContextMenu from './ContextMenu';
 import PageList from './PageList';
+import arrowTopIcon from '../../assets/arrow_top_1.svg';
+import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 
 const ChapterItem = ({ chapter }) => {
   const { NoteStore } = useNoteStore();
@@ -22,6 +26,9 @@ const ChapterItem = ({ chapter }) => {
         <ChapterColor color={chapter.color} background={chapter.color} />
         <ChapterTitle>{chapter.name}</ChapterTitle>
         <ContextMenu />
+        <ChapterFoldButton>
+          <ChapterFoldButtonIcon src={arrowTopIcon} />
+        </ChapterFoldButton>
       </ChapterWrapper>
       <PageList page={chapter.pageList} />
     </ChapterContainer>
