@@ -15,6 +15,7 @@ export const LNBBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   border-top: 1px solid #ddd9d4;
+  padding: 0 1rem;
 `;
 
 export const ContextMenuWrapper = styled.div`
@@ -42,13 +43,12 @@ export const ContextMenuIcon = styled.img`
 export const LNBTagWrapper = styled.div`
   display: flex;
   align-items: center;
-  width: calc(100% - 1.62rem);
   min-height: 2.81rem;
-  padding: 0rem 0.81rem 0rem 1rem;
+  padding: 0 1rem;
   font-size: 0.81rem;
+  font-weight: 500;
   cursor: pointer;
   border-bottom: 0.0625rem solid #eeedeb;
-  margin: 0 0.81rem;
   order: 2;
   &:hover {
     background-color: #faf8f7;
@@ -58,13 +58,13 @@ export const LNBTagWrapper = styled.div`
 
 export const LNBTagIcon = styled.img`
   width: 1rem;
+  margin-right: 0.63rem;
   filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)
     brightness(96%) contrast(87%);
 `;
 
 export const LNBTagText = styled.div`
   font-weight: 500;
-  margin-left: 0.63rem;
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */

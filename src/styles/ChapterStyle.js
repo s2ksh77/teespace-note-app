@@ -4,8 +4,6 @@ import { Dropdown } from 'antd';
 export const ChapterContainer = styled.ul`
   position: relative;
   user-select: none;
-  margin: 0rem 0.81rem 0rem 0.81rem;
-  padding: 0rem;
   display: block;
   flex-direction: column;
   font-size: 0.81rem;
@@ -24,7 +22,6 @@ export const ChapterWrapper = styled.div`
   height: 2.81rem;
   display: flex;
   margin: 4px 0 4px 0;
-  padding-left: 1.69rem;
   align-items: center;
   font-weight: 500;
   border-bottom: 0.0625rem solid #eeedeb;
@@ -52,7 +49,6 @@ export const ChapterColor = styled.span`
   align-self: center;
   border-radius: 10px;
   margin: 0.31rem 0;
-  color: ${props => props.color};
   background: ${props => props.background};
   min-width: 0.25rem;
 `;

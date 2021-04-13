@@ -14,16 +14,25 @@ import {
 } from '../../styles/ChapterStyle';
 import ContextMenu from './ContextMenu';
 import PageList from './PageList';
+import sharedPageIcon from '../../assets/page_shared.svg';
+import sharedIcon from '../../assets/share_1.svg';
 import arrowTopIcon from '../../assets/arrow_top_1.svg';
 import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 
 const ChapterItem = ({ chapter, flexOrder, isShared }) => {
   const { NoteStore } = useNoteStore();
 
+  const ChapterIcon = () => {
+    if (chapter.type === 'shared_page')
+      return <ChapterShareIcon src={sharedPageIcon} />;
+    if (chapter.type === 'shared') return <ChapterShareIcon src={sharedIcon} />;
+    return <ChapterColor background={chapter.color} />;
+  };
+
   return useObserver(() => (
     <ChapterContainer order={flexOrder}>
-      <ChapterWrapper>
-        <ChapterColor color={chapter.color} background={chapter.color} />
+      <ChapterWrapper style={{ paddingLeft: isShared ? '2.63rem' : '1.69rem' }}>
+        <ChapterIcon />
         <ChapterTitle>{chapter.name}</ChapterTitle>
         <ContextMenu />
         <ChapterFoldButton>

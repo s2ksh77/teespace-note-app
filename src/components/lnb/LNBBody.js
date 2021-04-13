@@ -31,26 +31,36 @@ const LNBBody = () => {
                     <ChapterItem
                       key={item.id}
                       chapter={item}
-                      name={item.name}
                       flexOrder={1}
+                      isShared={false}
                     />
                   );
                 case 2: // SHARED_PAGE
                   if (item.pageList.length > 0)
                     return (
-                      <ChapterItem key={item.id} chapter={item} flexOrder={3} />
+                      <ChapterItem
+                        key={item.id}
+                        chapter={item}
+                        flexOrder={3}
+                        isShared
+                      />
                     );
                   break;
                 case 3:
                   return (
-                    <ChapterItem key={item.id} chapter={item} flexOrder={3} />
+                    <ChapterItem
+                      key={item.id}
+                      chapter={item}
+                      flexOrder={3}
+                      isShared
+                    />
                   );
                 default:
                   break;
               }
               return null;
             })}
-          <LNBTag flexOrder={2} />
+          <LNBTag />
         </DndProvider>
       )}
     </LNBBodyContainer>
