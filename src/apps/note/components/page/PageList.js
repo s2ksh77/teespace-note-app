@@ -7,8 +7,10 @@ import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageS
 import { logEvent } from 'teespace-core';
 import { DRAG_TYPE } from '../../GlobalVariable';
 import { useTranslation } from 'react-i18next';
+import { useCoreStores } from 'teespace-core';
 
 const PageList = ({ showNewPage, chapter, chapterIdx }) => {
+  const { authStore } = useCoreStores();
   const { NoteStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
   const [, drop] = useDrop({
@@ -76,7 +78,10 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
         show={showNewPage}
       >
         <PageMargin />
-        <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
+        <NewPageBtn 
+          active={authStore.hasPermission('notePage', 'C') ? true : false} 
+          onClick={authStore.hasPermission('notePage', 'C') ? handleNewBtnClick(chapter.id) : null}
+        >
           <NewPageText>+ {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}</NewPageText>
         </NewPageBtn>
       </NewPage>

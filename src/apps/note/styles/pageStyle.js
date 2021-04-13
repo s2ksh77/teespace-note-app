@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const PageContainerCover = styled.div`
   display: flex;
@@ -87,17 +87,24 @@ export const NewPageBtn = styled.p`
   height: 100%;
   display: flex;
   padding-left: 1.25rem;
-  cursor: pointer;
   border-radius: 0.31rem;
-  &:hover {
-    background-color: #FAF8F7;
-  }
-  &:active {
-    background-color: #F2EFEC;
+  ${props => props.active 
+    ? css`    
+      cursor: pointer;
+      &:hover {
+        background-color: #FAF8F7;
+      }
+      &:active {
+        background-color: #F2EFEC;
+      }
+    `
+    : css`
+      color: #C9C4BE;
+    `
   }
 `;
+
 export const NewPageText = styled.span`
-  cursor: pointer;
   align-self: center;
 `;
 
