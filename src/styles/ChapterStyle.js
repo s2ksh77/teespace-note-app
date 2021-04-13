@@ -70,8 +70,8 @@ export const ChapterTitle = styled.span`
   font-weight: 500;
   align-items: center;
   margin-right: 0.3rem;
-  min-width: calc(100% - 4.05rem);
-  max-width: calc(100% - 4.05rem);
+  min-width: calc(100% - 3.75rem);
+  max-width: calc(100% - 3.75rem);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

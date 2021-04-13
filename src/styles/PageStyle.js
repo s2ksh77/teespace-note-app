@@ -17,6 +17,9 @@ export const PageWrapper = styled.li`
 `;
 
 export const PageTitle = styled.a`
+  min-width: calc(100% - 2.1rem);
+  max-width: calc(100% - 2.1rem);
+  margin-right: 0.3rem;
   cursor: pointer;
   color: #000000 !important;
   overflow: hidden;
