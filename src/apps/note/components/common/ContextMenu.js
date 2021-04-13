@@ -172,11 +172,11 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
       {note.type !== 'shared_page' && (
-        <Item key="0" disabled={!authStore.hasPermission('note', 'U')}>
+        <Item key="0" disabled={!authStore.hasPermission('notePage', 'U')}>
           {t('NOTE_DELIVER_CONTEXT_MENU_01')}
         </Item>
       )}
-      <Item key="1" disabled={!authStore.hasPermission('note', 'D')}>
+      <Item key="1" disabled={!authStore.hasPermission('notePage', 'D')}>
         {t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}
       </Item>
       <Item key="2" disabled={!authStore.hasPermission('noteSharePage', 'C')}>

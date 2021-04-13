@@ -9634,10 +9634,10 @@ var ContextMenu = function ContextMenu(_ref) {
     onClick: onClickContextMenu
   }, note.type !== 'shared_page' && /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "0",
-    disabled: !authStore.hasPermission('note', 'U')
+    disabled: !authStore.hasPermission('notePage', 'U')
   }, t('NOTE_DELIVER_CONTEXT_MENU_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "1",
-    disabled: !authStore.hasPermission('note', 'D')
+    disabled: !authStore.hasPermission('notePage', 'D')
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), /*#__PURE__*/React__default['default'].createElement(Item, {
     key: "2",
     disabled: !authStore.hasPermission('noteSharePage', 'C')
