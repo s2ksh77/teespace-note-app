@@ -2508,6 +2508,7 @@ var EditorStore = mobx.observable((_observable = {
   uploaderRef: '',
   uploaderType: '',
   visiblityState: '',
+  uploadFileCancelStatus: false,
   getTempTinymce: function getTempTinymce() {
     return this.tempTinymce;
   },
@@ -3085,6 +3086,33 @@ var EditorStore = mobx.observable((_observable = {
         }
       }
     }, _callee9, null, [[3, 8, 10, 12]]);
+  }))();
+}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
+  var _this4 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.next = 2;
+            return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
+              if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
+                var _file$cancelSource;
+
+                EditorStore.tempFileLayoutList[idx].deleted = true;
+                return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
+              }
+            })).then(function () {
+              _this4.uploadFileCancelStatus = true;
+            });
+
+          case 2:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10);
   }))();
 }), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
@@ -5864,6 +5892,11 @@ var NoteMeta = {
             instance.unmark();
           }
 
+          if (EditorStore.isUploading) {
+            EditorStore.uploadingFileallCancel();
+            return;
+          }
+
           PageStore.handleSave();
           Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
             try {
@@ -8609,6 +8642,7 @@ var handleUpload = /*#__PURE__*/function () {
                     };
                   }()).catch(function (e) {
                     if (e !== 'Network Error') {
+                      if (!EditorStore.tempFileLayoutList[i]) return;
                       EditorStore.tempFileLayoutList[i].error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
                       EditorStore.failCount += 1;
                       EditorStore.processLength += 1;
@@ -8653,13 +8687,22 @@ var handleUpload = /*#__PURE__*/function () {
 }();
 
 var initialFileList = function initialFileList() {
-  PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
-    EditorStore.setFileList(dto.fileList);
+  if (EditorStore.uploadFileCancelStatus) {
+    PageStore.handleSave();
+    EditorStore.uploadFileCancelStatus = false;
     EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
     EditorStore.setProcessCount(0);
     EditorStore.setFailCount(0);
     EditorStore.setTempFileLayoutList([]);
-  });
+  } else {
+    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
+      EditorStore.setFileList(dto.fileList);
+      EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
+      EditorStore.setProcessCount(0);
+      EditorStore.setFailCount(0);
+      EditorStore.setTempFileLayoutList([]);
+    });
+  }
 };
 
 var driveSuccessCb = function driveSuccessCb(fileList) {

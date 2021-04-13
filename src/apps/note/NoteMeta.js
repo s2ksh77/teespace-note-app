@@ -94,6 +94,10 @@ const NoteMeta = {
             const instance = new Mark(EditorStore.tinymce?.getBody());
             instance.unmark();
           }
+          if(EditorStore.isUploading) {
+            EditorStore.uploadingFileallCancel();
+            return;
+          }
           PageStore.handleSave();
           import('teespace-core')
             .then(module => {
