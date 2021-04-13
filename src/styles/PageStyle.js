@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const PageWrapper = styled.li`
   display: flex;
@@ -53,12 +53,20 @@ export const NewPageButton = styled.p`
   align-items: center;
   cursor: pointer;
   border-radius: 0.31rem;
-  &:hover {
-    background-color: #faf8f7;
-  }
-  &:active {
-    background-color: #f2efec;
-  }
+  ${props =>
+    props.active
+      ? css`
+          cursor: pointer;
+          &:hover {
+            background-color: #faf8f7;
+          }
+          &:active {
+            background-color: #f2efec;
+          }
+        `
+      : css`
+          color: #c9c4be;
+        `}
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
