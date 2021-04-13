@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
+import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from "react-dnd-html5-backend";
 import ContextMenu from '../common/ContextMenu';
@@ -21,6 +22,7 @@ import { checkMaxLength } from '../common/validators';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { authStore } = useCoreStores();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
@@ -133,7 +135,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   return useObserver(() => (
     <PageCover
       ref={
-        !PageStore.renameId
+        authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId
           ? (page.type === 'note' 
             ? (node) => drag(drop(node))
             : drag)

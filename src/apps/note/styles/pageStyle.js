@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const PageContainerCover = styled.div`
   display: flex;
@@ -82,23 +82,27 @@ export const NewPage = styled.span`
   display: ${props => props.show ? "flex" : "none"};
   height: 2.81rem;
 `;
-export const NewPageBtn = styled.p`
+export const NewPageBtn = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: center;
   padding-left: 1.25rem;
-  cursor: pointer;
   border-radius: 0.31rem;
-  &:hover {
-    background-color: #FAF8F7;
+  ${props => props.active 
+    ? css`    
+      cursor: pointer;
+      &:hover {
+        background-color: #FAF8F7;
+      }
+      &:active {
+        background-color: #F2EFEC;
+      }
+    `
+    : css`
+      color: #C9C4BE;
+    `
   }
-  &:active {
-    background-color: #F2EFEC;
-  }
-`;
-export const NewPageText = styled.span`
-  cursor: pointer;
-  align-self: center;
 `;
 
 export const EllipsisIcon = styled.i`
