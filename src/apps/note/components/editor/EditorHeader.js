@@ -103,7 +103,7 @@ const EditorHeader = () => {
           <EditBtn
             data-btn="editorEditBtn"
             onClick={handleClickBtn}
-            disabled={!authStore.hasPermission('note', 'U')}
+            disabled={!authStore.hasPermission('notePage', 'U')}
           >
             {PageStore.isReadMode()
               ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')

@@ -10828,7 +10828,7 @@ var EditorHeader = function EditorHeader() {
     }, /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer1, null, /*#__PURE__*/React__default['default'].createElement(EditBtn, {
       "data-btn": "editorEditBtn",
       onClick: handleClickBtn,
-      disabled: !authStore.hasPermission('note', 'U')
+      disabled: !authStore.hasPermission('notePage', 'U')
     }, PageStore.isReadMode() ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01') : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')), /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
       id: "editorTitle",
       maxLength: "200",
