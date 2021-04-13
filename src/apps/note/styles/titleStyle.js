@@ -17,9 +17,9 @@ export const EditBtn = styled.button`
   align-items: center;
   border-radius: 0.25rem;
   border: 0px solid #ffffff;
-  background-color: #232D3B;
+  background-color: #232d3b;
   &:hover {
-    background-color: #4C535D;
+    background-color: #4c535d;
     cursor: pointer;
   }
   &:focus {
@@ -36,7 +36,7 @@ export const EditBtn = styled.button`
 export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
-  height:100%;
+  height: 100%;
   outline: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -56,16 +56,16 @@ export const EditorTitle = styled.input`
 export const EditorHeaderContainer2 = styled.div`
   display: flex;
   flex: auto;
-  flex-shrink:0;
+  flex-shrink: 0;
   position: relative;
-  justify-content:flex-end;
+  justify-content: flex-end;
   align-items: center;
-  width: auto;  
+  width: auto;
 `;
 export const HeaderDivider = styled.div`
   width: 1px;
   height: 24px;
-  background: #DDD9D4;
+  background: #ddd9d4;
   margin: auto 0.56rem;
 `;
 export const EditingImg = styled.img`
@@ -79,9 +79,9 @@ export const ModifiedUser = styled.span`
 `;
 
 export const AutoSaveMsg = styled.span`
-  color: #2E6360 ;
+  color: #2e6360;
   font-size: 0.6875rem;
-  margin-right:${props=>props.isSaving ? "0.63rem" : "0.31rem"};
+  margin-right: ${props => (props.isSaving ? '0.63rem' : '0.31rem')};
 `;
 
 export const ModifiedTime = styled.span`
@@ -99,16 +99,17 @@ export const ModifiedTime = styled.span`
 export const EditorSearchIconDiv = styled.div`
   display: flex;
   padding: 8px;
-  &:hover{
+  &:hover {
     background: #ebe6df;
     border-radius: 0.25rem;
     cursor: pointer;
   }
-`
+`;
 
 export const EditorSearchIcon = styled.img`
-  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);
-`
+  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg)
+    brightness(93%) contrast(92%);
+`;
 
 export const LnbTitleCover = styled.div`
   display: flex;
@@ -134,14 +135,20 @@ export const LnbTitleNewButton = styled.button`
   justify-content: center;
   border: 0px solid #ffffff;
   border-radius: 0.25rem;
-  background-color: #232D3B;
-  min-width:4.5rem;
+  background-color: #232d3b;
+  min-width: 4.5rem;
   &:hover {
-    background-color: #4C535D;
+    background-color: #4c535d;
     cursor: pointer;
   }
   &:focus {
     outline: none;
+  }
+  &:disabled {
+    background: #ccc;
+    color: #fff;
+    border: 0;
+    cursor: not-allowed;
   }
 `;
 
@@ -154,17 +161,18 @@ export const LnbTitleSearchContainer = styled.form`
   height: 1.88rem;
   border-radius: 6px;
   border: 1px solid transparent;
-  background-color: #F7F4EF;
+  background-color: #f7f4ef;
   &:focus-within {
-    background: #FFFFFF;
-    border: 1px solid #7B7671;
+    background: #ffffff;
+    border: 1px solid #7b7671;
   }
   box-sizing: border-box;
   margin: auto 0;
-  flex:1;
-  min-width:10.6rem;
-  background-color: ${props => (props.isSearch ? "#FFFFFF" : "#F7F4EF")};
-  border: ${props => (props.isSearch ? "1px solid #7B7671" : "1px solid transparent")};
+  flex: 1;
+  min-width: 10.6rem;
+  background-color: ${props => (props.isSearch ? '#FFFFFF' : '#F7F4EF')};
+  border: ${props =>
+    props.isSearch ? '1px solid #7B7671' : '1px solid transparent'};
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -188,19 +196,19 @@ export const LnbTitleSearchInput = styled.input`
   border: 0rem;
   overflow: hidden;
   outline: none;
-  &:focus{
-    background: #FFFFFF;
+  &:focus {
+    background: #ffffff;
     outline: none;
   }
   &::placeholder {
-    color: #C9C4BE;
+    color: #c9c4be;
   }
-  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "inherit;")}
+  background-color: ${props => (props.isSearch ? '#FFFFFF;' : 'inherit;')};
 `;
 
 export const TagSearchForm = styled.form`
-  display:${props => props.show ? "block" : "none"};
-  margin-left:auto;
+  display: ${props => (props.show ? 'block' : 'none')};
+  margin-left: auto;
 `;
 
 export const TagTitleSearchContainer = styled.div`
@@ -217,6 +225,7 @@ export const TagTitleSearchContainer = styled.div`
     background: #FFFFFF;
     border: 1px solid #7B7671;
   }
-  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "#F7F4EF;")}
-  border: ${props => (props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;")}
+  background-color: ${props => (props.isSearch ? '#FFFFFF;' : '#F7F4EF;')}
+  border: ${props =>
+    props.isSearch ? '1px solid #7B7671;' : '0rem solid #c6ced6;'}
 `;

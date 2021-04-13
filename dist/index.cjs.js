@@ -6700,7 +6700,7 @@ function _templateObject18() {
 }
 
 function _templateObject17() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  margin-left:auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  margin-left: auto;\n"]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -6710,7 +6710,7 @@ function _templateObject17() {
 }
 
 function _templateObject16() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus{\n    background: #FFFFFF;\n    outline: none;\n  }\n  &::placeholder {\n    color: #C9C4BE;\n  }\n  background-color: ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus {\n    background: #ffffff;\n    outline: none;\n  }\n  &::placeholder {\n    color: #c9c4be;\n  }\n  background-color: ", ";\n"]);
 
   _templateObject16 = function _templateObject16() {
     return data;
@@ -6730,7 +6730,7 @@ function _templateObject15() {
 }
 
 function _templateObject14() {
-  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 1px solid transparent;\n  background-color: #F7F4EF;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex:1;\n  min-width:10.6rem;\n  background-color: ", ";\n  border: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 1px solid transparent;\n  background-color: #f7f4ef;\n  &:focus-within {\n    background: #ffffff;\n    border: 1px solid #7b7671;\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex: 1;\n  min-width: 10.6rem;\n  background-color: ", ";\n  border: ", ";\n"]);
 
   _templateObject14 = function _templateObject14() {
     return data;
@@ -6740,7 +6740,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: fit-content;\n  height: 1.88rem;\n  padding-left: 12px;\n  padding-right: 12px;\n  line-height: 100%;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232D3B;\n  min-width:4.5rem;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  align-items: center;\n  display: flex;\n  width: fit-content;\n  height: 1.88rem;\n  padding-left: 12px;\n  padding-right: 12px;\n  line-height: 100%;\n  margin-right: 0.63rem;\n  color: #ffffff;\n  font-size: 0.75rem;\n  justify-content: center;\n  border: 0px solid #ffffff;\n  border-radius: 0.25rem;\n  background-color: #232d3b;\n  min-width: 4.5rem;\n  &:hover {\n    background-color: #4c535d;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -6760,7 +6760,7 @@ function _templateObject12$1() {
 }
 
 function _templateObject11$1() {
-  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%) contrast(92%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg)\n    brightness(93%) contrast(92%);\n"]);
 
   _templateObject11$1 = function _templateObject11() {
     return data;
@@ -6770,7 +6770,7 @@ function _templateObject11$1() {
 }
 
 function _templateObject10$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover{\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  padding: 8px;\n  &:hover {\n    background: #ebe6df;\n    border-radius: 0.25rem;\n    cursor: pointer;\n  }\n"]);
 
   _templateObject10$1 = function _templateObject10() {
     return data;
@@ -6790,7 +6790,7 @@ function _templateObject9$1() {
 }
 
 function _templateObject8$1() {
-  var data = _taggedTemplateLiteral(["\n  color: #2E6360 ;\n  font-size: 0.6875rem;\n  margin-right:", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  color: #2e6360;\n  font-size: 0.6875rem;\n  margin-right: ", ";\n"]);
 
   _templateObject8$1 = function _templateObject8() {
     return data;
@@ -6820,7 +6820,7 @@ function _templateObject6$1() {
 }
 
 function _templateObject5$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 1px;\n  height: 24px;\n  background: #DDD9D4;\n  margin: auto 0.56rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 1px;\n  height: 24px;\n  background: #ddd9d4;\n  margin: auto 0.56rem;\n"]);
 
   _templateObject5$1 = function _templateObject5() {
     return data;
@@ -6830,7 +6830,7 @@ function _templateObject5$1() {
 }
 
 function _templateObject4$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  flex-shrink:0;\n  position: relative;\n  justify-content:flex-end;\n  align-items: center;\n  width: auto;  \n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: auto;\n  flex-shrink: 0;\n  position: relative;\n  justify-content: flex-end;\n  align-items: center;\n  width: auto;\n"]);
 
   _templateObject4$1 = function _templateObject4() {
     return data;
@@ -6840,7 +6840,7 @@ function _templateObject4$1() {
 }
 
 function _templateObject3$1() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height:100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height: 100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
 
   _templateObject3$1 = function _templateObject3() {
     return data;
@@ -6850,7 +6850,7 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 4.5rem;\n  height: 1.88rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #232D3B;\n  &:hover {\n    background-color: #4C535D;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 4.5rem;\n  height: 1.88rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #232d3b;\n  &:hover {\n    background-color: #4c535d;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
 
   _templateObject2$1 = function _templateObject2() {
     return data;
@@ -6877,7 +6877,7 @@ var HeaderDivider = styled__default['default'].div(_templateObject5$1());
 var EditingImg = styled__default['default'].img(_templateObject6$1());
 var ModifiedUser = styled__default['default'].span(_templateObject7$1());
 var AutoSaveMsg = styled__default['default'].span(_templateObject8$1(), function (props) {
-  return props.isSaving ? "0.63rem" : "0.31rem";
+  return props.isSaving ? '0.63rem' : '0.31rem';
 });
 var ModifiedTime = styled__default['default'].span(_templateObject9$1());
 var EditorSearchIconDiv = styled__default['default'].div(_templateObject10$1());
@@ -6885,21 +6885,21 @@ var EditorSearchIcon = styled__default['default'].img(_templateObject11$1());
 var LnbTitleCover = styled__default['default'].div(_templateObject12$1());
 var LnbTitleNewButton = styled__default['default'].button(_templateObject13());
 var LnbTitleSearchContainer = styled__default['default'].form(_templateObject14(), function (props) {
-  return props.isSearch ? "#FFFFFF" : "#F7F4EF";
+  return props.isSearch ? '#FFFFFF' : '#F7F4EF';
 }, function (props) {
-  return props.isSearch ? "1px solid #7B7671" : "1px solid transparent";
+  return props.isSearch ? '1px solid #7B7671' : '1px solid transparent';
 });
 var LnbTitleSearchIcon = styled__default['default'].button(_templateObject15());
 var LnbTitleSearchInput = styled__default['default'].input(_templateObject16(), function (props) {
-  return props.isSearch ? "#FFFFFF;" : "inherit;";
+  return props.isSearch ? '#FFFFFF;' : 'inherit;';
 });
 var TagSearchForm = styled__default['default'].form(_templateObject17(), function (props) {
-  return props.show ? "block" : "none";
+  return props.show ? 'block' : 'none';
 });
 var TagTitleSearchContainer = styled__default['default'].div(_templateObject18(), function (props) {
-  return props.isSearch ? "#FFFFFF;" : "#F7F4EF;";
+  return props.isSearch ? '#FFFFFF;' : '#F7F4EF;';
 }, function (props) {
-  return props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;";
+  return props.isSearch ? '1px solid #7B7671;' : '0rem solid #c6ced6;';
 });
 
 const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/search%3c/title%3e %3cg id='Icon/common/search' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.6826%2c1 C16.0216%2c1 20.3646%2c5.375 20.3646%2c10.752 C20.3646%2c13.042 19.5726%2c15.145 18.2556%2c16.81 L18.2556%2c16.81 L22.1736%2c20.76 L22.7096%2c21.301 C23.0986%2c21.693 23.0966%2c22.326 22.7036%2c22.715 C22.5086%2c22.908 22.2546%2c23.005 21.9996%2c23.005 C21.7436%2c23.005 21.4856%2c22.906 21.2896%2c22.709 L21.2896%2c22.709 L17.8786%2c19.271 C17.8786%2c19.27 17.8776%2c19.269 17.8776%2c19.269 L17.8776%2c19.269 L16.8666%2c18.249 C15.1876%2c19.656 13.0326%2c20.504 10.6826%2c20.504 C5.3436%2c20.504 0.9996%2c16.129 0.9996%2c10.752 C0.9996%2c5.375 5.3436%2c1 10.6826%2c1 Z M10.6826%2c3 C6.4466%2c3 2.9996%2c6.478 2.9996%2c10.752 C2.9996%2c15.027 6.4466%2c18.504 10.6826%2c18.504 C14.9176%2c18.504 18.3646%2c15.027 18.3646%2c10.752 C18.3646%2c6.478 14.9176%2c3 10.6826%2c3 Z M10.284%2c4.5271 C10.837%2c4.5271 11.284%2c4.9751 11.284%2c5.5271 C11.284%2c6.0791 10.837%2c6.5271 10.284%2c6.5271 C8.197%2c6.5271 6.499%2c8.2421 6.499%2c10.3511 C6.499%2c10.9031 6.052%2c11.3511 5.499%2c11.3511 C4.946%2c11.3511 4.499%2c10.9031 4.499%2c10.3511 C4.499%2c7.1401 7.094%2c4.5271 10.284%2c4.5271 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
@@ -7667,6 +7667,9 @@ var LNBHeader = function LNBHeader(_ref) {
       PageStore = _useNoteStore.PageStore,
       EditorStore = _useNoteStore.EditorStore;
 
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore;
+
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
 
@@ -7784,16 +7787,17 @@ var LNBHeader = function LNBHeader(_ref) {
       onClick: handleLayoutBtn
     })), /*#__PURE__*/React__default['default'].createElement(LnbTitleNewButton, {
       "data-btn": 'noteNewChapterBtn',
-      onClick: handleNewChapterClick
+      onClick: handleNewChapterClick,
+      disabled: !authStore.hasPermission('noteChapter', 'C')
     }, t('NOTE_PAGE_LIST_CMPNT_DEF_01')), /*#__PURE__*/React__default['default'].createElement(LnbTitleSearchContainer, {
       onSubmit: onSubmitSearchBtn,
-      isSearch: ChapterStore.searchStr !== "" || ChapterStore.isSearching ? true : false
+      isSearch: ChapterStore.searchStr !== '' || ChapterStore.isSearching ? true : false
     }, /*#__PURE__*/React__default['default'].createElement(SearchImgInput, {
       type: "image",
       border: "0",
       alt: " ",
       src: img,
-      isSearch: ChapterStore.searchStr !== "" || ChapterStore.isSearching ? true : false
+      isSearch: ChapterStore.searchStr !== '' || ChapterStore.isSearching ? true : false
     }), ChapterStore.isTagSearching ? /*#__PURE__*/React__default['default'].createElement(SearchTagChip, null, /*#__PURE__*/React__default['default'].createElement(TagText, null, ChapterStore.searchingTagName), /*#__PURE__*/React__default['default'].createElement(StyledCancelBtn, {
       onClick: cancelSearchingTagNote,
       src: img$1,
@@ -7802,7 +7806,7 @@ var LNBHeader = function LNBHeader(_ref) {
       ref: inputRef,
       value: ChapterStore.searchStr,
       onChange: onChangeInput,
-      placeholder: ChapterStore.isTagSearching ? "" : t('NOTE_PAGE_LIST_CMPNT_DEF_05'),
+      placeholder: ChapterStore.isTagSearching ? '' : t('NOTE_PAGE_LIST_CMPNT_DEF_05'),
       disabled: ChapterStore.isTagSearching ? true : false,
       onKeyDown: function onKeyDown(e) {
         return e.key === 'Escape' ? onClickCancelBtn() : null;
@@ -7810,7 +7814,7 @@ var LNBHeader = function LNBHeader(_ref) {
     }), /*#__PURE__*/React__default['default'].createElement(CancelBtn, {
       src: img$1,
       onClick: onClickCancelBtn,
-      visible: !(!ChapterStore.isSearching && ChapterStore.searchStr === "" || ChapterStore.isTagSearching)
+      visible: !(!ChapterStore.isSearching && ChapterStore.searchStr === '' || ChapterStore.isTagSearching)
     })), NoteStore.layoutState === 'collapse' && /*#__PURE__*/React__default['default'].createElement(HeaderButtons, null)));
   });
 };
@@ -9400,14 +9404,15 @@ var ContextMenu = function ContextMenu(_ref) {
       PageStore = _useNoteStore.PageStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      userStore = _useCoreStores.userStore;
+      userStore = _useCoreStores.userStore,
+      authStore = _useCoreStores.authStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
 
   var store = {
-    'chapter': ChapterStore,
-    'page': PageStore
+    chapter: ChapterStore,
+    page: PageStore
   };
   /**
    * 챕터/페이지의 이름을 변경한다.
@@ -9611,7 +9616,7 @@ var ContextMenu = function ContextMenu(_ref) {
     var key = _ref5.key,
         domEvent = _ref5.domEvent;
     domEvent.stopPropagation();
-    if (key === "0") renameComponent();else if (key === "1") deleteComponent();else if (key === "2") shareComponent();else if (key === "3") exportComponent(true);else if (key === "4") exportComponent(false);else if (key === "5") exportTxtComponent();else infoComponent();
+    if (key === '0') renameComponent();else if (key === '1') deleteComponent();else if (key === '2') shareComponent();else if (key === '3') exportComponent(true);else if (key === '4') exportComponent(false);else if (key === '5') exportTxtComponent();else infoComponent();
     if (key) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
@@ -9628,23 +9633,30 @@ var ContextMenu = function ContextMenu(_ref) {
     },
     onClick: onClickContextMenu
   }, note.type !== 'shared_page' && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "0"
+    key: "0",
+    disabled: !authStore.hasPermission('note', 'U')
   }, t('NOTE_DELIVER_CONTEXT_MENU_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "1"
+    key: "1",
+    disabled: !authStore.hasPermission('note', 'D')
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "2"
+    key: "2",
+    disabled: !authStore.hasPermission('noteSharePage', 'C')
   }, t('CM_FORWARD')), GlobalVariable.isMailApp && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "3"
+    key: "3",
+    disabled: !authStore.hasPermission('noteMailShare', 'C')
   }, t('NOTE_DELIVER_CONTEXT_MENU_02')), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
     title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
     onTitleClick: handleSubMenuClick,
     disabled: noteType === 'chapter' && !note.children.length ? true : false
   }, /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "4"
+    key: "4",
+    disabled: !authStore.hasPermission('notePage', 'C')
   }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "5"
+    key: "5",
+    disabled: !authStore.hasPermission('notePage', 'C')
   }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02'))), note.type === 'shared' && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "6"
+    key: "6",
+    disabled: !authStore.hasPermission('notePage', 'C')
   }, t('NOTE_DELIVER_CONTEXT_MENU_04')));
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(ContextMenuCover, {
@@ -9709,8 +9721,18 @@ var ChapterText = function ChapterText(_ref) {
   });
 };
 
-function _templateObject11$5() {
+function _templateObject12$5() {
   var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
+
+  _templateObject12$5 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11$5() {
+  var data = _taggedTemplateLiteral(["\n      color: #C9C4BE;\n    "]);
 
   _templateObject11$5 = function _templateObject11() {
     return data;
@@ -9720,7 +9742,7 @@ function _templateObject11$5() {
 }
 
 function _templateObject10$5() {
-  var data = _taggedTemplateLiteral(["\n  cursor: pointer;\n  align-self: center;\n"]);
+  var data = _taggedTemplateLiteral(["    \n      cursor: pointer;\n      &:hover {\n        background-color: #FAF8F7;\n      }\n      &:active {\n        background-color: #F2EFEC;\n      }\n    "]);
 
   _templateObject10$5 = function _templateObject10() {
     return data;
@@ -9730,7 +9752,7 @@ function _templateObject10$5() {
 }
 
 function _templateObject9$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  padding-left: 1.25rem;\n  cursor: pointer;\n  border-radius: 0.31rem;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  &:active {\n    background-color: #F2EFEC;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  padding-left: 1.25rem;\n  border-radius: 0.31rem;\n  ", "\n"]);
 
   _templateObject9$5 = function _templateObject9() {
     return data;
@@ -9828,9 +9850,10 @@ var PageTextInput = styled__default['default'].input(_templateObject7$5());
 var NewPage = styled__default['default'].span(_templateObject8$5(), function (props) {
   return props.show ? "flex" : "none";
 });
-var NewPageBtn = styled__default['default'].p(_templateObject9$5());
-var NewPageText = styled__default['default'].span(_templateObject10$5());
-var EllipsisIcon = styled__default['default'].i(_templateObject11$5());
+var NewPageBtn = styled__default['default'].div(_templateObject9$5(), function (props) {
+  return props.active ? styled.css(_templateObject10$5()) : styled.css(_templateObject11$5());
+});
+var EllipsisIcon = styled__default['default'].i(_templateObject12$5());
 
 var Page = function Page(_ref) {
   var page = _ref.page,
@@ -9843,6 +9866,9 @@ var Page = function Page(_ref) {
       NoteStore = _useNoteStore.NoteStore,
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore;
 
   var _useState = React.useState(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -10000,7 +10026,7 @@ var Page = function Page(_ref) {
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(PageCover, {
-      ref: !PageStore.renameId ? page.type === 'note' ? function (node) {
+      ref: authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId ? page.type === 'note' ? function (node) {
         return drag(drop(node));
       } : drag : null,
       id: page.id,
@@ -10043,6 +10069,9 @@ var PageList = function PageList(_ref) {
   var showNewPage = _ref.showNewPage,
       chapter = _ref.chapter,
       chapterIdx = _ref.chapterIdx;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore;
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
@@ -10127,8 +10156,9 @@ var PageList = function PageList(_ref) {
     className: 'page-li',
     show: showNewPage
   }, /*#__PURE__*/React__default['default'].createElement(PageMargin, null), /*#__PURE__*/React__default['default'].createElement(NewPageBtn, {
-    onClick: handleNewBtnClick(chapter.id)
-  }, /*#__PURE__*/React__default['default'].createElement(NewPageText, null, "+ ", t('NOTE_PAGE_LIST_CMPNT_DEF_04')))));
+    active: authStore.hasPermission('notePage', 'C') ? true : false,
+    onClick: authStore.hasPermission('notePage', 'C') ? handleNewBtnClick(chapter.id) : null
+  }, "+ ", t('NOTE_PAGE_LIST_CMPNT_DEF_04'))));
 };
 
 const img$e = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/share_1%3c/title%3e %3cg id='Icon/common/share_1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M17.8098%2c17.6693 C17.9668%2c17.6253 18.1248%2c17.6043 18.2808%2c17.6043 C19.0318%2c17.6043 19.7228%2c18.0943 19.9358%2c18.8423 C20.0598%2c19.2743 20.0058%2c19.7293 19.7868%2c20.1223 C19.5628%2c20.5223 19.1958%2c20.8113 18.7498%2c20.9353 C17.8398%2c21.1923 16.8828%2c20.6663 16.6258%2c19.7633 L16.6258%2c19.7623 C16.5018%2c19.3303 16.5558%2c18.8753 16.7758%2c18.4813 C16.9978%2c18.0823 17.3668%2c17.7943 17.8098%2c17.6693 M6.1928%2c13.6333 C5.2758%2c13.8913 4.3238%2c13.3633 4.0668%2c12.4603 L4.0668%2c12.4603 C3.9428%2c12.0273 3.9968%2c11.5733 4.2158%2c11.1803 C4.4388%2c10.7803 4.8068%2c10.4913 5.2508%2c10.3663 C5.4088%2c10.3223 5.5668%2c10.3013 5.7218%2c10.3013 C6.4728%2c10.3013 7.1638%2c10.7913 7.3758%2c11.5403 C7.4998%2c11.9723 7.4468%2c12.4273 7.2268%2c12.8203 C7.0038%2c13.2193 6.6358%2c13.5083 6.1928%2c13.6333 M16.7758%2c3.8763 C16.9978%2c3.4773 17.3668%2c3.1893 17.8108%2c3.0643 C17.9678%2c3.0203 18.1258%2c2.9993 18.2818%2c2.9993 C19.0328%2c2.9993 19.7228%2c3.4883 19.9358%2c4.2373 C20.0598%2c4.6693 20.0058%2c5.1243 19.7868%2c5.5173 C19.5638%2c5.9173 19.1958%2c6.2053 18.7508%2c6.3303 C17.8338%2c6.5873 16.8828%2c6.0613 16.6258%2c5.1573 L16.6258%2c5.1573 C16.5018%2c4.7243 16.5558%2c4.2703 16.7758%2c3.8763 M4.7108%2c8.4403 C3.7498%2c8.7113 2.9548%2c9.3363 2.4698%2c10.2043 C1.9888%2c11.0653 1.8718%2c12.0613 2.1428%2c13.0083 C2.6068%2c14.6333 4.1018%2c15.6983 5.7238%2c15.6983 C6.0568%2c15.6983 6.3958%2c15.6533 6.7328%2c15.5593 C7.3948%2c15.3733 7.9698%2c15.0073 8.4268%2c14.5213 L14.7068%2c18.3123 C14.5248%2c18.9613 14.5128%2c19.6473 14.7028%2c20.3113 C15.1648%2c21.9363 16.6608%2c23.0013 18.2818%2c23.0013 C18.6158%2c23.0013 18.9548%2c22.9553 19.2898%2c22.8613 C20.2508%2c22.5913 21.0468%2c21.9653 21.5328%2c21.0983 C22.0138%2c20.2373 22.1298%2c19.2413 21.8598%2c18.2943 C21.3008%2c16.3353 19.2478%2c15.1903 17.2698%2c15.7433 C16.6908%2c15.9063 16.1818%2c16.2113 15.7548%2c16.6093 L9.3498%2c12.7423 C9.4688%2c12.1673 9.4658%2c11.5713 9.2998%2c10.9913 C9.2958%2c10.9783 9.2888%2c10.9673 9.2858%2c10.9553 L15.7388%2c7.3823 C16.4208%2c8.0183 17.3268%2c8.3953 18.2828%2c8.3953 C18.6168%2c8.3953 18.9558%2c8.3503 19.2908%2c8.2563 C20.2518%2c7.9863 21.0478%2c7.3603 21.5328%2c6.4923 C22.0138%2c5.6313 22.1298%2c4.6363 21.8598%2c3.6893 C21.3008%2c1.7283 19.2368%2c0.5873 17.2708%2c1.1383 C16.3098%2c1.4083 15.5138%2c2.0333 15.0298%2c2.9003 C14.5538%2c3.7523 14.4378%2c4.7353 14.6968%2c5.6723 L8.2078%2c9.2653 C7.2888%2c8.4423 5.9838%2c8.0843 4.7108%2c8.4403' id='Fill-1' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
@@ -10144,7 +10174,10 @@ var Chapter = function Chapter(_ref) {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       ChapterStore = _useNoteStore.ChapterStore,
-      PageStore = _useNoteStore.PageStore; // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
+      PageStore = _useNoteStore.PageStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore; // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
 
 
   var _useState = React.useState(chapter.isFolded ? chapter.isFolded : false),
@@ -10173,7 +10206,7 @@ var Chapter = function Chapter(_ref) {
     }
   }),
       _useDrop2 = _slicedToArray(_useDrop, 2),
-      drop = _useDrop2[1]; // 챕터를 drag했을 때 
+      drop = _useDrop2[1]; // 챕터를 drag했을 때
 
 
   var _useDrag = reactDnd.useDrag({
@@ -10363,7 +10396,7 @@ var Chapter = function Chapter(_ref) {
       itemType: "chapter"
     }, /*#__PURE__*/React__default['default'].createElement(ChapterCover, {
       className: 'chapter-div' + (ChapterStore.isCtrlKeyDown ? ChapterStore.moveInfoMap.get(chapter.id) ? ' selectedMenu' : '' : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0 ? chapter.id === _toConsumableArray(ChapterStore.moveInfoMap)[0][0] : chapter.id === ChapterStore.currentChapterId) ? ' selectedMenu' : ''),
-      ref: !ChapterStore.renameId ? !isShared ? function (node) {
+      ref: authStore.hasPermission('noteShareChapter', 'C') && !ChapterStore.renameId ? !isShared ? function (node) {
         return drag(dropChapter(node));
       } : drag : null,
       onClick: onClickChapterBtn
@@ -10625,7 +10658,8 @@ var EditorHeader = function EditorHeader() {
       EditorStore = _useNoteStore.EditorStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      userStore = _useCoreStores.userStore;
+      userStore = _useCoreStores.userStore,
+      authStore = _useCoreStores.authStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -10793,7 +10827,8 @@ var EditorHeader = function EditorHeader() {
       alignment: 'center'
     }, /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer1, null, /*#__PURE__*/React__default['default'].createElement(EditBtn, {
       "data-btn": "editorEditBtn",
-      onClick: handleClickBtn
+      onClick: handleClickBtn,
+      disabled: !authStore.hasPermission('note', 'U')
     }, PageStore.isReadMode() ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01') : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')), /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
       id: "editorTitle",
       maxLength: "200",
@@ -11054,10 +11089,10 @@ function _templateObject13$3() {
   return data;
 }
 
-function _templateObject12$5() {
+function _templateObject12$6() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid #DDD9D4;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
-  _templateObject12$5 = function _templateObject12() {
+  _templateObject12$6 = function _templateObject12() {
     return data;
   };
 
@@ -11194,7 +11229,7 @@ var EditorContainerWrapper = styled__default['default'].div(_templateObject$8(),
 }, function (props) {
   return props.isFile && !props.isReadMode && props.isSearch && styled.css(_templateObject11$6());
 });
-var ReadModeContainer = styled__default['default'].div(_templateObject12$5());
+var ReadModeContainer = styled__default['default'].div(_templateObject12$6());
 var ReadModeIcon = styled__default['default'].img(_templateObject13$3());
 var ReadModeText = styled__default['default'].span(_templateObject14$3());
 var ReadModeSubText = styled__default['default'].span(_templateObject15$3());

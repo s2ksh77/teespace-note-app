@@ -26,7 +26,7 @@ import { checkMaxLength } from '../common/validators';
 
 const EditorHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
-  const { userStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const instance = new Mark(EditorStore.tinymce?.getBody());
 
@@ -100,7 +100,11 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment={'center'}>
         <EditorHeaderContainer1>
-          <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
+          <EditBtn
+            data-btn="editorEditBtn"
+            onClick={handleClickBtn}
+            disabled={!authStore.hasPermission('note', 'U')}
+          >
             {PageStore.isReadMode()
               ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
               : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}

@@ -1,28 +1,28 @@
-import React from "react";
-import useNoteStore from "../../store/useStore";
-import { useObserver } from "mobx-react";
+import React from 'react';
+import useNoteStore from '../../store/useStore';
+import { useObserver } from 'mobx-react';
 import {
   ContextMenuCover,
   ContextMenuIconCover,
   ContextMenuIcon,
-} from "../../styles/commonStyle";
+} from '../../styles/commonStyle';
 import viewMoreIcon from '../../assets/view_more.svg';
 import { Menu } from 'antd';
-import { exportData, exportPageAsTxt, exportChapterAsTxt } from "./NoteFile";
-import { useCoreStores } from "teespace-core";
-import { useTranslation } from "react-i18next";
-import GlobalVariable from "../../GlobalVariable";
+import { exportData, exportPageAsTxt, exportChapterAsTxt } from './NoteFile';
+import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
+import GlobalVariable from '../../GlobalVariable';
 
 const { SubMenu, Item } = Menu;
 
 const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
-  const { userStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const store = {
-    'chapter': ChapterStore,
-    'page': PageStore,
-  }
+    chapter: ChapterStore,
+    page: PageStore,
+  };
 
   /**
    * 챕터/페이지의 이름을 변경한다.
@@ -44,7 +44,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       case 'chapter':
         ChapterStore.setDeleteChapterId(note.id);
         ChapterStore.getChapterChildren(note.id).then(async dto => {
-          const editingList = dto.noteList.filter(note => note.is_edit !== null && note.is_edit !== '');
+          const editingList = dto.noteList.filter(
+            note => note.is_edit !== null && note.is_edit !== '',
+          );
           if (editingList.length === 1) {
             const res = await userStore.fetchProfile(editingList[0].is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
@@ -52,8 +54,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           } else if (editingList.length > 1) {
             PageStore.setEditingUserCount(editingList.length);
             NoteStore.setModalInfo('chapterconfirm');
-          } else { 
-            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
+          } else {
+            if (ChapterStore.currentChapterId === note.id)
+              setSelectableIdOfChapter();
             NoteStore.setModalInfo('chapter');
           }
         });
@@ -63,7 +66,10 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           if (dto.is_edit === null || dto.is_edit === '') {
             PageStore.setDeletePageList({ note_id: note.id });
             if (PageStore.currentPageId === note.id) {
-              if (parent.type === 'shared_page' && parent.children.length === 1) {
+              if (
+                parent.type === 'shared_page' &&
+                parent.children.length === 1
+              ) {
                 setSelectableIdOfChapter();
                 PageStore.setLastSharedPageParentId(parent.id);
               } else {
@@ -76,7 +82,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
             NoteStore.setModalInfo('confirm');
           }
-        })
+        });
         break;
       default:
         break;
@@ -90,16 +96,14 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         : ChapterStore.chapterList[1];
     const selectableChapterId = selectableChapter?.id;
     const selectablePageId = selectableChapter?.children[0]?.id;
-    
+
     ChapterStore.setSelectableChapterId(selectableChapterId);
     PageStore.setSelectablePageId(selectablePageId);
   };
 
   const setSelectableIdOfPage = () => {
     const selectablePageId =
-      pageIdx > 0
-        ? parent.children[pageIdx - 1]?.id
-        : parent.children[1]?.id;
+      pageIdx > 0 ? parent.children[pageIdx - 1]?.id : parent.children[1]?.id;
 
     PageStore.setSelectablePageId(selectablePageId);
   };
@@ -119,7 +123,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     NoteStore.setIsExporting(true);
     if (noteType === 'chapter') targetStore.setExportTitle(note.text);
     exportData(isMailShare, noteType, note.id);
-  }
+  };
 
   const exportTxtComponent = () => {
     // loading 화면 돌아가기 시작
@@ -132,56 +136,76 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       case 'page':
         exportPageAsTxt(note.id);
         break;
-      default: break;
+      default:
+        break;
     }
-  }
+  };
 
   const infoComponent = () => {
     NoteStore.handleSharedInfo(noteType, note.id);
-  }
+  };
 
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
 
-    if (key === "0") renameComponent();
-    else if (key === "1") deleteComponent();
-    else if (key === "2") shareComponent();
-    else if (key === "3") exportComponent(true);
-    else if (key === "4") exportComponent(false);
-    else if (key === "5") exportTxtComponent();
+    if (key === '0') renameComponent();
+    else if (key === '1') deleteComponent();
+    else if (key === '2') shareComponent();
+    else if (key === '3') exportComponent(true);
+    else if (key === '4') exportComponent(false);
+    else if (key === '5') exportTxtComponent();
     else infoComponent();
 
-    if (key) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+    if (key)
+      NoteStore.LNBChapterCoverRef.removeEventListener(
+        'wheel',
+        NoteStore.disableScroll,
+      );
   };
 
   const handleSubMenuClick = ({ domEvent }) => {
     domEvent.stopPropagation();
-  }
+  };
 
   // txt로 내보내기 배포 때 주석 풀 예정
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-      {note.type !== 'shared_page'
-        && <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>}
-      <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
-      <Item key="2">{t('CM_FORWARD')}</Item>
-      { GlobalVariable.isMailApp
-        && <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>}
+      {note.type !== 'shared_page' && (
+        <Item key="0" disabled={!authStore.hasPermission('note', 'U')}>
+          {t('NOTE_DELIVER_CONTEXT_MENU_01')}
+        </Item>
+      )}
+      <Item key="1" disabled={!authStore.hasPermission('note', 'D')}>
+        {t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}
+      </Item>
+      <Item key="2" disabled={!authStore.hasPermission('noteSharePage', 'C')}>
+        {t('CM_FORWARD')}
+      </Item>
+      {GlobalVariable.isMailApp && (
+        <Item key="3" disabled={!authStore.hasPermission('noteMailShare', 'C')}>
+          {t('NOTE_DELIVER_CONTEXT_MENU_02')}
+        </Item>
+      )}
       <SubMenu
         title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
         onTitleClick={handleSubMenuClick}
         disabled={
-          noteType === 'chapter' && !note.children.length
-            ? true
-            : false
+          noteType === 'chapter' && !note.children.length ? true : false
         }
       >
-        <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
-        <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
+        <Item key="4" disabled={!authStore.hasPermission('notePage', 'C')}>
+          {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}
+        </Item>
+        <Item key="5" disabled={!authStore.hasPermission('notePage', 'C')}>
+          {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}
+        </Item>
       </SubMenu>
-      {note.type === 'shared'
-        && <Item key="6">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>}
+      {note.type === 'shared' && (
+        <Item key="6" disabled={!authStore.hasPermission('notePage', 'C')}>
+          {t('NOTE_DELIVER_CONTEXT_MENU_04')}
+        </Item>
+      )}
     </Menu>
   );
 
@@ -192,12 +216,19 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       overlay={menu}
       trigger={['click']}
       placement="bottomRight"
-      onClick={(e) => {
+      onClick={e => {
         e.stopPropagation();
-        NoteStore.LNBChapterCoverRef.addEventListener('wheel', NoteStore.disableScroll);
+        NoteStore.LNBChapterCoverRef.addEventListener(
+          'wheel',
+          NoteStore.disableScroll,
+        );
       }}
-      onVisibleChange={(visible) => {
-        if (!visible) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
+      onVisibleChange={visible => {
+        if (!visible)
+          NoteStore.LNBChapterCoverRef.removeEventListener(
+            'wheel',
+            NoteStore.disableScroll,
+          );
       }}
     >
       <ContextMenuIconCover>
@@ -205,6 +236,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       </ContextMenuIconCover>
     </ContextMenuCover>
   ));
-}
+};
 
 export default ContextMenu;
