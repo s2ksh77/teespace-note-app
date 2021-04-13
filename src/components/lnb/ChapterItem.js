@@ -17,11 +17,11 @@ import PageList from './PageList';
 import arrowTopIcon from '../../assets/arrow_top_1.svg';
 import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 
-const ChapterItem = ({ chapter }) => {
+const ChapterItem = ({ chapter, flexOrder, isShared }) => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
-    <ChapterContainer>
+    <ChapterContainer order={flexOrder}>
       <ChapterWrapper>
         <ChapterColor color={chapter.color} background={chapter.color} />
         <ChapterTitle>{chapter.name}</ChapterTitle>
