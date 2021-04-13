@@ -3,7 +3,7 @@ import { Observer } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
 import Page from './Page';
-import { NewPage, NewPageBtn, PageMargin, NewPageText } from '../../styles/pageStyle';
+import { NewPage, NewPageBtn, PageMargin } from '../../styles/pageStyle';
 import { logEvent } from 'teespace-core';
 import { DRAG_TYPE } from '../../GlobalVariable';
 import { useTranslation } from 'react-i18next';
@@ -82,7 +82,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
           active={authStore.hasPermission('notePage', 'C') ? true : false} 
           onClick={authStore.hasPermission('notePage', 'C') ? handleNewBtnClick(chapter.id) : null}
         >
-          <NewPageText>+ {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}</NewPageText>
+          + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
         </NewPageBtn>
       </NewPage>
     </>

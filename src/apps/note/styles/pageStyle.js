@@ -82,10 +82,11 @@ export const NewPage = styled.span`
   display: ${props => props.show ? "flex" : "none"};
   height: 2.81rem;
 `;
-export const NewPageBtn = styled.p`
+export const NewPageBtn = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: center;
   padding-left: 1.25rem;
   border-radius: 0.31rem;
   ${props => props.active 
@@ -102,10 +103,6 @@ export const NewPageBtn = styled.p`
       color: #C9C4BE;
     `
   }
-`;
-
-export const NewPageText = styled.span`
-  align-self: center;
 `;
 
 export const EllipsisIcon = styled.i`
