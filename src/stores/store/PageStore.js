@@ -23,6 +23,56 @@ class PageStore {
     this.tagModel = res.map(tag => new TagModel(tag));
     console.log(this.tagModel);
   }
+
+  @action
+  async createPage(pageName: string, pageContent: string, chapterId: string) {
+    const res = await NoteRepository.createPage({
+      pageName,
+      pageContent,
+      chapterId,
+    });
+    return new PageModel(res);
+  }
+
+  @action
+  async deletePage(pageList: Array<PageInfo>) {
+    const res = await NoteRepository.deletepage(pageList);
+    return new PageModel(res);
+  }
+
+  @action
+  async renamePage(pageId: string, pageTitle: string, chapterId: string) {
+    const res = await NoteRepository.renamePage({
+      pageId,
+      pageTitle,
+      chapterId,
+    });
+    return new PageModel(res);
+  }
+
+  @action
+  async movePage(pageId: String, chapterId: string) {
+    const res = await NoteRepository.movePage({
+      pageId,
+      chapterId,
+    });
+    return new PageModel(res);
+  }
+
+  @action
+  async editStart(pageId: String, chapterId: string) {
+    const res = await NoteRepository.editStart({
+      pageId,
+      chapterId,
+    });
+    return new PageModel(res);
+  }
+
+  @action
+  async editDone(updateModel: PageModel) {
+    const res = await NoteRepository.editStart(updateModel);
+    return new PageModel(res);
+  }
 }
 
 export default new PageStore();

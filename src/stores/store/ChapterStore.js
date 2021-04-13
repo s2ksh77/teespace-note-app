@@ -12,9 +12,46 @@ class ChapterStore {
     const res = await NoteRepository.getChapterList();
     this.chapterList = res.map(chapter => new ChapterModel(chapter));
     console.log(this.chapterList);
-    // 테스트용
-    // const test = await NoteRepository.getNoteInfoList();
-    // console.log(new PageModel(test));
+  }
+
+  @action
+  async getChapterInfoList(chapterId: string) {
+    const res = await NoteRepository.getChapterInfoList(chapterId);
+    return new ChapterModel(res);
+  }
+
+  @action
+  async createChapter(chapterTitle: string, chapterColor: string) {
+    const res = await NoteRepository.createChapter({
+      chapterTitle,
+      chapterColor,
+    });
+    return new ChapterModel(res);
+  }
+
+  @action
+  async updateChapterColor(chapterId: string, chapterColor: string) {
+    const res = await NoteRepository.updateChapterColor({
+      chapterId,
+      chapterColor,
+    });
+    return new ChapterModel(res);
+  }
+
+  @action
+  async deleteChapter(chapterId: string) {
+    const res = await NoteRepository.deleteChapter(chapterId);
+    return new ChapterModel(res);
+  }
+
+  @action
+  async renameChapter(chapterId: string, chapterTitle: string, color: string) {
+    const res = await NoteRepository.renameChapter({
+      chapterId,
+      chapterTitle,
+      chapterColor,
+    });
+    return new ChapterModel(res);
   }
 }
 
