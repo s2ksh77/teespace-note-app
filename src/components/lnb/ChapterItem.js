@@ -9,9 +9,8 @@ import {
   ChapterShareIcon,
   ChapterTitle,
   ChapterTitleInput,
-  ChapterFoldButton,
-  ChapterFoldButtonIcon,
 } from '../../styles/ChapterStyle';
+import { ButtonWrapper, ButtonIcon } from '../../styles/CommonStyle';
 import ContextMenu from './ContextMenu';
 import PageList from './PageList';
 import sharedPageIcon from '../../assets/page_shared.svg';
@@ -35,9 +34,9 @@ const ChapterItem = ({ chapter, flexOrder, isShared }) => {
         <ChapterIcon />
         <ChapterTitle>{chapter.name}</ChapterTitle>
         <ContextMenu />
-        <ChapterFoldButton>
-          <ChapterFoldButtonIcon src={arrowTopIcon} />
-        </ChapterFoldButton>
+        <ButtonWrapper>
+          <ButtonIcon src={arrowTopIcon} />
+        </ButtonWrapper>
       </ChapterWrapper>
       <PageList page={chapter.pageList} />
     </ChapterContainer>

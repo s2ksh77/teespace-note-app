@@ -1,5 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
@@ -12,7 +13,6 @@ import {
 } from '../../styles/HeaderStyle';
 import { TagItem, TagText, TagCancelButton } from '../../styles/TagStyle';
 import LayoutStateButton from '../common/LayoutStateButton';
-import { useTranslation } from 'react-i18next';
 import backBtn from '../../assets/arrow_back_1.svg';
 
 const LNBHeader = () => {
@@ -34,7 +34,7 @@ const LNBHeader = () => {
         )}
         <SearchCancelButton />
       </LNBSearchBar>
-      <LayoutStateButton />
+      {NoteStore.layoutState === 'collapse' && <LayoutStateButton />}
     </LNBHeaderContainer>
   ));
 };

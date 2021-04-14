@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import NoteStore from './stores/store/NoteStore';
 import { useCoreStores } from 'teespace-core';
-import ChapterStore from './stores/store/ChapterStore';
 import useNoteStore from './stores/useNoteStore';
 
 import LNB from './components/LNB';
@@ -10,7 +8,7 @@ import Content from './components/Content';
 import { ContentWrapper, ContentFoldButton } from './styles/EditorStyle';
 
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
   const { userStore, spaceStore, authStore } = useCoreStores();
   const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
 
@@ -24,6 +22,10 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     });
     ChapterStore.fetchChapterList();
   }, [roomId, channelId]);
+
+  useEffect(() => {
+    NoteStore.setLayoutState(layoutState);
+  }, [layoutState]);
 
   return useObserver(() => (
     <>

@@ -56,7 +56,6 @@ export const LNBSearchBar = styled.form`
     border: 1px solid #7b7671;
   }
   box-sizing: border-box;
-  margin: auto 0;
   flex: 1;
   min-width: 10.6rem;
   background-color: ${props => (props.isSearch ? '#ffffff' : '#f7f4ef')};
@@ -172,7 +171,7 @@ export const EditorHeaderContainer1 = styled.div`
 export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
-  height:100%;
+  height: 100%;
   outline: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -192,17 +191,11 @@ export const EditorTitle = styled.input`
 export const EditorHeaderContainer2 = styled.div`
   display: flex;
   flex: auto;
-  flex-shrink:0;
+  flex-shrink: 0;
   position: relative;
-  justify-content:flex-end;
+  justify-content: flex-end;
   align-items: center;
-  width: auto;  
-`;
-export const HeaderDivider = styled.div`
-  width: 1px;
-  height: 24px;
-  background: #DDD9D4;
-  margin: auto 0.56rem;
+  width: auto;
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -218,8 +211,8 @@ export const LnbTitleSearchIcon = styled.button`
 `;
 
 export const TagSearchForm = styled.form`
-  display:${props => props.show ? "block" : "none"};
-  margin-left:auto;
+  display: ${props => (props.show ? 'block' : 'none')};
+  margin-left: auto;
 `;
 
 export const TagTitleSearchContainer = styled.div`
@@ -236,6 +229,7 @@ export const TagTitleSearchContainer = styled.div`
     background: #FFFFFF;
     border: 1px solid #7B7671;
   }
-  background-color: ${props => (props.isSearch ? "#FFFFFF;" : "#F7F4EF;")}
-  border: ${props => (props.isSearch ? "1px solid #7B7671;" : "0rem solid #c6ced6;")}
+  background-color: ${props => (props.isSearch ? '#FFFFFF;' : '#F7F4EF;')}
+  border: ${props =>
+    props.isSearch ? '1px solid #7B7671;' : '0rem solid #c6ced6;'}
 `;

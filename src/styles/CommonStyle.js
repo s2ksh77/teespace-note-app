@@ -1,16 +1,41 @@
 import styled, { css } from 'styled-components';
 import { Dropdown } from 'antd';
 
-/** 여기 아래부터 아직 안 쓰이는 곳 */
+export const ButtonWrapper = styled.span`
+  display: flex;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.38rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    background-color: #eae6e0;
+  }
+`;
 
-export const HeaderButtonContainer = styled.div`
+export const ButtonIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
+    brightness(98%) contrast(84%);
+`;
+
+export const LayoutStateButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-left: ${props =>
-    props.layoutState === 'collapse' && props.targetLayout === 'LNB'
-      ? '0.75rem'
-      : '0rem'};
+  margin-left: 0.63rem;
 `;
+
+export const HeaderDivider = styled.div`
+  width: 0.06rem;
+  height: 1.5rem;
+  background: #ddd9d4;
+  margin-right: 1rem;
+`;
+
+/** 여기 아래부터 아직 안 쓰이는 곳 */
 
 export const ContentHeaderCover = styled.div`
   height: 3rem;

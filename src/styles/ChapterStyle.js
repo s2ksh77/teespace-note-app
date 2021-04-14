@@ -91,27 +91,6 @@ export const ChapterTitleInput = styled.input`
   }
 `;
 
-export const ChapterFoldButton = styled.span`
-  display: flex;
-  flex: 0 0 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 0.38rem;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  &:hover {
-    background-color: #eae6e0;
-  }
-`;
-
-export const ChapterFoldButtonIcon = styled.img`
-  width: 1rem;
-  height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg)
-    brightness(98%) contrast(84%);
-`;
-
 /** 여기 아래부터 아직 안 쓰이는 곳 */
 
 export const ChapterTextSpan = styled.span`
