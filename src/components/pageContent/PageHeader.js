@@ -3,30 +3,38 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
+  HeaderContainer,
   EditButton,
+  PageContentTitle,
   AutoSaveMessage,
-  EditingImage,
+  EditingIcon,
   ModifiedUser,
   ModifiedTime,
-  SearchIcon,
 } from '../../styles/HeaderStyle';
-import { PageTitle } from '../../styles/PageStyle';
+import {
+  ButtonWrapper as SearchButtonWrapper,
+  ButtonIcon as SearchButtonIcon,
+} from '../../styles/CommonStyle';
 import LayoutStateButton from '../common/LayoutStateButton';
+import editingIcon from '../../assets/wapl_working.svg';
+import searchIcon from '../../assets/search.svg';
 
 const PageHeader = () => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
-    <>
+    <HeaderContainer>
       <EditButton />
-      <PageTitle />
-      <AutoSaveMessage />
-      <EditingImage />
-      <ModifiedUser />
-      <ModifiedTime />
-      <SearchIcon />
-      <LayoutStateButton />
-    </>
+      <PageContentTitle>(제목 없음)</PageContentTitle>
+      {/* <AutoSaveMessage /> */}
+      {/* <EditingIcon src={editingIcon} /> */}
+      <ModifiedUser>User</ModifiedUser>
+      <ModifiedTime>Time</ModifiedTime>
+      <SearchButtonWrapper style={{ marginRight: '0.37rem' }}>
+        <SearchButtonIcon src={searchIcon} />
+      </SearchButtonWrapper>
+      {NoteStore.layoutState === 'expand' && <LayoutStateButton />}
+    </HeaderContainer>
   ));
 };
 

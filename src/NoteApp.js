@@ -30,7 +30,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   return useObserver(() => (
     <>
       <LNB />
-      <ContentWrapper>
+      <ContentWrapper show={layoutState === 'expand'}>
         <ContentFoldButton />
         <Content />
       </ContentWrapper>

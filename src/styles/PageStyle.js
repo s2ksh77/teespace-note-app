@@ -25,9 +25,6 @@ export const PageTitle = styled.a`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  &:hover {
-    color: #000000;
-  }
 `;
 
 export const PageTitleInput = styled.input`

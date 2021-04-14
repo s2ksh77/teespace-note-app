@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
-  LNBHeaderContainer,
+  HeaderContainer as LNBHeaderContainer,
   BackButton,
   NewChapterButton,
   LNBSearchBar,

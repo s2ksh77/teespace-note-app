@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 
-export const LNBHeaderContainer = styled.div`
+export const HeaderContainer = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;
   height: 3rem;
-  padding: 0 0.75rem 0 1rem;
+  padding: 0 1rem;
   align-items: center;
   box-sizing: border-box;
 `;
@@ -94,13 +94,14 @@ export const SearchCancelButton = styled.img`
 `;
 
 export const EditButton = styled.button`
-  width: 4.5rem;
+  min-width: 4.5rem;
   height: 1.88rem;
   color: white;
   font-size: 0.75rem;
   align-items: center;
   border-radius: 0.25rem;
-  border: 0px solid #ffffff;
+  border: 0;
+  margin-right: 1rem;
   background-color: #232d3b;
   &:hover {
     background-color: #4c535d;
@@ -117,13 +118,23 @@ export const EditButton = styled.button`
   }
 `;
 
+export const PageContentTitle = styled.span`
+  width: 100%;
+  margin-right: 1rem;
+  font-size: 0.81rem;
+  color: #000000 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const AutoSaveMessage = styled.span`
   color: #2e6360;
   font-size: 0.6875rem;
   margin-right: ${props => (props.isSaving ? '0.63rem' : '0.31rem')};
 `;
 
-export const EditingImage = styled.img`
+export const EditingIcon = styled.img`
   margin-right: 0.5rem;
 `;
 
@@ -140,9 +151,6 @@ export const ModifiedTime = styled.span`
   font-size: 0.6875rem;
   border-left: 1px solid #d8d8d8 !important;
   padding: 0 0.38rem !important;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 `;
 
 export const SearchIcon = styled.img`

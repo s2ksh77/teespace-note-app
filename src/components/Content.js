@@ -12,16 +12,23 @@ const Content = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const renderContent = (() => {
-    if (ChapterStore.loadingPageInfo) return <LoadingContent />;
-    if (ChapterStore.currentChapterId) {
-      if (PageStore.currentPageId) return <PageContent />;
-      return <NoContent />; // chapter 하위 page가 없을 때
-    }
-    return <NoContent />;
+    // if (ChapterStore.loadingPageInfo) return <LoadingContent />;
+    // if (ChapterStore.currentChapterId) {
+    //   if (PageStore.currentPageId) return <PageContent />;
+    //   return <NoContent />; // chapter 하위 page가 없을 때
+    // }
+    // return <NoContent />;
   })();
 
+  const RenderContent = () => {
+    // 임시로 PageContent 띄우기. 이름도 다시 생각해보기!
+    return <PageContent />;
+  };
+
   return useObserver(() => (
-    <ContentContainer>{renderContent}</ContentContainer>
+    <ContentContainer>
+      <RenderContent />
+    </ContentContainer>
   ));
 };
 
