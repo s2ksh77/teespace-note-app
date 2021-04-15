@@ -2,14 +2,14 @@ import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
-const NoteEditor = () => {
+const Editor = () => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
     <>
-      <div> NoteEditor </div>
+      <div> Editor </div>
     </>
   ));
 };
 
-export default NoteEditor;
+export default Editor;

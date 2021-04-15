@@ -143,81 +143,89 @@ export const PageContainer = styled.div`
     `}
 `;
 
-export const PageSubHeader = styled.div`
-  width: 100%;
-  height: 2.81rem;
-  border-top: 1px solid #ddd9d4;
+export const PageBodyContainer = styled.div``;
+
+export const PageSubHeaderContainer = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: row;
+  height: 2.81rem;
+  padding: 0 1rem;
+  border-top: 1px solid #ddd9d4;
+  align-items: center;
   color: #999999;
+`;
+
+export const ReadModeIcon = styled.img`
+  margin-right: 0.5rem;
+`;
+
+export const ReadModeText = styled.span`
+  font-size: 0.75rem;
+  margin-right: 0.63rem;
+  color: ${props => props.color};
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
 
-export const ReadModeIcon = styled.img`
-  margin-left: 16px;
-`
-export const ReadModeText = styled.span`
-  margin-left: 0.5rem;
-  color: #999999;
-  font-size: 0.75rem;
-  display: flex;
-  font-size: 0.75rem;
-`;
+// export const ReadModeText = styled.span`
+//   margin-left: 0.5rem;
+//   color: #999999;
+//   font-size: 0.75rem;
+//   display: flex;
+//   font-size: 0.75rem;
+// `;
 
 export const ReadModeSubText = styled.span`
   margin-left: 0.63rem;
-  color: #A3A3A3;
+  color: #a3a3a3;
   font-size: 0.75rem;
   display: flex;
   font-size: 0.75rem;
 `;
 
 export const FileBodyLayout = styled.div`
-  width:auto;
-  display : flex;
+  width: auto;
+  display: flex;
   align-items: center;
   height: 4.19rem;
-  border-bottom: 1px solid #DDD9D4;
+  border-bottom: 1px solid #ddd9d4;
   overflow: hidden;
-  box-sizing :border-box;
+  box-sizing: border-box;
   padding: 0rem 0.5rem;
-`
+`;
 export const FileBody = styled.div`
   display: flex;
   position: relative;
   padding: 0.375rem;
   border-radius: 0.5rem;
   ${props =>
-    props.closable ?
-      css`
-      width: 13.75rem;
-      min-width: 13.75rem;
-    `
+    props.closable
+      ? css`
+          width: 13.75rem;
+          min-width: 13.75rem;
+        `
       : css`
-      width: 12.5rem;
-      min-width: 12.5rem;
-    `
-  }
-  box-sizing: border-box; 
-  border : 1px solid #dadada;
+          width: 12.5rem;
+          min-width: 12.5rem;
+        `}
+  box-sizing: border-box;
+  border: 1px solid #dadada;
   height: 2.63rem;
   margin-left: 0.5rem;
-  flex-direction : row;
-  flex-wrap : wrap;
-  &:first-child{
+  flex-direction: row;
+  flex-wrap: wrap;
+  &:first-child {
     margin-left: 0rem;
   }
   &:focus {
     outline: 0;
   }
-`
+`;
 export const FileContent = styled.div`
   min-width: calc(100% - 1.325rem);
   display: flex;
   margin-left: 0px;
-`
+`;
 export const FileDownloadIcon = styled.div`
   display: flex;
   align-items: center;
@@ -228,22 +236,22 @@ export const FileDownloadIcon = styled.div`
   margin-right: 0.375rem;
   width: 1.88rem;
   height: 1.88rem;
-`
+`;
 export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
     position: absolute;
-    left : 1.5rem;
-    top:1.5rem;
+    left: 1.5rem;
+    top: 1.5rem;
     font-size: 0.875rem;
-    color: #FB3A3A;
+    color: #fb3a3a;
   }
-`
+`;
 
-export const ProgressWrapper = styled.div` 
+export const ProgressWrapper = styled.div`
   width: 100%;
   position: relative !important;
   display: flex;
-`
+`;
 
 export const FileExtensionIcon = styled.div`
   display: flex;
@@ -256,31 +264,31 @@ export const FileExtensionIcon = styled.div`
   width: 30px;
   height: 40px;
   ${FileDownloadIcon}:hover & {
-    display:none;
+    display: none;
   }
-`
+`;
 
 // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 export const FileDownloadBtn = styled.img`
-  width:1.5rem;
-  height:1.5rem;
-`
+  width: 1.5rem;
+  height: 1.5rem;
+`;
 export const FileExtensionBtn = styled.img`
-  width:1.5rem;
-  height:1.5rem;
-`
+  width: 1.5rem;
+  height: 1.5rem;
+`;
 
 export const FileData = styled.div`
   height: auto;
   line-height: 0.9375rem;
   max-width: 9.55rem;
-  min-width: ${(props) => props.mode === "true" ? "" : "9.5rem"};
+  min-width: ${props => (props.mode === 'true' ? '' : '9.5rem')};
   overflow: inherit;
   display: inline-block;
   height: 40px;
-  cursor : pointer;
+  cursor: pointer;
   flex: 1;
-`
+`;
 
 export const FileDataName = styled.div`
   display: flex;
@@ -289,21 +297,21 @@ export const FileDataName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
+`;
 export const FileName = styled.div`
   font-size: 0.69rem;
   background-color: inherit;
   margin-right: 0rem;
   margin-top: 0;
-  color: #45474A;
+  color: #45474a;
   line-height: 0.9375rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  &:hover{
+  &:hover {
     text-decoration: underline;
   }
-`
+`;
 export const FileDataTime = styled.div`
   display: flex;
   overflow: hidden;
@@ -313,7 +321,7 @@ export const FileDataTime = styled.div`
   height: auto;
   overflow: inherit;
   max-width: 9.55rem;
-`
+`;
 
 export const FileTime = styled.div`
   background-color: inherit;
@@ -323,8 +331,8 @@ export const FileTime = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color:#888D96;
-`
+  color: #888d96;
+`;
 export const FileProgress = styled.div`
   background-color: inherit;
   line-height: 0.9375rem;
@@ -333,10 +341,9 @@ export const FileProgress = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color:#888D96;
+  color: #888d96;
   margin-left: auto;
-`
-
+`;
 
 export const FileClose = styled.div`
   display: flex;
@@ -346,13 +353,14 @@ export const FileClose = styled.div`
   cursor: pointer;
   border-radius: 0.5rem;
   align-items: top;
-`
+`;
 
 export const FileCloseBtn = styled.img`
   width: 0.56rem;
   height: 0.56rem;
-  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
-`
+  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)
+    brightness(90%) contrast(109%);
+`;
 
 export const editorContentCSS = ` 
   html,body{
@@ -419,4 +427,4 @@ export const editorContentCSS = `
     background-color: #FFD200 !important;
   }
   .tox-notification { display: none !important }
-`
+`;

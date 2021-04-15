@@ -8,6 +8,7 @@ export const LNBContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  border-right: ${({ isExpanded }) => (isExpanded ? '1px solid #ddd9d4' : '0')};
 `;
 
 export const LNBBodyContainer = styled.div`

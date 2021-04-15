@@ -10,7 +10,7 @@ const LNB = () => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
-    <LNBContainer>
+    <LNBContainer isExpanded={NoteStore.layoutState === 'expand'}>
       <LNBHeader />
       <LNBBody />
     </LNBContainer>

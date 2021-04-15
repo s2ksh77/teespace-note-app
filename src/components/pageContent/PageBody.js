@@ -2,8 +2,9 @@ import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
-import { PageSubHeader } from '../../styles/EditorStyle';
-import NoteEditor from './NoteEditor';
+import { PageBodyContainer } from '../../styles/EditorStyle';
+import PageSubHeader from './PageSubHeader';
+import Editor from './Editor';
 import PageFileList from './PageFileList';
 import PageTagList from './PageTagList';
 import ExportEditor from './ExportEditor';
@@ -12,12 +13,12 @@ const PageBody = () => {
   const { NoteStore } = useNoteStore();
 
   return useObserver(() => (
-    <>
+    <PageBodyContainer>
       <PageSubHeader />
-      <NoteEditor />
+      <Editor />
       <PageFileList />
       <PageTagList />
-    </>
+    </PageBodyContainer>
   ));
 };
 
