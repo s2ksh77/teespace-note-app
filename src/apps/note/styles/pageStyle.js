@@ -89,19 +89,12 @@ export const NewPageBtn = styled.div`
   align-items: center;
   padding-left: 1.25rem;
   border-radius: 0.31rem;
-  ${props => props.active 
-    ? css`    
-      cursor: pointer;
-      &:hover {
-        background-color: #FAF8F7;
-      }
-      &:active {
-        background-color: #F2EFEC;
-      }
-    `
-    : css`
-      color: #C9C4BE;
-    `
+  cursor: pointer;
+  &:hover {
+    background-color: #FAF8F7;
+  }
+  &:active {
+    background-color: #F2EFEC;
   }
 `;
 
