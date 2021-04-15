@@ -100,15 +100,17 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment={'center'}>
         <EditorHeaderContainer1>
-          <EditBtn
-            data-btn="editorEditBtn"
-            onClick={handleClickBtn}
-            disabled={!authStore.hasPermission('notePage', 'U')}
-          >
-            {PageStore.isReadMode()
-              ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
-              : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
-          </EditBtn>
+          {authStore.hasPermission('notePage', 'U') &&
+            <EditBtn
+              data-btn="editorEditBtn"
+              onClick={handleClickBtn}
+            >
+              {PageStore.isReadMode()
+                ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
+                : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
+              }
+            </EditBtn>
+          }
           <EditorTitle
             id="editorTitle"
             maxLength="200"
