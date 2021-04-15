@@ -138,19 +138,20 @@ export const EditingIcon = styled.img`
   margin-right: 0.5rem;
 `;
 
-export const ModifiedUser = styled.span`
-  color: rgb(0, 0, 0);
+export const SmallText = styled.span`
   font-size: 0.6875rem;
   padding: 0 0.38rem 0 0 !important;
 `;
 
-export const ModifiedTime = styled.span`
-  width: auto;
-  height: auto;
-  color: rgb(0, 0, 0);
+export const ModifiedUser = styled.span`
   font-size: 0.6875rem;
-  border-left: 1px solid #d8d8d8 !important;
-  padding: 0 0.38rem !important;
+  padding-right: 0.38rem;
+  border-right: 1px solid #d8d8d8;
+`;
+
+export const ModifiedTime = styled.span`
+  font-size: 0.6875rem;
+  padding: 0 0.75rem 0 0.38rem;
 `;
 
 export const SearchIcon = styled.img`
