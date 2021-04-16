@@ -74,6 +74,5 @@ const getTagCategory = keyList => {
  */
 export const convertServerTagList: TagCategory = dto => {
   const keyList = getSortedServerTagList(dto).map(createTagKeyInfo);
-  console.log('keyList', keyList);
   return getTagCategory(keyList);
 };

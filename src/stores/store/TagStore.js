@@ -29,7 +29,6 @@ class TagStore {
     this.isLoading = true;
     this.tagCategory = yield NoteRepository.getAllTagObj();
     this.isLoading = false;
-    console.log('this.isLoading', this.isLoading);
   });
 }
 

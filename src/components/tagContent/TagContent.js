@@ -17,7 +17,6 @@ const TagContent = () => {
   }, []);
 
   const RenderBody = () => {
-    console.log('TagStore.isLoading', TagStore.isLoading);
     if (TagStore.isLoading) return <LoadingContent />;
     // if (TagStore.isSearching) {
     // }
