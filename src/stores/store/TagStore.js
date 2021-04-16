@@ -1,32 +1,35 @@
-import { action, flow, observable, runInAction } from 'mobx';
+import { action, computed, flow, observable } from 'mobx';
 import NoteRepository from '../repository/NoteRepository';
 
 // @flow
 class TagStore {
-  tags = [];
+  @observable
+  isLoading: Boolean = true;
 
-  isloading = true;
+  @observable
+  tagCategory = { KOR: {}, ENG: {}, NUM: {}, ETC: {} };
 
-  constructor() {}
-  // async fetchNoteTagList(noteId) {
-  //   await NoteRepository.getNoteTagList(noteId).then(response => {
-  //     if (response.status === 200) {
-  //       const {
-  //         data: { dto: tagList },
-  //       } = response;
-  //       this.setNoteTagList(tagList.tagList);
-  //     }
-  //   });
-  //   return this.notetagList;
-  // },
+  @computed
+  get isNoTag(): Boolean {
+    return (
+      Object.keys(this.tagCategory.ENG).length === 0 &&
+      Object.keys(this.tagCategory.KOR).length === 0 &&
+      Object.keys(this.tagCategory.NUM).length === 0 &&
+      Object.keys(this.tagCategory.ETC).length === 0
+    );
+  }
 
-  // fetches all Tags from the server
+  /**
+   * fetches all Tags with category from the server
+   * RoomTagModel : class { tagId, text, noteList }
+   * TagKeyModel : class { key, tags:Array<RoomTagModel> }
+   */
   @action
-  fetchTagList = flow(function* fetchTagList() {
+  getTagCategory = flow(function* getTagCategory() {
     this.isLoading = true;
-    const tagList = yield NoteRepository.fetchTagSortedList();
-    tagList.forEach(tag => convert);
+    this.tagCategory = yield NoteRepository.getAllTagObj();
     this.isLoading = false;
+    console.log('this.isLoading', this.isLoading);
   });
 }
 

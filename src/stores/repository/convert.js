@@ -63,6 +63,7 @@ const getTagCategory = keyList => {
   return keyList.reduce(
     (result, keyInfo) => {
       result[getKeyCategory(keyInfo.key)].push(keyInfo);
+      return result;
     },
     { KOR: [], ENG: [], NUM: [], ETC: [] },
   );

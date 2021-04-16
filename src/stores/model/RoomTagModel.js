@@ -6,13 +6,13 @@ import PageModel from './PageModel';
 @autobind
 class RoomTagModel {
   @observable
-  noteList: Array<string>;
-
-  @observable
   tagId: String;
 
   @observable
   text: String;
+
+  @observable
+  noteList: Array<string>;
 
   @action
   setValues(data: Object) {

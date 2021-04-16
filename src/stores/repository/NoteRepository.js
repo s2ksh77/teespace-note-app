@@ -4,6 +4,7 @@ import ChapterModel, {
 } from '../model/ChapterModel';
 import { convertPageObjToModel as pageConverter } from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
+import { convertServerTagList } from './convert';
 // @flow
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
@@ -75,13 +76,15 @@ class NoteRepository {
   //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
-  async fetchTagSortedList() {
+  async getAllTagObj() {
     const response = await API.Get(
       `note-api/tagSort?action=List&note_channel_id=${
-        this.chId
       }&t=${new Date().getTime().toString()}`,
     );
-    return response;
+
+    return response?.data?.dto?.tag_index_list_dto
+      ? convertServerTagList(response.data.dto.tag_index_list_dto)
+      : {};
   }
 
   async fetchTagNoteList({
