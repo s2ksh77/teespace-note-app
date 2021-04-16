@@ -26,7 +26,9 @@ const Content = () => {
   };
 
   return useObserver(() => (
-    <ContentContainer>
+    <ContentContainer
+      show={!NoteStore.isCollapsed || NoteStore.isTargetLayout('content')}
+    >
       <RenderContent />
     </ContentContainer>
   ));

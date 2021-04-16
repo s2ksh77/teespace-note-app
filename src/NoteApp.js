@@ -5,7 +5,6 @@ import useNoteStore from './stores/useNoteStore';
 
 import LNB from './components/LNB';
 import Content from './components/Content';
-import { ContentWrapper, ContentFoldButton } from './styles/EditorStyle';
 
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
@@ -30,10 +29,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   return useObserver(() => (
     <>
       <LNB />
-      <ContentWrapper show={layoutState === 'expand'}>
-        <ContentFoldButton />
-        <Content />
-      </ContentWrapper>
+      <Content />
     </>
   ));
 };

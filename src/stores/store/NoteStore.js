@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import ChapterModel from '../model/ChapterModel';
 import ChapterStore from './ChapterStore';
 import NoteRepository from '../repository/NoteRepository';
@@ -17,6 +17,12 @@ class NoteStore {
 
   @observable
   layoutState: string = '';
+
+  @observable
+  targetLayout: string = 'lnb';
+
+  @observable
+  isContentExpanded: Boolean = false;
 
   /* init 관련 변수 Repo -> NoteStore */
   init(data: Object) {
@@ -49,6 +55,25 @@ class NoteStore {
 
   setLayoutState(data: string) {
     this.layoutState = data;
+  }
+
+  setTargetLayout(data: string) {
+    this.targetLayout = data;
+  }
+
+  @action
+  toggleIsContentExpanded() {
+    this.isContentExpanded = !this.isContentExpanded;
+  }
+
+  @computed
+  get isCollapsed() {
+    return this.layoutState === 'collapse';
+  }
+
+  @computed
+  get isTargetLayout() {
+    return (layout: string) => this.targetLayout === layout;
   }
 }
 

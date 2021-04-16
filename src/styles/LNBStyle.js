@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const LNBContainer = styled.div`
-  display: flex;
+  display: ${({ show }) => (show ? 'flex' : 'none')};
   flex-direction: column;
   flex: 1 1;
   min-width: 23rem;

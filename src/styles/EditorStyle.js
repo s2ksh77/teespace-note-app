@@ -1,21 +1,10 @@
 import { Progress } from 'antd';
 import styled, { css } from 'styled-components';
 
-export const ContentWrapper = styled.div`
-  display: ${props => (props.show ? 'flex' : 'none')};
-  flex-direction: column;
-  flex: 2 2 42rem;
-  height: 100%;
-  overflow-x: hidden;
-  position: relative;
-  border-left: ${props => (props.isBorderLeft ? '1px solid  #ddd9d4' : '0px')};
-`;
-
 export const ContentFoldButton = styled.div`
   width: 0.94rem;
   height: 2.06rem;
   display: ${props => (props.show ? 'flex' : 'none')};
-  align-items: center;
   background-color: #205855;
   border: 0px solid #9ca7ad;
   cursor: pointer;
@@ -25,23 +14,26 @@ export const ContentFoldButton = styled.div`
   z-index: 18;
   top: 50%;
   transform: ${props =>
-    props.isExpanded ? 'rotate(180deg)' : 'translate(-0.9rem, 0rem)'};
+    props.isContentExpanded ? 'rotate(180deg)' : 'translate(-0.9rem, 0rem)'};
   &:hover {
     background-color: #205855;
   }
 `;
 
-export const ContentFoldButtonImage = styled.img`
+export const ContentFoldButtonIcon = styled.img`
   width: 100%;
   filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg)
     brightness(113%) contrast(100%);
 `;
 
 export const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: ${props => (props.show ? 'flex' : 'none')};
+  flex-direction: row;
+  flex: 2 2 42rem;
+  overflow-x: hidden;
   width: 100%;
   height: 100%;
+  border-left: ${props => (props.isBorderLeft ? '1px solid  #ddd9d4' : '0px')};
 `;
 
 export const PageContainer = styled.div`
