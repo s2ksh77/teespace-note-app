@@ -1,11 +1,15 @@
 /* eslint-disable import/no-cycle */
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
+import i18n from '../../i18n/i18n';
 import ChapterModel from '../model/ChapterModel';
 import NoteRepository from '../repository/NoteRepository';
 // @flow
 class ChapterStore {
   @observable
   chapterList: $Shape<Array<ChapterModel>> = [];
+
+  @observable
+  newChapterVisible: Boolean = false;
 
   @action
   async fetchChapterList() {
@@ -22,10 +26,14 @@ class ChapterStore {
 
   @action
   async createChapter(chapterTitle: string, chapterColor: string) {
+    if (!chapterTitle) chapterTitle = i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
     const res = await NoteRepository.createChapter({
       chapterTitle,
       chapterColor,
     });
+    if (res) {
+      await this.fetchChapterList();
+    }
     return new ChapterModel(res);
   }
 
@@ -35,12 +43,18 @@ class ChapterStore {
       chapterId,
       chapterColor,
     });
+    if (res) {
+      await this.fetchChapterList();
+    }
     return new ChapterModel(res);
   }
 
   @action
   async deleteChapter(chapterId: string) {
     const res = await NoteRepository.deleteChapter(chapterId);
+    if (res) {
+      await this.fetchChapterList();
+    }
     return new ChapterModel(res);
   }
 
@@ -51,7 +65,15 @@ class ChapterStore {
       chapterTitle,
       chapterColor,
     });
+    if (res) {
+      await this.fetchChapterList();
+    }
     return new ChapterModel(res);
+  }
+
+  @action
+  setNewChapterVisible(bool: Boolean) {
+    this.newChapterVisible = bool;
   }
 }
 

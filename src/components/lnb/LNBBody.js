@@ -5,7 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import useNoteStore from '../../stores/useNoteStore';
 
 import { LNBBodyContainer } from '../../styles/LNBStyle';
-import NewChapterForm from './NewChapterForm';
+import LNBNewChapterForm from './LNBNewChapterForm';
 import SearchingContent from '../common/SearchingContent';
 import LNBSearchResult from './LNBSearchResult';
 import ChapterItem from './ChapterItem';
@@ -17,7 +17,7 @@ const LNBBody = () => {
 
   return useObserver(() => (
     <LNBBodyContainer>
-      <NewChapterForm />
+      <LNBNewChapterForm />
       {ChapterStore.isSearching || ChapterStore.isTagSearching ? (
         <LNBSearchResult /> // SearchingContent도 넣어야 함
       ) : (

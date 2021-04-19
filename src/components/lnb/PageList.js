@@ -8,11 +8,11 @@ import { NewPageButton } from '../../styles/PageStyle';
 
 const PageList = ({ page }) => {
   const { authStore } = useCoreStores();
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
   const { t } = useTranslation();
 
   const handleNewBtnClick = () => {
-    // todo
+    if (ChapterStore.newChapterVisible) return;
   };
 
   return useObserver(() => (

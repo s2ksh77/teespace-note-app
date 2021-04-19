@@ -79,6 +79,7 @@ class NoteRepository {
   async getAllTagObj() {
     const response = await API.Get(
       `note-api/tagSort?action=List&note_channel_id=${
+        NoteStore.chId
       }&t=${new Date().getTime().toString()}`,
     );
 
@@ -167,13 +168,13 @@ class NoteRepository {
       const response = await API.post(`note-api/notebooks`, {
         dto: {
           id: '',
-          ws_id: this.WS_ID,
-          note_channel_id: this.chId,
+          ws_id: NoteStore.roomId,
+          note_channel_id: NoteStore.chId,
           text: chapterTitle,
           children: [],
           type: 'notebook',
-          USER_ID: this.USER_ID,
-          user_name: this.USER_NAME,
+          USER_ID: NoteStore.userId,
+          user_name: NoteStore.userName,
           color: chapterColor,
         },
       });

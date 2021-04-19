@@ -83,9 +83,8 @@ export const LNBEditModeCover = styled.div`
 export const LNBNewChapter = styled.div`
   position: relative;
   user-select: none;
-  margin: 0rem 0.81rem;
   padding: 0rem;
-  display: flex;
+  display: ${props => (props.visible ? 'flex' : 'none')};
   line-height: 100% !important;
   font-size: 0.8125rem;
   width: auto;

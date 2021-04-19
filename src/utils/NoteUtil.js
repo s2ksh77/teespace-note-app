@@ -14,21 +14,19 @@ const NoteUtil = {
     }
   },
   getChapterRandomColor() {
-    const colorArray = {
-      1: '#C84847',
-      2: '#F29274',
-      3: '#F6C750',
-      4: '#77B69B',
-      5: '#679886',
-      6: '#3A7973',
-      7: '#77BED3',
-      8: '#5C83DA',
-      9: '#8F91E7',
-      10: '#DF97AA',
-      11: '#CA6D6D',
-    };
-
-    const COLOR_ARRAY = Object.values(this.colorArray);
+    const COLOR_ARRAY = [
+      '#C84847',
+      '#F29274',
+      '#F6C750',
+      '#77B69B',
+      '#679886',
+      '#3A7973',
+      '#77BED3',
+      '#5C83DA',
+      '#8F91E7',
+      '#DF97AA',
+      '#CA6D6D',
+    ];
     return COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
   },
 };
