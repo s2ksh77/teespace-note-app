@@ -54,7 +54,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
           </ChapterTextSpan>
         </Tooltip>
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
-        {authStore.hasPermission('noteChapter', 'U') && (
+        {(authStore.hasPermission('noteChapter', 'U') || NoteUtil.getChapterNumType(chapter.type) === 3) && (
           <ContextMenu noteType={'chapter'} note={chapter} chapterIdx={index} />
         )}
       </ChapterTitle>

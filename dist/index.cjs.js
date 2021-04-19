@@ -9776,7 +9776,7 @@ var ChapterText = function ChapterText(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement(ChapterTextSpan, {
       onMouseOver: handleTooltip,
       marginLeft: chapter.type === 'notebook' || chapter.type === 'default' ? '1.69rem' : '2.63rem'
-    }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text)), authStore.hasPermission('noteChapter', 'U') && /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+    }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text)), (authStore.hasPermission('noteChapter', 'U') || NoteUtil.getChapterNumType(chapter.type) === 3) && /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
       noteType: 'chapter',
       note: chapter,
       chapterIdx: index
