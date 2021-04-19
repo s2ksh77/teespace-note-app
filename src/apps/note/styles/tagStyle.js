@@ -10,7 +10,7 @@ export const TagContainerCover = styled.div`
 
 export const EditorTagCover = styled.div`
   white-space: nowrap;
-  width: calc(100% - 0px);
+  width: 100%;
   height: 2.81rem;
   border-width: 0px;
   border-style: solid;
@@ -19,14 +19,14 @@ export const EditorTagCover = styled.div`
   line-height: 66.1177px;
   display: flex;
   align-items: center;
+  padding: 0 1rem;
 `;
 
 export const TagNewBtn = styled.div`
   display: flex;
   flex: 0 0 1.25rem;
   border: none;
-  margin-left: 0.75rem;
-  margin-right: 0.88rem;
+  margin-right: 0.63rem;
   align-self: center;
   background-color: transparent;
   cursor: pointer;
@@ -40,7 +40,7 @@ export const PanelArrow = styled.img`
 export const TagList = styled.div`
   display: flex !important;
   align-items: center !important;
-  width: calc(100% - 2.4rem);
+  width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 `;

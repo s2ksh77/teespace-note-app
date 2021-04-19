@@ -141,7 +141,7 @@ const HandleUploader = props => {
 };
 
 const EditorContainer = () => {
-  const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore, TagStore } = useNoteStore();
   const { configStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
@@ -727,7 +727,7 @@ const EditorContainer = () => {
           toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
-        <TagListContainer />
+        {(authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && <TagListContainer />}
         <DriveAttachModal
           visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}

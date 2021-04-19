@@ -7489,7 +7489,7 @@ function _templateObject6$3() {
 }
 
 function _templateObject5$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex !important;\n  align-items: center !important;\n  width: calc(100% - 2.4rem);\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex !important;\n  align-items: center !important;\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
 
   _templateObject5$3 = function _templateObject5() {
     return data;
@@ -7509,7 +7509,7 @@ function _templateObject4$3() {
 }
 
 function _templateObject3$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.25rem;\n  border: none;\n  margin-left: 0.75rem;\n  margin-right: 0.88rem;\n  align-self: center;\n  background-color: transparent;\n  cursor: pointer;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 0 0 1.25rem;\n  border: none;\n  margin-right: 0.63rem;\n  align-self: center;\n  background-color: transparent;\n  cursor: pointer;\n"]);
 
   _templateObject3$3 = function _templateObject3() {
     return data;
@@ -7519,7 +7519,7 @@ function _templateObject3$3() {
 }
 
 function _templateObject2$3() {
-  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: calc(100% - 0px);\n  height: 2.81rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  white-space: nowrap;\n  width: 100%;\n  height: 2.81rem;\n  border-width: 0px;\n  border-style: solid;\n  vertical-align: top;\n  overflow: hidden;\n  line-height: 66.1177px;\n  display: flex;\n  align-items: center;\n  padding: 0 1rem;\n"]);
 
   _templateObject2$3 = function _templateObject2() {
     return data;
@@ -10919,68 +10919,8 @@ var EditorHeader = function EditorHeader() {
   });
 };
 
-function _templateObject36$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.56rem;\n  height: 0.56rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
-
-  _templateObject36$1 = function _templateObject36() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject35$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: top;\n"]);
-
-  _templateObject35$1 = function _templateObject35() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject34$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: flex;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n  margin-left: auto;\n"]);
-
-  _templateObject34$1 = function _templateObject34() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject33$1() {
-  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
-
-  _templateObject33$1 = function _templateObject33() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject32$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
-
-  _templateObject32$1 = function _templateObject32() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject31$1() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
-
-  _templateObject31$1 = function _templateObject31() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject30$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.56rem;\n  height: 0.56rem;\n  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);\n"]);
 
   _templateObject30$1 = function _templateObject30() {
     return data;
@@ -10990,7 +10930,7 @@ function _templateObject30$1() {
 }
 
 function _templateObject29$1() {
-  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 100%;\n  padding-left: 0.4625rem;\n  color: #000000;\n  cursor: pointer;\n  border-radius: 0.5rem;\n  align-items: top;\n"]);
 
   _templateObject29$1 = function _templateObject29() {
     return data;
@@ -11000,7 +10940,7 @@ function _templateObject29$1() {
 }
 
 function _templateObject28$1() {
-  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: flex;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n  margin-left: auto;\n"]);
 
   _templateObject28$1 = function _templateObject28() {
     return data;
@@ -11010,7 +10950,7 @@ function _templateObject28$1() {
 }
 
 function _templateObject27$1() {
-  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  background-color: inherit;\n  line-height: 0.9375rem;\n  display: inline-block;\n  font-size: 0.63rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color:#888D96;\n"]);
 
   _templateObject27$1 = function _templateObject27() {
     return data;
@@ -11020,7 +10960,7 @@ function _templateObject27$1() {
 }
 
 function _templateObject26$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  line-height: 0.9375rem;\n  height: auto;\n  overflow: inherit;\n  max-width: 9.55rem;\n"]);
 
   _templateObject26$1 = function _templateObject26() {
     return data;
@@ -11030,7 +10970,7 @@ function _templateObject26$1() {
 }
 
 function _templateObject25$1() {
-  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.69rem;\n  background-color: inherit;\n  margin-right: 0rem;\n  margin-top: 0;\n  color: #45474A;\n  line-height: 0.9375rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  &:hover{\n    text-decoration: underline;\n  }\n"]);
 
   _templateObject25$1 = function _templateObject25() {
     return data;
@@ -11040,7 +10980,7 @@ function _templateObject25$1() {
 }
 
 function _templateObject24$1() {
-  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n"]);
 
   _templateObject24$1 = function _templateObject24() {
     return data;
@@ -11050,7 +10990,7 @@ function _templateObject24$1() {
 }
 
 function _templateObject23$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  height: auto;\n  line-height: 0.9375rem;\n  max-width: 9.55rem;\n  min-width: ", ";\n  overflow: inherit;\n  display: inline-block;\n  height: 40px;\n  cursor : pointer;\n  flex: 1;\n"]);
 
   _templateObject23$1 = function _templateObject23() {
     return data;
@@ -11060,7 +11000,7 @@ function _templateObject23$1() {
 }
 
 function _templateObject22$1() {
-  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
 
   _templateObject22$1 = function _templateObject22() {
     return data;
@@ -11070,7 +11010,7 @@ function _templateObject22$1() {
 }
 
 function _templateObject21$1() {
-  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
+  var data = _taggedTemplateLiteral(["\n  width:1.5rem;\n  height:1.5rem;\n"]);
 
   _templateObject21$1 = function _templateObject21() {
     return data;
@@ -11080,7 +11020,7 @@ function _templateObject21$1() {
 }
 
 function _templateObject20$2() {
-  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"]);
 
   _templateObject20$2 = function _templateObject20() {
     return data;
@@ -11090,7 +11030,7 @@ function _templateObject20$2() {
 }
 
 function _templateObject19$2() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
+  var data = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"]);
 
   _templateObject19$2 = function _templateObject19() {
     return data;
@@ -11100,7 +11040,7 @@ function _templateObject19$2() {
 }
 
 function _templateObject18$3() {
-  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-bottom: 1px solid #DDD9D4;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
   _templateObject18$3 = function _templateObject18() {
     return data;
@@ -11110,7 +11050,7 @@ function _templateObject18$3() {
 }
 
 function _templateObject17$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"]);
 
   _templateObject17$3 = function _templateObject17() {
     return data;
@@ -11120,7 +11060,7 @@ function _templateObject17$3() {
 }
 
 function _templateObject16$3() {
-  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
 
   _templateObject16$3 = function _templateObject16() {
     return data;
@@ -11130,7 +11070,7 @@ function _templateObject16$3() {
 }
 
 function _templateObject15$3() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 0.63rem;\n  color: #A3A3A3;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
 
   _templateObject15$3 = function _templateObject15() {
     return data;
@@ -11140,7 +11080,7 @@ function _templateObject15$3() {
 }
 
 function _templateObject14$3() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n      width: 13.75rem;\n      min-width: 13.75rem;\n    "]);
 
   _templateObject14$3 = function _templateObject14() {
     return data;
@@ -11150,7 +11090,7 @@ function _templateObject14$3() {
 }
 
 function _templateObject13$3() {
-  var data = _taggedTemplateLiteral(["\n  margin-left: 16px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  padding: 0.375rem;\n  border-radius: 0.5rem;\n  ", "\n  box-sizing: border-box; \n  border : 1px solid #dadada;\n  height: 2.63rem;\n  margin-left: 0.5rem;\n  flex-direction : row;\n  flex-wrap : wrap;\n  &:first-child{\n    margin-left: 0rem;\n  }\n  &:focus {\n    outline: 0;\n  }\n"]);
 
   _templateObject13$3 = function _templateObject13() {
     return data;
@@ -11160,7 +11100,7 @@ function _templateObject13$3() {
 }
 
 function _templateObject12$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid #DDD9D4;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width:auto;\n  display : flex;\n  align-items: center;\n  height: 4.19rem;\n  border-bottom: 1px solid #DDD9D4;\n  overflow: hidden;\n  box-sizing :border-box;\n  padding: 0rem 0.5rem;\n"]);
 
   _templateObject12$5 = function _templateObject12() {
     return data;
@@ -11170,7 +11110,7 @@ function _templateObject12$5() {
 }
 
 function _templateObject11$5() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);\n"]);
 
   _templateObject11$5 = function _templateObject11() {
     return data;
@@ -11180,7 +11120,7 @@ function _templateObject11$5() {
 }
 
 function _templateObject10$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  width: 0.94rem;\n  height: 2.06rem;\n  display: ", ";\n  align-items: center;\n  background-color: #205855;\n  border: 0px solid #9ca7ad;\n  cursor: pointer;\n  border-top-left-radius: 0.31rem;\n  border-bottom-left-radius: 0.31rem;\n  position: fixed;\n  z-index: 18;\n  top: 50%;\n  transform: ", ";\n  &:hover {\n    background-color: #205855;\n  }\n"]);
 
   _templateObject10$6 = function _templateObject10() {
     return data;
@@ -11190,7 +11130,7 @@ function _templateObject10$6() {
 }
 
 function _templateObject9$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.63rem;\n  color: #A3A3A3;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject9$6 = function _templateObject9() {
     return data;
@@ -11200,7 +11140,7 @@ function _templateObject9$6() {
 }
 
 function _templateObject8$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.5rem;\n  color: #999999;\n  font-size: 0.75rem;\n  display: flex;\n  font-size: 0.75rem;\n"]);
 
   _templateObject8$6 = function _templateObject8() {
     return data;
@@ -11210,7 +11150,7 @@ function _templateObject8$6() {
 }
 
 function _templateObject7$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  margin-left: 16px;\n"]);
 
   _templateObject7$6 = function _templateObject7() {
     return data;
@@ -11220,7 +11160,7 @@ function _templateObject7$6() {
 }
 
 function _templateObject6$6() {
-  var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;\n    }\n  "]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid #DDD9D4;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
   _templateObject6$6 = function _templateObject6() {
     return data;
@@ -11270,7 +11210,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$8() {
-  var data = _taggedTemplateLiteral(["\n  display:flex;\n  flex-direction:column;\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n    border-color: #DDD9D4;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  display:flex;\n  flex-direction:column;\n  width:100%;\n  height:100%;\n  .tox-tinymce{\n    border-left: 0px solid black;\n    border-color: #DDD9D4;\n    flex: 1;\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$8 = function _templateObject() {
     return data;
@@ -11286,51 +11226,39 @@ var EditorContainerWrapper = styled.div(_templateObject$8(), function (props) {
   return props.isReadMode && css(_templateObject4$7());
 }, function (props) {
   return !props.isReadMode && css(_templateObject5$6());
-}, function (props) {
-  return !props.isFile && props.isReadMode && css(_templateObject6$6());
-}, function (props) {
-  return props.isFile && props.isReadMode && css(_templateObject7$6());
-}, function (props) {
-  return !props.isFile && !props.isReadMode && !props.isSearch && css(_templateObject8$6());
-}, function (props) {
-  return !props.isFile && !props.isReadMode && props.isSearch && css(_templateObject9$6());
-}, function (props) {
-  return props.isFile && !props.isReadMode && !props.isSearch && css(_templateObject10$6());
-}, function (props) {
-  return props.isFile && !props.isReadMode && props.isSearch && css(_templateObject11$5());
 });
-var ReadModeContainer = styled.div(_templateObject12$5());
-var ReadModeIcon = styled.img(_templateObject13$3());
-var ReadModeText = styled.span(_templateObject14$3());
-var ReadModeSubText = styled.span(_templateObject15$3());
-var FoldBtn = styled.div(_templateObject16$3(), function (props) {
+var ReadModeContainer = styled.div(_templateObject6$6());
+var ReadModeIcon = styled.img(_templateObject7$6());
+var ReadModeText = styled.span(_templateObject8$6());
+var ReadModeSubText = styled.span(_templateObject9$6());
+var FoldBtn = styled.div(_templateObject10$6(), function (props) {
   return props.show ? "flex" : "none";
 }, function (props) {
   return props.isExpanded ? "rotate(180deg)" : "translate(-0.9rem, 0rem)";
 });
-var FoldBtnImg = styled.img(_templateObject17$3());
-var FileBodyLayout = styled.div(_templateObject18$3());
-var FileBody = styled.div(_templateObject19$2(), function (props) {
-  return props.closable ? css(_templateObject20$2()) : css(_templateObject21$1());
+var FoldBtnImg = styled.img(_templateObject11$5());
+var FileBodyLayout = styled.div(_templateObject12$5());
+var FileBody = styled.div(_templateObject13$3(), function (props) {
+  return props.closable ? css(_templateObject14$3()) : css(_templateObject15$3());
 });
-var FileContent = styled.div(_templateObject22$1());
-var FileDownloadIcon = styled.div(_templateObject23$1());
-var FileErrorIcon = styled.div(_templateObject24$1());
-var ProgressWrapper = styled.div(_templateObject25$1());
-var FileExtensionIcon = styled.div(_templateObject26$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
+var FileContent = styled.div(_templateObject16$3());
+var FileDownloadIcon = styled.div(_templateObject17$3());
+var FileErrorIcon = styled.div(_templateObject18$3());
+var ProgressWrapper = styled.div(_templateObject19$2());
+var FileExtensionIcon = styled.div(_templateObject20$2(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 
-var FileDownloadBtn = styled.img(_templateObject27$1());
-var FileExtensionBtn = styled.img(_templateObject28$1());
-var FileData = styled.div(_templateObject29$1(), function (props) {
+var FileDownloadBtn = styled.img(_templateObject21$1());
+var FileExtensionBtn = styled.img(_templateObject22$1());
+var FileData = styled.div(_templateObject23$1(), function (props) {
   return props.mode === "true" ? "" : "9.5rem";
 });
-var FileDataName = styled.div(_templateObject30$1());
-var FileName = styled.div(_templateObject31$1());
-var FileDataTime = styled.div(_templateObject32$1());
-var FileTime = styled.div(_templateObject33$1());
-var FileProgress = styled.div(_templateObject34$1());
-var FileClose = styled.div(_templateObject35$1());
-var FileCloseBtn = styled.img(_templateObject36$1());
+var FileDataName = styled.div(_templateObject24$1());
+var FileName = styled.div(_templateObject25$1());
+var FileDataTime = styled.div(_templateObject26$1());
+var FileTime = styled.div(_templateObject27$1());
+var FileProgress = styled.div(_templateObject28$1());
+var FileClose = styled.div(_templateObject29$1());
+var FileCloseBtn = styled.img(_templateObject30$1());
 var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  body{\n    font-family : \"Noto Sans KR\",sans-serif;\n  }\n  a, img {\n    cursor:pointer;\n  }\n  ::selection {\n    background: #35A57A; /* WebKit/Blink Browsers */\n    color:#ffffff;\n  }\n  ::-moz-selection {\n    background: #35A57A; /* Gecko Browsers */\n    color:#ffffff;\n  }\n  ::-webkit-scrollbar {\n    width: 0.375rem;\n    height: 0.625rem;\n  }\n  ::-webkit-scrollbar-thumb {\n      width: 0.375rem;\n      background: #C5C5C8;\n      /* border: 0.188rem solid transparent; */\n      background-clip: padding-box;\n      border-radius: 0.5625rem;\n      opacity: 0.6;\n  }\n  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {\n    background-color: #f8cac6;\n  }\n  .mce-content-body [data-mce-selected=inline-boundary] {\n    background-color:#FFE362;\n  }\n  table[style*=\"border-width: 0px\"],\n  .mce-item-table:not([border]),\n  .mce-item-table[border=\"0\"],\n  table[style*=\"border-width: 0px\"] td,\n  .mce-item-table:not([border]) td,\n  .mce-item-table[border=\"0\"] td,\n  table[style*=\"border-width: 0px\"] th,\n  .mce-item-table:not([border]) th,\n  .mce-item-table[border=\"0\"] th,\n  table[style*=\"border-width: 0px\"] caption,\n  .mce-item-table:not([border]) caption,\n  .mce-item-table[border=\"0\"] caption {\n    border: 1px solid #ccc;\n  }\n  .mce-content-body{\n    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;\n    background-size: 0.625rem 0.625rem !important;\n  }\n  img {\n    max-width: 100%;\n  }\n  mark {\n    background-color: #FEF3BE;\n    color : #000000; \n  }\n  mark.searchselected{\n    background-color: #FFD200 !important;\n  }\n  .tox-notification { display: none !important }\n";
 
 const img$s = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
@@ -11401,6 +11329,9 @@ var TagListContainer = function TagListContainer() {
       NoteStore = _useNoteStore.NoteStore,
       TagStore = _useNoteStore.TagStore,
       PageStore = _useNoteStore.PageStore;
+
+  var _useCoreStores = useCoreStores(),
+      authStore = _useCoreStores.authStore;
 
   var _useTranslation = useTranslation(),
       t = _useTranslation.t;
@@ -11565,7 +11496,7 @@ var TagListContainer = function TagListContainer() {
   };
 
   return useObserver(function () {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, /*#__PURE__*/React.createElement(Tooltip, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EditorTagCover, null, authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React.createElement(Tooltip, {
       title: !PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')
     }, /*#__PURE__*/React.createElement(TagNewBtn, null, /*#__PURE__*/React.createElement(TagNewBtnIcon, {
       src: img$6,
@@ -11592,7 +11523,7 @@ var TagListContainer = function TagListContainer() {
         className: index === TagStore.selectTagIdx ? 'noteFocusedTag' : '',
         "data-idx": index,
         id: item.tag_id,
-        closable: PageStore.isReadMode() ? false : true,
+        closable: PageStore.isReadMode() || !authStore.hasPermission('notePage', 'U') ? false : true,
         tabIndex: "0",
         onClose: handleCloseBtn.bind(null, item.tag_id, item.text),
         onClick: handleClickTag.bind(null, index),
@@ -11601,7 +11532,7 @@ var TagListContainer = function TagListContainer() {
       }, /*#__PURE__*/React.createElement(Tooltip, {
         title: isEllipsisActive ? NoteUtil.decodeStr(item.text) : null
       }, /*#__PURE__*/React.createElement(TagText, {
-        onDoubleClick: !PageStore.isReadMode() ? handleChangeTag(item.text, index, item.tag_id) : null,
+        onDoubleClick: !PageStore.isReadMode() && authStore.hasPermission('notePage', 'U') ? handleChangeTag(item.text, index, item.tag_id) : null,
         onMouseOver: handleTooltip
       }, NoteUtil.decodeStr(item.text))));
     }))));
@@ -12148,7 +12079,8 @@ var EditorContainer = function EditorContainer() {
   var _useNoteStore2 = useNoteStore(),
       NoteStore = _useNoteStore2.NoteStore,
       PageStore = _useNoteStore2.PageStore,
-      EditorStore = _useNoteStore2.EditorStore;
+      EditorStore = _useNoteStore2.EditorStore,
+      TagStore = _useNoteStore2.TagStore;
 
   var _useCoreStores = useCoreStores(),
       configStore = _useCoreStores.configStore,
@@ -12352,7 +12284,7 @@ var EditorContainer = function EditorContainer() {
         selector: '#noteEditor',
         menubar: false,
         toolbar_mode: 'floating',
-        height: 'calc(100% - 8.8rem)',
+        height: '100%',
         setup: function setup(editor) {
           setNoteEditor(editor); // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
 
@@ -12670,7 +12602,7 @@ var EditorContainer = function EditorContainer() {
       apiKey: GlobalVariable.apiKey,
       plugins: "print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
       toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
-    }), EditorStore.isFile ? /*#__PURE__*/React.createElement(FileLayout, null) : null, /*#__PURE__*/React.createElement(TagListContainer, null), /*#__PURE__*/React.createElement(DriveAttachModal, {
+    }), EditorStore.isFile ? /*#__PURE__*/React.createElement(FileLayout, null) : null, (authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && /*#__PURE__*/React.createElement(TagListContainer, null), /*#__PURE__*/React.createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
       cancelCallback: driveCancelCb,
