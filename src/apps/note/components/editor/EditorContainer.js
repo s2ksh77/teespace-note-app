@@ -141,7 +141,7 @@ const HandleUploader = props => {
 };
 
 const EditorContainer = () => {
-  const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore, TagStore } = useNoteStore();
   const { configStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
@@ -358,7 +358,7 @@ const EditorContainer = () => {
             selector: '#noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
-            height: 'calc(100% - 8.8rem)',
+            height: '100%',
             setup: function (editor) {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
@@ -727,7 +727,7 @@ const EditorContainer = () => {
           toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
-        <TagListContainer />
+        {(authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && <TagListContainer />}
         <DriveAttachModal
           visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}

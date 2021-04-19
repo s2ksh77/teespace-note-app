@@ -16,11 +16,12 @@ import { Tooltip } from 'antd';
 import AddTagForm from './AddTagForm'
 import { isFilled, checkWhitespace, checkMaxLength } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
-import { logEvent } from 'teespace-core';
+import { logEvent, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
+  const { authStore } = useCoreStores();
   const { t } = useTranslation();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const tagList = useRef([]); // 모든 노트 태그 리스트 담을 것
@@ -176,11 +177,11 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        <Tooltip title={!PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')}>
+        {authStore.hasPermission('notePage', 'U') && <Tooltip title={!PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')}>
           <TagNewBtn>
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
-        </Tooltip>
+        </Tooltip>}
         <AddTagForm
           show={TagStore.isNewTag}
           toggleTagInput={toggleTagInput}
@@ -204,7 +205,11 @@ const TagListContainer = () => {
                   className={index === TagStore.selectTagIdx ? 'noteFocusedTag' : ''}
                   data-idx={index}
                   id={item.tag_id}
-                  closable={PageStore.isReadMode() ? false : true}
+                  closable={
+                    PageStore.isReadMode() || !authStore.hasPermission('notePage', 'U')
+                      ? false
+                      : true
+                  }
                   tabIndex="0"
                   onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
                   onClick={handleClickTag.bind(null, index)}
@@ -213,7 +218,11 @@ const TagListContainer = () => {
                 >
                   <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
                     <TagText
-                      onDoubleClick={!PageStore.isReadMode() ? handleChangeTag(item.text, index, item.tag_id) : null}
+                      onDoubleClick={
+                        !PageStore.isReadMode() && authStore.hasPermission('notePage', 'U')
+                          ? handleChangeTag(item.text, index, item.tag_id)
+                          : null
+                      }
                       onMouseOver={handleTooltip}
                     >
                       {NoteUtil.decodeStr(item.text)}
