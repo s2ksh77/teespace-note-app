@@ -7785,10 +7785,9 @@ var LNBHeader = function LNBHeader(_ref) {
     }, /*#__PURE__*/React.createElement(Button, {
       src: img$5,
       onClick: handleLayoutBtn
-    })), /*#__PURE__*/React.createElement(LnbTitleNewButton, {
+    })), authStore.hasPermission('noteChapter', 'C') && /*#__PURE__*/React.createElement(LnbTitleNewButton, {
       "data-btn": 'noteNewChapterBtn',
-      onClick: handleNewChapterClick,
-      disabled: !authStore.hasPermission('noteChapter', 'C')
+      onClick: handleNewChapterClick
     }, t('NOTE_PAGE_LIST_CMPNT_DEF_01')), /*#__PURE__*/React.createElement(LnbTitleSearchContainer, {
       onSubmit: onSubmitSearchBtn,
       isSearch: ChapterStore.searchStr !== '' || ChapterStore.isSearching ? true : false
@@ -9753,28 +9752,8 @@ var ChapterText = function ChapterText(_ref) {
   });
 };
 
-function _templateObject12$5() {
-  var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
-
-  _templateObject12$5 = function _templateObject12() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject11$5() {
-  var data = _taggedTemplateLiteral(["\n      color: #C9C4BE;\n    "]);
-
-  _templateObject11$5 = function _templateObject11() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject10$5() {
-  var data = _taggedTemplateLiteral(["    \n      cursor: pointer;\n      &:hover {\n        background-color: #FAF8F7;\n      }\n      &:active {\n        background-color: #F2EFEC;\n      }\n    "]);
+  var data = _taggedTemplateLiteral(["\n  background-image: url(\"../Assets/view_more.png\");\n  color: #75757f;\n  width: 100%;\n  height: 100%;\n"]);
 
   _templateObject10$5 = function _templateObject10() {
     return data;
@@ -9784,7 +9763,7 @@ function _templateObject10$5() {
 }
 
 function _templateObject9$5() {
-  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  padding-left: 1.25rem;\n  border-radius: 0.31rem;\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  padding-left: 1.25rem;\n  border-radius: 0.31rem;\n  cursor: pointer;\n  &:hover {\n    background-color: #FAF8F7;\n  }\n  &:active {\n    background-color: #F2EFEC;\n  }\n"]);
 
   _templateObject9$5 = function _templateObject9() {
     return data;
@@ -9882,10 +9861,8 @@ var PageTextInput = styled.input(_templateObject7$5());
 var NewPage = styled.span(_templateObject8$5(), function (props) {
   return props.show ? "flex" : "none";
 });
-var NewPageBtn = styled.div(_templateObject9$5(), function (props) {
-  return props.active ? css(_templateObject10$5()) : css(_templateObject11$5());
-});
-var EllipsisIcon = styled.i(_templateObject12$5());
+var NewPageBtn = styled.div(_templateObject9$5());
+var EllipsisIcon = styled.i(_templateObject10$5());
 
 var Page = function Page(_ref) {
   var page = _ref.page,
@@ -10186,10 +10163,9 @@ var PageList = function PageList(_ref) {
   }), /*#__PURE__*/React.createElement(NewPage, {
     ref: drop,
     className: 'page-li',
-    show: showNewPage
+    show: showNewPage && !authStore.hasPermission('notePage', 'C')
   }, /*#__PURE__*/React.createElement(PageMargin, null), /*#__PURE__*/React.createElement(NewPageBtn, {
-    active: authStore.hasPermission('notePage', 'C') ? true : false,
-    onClick: authStore.hasPermission('notePage', 'C') ? handleNewBtnClick(chapter.id) : null
+    onClick: handleNewBtnClick(chapter.id)
   }, "+ ", t('NOTE_PAGE_LIST_CMPNT_DEF_04'))));
 };
 
@@ -10857,10 +10833,9 @@ var EditorHeader = function EditorHeader() {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ContentHeader, {
       handleBackBtn: handleLayoutBtn,
       alignment: 'center'
-    }, /*#__PURE__*/React.createElement(EditorHeaderContainer1, null, /*#__PURE__*/React.createElement(EditBtn, {
+    }, /*#__PURE__*/React.createElement(EditorHeaderContainer1, null, authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React.createElement(EditBtn, {
       "data-btn": "editorEditBtn",
-      onClick: handleClickBtn,
-      disabled: !authStore.hasPermission('notePage', 'U')
+      onClick: handleClickBtn
     }, PageStore.isReadMode() ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01') : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')), /*#__PURE__*/React.createElement(EditorTitle, {
       id: "editorTitle",
       maxLength: "200",
@@ -11121,20 +11096,20 @@ function _templateObject13$3() {
   return data;
 }
 
-function _templateObject12$6() {
+function _templateObject12$5() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 2.81rem;\n  border-top: 1px solid #DDD9D4;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  color: #999999;\n"]);
 
-  _templateObject12$6 = function _templateObject12() {
+  _templateObject12$5 = function _templateObject12() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject11$6() {
+function _templateObject11$5() {
   var data = _taggedTemplateLiteral(["\n    .tox-tinymce{ // ContentHeaderCover, ReadModeContainer(Search), FileBodyLayout, EditorTagCover\n      height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;\n    }\n  "]);
 
-  _templateObject11$6 = function _templateObject11() {
+  _templateObject11$5 = function _templateObject11() {
     return data;
   };
 
@@ -11259,9 +11234,9 @@ var EditorContainerWrapper = styled.div(_templateObject$8(), function (props) {
 }, function (props) {
   return props.isFile && !props.isReadMode && !props.isSearch && css(_templateObject10$6());
 }, function (props) {
-  return props.isFile && !props.isReadMode && props.isSearch && css(_templateObject11$6());
+  return props.isFile && !props.isReadMode && props.isSearch && css(_templateObject11$5());
 });
-var ReadModeContainer = styled.div(_templateObject12$6());
+var ReadModeContainer = styled.div(_templateObject12$5());
 var ReadModeIcon = styled.img(_templateObject13$3());
 var ReadModeText = styled.span(_templateObject14$3());
 var ReadModeSubText = styled.span(_templateObject15$3());
@@ -12164,7 +12139,8 @@ var EditorContainer = function EditorContainer() {
       EditorStore = _useNoteStore2.EditorStore;
 
   var _useCoreStores = useCoreStores(),
-      configStore = _useCoreStores.configStore;
+      configStore = _useCoreStores.configStore,
+      authStore = _useCoreStores.authStore;
 
   var _useTranslation = useTranslation(),
       t = _useTranslation.t;
@@ -12342,7 +12318,7 @@ var EditorContainer = function EditorContainer() {
       }
     }, /*#__PURE__*/React.createElement(ReadModeIcon, {
       src: img$i
-    }), /*#__PURE__*/React.createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React.createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : null, EditorStore.isSearch ? /*#__PURE__*/React.createElement(ReadModeContainer, {
+    }), authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React.createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : /*#__PURE__*/React.createElement(ReadModeSubText, null, t('NOTE_GUEST_01'))) : null, EditorStore.isSearch ? /*#__PURE__*/React.createElement(ReadModeContainer, {
       style: {
         display: 'flex'
       }
