@@ -131,6 +131,8 @@ const languageSet = {
     NOTE_EDIT_PAGE_UPDATE_TIME_01: `오전 {{time}}`,
     NOTE_EDIT_PAGE_UPDATE_TIME_02: `오후 {{time}}`,
     NOTE_EXPORT_TITLE: '제목',
+
+    tempNoteGuest : '게스트 환경에서는 제공하지 않는 기능입니다.',
 };
 
 export default languageSet;

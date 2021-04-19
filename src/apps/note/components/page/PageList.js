@@ -75,7 +75,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
       <NewPage
         ref={drop}
         className={'page-li'}
-        show={showNewPage && !authStore.hasPermission('notePage', 'C')}
+        show={showNewPage && authStore.hasPermission('notePage', 'C')}
       >
         <PageMargin />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
