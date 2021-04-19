@@ -34,7 +34,7 @@ import hangul from '../../assets/hangul.svg';
 import video from '../../assets/movie.svg';
 import audio from '../../assets/audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
-import { downloadFile, openSaveDrive, fileCategory } from '../common/NoteFile';
+import { downloadFile, openSaveDrive, fileCategory, isPreview } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -189,14 +189,10 @@ const FileLayout = () => {
       file_extension: extension,
       user_context_2,
     } = item;
-    const cat = Object.keys(fileCategory).find(cat =>
-      fileCategory[cat]['ext'].includes(extension),
-    );
-    const isPreviewFile = cat && fileCategory[cat]['isPreview'];
     // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
-    if (!PageStore.isReadMode() && !isPreviewFile) return;
+    if (!PageStore.isReadMode() && !isPreview(extension)) return;
 
-    if (isPreviewFile) {
+    if (isPreview(extension)) {
       EditorStore.setPreviewFileMeta({
         userId: NoteRepository.USER_ID,
         channelId: NoteRepository.chId,

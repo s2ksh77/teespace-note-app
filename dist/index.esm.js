@@ -9420,6 +9420,13 @@ var fileCategory = {
   isZip: isZip,
   isEtc: isEtc
 };
+var isPreview = function isPreview(extension) {
+  var cat = Object.keys(fileCategory).find(function (cat) {
+    return fileCategory[cat]['ext'].includes(extension);
+  });
+  if (!cat) return false;
+  return fileCategory[cat]["isPreview"];
+};
 
 var SubMenu = Menu.SubMenu,
     Item = Menu.Item;
@@ -11772,15 +11779,11 @@ var FileLayout = function FileLayout() {
     var file_id = item.file_id,
         file_name = item.file_name,
         extension = item.file_extension,
-        user_context_2 = item.user_context_2;
-    var cat = Object.keys(fileCategory).find(function (cat) {
-      return fileCategory[cat]['ext'].includes(extension);
-    });
-    var isPreviewFile = cat && fileCategory[cat]['isPreview']; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+        user_context_2 = item.user_context_2; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
 
-    if (!PageStore.isReadMode() && !isPreviewFile) return;
+    if (!PageStore.isReadMode() && !isPreview(extension)) return;
 
-    if (isPreviewFile) {
+    if (isPreview(extension)) {
       EditorStore.setPreviewFileMeta({
         userId: NoteRepository$1.USER_ID,
         channelId: NoteRepository$1.chId,
