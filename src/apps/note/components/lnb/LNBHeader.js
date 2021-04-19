@@ -89,13 +89,14 @@ const LNBHeader = ({ createNewChapter }) => {
         >
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
-        <LnbTitleNewButton
-          data-btn={'noteNewChapterBtn'}
-          onClick={handleNewChapterClick}
-          disabled={!authStore.hasPermission('noteChapter', 'C')}
-        >
-          {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
-        </LnbTitleNewButton>
+        {authStore.hasPermission('noteChapter', 'C') && (
+          <LnbTitleNewButton
+            data-btn={'noteNewChapterBtn'}
+            onClick={handleNewChapterClick}
+          >
+            {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
+          </LnbTitleNewButton>
+        )}
         <LnbTitleSearchContainer
           onSubmit={onSubmitSearchBtn}
           isSearch={
