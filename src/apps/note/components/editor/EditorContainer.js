@@ -358,7 +358,7 @@ const EditorContainer = () => {
             selector: '#noteEditor',
             menubar: false,
             toolbar_mode: 'floating',
-            height: 'calc(100% - 8.8rem)',
+            height: '100%',
             setup: function (editor) {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
