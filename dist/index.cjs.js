@@ -10199,7 +10199,7 @@ var PageList = function PageList(_ref) {
   }), /*#__PURE__*/React__default['default'].createElement(NewPage, {
     ref: drop,
     className: 'page-li',
-    show: showNewPage && !authStore.hasPermission('notePage', 'C')
+    show: showNewPage && authStore.hasPermission('notePage', 'C')
   }, /*#__PURE__*/React__default['default'].createElement(PageMargin, null), /*#__PURE__*/React__default['default'].createElement(NewPageBtn, {
     onClick: handleNewBtnClick(chapter.id)
   }, "+ ", t('NOTE_PAGE_LIST_CMPNT_DEF_04'))));
