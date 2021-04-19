@@ -567,7 +567,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context6.prev = 0;
                 _context6.next = 3;
-                return API.post("note-api/notebooks", {
+                return API.post("note-api/langauge/".concat(NoteStore.i18nLanguage, "/notebooks"), {
                   dto: {
                     id: '',
                     ws_id: this.WS_ID,
@@ -1175,7 +1175,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context20.prev = 0;
                 _context20.next = 3;
-                return API.post("note-api/noteFile", dto);
+                return API.post('note-api/noteFile', dto);
 
               case 3:
                 return _context20.abrupt("return", _context20.sent);
@@ -1242,12 +1242,12 @@ var NoteRepository = /*#__PURE__*/function () {
       return createUploadStorage;
     }()
     /**
-     * 
-     * @param {*} file 
-     * @param {*} fileName 
-     * @param {*} fileExtension 
-     * @param {*} onUploadProgress 
-     * @param {*} cancelSource 
+     *
+     * @param {*} file
+     * @param {*} fileName
+     * @param {*} fileExtension
+     * @param {*} onUploadProgress
+     * @param {*} cancelSource
      */
 
   }, {
