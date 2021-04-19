@@ -8310,7 +8310,7 @@ const img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
 var changeLinkDialog = function changeLinkDialog() {
   try {
     var dialog = document.querySelector('.tox-dialog');
-    dialog.classList.add("custom-link-dialog");
+    dialog.classList.add('custom-link-dialog');
     changeLinkDialogFooter(dialog.querySelector('.tox-dialog__footer')); // 일단 버튼 위치 바꾸기
 
     changeLinkDialogHeader(dialog.querySelector('.tox-dialog__header')); // saveBtn : disable하려고 넘겨준다
@@ -8322,14 +8322,14 @@ var changeLinkDialog = function changeLinkDialog() {
 };
 
 var changeLinkDialogHeader = function changeLinkDialogHeader(header) {
-  header.classList.add("custom-dialog-header");
+  header.classList.add('custom-dialog-header');
   var title = header.querySelector('.tox-dialog__title');
-  title.classList.add("custom-dialog-title");
+  title.classList.add('custom-dialog-title');
   title.textContent = i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_01');
 };
 
 var changeLinkDialogFooter = function changeLinkDialogFooter(footer) {
-  footer.classList.add("custom-dialog-footer");
+  footer.classList.add('custom-dialog-footer');
   var btnGroup = footer.querySelector('.tox-dialog__footer-end');
   btnGroup.classList.add('custom-dialog-btns');
 
@@ -8360,7 +8360,7 @@ var renderErrorMark = function renderErrorMark(target) {
 var textCondition = function textCondition(value) {
   return isFilled(value) ? {
     result: true,
-    message: ""
+    message: ''
   } : {
     result: false,
     message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_11')
@@ -8376,7 +8376,7 @@ var urlSaveCondition = function urlSaveCondition(_value) {
   if (GlobalVariable.isMailApp) {
     if (isValidMailtoMail(_value)) return {
       result: true,
-      message: ""
+      message: ''
     }; // pass
 
     if (isValidMail(_value)) return {
@@ -8387,7 +8387,7 @@ var urlSaveCondition = function urlSaveCondition(_value) {
 
   if (checkUrlValidation(_value)) return {
     result: true,
-    message: ""
+    message: ''
   }; // pass
 
   return {
@@ -8414,7 +8414,7 @@ var renderValidation = function renderValidation(params) {
       });
     } // text필드 errorMark 보여주는건 focusOut일 때만
     else if (type === 'text' && e.type === 'input') ; else {
-        tooltip$.textContent = resultObj["message"];
+        tooltip$.textContent = resultObj['message'];
         [img$, tooltip$].forEach(function (node) {
           return node.classList.add('note-show-element');
         });
@@ -8423,6 +8423,8 @@ var renderValidation = function renderValidation(params) {
 
 
     if (textInput && isFilled(textInput.value)) {
+      debugger;
+
       _toConsumableArray(textInput.parentElement.querySelectorAll('.note-show-element')).forEach(function (node) {
         return node.classList.remove('note-show-element');
       });
@@ -8461,7 +8463,7 @@ var isEmpty = function isEmpty(targetInputs$) {
 var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
   // 텍스트, 링크 순으로 바꿔주기
   var form = dialog.querySelector('.tox-dialog__body .tox-form');
-  form.classList.add("custom-dialog-form");
+  form.classList.add('custom-dialog-form');
   var formStr = {
     url: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_05'),
     text: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_04')
@@ -8485,14 +8487,14 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
       } //errorMark가 있는지 확인하고 saveBtn disable 시키는게 간단할 듯
 
 
-      if (form.querySelectorAll(".note-link-form-error.note-show-element").length) disableSaveBtn(saveBtn);else activateSaveBtn(saveBtn);
+      if (form.querySelectorAll('.note-link-form-error.note-show-element').length) disableSaveBtn(saveBtn);else activateSaveBtn(saveBtn);
     };
   }; // string 바꿔주기, renderValidationErrorMark
 
 
   _toConsumableArray(form.childNodes).forEach(function (child) {
     var input$ = child.querySelector('input');
-    var type = input$.getAttribute('type') === "url" ? "url" : "text"; // label text 바꾸기
+    var type = input$.getAttribute('type') === 'url' ? 'url' : 'text'; // label text 바꾸기
 
     child.querySelector('.tox-form__group label').textContent = formStr[type]; // errorMark 그려주고
 
@@ -8504,20 +8506,20 @@ var changeLinkDialogForm = function changeLinkDialogForm(dialog) {
     var params = {
       type: type,
       errorMark: errorMark,
-      errorCondition: type === "text" ? textCondition : urlSaveCondition,
-      textInput: form.childNodes.length > 1 ? targetInputs$[0] : null // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
+      errorCondition: type === 'text' ? textCondition : urlSaveCondition,
+      textInput: form.querySelector('input[type="text"]') // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
 
     }; // validation 함수 만들기
 
     var renderItemValidation = renderValidation(params); // focus out 했을 때 동작한다
 
-    if (type === "text") {
+    if (type === 'text') {
       // focusOut일 때만 동작해야해서
-      input$.addEventListener("focusout", handleInput(renderItemValidation)); // 다 지웠을 때도 인식해야 하고, 중간에 focus상태에서 text 쓸 때도 에러메시지 지워져야함
+      input$.addEventListener('focusout', handleInput(renderItemValidation)); // 다 지웠을 때도 인식해야 하고, 중간에 focus상태에서 text 쓸 때도 에러메시지 지워져야함
 
-      input$.addEventListener("input", handleInput(renderItemValidation));
+      input$.addEventListener('input', handleInput(renderItemValidation));
     } //url
-    else input$.addEventListener("input", handleInput(renderItemValidation));
+    else input$.addEventListener('input', handleInput(renderItemValidation));
   }); // text input으로 focus
 
 
