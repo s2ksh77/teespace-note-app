@@ -11,11 +11,18 @@ class ChapterStore {
   @observable
   newChapterVisible: Boolean = false;
 
+  @observable
+  chapterMap: Map<String, $Shape<ChapterModel>> = {};
+
   @action
   async fetchChapterList() {
     const res = await NoteRepository.getChapterList();
     this.chapterList = res.map(chapter => new ChapterModel(chapter));
-    console.log(this.chapterList);
+    // Server Chapter Map
+    this.chapterMap = this.chapterList.reduce(
+      (acc, chapter, idx) => acc.set(chapter.id, chapter),
+      new Map(),
+    );
   }
 
   @action
