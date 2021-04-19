@@ -9689,8 +9689,7 @@ var ContextMenu = function ContextMenu(_ref) {
   var handleSubMenuClick = function handleSubMenuClick(_ref6) {
     var domEvent = _ref6.domEvent;
     domEvent.stopPropagation();
-  }; // txt로 내보내기 배포 때 주석 풀 예정
-  // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
+  }; // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
 
 
   var menu = /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
@@ -9698,31 +9697,24 @@ var ContextMenu = function ContextMenu(_ref) {
       borderRadius: 5
     },
     onClick: onClickContextMenu
-  }, note.type !== 'shared_page' && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "0",
-    disabled: !authStore.hasPermission('notePage', 'U')
-  }, t('NOTE_DELIVER_CONTEXT_MENU_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "1",
-    disabled: !authStore.hasPermission('notePage', 'D')
-  }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "2",
-    disabled: !authStore.hasPermission('noteSharePage', 'C')
-  }, t('CM_FORWARD')), GlobalVariable.isMailApp && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "3",
-    disabled: !authStore.hasPermission('noteMailShare', 'C')
-  }, t('NOTE_DELIVER_CONTEXT_MENU_02')), /*#__PURE__*/React__default['default'].createElement(SubMenu, {
+  }, note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React__default['default'].createElement(Item, {
+    key: "0"
+  }, t('NOTE_DELIVER_CONTEXT_MENU_01')), authStore.hasPermission('notePage', 'D') && /*#__PURE__*/React__default['default'].createElement(Item, {
+    key: "1"
+  }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), authStore.hasPermission('noteSharePage', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
+    key: "2"
+  }, t('CM_FORWARD')), GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
+    key: "3"
+  }, t('NOTE_DELIVER_CONTEXT_MENU_02')), authStore.hasPermission('notePage', 'C') && /*#__PURE__*/React__default['default'].createElement(SubMenu, {
     title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
     onTitleClick: handleSubMenuClick,
     disabled: noteType === 'chapter' && !note.children.length ? true : false
   }, /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "4",
-    disabled: !authStore.hasPermission('notePage', 'C')
+    key: "4"
   }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "5",
-    disabled: !authStore.hasPermission('notePage', 'C')
+    key: "5"
   }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02'))), note.type === 'shared' && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "6",
-    disabled: !authStore.hasPermission('notePage', 'C')
+    key: "6"
   }, t('NOTE_DELIVER_CONTEXT_MENU_04')));
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(ContextMenuCover, {
@@ -10102,7 +10094,7 @@ var Page = function Page(_ref) {
       title: isEllipsisActive ? page.text : null
     }, /*#__PURE__*/React__default['default'].createElement(PageText, {
       onMouseOver: handleTooltip
-    }, page.text)), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+    }, page.text)), (authStore.hasPermission('notePage', 'U') || page.type === 'shared') && /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
       noteType: 'page',
       note: page,
       chapterIdx: chapterIdx,
