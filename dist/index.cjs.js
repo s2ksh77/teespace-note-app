@@ -3255,7 +3255,8 @@ var languageSet = {
   DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
-  NOTE_EXPORT_TITLE: '제목'
+  NOTE_EXPORT_TITLE: '제목',
+  tempNoteGuest: '게스트 환경에서는 제공하지 않는 기능입니다.'
 };
 
 var languageSet$1 = {
@@ -3388,7 +3389,8 @@ var languageSet$1 = {
   DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
-  NOTE_EXPORT_TITLE: 'Title'
+  NOTE_EXPORT_TITLE: 'Title',
+  tempNoteGuest: 'This feature is not available to guests.'
 };
 
 var resources = {
@@ -11617,10 +11619,12 @@ var StyledMenu = styled__default['default'](antd.Menu)(_templateObject$9());
 var FileLayout = function FileLayout() {
   var _useNoteStore = useNoteStore(),
       EditorStore = _useNoteStore.EditorStore,
-      PageStore = _useNoteStore.PageStore;
+      PageStore = _useNoteStore.PageStore,
+      NoteStore = _useNoteStore.NoteStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      configStore = _useCoreStores.configStore;
+      configStore = _useCoreStores.configStore,
+      authStore = _useCoreStores.authStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -11827,9 +11831,16 @@ var FileLayout = function FileLayout() {
         fileExtension: extension
       });
       EditorStore.setIsPreview(true);
-    } else {
-      downloadFile(file_id ? file_id : user_context_2);
+      return;
     }
+
+    if (!authStore.hasPermission('notePage', 'U')) {
+      NoteStore.setToastText(t('tempNoteGuest'));
+      NoteStore.setIsVisibleToast(true);
+      return;
+    }
+
+    downloadFile(file_id ? file_id : user_context_2);
   };
 
   var handleFileRemove = /*#__PURE__*/function () {
@@ -11939,7 +11950,9 @@ var FileLayout = function FileLayout() {
         closable: !PageStore.isReadMode(),
         onMouseEnter: handleTempMouseHover.bind(null, index),
         onMouseLeave: handleTempMouseLeave
-      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
+      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
+        src: fileExtension(item.file_extension)
+      })) : /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
         overlay: menu,
         trigger: ['click'],
         placement: "bottomCenter",
@@ -11984,7 +11997,9 @@ var FileLayout = function FileLayout() {
         }),
         tabIndex: index,
         closable: !PageStore.isReadMode()
-      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
+      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
+        src: fileExtension(item.file_extension)
+      })) : /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
         overlay: menu,
         trigger: ['click'],
         placement: "bottomCenter",

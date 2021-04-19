@@ -47,7 +47,7 @@ const StyledMenu = styled(Menu)`
 
 const FileLayout = () => {
   const { EditorStore, PageStore, NoteStore } = useNoteStore();
-  const { configStore } = useCoreStores();
+  const { configStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const [hover, setHover] = useState(false);
   const [hoverFileId, setHoverFileId] = useState(null);
@@ -206,9 +206,14 @@ const FileLayout = () => {
         fileExtension: extension,
       });
       EditorStore.setIsPreview(true);
-    } else {
-      downloadFile(file_id ? file_id : user_context_2);
+      return;
     }
+    if (!authStore.hasPermission('notePage', 'U')) {
+      NoteStore.setToastText(t('tempNoteGuest'));
+      NoteStore.setIsVisibleToast(true);
+      return;
+    }
+    downloadFile(file_id ? file_id : user_context_2);
   };
 
   const handleFileRemove = async (fileId, index, type) => {
@@ -295,7 +300,11 @@ const FileLayout = () => {
               onMouseLeave={handleTempMouseLeave}
             >
               <FileContent>
-                <Dropdown
+              {!authStore.hasPermission('notePage', 'U') ?
+                <FileDownloadIcon>
+                  <FileExtensionBtn src={fileExtension(item.file_extension)}/>
+                </FileDownloadIcon>
+              : <Dropdown
                   overlay={menu}
                   trigger={['click']}
                   placement="bottomCenter"
@@ -311,6 +320,7 @@ const FileLayout = () => {
                     )}
                   </FileDownloadIcon>
                 </Dropdown>
+                }
                 {item.error ? (
                   <FileErrorIcon>
                     <ExclamationCircleFilled />
@@ -397,7 +407,11 @@ const FileLayout = () => {
             closable={!PageStore.isReadMode()}
           >
             <FileContent>
-              <Dropdown
+            {!authStore.hasPermission('notePage', 'U') ?
+              <FileDownloadIcon>
+                <FileExtensionBtn src={fileExtension(item.file_extension)}/>
+              </FileDownloadIcon>
+            : <Dropdown
                 overlay={menu}
                 trigger={['click']}
                 placement="bottomCenter"
@@ -420,6 +434,7 @@ const FileLayout = () => {
                   )}
                 </FileDownloadIcon>
               </Dropdown>
+              }
               <FileData mode={PageStore.isReadMode().toString()}>
                 <FileDataName>
                   <Tooltip
