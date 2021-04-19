@@ -9752,6 +9752,9 @@ var ChapterText = function ChapterText(_ref) {
       handleFoldBtnClick = _ref.handleFoldBtnClick,
       isFolded = _ref.isFolded;
 
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore;
+
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
 
@@ -9773,8 +9776,8 @@ var ChapterText = function ChapterText(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement(ChapterTextSpan, {
       onMouseOver: handleTooltip,
       marginLeft: chapter.type === 'notebook' || chapter.type === 'default' ? '1.69rem' : '2.63rem'
-    }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text)), /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
-      noteType: "chapter",
+    }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text)), authStore.hasPermission('noteChapter', 'U') && /*#__PURE__*/React__default['default'].createElement(ContextMenu, {
+      noteType: 'chapter',
       note: chapter,
       chapterIdx: index
     })), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, {

@@ -15,6 +15,7 @@ import { Tooltip } from "antd";
 import NoteUtil from '../../NoteUtil';
 import { useTranslation } from "react-i18next";
 import moment from 'moment-timezone';
+import { useCoreStores } from 'teespace-core';
 
 const isNew = (chapter) => {
   // 챕터 이름 변경시 업데이트
@@ -28,6 +29,7 @@ const isNew = (chapter) => {
 
 const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
   const { ChapterStore } = useNoteStore();
+  const { authStore } = useCoreStores();
   const { t } = useTranslation();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   chapter.text = NoteUtil.decodeStr(chapter.text);
@@ -52,11 +54,9 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
           </ChapterTextSpan>
         </Tooltip>
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
-        <ContextMenu
-          noteType={"chapter"}
-          note={chapter}
-          chapterIdx={index}
-        />
+        {authStore.hasPermission('noteChapter', 'U') && (
+          <ContextMenu noteType={'chapter'} note={chapter} chapterIdx={index} />
+        )}
       </ChapterTitle>
       <ChapterFolderBtn onClick={handleFoldBtnClick}>
         <ChapterFoldBtnIcon src={isFolded ? arrowBottomIcon : arrowTopIcon} />
