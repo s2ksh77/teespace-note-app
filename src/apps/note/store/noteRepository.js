@@ -1,4 +1,5 @@
 import { API } from 'teespace-core';
+import NoteStore from './noteStore';
 
 const { default: axios } = require('axios');
 
@@ -70,7 +71,9 @@ class NoteRepository {
 
   getNoteTagList(noteId) {
     return API.Get(
-      `note-api/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
+      `note-api/tag?action=List&note_id=${noteId}&t=${new Date()
+        .getTime()
+        .toString()}`,
     );
   }
 
@@ -82,7 +85,8 @@ class NoteRepository {
   // }
   async getAllSortedTagList() {
     return await API.Get(
-      `note-api/tagSort?action=List&note_channel_id=${this.chId
+      `note-api/tagSort?action=List&note_channel_id=${
+        this.chId
       }&t=${new Date().getTime().toString()}`,
     );
   }
@@ -102,19 +106,14 @@ class NoteRepository {
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
-
   }
 
   getChapterInfoList(chapterId) {
-    return API.Get(
-      `note-api/chaptershare?action=List&id=${chapterId}`,
-    );
+    return API.Get(`note-api/chaptershare?action=List&id=${chapterId}`);
   }
 
   getChapterColor(chapterId) {
-    return API.get(
-      `note-api/chaptershare?action=List&id=${chapterId}`,
-    );
+    return API.get(`note-api/chaptershare?action=List&id=${chapterId}`);
   }
   async updateChapterColor(chapterId, targetColor) {
     try {
@@ -122,9 +121,9 @@ class NoteRepository {
         dto: {
           id: chapterId,
           ws_id: this.WS_ID,
-          color: targetColor
-        }
-      })
+          color: targetColor,
+        },
+      });
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -132,26 +131,27 @@ class NoteRepository {
   }
 
   getChapterText(chapterId) {
-    return API.get(
-      `note-api/chaptershare?action=List&id=${chapterId}`,
-    );
+    return API.get(`note-api/chaptershare?action=List&id=${chapterId}`);
   }
 
   async createChapter(chapterTitle, chapterColor) {
     try {
-      const { data } = await API.post(`note-api/notebooks`, {
-        dto: {
-          id: '',
-          ws_id: this.WS_ID,
-          note_channel_id: this.chId,
-          text: chapterTitle,
-          children: [],
-          type: 'notebook',
-          USER_ID: this.USER_ID,
-          user_name: this.USER_NAME,
-          color: chapterColor,
+      const { data } = await API.post(
+        `note-api/langauge/${NoteStore.i18nLanguage}/notebooks`,
+        {
+          dto: {
+            id: '',
+            ws_id: this.WS_ID,
+            note_channel_id: this.chId,
+            text: chapterTitle,
+            children: [],
+            type: 'notebook',
+            USER_ID: this.USER_ID,
+            user_name: this.USER_NAME,
+            color: chapterColor,
+          },
         },
-      })
+      );
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -160,12 +160,13 @@ class NoteRepository {
 
   async deleteChapter(chapterId) {
     try {
-      const { data } = await API.delete(`note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`);
+      const { data } = await API.delete(
+        `note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`,
+      );
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
-
   }
 
   async renameChapter(chapterId, chapterTitle, color) {
@@ -180,8 +181,8 @@ class NoteRepository {
           parent_notebook: '',
           text: chapterTitle,
           user_name: this.USER_NAME,
-        }
-      })
+        },
+      });
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -195,7 +196,9 @@ class NoteRepository {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
-          modified_date: `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`,
+          modified_date: `${today.getFullYear()}.${
+            today.getMonth() + 1
+          }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`,
           USER_ID: this.USER_ID,
           note_channel_id: this.chId,
           user_name: this.USER_NAME,
@@ -211,7 +214,7 @@ class NoteRepository {
   }
 
   async deletePage(pageList) {
-    pageList.forEach((page) => {
+    pageList.forEach(page => {
       page.USER_ID = this.USER_ID;
       page.WS_ID = this.WS_ID;
       page.note_channel_id = this.chId;
@@ -221,7 +224,7 @@ class NoteRepository {
       return await API.Post(`note-api/note?action=Delete`, {
         dto: {
           noteList: pageList,
-        }
+        },
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -240,7 +243,7 @@ class NoteRepository {
           note_id: pageId,
           note_title: pageTitle,
           parent_notebook: chapterId,
-        }
+        },
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -258,7 +261,7 @@ class NoteRepository {
           user_name: this.USER_NAME,
           USER_ID: this.USER_ID,
           TYPE: 'MOVE',
-        }
+        },
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -292,7 +295,9 @@ class NoteRepository {
     updateDto.dto.USER_ID = this.USER_ID;
     updateDto.dto.CH_TYPE = this.CH_TYPE;
     updateDto.dto.user_name = this.USER_NAME;
-    updateDto.dto.modified_date = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
+    updateDto.dto.modified_date = `${today.getFullYear()}.${
+      today.getMonth() + 1
+    }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
     try {
       return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {
@@ -323,8 +328,8 @@ class NoteRepository {
     try {
       return await API.post(`note-api/tag`, {
         dto: {
-          tagList: targetList
-        }
+          tagList: targetList,
+        },
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -334,8 +339,8 @@ class NoteRepository {
     try {
       return await API.post(`note-api/tag?action=Delete`, {
         dto: {
-          tagList: targetList
-        }
+          tagList: targetList,
+        },
       });
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -345,7 +350,7 @@ class NoteRepository {
     try {
       return await API.post(`note-api/tag?action=Update`, {
         dto: {
-          tagList: targetList
+          tagList: targetList,
         },
       });
     } catch (e) {
@@ -362,10 +367,10 @@ class NoteRepository {
           channel_id: this.chId,
           storageFileInfo: {
             user_id: this.USER_ID,
-            file_id: fileId
-          }
-        }
-      })
+            file_id: fileId,
+          },
+        },
+      });
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -373,48 +378,78 @@ class NoteRepository {
 
   async createUploadMeta(dto) {
     try {
-      return await API.post("note-api/noteFile", dto)
+      return await API.post('note-api/noteFile', dto);
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
   async createUploadStorage(fileId, file, onUploadProgress) {
     try {
-      return await API.post(`Storage/StorageFile?action=Create&fileID=` + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
-        headers: {
-          'content-type': 'multipart/form-data'
+      return await API.post(
+        `Storage/StorageFile?action=Create&fileID=` +
+          fileId +
+          '&workspaceID=' +
+          this.WS_ID +
+          '&channelID=' +
+          this.chId +
+          '&userID=' +
+          this.USER_ID,
+        file,
+        {
+          headers: {
+            'content-type': 'multipart/form-data',
+          },
+          xhrFields: {
+            withCredentials: true,
+          },
+          onUploadProgress,
         },
-        xhrFields: {
-          withCredentials: true,
-        },
-        onUploadProgress
-      })
+      );
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
   }
 
   /**
-   * 
-   * @param {*} file 
-   * @param {*} fileName 
-   * @param {*} fileExtension 
-   * @param {*} onUploadProgress 
-   * @param {*} cancelSource 
+   *
+   * @param {*} file
+   * @param {*} fileName
+   * @param {*} fileExtension
+   * @param {*} onUploadProgress
+   * @param {*} cancelSource
    */
 
-  async uploadFileGW(file, fileName, fileExtension, onUploadProgress, cancelSource) {
-    return await API.post(`/gateway-api/upload?user_id=` + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension,
-      file, {
-      headers: { // pplication/x-www-form-urlencoded; charset=UTF-8
-        'content-type': 'multipart/form-data',
+  async uploadFileGW(
+    file,
+    fileName,
+    fileExtension,
+    onUploadProgress,
+    cancelSource,
+  ) {
+    return await API.post(
+      `/gateway-api/upload?user_id=` +
+        this.USER_ID +
+        '&ws_id=' +
+        this.WS_ID +
+        '&ch_id=' +
+        this.chId +
+        '&file_name=' +
+        fileName +
+        '&file_extension=' +
+        fileExtension,
+      file,
+      {
+        headers: {
+          // pplication/x-www-form-urlencoded; charset=UTF-8
+          'content-type': 'multipart/form-data',
+        },
+        xhrFields: {
+          withCredentials: true,
+        },
+        onUploadProgress,
+        cancelToken: cancelSource.token,
       },
-      xhrFields: {
-        withCredentials: true,
-      },
-      onUploadProgress,
-      cancelToken: cancelSource.token,
-    });
+    );
   }
 
   async deleteFile(deleteFileId) {
@@ -433,10 +468,10 @@ class NoteRepository {
             file_updated_at: '',
             user_context_1: '',
             user_context_2: '',
-            user_context_3: ''
-          }
-        }
-      })
+            user_context_3: '',
+          },
+        },
+      });
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -451,9 +486,9 @@ class NoteRepository {
           workspace_id: this.WS_ID,
           channel_id: this.chId,
           file_id: deleteFileList,
-          user_id: this.USER_ID
-        }
-      })
+          user_id: this.USER_ID,
+        },
+      });
     } else {
       return Promise.resolve();
     }
@@ -462,15 +497,15 @@ class NoteRepository {
   createShareChapter(chapterList) {
     return API.post(`note-api/chaptershare`, {
       dto: {
-        notbookList: chapterList
-      }
+        notbookList: chapterList,
+      },
     });
   }
   createSharePage(pageList) {
     return API.post(`note-api/noteshare`, {
       dto: {
-        noteList: pageList
-      }
+        noteList: pageList,
+      },
     });
   }
   async getSearchList(searchKey) {
@@ -478,10 +513,9 @@ class NoteRepository {
       return await API.post(`note-api/noteSearch?action=List`, {
         dto: {
           note_channel_id: this.chId,
-          text: searchKey
-        }
-      }
-      );
+          text: searchKey,
+        },
+      });
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -489,8 +523,8 @@ class NoteRepository {
   async createFileMeta(targetList) {
     return await API.post(`note-api/noteFileMeta`, {
       dto: {
-        fileList: targetList
-      }
+        fileList: targetList,
+      },
     });
   }
 }

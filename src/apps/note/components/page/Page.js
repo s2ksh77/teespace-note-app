@@ -193,13 +193,14 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
               <PageText onMouseOver={handleTooltip}>{page.text}</PageText>
             </Tooltip>
             {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
-            <ContextMenu
-              noteType={'page'}
-              note={page}
-              chapterIdx={chapterIdx}
-              pageIdx={index}
-              parent={chapter}
-            />
+            {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && 
+              <ContextMenu
+                noteType={'page'}
+                note={page}
+                chapterIdx={chapterIdx}
+                pageIdx={index}
+                parent={chapter}
+              />}
           </PageTextContainer>
         </PageTextCover>
       )}
