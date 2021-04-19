@@ -32,10 +32,3 @@ const NoteUtil = {
 };
 
 export default NoteUtil;
-
-const CHAPTER_TYPE = {
-  DEFAULT: 'default',
-  NOTEBOOK: 'notebook',
-  SHARED_PAGE: 'shared_page',
-  SHARED: 'shared',
-};
