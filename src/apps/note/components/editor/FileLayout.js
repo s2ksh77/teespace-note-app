@@ -23,18 +23,8 @@ import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
 import cancelBtn from '../../assets/ts_cancel@3x.png';
 import downloadBtn from '../../assets/file_download.svg';
-import txt from '../../assets/txt.svg';
-import excel from '../../assets/cell.svg';
-import ppt from '../../assets/point.svg';
-import pdf from '../../assets/pdf.svg';
-import etc from '../../assets/etc.svg';
-import zip from '../../assets/zip.svg';
-import docs from '../../assets/word.svg';
-import hangul from '../../assets/hangul.svg';
-import video from '../../assets/movie.svg';
-import audio from '../../assets/audio.svg';
 import { Dropdown, Menu, Progress, Tooltip } from 'antd';
-import { downloadFile, openSaveDrive, fileCategory, isPreview } from '../common/NoteFile';
+import { downloadFile, openSaveDrive, fileExtension, isPreview } from '../common/NoteFile';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -63,35 +53,6 @@ const FileLayout = () => {
     );
   };
 
-  const fileExtension = extension => {
-    // driveGetFileIcon(fileName)
-    const cat = Object.keys(fileCategory).find(cat =>
-      fileCategory[cat]['ext'].includes(extension),
-    );
-    switch (cat) {
-      case 'isTxt':
-        return txt;
-      case 'isPowerPoint':
-        return ppt;
-      case 'isPdf':
-        return pdf;
-      case 'isExcel':
-        return excel;
-      case 'isWord':
-        return docs;
-      case 'isHangul':
-        return hangul;
-      case 'isZip':
-        return zip;
-      case 'isVideoWithPreview':
-      case 'isVideoWithoutPreview':
-        return video;
-      case 'isAudio':
-        return audio;
-      default:
-        return etc;
-    }
-  };
   const handleFileDown = key => {
     if (key === '0') openSaveDrive();
     if (key === '1') downloadFile(EditorStore.downloadFileId);
