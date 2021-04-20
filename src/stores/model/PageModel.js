@@ -115,7 +115,12 @@ class PageModel {
 
   @action
   setRoomId(data: string) {
-    this.roomId = data;
+    this.roomId = NoteStore.roomId;
+  }
+
+  @action
+  setChId(data: string) {
+    this.chId = NoteStore.chId;
   }
 
   @action
@@ -180,11 +185,6 @@ class PageModel {
   @action
   setModifiedDate(data: string) {
     this.modDate = data;
-  }
-
-  @action
-  setNoteChannelId(data: string) {
-    this.chId = data;
   }
 
   @action
