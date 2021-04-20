@@ -118,7 +118,7 @@ export const EditButton = styled.button`
   }
 `;
 
-export const PageContentTitle11 = styled.span`
+export const PageContentTitle = styled.input`
   width: 100%;
   margin-right: 1rem;
   font-size: 0.81rem;
@@ -179,7 +179,7 @@ export const EditorHeaderContainer1 = styled.div`
   width: 80%;
 `;
 
-export const PageContentTitle = styled.input`
+export const PageContentTitle11 = styled.input`
   display: inline-block;
   width: 100%;
   height: 100%;

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
@@ -10,7 +11,7 @@ import {
   EditingIcon,
   ModifiedUser,
   ModifiedTime,
-  BackButton as Icon,
+  BackButton as BackButtonIcon,
 } from '../../styles/HeaderStyle';
 import {
   ButtonWrapper as SearchButtonWrapper,
@@ -20,8 +21,7 @@ import {
 import LayoutStateButton from '../common/LayoutStateButton';
 import editingIcon from '../../assets/wapl_working.svg';
 import searchIcon from '../../assets/search.svg';
-import backBtn from '../../assets/arrow_back_1.svg';
-import { useTranslation } from 'react-i18next';
+import backIcon from '../../assets/arrow_back_1.svg';
 
 const PageHeader = () => {
   const { NoteStore, PageStore } = useNoteStore();
@@ -41,8 +41,11 @@ const PageHeader = () => {
   return useObserver(() => (
     <HeaderContainer>
       {NoteStore.targetLayout === 'content' && (
-        <BackButton show={NoteStore.targetLayout === 'content'}>
-          <Icon src={backBtn} onClick={handleStateChange} />
+        <BackButton
+          show={NoteStore.targetLayout === 'content'}
+          onClick={handleStateChange}
+        >
+          <BackButtonIcon src={backIcon} />
         </BackButton>
       )}
       <EditButton>
@@ -54,7 +57,7 @@ const PageHeader = () => {
         maxLength="200"
         placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
         value={PageStore.pageModel.name}
-        disabled={PageStore.pageModel.isReadMode ? true : false}
+        disabled={PageStore.pageModel.isReadMode}
         onChange={handleChange}
       />
       {/* <AutoSaveMessage /> */}
