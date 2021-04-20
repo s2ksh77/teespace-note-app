@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import checkMaxLength from '../utils/validators';
+import { checkMaxLength } from '../utils/validators';
 
 // validator :
 const useInput = initialValue => {

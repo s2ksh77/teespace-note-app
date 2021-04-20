@@ -1,6 +1,6 @@
 import { isNil, isEmpty } from 'ramda';
 import NoteUtil from './NoteUtil';
-import GlobalVariable from '../GlobalVariable';
+import GlobalVariable from './GlobalVariable'; // 임시
 
 export const checkMaxLength = e => {
   /* eslint no-underscore-dangle: 0 */
