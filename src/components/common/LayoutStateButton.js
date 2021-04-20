@@ -30,16 +30,26 @@ const LayoutStateButton = () => {
     }
   })();
 
+  const fetchFirstNote = async () => {
+    PageStore.setIsLoading(true);
+    await PageStore.fetchNoteInfoList(
+      ChapterStore.chapterList[0]?.pageList[0]?.id,
+    );
+    PageStore.setIsLoading(false);
+  };
+
   const handleLayoutState = () => {
     // 같은 룸에서 layoutState만 바뀔 때
     switch (NoteStore.layoutState) {
       case 'expand':
         EventBus.dispatch('onLayoutCollapse');
-        // NoteStore.setTargetLayout('Content');
+        NoteStore.setTargetLayout('content');
         // NoteStore.setIsContentExpanded(false);
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
+        if (!PageStore.pageModel) fetchFirstNote();
+        NoteStore.setTargetLayout('both');
         // if (NoteStore.targetLayout === 'Content')
         //   ChapterStore.getNoteChapterList();
         // else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();

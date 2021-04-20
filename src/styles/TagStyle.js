@@ -91,20 +91,16 @@ export const TagItemNum = styled.div`
   line-height: normal;
 `;
 
-/** 여기 아래부터 아직 안 쓰이는 곳 */
-
-export const EditorTagCover = styled.div`
-  white-space: nowrap;
-  width: calc(100% - 0px);
+export const PageTagListWrapper = styled.div`
+  width: 100%;
   height: 2.81rem;
-  border-width: 0px;
-  border-style: solid;
-  vertical-align: top;
   overflow: hidden;
-  line-height: 66.1177px;
   display: flex;
   align-items: center;
+  padding: 0 1rem;
 `;
+
+/** 여기 아래부터 아직 안 쓰이는 곳 */
 
 export const TagNewBtn = styled.div`
   display: flex;

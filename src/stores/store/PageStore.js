@@ -1,18 +1,25 @@
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import PageModel from '../model/PageModel';
 import TagModel from '../model/TagModel';
 import NoteRepository from '../repository/NoteRepository';
 // @flow
 class PageStore {
   @observable
+  isLoading: Boolean = false;
+
+  @observable
   pageModel: $Shape<PageModel> = '';
 
   @observable
   tagModel: $Shape<TagModel> = '';
 
+  setIsLoading(isLoading: Boolean) {
+    this.isLoading = isLoading;
+  }
+
   @action
-  async fetchNoteInfoList() {
-    const res = await NoteRepository.fetchNoteInfoList();
+  async fetchNoteInfoList(pageId: string) {
+    const res = await NoteRepository.getNoteInfoList(pageId);
     this.pageModel = new PageModel(res);
     console.log(this.pageModel);
   }

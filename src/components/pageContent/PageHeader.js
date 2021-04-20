@@ -1,5 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
@@ -20,12 +21,18 @@ import editingIcon from '../../assets/wapl_working.svg';
 import searchIcon from '../../assets/search.svg';
 
 const PageHeader = () => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, PageStore } = useNoteStore();
+  const { t } = useTranslation();
 
   return useObserver(() => (
     <HeaderContainer>
       <EditButton />
-      <PageContentTitle>(제목 없음)</PageContentTitle>
+      <PageContentTitle
+        maxLength="200"
+        placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
+        value={PageStore.pageModel.name}
+        disabled={PageStore.pageModel.isReadMode}
+      />
       {/* <AutoSaveMessage /> */}
       {/* <EditingIcon src={editingIcon} /> */}
       <ModifiedUser>User</ModifiedUser>

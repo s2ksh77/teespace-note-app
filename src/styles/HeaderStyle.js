@@ -118,10 +118,12 @@ export const EditButton = styled.button`
   }
 `;
 
-export const PageContentTitle = styled.span`
+export const PageContentTitle = styled.input`
   width: 100%;
   margin-right: 1rem;
   font-size: 0.81rem;
+  border: 0;
+  background-color: #ffffff;
   color: #000000 !important;
   overflow: hidden;
   text-overflow: ellipsis;

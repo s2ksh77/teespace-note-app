@@ -6,10 +6,15 @@ import { PageWrapper, PageTitle, PageTitleInput } from '../../styles/PageStyle';
 import ContextMenu from './ContextMenu';
 
 const PageItem = ({ page }) => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, PageStore } = useNoteStore();
+
+  const handlePageClick = () => {
+    PageStore.fetchNoteInfoList(page.id);
+    if (NoteStore.isCollapsed) NoteStore.setTargetLayout('content');
+  };
 
   return useObserver(() => (
-    <PageWrapper>
+    <PageWrapper onClick={handlePageClick}>
       <PageTitle>{page.text}</PageTitle>
       <ContextMenu />
     </PageWrapper>

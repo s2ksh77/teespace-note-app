@@ -10,13 +10,16 @@ import PageTagList from './PageTagList';
 import ExportEditor from './ExportEditor';
 
 const PageBody = () => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, PageStore, EditorStore } = useNoteStore();
 
   return useObserver(() => (
-    <PageBodyContainer>
+    <PageBodyContainer
+      isReadMode={PageStore.pageModel.isReadMode}
+      isSearching={EditorStore.isSearching}
+    >
       <PageSubHeader />
       <Editor />
-      <PageFileList />
+      {/* <PageFileList /> */}
       <PageTagList />
     </PageBodyContainer>
   ));

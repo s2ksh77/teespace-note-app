@@ -1,4 +1,3 @@
-import { Progress } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const ContentFoldButton = styled.div`
@@ -41,101 +40,40 @@ export const PageContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+`;
+
+export const PageBodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   .tox-tinymce {
     border-left: 0px solid black;
     border-color: #ddd9d4;
+    flex: 1;
   }
-  ${props =>
-    !props.isReadMode &&
-    !props.isSearch &&
+  ${({ isReadMode, isSearching }) =>
+    !isReadMode &&
+    !isSearching &&
     css`
       .tox-editor-header {
         display: block;
       }
     `}
-  ${props =>
-    !props.isReadMode &&
-    props.isSearch &&
+  ${({ isReadMode, isSearching }) =>
+    (isReadMode || isSearching) &&
     css`
       .tox-editor-header {
         display: none;
       }
     `}
-  ${props =>
-    props.isReadMode &&
-    css`
-      .tox-editor-header {
-        display: none;
-      }
-    `}
-  ${props =>
-    !props.isReadMode &&
+  ${({ isReadMode }) =>
+    !isReadMode &&
     css`
       .tox-tinymce {
         border-left: 0.1px solid transparent;
       }
     `}
-  ${props =>
-    !props.isFile &&
-    props.isReadMode &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, ReadModeContainer, EditorTagCover
-        height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;
-      }
-    `}
-  ${props =>
-    props.isFile &&
-    props.isReadMode &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, ReadModeContainer, FileBodyLayout, EditorTagCover
-        height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;
-      }
-    `}
-  ${props =>
-    !props.isFile &&
-    !props.isReadMode &&
-    !props.isSearch &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, EditorTagCover
-        height: calc(100% - 3rem - 2.81rem) !important;
-      }
-    `}
-  ${props =>
-    !props.isFile &&
-    !props.isReadMode &&
-    props.isSearch &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, ReadModeContainer(Search), EditorTagCover
-        height: calc(100% - 3rem - 2.81rem - 2.81rem) !important;
-      }
-    `}
-  ${props =>
-    props.isFile &&
-    !props.isReadMode &&
-    !props.isSearch &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, FileBodyLayout, EditorTagCover
-        height: calc(100% - 3rem - 4.19rem - 2.81rem) !important;
-      }
-    `}
-  ${props =>
-    props.isFile &&
-    !props.isReadMode &&
-    props.isSearch &&
-    css`
-      .tox-tinymce {
-        // ContentHeaderCover, ReadModeContainer(Search), FileBodyLayout, EditorTagCover
-        height: calc(100% - 3rem - 2.81rem - 4.19rem - 2.81rem) !important;
-      }
-    `}
 `;
-
-export const PageBodyContainer = styled.div``;
 
 export const PageSubHeaderContainer = styled.div`
   display: flex;
@@ -157,6 +95,83 @@ export const ReadModeText = styled.span`
   color: ${props => props.color};
 `;
 
+export const EditorContentStyle = ` 
+  html,body {
+    height: 100%;
+  }
+  body {
+    font-family: "Noto Sans KR",sans-serif;
+  }
+  a, img {
+    cursor: pointer;
+  }
+  ::selection {
+    background: #35A57A; /* WebKit/Blink Browsers */
+    color: #ffffff;
+  }
+  ::-moz-selection {
+    background: #35A57A; /* Gecko Browsers */
+    color: #ffffff;
+  }
+  ::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.625rem;
+  }
+  ::-webkit-scrollbar-thumb {
+      width: 0.375rem;
+      background: #C5C5C8;
+      /* border: 0.188rem solid transparent; */
+      background-clip: padding-box;
+      border-radius: 0.5625rem;
+      opacity: 0.6;
+  }
+  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
+    background-color: #f8cac6;
+  }
+  .mce-content-body [data-mce-selected=inline-boundary] {
+    background-color:#FFE362;
+  }
+  table[style*="border-width: 0px"],
+  .mce-item-table:not([border]),
+  .mce-item-table[border="0"],
+  table[style*="border-width: 0px"] td,
+  .mce-item-table:not([border]) td,
+  .mce-item-table[border="0"] td,
+  table[style*="border-width: 0px"] th,
+  .mce-item-table:not([border]) th,
+  .mce-item-table[border="0"] th,
+  table[style*="border-width: 0px"] caption,
+  .mce-item-table:not([border]) caption,
+  .mce-item-table[border="0"] caption {
+    border: 1px solid #ccc;
+  }
+  .mce-content-body {
+    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
+    background-size: 0.625rem 0.625rem !important;
+  }
+  img {
+    max-width: 100%;
+  }
+  mark {
+    background-color: #FEF3BE;
+    color : #000000; 
+  }
+  mark.searchselected {
+    background-color: #FFD200 !important;
+  }
+  .tox-notification { display: none !important }
+`;
+
+export const PageFileListWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 4.19rem;
+  align-items: center;
+  border-bottom: 1px solid #ddd9d4;
+  padding: 0rem 0.56rem;
+  overflow: hidden;
+`;
+
 /** 여기 아래부터 아직 안 쓰이는 곳 */
 
 // export const ReadModeText = styled.span`
@@ -175,16 +190,6 @@ export const ReadModeSubText = styled.span`
   font-size: 0.75rem;
 `;
 
-export const FileBodyLayout = styled.div`
-  width: auto;
-  display: flex;
-  align-items: center;
-  height: 4.19rem;
-  border-bottom: 1px solid #ddd9d4;
-  overflow: hidden;
-  box-sizing: border-box;
-  padding: 0rem 0.5rem;
-`;
 export const FileBody = styled.div`
   display: flex;
   position: relative;
@@ -352,71 +357,4 @@ export const FileCloseBtn = styled.img`
   height: 0.56rem;
   filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg)
     brightness(90%) contrast(109%);
-`;
-
-export const editorContentCSS = ` 
-  html,body{
-    height:calc(100% - 16px);
-  }
-  body{
-    font-family : "Noto Sans KR",sans-serif;
-  }
-  a, img {
-    cursor:pointer;
-  }
-  ::selection {
-    background: #35A57A; /* WebKit/Blink Browsers */
-    color:#ffffff;
-  }
-  ::-moz-selection {
-    background: #35A57A; /* Gecko Browsers */
-    color:#ffffff;
-  }
-  ::-webkit-scrollbar {
-    width: 0.375rem;
-    height: 0.625rem;
-  }
-  ::-webkit-scrollbar-thumb {
-      width: 0.375rem;
-      background: #C5C5C8;
-      /* border: 0.188rem solid transparent; */
-      background-clip: padding-box;
-      border-radius: 0.5625rem;
-      opacity: 0.6;
-  }
-  .mce-content-body .note-invalidUrl[data-mce-selected=inline-boundary] {
-    background-color: #f8cac6;
-  }
-  .mce-content-body [data-mce-selected=inline-boundary] {
-    background-color:#FFE362;
-  }
-  table[style*="border-width: 0px"],
-  .mce-item-table:not([border]),
-  .mce-item-table[border="0"],
-  table[style*="border-width: 0px"] td,
-  .mce-item-table:not([border]) td,
-  .mce-item-table[border="0"] td,
-  table[style*="border-width: 0px"] th,
-  .mce-item-table:not([border]) th,
-  .mce-item-table[border="0"] th,
-  table[style*="border-width: 0px"] caption,
-  .mce-item-table:not([border]) caption,
-  .mce-item-table[border="0"] caption {
-    border: 1px solid #ccc;
-  }
-  .mce-content-body{
-    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
-    background-size: 0.625rem 0.625rem !important;
-  }
-  img {
-    max-width: 100%;
-  }
-  mark {
-    background-color: #FEF3BE;
-    color : #000000; 
-  }
-  mark.searchselected{
-    background-color: #FFD200 !important;
-  }
-  .tox-notification { display: none !important }
 `;

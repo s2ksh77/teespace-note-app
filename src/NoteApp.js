@@ -3,6 +3,7 @@ import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import useNoteStore from './stores/useNoteStore';
 
+import { GlobalStyle } from './GlobalStyles';
 import LNB from './components/LNB';
 import Content from './components/Content';
 
@@ -28,6 +29,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
 
   return useObserver(() => (
     <>
+      <GlobalStyle />
       <LNB />
       <Content />
     </>

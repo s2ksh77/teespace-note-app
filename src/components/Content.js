@@ -11,17 +11,17 @@ import TagContent from './tagContent/TagContent';
 const Content = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
-  const renderContent = (() => {
-    // if (ChapterStore.loadingPageInfo) return <LoadingContent />;
-    // if (ChapterStore.currentChapterId) {
-    //   if (PageStore.currentPageId) return <PageContent />;
-    //   return <NoContent />; // chapter 하위 page가 없을 때
-    // }
-    // return <NoContent />;
-  })();
+  // const renderContent = (() => {
+  //   if (ChapterStore.loadingPageInfo) return <LoadingContent />;
+  //   if (ChapterStore.currentChapterId) {
+  //     if (PageStore.currentPageId) return <PageContent />;
+  //     return <NoContent />; // chapter 하위 page가 없을 때
+  //   }
+  //   return <NoContent />;
+  // })();
 
-  const RenderContent = () => {
-    // 임시로 PageContent 띄우기. 이름도 다시 생각해보기!
+  const renderContent = () => {
+    if (PageStore.isLoading) return <LoadingContent />;
     return <PageContent />;
   };
 
@@ -29,7 +29,7 @@ const Content = () => {
     <ContentContainer
       show={!NoteStore.isCollapsed || NoteStore.isTargetLayout('content')}
     >
-      <RenderContent />
+      {renderContent()}
     </ContentContainer>
   ));
 };
