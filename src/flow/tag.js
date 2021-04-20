@@ -12,12 +12,12 @@ declare type TagCategory = {
   ETC: Array<TagKeyInfo>,
 };
 declare type TagKeyInfo = {
-  key: String,
+  key: string,
   tagList: Array<RoomTagInfo>,
 };
 
 declare type RoomTagInfo = {
-  tagId: String,
-  text: String,
+  tagId: string,
+  text: string,
   noteList: Array<string>,
 };
