@@ -9,12 +9,16 @@ import LNBBody from './lnb/LNBBody';
 const LNB = () => {
   const { NoteStore } = useNoteStore();
 
+  const isLNBVisible = () => {
+    return (
+      (NoteStore.isCollapsed && NoteStore.isTargetLayout('lnb')) ||
+      (!NoteStore.isCollapsed && !NoteStore.isContentExpanded)
+    );
+  };
+
   return useObserver(() => (
     <LNBContainer
-      show={
-        (NoteStore.isCollapsed && NoteStore.isTargetLayout('lnb')) ||
-        (!NoteStore.isCollapsed && !NoteStore.isContentExpanded)
-      }
+      isVisible={isLNBVisible()}
       isExpanded={!NoteStore.isCollapsed}
     >
       <LNBHeader />
