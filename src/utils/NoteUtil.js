@@ -1,3 +1,5 @@
+import CHAPTER_TYPE from './const';
+
 const NoteUtil = {
   getChapterType(type) {
     switch (type) {
