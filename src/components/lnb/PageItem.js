@@ -8,8 +8,8 @@ import ContextMenu from './ContextMenu';
 const PageItem = ({ page }) => {
   const { NoteStore, PageStore } = useNoteStore();
 
-  const handlePageClick = () => {
-    PageStore.fetchNoteInfoList(page.id);
+  const handlePageClick = async () => {
+    await PageStore.fetchNoteInfoList(page.id);
     if (NoteStore.isCollapsed) NoteStore.setTargetLayout('content');
   };
 
