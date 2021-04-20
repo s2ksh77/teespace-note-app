@@ -20,14 +20,21 @@ const LNBHeader = () => {
   const { t } = useTranslation();
   // Back Btn TODO
 
-  const handleChangeState = () =>{
+  const handleNewBtnClick = () => {
     ChapterStore.setNewChapterVisible(!ChapterStore.newChapterVisible);
-  }
+  };
+  const handleStateChange = () => {};
 
   return useObserver(() => (
     <LNBHeaderContainer>
-      <BackButton src={backBtn} style={{ display: 'none' }} />
-      <NewChapterButton onClick={handleChangeState}>{t('NOTE_PAGE_LIST_CMPNT_DEF_01')}</NewChapterButton>
+      <BackButton
+        src={backBtn}
+        onClick={handleStateChange}
+        style={{ display: 'none' }}
+      />
+      <NewChapterButton onClick={handleNewBtnClick}>
+        {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
+      </NewChapterButton>
       <LNBSearchBar>
         {ChapterStore.isTagSearching ? (
           <TagItem>

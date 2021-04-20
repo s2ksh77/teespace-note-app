@@ -53,7 +53,6 @@ const LayoutStateButton = () => {
         // if (NoteStore.targetLayout === 'Content')
         //   ChapterStore.getNoteChapterList();
         // else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
-        // NoteStore.setTargetLayout(null);
         break;
     }
   };

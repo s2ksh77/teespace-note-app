@@ -234,19 +234,19 @@ class NoteRepository {
   }): Promise<any> {
     try {
       const today = new Date();
-      const response = API.Post(`note-api/note`, {
+      const response = await API.Post(`note-api/note`, {
         dto: {
-          WS_ID: this.WS_ID,
+          WS_ID: NoteStore.roomId,
           CH_TYPE: 'CHN0003',
           modified_date: `${today.getFullYear()}.${
             today.getMonth() + 1
           }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`,
-          USER_ID: this.USER_ID,
-          note_channel_id: this.chId,
-          user_name: this.USER_NAME,
+          USER_ID: NoteStore.userId,
+          note_channel_id: NoteStore.chId,
+          user_name: NoteStore.userName,
           note_title: pageName,
           note_content: pageContent || '',
-          is_edit: this.USER_ID,
+          is_edit: NoteStore.userId,
           parent_notebook: chapterId,
         },
       });

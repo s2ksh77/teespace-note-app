@@ -6,13 +6,23 @@ import useNoteStore from '../../stores/useNoteStore';
 import PageItem from './PageItem';
 import { NewPageButton } from '../../styles/PageStyle';
 
-const PageList = ({ page }) => {
+const PageList = ({ page, chapterId }) => {
   const { authStore } = useCoreStores();
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
 
-  const handleNewBtnClick = () => {
-    if (ChapterStore.newChapterVisible) return;
+  const handleNewBtnClick = async chapterId => {
+    try {
+      if (ChapterStore.newChapterVisible) return;
+
+      const result = await PageStore.createPage(
+        t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
+        null,
+        chapterId,
+      );
+    } catch (error) {
+      console.error(`Page Create :: Error is ${error}`);
+    }
   };
 
   return useObserver(() => (
@@ -21,9 +31,12 @@ const PageList = ({ page }) => {
         <PageItem key={item.id} page={item} />
       ))}
       <NewPageButton
+        key={chapterId}
         active={!!authStore.hasPermission('notePage', 'C')}
         onClick={
-          authStore.hasPermission('notePage', 'C') ? handleNewBtnClick : null
+          authStore.hasPermission('notePage', 'C')
+            ? handleNewBtnClick.bind(null, chapterId)
+            : null
         }
       >
         + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}

@@ -2,6 +2,8 @@ import { action, computed, observable } from 'mobx';
 import PageModel from '../model/PageModel';
 import TagModel from '../model/TagModel';
 import NoteRepository from '../repository/NoteRepository';
+import ChapterStore from './ChapterStore';
+import NoteStore from './NoteStore';
 // @flow
 class PageStore {
   @observable
@@ -38,12 +40,20 @@ class PageStore {
       pageContent,
       chapterId,
     });
-    return new PageModel(res);
+    if (res) {
+      await ChapterStore.fetchChapterList();
+      if (NoteStore.isCollapsed) NoteStore.setTargetLayout('content');
+    }
+    this.pageModel = new PageModel(res);
+    return this.pageModel;
   }
 
   @action
   async deletePage(pageList: Array<PageInfo>) {
     const res = await NoteRepository.deletepage(pageList);
+    if (res) {
+      await ChapterStore.fetchChapterList();
+    }
     return new PageModel(res);
   }
 
@@ -54,6 +64,9 @@ class PageStore {
       pageTitle,
       chapterId,
     });
+    if (res) {
+      await ChapterStore.fetchChapterList();
+    }
     return new PageModel(res);
   }
 
