@@ -3225,7 +3225,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_MENUBAR_30: '이미지 교체',
   NOTE_EDIT_PAGE_MENUBAR_31: '취소선',
   NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
-  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 있는 태그 이름입니다.',
+  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 존재하는 태그 이름입니다.',
   NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
   NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 \'새 챕터\' 버튼을 클릭하세요.',
   NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
@@ -6666,7 +6666,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n  position:relative;\n  user-select: none;\n  margin: 0rem 0.81rem;\n  padding: 0rem;\n  display: flex;\n  line-height: 100% !important;\n  font-size: 0.8125rem;\n  width: auto;\n  height: 2.81rem;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #eeedeb;\n"]);
+  var data = _taggedTemplateLiteral(["\n  position:relative;\n  user-select: none;\n  margin: 0rem 0.81rem;\n  padding: 0rem;\n  display: flex;\n  flex-shrink:0;\n  line-height: 100% !important;\n  font-size: 0.8125rem;\n  width: auto;\n  height: 2.81rem;\n  font-weight: 500;\n  border-bottom: 0.0625rem solid #eeedeb;\n"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
