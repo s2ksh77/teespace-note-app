@@ -11557,8 +11557,7 @@ var StyledMenu = styled(Menu)(_templateObject$9());
 var FileLayout = function FileLayout() {
   var _useNoteStore = useNoteStore(),
       EditorStore = _useNoteStore.EditorStore,
-      PageStore = _useNoteStore.PageStore,
-      NoteStore = _useNoteStore.NoteStore;
+      PageStore = _useNoteStore.PageStore;
 
   var _useCoreStores = useCoreStores(),
       configStore = _useCoreStores.configStore,
@@ -11725,12 +11724,6 @@ var FileLayout = function FileLayout() {
         fileExtension: extension
       });
       EditorStore.setIsPreview(true);
-      return;
-    }
-
-    if (!authStore.hasPermission('notePage', 'U')) {
-      NoteStore.setToastText(t('tempNoteGuest'));
-      NoteStore.setIsVisibleToast(true);
       return;
     }
 
