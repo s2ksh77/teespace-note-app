@@ -165,11 +165,6 @@ const FileLayout = () => {
       EditorStore.setIsPreview(true);
       return;
     }
-    if (!authStore.hasPermission('notePage', 'U')) {
-      NoteStore.setToastText(t('tempNoteGuest'));
-      NoteStore.setIsVisibleToast(true);
-      return;
-    }
     downloadFile(file_id ? file_id : user_context_2);
   };
 
