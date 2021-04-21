@@ -8390,8 +8390,6 @@ var renderValidation = function renderValidation(params) {
 
 
     if (textInput && isFilled(textInput.value)) {
-      debugger;
-
       _toConsumableArray(textInput.parentElement.querySelectorAll('.note-show-element')).forEach(function (node) {
         return node.classList.remove('note-show-element');
       });
