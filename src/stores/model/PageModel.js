@@ -250,8 +250,7 @@ class PageModel {
   @computed
   get isReadMode() {
     if (this.editingUserId === null || this.editingUserId === '') return true;
-    if (this.editingUserId !== null && NoteStore.userId === this.editingUserId)
-      return false;
+    if (NoteStore.userId === this.editingUserId) return false;
 
     // PageStore.setOtherEditUserID(this.editingUserId);
     return true;

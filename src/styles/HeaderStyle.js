@@ -137,7 +137,7 @@ export const AutoSaveMessage = styled.span`
 `;
 
 export const EditingIcon = styled.img`
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
 `;
 
 export const SmallText = styled.span`

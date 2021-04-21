@@ -61,9 +61,14 @@ const PageHeader = () => {
         onChange={handleChange}
       />
       {/* <AutoSaveMessage /> */}
-      {/* <EditingIcon src={editingIcon} /> */}
-      <ModifiedUser>{PageStore.pageModel.userName}</ModifiedUser>
-      <ModifiedTime>{PageStore.pageModel.modDate}</ModifiedTime>
+      {PageStore.pageModel.isReadMode ? (
+        <>
+          <ModifiedUser>{PageStore.pageModel.userName}</ModifiedUser>
+          <ModifiedTime>{PageStore.pageModel.modDate}</ModifiedTime>
+        </>
+      ) : (
+        <EditingIcon src={editingIcon} />
+      )}
       <SearchButtonWrapper style={{ marginRight: '0.37rem' }}>
         <SearchButtonIcon src={searchIcon} />
       </SearchButtonWrapper>
