@@ -30,6 +30,7 @@ export const LNBNewChapter = styled.div`
   margin: 0rem 0.81rem;
   padding: 0rem;
   display: flex;
+  flex-shrink:0;
   line-height: 100% !important;
   font-size: 0.8125rem;
   width: auto;
