@@ -99,7 +99,6 @@ const renderValidation = params => (e, targetValue) => {
   // multiline일 때 textInput 없음
   // 텍스트 빈 칸일 때 url 쓰면 자동으로 텍스트 채워준다 -> errorMark 지워주어야
   if (textInput && isFilled(textInput.value)) {
-    debugger;
     [
       ...textInput.parentElement.querySelectorAll('.note-show-element'),
     ].forEach(node => node.classList.remove('note-show-element'));
