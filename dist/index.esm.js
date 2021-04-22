@@ -1511,7 +1511,7 @@ var checkNotDuplicate = function checkNotDuplicate(targetArr, key, value) {
 }; // true : valid(중복X), false : invalid(중복)
 // 태그 생성 : 대소문자 구분 없이 동일 text 처리
 
-var checkNotDuplicateIgnoreCase = function checkNotDuplicateIgnoreCase(targetArr, key, value) {
+var checkDuplicateIgnoreCase = function checkDuplicateIgnoreCase(targetArr, key, value) {
   return targetArr.find(function (item) {
     return NoteUtil.encodeStr(item[key].toUpperCase()) === NoteUtil.encodeStr(value.toUpperCase());
   }) ? false : true;
@@ -1523,13 +1523,21 @@ var TagStore = observable({
   isNewTag: false,
   tagText: '',
   addTagList: [],
+  // web에서 안씀
   removeTagList: [],
+  // web에서 안씀
   updateTagList: [],
+  // web에서 안씀
   currentTagId: '',
+  // web에서 안씀
   currentTagValue: '',
+  // web에서 안씀
   selectTagIdx: '',
+  // web에서 안씀
   editTagIndex: '',
+  // web에서 안씀
   editTagValue: '',
+  // web에서 안씀
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // a,b,c 같은 키들만 담는다(render용)
@@ -1781,18 +1789,17 @@ var TagStore = observable({
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
-              deleteTagArray = [];
-              deleteTagList.forEach(function (tag) {
-                deleteTagArray.push({
+              deleteTagArray = deleteTagList.map(function (tag) {
+                return {
                   tag_id: tag,
                   note_id: noteId,
                   WS_ID: NoteRepository$1.WS_ID
-                });
+                };
               });
-              _context5.next = 4;
+              _context5.next = 3;
               return NoteRepository$1.deleteTag(deleteTagArray);
 
-            case 4:
+            case 3:
               _yield$NoteRepository2 = _context5.sent;
               dto = _yield$NoteRepository2.data.dto;
 
@@ -1800,7 +1807,7 @@ var TagStore = observable({
 
               return _context5.abrupt("return", dto);
 
-            case 8:
+            case 7:
             case "end":
               return _context5.stop();
           }
@@ -1860,9 +1867,9 @@ var TagStore = observable({
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              createTagArr = createTagList.map(function (tag) {
+              createTagArr = createTagList.map(function (tagText) {
                 return {
-                  text: NoteUtil.encodeStr(tag),
+                  text: tagText,
                   note_id: noteId,
                   WS_ID: NoteRepository$1.WS_ID
                 };
@@ -1874,7 +1881,7 @@ var TagStore = observable({
               _yield$NoteRepository4 = _context7.sent;
               dto = _yield$NoteRepository4.data.dto;
 
-              _this4.setAddTagList([]);
+              _this4.fetchNoteTagList(noteId);
 
               return _context7.abrupt("return", dto);
 
@@ -1886,7 +1893,11 @@ var TagStore = observable({
       }, _callee7);
     }))();
   },
-  updateNoteTag: function updateNoteTag(updateTagList) {
+
+  /**
+   * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
+   */
+  updateNoteTag: function updateNoteTag(updateTagList, noteId) {
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
@@ -1899,7 +1910,7 @@ var TagStore = observable({
               updateTagArr = updateTagList.map(function (tag) {
                 return {
                   tag_id: tag.tag_id,
-                  text: NoteUtil.encodeStr(tag.text),
+                  text: tag.text,
                   WS_ID: NoteRepository$1.WS_ID
                 };
               });
@@ -1910,7 +1921,7 @@ var TagStore = observable({
               _yield$NoteRepository5 = _context8.sent;
               dto = _yield$NoteRepository5.data.dto;
 
-              _this5.setUpdateTagList([]);
+              _this5.fetchNoteTagList(noteId);
 
               return _context8.abrupt("return", dto);
 
@@ -1922,27 +1933,39 @@ var TagStore = observable({
       }, _callee8);
     }))();
   },
-  fetchNoteTagList: function fetchNoteTagList(noteId) {
+
+  /**
+   * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
+   */
+  deleteNoteTag: function deleteNoteTag(deleteTagList, noteId) {
     var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var deleteTagArray, _yield$NoteRepository6, dto;
+
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              _context9.next = 2;
-              return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
-                if (response.status === 200) {
-                  var tagList = response.data.dto;
-
-                  _this6.setNoteTagList(tagList.tagList);
-                }
+              deleteTagArray = deleteTagList.map(function (tag) {
+                return {
+                  tag_id: tag,
+                  note_id: noteId,
+                  WS_ID: NoteRepository$1.WS_ID
+                };
               });
-
-            case 2:
-              return _context9.abrupt("return", _this6.notetagList);
+              _context9.next = 3;
+              return NoteRepository$1.deleteTag(deleteTagArray);
 
             case 3:
+              _yield$NoteRepository6 = _context9.sent;
+              dto = _yield$NoteRepository6.data.dto;
+
+              _this6.fetchNoteTagList(noteId);
+
+              return _context9.abrupt("return", dto);
+
+            case 7:
             case "end":
               return _context9.stop();
           }
@@ -1950,7 +1973,7 @@ var TagStore = observable({
       }, _callee9);
     }))();
   },
-  setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
+  fetchNoteTagList: function fetchNoteTagList(noteId) {
     var _this7 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
@@ -1958,15 +1981,43 @@ var TagStore = observable({
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              if (_this7.updateTagList.length === 0) {
-                _this7.appendUpdateTagList(tagId, tagText);
+              _context10.next = 2;
+              return NoteRepository$1.getNoteTagList(noteId).then(function (response) {
+                if (response.status === 200) {
+                  var tagList = response.data.dto;
+
+                  _this7.setNoteTagList(tagList.tagList);
+                }
+              });
+
+            case 2:
+              return _context10.abrupt("return", _this7.notetagList);
+
+            case 3:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, _callee10);
+    }))();
+  },
+  setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
+    var _this8 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        while (1) {
+          switch (_context11.prev = _context11.next) {
+            case 0:
+              if (_this8.updateTagList.length === 0) {
+                _this8.appendUpdateTagList(tagId, tagText);
               } else {
-                if (_this7.updateTagList.map(function (item) {
+                if (_this8.updateTagList.map(function (item) {
                   return item.tag_id;
                 }).indexOf(tagId) === -1) {
-                  _this7.appendUpdateTagList(tagId, tagText);
+                  _this8.appendUpdateTagList(tagId, tagText);
                 } else {
-                  _this7.updateTagList.forEach(function (item) {
+                  _this8.updateTagList.forEach(function (item) {
                     if (item.tag_id === tagId) item.text = tagText;
                   });
                 }
@@ -1974,10 +2025,10 @@ var TagStore = observable({
 
             case 1:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   setCurrentTagData: function setCurrentTagData(id, text) {
@@ -1986,34 +2037,34 @@ var TagStore = observable({
   },
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
   fetchTagData: function fetchTagData() {
-    var _this8 = this;
+    var _this9 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
-              _this8.setTagPanelLoading(true);
+              _this9.setTagPanelLoading(true);
 
-              _context11.t0 = _this8;
-              _context11.next = 4;
-              return _this8.getAllsortedTagList();
+              _context12.t0 = _this9;
+              _context12.next = 4;
+              return _this9.getAllsortedTagList();
 
             case 4:
-              _context11.t1 = _context11.sent;
+              _context12.t1 = _context12.sent;
 
-              _context11.t0.setAllSortedTagList.call(_context11.t0, _context11.t1);
+              _context12.t0.setAllSortedTagList.call(_context12.t0, _context12.t1);
 
-              _this8.setSortedTagList(_this8.categorizeTagList(_this8.allSortedTagList, false));
+              _this9.setSortedTagList(_this9.categorizeTagList(_this9.allSortedTagList, false));
 
-              _this8.setTagPanelLoading(false);
+              _this9.setTagPanelLoading(false);
 
             case 8:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
         }
-      }, _callee11);
+      }, _callee12);
     }))();
   },
 
@@ -2022,27 +2073,27 @@ var TagStore = observable({
    * @return sorted tag list
    */
   getAllsortedTagList: function getAllsortedTagList() {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$NoteRepository6, tag_index_list_dto;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      var _yield$NoteRepository7, tag_index_list_dto;
 
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
-              _context12.next = 2;
+              _context13.next = 2;
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository6 = _context12.sent;
-              tag_index_list_dto = _yield$NoteRepository6.data.dto.tag_index_list_dto;
-              return _context12.abrupt("return", tag_index_list_dto);
+              _yield$NoteRepository7 = _context13.sent;
+              tag_index_list_dto = _yield$NoteRepository7.data.dto.tag_index_list_dto;
+              return _context13.abrupt("return", tag_index_list_dto);
 
             case 5:
             case "end":
-              return _context12.stop();
+              return _context13.stop();
           }
         }
-      }, _callee12);
+      }, _callee13);
     }))();
   },
 
@@ -2053,7 +2104,7 @@ var TagStore = observable({
    * @return categorized tag objects
    */
   categorizeTagList: function categorizeTagList(allTagsList, isSearching) {
-    var _this9 = this;
+    var _this10 = this;
 
     /**
      * categorizedTagObjs: {
@@ -2070,10 +2121,10 @@ var TagStore = observable({
     allTagsList.forEach(function (item) {
       var upperCaseKey = item.KEY.toUpperCase();
 
-      var tagKeyCategory = _this9.getTagKeyCategory(upperCaseKey);
+      var tagKeyCategory = _this10.getTagKeyCategory(upperCaseKey);
 
-      var tagList = tagKeyCategory === 'ENG' ? _this9.sortEngTagList(item.tag_indexdto.tagList) : item.tag_indexdto.tagList;
-      var tagObjs = isSearching ? _this9.getSearchTagObjs(tagList, _this9.searchStr) : _this9.getTagObjs(tagList);
+      var tagList = tagKeyCategory === 'ENG' ? _this10.sortEngTagList(item.tag_indexdto.tagList) : item.tag_indexdto.tagList;
+      var tagObjs = isSearching ? _this10.getSearchTagObjs(tagList, _this10.searchStr) : _this10.getTagObjs(tagList);
 
       if (Object.keys(tagObjs).length > 0) {
         categorizedTagObjs[tagKeyCategory][upperCaseKey] = tagObjs;
@@ -2169,60 +2220,33 @@ var TagStore = observable({
     });
   },
   searchTag: function searchTag(str) {
-    var _this10 = this;
+    var _this11 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
-        while (1) {
-          switch (_context13.prev = _context13.next) {
-            case 0:
-              _this10.setIsSearching(true);
-
-              _this10.setIsSearchLoading(true);
-
-              _this10.setSearchStr(str);
-
-              _context13.t0 = _this10;
-              _context13.next = 6;
-              return _this10.getAllsortedTagList();
-
-            case 6:
-              _context13.t1 = _context13.sent;
-
-              _context13.t0.setAllSortedTagList.call(_context13.t0, _context13.t1);
-
-              _this10.setSortedTagList(_this10.categorizeTagList(_this10.allSortedTagList, true));
-
-              _this10.setIsSearchLoading(false);
-
-            case 10:
-            case "end":
-              return _context13.stop();
-          }
-        }
-      }, _callee13);
-    }))();
-  },
-  setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var _yield$NoteRepository7, noteList;
-
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
           switch (_context14.prev = _context14.next) {
             case 0:
-              _context14.next = 2;
-              return NoteRepository$1.getTagNoteList(tagId);
+              _this11.setIsSearching(true);
 
-            case 2:
-              _yield$NoteRepository7 = _context14.sent;
-              noteList = _yield$NoteRepository7.data.dto.noteList;
-              ChapterStore.setSearchResult({
-                chapter: null,
-                page: noteList
-              });
+              _this11.setIsSearchLoading(true);
 
-            case 5:
+              _this11.setSearchStr(str);
+
+              _context14.t0 = _this11;
+              _context14.next = 6;
+              return _this11.getAllsortedTagList();
+
+            case 6:
+              _context14.t1 = _context14.sent;
+
+              _context14.t0.setAllSortedTagList.call(_context14.t0, _context14.t1);
+
+              _this11.setSortedTagList(_this11.categorizeTagList(_this11.allSortedTagList, true));
+
+              _this11.setIsSearchLoading(false);
+
+            case 10:
             case "end":
               return _context14.stop();
           }
@@ -2230,12 +2254,39 @@ var TagStore = observable({
       }, _callee14);
     }))();
   },
+  setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var _yield$NoteRepository8, noteList;
+
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _context15.next = 2;
+              return NoteRepository$1.getTagNoteList(tagId);
+
+            case 2:
+              _yield$NoteRepository8 = _context15.sent;
+              noteList = _yield$NoteRepository8.data.dto.noteList;
+              ChapterStore.setSearchResult({
+                chapter: null,
+                page: noteList
+              });
+
+            case 5:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15);
+    }))();
+  },
   setEditCreateTag: function setEditCreateTag() {
-    var _this11 = this;
+    var _this12 = this;
 
     // add Tag List 갱신
     this.addTagList.forEach(function (tag, index) {
-      if (tag === TagStore.currentTagValue) _this11.addTagList[index] = TagStore.editTagValue;
+      if (tag === TagStore.currentTagValue) _this12.addTagList[index] = TagStore.editTagValue;
     }); // 현재 보여지는 List 갱신
 
     this.notetagList.forEach(function (tag) {
@@ -2243,7 +2294,7 @@ var TagStore = observable({
     });
   },
   isValidTag: function isValidTag(text) {
-    return checkNotDuplicateIgnoreCase(this.notetagList, 'text', text);
+    return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
   }
 });
 
@@ -2912,7 +2963,7 @@ var EditorStore = observable((_observable = {
   var isEmpty = NoteUtil.isEmpty;
   if ((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) return true;
   if (PageStore.isNewPage && isEmpty(TagStore.notetagList) && isEmpty(this.tempFileLayoutList) && isEmpty(this.fileLayoutList)) return false;
-  if (!PageStore.isNewPage && isEmpty(TagStore.addTagList) && isEmpty(TagStore.updateTagList) && isEmpty(TagStore.removeTagList)) return false;
+  if (!PageStore.isNewPage) return false;
   return true;
 }), _observable));
 
@@ -4135,9 +4186,6 @@ var PageStore = observable((_observable$1 = {
     var isAutoSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     this.getNoteTitle();
     var updateDTO = this.getSaveDto(isAutoSave);
-    if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
-    if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
-    if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     if (isAutoSave) this.handleAutoSave(updateDTO);else this.handleSaveBtn(updateDTO);
   },
   handleAutoSave: function handleAutoSave(updateDTO) {
