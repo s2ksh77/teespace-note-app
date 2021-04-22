@@ -24,6 +24,12 @@ class NoteStore {
   @observable
   isContentExpanded: Boolean = false;
 
+  @observable
+  searchResult: Array<String> = [];
+
+  @observable
+  isSearch: Boolean = false;
+
   /* init 관련 변수 Repo -> NoteStore */
   init(data: Object) {
     this.setRoomId(data.roomId);
@@ -61,6 +67,14 @@ class NoteStore {
     this.targetLayout = data;
   }
 
+  setSearchResult(data: Array) {
+    this.searchResult = data;
+  }
+
+  setIsSearch(data: Boolean) {
+    this.isSearch = data;
+  }
+
   @action
   toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
@@ -74,6 +88,14 @@ class NoteStore {
   @computed
   get isTargetLayout() {
     return (layout: string) => this.targetLayout === layout;
+  }
+
+  @action
+  async getSearchList(searchKey: string) {
+    const {
+      data: { dto },
+    } = await NoteRepository.getSearchList(searchKey);
+    return dto;
   }
 }
 

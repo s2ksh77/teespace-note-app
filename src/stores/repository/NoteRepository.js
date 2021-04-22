@@ -571,7 +571,7 @@ class NoteRepository {
     try {
       return await API.post(`note-api/noteSearch?action=List`, {
         dto: {
-          note_channel_id: this.chId,
+          note_channel_id: NoteStore.chId,
           text: searchKey,
         },
       });

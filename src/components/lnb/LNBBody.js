@@ -18,7 +18,7 @@ const LNBBody = () => {
   return useObserver(() => (
     <LNBBodyContainer>
       <LNBNewChapterForm />
-      {ChapterStore.isSearching || ChapterStore.isTagSearching ? (
+      {NoteStore.isSearch || ChapterStore.isTagSearching ? (
         <LNBSearchResult /> // SearchingContent도 넣어야 함
       ) : (
         <DndProvider backend={HTML5Backend}>
