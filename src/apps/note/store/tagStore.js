@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
-import { checkNotDuplicateIgnoreCase } from '../components/common/validators';
+import { checkDuplicateIgnoreCase } from '../components/common/validators';
 import NoteUtil from '../NoteUtil';
 
 const TagStore = observable({
@@ -9,14 +9,14 @@ const TagStore = observable({
   notetagList: [],
   isNewTag: false,
   tagText: '',
-  addTagList: [],
-  removeTagList: [],
-  updateTagList: [],
-  currentTagId: '',
-  currentTagValue: '',
-  selectTagIdx: '',
-  editTagIndex: '',
-  editTagValue: '',
+  addTagList: [],// web에서 안씀
+  removeTagList: [],// web에서 안씀
+  updateTagList: [],// web에서 안씀
+  currentTagId: '', // web에서 안씀
+  currentTagValue: '', // web에서 안씀
+  selectTagIdx: '', // web에서 안씀
+  editTagIndex: '', // web에서 안씀
+  editTagValue: '', // web에서 안씀
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // a,b,c 같은 키들만 담는다(render용)
@@ -176,14 +176,11 @@ const TagStore = observable({
     return dto;
   },
   async deleteTag(deleteTagList, noteId) {
-    const deleteTagArray = [];
-    deleteTagList.forEach(tag => {
-      deleteTagArray.push({
+    const deleteTagArray = deleteTagList.map(tag => ({
         tag_id: tag,
         note_id: noteId,
         WS_ID: NoteRepository.WS_ID,
-      });
-    });
+    }));
     const {
       data: { dto },
     } = await NoteRepository.deleteTag(deleteTagArray);
@@ -192,13 +189,11 @@ const TagStore = observable({
   },
 
   async updateTag(updateTagList) {
-    const updateTagArray = updateTagList.map(tag => {
-      return {
-        tag_id: tag.tag_id,
-        text: tag.text,
-        WS_ID: NoteRepository.WS_ID,
-      };
-    });
+    const updateTagArray = updateTagList.map(tag => ({
+      tag_id: tag.tag_id,
+      text: tag.text,
+      WS_ID: NoteRepository.WS_ID,
+    }));
     const {
       data: { dto },
     } = await NoteRepository.updateTag(updateTagArray);
@@ -212,9 +207,9 @@ const TagStore = observable({
   // encode logic 추가된 createTag, updateTag
   // tag는 tag 추가 및 수정시 동일값 체크 로직 & 저장할 때 encoding한다
   async createNoteTag(createTagList, noteId) {
-    const createTagArr = createTagList.map(tag => {
+    const createTagArr = createTagList.map(tagText => {
       return {
-        text: NoteUtil.encodeStr(tag),
+        text: tagText,
         note_id: noteId,
         WS_ID: NoteRepository.WS_ID,
       };
@@ -222,21 +217,39 @@ const TagStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.createTag(createTagArr);
-    this.setAddTagList([]);
+    this.fetchNoteTagList(noteId);
     return dto;
   },
-  async updateNoteTag(updateTagList) {
+  /**
+   * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
+   */
+  async updateNoteTag(updateTagList, noteId) {
     const updateTagArr = updateTagList.map(tag => {
       return {
         tag_id: tag.tag_id,
-        text: NoteUtil.encodeStr(tag.text),
+        text: tag.text,
         WS_ID: NoteRepository.WS_ID,
       };
     });
     const {
       data: { dto },
     } = await NoteRepository.updateTag(updateTagArr);
-    this.setUpdateTagList([]);
+    this.fetchNoteTagList(noteId);
+    return dto;
+  },
+  /**
+   * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
+   */
+   async deleteNoteTag(deleteTagList, noteId) {
+    const deleteTagArray = deleteTagList.map(tag => ({
+        tag_id: tag,
+        note_id: noteId,
+        WS_ID: NoteRepository.WS_ID,
+    }));
+    const {
+      data: { dto },
+    } = await NoteRepository.deleteTag(deleteTagArray);    
+    this.fetchNoteTagList(noteId);
     return dto;
   },
   async fetchNoteTagList(noteId) {
@@ -445,7 +458,7 @@ const TagStore = observable({
     });
   },
   isValidTag(text) {
-    return checkNotDuplicateIgnoreCase(this.notetagList, 'text', text);
+    return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
   },
 });
 

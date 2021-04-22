@@ -626,10 +626,6 @@ const PageStore = observable({
   handleSave(isAutoSave=false) {
     this.getNoteTitle();
     const updateDTO = this.getSaveDto(isAutoSave);
-
-    if (TagStore.removeTagList.length > 0) TagStore.deleteTag(TagStore.removeTagList, PageStore.currentPageId);
-    if (TagStore.addTagList.length > 0) TagStore.createTag(TagStore.addTagList, PageStore.currentPageId);
-    if (TagStore.updateTagList.length > 0) TagStore.updateTag(TagStore.updateTagList);
     
     if (isAutoSave) this.handleAutoSave(updateDTO);
     else this.handleSaveBtn(updateDTO);

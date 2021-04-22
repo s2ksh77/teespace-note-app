@@ -18,29 +18,27 @@ import { isFilled, checkWhitespace, checkMaxLength } from '../common/validators'
 import NoteUtil from '../../NoteUtil';
 import { logEvent, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-
+/** 
+ * notetagListisNewTag 제외 TagStore 변수 제거
+ */
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const { t } = useTranslation();
-  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
-  const tagList = useRef([]); // 모든 노트 태그 리스트 담을 것
-  const tagListCover = useRef(null) // scroll 때문에 필요
+  // editTagInfo = {id,pre,cur}
+  // 바뀌지 않는 값을 useRef에 저장하려 했으나 id로 input창을 끄고 켜서 리렌더가 필요 => useState로 관리하는 것으로 변경
+  const [editTagInfo, setEditTagInfo] = useState({});
 
-  const handleCloseBtn = (targetId, targetText) => {
-    if (targetId) {
-      const curTag = TagStore.notetagList.filter(
-        tag => tag.tag_id !== targetId,
-      );
-      TagStore.setNoteTagList(curTag);
-      TagStore.appendRemoveTagList(targetId);
-    } else {
-      const exceptTag = TagStore.notetagList.filter(
-        tag => tag.text !== targetText,
-      );
-      TagStore.setNoteTagList(exceptTag);
-      TagStore.removeAddTagList(targetText);
-    }
+  // 선택한 노드 저장
+  const [selectedId, setSelectedId] = useState(null);
+  const selectedTag = useRef(null); // node를 받음, 방향키로 이동 위해 필요
+
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  const tagListCover = useRef(null) // scroll 때문에 필요
+  
+  // delete
+  const handleCloseBtn = (targetId) => () => {
+    TagStore.deleteNoteTag([targetId], PageStore.currentPageId);
   };
 
   // AddTagForm 보여줄지말지
@@ -55,114 +53,88 @@ const TagListContainer = () => {
     tagListCover.current.scrollTo({ left: 0, behavior: 'smooth' });
   }
 
-  const handleChangeTag = (text, index, id) => () => {
-    TagStore.setCurrentTagData(id, text);
-    TagStore.setEditTagValue(text);
-    TagStore.setEditTagIndex(index); // input창을 보여줄지 말지
+  const handleDbClick = (id,pre) => () => {
+    setEditTagInfo({id,pre,cur:pre});
   };
 
-  const handleChangeName = e => TagStore.setEditTagValue(checkMaxLength(e));
-
-  const updateNoteTagList = () => {
-    TagStore.notetagList[TagStore.editTagIndex].text = TagStore.editTagValue;
-    TagStore.setUpdateNoteTagList(
-      TagStore.currentTagId,
-      TagStore.editTagValue
-    );
+  const handleChangeModifyInput = e => {
+    let updated = checkMaxLength(e); // setState가 비동기라 해당 콜백 안에서는 e가 nullified
+    setEditTagInfo((prev)=>({
+      ...prev,
+      cur:updated,
+    }));
   }
 
-  const handleModifyInput = () => {
-    const isSame = NoteUtil.isSameStr(TagStore.currentTagValue, TagStore.editTagValue);
-    const isSameIgnoringCase = NoteUtil.isSameStr(TagStore.currentTagValue.toUpperCase(), TagStore.editTagValue.toUpperCase());
+  const updateNoteTagList = () => {
+    TagStore.updateNoteTag([{
+      tag_id: editTagInfo.id,
+      text:editTagInfo.cur
+    }], PageStore.currentPageId);
+  }
 
-    if (TagStore.currentTagId) {
-      // 수정하지 않았으면 그대로 return
-      if (isSame) { }
-      // 대소문자만 바꾼 경우
-      else if (isSameIgnoringCase) {
-        updateNoteTagList();
-      }
-      // 공백만 있거나 아무것도 입력하지 않은 경우
-      // Modal없이 modify 취소
-      else if (!checkWhitespace(TagStore.editTagValue)) { }
-      else {
-        if (TagStore.isValidTag(TagStore.editTagValue)) {
-          updateNoteTagList();
-        } else {
-          NoteStore.setModalInfo('duplicateTagName');
-        }
-      }
-    } else { // 아이디 없는 애를 고칠 경우
-      if (isSame) { }
-      // 대소문자만 바꾼 경우
-      else if (isSameIgnoringCase) {
-        TagStore.setEditCreateTag();
-      }
-      // 공백만 있거나 아무것도 입력하지 않은 경우
-      // Modal없이 modify 취소
-      else if (!checkWhitespace(TagStore.editTagValue)) { }
-      else {
-        if (TagStore.isValidTag(TagStore.editTagValue)) {
-          TagStore.setEditCreateTag();
-        } else {
-          NoteStore.setModalInfo('duplicateTagName');
-        }
-      }
-    }
-    TagStore.setEditTagIndex(-1)
+  const handleBlurModify = () => {
+    if (!editTagInfo.id || !editTagInfo.pre) {setEditTagInfo({}); return;}
+    const isSame = NoteUtil.isSameStr(editTagInfo.pre, editTagInfo.cur);
+    const isSameIgnoringCase = NoteUtil.isSameStr(editTagInfo.pre.toUpperCase(), editTagInfo.cur.toUpperCase());
+    // 공백만 있거나 아무것도 입력하지 않은 경우
+    // Modal없이 modify 취소
+    if (!checkWhitespace(editTagInfo.cur) || !editTagInfo.id || isSame) {}
+    // 대소문자만 바꾼 경우
+    if (isSameIgnoringCase || TagStore.isValidTag(editTagInfo.cur)) updateNoteTagList();
+    else NoteStore.setModalInfo('duplicateTagName');
+    setEditTagInfo({});
   };
-
-  const handleModifyingKeyDown = (event) => {
+  
+  const handleModifyKeyDown = (event) => {
     switch (event.key) {
       case "Enter":
-        handleModifyInput();
+        handleBlurModify();
         break;
       case "Escape":
-        TagStore.setIsNewTag(false); // todo : 필요한건지 체크
-        TagStore.setCurrentTagData("", "");
-        TagStore.setEditTagValue("");
-        TagStore.setEditTagIndex(""); // input 태그 보여줄지 tagchip 보여줄지 결정
+        setEditTagInfo({});
         break;
       default:
         break;
     }
   }
 
-  const handleTagChipBlur = (index) => (e) => {
-    // 선택된게 blur된 경우 풀어주기
-    if (TagStore.selectTagIdx === index) TagStore.setSelectTagIndex('');
+  const handleTagChipBlur = (id) => (e) => {
+    // 다른 태그가 선택돼서 blur되는 경우
+    if (tagListCover.current.contains(e.relatedTarget)) return;
+    if (selectedId === id) setSelectedId(null);
+  }
+
+  const unselectTag = () => {
+    selectedTag.current = null;
+    setSelectedId(null);
+  }
+  
+  const selectTag = (node) => {
+    setSelectedId(node.id);
+    selectedTag.current = node;
+    selectedTag.current?.focus();
+    selectedTag.current?.scrollIntoView(false);
   }
 
   // tagList.current에 idx 키에 element가 있다
-  const handleClickTag = (idx, e) => {
-    if (TagStore.selectTagIdx === idx) TagStore.setSelectTagIndex('');
-    else {
-      changeFocusedTag(tagList.current[idx], idx);
-      logEvent('note', 'clickTagBtn')
-    }
+  const handleClickTag = (id) => e => {
+    if (selectedId === id) {unselectTag();return}
+    selectTag(e.currentTarget);
+    logEvent('note', 'clickTagBtn');
   }
 
-  // 다른 곳에서도 필요해서 handleClickTag랑 분리한듯
-  // idx : null 가능
-  const changeFocusedTag = (target, idx) => {
-    if (!isFilled(idx) || !isFilled(target)) return;
-    TagStore.setSelectTagIndex(idx);
-    target.focus();
-    target.scrollIntoView(false);
-  }
-
-  const handleKeyDownTag = (e) => {
+  const handleKeyDown = (e) => {
     switch (e.keyCode) {
       // left
       case 37:
-        if (TagStore.selectTagIdx > 0) {
-          changeFocusedTag(tagList.current[TagStore.selectTagIdx - 1], TagStore.selectTagIdx - 1);
+        if (selectedTag.current?.previousElementSibling) {
+          selectTag(selectedTag.current.previousElementSibling);
         }
         break;
       // right
       case 39:
-        if (TagStore.selectTagIdx < TagStore.notetagList.length - 1) {
-          changeFocusedTag(tagList.current[TagStore.selectTagIdx + 1], TagStore.selectTagIdx + 1);
+        if (selectedTag.current?.nextElementSibling) {
+          selectTag(selectedTag.current.nextElementSibling);
         }
         break;
       default:
@@ -188,22 +160,22 @@ const TagListContainer = () => {
         />
         <TagList ref={tagListCover}>
           {TagStore.notetagList.map((item, index) =>
-            (TagStore.editTagIndex === index) ? (
+            // note_id, tag_id, text
+            (editTagInfo.id === item.tag_id) ? (
               <TagInput
                 key={item}
                 maxLength="50"
-                value={TagStore.editTagValue}
-                onChange={handleChangeName}
-                onBlur={handleModifyInput}
-                onKeyDown={handleModifyingKeyDown}
+                value={editTagInfo.cur}
+                onChange={handleChangeModifyInput}
+                onBlur={handleBlurModify}
+                onKeyDown={handleModifyKeyDown}
                 autoFocus={true}
               />
             ) : (
                 <TagChip
-                  ref={el => tagList.current[index] = el}
-                  key={index}
-                  className={index === TagStore.selectTagIdx ? 'noteFocusedTag' : ''}
-                  data-idx={index}
+                  key={item.tag_id}
+                  className={item.tag_id === selectedId ? 'noteFocusedTag' : ''}
+                  data-idx={index} // 없어져도 되나?
                   id={item.tag_id}
                   closable={
                     PageStore.isReadMode() || !authStore.hasPermission('notePage', 'U')
@@ -211,16 +183,16 @@ const TagListContainer = () => {
                       : true
                   }
                   tabIndex="0"
-                  onClose={handleCloseBtn.bind(null, item.tag_id, item.text)}
-                  onClick={handleClickTag.bind(null, index)}
-                  onKeyDown={handleKeyDownTag.bind(null)}
-                  onBlur={handleTagChipBlur(index)}
+                  onClose={handleCloseBtn(item.tag_id)}
+                  onClick={handleClickTag(item.tag_id)}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleTagChipBlur(item.tag_id)}
                 >
                   <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
                     <TagText
                       onDoubleClick={
                         !PageStore.isReadMode() && authStore.hasPermission('notePage', 'U')
-                          ? handleChangeTag(item.text, index, item.tag_id)
+                          ? handleDbClick(item.tag_id,item.text)
                           : null
                       }
                       onMouseOver={handleTooltip}
