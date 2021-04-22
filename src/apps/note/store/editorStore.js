@@ -549,13 +549,7 @@ const EditorStore = observable({
       isEmpty(this.fileLayoutList)
     )
       return false;
-    if (
-      !PageStore.isNewPage &&
-      isEmpty(TagStore.addTagList) &&
-      isEmpty(TagStore.updateTagList) &&
-      isEmpty(TagStore.removeTagList)
-    )
-      return false;
+    if (!PageStore.isNewPage) return false;
     return true;
   },
 });

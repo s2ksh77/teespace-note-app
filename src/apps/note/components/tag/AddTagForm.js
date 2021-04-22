@@ -4,26 +4,18 @@ import {checkWhitespace, checkMaxLength} from '../common/validators';
 import useNoteStore from '../../store/useStore';
 
 const AddTagForm = ({show, toggleTagInput}) => {
-  const { NoteStore, TagStore } = useNoteStore(); 
+  const { NoteStore, PageStore, TagStore } = useNoteStore(); 
   const [value, setValue] = useState('');
   if (!show) return null;
 
   const handleTagInput = e => setValue(checkMaxLength(e));
   
   const handleBlurTagInput = () => {
-    if (!checkWhitespace(value)) {
-      TagStore.setIsNewTag(false);
-    } else {
-      if (TagStore.isValidTag(value)) {
-        TagStore.appendAddTagList(value);
-        TagStore.setIsNewTag(false);
-        TagStore.prependNoteTagList(value);
-      } else {
-        NoteStore.setModalInfo('duplicateTagName');
-        TagStore.setIsNewTag(false);
-      }
-    }
+    if (!checkWhitespace(value)) {};
+    if (TagStore.isValidTag(value)) TagStore.createNoteTag([value], PageStore.currentPageId);
+    else NoteStore.setModalInfo('duplicateTagName');
     // input창 초기화
+    TagStore.setIsNewTag(false);
     setValue("");
   };  
 

@@ -476,9 +476,9 @@ export const handleUnselect = () => {
         EditorStore.setFileIndex('');
         EditorStore.setFileElement('');
     }
-    if (TagStore.selectTagIdx !== '') {
-        TagStore.setSelectTagIndex('')
-    }
+    // if (TagStore.selectTagIdx !== '') {
+    //     TagStore.setSelectTagIndex('')
+    // }
     if (PageStore.moveInfoMap.size > 1) {
         PageStore.handleClickOutside();
     }
