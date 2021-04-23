@@ -180,6 +180,13 @@ const changeLinkDialogForm = dialog => {
     //url
     else input$.addEventListener('input', handleInput(renderItemValidation));
   });
+  // 유효하지 않은 input일 때 enter 동작 막기 ( default keydown event인 enter 동작 막기 )
+  form.addEventListener("keydown",(e) => {
+    if (e.key === "Enter" && saveBtn.disabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  })
   // text input으로 focus
   targetInputs$[0].focus();
 };
