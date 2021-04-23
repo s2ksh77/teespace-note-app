@@ -120,6 +120,7 @@ export const EditButton = styled.button`
 
 export const PageContentTitle = styled.input`
   width: 100%;
+  flex: 1;
   margin-right: 1rem;
   font-size: 0.81rem;
   border: 0;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Editor as TinyMCE } from '@tinymce/tinymce-react';
 import { useCoreStores } from 'teespace-core';
@@ -8,15 +8,45 @@ import useNoteStore from '../../stores/useNoteStore';
 import { EditorContentStyle } from '../../styles/EditorStyle';
 
 const Editor = () => {
-  const { NoteStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const { t } = useTranslation();
+
+  document.addEventListener('visibilitychange', () => {
+    if (
+      !PageStore.pageModel.isReadMode &&
+      document.visibilityState === 'hidden'
+    ) {
+      EditorStore.setVisiblityState('hidden');
+    }
+  });
 
   const initializeEditor = editor => {
     EditorStore.setEditor(editor);
     if (PageStore.pageModel.isReadMode) EditorStore.editor.setMode('readonly');
     else EditorStore.editor.setMode('design');
   };
+
+  const handleEditorChange = content => {
+    // TODO TAB 변경시 Content마음대로 바뀌는 이슈
+    if (
+      EditorStore.visiblityState === 'hidden' &&
+      document.visibilityState === 'visible'
+    )
+      return;
+    PageStore.pageModel.setNoteContent(content);
+  };
+
+  useLayoutEffect(() => {
+    if (!EditorStore.editor) return;
+    if (PageStore.pageModel.isReadMode) {
+      EditorStore.editor.setMode('readonly');
+      // EditorStore.editor.addEventListener('click', handleUnselect);
+    } else {
+      EditorStore.editor.setMode('design');
+      // EditorStore.editor.removeEventListener('click', handleUnselect);
+    }
+  }, [PageStore.pageModel.isReadMode]);
 
   return useObserver(() => (
     <TinyMCE
@@ -32,6 +62,7 @@ const Editor = () => {
           // setNoteEditor(editor);
           // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
           editor.on('init', () => {
+            console.log('init');
             // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
             // init에도 useEffect 내용 추가
             // if (
@@ -389,7 +420,7 @@ const Editor = () => {
         table_sizing_mode: 'fixed', // only impacts the width of tables and cells
         content_style: EditorContentStyle,
       }}
-      // onEditorChange={getEditorContent}
+      onEditorChange={handleEditorChange}
       apiKey="90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3"
       plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
       toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"

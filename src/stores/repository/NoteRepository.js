@@ -2,7 +2,10 @@ import { API } from 'teespace-core';
 import ChapterModel, {
   convertChapterObjToModel as chapterConverter,
 } from '../model/ChapterModel';
-import { convertPageObjToModel as pageConverter } from '../model/PageModel';
+import {
+  convertPageObjToModel as pageConverter,
+  convertPageModelToObj,
+} from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
 import { convertServerTagList } from './convert';
 // @flow
@@ -329,22 +332,28 @@ class NoteRepository {
   }
 
   async editStart({
-    noteId,
+    pageId,
     chapterId,
+    title,
+    content,
+    textContent,
   }: {
-    noteId: string,
+    pageId: string,
     chapterId: string,
   }): Promise<any> {
     try {
       const response = await API.post(`note-api/note?action=Update`, {
         dto: {
-          WS_ID: this.WS_ID,
+          WS_ID: NoteStore.roomId,
           CH_TYPE: 'CHN0003',
-          USER_ID: this.USER_ID,
-          note_channel_id: this.chId,
-          user_name: this.USER_NAME,
-          note_id: noteId,
-          is_edit: this.USER_ID,
+          USER_ID: NoteStore.userId,
+          note_channel_id: NoteStore.chId,
+          user_name: NoteStore.userName,
+          note_id: pageId,
+          note_title: title,
+          note_content: content,
+          text_content: textContent,
+          is_edit: NoteStore.userId,
           parent_notebook: chapterId,
           TYPE: 'EDIT_START',
         },
@@ -355,18 +364,30 @@ class NoteRepository {
     }
   }
 
-  async editDone(updateDto: Object) {
+  async editDone(dto: object) {
+    // 임시 로직. 최적화 필요.
+    console.log(dto);
     const today = new Date();
-    updateDto.dto.WS_ID = this.WS_ID;
-    updateDto.dto.note_channel_id = this.chId;
-    updateDto.dto.USER_ID = this.USER_ID;
-    updateDto.dto.CH_TYPE = this.CH_TYPE;
-    updateDto.dto.user_name = this.USER_NAME;
-    updateDto.dto.modified_date = `${today.getFullYear()}.${
-      today.getMonth() + 1
-    }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
     try {
-      const response = await API.post(`note-api/note?action=Update`, updateDto);
+      const response = await API.post(`note-api/note?action=Update`, {
+        dto: {
+          WS_ID: NoteStore.roomId,
+          CH_TYPE: 'CHN0003',
+          USER_ID: NoteStore.userId,
+          note_channel_id: NoteStore.chId,
+          user_name: NoteStore.userName,
+          note_id: dto.note_id,
+          note_title: dto.note_title,
+          note_content: dto.note_content,
+          text_content: dto.text_content,
+          parent_notebook: dto.parent_notebook,
+          is_edit: dto.is_edit,
+          modified_date: `${today.getFullYear()}.${
+            today.getMonth() + 1
+          }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`,
+          TYPE: 'EDIT_DONE',
+        },
+      });
       return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));

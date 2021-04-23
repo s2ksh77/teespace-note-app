@@ -6,8 +6,7 @@ import ChapterStore from './ChapterStore';
 import NoteStore from './NoteStore';
 // @flow
 class PageStore {
-  @observable
-  isLoading: Boolean = false;
+  @observable isLoading: boolean = false;
 
   @observable
   pageModel: $Shape<PageModel> = '';
@@ -80,18 +79,23 @@ class PageStore {
   }
 
   @action
-  async editStart(pageId: String, chapterId: string) {
+  async editStart(pageId: string, chapterId: string) {
     const res = await NoteRepository.editStart({
       pageId,
       chapterId,
+      title: this.pageModel.name,
+      content: this.pageModel.content,
+      textContent: this.pageModel.textContent,
     });
-    return new PageModel(res);
+    if (res) this.pageModel = new PageModel(res);
+    return this.pageModel;
   }
 
   @action
-  async editDone(updateModel: PageModel) {
-    const res = await NoteRepository.editStart(updateModel);
-    return new PageModel(res);
+  async editDone(dto: object) {
+    const res = await NoteRepository.editDone(dto);
+    if (res) this.pageModel = new PageModel(res);
+    return this.pageModel;
   }
 }
 

@@ -2,9 +2,11 @@ import { observable, action, computed } from 'mobx';
 
 // @flow
 class EditorStore {
-  @observable editor: object = {};
+  @observable editor: object;
 
   @observable isSearching: Boolean = false;
+
+  visibilityState: string;
 
   setEditor(editor: object) {
     this.editor = editor;
@@ -12,6 +14,10 @@ class EditorStore {
 
   setIsSearching(isSearching: Boolean) {
     this.isSearching = isSearching;
+  }
+
+  setVisibilityState(visibilityState: string) {
+    this.visibilityState = visibilityState;
   }
 }
 

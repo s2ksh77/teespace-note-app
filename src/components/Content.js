@@ -22,7 +22,8 @@ const Content = () => {
 
   const renderContent = () => {
     if (PageStore.isLoading) return <LoadingContent />;
-    return <PageContent />;
+    if (PageStore.pageModel) return <PageContent />;
+    return <NoContent />;
   };
 
   return useObserver(() => (
