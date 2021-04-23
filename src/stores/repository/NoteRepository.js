@@ -165,7 +165,7 @@ class NoteRepository {
     chapterColor: string,
   }): Promise<any> {
     try {
-      const response = await API.post(`note-api/notebooks`, {
+      const response = await API.post(`note-api/langauge/ko_KR/notebooks`, {
         dto: {
           id: '',
           ws_id: NoteStore.roomId,

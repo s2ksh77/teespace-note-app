@@ -30,6 +30,9 @@ class NoteStore {
   @observable
   isSearch: Boolean = false;
 
+  @observable
+  searchStr: String = '';
+
   /* init 관련 변수 Repo -> NoteStore */
   init(data: Object) {
     this.setRoomId(data.roomId);
@@ -73,6 +76,16 @@ class NoteStore {
 
   setIsSearch(data: Boolean) {
     this.isSearch = data;
+  }
+
+  setSearchStr(data: string) {
+    this.searchStr = data;
+  }
+
+  setSearchInit() {
+    this.searchStr = '';
+    this.isSearch = false;
+    this.searchResult = [];
   }
 
   @action

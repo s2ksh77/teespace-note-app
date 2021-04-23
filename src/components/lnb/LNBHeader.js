@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
@@ -20,7 +20,6 @@ import LNBSearchResult from './LNBSearchResult';
 
 const LNBHeader = () => {
   const { NoteStore, ChapterStore } = useNoteStore();
-  const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);
   const { t } = useTranslation();
   // Back Btn TODO
@@ -34,13 +33,13 @@ const LNBHeader = () => {
     const {
       target: { value },
     } = e;
-    setInputValue(value);
+    NoteStore.setSearchStr(value);
   };
 
   const handleKeyDown = async e => {
     e.preventDefault();
     try {
-      const response = await NoteStore.getSearchList(inputValue);
+      const response = await NoteStore.getSearchList(NoteStore.searchStr);
       NoteStore.setIsSearch(true);
       NoteStore.setSearchResult(response);
     } catch (error) {
@@ -49,7 +48,7 @@ const LNBHeader = () => {
   };
 
   const handleCancelKeyDown = async () => {
-    setInputValue('');
+    NoteStore.setSearchStr('');
     try {
       const reponse = await ChapterStore.fetchChapterList();
     } catch (error) {
@@ -58,10 +57,8 @@ const LNBHeader = () => {
   };
 
   const handleCancel = async () => {
-    setInputValue('');
-    NoteStore.setIsSearch(false);
+    NoteStore.setSearchInit();
     await ChapterStore.fetchChapterList();
-    NoteStore.setSearchResult([]);
   };
 
   return useObserver(() => (
@@ -80,7 +77,9 @@ const LNBHeader = () => {
           border="0"
           alt=" "
           src={searchImg}
-          isSearch={inputValue !== '' || NoteStore.isSearch ? true : false}
+          isSearch={
+            NoteStore.searchStr !== '' || NoteStore.isSearch ? true : false
+          }
         />
         {ChapterStore.isTagSearching ? (
           <TagItem>
@@ -90,7 +89,7 @@ const LNBHeader = () => {
         ) : (
           <LNBSearchInput
             ref={inputRef}
-            value={inputValue}
+            value={NoteStore.searchStr}
             onChange={handleChange}
             placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_05')}
             onKeyDown={e => (e.key === 'Escape' ? handleCancelKeyDown() : null)}
@@ -98,7 +97,9 @@ const LNBHeader = () => {
         )}
         <SearchCancelButton
           src={cancelImg}
-          visible={inputValue !== '' || NoteStore.isSearch ? true : false}
+          visible={
+            NoteStore.searchStr !== '' || NoteStore.isSearch ? true : false
+          }
           onClick={handleCancel}
         />
       </LNBSearchBar>

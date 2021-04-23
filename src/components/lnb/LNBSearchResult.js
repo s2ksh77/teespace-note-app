@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 import {
@@ -15,7 +15,36 @@ import shareImg from '../../assets/ts_share@3x.png';
 import NoContent from '../common/NoContent';
 
 const LNBSearchResult = () => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const [selected, setSelected] = useState(null);
+
+  const handleChapterClick = chapterId => async () => {
+    // TODO 스크롤
+    // ChapterStore.setScrollIntoViewId(chapterId);
+
+    NoteStore.setSearchInit();
+    await ChapterStore.fetchChapterList();
+
+    const chapterInfo = ChapterStore.chapterMap.get(chapterId);
+    const pageInfo = chapterInfo.pageList?.[0];
+
+    if (pageInfo) {
+      await PageStore.fetchNoteInfoList(pageInfo.id);
+    }
+  };
+
+  const handlePageClick = pageId => async () => {
+    await PageStore.fetchNoteInfoList(pageId);
+
+    if (!PageStore.pageModel.isReadMode) return;
+
+    if (NoteStore.layoutState === 'collapse') {
+      NoteStore.setSearchInit();
+      NoteStore.setTargetLayout('content');
+    } else {
+      setSelected(pageId);
+    }
+  };
 
   return useObserver(() => (
     <>
@@ -26,7 +55,10 @@ const LNBSearchResult = () => {
         <>
           {NoteStore.searchResult?.['chapterList']?.map(chapter => {
             return (
-              <ChapterSearchResult key={chapter.id}>
+              <ChapterSearchResult
+                key={chapter.id}
+                onClick={handleChapterClick(chapter.id)}
+              >
                 {chapter.type === 'shared' || chapter.type === 'shared_page' ? (
                   <ChapterSearchShareIcon src={shareImg} />
                 ) : (
@@ -47,7 +79,11 @@ const LNBSearchResult = () => {
           })}
           {NoteStore.searchResult?.['pageList']?.map(page => {
             return (
-              <PageSearchResult key={page.note_id}>
+              <PageSearchResult
+                key={page.note_id}
+                onClick={handlePageClick(page.note_id)}
+                isSelected={selected === page.note_id ? true : false}
+              >
                 <PageSearchResultChapterTitle>
                   {page.text}
                 </PageSearchResultChapterTitle>

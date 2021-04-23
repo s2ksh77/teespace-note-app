@@ -30,17 +30,19 @@ const PageList = ({ page, chapterId }) => {
       {page.map((item, index) => (
         <PageItem key={item.id} page={item} />
       ))}
-      <NewPageButton
-        key={chapterId}
-        active={!!authStore.hasPermission('notePage', 'C')}
-        onClick={
-          authStore.hasPermission('notePage', 'C')
-            ? handleNewBtnClick.bind(null, chapterId)
-            : null
-        }
-      >
-        + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
-      </NewPageButton>
+      {page.type !== 'shared' || page.type !== 'shared_page' ? (
+        <NewPageButton
+          key={chapterId}
+          active={!!authStore.hasPermission('notePage', 'C')}
+          onClick={
+            authStore.hasPermission('notePage', 'C')
+              ? handleNewBtnClick.bind(null, chapterId)
+              : null
+          }
+        >
+          + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
+        </NewPageButton>
+      ) : null}
     </>
   ));
 };
