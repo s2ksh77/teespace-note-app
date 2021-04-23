@@ -48,6 +48,18 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         else NoteStore.setTargetLayout('both');
       }
     }
+
+    return () => {
+      if (
+        history.location.search.includes('note') &&
+        history.location.pathname.includes(roomId)
+      )
+        return;
+      NoteStore.setRoomId('');
+      NoteStore.setChId('');
+      NoteStore.setLayoutState('collapse');
+      NoteStore.setIsContentExpanded(false);
+    };
   }, [roomId, channelId]);
 
   useEffect(() => {
