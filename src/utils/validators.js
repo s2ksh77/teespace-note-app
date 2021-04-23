@@ -37,6 +37,7 @@ const isEmail = new RegExp(/^(mailto:\s*)?[\w.%+-]+@[\w.]+\.[A-Z]{2,4}$/im);
 
 // 유효하면 true
 export const composeValidators = (...args) => value => {
+  // eslint-disable-next-line no-restricted-syntax
   for (const validator of args) {
     const error = !validator(value);
 
@@ -78,7 +79,7 @@ export const checkNotDuplicate = (targetArr, key, value) => {
 
 // true : valid(중복X), false : invalid(중복)
 // 태그 생성 : 대소문자 구분 없이 동일 text 처리
-export const checkNotDuplicateIgnoreCase = (targetArr, key, value) => {
+export const checkDuplicateIgnoreCase = (targetArr, key, value) => {
   return !targetArr.find(
     item =>
       NoteUtil.encodeStr(item[key].toUpperCase()) ===

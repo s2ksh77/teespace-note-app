@@ -12,7 +12,7 @@ class PageStore {
   pageModel: $Shape<PageModel> = '';
 
   @observable
-  tagModel: $Shape<TagModel> = '';
+  tagList: Array<$Shape<TagModel>> = [];
 
   setIsLoading(isLoading: Boolean) {
     this.isLoading = isLoading;
@@ -28,8 +28,8 @@ class PageStore {
   @action
   async fetchNoteTagList() {
     const res = await NoteRepository.fetchNoteTagList();
-    this.tagModel = res.map(tag => new TagModel(tag));
-    console.log(this.tagModel);
+    this.tagList = res.map(tag => new TagModel(tag));
+    console.log(this.tagList);
   }
 
   @action
