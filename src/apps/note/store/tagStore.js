@@ -7,9 +7,9 @@ import NoteUtil from '../NoteUtil';
 const TagStore = observable({
   // note에 딸린 tagList
   notetagList: [],
-  isNewTag: false,
+  isNewTag: false, // web에서 안씀
   tagText: '',
-  addTagList: [],// web에서 안씀
+  addTagList: [], // web에서 안씀
   removeTagList: [],// web에서 안씀
   updateTagList: [],// web에서 안씀
   currentTagId: '', // web에서 안씀
@@ -215,8 +215,9 @@ const TagStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.createTag(createTagArr);
-    this.fetchNoteTagList(noteId);
-    return dto;
+    await this.fetchNoteTagList(noteId);
+    // 항상 태그 한 개만 생성할 때 기준 코드
+    return {...dto, text: createTagArr[0].text};
   },
   /**
    * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
@@ -230,8 +231,8 @@ const TagStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.updateTag(updateTagArr);
-    this.fetchNoteTagList(noteId);
-    return dto;
+    await this.fetchNoteTagList(noteId);
+    return {...dto, text:updateTagList[0].text};
   },
   /**
    * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
