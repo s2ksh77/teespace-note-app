@@ -18,7 +18,7 @@ import NoteUtil from '../../NoteUtil';
 import { logEvent, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 /** 
- * notetagListisNewTag 제외 TagStore 변수 제거
+ * TagStore 변수 제거
  */
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
@@ -26,6 +26,8 @@ const TagListContainer = () => {
   const { t } = useTranslation();
   // 새로운 태그 만들 때
   const [value, setValue] = useState('');
+  const preventBlur = useRef(false);
+  const [isNewTag, setIsNewTag] = useState('');
 
   // editTagInfo = {id,pre,cur}
   // 바뀌지 않는 값을 useRef에 저장하려 했으나 id로 input창을 끄고 켜서 리렌더가 필요 => useState로 관리하는 것으로 변경
@@ -38,14 +40,23 @@ const TagListContainer = () => {
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   const tagListCover = useRef(null) // scroll 때문에 필요
   
+  // 공통
+  const findNSelect = (text) => {
+    const added = [...tagListCover.current.children].find(node => node.textContent === text);
+    if (added) selectTag(added);
+  }
+
   /**
    *   AddTagForm 관련
   */ 
   // AddTagForm 보여줄지말지
   const toggleTagInput = () => {
     if (PageStore.isReadMode()) return; // early return으로 바꾸기
-    if (!TagStore.isNewTag) TagStore.setIsNewTag(true);
-    else TagStore.setIsNewTag(false);
+    if (!isNewTag) {
+      setIsNewTag(true);
+      preventBlur.current=false;
+    }
+    else setIsNewTag(false);
   };
   
   const onClickNewTagBtn = () => {
@@ -53,20 +64,27 @@ const TagListContainer = () => {
     tagListCover.current.scrollTo({ left: 0, behavior: 'smooth' });
   }
   const handleChangeAddInput = e => setValue(checkMaxLength(e));
-  
-  const handleBlurAddInput = () => {
-    if (!checkWhitespace(value)) {};
-    if (TagStore.isValidTag(value)) TagStore.createNoteTag([value], PageStore.currentPageId);
+  /*
+    blur는 다른 곳 클릭이랑, 엔터 이벤트 다 test해야함
+   */
+  const handleBlurAddInput = async (e) => {
+    if (preventBlur.current) {preventBlur.current = false;return}
+    if (!checkWhitespace(value)) {}
+    else if (TagStore.isValidTag(value)) {
+      const result = await TagStore.createNoteTag([value], PageStore.currentPageId);
+      findNSelect(result.text); // 생성된 태그에 focus
+    }
     else NoteStore.setModalInfo('duplicateTagName');
     // input창 초기화
-    TagStore.setIsNewTag(false);
+    setIsNewTag(false);
     setValue("");
   };  
 
-  const handleAddTagKeyDown = (event) => {
-    switch (event.key) {
+  const handleAddTagKeyDown = (e) => {
+    switch (e.key) {
       case "Enter":
         handleBlurAddInput();
+        preventBlur.current=true;
         break;
       case "Escape":
         toggleTagInput();
@@ -87,22 +105,22 @@ const TagListContainer = () => {
     }));
   }
 
-  const updateNoteTagList = () => {
-    TagStore.updateNoteTag([{
+  const updateNoteTagList = async () => {
+    const result = await TagStore.updateNoteTag([{
       tag_id: editTagInfo.id,
       text:editTagInfo.cur
     }], PageStore.currentPageId);
+    findNSelect(result.text); // 생성된 태그에 focus
   }
 
   const handleBlurModify = () => {
-    if (!editTagInfo.id || !editTagInfo.pre) {setEditTagInfo({}); return;}
     const isSame = NoteUtil.isSameStr(editTagInfo.pre, editTagInfo.cur);
     const isSameIgnoringCase = NoteUtil.isSameStr(editTagInfo.pre.toUpperCase(), editTagInfo.cur.toUpperCase());
     // 공백만 있거나 아무것도 입력하지 않은 경우
     // Modal없이 modify 취소
-    if (!checkWhitespace(editTagInfo.cur) || !editTagInfo.id || isSame) {}
+    if (!checkWhitespace(editTagInfo.cur) || !editTagInfo.id || !editTagInfo.pre || isSame) {}
     // 대소문자만 바꾼 경우
-    if (isSameIgnoringCase || TagStore.isValidTag(editTagInfo.cur)) updateNoteTagList();
+    else if (isSameIgnoringCase || TagStore.isValidTag(editTagInfo.cur)) updateNoteTagList();
     else NoteStore.setModalInfo('duplicateTagName');
     setEditTagInfo({});
   };
@@ -125,6 +143,7 @@ const TagListContainer = () => {
   */
   const handleCloseBtn = (targetId) => () => {
     TagStore.deleteNoteTag([targetId], PageStore.currentPageId);
+    unselectTag();
   };
 
   const handleDbClick = (id,pre) => () => {
@@ -180,7 +199,7 @@ const TagListContainer = () => {
   const handleTooltip = (e) => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
   }
-
+  
   return useObserver(() => (
     <>
       <EditorTagCover>
@@ -189,7 +208,7 @@ const TagListContainer = () => {
             <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
           </TagNewBtn>
         </Tooltip>}
-        {TagStore.isNewTag && <TagInput
+        {isNewTag && <TagInput
           maxLength="50"
           value={value}
           onChange={handleChangeAddInput}
