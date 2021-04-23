@@ -1551,6 +1551,7 @@ var TagStore = mobx.observable({
   // note에 딸린 tagList
   notetagList: [],
   isNewTag: false,
+  // web에서 안씀
   tagText: '',
   addTagList: [],
   // web에서 안씀
@@ -1910,12 +1911,15 @@ var TagStore = mobx.observable({
             case 3:
               _yield$NoteRepository4 = _context7.sent;
               dto = _yield$NoteRepository4.data.dto;
-
-              _this4.fetchNoteTagList(noteId);
-
-              return _context7.abrupt("return", dto);
+              _context7.next = 7;
+              return _this4.fetchNoteTagList(noteId);
 
             case 7:
+              return _context7.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
+                text: createTagArr[0].text
+              }));
+
+            case 8:
             case "end":
               return _context7.stop();
           }
@@ -1950,12 +1954,15 @@ var TagStore = mobx.observable({
             case 3:
               _yield$NoteRepository5 = _context8.sent;
               dto = _yield$NoteRepository5.data.dto;
-
-              _this5.fetchNoteTagList(noteId);
-
-              return _context8.abrupt("return", dto);
+              _context8.next = 7;
+              return _this5.fetchNoteTagList(noteId);
 
             case 7:
+              return _context8.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
+                text: updateTagList[0].text
+              }));
+
+            case 8:
             case "end":
               return _context8.stop();
           }
