@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-export const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
   textarea#noteEditor {
     flex-grow:1;
   }
@@ -437,3 +437,5 @@ export const CenterContent = styled.div`
   align-items: cener;
   justify-content: center;
 `;
+
+export default GlobalStyle;

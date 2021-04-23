@@ -15,6 +15,8 @@ class NoteStore {
 
   userEmail: '';
 
+  metaTagNoteId: string;
+
   @observable
   layoutState: string = '';
 
@@ -62,12 +64,20 @@ class NoteStore {
     this.userEmail = data;
   }
 
+  setMetaTagNoteId(metaTagNoteId: string) {
+    this.metaTagNoteId = metaTagNoteId;
+  }
+
   setLayoutState(data: string) {
     this.layoutState = data;
   }
 
   setTargetLayout(data: string) {
     this.targetLayout = data;
+  }
+
+  setIsContentExpanded(isContentExpanded: boolean) {
+    this.isContentExpanded = isContentExpanded;
   }
 
   setSearchResult(data: Array) {
