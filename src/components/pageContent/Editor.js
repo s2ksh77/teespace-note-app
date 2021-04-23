@@ -5,6 +5,7 @@ import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 
+import { apiKey } from '../../utils/const';
 import { EditorContentStyle } from '../../styles/EditorStyle';
 
 const Editor = () => {
@@ -421,7 +422,7 @@ const Editor = () => {
         content_style: EditorContentStyle,
       }}
       onEditorChange={handleEditorChange}
-      apiKey="90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3"
+      apiKey={apiKey}
       plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
       toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
     />
