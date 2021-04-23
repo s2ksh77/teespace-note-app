@@ -207,13 +207,11 @@ const TagStore = observable({
   // encode logic 추가된 createTag, updateTag
   // tag는 tag 추가 및 수정시 동일값 체크 로직 & 저장할 때 encoding한다
   async createNoteTag(createTagList, noteId) {
-    const createTagArr = createTagList.map(tagText => {
-      return {
-        text: tagText,
-        note_id: noteId,
-        WS_ID: NoteRepository.WS_ID,
-      };
-    });
+    const createTagArr = createTagList.map(tagText => ({
+      text: tagText,
+      note_id: noteId,
+      WS_ID: NoteRepository.WS_ID,
+    }));
     const {
       data: { dto },
     } = await NoteRepository.createTag(createTagArr);
@@ -224,13 +222,11 @@ const TagStore = observable({
    * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
    */
   async updateNoteTag(updateTagList, noteId) {
-    const updateTagArr = updateTagList.map(tag => {
-      return {
-        tag_id: tag.tag_id,
-        text: tag.text,
-        WS_ID: NoteRepository.WS_ID,
-      };
-    });
+    const updateTagArr = updateTagList.map(tag => ({
+      tag_id: tag.tag_id,
+      text: tag.text,
+      WS_ID: NoteRepository.WS_ID,
+    }));
     const {
       data: { dto },
     } = await NoteRepository.updateTag(updateTagArr);
@@ -242,9 +238,9 @@ const TagStore = observable({
    */
    async deleteNoteTag(deleteTagList, noteId) {
     const deleteTagArray = deleteTagList.map(tag => ({
-        tag_id: tag,
-        note_id: noteId,
-        WS_ID: NoteRepository.WS_ID,
+      tag_id: tag,
+      note_id: noteId,
+      WS_ID: NoteRepository.WS_ID,
     }));
     const {
       data: { dto },
