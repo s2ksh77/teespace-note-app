@@ -10,8 +10,8 @@ const TagStore = observable({
   isNewTag: false, // web에서 안씀
   tagText: '',
   addTagList: [], // web에서 안씀
-  removeTagList: [],// web에서 안씀
-  updateTagList: [],// web에서 안씀
+  removeTagList: [], // web에서 안씀
+  updateTagList: [], // web에서 안씀
   currentTagId: '', // web에서 안씀
   currentTagValue: '', // web에서 안씀
   selectTagIdx: '', // web에서 안씀
@@ -177,9 +177,9 @@ const TagStore = observable({
   },
   async deleteTag(deleteTagList, noteId) {
     const deleteTagArray = deleteTagList.map(tag => ({
-        tag_id: tag,
-        note_id: noteId,
-        WS_ID: NoteRepository.WS_ID,
+      tag_id: tag,
+      note_id: noteId,
+      WS_ID: NoteRepository.WS_ID,
     }));
     const {
       data: { dto },
@@ -217,13 +217,14 @@ const TagStore = observable({
     } = await NoteRepository.createTag(createTagArr);
     await this.fetchNoteTagList(noteId);
     // 항상 태그 한 개만 생성할 때 기준 코드
-    return {...dto, text: createTagArr[0].text};
+    return { ...dto, text: createTagArr[0].text };
   },
   /**
    * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
    */
   async updateNoteTag(updateTagList, noteId) {
     const updateTagArr = updateTagList.map(tag => ({
+      note_id: noteId,
       tag_id: tag.tag_id,
       text: tag.text,
       WS_ID: NoteRepository.WS_ID,
@@ -232,12 +233,12 @@ const TagStore = observable({
       data: { dto },
     } = await NoteRepository.updateTag(updateTagArr);
     await this.fetchNoteTagList(noteId);
-    return {...dto, text:updateTagList[0].text};
+    return { ...dto, text: updateTagList[0].text };
   },
   /**
    * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
    */
-   async deleteNoteTag(deleteTagList, noteId) {
+  async deleteNoteTag(deleteTagList, noteId) {
     const deleteTagArray = deleteTagList.map(tag => ({
       tag_id: tag,
       note_id: noteId,
@@ -245,7 +246,7 @@ const TagStore = observable({
     }));
     const {
       data: { dto },
-    } = await NoteRepository.deleteTag(deleteTagArray);    
+    } = await NoteRepository.deleteTag(deleteTagArray);
     this.fetchNoteTagList(noteId);
     return dto;
   },

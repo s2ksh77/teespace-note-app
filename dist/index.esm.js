@@ -2089,6 +2089,7 @@ var TagStore = observable({
             case 0:
               updateTagArr = updateTagList.map(function (tag) {
                 return {
+                  note_id: noteId,
                   tag_id: tag.tag_id,
                   text: tag.text,
                   WS_ID: NoteRepository$1.WS_ID
