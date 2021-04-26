@@ -27,6 +27,9 @@ class NoteStore {
   isContentExpanded: Boolean = false;
 
   @observable
+  isPageContent: Boolean = true;
+
+  @observable
   searchResult: Array<String> = [];
 
   @observable
@@ -78,6 +81,10 @@ class NoteStore {
 
   setIsContentExpanded(isContentExpanded: boolean) {
     this.isContentExpanded = isContentExpanded;
+  }
+
+  setIsPageContent(isPageContent: boolean) {
+    this.isPageContent = isPageContent;
   }
 
   setSearchResult(data: Array) {

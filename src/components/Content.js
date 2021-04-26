@@ -21,8 +21,10 @@ const Content = () => {
   // })();
 
   const renderContent = () => {
-    if (PageStore.isLoading) return <LoadingContent />;
-    if (PageStore.pageModel) return <PageContent />;
+    if (NoteStore.isPageContent && PageStore.isLoading)
+      return <LoadingContent />;
+    if (NoteStore.isPageContent && PageStore.pageModel) return <PageContent />;
+    if (!NoteStore.isPageContent) return <TagContent />;
     return <NoContent />;
   };
 
