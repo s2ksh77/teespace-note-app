@@ -20,7 +20,7 @@ class RoomTagModel {
   }
 
   @action
-  setTagId(data: string) {
+  setId(data: string) {
     this.id = data;
   }
 

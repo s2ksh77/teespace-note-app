@@ -1,7 +1,7 @@
 // @flow
-declare type TagInfo = {
+declare type PageTag = {
   noteId: string,
-  tagId: string,
+  id: string,
   text: string,
 };
 
@@ -12,7 +12,7 @@ declare type CreateTagDto = {
 };
 
 declare type UpdateTagInput = {
-  tagId: string,
+  id: string,
   text: string,
 };
 

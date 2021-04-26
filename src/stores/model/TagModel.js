@@ -4,13 +4,13 @@ import autobind from 'autobind-decorator';
 @autobind
 class TagModel {
   @observable
-  noteId: string;
-
-  @observable
-  tagId: string;
+  id: string;
 
   @observable
   text: string;
+
+  @observable
+  noteId: string;
 
   constructor(data: Object) {
     this.setValues(data);
@@ -22,69 +22,69 @@ class TagModel {
   }
 
   @action
-  setNoteId(data: string) {
-    this.noteId = data;
-  }
-
-  @action
-  setTagId(data: string) {
-    this.tagId = data;
+  setid(data: string) {
+    this.id = data;
   }
 
   @action
   setTagText(data: string) {
     this.text = data;
   }
+
+  @action
+  setNoteId(data: string) {
+    this.noteId = data;
+  }
 }
 
 export default TagModel;
 
 /**
- * @param ServerObj to TagInfo mapping
+ * @param ServerObj to PageTag mapping
  * @returns TagModel
  */
-export const convertTagObjToModel = (
-  obj: $Shape<TagInfo>,
-): ?$Shape<TagInfo> => {
-  if (obj.note_id) {
-    return {
-      noteId: obj.note_id,
-    };
-  }
-  if (obj.tag_id) {
-    return {
-      id: obj.tag_id,
-    };
-  }
-  if (obj.text) {
-    return {
-      name: obj.text,
-    };
-  }
-  return '';
-};
+// export const convertTagObjToModel = (
+//   obj: $Shape<TagInfo>,
+// ): ?$Shape<TagInfo> => {
+//   if (obj.note_id) {
+//     return {
+//       noteId: obj.note_id,
+//     };
+//   }
+//   if (obj.tag_id) {
+//     return {
+//       id: obj.tag_id,
+//     };
+//   }
+//   if (obj.text) {
+//     return {
+//       name: obj.text,
+//     };
+//   }
+//   return '';
+// };
 
 /**
  * @param TagModel to ServerObj mapping
  * @returns ServerObj
  */
-export const convertTagModelToObj = (
-  obj: $Shape<TagInfo>,
-): ?$Shape<TagInfoDto> => {
-  if (obj.noteId) {
-    return {
-      note_id: obj.noteId,
-    };
-  }
-  if (obj.id) {
-    return {
-      tag_id: obj.id,
-    };
-  }
-  if (obj.name) {
-    return {
-      text: obj.name,
-    };
-  }
-  return '';
-};
+// export const convertTagModelToObj = (
+//   obj: $Shape<TagInfo>,
+// ): ?$Shape<TagInfoDto> => {
+//   if (obj.noteId) {
+//     return {
+//       note_id: obj.noteId,
+//     };
+//   }
+//   if (obj.id) {
+//     return {
+//       tag_id: obj.id,
+//     };
+//   }
+//   if (obj.name) {
+//     return {
+//       text: obj.name,
+//     };
+//   }
+//   return '';
+// };

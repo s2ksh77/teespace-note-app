@@ -7,7 +7,11 @@ import {
   convertPageModelToObj,
 } from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
-import { convertTagObj, convertServerTagList } from '../../utils/convert';
+import {
+  convertToPageTag,
+  convertTagObj,
+  convertServerTagList,
+} from '../../utils/convert';
 // @flow
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
@@ -70,7 +74,7 @@ class NoteRepository {
         .getTime()
         .toString()}`,
     );
-    return response ? convertTagObj(response.data.dto.tagList) : [];
+    return response ? convertToPageTag(response.data.dto.tagList) : [];
   }
 
   // 태그 컨텐츠 관련

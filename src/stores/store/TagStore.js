@@ -30,7 +30,7 @@ const TagStore = observable(
     },
     /**
      * fetches all Tags with category from the server
-     * RoomTagModel : class { tagId, text, noteList }
+     * RoomTagModel : class { id, text, noteList }
      * TagKeyModel : class { key, tags:Array<RoomTagModel> }
      */
     async getTagCategory() {
@@ -103,7 +103,7 @@ export default TagStore;
 
 // /**
 //  * fetches all Tags with category from the server
-//  * RoomTagModel : class { tagId, text, noteList }
+//  * RoomTagModel : class { id, text, noteList }
 //  * TagKeyModel : class { key, tags:Array<RoomTagModel> }
 //  */
 // @action

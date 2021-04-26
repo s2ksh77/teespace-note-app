@@ -146,7 +146,7 @@ const PageTagList = () => {
     const result = await TagStore.updateNoteTag(
       [
         {
-          tagId: editTagInfo.id,
+          id: editTagInfo.id,
           text: editTagInfo.cur,
         },
       ],
@@ -278,7 +278,7 @@ const PageTagList = () => {
         <TagList ref={tagListCover}>
           {PageStore.tagList.map((item, index) =>
             // note_id, tag_id, text
-            editTagInfo.id === item.tagId ? (
+            editTagInfo.id === item.id ? (
               <TagInput
                 key={item}
                 maxLength="50"
@@ -290,10 +290,10 @@ const PageTagList = () => {
               />
             ) : (
               <TagItem
-                key={item.tagId}
-                className={item.tagId === selectedId ? 'noteFocusedTag' : ''}
+                key={item.id}
+                className={item.id === selectedId ? 'noteFocusedTag' : ''}
                 data-idx={index} // 없어져도 되나?
-                id={item.tagId}
+                id={item.id}
                 closable={
                   !(
                     PageStore.pageModel.isReadMode ||
@@ -301,10 +301,10 @@ const PageTagList = () => {
                   )
                 }
                 tabIndex="0"
-                onClose={handleCloseBtn(item.tagId)}
-                onClick={handleClickTag(item.tagId)}
+                onClose={handleCloseBtn(item.id)}
+                onClick={handleClickTag(item.id)}
                 onKeyDown={handleTagChipKeyDown}
-                onBlur={handleBlurTagChip(item.tagId)}
+                onBlur={handleBlurTagChip(item.id)}
               >
                 <Tooltip
                   title={
@@ -315,7 +315,7 @@ const PageTagList = () => {
                     onDoubleClick={
                       !PageStore.pageModel.isReadMode &&
                       authStore.hasPermission('notePage', 'U')
-                        ? handleDbClick(item.tagId, item.text)
+                        ? handleDbClick(item.id, item.text)
                         : null
                     }
                     onMouseOver={handleTooltip}

@@ -77,7 +77,7 @@ class PageModel {
   shareUserId: string;
 
   @observable
-  tagList: Array<TagInfo>;
+  tagList: Array<PageTag>;
 
   @observable
   targetChId: string;
@@ -218,7 +218,7 @@ class PageModel {
   }
 
   @action
-  setTagList(data: Array<TagInfo>) {
+  setTagList(data: Array<PageTag>) {
     this.tagList = data;
   }
 

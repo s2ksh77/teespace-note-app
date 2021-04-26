@@ -4,14 +4,18 @@ export default test;
 /**
  * 페이지 태그 관련
  */
-export const convertTagObj: Array<TagInfo> = tagList => {
+export const convertToPageTag: Array<PageTag> = tagList => {
   // eslint-disable-next-line camelcase
   return tagList.map(({ note_id, tag_id, text }) => ({
     noteId: note_id,
-    tagId: tag_id,
+    id: tag_id,
     text,
   }));
 };
+export const convertTagObj = dto => {
+  return dto;
+};
+
 // createNoteTag
 export const convertToCreateDto: Array<CreateTagDto> = ({
   tagList,
@@ -26,9 +30,9 @@ export const convertToCreateDto: Array<CreateTagDto> = ({
 };
 
 export const convertToUpdateDto: Array<UpdateTagDto> = (tagList, wsId) => {
-  return tagList.map(({ tagId, text }) => ({
+  return tagList.map(({ id, text }) => ({
     WS_ID: wsId,
-    tag_id: tagId,
+    tag_id: id,
     text,
   }));
 };
@@ -38,10 +42,10 @@ export const convertToDeleteDto: Array<DeleteTagDto> = ({
   noteId,
   wsId,
 }) => {
-  return tagList.map(tagId => ({
+  return tagList.map(id => ({
     WS_ID: wsId,
     note_id: noteId,
-    tag_id: tagId,
+    tag_id: id,
   }));
 };
 /**
@@ -114,7 +118,7 @@ const getTagCategory: TagCategory = keyList => {
 };
 /**
  * @param {*} dto
- * @return { KOR: [{key,tagList:[{tagId,text,noteList}]}], ENG: [], NUM: [], ETC: [] }
+ * @return { KOR: [{key,tagList:[{id,text,noteList}]}], ENG: [], NUM: [], ETC: [] }
  */
 export const convertServerTagList: TagCategory = dto => {
   const keyList = getSortedServerTagList(dto).map(createTagKeyInfo);
