@@ -1697,6 +1697,7 @@ var TagStore = observable({
   // note에 딸린 tagList
   notetagList: [],
   isNewTag: false,
+  // web에서 안씀
   tagText: '',
   addTagList: [],
   // web에서 안씀
@@ -2056,12 +2057,15 @@ var TagStore = observable({
             case 3:
               _yield$NoteRepository4 = _context7.sent;
               dto = _yield$NoteRepository4.data.dto;
-
-              _this4.fetchNoteTagList(noteId);
-
-              return _context7.abrupt("return", dto);
+              _context7.next = 7;
+              return _this4.fetchNoteTagList(noteId);
 
             case 7:
+              return _context7.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
+                text: createTagArr[0].text
+              }));
+
+            case 8:
             case "end":
               return _context7.stop();
           }
@@ -2096,12 +2100,15 @@ var TagStore = observable({
             case 3:
               _yield$NoteRepository5 = _context8.sent;
               dto = _yield$NoteRepository5.data.dto;
-
-              _this5.fetchNoteTagList(noteId);
-
-              return _context8.abrupt("return", dto);
+              _context8.next = 7;
+              return _this5.fetchNoteTagList(noteId);
 
             case 7:
+              return _context8.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
+                text: updateTagList[0].text
+              }));
+
+            case 8:
             case "end":
               return _context8.stop();
           }
@@ -4169,7 +4176,7 @@ var PageStore = observable((_observable$1 = {
               }
 
               _context10.next = 9;
-              return UserStore.fetchProfile(dto.USER_ID);
+              return UserStore.getProfile(dto.USER_ID);
 
             case 9:
               userProfile = _context10.sent;
@@ -11317,60 +11324,8 @@ var editorContentCSS = " \n  html,body{\n    height:calc(100% - 16px);\n  }\n  b
 
 const img$s = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='20px' height='20px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/lock%3c/title%3e %3cg id='Icon/common/lock' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M12.49%2c0.9997 C16.251%2c0.9997 19.311%2c4.2457 19.311%2c8.2357 L19.311%2c8.2357 L19.311%2c10.3417 C20.87%2c10.8827 22%2c12.3537 22%2c14.0977 L22%2c14.0977 L22%2c19.0097 C22%2c21.2097 20.213%2c22.9997 18.016%2c22.9997 L18.016%2c22.9997 L5.984%2c22.9997 C3.787%2c22.9997 2%2c21.2097 2%2c19.0097 L2%2c19.0097 L2%2c14.0977 C2%2c12.3507 3.134%2c10.8787 4.697%2c10.3397 L4.697%2c10.3397 L4.697%2c8.2357 C4.697%2c4.2457 7.757%2c0.9997 11.519%2c0.9997 L11.519%2c0.9997 Z M18.016%2c12.1067 L5.984%2c12.1067 C4.89%2c12.1067 4%2c12.9997 4%2c14.0977 L4%2c14.0977 L4%2c19.0097 C4%2c20.1067 4.89%2c20.9997 5.984%2c20.9997 L5.984%2c20.9997 L18.016%2c20.9997 C19.11%2c20.9997 20%2c20.1067 20%2c19.0097 L20%2c19.0097 L20%2c14.0977 C20%2c12.9997 19.11%2c12.1067 18.016%2c12.1067 L18.016%2c12.1067 Z M12%2c12.96 C12.969%2c12.96 13.758%2c13.758 13.758%2c14.74 C13.758%2c15.345 13.457%2c15.879 13%2c16.201 L13%2c16.201 L13%2c18.731 C13%2c19.284 12.552%2c19.731 12%2c19.731 C11.448%2c19.731 11%2c19.284 11%2c18.731 L11%2c18.731 L11%2c16.201 C10.543%2c15.879 10.242%2c15.345 10.242%2c14.74 C10.242%2c13.758 11.031%2c12.96 12%2c12.96 Z M12.49%2c2.9997 L11.519%2c2.9997 C8.86%2c2.9997 6.697%2c5.3487 6.697%2c8.2357 L6.697%2c8.2357 L6.697%2c10.1067 L17.311%2c10.1067 L17.311%2c8.2357 C17.311%2c5.3487 15.148%2c2.9997 12.49%2c2.9997 L12.49%2c2.9997 Z' id='Combined-Shape' fill='%23999999'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-var AddTagForm = function AddTagForm(_ref) {
-  var show = _ref.show,
-      toggleTagInput = _ref.toggleTagInput;
-
-  var _useNoteStore = useNoteStore(),
-      NoteStore = _useNoteStore.NoteStore,
-      PageStore = _useNoteStore.PageStore,
-      TagStore = _useNoteStore.TagStore;
-
-  var _useState = useState(''),
-      _useState2 = _slicedToArray(_useState, 2),
-      value = _useState2[0],
-      setValue = _useState2[1];
-
-  if (!show) return null;
-
-  var handleTagInput = function handleTagInput(e) {
-    return setValue(checkMaxLength(e));
-  };
-
-  var handleBlurTagInput = function handleBlurTagInput() {
-    if (!checkWhitespace(value)) ;
-    if (TagStore.isValidTag(value)) TagStore.createNoteTag([value], PageStore.currentPageId);else NoteStore.setModalInfo('duplicateTagName'); // input창 초기화
-
-    TagStore.setIsNewTag(false);
-    setValue("");
-  };
-
-  var handleKeyDown = function handleKeyDown(event) {
-    switch (event.key) {
-      case "Enter":
-        handleBlurTagInput();
-        break;
-
-      case "Escape":
-        toggleTagInput();
-        setValue("");
-        break;
-    }
-  }; // return useObserver(()=>(
-
-
-  return /*#__PURE__*/React.createElement(TagInput, {
-    maxLength: "50",
-    value: value,
-    onChange: handleTagInput,
-    onBlur: handleBlurTagInput,
-    onKeyDown: handleKeyDown,
-    autoFocus: true
-  });
-};
-
 /** 
- * notetagListisNewTag 제외 TagStore 변수 제거
+ * TagStore 변수 제거
  */
 
 var TagListContainer = function TagListContainer() {
@@ -11383,42 +11338,64 @@ var TagListContainer = function TagListContainer() {
       authStore = _useCoreStores.authStore;
 
   var _useTranslation = useTranslation(),
-      t = _useTranslation.t; // editTagInfo = {id,pre,cur}
+      t = _useTranslation.t; // 새로운 태그 만들 때
+
+
+  var _useState = useState(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      value = _useState2[0],
+      setValue = _useState2[1];
+
+  var preventBlur = useRef(false);
+
+  var _useState3 = useState(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isNewTag = _useState4[0],
+      setIsNewTag = _useState4[1]; // editTagInfo = {id,pre,cur}
   // 바뀌지 않는 값을 useRef에 저장하려 했으나 id로 input창을 끄고 켜서 리렌더가 필요 => useState로 관리하는 것으로 변경
 
 
-  var _useState = useState({}),
-      _useState2 = _slicedToArray(_useState, 2),
-      editTagInfo = _useState2[0],
-      setEditTagInfo = _useState2[1]; // 선택한 노드 저장
+  var _useState5 = useState({}),
+      _useState6 = _slicedToArray(_useState5, 2),
+      editTagInfo = _useState6[0],
+      setEditTagInfo = _useState6[1]; // 선택한 노드 저장
 
 
-  var _useState3 = useState(null),
-      _useState4 = _slicedToArray(_useState3, 2),
-      selectedId = _useState4[0],
-      setSelectedId = _useState4[1];
+  var _useState7 = useState(null),
+      _useState8 = _slicedToArray(_useState7, 2),
+      selectedId = _useState8[0],
+      setSelectedId = _useState8[1];
 
   var selectedTag = useRef(null); // node를 받음, 방향키로 이동 위해 필요
 
-  var _useState5 = useState(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      isEllipsisActive = _useState6[0],
-      setIsEllipsisActive = _useState6[1];
+  var _useState9 = useState(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      isEllipsisActive = _useState10[0],
+      setIsEllipsisActive = _useState10[1];
 
   var tagListCover = useRef(null); // scroll 때문에 필요
-  // delete
+  // 공통
 
-  var handleCloseBtn = function handleCloseBtn(targetId) {
-    return function () {
-      TagStore.deleteNoteTag([targetId], PageStore.currentPageId);
-    };
-  }; // AddTagForm 보여줄지말지
+  var findNSelect = function findNSelect(text) {
+    var added = _toConsumableArray(tagListCover.current.children).find(function (node) {
+      return node.textContent === text;
+    });
+
+    if (added) selectTag(added);
+  };
+  /**
+   *   AddTagForm 관련
+  */
+  // AddTagForm 보여줄지말지
 
 
   var toggleTagInput = function toggleTagInput() {
     if (PageStore.isReadMode()) return; // early return으로 바꾸기
 
-    if (!TagStore.isNewTag) TagStore.setIsNewTag(true);else TagStore.setIsNewTag(false);
+    if (!isNewTag) {
+      setIsNewTag(true);
+      preventBlur.current = false;
+    } else setIsNewTag(false);
   };
 
   var onClickNewTagBtn = function onClickNewTagBtn() {
@@ -11429,15 +11406,92 @@ var TagListContainer = function TagListContainer() {
     });
   };
 
-  var handleDbClick = function handleDbClick(id, pre) {
-    return function () {
-      setEditTagInfo({
-        id: id,
-        pre: pre,
-        cur: pre
-      });
-    };
+  var handleChangeAddInput = function handleChangeAddInput(e) {
+    return setValue(checkMaxLength(e));
   };
+  /*
+    blur는 다른 곳 클릭이랑, 엔터 이벤트 다 test해야함
+   */
+
+
+  var handleBlurAddInput = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+      var result;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!preventBlur.current) {
+                _context.next = 3;
+                break;
+              }
+
+              preventBlur.current = false;
+              return _context.abrupt("return");
+
+            case 3:
+              if (checkWhitespace(value)) {
+                _context.next = 6;
+                break;
+              }
+
+              _context.next = 14;
+              break;
+
+            case 6:
+              if (!TagStore.isValidTag(value)) {
+                _context.next = 13;
+                break;
+              }
+
+              _context.next = 9;
+              return TagStore.createNoteTag([value], PageStore.currentPageId);
+
+            case 9:
+              result = _context.sent;
+              findNSelect(result.text); // 생성된 태그에 focus
+
+              _context.next = 14;
+              break;
+
+            case 13:
+              NoteStore.setModalInfo('duplicateTagName');
+
+            case 14:
+              // input창 초기화
+              setIsNewTag(false);
+              setValue("");
+
+            case 16:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleBlurAddInput(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  var handleAddTagKeyDown = function handleAddTagKeyDown(e) {
+    switch (e.key) {
+      case "Enter":
+        handleBlurAddInput();
+        preventBlur.current = true;
+        break;
+
+      case "Escape":
+        toggleTagInput();
+        setValue("");
+        break;
+    }
+  };
+  /**
+   *   edit tag 관련
+  */
+
 
   var handleChangeModifyInput = function handleChangeModifyInput(e) {
     var updated = checkMaxLength(e); // setState가 비동기라 해당 콜백 안에서는 e가 nullified
@@ -11449,27 +11503,44 @@ var TagListContainer = function TagListContainer() {
     });
   };
 
-  var updateNoteTagList = function updateNoteTagList() {
-    TagStore.updateNoteTag([{
-      tag_id: editTagInfo.id,
-      text: editTagInfo.cur
-    }], PageStore.currentPageId);
-  };
+  var updateNoteTagList = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var result;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return TagStore.updateNoteTag([{
+                tag_id: editTagInfo.id,
+                text: editTagInfo.cur
+              }], PageStore.currentPageId);
+
+            case 2:
+              result = _context2.sent;
+              findNSelect(result.text); // 생성된 태그에 focus
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function updateNoteTagList() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
 
   var handleBlurModify = function handleBlurModify() {
-    if (!editTagInfo.id || !editTagInfo.pre) {
-      setEditTagInfo({});
-      return;
-    }
-
     var isSame = NoteUtil.isSameStr(editTagInfo.pre, editTagInfo.cur);
     var isSameIgnoringCase = NoteUtil.isSameStr(editTagInfo.pre.toUpperCase(), editTagInfo.cur.toUpperCase()); // 공백만 있거나 아무것도 입력하지 않은 경우
     // Modal없이 modify 취소
 
-    if (!checkWhitespace(editTagInfo.cur) || !editTagInfo.id || isSame) ; // 대소문자만 바꾼 경우
+    if (!checkWhitespace(editTagInfo.cur) || !editTagInfo.id || !editTagInfo.pre || isSame) ; // 대소문자만 바꾼 경우
+    else if (isSameIgnoringCase || TagStore.isValidTag(editTagInfo.cur)) updateNoteTagList();else NoteStore.setModalInfo('duplicateTagName');
 
-
-    if (isSameIgnoringCase || TagStore.isValidTag(editTagInfo.cur)) updateNoteTagList();else NoteStore.setModalInfo('duplicateTagName');
     setEditTagInfo({});
   };
 
@@ -11484,11 +11555,32 @@ var TagListContainer = function TagListContainer() {
         break;
     }
   };
+  /**
+   *   Tag Chip 관련 메서드
+  */
 
-  var handleTagChipBlur = function handleTagChipBlur(id) {
+
+  var handleCloseBtn = function handleCloseBtn(targetId) {
+    return function () {
+      TagStore.deleteNoteTag([targetId], PageStore.currentPageId);
+      unselectTag();
+    };
+  };
+
+  var handleDbClick = function handleDbClick(id, pre) {
+    return function () {
+      setEditTagInfo({
+        id: id,
+        pre: pre,
+        cur: pre
+      });
+    };
+  };
+
+  var handleBlurTagChip = function handleBlurTagChip(id) {
     return function (e) {
       // 다른 태그가 선택돼서 blur되는 경우
-      if (tagListCover.current.contains(e.relatedTarget)) return;
+      if (e.relatedTarget && tagListCover.current.contains(e.relatedTarget)) return;
       if (selectedId === id) setSelectedId(null);
     };
   };
@@ -11520,7 +11612,7 @@ var TagListContainer = function TagListContainer() {
     };
   };
 
-  var handleKeyDown = function handleKeyDown(e) {
+  var handleTagChipKeyDown = function handleTagChipKeyDown(e) {
     var _selectedTag$current3, _selectedTag$current4;
 
     switch (e.keyCode) {
@@ -11541,6 +11633,10 @@ var TagListContainer = function TagListContainer() {
         break;
     }
   };
+  /**
+   *   Tooltip 관련 메서드
+  */
+
 
   var handleTooltip = function handleTooltip(e) {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
@@ -11552,9 +11648,13 @@ var TagListContainer = function TagListContainer() {
     }, /*#__PURE__*/React.createElement(TagNewBtn, null, /*#__PURE__*/React.createElement(TagNewBtnIcon, {
       src: img$6,
       onClick: onClickNewTagBtn
-    }))), /*#__PURE__*/React.createElement(AddTagForm, {
-      show: TagStore.isNewTag,
-      toggleTagInput: toggleTagInput
+    }))), isNewTag && /*#__PURE__*/React.createElement(TagInput, {
+      maxLength: "50",
+      value: value,
+      onChange: handleChangeAddInput,
+      onBlur: handleBlurAddInput,
+      onKeyDown: handleAddTagKeyDown,
+      autoFocus: true
     }), /*#__PURE__*/React.createElement(TagList, {
       ref: tagListCover
     }, TagStore.notetagList.map(function (item, index) {
@@ -11577,8 +11677,8 @@ var TagListContainer = function TagListContainer() {
           tabIndex: "0",
           onClose: handleCloseBtn(item.tag_id),
           onClick: handleClickTag(item.tag_id),
-          onKeyDown: handleKeyDown,
-          onBlur: handleTagChipBlur(item.tag_id)
+          onKeyDown: handleTagChipKeyDown,
+          onBlur: handleBlurTagChip(item.tag_id)
         }, /*#__PURE__*/React.createElement(Tooltip, {
           title: isEllipsisActive ? NoteUtil.decodeStr(item.text) : null
         }, /*#__PURE__*/React.createElement(TagText, {
@@ -12235,15 +12335,19 @@ var EditorContainer = function EditorContainer() {
   useLayoutEffect(function () {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
-      var _EditorStore$tinymce6, _EditorStore$editor;
+      setTimeout(function () {
+        var _EditorStore$tinymce6, _EditorStore$editor;
 
-      (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.setMode('readonly');
-      (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
+        (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.setMode('readonly');
+        (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
+      }, 100);
     } else {
-      var _EditorStore$tinymce7, _EditorStore$editor2;
+      setTimeout(function () {
+        var _EditorStore$tinymce7, _EditorStore$editor2;
 
-      (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setMode('design');
-      (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
+        (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setMode('design');
+        (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
+      }, 100);
     }
   }, [PageStore.isReadMode()]);
 
