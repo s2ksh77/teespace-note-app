@@ -4151,7 +4151,7 @@ var PageStore = mobx.observable((_observable$1 = {
               }
 
               _context10.next = 9;
-              return teespaceCore.UserStore.fetchProfile(dto.USER_ID);
+              return teespaceCore.UserStore.getProfile(dto.USER_ID);
 
             case 9:
               userProfile = _context10.sent;

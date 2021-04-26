@@ -4118,7 +4118,7 @@ var PageStore = observable((_observable$1 = {
               }
 
               _context10.next = 9;
-              return UserStore.fetchProfile(dto.USER_ID);
+              return UserStore.getProfile(dto.USER_ID);
 
             case 9:
               userProfile = _context10.sent;
