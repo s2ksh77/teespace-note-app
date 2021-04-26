@@ -12217,15 +12217,19 @@ var EditorContainer = function EditorContainer() {
   React.useLayoutEffect(function () {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
-      var _EditorStore$tinymce6, _EditorStore$editor;
+      setTimeout(function () {
+        var _EditorStore$tinymce6, _EditorStore$editor;
 
-      (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.setMode('readonly');
-      (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
+        (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.setMode('readonly');
+        (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
+      }, 100);
     } else {
-      var _EditorStore$tinymce7, _EditorStore$editor2;
+      setTimeout(function () {
+        var _EditorStore$tinymce7, _EditorStore$editor2;
 
-      (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setMode('design');
-      (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
+        (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setMode('design');
+        (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
+      }, 100);
     }
   }, [PageStore.isReadMode()]);
 
