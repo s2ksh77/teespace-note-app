@@ -4,10 +4,10 @@ import autobind from 'autobind-decorator';
 @autobind
 class TagModel {
   @observable
-  note_id: string;
+  noteId: string;
 
   @observable
-  tag_id: string;
+  tagId: string;
 
   @observable
   text: string;
@@ -23,12 +23,12 @@ class TagModel {
 
   @action
   setNoteId(data: string) {
-    this.note_id = data;
+    this.noteId = data;
   }
 
   @action
   setTagId(data: string) {
-    this.tag_id = data;
+    this.tagId = data;
   }
 
   @action

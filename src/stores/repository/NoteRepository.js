@@ -7,7 +7,7 @@ import {
   convertPageModelToObj,
 } from '../model/PageModel';
 import NoteStore from '../store/NoteStore';
-import { convertServerTagList } from './convert';
+import { convertTagObj, convertServerTagList } from './convert';
 // @flow
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */

@@ -35,6 +35,7 @@ const LayoutStateButton = () => {
     await PageStore.fetchNoteInfoList(
       ChapterStore.chapterList[0]?.pageList[0]?.id,
     );
+    PageStore.fetchNoteTagList(ChapterStore.chapterList[0]?.pageList[0]?.id);
     PageStore.setIsLoading(false);
   };
 

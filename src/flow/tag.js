@@ -1,7 +1,7 @@
 // @flow
 declare type TagInfo = {
-  note_id: string,
-  tag_id: string,
+  noteId: string,
+  tagId: string,
   text: string,
 };
 

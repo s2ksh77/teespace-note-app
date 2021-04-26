@@ -2,6 +2,18 @@ const test = {};
 export default test;
 // @flow
 /**
+ * 페이지 태그 관련
+ */
+export const convertTagObj: Array<TagInfo> = tagList => {
+  // eslint-disable-next-line camelcase
+  return tagList.map(({ note_id, tag_id, text }) => ({
+    noteId: note_id,
+    tagId:tag_id,
+    text,
+  }));
+};
+
+/**
  * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
  * @param {string} tagKey
  * @return category of tag

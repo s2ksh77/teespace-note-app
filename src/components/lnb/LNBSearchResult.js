@@ -30,11 +30,13 @@ const LNBSearchResult = () => {
 
     if (pageInfo) {
       await PageStore.fetchNoteInfoList(pageInfo.id);
+      PageStore.fetchNoteTagList(pageInfo.id);
     }
   };
 
   const handlePageClick = pageId => async () => {
     await PageStore.fetchNoteInfoList(pageId);
+    PageStore.fetchNoteTagList(pageId);
 
     if (!PageStore.pageModel.isReadMode) return;
 
@@ -48,12 +50,12 @@ const LNBSearchResult = () => {
 
   return useObserver(() => (
     <>
-      {NoteStore.searchResult?.['chapterList'] === null &&
-      NoteStore.searchResult?.['pageList'] === null ? (
+      {NoteStore.searchResult?.chapterList === null &&
+      NoteStore.searchResult?.pageList === null ? (
         <NoContent />
       ) : (
         <>
-          {NoteStore.searchResult?.['chapterList']?.map(chapter => {
+          {NoteStore.searchResult?.chapterList?.map(chapter => {
             return (
               <ChapterSearchResult
                 key={chapter.id}
@@ -77,12 +79,12 @@ const LNBSearchResult = () => {
               </ChapterSearchResult>
             );
           })}
-          {NoteStore.searchResult?.['pageList']?.map(page => {
+          {NoteStore.searchResult?.pageList?.map(page => {
             return (
               <PageSearchResult
                 key={page.note_id}
                 onClick={handlePageClick(page.note_id)}
-                isSelected={selected === page.note_id ? true : false}
+                isSelected={selected === page.note_id}
               >
                 <PageSearchResultChapterTitle>
                   {page.text}
