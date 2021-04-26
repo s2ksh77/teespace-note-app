@@ -31,13 +31,14 @@ const LNBSearchResult = () => {
     if (pageInfo) {
       await PageStore.fetchNoteInfoList(pageInfo.id);
       PageStore.fetchNoteTagList(pageInfo.id);
+      NoteStore.setIsPageContent(true);
     }
   };
 
   const handlePageClick = pageId => async () => {
     await PageStore.fetchNoteInfoList(pageId);
     PageStore.fetchNoteTagList(pageId);
-
+    NoteStore.setIsPageContent(true);
     if (!PageStore.pageModel.isReadMode) return;
 
     if (NoteStore.layoutState === 'collapse') {

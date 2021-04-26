@@ -78,11 +78,6 @@ export const TagKeyContainer = styled.div`
 
 export const TagKey = styled.div``;
 
-export const TagKeyList = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
 export const TagItemNum = styled.div`
   font-size: 0.688rem;
   margin-left: auto;
@@ -159,7 +154,7 @@ export const TagInput = styled.input`
   outline: none;
 `;
 
-export const TagChipGroup = styled.div`
+export const TagKeyList = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;

@@ -8,40 +8,48 @@ export const convertTagObj: Array<TagInfo> = tagList => {
   // eslint-disable-next-line camelcase
   return tagList.map(({ note_id, tag_id, text }) => ({
     noteId: note_id,
-    tagId:tag_id,
+    tagId: tag_id,
     text,
   }));
 };
 // createNoteTag
-export const convertToCreateDto: Array<CreateTagDto> = ({tagList, noteId, wsId}) => {
-  return tagList.map((text) => ({
-    WS_ID:wsId,
-    note_id:noteId,
+export const convertToCreateDto: Array<CreateTagDto> = ({
+  tagList,
+  noteId,
+  wsId,
+}) => {
+  return tagList.map(text => ({
+    WS_ID: wsId,
+    note_id: noteId,
     text,
-  }))
-}
+  }));
+};
 
-export const convertToUpdateDto:Array<UpdateTagDto> = (tagList, wsId) => {
-  return tagList.map(({tagId,text}) => ({
-    WS_ID:wsId,
-    tag_id:tagId,
+export const convertToUpdateDto: Array<UpdateTagDto> = (tagList, wsId) => {
+  return tagList.map(({ tagId, text }) => ({
+    WS_ID: wsId,
+    tag_id: tagId,
     text,
-  }))
-}
+  }));
+};
 
-export const convertToDeleteDto:Array<DeleteTagDto> = ({tagList, noteId, wsId}) => {
+export const convertToDeleteDto: Array<DeleteTagDto> = ({
+  tagList,
+  noteId,
+  wsId,
+}) => {
   return tagList.map(tagId => ({
     WS_ID: wsId,
     note_id: noteId,
     tag_id: tagId,
-  }))
-}
+  }));
+};
 /**
  * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
  * @param {string} tagKey
  * @return category of tag
  */
-const getKeyCategory = tagKey => {
+const getKeyCategory: CategoryName = tagKey => {
   const charCode = tagKey.charCodeAt(0);
   if (charCode >= 12593 && charCode < 55203) return 'KOR';
   if (charCode > 64 && charCode < 123) return 'ENG';
@@ -55,7 +63,7 @@ const compareFunc = (a, b) => {
 };
 const numCompare = (a, b) => a.text - b.text;
 
-const createRoomTagInfo = (isNum, data) => {
+const createRoomTagInfo: Array<RoomTagInfo> = (isNum, data) => {
   const sorted = isNum ? data.sort(numCompare) : data.sort(compareFunc);
   const reduced = sorted.reduce((obj, tag) => {
     if (obj[tag.text]) {
@@ -69,10 +77,11 @@ const createRoomTagInfo = (isNum, data) => {
     }
     return obj;
   }, {});
-  return Object.entries(reduced).map(item => ({
-    tagId: item[1].id,
-    text: item[0],
-    noteList: item[1].noteList,
+
+  return Object.entries(reduced).map(([text, { id, noteList }]) => ({
+    id,
+    text,
+    noteList,
   }));
 };
 /**
@@ -94,7 +103,7 @@ const getSortedServerTagList = dto => {
     return 0;
   });
 };
-const getTagCategory = keyList => {
+const getTagCategory: TagCategory = keyList => {
   return keyList.reduce(
     (result, keyInfo) => {
       result[getKeyCategory(keyInfo.key)].push(keyInfo);

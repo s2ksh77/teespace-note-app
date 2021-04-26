@@ -1,4 +1,4 @@
-import { action, computed, flow, observable } from 'mobx';
+import { action, observable } from 'mobx';
 import NoteRepository from '../repository/NoteRepository';
 import {
   convertToCreateDto,
@@ -19,6 +19,14 @@ const TagStore = observable(
       )
         return true;
       return false;
+    },
+    isSearchLoading: false,
+    isSearching: false,
+    setIsSearchLoading(isSearchLoading) {
+      this.isSearchLoading = isSearchLoading;
+    },
+    setIsSearching(isSearching) {
+      this.isSearching = isSearching;
     },
     /**
      * fetches all Tags with category from the server
@@ -68,6 +76,8 @@ const TagStore = observable(
     },
   },
   {
+    setIsSearchLoading: action,
+    setIsSearching: action,
     createNoteTag: action,
     updateNoteTag: action,
     deleteNoteTag: action,

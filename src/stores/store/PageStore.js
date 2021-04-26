@@ -29,7 +29,6 @@ class PageStore {
   async fetchNoteTagList(pageId: string) {
     const res = await NoteRepository.fetchNoteTagList(pageId);
     this.tagList = res.map(tag => new TagModel(tag));
-    // console.log('fetchNoteTagList',this.tagList);
   }
 
   @action

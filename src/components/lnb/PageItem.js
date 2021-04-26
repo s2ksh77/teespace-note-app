@@ -11,6 +11,7 @@ const PageItem = ({ page }) => {
   const handlePageClick = async () => {
     await PageStore.fetchNoteInfoList(page.id);
     PageStore.fetchNoteTagList(page.id);
+    NoteStore.setIsPageContent(true);
     if (NoteStore.isCollapsed) NoteStore.setTargetLayout('content');
   };
 

@@ -28,6 +28,8 @@ declare type DeleteTagDto = {
   note_id: string,
 };
 
+declare type CategoryName = 'KOR' | 'ENG' | 'NUM' | 'ETC';
+
 declare type TagCategory = {
   KOR: Array<TagKeyInfo>,
   ENG: Array<TagKeyInfo>,
@@ -40,7 +42,7 @@ declare type TagKeyInfo = {
 };
 
 declare type RoomTagInfo = {
-  tagId: string,
+  id: string,
   text: string,
   noteList: Array<string>,
 };

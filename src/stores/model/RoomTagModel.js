@@ -1,4 +1,4 @@
-import { observable, action, set, computed } from 'mobx';
+import { observable, action, set } from 'mobx';
 import autobind from 'autobind-decorator';
 import PageModel from './PageModel';
 
@@ -6,7 +6,7 @@ import PageModel from './PageModel';
 @autobind
 class RoomTagModel {
   @observable
-  tagId: String;
+  id: String;
 
   @observable
   text: String;
@@ -20,42 +20,19 @@ class RoomTagModel {
   }
 
   @action
-  setNoteList(data: Array<PageModel>) {
-    this.noteList = data;
-  }
-
-  @action
   setTagId(data: string) {
-    this.tagId = data;
+    this.id = data;
   }
 
   @action
   setText(data: string) {
     this.text = data;
   }
+
+  @action
+  setNoteList(data: Array<PageModel>) {
+    this.noteList = data;
+  }
 }
 
 export default RoomTagModel;
-
-/**
- * @param ServerObj to TagInfo mapping
- * @returns TagModel
- */
-export const convertTagObjToModel = (obj): ?$Shape<RoomTagInfo> => {
-  if (obj.noteList) {
-    return {
-      noteList: obj.note_id,
-    };
-  }
-  if (obj.tag_id) {
-    return {
-      id: obj.tag_id,
-    };
-  }
-  if (obj.text) {
-    return {
-      name: obj.text,
-    };
-  }
-  return '';
-};
