@@ -27,11 +27,12 @@ export const ContentFoldButtonIcon = styled.img`
 
 export const ContentContainer = styled.div`
   display: ${props => (props.show ? 'flex' : 'none')};
-  flex-direction: row;
   flex: 2 2 42rem;
+  flex-direction: column;
   overflow-x: hidden;
   width: 100%;
   height: 100%;
+  align-items: center;
   border-left: ${props => (props.isBorderLeft ? '1px solid  #ddd9d4' : '0px')};
 `;
 

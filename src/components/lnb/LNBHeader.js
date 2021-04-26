@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 import {
   HeaderContainer as LNBHeaderContainer,
-  BackButton,
+  BackButtonIcon,
   NewChapterButton,
-  LNBSearchBar,
-  LNBSearchInput,
+  SearchBar,
+  SearchBarIcon,
+  SearchInput,
   SearchCancelButton,
 } from '../../styles/HeaderStyle';
 import { TagItem, TagText, TagCancelButton } from '../../styles/TagStyle';
@@ -15,7 +16,6 @@ import LayoutStateButton from '../common/LayoutStateButton';
 import backBtn from '../../assets/arrow_back_1.svg';
 import searchImg from '../../assets/search.svg';
 import cancelImg from '../../assets/ts_cancel@3x.png';
-import { SearchImgInput } from '../../styles/CommonStyle';
 import LNBSearchResult from './LNBSearchResult';
 
 const LNBHeader = () => {
@@ -63,7 +63,7 @@ const LNBHeader = () => {
 
   return useObserver(() => (
     <LNBHeaderContainer>
-      <BackButton
+      <BackButtonIcon
         src={backBtn}
         onClick={handleStateChange}
         style={{ display: 'none' }}
@@ -71,15 +71,18 @@ const LNBHeader = () => {
       <NewChapterButton onClick={handleNewBtnClick}>
         {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
       </NewChapterButton>
-      <LNBSearchBar onSubmit={handleKeyDown}>
-        <SearchImgInput
+      <SearchBar
+        style={
+          NoteStore.targetLayout === 'lnb'
+            ? { marginRight: '0.63rem' }
+            : { marginRight: '0' }
+        }
+        onSubmit={handleKeyDown}
+      >
+        <SearchBarIcon
           type="image"
-          border="0"
-          alt=" "
           src={searchImg}
-          isSearch={
-            NoteStore.searchStr !== '' || NoteStore.isSearch ? true : false
-          }
+          isSearch={!!(NoteStore.searchStr !== '' || NoteStore.isSearch)}
         />
         {ChapterStore.isTagSearching ? (
           <TagItem>
@@ -87,7 +90,7 @@ const LNBHeader = () => {
             <TagCancelButton />
           </TagItem>
         ) : (
-          <LNBSearchInput
+          <SearchInput
             ref={inputRef}
             value={NoteStore.searchStr}
             onChange={handleChange}
@@ -97,12 +100,10 @@ const LNBHeader = () => {
         )}
         <SearchCancelButton
           src={cancelImg}
-          visible={
-            NoteStore.searchStr !== '' || NoteStore.isSearch ? true : false
-          }
+          visible={!!(NoteStore.searchStr !== '' || NoteStore.isSearch)}
           onClick={handleCancel}
         />
-      </LNBSearchBar>
+      </SearchBar>
       {NoteStore.layoutState === 'collapse' && <LayoutStateButton />}
     </LNBHeaderContainer>
   ));

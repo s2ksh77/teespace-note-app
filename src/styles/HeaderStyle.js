@@ -10,7 +10,7 @@ export const HeaderContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const BackButton = styled.img`
+export const BackButtonIcon = styled.img`
   width: 1rem;
   height: 1rem;
   cursor: pointer;
@@ -41,13 +41,14 @@ export const NewChapterButton = styled.button`
   }
 `;
 
-export const LNBSearchBar = styled.form`
-  position: relative;
-  display: inline-flex;
+export const SearchBar = styled.form`
+  display: flex;
   align-items: center;
   padding: 0 0.63rem;
-  width: 14.81rem;
+  width: ${({ isTagSearch }) => (isTagSearch ? '12.5rem' : '100%')};
   height: 1.88rem;
+  margin-left: auto;
+  margin-right: ${({ isTagSearch }) => (isTagSearch ? '0.56rem' : '0')};
   border-radius: 6px;
   border: 1px solid transparent;
   background-color: #f7f4ef;
@@ -55,23 +56,30 @@ export const LNBSearchBar = styled.form`
     background: #ffffff;
     border: 1px solid #7b7671;
   }
-  box-sizing: border-box;
-  flex: 1;
-  min-width: 10.6rem;
   background-color: ${props => (props.isSearch ? '#ffffff' : '#f7f4ef')};
   border: ${props =>
     props.isSearch ? '1px solid #7b7671' : '1px solid transparent'};
 `;
 
-export const LNBSearchInput = styled.input`
-  flex: auto;
-  width: 13.3rem;
-  align-self: center;
+export const SearchBarIcon = styled.input`
+  width: 0.88rem;
+  height: 0.88rem;
+  cursor: pointer;
+  margin-right: 0.38rem;
+  filter: ${({ isSearch }) =>
+    isSearch
+      ? 'invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);'
+      : 'invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);'}
+  &:hover {
+    filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);
+  }
+`;
+
+export const SearchInput = styled.input`
+  width: 100%;
   font-size: 0.81rem !important;
   background-color: inherit;
-  border: 0rem;
   overflow: hidden;
-  outline: none;
   &:focus {
     background: #ffffff;
     outline: none;
@@ -79,7 +87,6 @@ export const LNBSearchInput = styled.input`
   &::placeholder {
     color: #c9c4be;
   }
-  background-color: ${props => (props.isSearch ? '#ffffff' : 'inherit')};
 `;
 
 export const SearchCancelButton = styled.img`

@@ -6,21 +6,18 @@ import Mark from 'mark.js';
 import useNoteStore from '../../stores/useNoteStore';
 
 import {
-  HeaderContainer,
   EditButton,
   PageContentTitle,
   AutoSaveMessage,
   EditingIcon,
   ModifiedUser,
   ModifiedTime,
-  BackButton as BackButtonIcon,
 } from '../../styles/HeaderStyle';
 import {
   ButtonWrapper as SearchButtonWrapper,
   ButtonIcon as SearchButtonIcon,
-  PreBtnWrapper as BackButton,
 } from '../../styles/CommonStyle';
-import LayoutStateButton from '../common/LayoutStateButton';
+import ContentHeader from '../common/ContentHeader';
 import editingIcon from '../../assets/wapl_working.svg';
 import searchIcon from '../../assets/search.svg';
 import backIcon from '../../assets/arrow_back_1.svg';
@@ -91,15 +88,7 @@ const PageHeader = () => {
   };
 
   return useObserver(() => (
-    <HeaderContainer>
-      {NoteStore.targetLayout === 'content' && (
-        <BackButton
-          show={NoteStore.targetLayout === 'content'}
-          onClick={handleBackBtnClick}
-        >
-          <BackButtonIcon src={backIcon} />
-        </BackButton>
-      )}
+    <ContentHeader handleBackBtnClick={handleBackBtnClick}>
       {authStore.hasPermission('notePage', 'U') && (
         <EditButton onClick={handleEditBtnClick}>
           {PageStore.pageModel.isReadMode
@@ -123,12 +112,10 @@ const PageHeader = () => {
       ) : (
         <EditingIcon src={editingIcon} />
       )}
-      <SearchButtonWrapper style={{ marginRight: '0.37rem' }}>
+      <SearchButtonWrapper style={{ marginRight: '0.75rem' }}>
         <SearchButtonIcon src={searchIcon} />
       </SearchButtonWrapper>
-      {(NoteStore.targetLayout === 'content' ||
-        NoteStore.targetLayout === 'both') && <LayoutStateButton />}
-    </HeaderContainer>
+    </ContentHeader>
   ));
 };
 
