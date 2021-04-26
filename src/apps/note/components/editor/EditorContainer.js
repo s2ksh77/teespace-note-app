@@ -255,11 +255,15 @@ const EditorContainer = () => {
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
-      EditorStore.tinymce?.setMode('readonly');
-      EditorStore.editor?.addEventListener('click', handleUnselect);
+      setTimeout(()=>{
+        EditorStore.tinymce?.setMode('readonly');
+        EditorStore.editor?.addEventListener('click', handleUnselect);
+      }, 100)
     } else {
-      EditorStore.tinymce?.setMode('design');
-      EditorStore.editor?.removeEventListener('click', handleUnselect);
+      setTimeout(()=>{
+        EditorStore.tinymce?.setMode('design');
+        EditorStore.editor?.removeEventListener('click', handleUnselect);
+      }, 100)
     }
   }, [PageStore.isReadMode()]);
 
