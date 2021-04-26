@@ -12,7 +12,30 @@ export const convertTagObj: Array<TagInfo> = tagList => {
     text,
   }));
 };
+// createNoteTag
+export const convertToCreateDto: Array<CreateTagDto> = ({tagList, noteId, wsId}) => {
+  return tagList.map((text) => ({
+    WS_ID:wsId,
+    note_id:noteId,
+    text,
+  }))
+}
 
+export const convertToUpdateDto:Array<UpdateTagDto> = (tagList, wsId) => {
+  return tagList.map(({tagId,text}) => ({
+    WS_ID:wsId,
+    tag_id:tagId,
+    text,
+  }))
+}
+
+export const convertToDeleteDto:Array<DeleteTagDto> = ({tagList, noteId, wsId}) => {
+  return tagList.map(tagId => ({
+    WS_ID: wsId,
+    note_id: noteId,
+    tag_id: tagId,
+  }))
+}
 /**
  * tagKey의 category(KOR, ENG, NUM, ETC)를 반환한다.
  * @param {string} tagKey

@@ -1,6 +1,6 @@
 import { action, computed, flow, observable } from 'mobx';
 import NoteRepository from '../repository/NoteRepository';
-
+import {convertToCreateDto, convertToUpdateDto, convertToDeleteDto} from '../../utils/convert'
 // @flow
 const TagStore = observable(
   {
@@ -17,16 +17,13 @@ const TagStore = observable(
       this.tagCategory = await NoteRepository.getAllTagObj();
       this.isLoading = false;
     },
-    // 임시~~~~~~~~~~~ 일단 넣어놓음
-    async createNoteTag(createTagList, noteId) {
-      const createTagArr = createTagList.map(tagText => ({
-        text: tagText,
-        note_id: noteId,
-        WS_ID: NoteRepository.WS_ID,
-      }));
+     
+    async createNoteTag(tagList:Array<string>, noteId:string) {
       const {
         data: { dto },
-      } = await NoteRepository.createTag(createTagArr);
+      } = await NoteRepository.createTag(
+        convertToCreateDto({tagList,noteId,wsId:NoteRepository.WS_ID})
+      );
       await this.fetchNoteTagList(noteId);
       // 항상 태그 한 개만 생성할 때 기준 코드
       return { ...dto, text: createTagArr[0].text };
@@ -35,15 +32,12 @@ const TagStore = observable(
     /**
      * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
-    async updateNoteTag(updateTagList, noteId) {
-      const updateTagArr = updateTagList.map(tag => ({
-        tag_id: tag.tag_id,
-        text: tag.text,
-        WS_ID: NoteRepository.WS_ID,
-      }));
+    async updateNoteTag(tagList:Array<UpdateTagInput>, noteId:string) {
       const {
         data: { dto },
-      } = await NoteRepository.updateTag(updateTagArr);
+      } = await NoteRepository.updateTag(
+        convertToUpdateDto(tagList, NoteRepository.WS_ID)
+      );
       await this.fetchNoteTagList(noteId);
       return { ...dto, text: updateTagList[0].text };
     },
@@ -51,15 +45,12 @@ const TagStore = observable(
     /**
      * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
-    async deleteNoteTag(deleteTagList, noteId) {
-      const deleteTagArray = deleteTagList.map(tag => ({
-        tag_id: tag,
-        note_id: noteId,
-        WS_ID: NoteRepository.WS_ID,
-      }));
+    async deleteNoteTag(tagList:Array<string>, noteId:string) {
       const {
         data: { dto },
-      } = await NoteRepository.deleteTag(deleteTagArray);
+      } = await NoteRepository.deleteTag(
+        convertToDeleteDto({tagList, noteId, wsID})
+      );
       this.fetchNoteTagList(noteId);
       return dto;
     },
