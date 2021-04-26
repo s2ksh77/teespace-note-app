@@ -58,7 +58,9 @@ const PageTagList = () => {
   const selectTag = node => {
     setSelectedId(node.id);
     selectedTag.current = node;
+    // eslint-disable-next-line no-unused-expressions
     selectedTag.current?.focus();
+    // eslint-disable-next-line no-unused-expressions
     selectedTag.current?.scrollIntoView(false);
   };
 
@@ -107,6 +109,7 @@ const PageTagList = () => {
         PageStore.pageModel.id,
       );
       findNSelect(result.text); // 생성된 태그에 focus
+      // eslint-disable-next-line no-alert
     } else alert('duplicateTagName');
     // else NoteStore.setModalInfo('duplicateTagName');
     // input창 초기화
@@ -172,7 +175,8 @@ const PageTagList = () => {
     else if (isSameIgnoringCase || isValidTag(editTagInfo.cur))
       updateNoteTagList();
     // else NoteStore.setModalInfo('duplicateTagName');
-    else alert('duplicateTagName')
+    // eslint-disable-next-line no-alert
+    else alert('duplicateTagName');
     setEditTagInfo({});
   };
 

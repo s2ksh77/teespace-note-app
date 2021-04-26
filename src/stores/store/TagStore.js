@@ -1,12 +1,25 @@
 import { action, computed, flow, observable } from 'mobx';
 import NoteRepository from '../repository/NoteRepository';
-import {convertToCreateDto, convertToUpdateDto, convertToDeleteDto} from '../../utils/convert'
+import {
+  convertToCreateDto,
+  convertToUpdateDto,
+  convertToDeleteDto,
+} from '../../utils/convert';
 // @flow
 const TagStore = observable(
   {
     isLoading: true,
     tagCategory: { KOR: {}, ENG: {}, NUM: {}, ETC: {} },
-    isNoTag: true,
+    get isNoTag(): boolean {
+      if (
+        Object.keys(this.tagCategory.KOR).length === 0 &&
+        Object.keys(this.tagCategory.ENG).length === 0 &&
+        Object.keys(this.tagCategory.NUM).length === 0 &&
+        Object.keys(this.tagCategory.ETC).length === 0
+      )
+        return true;
+      return false;
+    },
     /**
      * fetches all Tags with category from the server
      * RoomTagModel : class { tagId, text, noteList }
@@ -17,39 +30,38 @@ const TagStore = observable(
       this.tagCategory = await NoteRepository.getAllTagObj();
       this.isLoading = false;
     },
-     
-    async createNoteTag(tagList:Array<string>, noteId:string) {
+    async createNoteTag(tagList: Array<string>, noteId: string) {
       const {
         data: { dto },
       } = await NoteRepository.createTag(
-        convertToCreateDto({tagList,noteId,wsId:NoteRepository.WS_ID})
+        convertToCreateDto({ tagList, noteId, wsId: NoteRepository.WS_ID }),
       );
       await this.fetchNoteTagList(noteId);
       // 항상 태그 한 개만 생성할 때 기준 코드
-      return { ...dto, text: createTagArr[0].text };
+      return { ...dto, text: tagList[0] };
     },
 
     /**
      * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
-    async updateNoteTag(tagList:Array<UpdateTagInput>, noteId:string) {
+    async updateNoteTag(tagList: Array<UpdateTagInput>, noteId: string) {
       const {
         data: { dto },
       } = await NoteRepository.updateTag(
-        convertToUpdateDto(tagList, NoteRepository.WS_ID)
+        convertToUpdateDto(tagList, NoteRepository.WS_ID),
       );
       await this.fetchNoteTagList(noteId);
-      return { ...dto, text: updateTagList[0].text };
+      return { ...dto, text: tagList[0].text };
     },
 
     /**
      * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
-    async deleteNoteTag(tagList:Array<string>, noteId:string) {
+    async deleteNoteTag(tagList: Array<string>, noteId: string) {
       const {
         data: { dto },
       } = await NoteRepository.deleteTag(
-        convertToDeleteDto({tagList, noteId, wsID})
+        convertToDeleteDto({ tagList, noteId, wsId: NoteRepository.WS_ID }),
       );
       this.fetchNoteTagList(noteId);
       return dto;

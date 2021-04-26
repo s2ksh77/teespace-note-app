@@ -9,24 +9,24 @@ declare type CreateTagDto = {
   WS_ID: string,
   note_id: string,
   text: string,
-}
+};
 
 declare type UpdateTagInput = {
   tagId: string,
   text: string,
-}
+};
 
 declare type UpdateTagDto = {
   WS_ID: string,
   tag_id: string,
   text: string,
-}
+};
 
 declare type DeleteTagDto = {
   WS_ID: string,
   tag_id: string,
   note_id: string,
-}
+};
 
 declare type TagCategory = {
   KOR: Array<TagKeyInfo>,

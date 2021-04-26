@@ -10,7 +10,7 @@ const TagBody = () => {
 
   return useObserver(() => (
     <>
-      <div>{console.log(TagStore.tagCategory)}</div>
+      <div>Tag Body{console.log(TagStore.tagCategory)}</div>
     </>
   ));
 };
