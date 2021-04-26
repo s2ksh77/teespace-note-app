@@ -511,7 +511,7 @@ const PageStore = observable({
     }
 
     if (dto.USER_ID) {
-      const userProfile = await UserStore.fetchProfile(dto.USER_ID);
+      const userProfile = await UserStore.getProfile(dto.USER_ID);
       if (userProfile) this.displayName = userProfile.displayName;
     }
     this.setCurrentPageId(dto.note_id);
