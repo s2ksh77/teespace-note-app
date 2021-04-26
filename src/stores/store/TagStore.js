@@ -5,6 +5,9 @@ import {
   convertToUpdateDto,
   convertToDeleteDto,
 } from '../../utils/convert';
+import NoteStore from './NoteStore';
+import PageStore from './PageStore';
+
 // @flow
 const TagStore = observable(
   {
@@ -39,12 +42,10 @@ const TagStore = observable(
       this.isLoading = false;
     },
     async createNoteTag(tagList: Array<string>, noteId: string) {
-      const {
-        data: { dto },
-      } = await NoteRepository.createTag(
-        convertToCreateDto({ tagList, noteId, wsId: NoteRepository.WS_ID }),
+      const dto = await NoteRepository.createTag(
+        convertToCreateDto({ tagList, noteId, wsId: NoteStore.roomId }),
       );
-      await this.fetchNoteTagList(noteId);
+      await PageStore.fetchNoteTagList(noteId);
       // 항상 태그 한 개만 생성할 때 기준 코드
       return { ...dto, text: tagList[0] };
     },
@@ -53,12 +54,10 @@ const TagStore = observable(
      * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
     async updateNoteTag(tagList: Array<UpdateTagInput>, noteId: string) {
-      const {
-        data: { dto },
-      } = await NoteRepository.updateTag(
-        convertToUpdateDto(tagList, NoteRepository.WS_ID),
+      const dto = await NoteRepository.updateTag(
+        convertToUpdateDto(tagList, NoteStore.roomId),
       );
-      await this.fetchNoteTagList(noteId);
+      await PageStore.fetchNoteTagList(noteId);
       return { ...dto, text: tagList[0].text };
     },
 
@@ -66,12 +65,11 @@ const TagStore = observable(
      * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
      */
     async deleteNoteTag(tagList: Array<string>, noteId: string) {
-      const {
-        data: { dto },
-      } = await NoteRepository.deleteTag(
-        convertToDeleteDto({ tagList, noteId, wsId: NoteRepository.WS_ID }),
+      const dto = await NoteRepository.deleteTag(
+        convertToDeleteDto({ tagList, noteId, wsId: NoteStore.roomId }),
       );
-      this.fetchNoteTagList(noteId);
+      // delete는 작업 완료 후 focus할 필요없어서 await 안함
+      PageStore.fetchNoteTagList(noteId);
       return dto;
     },
   },

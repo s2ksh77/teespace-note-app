@@ -4,10 +4,6 @@ const GlobalStyle = createGlobalStyle`
   textarea#noteEditor {
     flex-grow:1;
   }
-  .noteFocusedTag {
-    background-color: #DDD7CD;
-    border: 1px solid #7B7671;
-  }
   .readModeIcon{
      margin-left: 1.19rem;
   }

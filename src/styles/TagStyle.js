@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Collapse, Tag } from 'antd';
 
 // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
@@ -24,9 +24,16 @@ export const TagItem = styled(Tag)`
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: #f7f4ef;
-  border: 1px solid transparent;
   border-radius: 25px;
+  ${({ isSelected }) =>
+    isSelected
+      ? css`
+          background-color: #ddd7cd;
+          border: 1px solid #7b7671;
+        `
+      : css`
+          background-color: #f7f4ef;
+        `}
   padding: 0 0.63rem;
   transition-duration: 0s;
   &:hover {

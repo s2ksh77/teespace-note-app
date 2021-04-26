@@ -1,5 +1,5 @@
 /**
- * [ TODO ]: 생성, 수정, 삭제 test, 왜 안되는지 확인하고 수정
+ * [ TODO ]: update 왜 안되는지 원인 분석 및 수정, update 후 select
  */
 import React, { useRef, useState } from 'react';
 import { useObserver } from 'mobx-react';
@@ -57,6 +57,7 @@ const PageTagList = () => {
 
   const selectTag = node => {
     setSelectedId(node.id);
+    preventBlur.current = true;
     selectedTag.current = node;
     // eslint-disable-next-line no-unused-expressions
     selectedTag.current?.focus();
@@ -71,9 +72,8 @@ const PageTagList = () => {
     if (added) selectTag(added);
   };
 
-  const isValidTag = text => {
+  const isValidTag = text =>
     checkDuplicateIgnoreCase(PageStore.tagList, 'text', text);
-  };
 
   /**
    *   AddTagForm 관련
@@ -121,7 +121,6 @@ const PageTagList = () => {
     switch (e.key) {
       case 'Enter':
         handleBlurAddInput();
-        preventBlur.current = true;
         break;
       case 'Escape':
         toggleTagInput();
@@ -150,7 +149,7 @@ const PageTagList = () => {
           text: editTagInfo.cur,
         },
       ],
-      PageStore.pageMode.id,
+      PageStore.pageModel.id,
     );
     findNSelect(result.text); // 생성된 태그에 focus
   };
@@ -184,6 +183,7 @@ const PageTagList = () => {
     switch (event.key) {
       case 'Enter':
         handleBlurModify();
+        preventBlur.current = true;
         break;
       case 'Escape':
         setEditTagInfo({});
@@ -203,9 +203,14 @@ const PageTagList = () => {
 
   const handleDbClick = (id, pre) => () => {
     setEditTagInfo({ id, pre, cur: pre });
+    preventBlur.current = true;
   };
 
   const handleBlurTagChip = id => e => {
+    if (preventBlur.current) {
+      preventBlur.current = false;
+      return;
+    }
     // 다른 태그가 선택돼서 blur되는 경우
     if (e.relatedTarget && tagListCover.current.contains(e.relatedTarget))
       return;
@@ -277,7 +282,6 @@ const PageTagList = () => {
         )}
         <TagList ref={tagListCover}>
           {PageStore.tagList.map((item, index) =>
-            // note_id, tag_id, text
             editTagInfo.id === item.id ? (
               <TagInput
                 key={item}
@@ -291,7 +295,7 @@ const PageTagList = () => {
             ) : (
               <TagItem
                 key={item.id}
-                className={item.id === selectedId ? 'noteFocusedTag' : ''}
+                isSelected={item.id === selectedId}
                 data-idx={index} // 없어져도 되나?
                 id={item.id}
                 closable={

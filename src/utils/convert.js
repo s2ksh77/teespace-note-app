@@ -12,9 +12,8 @@ export const convertToPageTag: Array<PageTag> = tagList => {
     text,
   }));
 };
-export const convertTagObj = dto => {
-  return dto;
-};
+// todo
+export const convertTagObj = dto => dto;
 
 // createNoteTag
 export const convertToCreateDto: Array<CreateTagDto> = ({
