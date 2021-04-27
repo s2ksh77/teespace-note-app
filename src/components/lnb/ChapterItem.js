@@ -42,7 +42,7 @@ const ChapterItem = ({ chapter, flexOrder, isShared }) => {
   };
 
   return useObserver(() => (
-    <ChapterContainer order={flexOrder} onClick={handleClickChapter}>
+    <ChapterContainer order={flexOrder}>
       <ChapterWrapper
         className={
           NoteStore.isPageContent &&
@@ -51,6 +51,7 @@ const ChapterItem = ({ chapter, flexOrder, isShared }) => {
             : ''
         }
         style={{ paddingLeft: isShared ? '2.63rem' : '1.69rem' }}
+        onClick={handleClickChapter}
       >
         <ChapterIcon />
         <ChapterTitle>{chapter.name}</ChapterTitle>
