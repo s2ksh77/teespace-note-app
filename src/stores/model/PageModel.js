@@ -29,7 +29,7 @@ class PageModel {
   deleteDate: string;
 
   @observable
-  fileList: Array<FileInfo>;
+  fileList: Array<FileInfo> = [];
 
   @observable
   fileDeletedAt: string;

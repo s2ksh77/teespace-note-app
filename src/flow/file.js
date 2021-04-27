@@ -1,11 +1,17 @@
 // @flow
 declare type FileInfo = {
-  created_at: string,
-  file_deleted_at: string,
-  file_extension: string,
-  file_id: string,
+  user_id: string,
   file_last_update_user_id: string,
+  file_id: string,
   file_name: string,
-  file_size: string,
+  file_extension: string,
+  file_created_at: string,
   file_updated_at: string,
+  file_size: string,
+  user_context_1: string,
+  user_context_2: string,
+  user_context_3: string,
+  progress: Number,
+  type: string,
+  error: string,
 };

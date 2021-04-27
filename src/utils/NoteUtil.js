@@ -1,4 +1,6 @@
 import CHAPTER_TYPE from './const';
+import i18n from '../i18n/i18n';
+import PageStore from '../stores/store/PageStore';
 
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -110,6 +112,54 @@ const NoteUtil = {
 
   isEmpty(arr) {
     return arr?.length === 0;
+  },
+  convertDateFormat(date, isSharedInfo) {
+    const mDate = date.split(' ')[0];
+    const mTime = date.split(' ')[1];
+    const mYear = parseInt(mDate.split('.')[0]);
+    const mMonth = parseInt(mDate.split('.')[1]);
+    const mDay = parseInt(mDate.split('.')[2]);
+    const mHour = parseInt(mTime.split(':')[0]);
+    const mMinute = parseInt(mTime.split(':')[1]);
+    const curDate = new Date();
+    const convertTwoDigit = digit => ('0' + digit).slice(-2);
+    const m12Hour = mHour > 12 ? mHour - 12 : mHour;
+
+    const hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
+    const basicDate =
+      mHour < 12
+        ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', { time: hhmm })
+        : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', { time: hhmm });
+
+    if (
+      date === PageStore.pageModel.modDate &&
+      mYear === curDate.getFullYear() &&
+      !isSharedInfo
+    ) {
+      // 같은 해
+      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate())
+        return basicDate;
+      // 같은 날
+      else
+        return (
+          convertTwoDigit(mMonth) +
+          '.' +
+          convertTwoDigit(mDay) +
+          ' ' +
+          basicDate
+        ); // 다른 날
+    } else {
+      // 다른 해, 정보 보기
+      return (
+        mYear +
+        '.' +
+        convertTwoDigit(mMonth) +
+        '.' +
+        convertTwoDigit(mDay) +
+        ' ' +
+        basicDate
+      );
+    }
   },
 };
 

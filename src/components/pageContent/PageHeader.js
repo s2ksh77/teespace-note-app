@@ -21,6 +21,7 @@ import ContentHeader from '../common/ContentHeader';
 import editingIcon from '../../assets/wapl_working.svg';
 import searchIcon from '../../assets/search.svg';
 import backIcon from '../../assets/arrow_back_1.svg';
+import NoteUtil from '../../utils/NoteUtil';
 
 const PageHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -87,6 +88,8 @@ const PageHeader = () => {
     PageStore.pageModel.setNoteTitle(value);
   };
 
+  const handleSearch = () => {};
+
   return useObserver(() => (
     <ContentHeader handleBackBtnClick={handleBackBtnClick}>
       {authStore.hasPermission('notePage', 'U') && (
@@ -107,12 +110,17 @@ const PageHeader = () => {
       {PageStore.pageModel.isReadMode ? (
         <>
           <ModifiedUser>{PageStore.pageModel.userName}</ModifiedUser>
-          <ModifiedTime>{PageStore.pageModel.modDate}</ModifiedTime>
+          <ModifiedTime>
+            {NoteUtil.convertDateFormat(PageStore.pageModel.modDate)}
+          </ModifiedTime>
         </>
       ) : (
         <EditingIcon src={editingIcon} />
       )}
-      <SearchButtonWrapper style={{ marginRight: '0.75rem' }}>
+      <SearchButtonWrapper
+        style={{ marginRight: '0.75rem' }}
+        onClick={handleSearch}
+      >
         <SearchButtonIcon src={searchIcon} />
       </SearchButtonWrapper>
     </ContentHeader>

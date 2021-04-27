@@ -370,7 +370,6 @@ class NoteRepository {
 
   async editDone(dto: object) {
     // 임시 로직. 최적화 필요.
-    console.log(dto);
     const today = new Date();
     try {
       const response = await API.post(`note-api/note?action=Update`, {
@@ -512,14 +511,14 @@ class NoteRepository {
     onUploadProgress,
     cancelSource,
   }: {
-    file: string,
+    file: any,
     fileName: string,
     fileExtension: string,
     onUploadProgress: Func,
     cancelSource: any,
   }) {
     return await API.post(
-      `/gateway-api/upload?user_id=${this.USER_ID}&ws_id=${this.WS_ID}&ch_id=${this.chId}&file_name=${fileName}&file_extension=${fileExtension}`,
+      `/gateway-api/upload?user_id=${NoteStore.userId}&ws_id=${NoteStore.roomId}&ch_id=${NoteStore.chId}&file_name=${fileName}&file_extension=${fileExtension}`,
       file,
       {
         headers: {

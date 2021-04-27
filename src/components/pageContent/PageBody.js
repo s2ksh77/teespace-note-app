@@ -19,7 +19,7 @@ const PageBody = () => {
     >
       <PageSubHeader />
       <Editor />
-      {/* <PageFileList /> */}
+      <PageFileList />
       <PageTagList />
     </PageBodyContainer>
   ));
