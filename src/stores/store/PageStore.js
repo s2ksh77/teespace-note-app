@@ -14,8 +14,14 @@ class PageStore {
   @observable
   tagList: Array<$Shape<TagModel>> = [];
 
+  @action
   setIsLoading(isLoading: Boolean) {
     this.isLoading = isLoading;
+  }
+
+  @action
+  setPageModel(data) {
+    this.pageModel = new PageModel(data);
   }
 
   @action

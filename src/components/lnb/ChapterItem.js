@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
-
 import {
   ChapterContainer,
   ChapterWrapper,
@@ -17,9 +16,23 @@ import sharedPageIcon from '../../assets/page_shared.svg';
 import sharedIcon from '../../assets/share_1.svg';
 import arrowTopIcon from '../../assets/arrow_top_1.svg';
 import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
+import PageModel from '../../stores/model/PageModel';
 
 const ChapterItem = ({ chapter, flexOrder, isShared }) => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+
+  const handleClickChapter = async () => {
+    if (!PageStore.pageModel.isReadMode) return;
+    if (chapter.pageList.length > 0) {
+      await PageStore.fetchNoteInfoList(chapter.pageList[0].id);
+      PageStore.fetchNoteTagList(chapter.pageList[0].id);
+    } else {
+      PageStore.setPageModel(new PageModel({ chapterId: chapter.id }));
+    }
+    if (NoteStore.layoutState === 'collapse')
+      NoteStore.setTargetLayout('content');
+    NoteStore.setIsPageContent(true);
+  };
 
   const ChapterIcon = () => {
     if (chapter.type === 'shared_page')
@@ -29,8 +42,16 @@ const ChapterItem = ({ chapter, flexOrder, isShared }) => {
   };
 
   return useObserver(() => (
-    <ChapterContainer order={flexOrder}>
-      <ChapterWrapper style={{ paddingLeft: isShared ? '2.63rem' : '1.69rem' }}>
+    <ChapterContainer order={flexOrder} onClick={handleClickChapter}>
+      <ChapterWrapper
+        className={
+          NoteStore.isPageContent &&
+          PageStore.pageModel?.chapterId === chapter.id
+            ? 'selectedMenu'
+            : ''
+        }
+        style={{ paddingLeft: isShared ? '2.63rem' : '1.69rem' }}
+      >
         <ChapterIcon />
         <ChapterTitle>{chapter.name}</ChapterTitle>
         <ContextMenu />

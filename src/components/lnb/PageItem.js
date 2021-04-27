@@ -16,7 +16,14 @@ const PageItem = ({ page }) => {
   };
 
   return useObserver(() => (
-    <PageWrapper onClick={handlePageClick}>
+    <PageWrapper
+      className={
+        NoteStore.isPageContent && PageStore.pageModel.id === page.id
+          ? 'selected'
+          : ''
+      }
+      onClick={handlePageClick}
+    >
       <PageTitle>{page.text}</PageTitle>
       <ContextMenu />
     </PageWrapper>
