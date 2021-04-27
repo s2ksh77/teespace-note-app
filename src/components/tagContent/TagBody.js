@@ -60,17 +60,16 @@ const TagBody = () => {
   return useObserver(() => (
     <>
       <TagCollapse
-        defaultActiveKey={Object.keys(categoryInfo)}
+        defaultActiveKey={Object.keys(TagStore.tagListObj)}
         expandIcon={panelProps => customExpandIcon(panelProps)}
         expandIconPosition="right"
       >
-        {Object.keys(TagStore.tagCategory).map(category => {
+        {Object.keys(TagStore.tagListObj).map(category => {
           // category : KOR, ENG,NUM,ETC
           return (
             // categoryInfo[category] : "ㄱ~ㅎ"
             <TagCategory header={categoryInfo[category]} key={category}>
-              {TagStore.tagCategory[category]?.map(({ key, tagList }) => (
-                // TagStore.tagCategory[category] : TagKeyInfo{key,tagList}
+              {TagStore.tagListObj[category]?.map(({ key, tagList }) => (
                 // key : "ㄱ", "ㄴ" ..
                 <TagKeyContainer key={key}>
                   <TagKey>{key}</TagKey>

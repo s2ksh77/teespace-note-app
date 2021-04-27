@@ -66,9 +66,16 @@ const compareFunc = (a, b) => {
 };
 const numCompare = (a, b) => a.text - b.text;
 
-const createRoomTagInfo: Array<RoomTagInfo> = (isNum, data) => {
+// data: Array<TagDtoItem>
+const createKeyTagList: Array<RoomTagItem> = ({
+  isNum,
+  data,
+  isSearching,
+  searchStr,
+}) => {
   const sorted = isNum ? data.sort(numCompare) : data.sort(compareFunc);
   const reduced = sorted.reduce((obj, tag) => {
+    if (isSearching && !tag.text.includes(searchStr.toUpperCase())) return obj;
     if (obj[tag.text]) {
       obj[tag.text].noteList.push(tag.note_id);
     } else {
@@ -87,26 +94,15 @@ const createRoomTagInfo: Array<RoomTagInfo> = (isNum, data) => {
     noteList,
   }));
 };
-/**
- *
- * @param {*} data
- * @returns
- */
-const createTagKeyInfo: TagKeyInfo = data => ({
-  key: data.KEY,
-  tagList: createRoomTagInfo(
-    getKeyCategory(data.KEY) === 'NUM',
-    data.tag_indexdto.tagList,
-  ),
-});
-const getSortedServerTagList = dto => {
+
+const getSortedKeyListDto = dto => {
   return dto.sort((a, b) => {
     if (a.KEY > b.KEY) return 1;
     if (a.KEY < b.KEY) return -1;
     return 0;
   });
 };
-const getTagCategory: TagCategory = keyList => {
+const getTagListObj: TagListObj = (keyList: Array<KeyTagList>) => {
   return keyList.reduce(
     (result, keyInfo) => {
       result[getKeyCategory(keyInfo.key)].push(keyInfo);
@@ -116,10 +112,41 @@ const getTagCategory: TagCategory = keyList => {
   );
 };
 /**
- * @param {*} dto
+ * @param {*} dto: TagListDto,
  * @return { KOR: [{key,tagList:[{id,text,noteList}]}], ENG: [], NUM: [], ETC: [] }
  */
-export const convertServerTagList: TagCategory = dto => {
-  const keyList = getSortedServerTagList(dto).map(createTagKeyInfo);
-  return getTagCategory(keyList);
+export const convertServerTagList: TagListObj = ({
+  dto,
+  isSearching,
+  searchStr,
+}: {
+  dto: TagListDto,
+  isSearching: Boolean,
+  searchStr: string,
+}) => {
+  const keyList: Array<KeyTagList> = getSortedKeyListDto(dto).reduce(
+    (acc, keyItem) => {
+      const keyTagList: Array<RoomTagItem> = createKeyTagList({
+        isNum: getKeyCategory(keyItem.KEY) === 'NUM',
+        data: keyItem.tag_indexdto.tagList,
+        isSearching,
+        searchStr,
+      });
+      if (keyTagList.length)
+        acc.push({
+          key: keyItem.KEY,
+          tagList: keyTagList,
+        });
+      return acc;
+    },
+    [],
+  );
+
+  const result: TagListObj = getTagListObj(keyList);
+
+  if (!isSearching) return result;
+  return Object.keys(result).reduce((acc, category) => {
+    if (result[category].length) acc[category] = result[category];
+    return acc;
+  }, {});
 };

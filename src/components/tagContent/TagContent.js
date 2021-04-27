@@ -13,12 +13,11 @@ import LoadingContent from '../common/LoadingContent';
 const TagContent = () => {
   const { TagStore } = useNoteStore();
   useEffect(() => {
-    TagStore.getTagCategory();
+    TagStore.getRoomTagListObj();
   }, []);
 
   const RenderBody = () => {
     if (TagStore.isSearchLoading) return <SearchingContent />;
-    if (TagStore.isSearching) return <TagSearchResult />;
     if (TagStore.isLoading) return <LoadingContent />;
     if (TagStore.isNoTag) return <NoContent />;
     return <TagBody />;

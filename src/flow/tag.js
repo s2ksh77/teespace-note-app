@@ -30,18 +30,33 @@ declare type DeleteTagDto = {
 
 declare type CategoryName = 'KOR' | 'ENG' | 'NUM' | 'ETC';
 
-declare type TagCategory = {
-  KOR: Array<TagKeyInfo>,
-  ENG: Array<TagKeyInfo>,
-  NUM: Array<TagKeyInfo>,
-  ETC: Array<TagKeyInfo>,
-};
-declare type TagKeyInfo = {
-  key: string,
-  tagList: Array<RoomTagInfo>,
+declare type TagListDto = Array<KeyTagListDto>;
+
+declare type KeyTagListDto = {
+  KEY: String,
+  tag_indexdto: {
+    tagList: Array<TagDtoItem>,
+  },
 };
 
-declare type RoomTagInfo = {
+declare type TagDtoItem = {
+  note_id: String,
+  tag_id: String,
+  text: String,
+};
+
+declare type TagListObj = {
+  KOR?: Array<KeyTagList>,
+  ENG?: Array<KeyTagList>,
+  NUM?: Array<KeyTagList>,
+  ETC?: Array<KeyTagList>,
+};
+declare type KeyTagList = {
+  key: string,
+  tagList: Array<RoomTagItem>,
+};
+
+declare type RoomTagItem = {
   id: string,
   text: string,
   noteList: Array<string>,

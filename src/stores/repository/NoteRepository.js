@@ -83,7 +83,7 @@ class NoteRepository {
   //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
   //   )
   // }
-  async getAllTagObj() {
+  async getAllTagObj(): TagListDto {
     const response = await API.Get(
       `note-api/tagSort?action=List&note_channel_id=${
         NoteStore.chId
@@ -91,8 +91,8 @@ class NoteRepository {
     );
 
     return response?.data?.dto?.tag_index_list_dto
-      ? convertServerTagList(response.data.dto.tag_index_list_dto)
-      : {};
+      ? response?.data?.dto?.tag_index_list_dto
+      : [];
   }
 
   async fetchTagNoteList({

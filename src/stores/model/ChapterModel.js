@@ -51,8 +51,13 @@ class ChapterModel {
   @observable
   roomId: string;
 
+  @observable
+  isFolded: Boolean;
+
   constructor(data: Object) {
     this.setValues(data);
+    // boolean인지 확인, 이렇게 써도 될까요???????
+    if (!!data.isFolded !== data.isFolded) this.setIsFolded(false);
   }
 
   @action
@@ -133,6 +138,16 @@ class ChapterModel {
   @action
   setUserName(data: string) {
     this.userName = data;
+  }
+
+  @action
+  setIsFolded(isFolded: boolean) {
+    this.isFolded = isFolded;
+  }
+
+  @action
+  toggleIsFolded() {
+    this.isFolded = !this.isFolded;
   }
 }
 
