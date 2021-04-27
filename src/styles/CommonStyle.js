@@ -25,14 +25,41 @@ export const ButtonIcon = styled.img`
 export const LayoutStateButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 0.63rem;
+  margin-left: ${({ isNoContent }) => (isNoContent ? 'auto' : '0')};
 `;
 
 export const HeaderDivider = styled.div`
   width: 0.06rem;
   height: 1.5rem;
   background: #ddd9d4;
-  margin-right: 1rem;
+  margin-right: 0.75rem;
+`;
+
+export const CenterContentWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #ddd9d4;
+`;
+
+export const NoContentTitle = styled.div`
+  font-size: 0.94rem;
+  font-weight: 400;
+`;
+
+export const NoContentSubTitle = styled.span`
+  font-size: 0.75rem;
+  font-weight: 300;
+  margin-top: 0.75rem;
+  color: #777777;
+`;
+
+export const NoContentImg = styled.img`
+  width: 8.13rem;
+  margin-top: 1.25rem;
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */
@@ -60,17 +87,6 @@ export const PreBtnWrapper = styled.div`
   }
 `;
 
-export const ContentBodyCover = styled.div`
-  width: 100%;
-  height: calc(100% - 3rem);
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.25rem 0.75rem;
-  border-top: 1px solid #ddd9d4;
-`;
-
 export const NoneContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -80,26 +96,6 @@ export const NoneContainer = styled.div`
   align-items: center;
 `;
 
-export const NoneTitle = styled.div`
-  font-size: 0.938rem;
-  font-weight: 400;
-  color: #000000;
-  width: auto;
-  height: 1.38rem;
-  line-height: normal;
-`;
-
-export const NoneText = styled.span`
-  font-size: 0.75rem;
-  font-weight: 300;
-  margin-top: 0.75rem;
-  color: #777777;
-`;
-
-export const NoneImg = styled.img`
-  width: 8.13rem;
-  margin-top: 1.25rem;
-`;
 export const ButtonDiv = styled.div`
   display: flex;
   align-items: center;

@@ -21,11 +21,15 @@ const Content = () => {
   // })();
 
   const renderContent = () => {
-    if (NoteStore.isPageContent && PageStore.isLoading)
-      return <LoadingContent />;
-    if (NoteStore.isPageContent && PageStore.pageModel) return <PageContent />;
-    if (!NoteStore.isPageContent) return <TagContent />;
-    return <NoContent />;
+    if (NoteStore.isPageContent) {
+      if (PageStore.isLoading) return <LoadingContent />;
+      if (ChapterStore.chapterList.length > 0) {
+        if (PageStore.pageModel?.id) return <PageContent />;
+        return <NoContent />;
+      }
+      return <NoContent isNoChapter />;
+    }
+    return <TagContent />;
   };
 
   return useObserver(() => (
