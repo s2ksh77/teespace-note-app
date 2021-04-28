@@ -538,8 +538,8 @@ class NoteRepository {
     try {
       return await API.put(`note-api/noteFile?action=Delete`, {
         dto: {
-          workspace_id: this.WS_ID,
-          channel_id: this.chId,
+          workspace_id: NoteStore.roomId,
+          channel_id: NoteStore.chId,
           storageFileInfo: {
             user_id: '',
             file_last_update_user_id: '',

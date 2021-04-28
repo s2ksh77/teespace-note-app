@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../stores/useNoteStore';
 
@@ -19,7 +19,7 @@ const PageBody = () => {
     >
       <PageSubHeader />
       <Editor />
-      <PageFileList />
+      {PageStore.pageModel.isFile ? <PageFileList /> : null}
       <PageTagList />
     </PageBodyContainer>
   ));

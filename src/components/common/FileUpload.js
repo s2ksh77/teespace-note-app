@@ -12,6 +12,8 @@ import video from '../../assets/movie.svg';
 import audio from '../../assets/audio.svg';
 import PageStore from '../../stores/store/PageStore';
 import { isFilled } from '../../utils/validators';
+import { API } from 'teespace-core';
+import NoteStore from '../../stores/store/NoteStore';
 
 // @flow
 /**
@@ -80,7 +82,12 @@ export const handleUpload = flow(function* handleUpload(item) {
       item.cancelSource,
     );
     if (result.resultMsg === 'Success') {
-      console.log(result);
+      if (item.type === 'image')
+        insertImage(
+          'image',
+          result.storageFileInfoList[0].file_id,
+          result.storageFileInfoList[0].file_name,
+        );
       yield EditorStore.createFileMeta(
         [result.storageFileInfoList[0].file_id],
         PageStore.pageModel.id,
@@ -270,4 +277,40 @@ export const isValidFileNameLength = fileName => {
       : fileName.length;
   if (fileName.slice(0, targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
   return true;
+};
+
+const insertImage = (type: string, fileId: string, fileName: string) => {
+  const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteStore.roomId}&channelID=${NoteStore.chId}&userID=${NoteStore.userId}`;
+  switch (type) {
+    case 'image':
+      EditorStore.editor.execCommand(
+        'mceInsertContent',
+        false,
+        '<img id="' +
+          fileId +
+          '" src="' +
+          targetSRC +
+          '" data-name="' +
+          fileName +
+          '"data-mce-src="' +
+          targetSRC +
+          '"crossorigin="' +
+          '*' +
+          '"/>',
+      );
+      break;
+    case 'video':
+      EditorStore.editor.insertContent(
+        `<p>
+            <span class="mce-preview-object mce-object-video" contenteditable="false" data-mce-object="video" data-mce-p-allowfullscreen="allowfullscreen" data-mce-p-frameborder="no" data-mce-p-scrolling="no" data-mce-p-src='' data-mce-html="%20">
+              <video width="400" controls>
+                <source src=${targetSRC} />
+              </video>
+            </span>
+          </p>`,
+      );
+      break;
+    default:
+      break;
+  }
 };

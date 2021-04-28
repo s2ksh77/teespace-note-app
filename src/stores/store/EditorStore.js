@@ -65,8 +65,7 @@ class EditorStore {
       type: type,
       error: false,
     };
-    console.log(PageStore.pageModel.fileList);
-    PageStore.pageModel.fileList.unshift(obj);
+    if (type !== 'image') PageStore.pageModel.fileList.unshift(obj);
   }
 
   @computed
@@ -117,6 +116,13 @@ class EditorStore {
     const {
       data: { dto },
     } = await NoteRepository.createFileMeta(createCopyArray);
+    return dto;
+  }
+
+  async deleteFile(fileId: string) {
+    const {
+      data: { dto },
+    } = await NoteRepository.deleteFile(fileId);
     return dto;
   }
 }

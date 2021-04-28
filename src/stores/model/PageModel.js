@@ -3,6 +3,7 @@ import { observable, action, set, computed } from 'mobx';
 import autobind from 'autobind-decorator';
 import { UserStore } from 'teespace-core';
 import NoteStore from '../store/NoteStore';
+import EditorStore from '../store/EditorStore';
 
 // @flow
 @autobind
@@ -254,6 +255,23 @@ class PageModel {
 
     // PageStore.setOtherEditUserID(this.editingUserId);
     return true;
+  }
+
+  @computed
+  get isFile() {
+    let checkFile;
+    if (this.fileList.length > 0) {
+      checkFile = this.fileList.filter(
+        file =>
+          !file.file_extension || !EditorStore.isImage(file.file_extension),
+      );
+    }
+    if (checkFile === undefined) return false;
+    else if (checkFile !== undefined && checkFile.length === 0) return false;
+    else {
+      this.setFileList(checkFile);
+      return true;
+    }
   }
 
   // eslint-disable-next-line consistent-return

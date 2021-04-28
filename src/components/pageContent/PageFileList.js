@@ -167,39 +167,21 @@ const PageFileList = () => {
     downloadFile(file_id ? file_id : user_context_2);
   };
 
-  const handleFileRemove = async (fileId, index, type) => {
-    const removePostProcess = () => {
-      if (EditorStore.isFile) {
-        EditorStore.setFileIndex(''); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
-        if (type === 'uploaded')
-          filebodyRef.current[index > 0 ? index - 1 : 0]?.click();
-      } else {
-        try {
-          // 불안해서 넣는 try catch문
-          EditorStore.tinymce.focus();
-          EditorStore.tinymce.selection.select(
-            EditorStore.tinymce.getBody(),
-            true,
-          );
-          EditorStore.tinymce.selection.collapse(false);
-        } catch (err) {}
-      }
-    };
-    if (type === 'temp' && EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.uploadDTO[index].cancelSource.cancel();
-      EditorStore.tempFileLayoutList[index].deleted = true;
-    } else if (type === 'uploaded' && EditorStore.fileLayoutList.length > 0) {
-      EditorStore.fileLayoutList[index].deleted = true;
+  const handleFileRemove = (fileId, index, type) => async e => {
+    e.stopPropagation();
+
+    if (type === 'uploaded') {
+      PageStore.pageModel.fileList[index].deleted = true;
       await EditorStore.deleteFile(fileId).then(dto => {
         if (dto.resultMsg === 'Success') {
           setTimeout(() => {
-            EditorStore.fileLayoutList.splice(index, 1);
-            EditorStore.isFileLength();
-            removePostProcess();
+            PageStore.pageModel.fileList.splice(index, 1);
+            // EditorStore.isFileLength();
+            // removePostProcess();
           }, 1000);
         } else if (dto.resultMsg === 'Fail') {
-          EditorStore.fileLayoutList[index].deleted = undefined;
-          EditorStore.fileLayoutList.splice(index, 1);
+          PageStore.pageModel.fileList[index].deleted = undefined;
+          PageStore.pageModel.fileList.splice(index, 1);
           removePostProcess();
         }
       });
@@ -336,12 +318,7 @@ const PageFileList = () => {
             >
               <FileCloseBtn
                 src={cancelBtn}
-                onClick={handleFileRemove.bind(
-                  null,
-                  item.file_id ? item.file_id : item.user_context_2,
-                  index,
-                  'uploaded',
-                )}
+                onClick={handleFileRemove(item.file_id, index, 'uploaded')}
               />
             </FileClose>
           </FileContent>
