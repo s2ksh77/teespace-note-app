@@ -31,11 +31,7 @@ const ContextMenu = ({ itemType, item }) => {
    * 챕터/페이지의 이름을 변경한다.
    */
   const renameComponent = () => {
-    // const targetStore = store[itemType];
-    // if (!targetStore) return;
-    // targetStore.setRenameId(item.id);
-    // targetStore.setRenamePrevText(item.text);
-    // targetStore.setRenameText(item.text);
+    ChapterStore.setRenameInfo({ id: item.id, pre: item.name, cur: item.name });
   };
 
   /**
@@ -189,10 +185,10 @@ const ContextMenu = ({ itemType, item }) => {
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
   const menu = (
     <Menu style={{ borderRadius: 5 }} onClick={handleClickContextMenu}>
-      {/* {item.type !== 'shared_page' &&
+      {item.type !== 'shared_page' &&
         authStore.hasPermission('notePage', 'U') && (
           <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
-        )} */}
+        )}
       {authStore.hasPermission('notePage', 'D') && (
         <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
       )}

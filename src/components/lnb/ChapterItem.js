@@ -21,6 +21,10 @@ import sharedIcon from '../../assets/share_1.svg';
 import arrowTopIcon from '../../assets/arrow_top_1.svg';
 import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
 import PageModel from '../../stores/model/PageModel';
+import { checkWhitespace, checkMaxLength } from '../../utils/validators';
+
+const ignoreClick = e => e.stopPropagation();
+const handleFocus = e => e.target.select();
 
 const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -148,6 +152,41 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     NoteStore.setIsPageContent(true);
   };
 
+  const handleChangeTitle = e =>
+    ChapterStore.setRenameInfo({ cur: checkMaxLength(e) });
+
+  const renameTitle = async () => {
+    await ChapterStore.renameChapter({
+      chapterId: ChapterStore.renameInfo.id,
+      chapterTitle: ChapterStore.renameInfo.cur,
+      color: chapter.color,
+    });
+    ChapterStore.setRenameInfo({ id: '', pre: '', cur: '' });
+  };
+
+  const handleBlurInput = isEscape => () => {
+    // rename 안 됨 : escape키 누를 때, pre === cur 일 때 rename 작업 취소
+    if (
+      isEscape ||
+      !checkWhitespace(ChapterStore.renameInfo.cur) ||
+      ChapterStore.renameInfo.pre === ChapterStore.renameInfo.cur
+    ) {
+      ChapterStore.setRenameInfo({ id: '', pre: '', cur: '' });
+      return;
+    }
+    // 다 통과했으면 rename 가능
+    renameTitle();
+    // NoteStore.LNBChapterCoverRef.removeEventListener(
+    //   'wheel',
+    //   NoteStore.disableScroll,
+    // );
+  };
+
+  const handleKeydown = e => {
+    if (e.key === 'Enter') handleBlurInput(false)();
+    else if (e.key === 'Escape') handleBlurInput(true)();
+  };
+
   const ChapterIcon = () => {
     if (chapter.type === 'shared_page')
       return <ChapterShareIcon src={sharedPageIcon} />;
@@ -172,7 +211,22 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
         }
       >
         <ChapterIcon />
-        <ChapterTitle>{chapter.name}</ChapterTitle>
+        {ChapterStore.renameInfo.id === chapter.id ? (
+          <ChapterTitleInput
+            paddingLeft={isShared ? '2.63rem' : '1.69rem'}
+            maxLength="200"
+            placeholder={ChapterStore.renameInfo.pre}
+            value={ChapterStore.renameInfo.cur}
+            onClick={ignoreClick}
+            onChange={handleChangeTitle}
+            onBlur={handleBlurInput(false)}
+            onKeyDown={handleKeydown}
+            onFocus={handleFocus}
+            autoFocus
+          />
+        ) : (
+          <ChapterTitle>{chapter.name}</ChapterTitle>
+        )}
         <ContextMenu itemType="chapter" item={chapter} />
         <ButtonWrapper>
           <ButtonIcon src={arrowTopIcon} />

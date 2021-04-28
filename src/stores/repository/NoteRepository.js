@@ -218,14 +218,14 @@ class NoteRepository {
     try {
       const response = await API.put(`note-api/notebooks?action=Update`, {
         dto: {
-          USER_ID: this.USER_ID,
+          USER_ID: NoteStore.userId,
           color,
           id: chapterId,
-          ws_id: this.WS_ID,
-          note_channel_id: this.chId,
+          ws_id: NoteStore.roomId,
+          note_channel_id: NoteStore.chId,
           parent_notebook: '',
           text: chapterTitle,
-          user_name: this.USER_NAME,
+          user_name: NoteStore.userName,
         },
       });
       return response ? convertChapterObj(response.data.dto) : [];

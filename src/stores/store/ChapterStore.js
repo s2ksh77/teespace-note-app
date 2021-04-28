@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { action, computed, observable } from 'mobx';
+import { action, computed, flow, observable } from 'mobx';
 import i18n from '../../i18n/i18n';
 import ChapterModel from '../model/ChapterModel';
 import NoteRepository from '../repository/NoteRepository';
@@ -15,6 +15,12 @@ class ChapterStore {
 
   @observable
   chapterMap: Map<String, $Shape<ChapterModel>> = {};
+
+  /**
+   * ChapterStorechapterList에 chapter,page 정보가 모두 있으므로 chapter,page rename 로직도 이 곳에 넣음
+   */
+  @observable
+  renameInfo = { id: '', pre: '', cur: '' };
 
   dragData: Map<string, Object> = new Map();
 
@@ -48,6 +54,19 @@ class ChapterStore {
 
   setDragEnterChapterIdx(dragEnterChapterIdx: number) {
     this.dragEnterChapterIdx = dragEnterChapterIdx;
+  }
+
+  @action // set은 인스턴스 변수 바로 다음에 나오도록 위치 수정했습니다!
+  setNewChapterVisible(bool: Boolean) {
+    this.newChapterVisible = bool;
+  }
+
+  @action
+  // clear할 때 {id:'', pre:'', cur:''}를 넘김
+  setRenameInfo(info) {
+    Object.keys(info).forEach(key => {
+      this.renameInfo[key] = info[key];
+    });
   }
 
   @action
@@ -101,23 +120,28 @@ class ChapterStore {
     return new ChapterModel(res);
   }
 
-  @action
-  async renameChapter(chapterId: string, chapterTitle: string, color: string) {
-    const res = await NoteRepository.renameChapter({
+  // action쓰면 첫번째 await까지만 action이 적용됨, flow로 바꿈
+  // input은 repo 함수랑 인자 맞춰줌
+  renameChapter = flow(function* renameChapter({
+    chapterId,
+    chapterTitle,
+    color,
+  }: {
+    chapterId: string,
+    chapterTitle: string,
+    color: string,
+  }) {
+    const res = yield NoteRepository.renameChapter({
       chapterId,
       chapterTitle,
-      chapterColor,
+      color,
     });
+    // todo: if문 조건
     if (res) {
-      await this.fetchChapterList();
+      yield this.fetchChapterList();
     }
     return new ChapterModel(res);
-  }
-
-  @action
-  setNewChapterVisible(bool: Boolean) {
-    this.newChapterVisible = bool;
-  }
+  });
 
   @action
   getSortedDragDataList() {
