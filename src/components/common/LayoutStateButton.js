@@ -12,6 +12,7 @@ import {
 import ExpandIcon from '../../assets/ts_maximize.svg';
 import CollapseIcon from '../../assets/ts_minimize.svg';
 import closeIcon from '../../assets/ts_cancel.svg';
+import PageModel from '../../stores/model/PageModel';
 
 const LayoutStateButton = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -32,10 +33,24 @@ const LayoutStateButton = () => {
 
   const fetchFirstNote = async () => {
     PageStore.setIsLoading(true);
-    await PageStore.fetchNoteInfoList(
-      ChapterStore.chapterList[0]?.pageList[0]?.id,
-    );
-    PageStore.fetchNoteTagList(ChapterStore.chapterList[0]?.pageList[0]?.id);
+    // 챕터 없는 경우
+    if (ChapterStore.chapterList.length === 0) {
+      PageStore.setPageModel(new PageModel({}));
+      PageStore.setIsLoading(false);
+      return;
+    }
+    if (ChapterStore.chapterList[0].pageList.length) {
+      await PageStore.fetchNoteInfoList(
+        ChapterStore.chapterList[0].pageList[0].id,
+      ); // 여기서 pageModel set한 후 seChId
+      PageStore.fetchNoteTagList(ChapterStore.chapterList[0].pageList[0].id);
+      PageStore.pageModel.setChId(ChapterStore.chapterList[0].id);
+    } else {
+      // 페이지 없는 경우
+      PageStore.setPageModel(
+        new PageModel({ chapterId: ChapterStore.chapterList[0].id }),
+      );
+    }
     PageStore.setIsLoading(false);
   };
 
