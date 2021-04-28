@@ -31,6 +31,7 @@ const LNBBody = () => {
                     <ChapterItem
                       key={item.id}
                       chapter={item}
+                      index={index}
                       flexOrder={1}
                       isShared={false}
                     />

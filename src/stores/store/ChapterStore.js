@@ -3,6 +3,8 @@ import { action, computed, observable } from 'mobx';
 import i18n from '../../i18n/i18n';
 import ChapterModel from '../model/ChapterModel';
 import NoteRepository from '../repository/NoteRepository';
+import NoteStore from './NoteStore';
+
 // @flow
 class ChapterStore {
   @observable
@@ -13,6 +15,40 @@ class ChapterStore {
 
   @observable
   chapterMap: Map<String, $Shape<ChapterModel>> = {};
+
+  dragData: Map<string, Object> = new Map();
+
+  isCtrlKeyDown: boolean = false;
+
+  dragEnterChapterIdx: number;
+
+  getDragData() {
+    return this.dragData;
+  }
+
+  setDragData(dragData: Map<string, object>) {
+    this.dragData = dragData;
+  }
+
+  appendDragData(key: string, value: object) {
+    this.dragData.set(key, value);
+  }
+
+  deleteDragData(key: string) {
+    this.dragData.delete(key);
+  }
+
+  clearDragData() {
+    this.dragData.clear();
+  }
+
+  setIsCtrlKeyDown(isCtrlKeyDown: boolean) {
+    this.isCtrlKeyDown = isCtrlKeyDown;
+  }
+
+  setDragEnterChapterIdx(dragEnterChapterIdx: number) {
+    this.dragEnterChapterIdx = dragEnterChapterIdx;
+  }
 
   @action
   async fetchChapterList() {
@@ -81,6 +117,41 @@ class ChapterStore {
   @action
   setNewChapterVisible(bool: Boolean) {
     this.newChapterVisible = bool;
+  }
+
+  @action
+  getSortedDragDataList() {
+    const dragDataList = [...this.dragData].map(keyValue => keyValue[1]);
+    return dragDataList.sort((a, b) => a.chapterIdx - b.chapterIdx);
+  }
+
+  @action
+  moveChapter(targetChapterIdx: number) {}
+
+  @action
+  createNoteShareChapter(targetRoomId, targetChapterList) {
+    if (!targetChapterList) return;
+
+    const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const targetList = targetChapterList.map(chapter => {
+      return {
+        id: chapter.id,
+        ws_id: NoteStore.roomId,
+        note_channel_id: NoteStore.chId,
+        text: chapter.text,
+        color: chapter.color,
+        USER_ID: NoteStore.userId,
+        shared_user_id: NoteStore.userId,
+        shared_room_name: NoteStore.roomId,
+        target_workspace_id: targetRoomId,
+        target_channel_id: targetChId,
+      };
+    });
+
+    NoteRepository.createShareChapter(targetList).then(() => {
+      this.fetchChapterList();
+      NoteStore.setIsDragging(false);
+    });
   }
 }
 

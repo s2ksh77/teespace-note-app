@@ -7,7 +7,8 @@ import NoteStore from './NoteStore';
 
 // @flow
 class PageStore {
-  @observable isLoading: boolean = false;
+  @observable
+  isLoading: boolean = false;
 
   @observable
   pageModel: $Shape<PageModel> = '';
@@ -15,14 +16,42 @@ class PageStore {
   @observable
   tagList: Array<$Shape<TagModel>> = [];
 
+  dragData: Map<string, object> = new Map();
+
+  isCtrlKeyDown: boolean = false;
+
   @action
-  setIsLoading(isLoading: Boolean) {
+  setIsLoading(isLoading: boolean) {
     this.isLoading = isLoading;
   }
 
   @action
   setPageModel(data) {
     this.pageModel = new PageModel(data);
+  }
+
+  getDragData() {
+    return this.dragData;
+  }
+
+  setDragData(dragData: Map<string, object>) {
+    this.dragData = dragData;
+  }
+
+  appendDragData(key: string, value: object) {
+    this.dragData.set(key, value);
+  }
+
+  deleteDragData(key: string) {
+    this.dragData.delete(key);
+  }
+
+  clearDragData() {
+    this.dragData.clear();
+  }
+
+  setIsCtrlKeyDown(isCtrlKeyDown) {
+    this.isCtrlKeyDown = isCtrlKeyDown;
   }
 
   @action

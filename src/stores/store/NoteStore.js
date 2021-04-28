@@ -1,4 +1,5 @@
 import { observable, action, computed } from 'mobx';
+import { RoomStore } from 'teespace-core';
 import ChapterModel from '../model/ChapterModel';
 import ChapterStore from './ChapterStore';
 import NoteRepository from '../repository/NoteRepository';
@@ -43,6 +44,14 @@ class NoteStore {
 
   @observable
   isMailApp: boolean = false;
+
+  isDragging: boolean = false;
+
+  draggedType: string;
+
+  draggedItems: Array<object>;
+
+  draggedOffset: object;
 
   /* init 관련 변수 Repo -> NoteStore */
   init(data: Object) {
@@ -142,6 +151,28 @@ class NoteStore {
       data: { dto },
     } = await NoteRepository.getSearchList(searchKey);
     return dto;
+  }
+
+  setIsDragging(isDragging) {
+    this.isDragging = isDragging;
+  }
+
+  setDraggedType(draggedType) {
+    this.draggedType = draggedType;
+  }
+
+  setDraggedItems(draggedItems) {
+    this.draggedItems = draggedItems;
+  }
+
+  setDraggedOffset(offset) {
+    this.draggedOffset = offset;
+  }
+
+  getTargetChId(targetRoomId: string, chType: string) {
+    return RoomStore.getChannelIds({ roomId: targetRoomId })[
+      chType || 'CHN0003'
+    ];
   }
 }
 
