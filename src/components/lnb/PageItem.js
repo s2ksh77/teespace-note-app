@@ -39,7 +39,7 @@ const PageItem = ({ page }) => {
         <PageTitle onMouseOver={handleTooltip}>{page.text}</PageTitle>
       </Tooltip>
       {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && (
-        <ContextMenu noteType="page" note={page} />
+        <ContextMenu itemType="page" item={page} />
       )}
     </PageWrapper>
   ));

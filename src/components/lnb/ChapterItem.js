@@ -55,7 +55,7 @@ const ChapterItem = ({ chapter, flexOrder, isShared }) => {
       >
         <ChapterIcon />
         <ChapterTitle>{chapter.name}</ChapterTitle>
-        <ContextMenu />
+        <ContextMenu itemType="chapter" item={chapter} />
         <ButtonWrapper>
           <ButtonIcon src={arrowTopIcon} />
         </ButtonWrapper>

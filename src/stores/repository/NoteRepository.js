@@ -114,9 +114,11 @@ class NoteRepository {
   async getChapterChildren(chapterId: string): Promise<String> {
     try {
       const response = await API.Get(
-        `note-api/note?action=List&note_channel_id=${this.chId}&parent_notebook=${chapterId}`,
+        `note-api/note?action=List&note_channel_id=${NoteStore.chId}&parent_notebook=${chapterId}`,
       );
-      return response ? convertChapterObj(response.data.dto) : [];
+      return response?.data?.dto?.noteList
+        ? response.data.dto.noteList.map(convertPageObj)
+        : [];
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -194,9 +196,11 @@ class NoteRepository {
   async deleteChapter(chapterId: string): Promise<String> {
     try {
       const response = await API.delete(
-        `note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`,
+        `note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${NoteStore.chId}&USER_ID=${NoteStore.userId}&ws_id=${NoteStore.roomId}`,
       );
-      return response ? convertChapterObj(response.data.dto) : [];
+      // return response ? convertChapterObj(response.data.dto) : [];
+      // response.data.dto 없음
+      return response;
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
