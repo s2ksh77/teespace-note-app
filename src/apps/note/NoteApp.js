@@ -8,8 +8,8 @@ import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
 import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
 import foldImg from './assets/arrow_back_1.svg';
-import { useCoreStores, Toast, ComponentStore } from 'teespace-core';
-import DragPreview from "./components/common/DragPreview";
+import { WWMS, useCoreStores, Toast, ComponentStore } from 'teespace-core';
+import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
 import Overlay from './components/common/Overlay';
 import TempEditor from './components/editor/TempEditor';
@@ -80,6 +80,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         NoteStore.setLoadingNoteApp(true);
       }
     }
+      WWMS.removeHandler('CHN0003', 'NoteWWMSHandler');
   }, [roomId, channelId, layoutState]);
 
   useEffect(() => {
