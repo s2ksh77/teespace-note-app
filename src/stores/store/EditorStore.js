@@ -18,6 +18,8 @@ class EditorStore {
 
   uploaderRef = '';
 
+  @observable isFile: Boolean = false;
+
   @observable uploadDTO: Object = [];
 
   setEditor(editor: object) {
@@ -43,6 +45,10 @@ class EditorStore {
     this.uploaderRef = ref;
   }
 
+  setIsFile(flag) {
+    this.isFile = flag;
+  }
+
   setUploadFileDTO(model: StorageModel, file, type: string, cancelSource) {
     this.uploadDTO.push({
       model,
@@ -65,7 +71,10 @@ class EditorStore {
       type: type,
       error: false,
     };
-    if (type !== 'image') PageStore.pageModel.fileList.unshift(obj);
+    if (type !== 'image') {
+      PageStore.pageModel.fileList.unshift(obj);
+      PageStore.pageModel.isFile();
+    }
   }
 
   @computed

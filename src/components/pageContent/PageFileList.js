@@ -48,6 +48,7 @@ const PageFileList = () => {
   const [hoverFileId, setHoverFileId] = useState(null);
   const [hoverFileIdx, setHoverFileIdx] = useState(null);
   const [hoverTempIdx, setHoverTempIdx] = useState(null);
+  const [clickFileIdx, setClickFileIdx] = useState(null);
   const filebodyRef = useRef([]);
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
@@ -69,14 +70,17 @@ const PageFileList = () => {
   const handleMouseHover = fileId => {
     setHoverFileId(fileId);
   };
+
   const handleMouseLeave = () => {
     setHoverFileId(null);
     setHover(false);
   };
+
   const handleHoverIcon = idx => {
     setHoverFileIdx(idx);
     setHover(true);
   };
+
   const handleLeaveIcon = () => {
     setHoverFileIdx(null);
     setHover(false);
@@ -86,56 +90,48 @@ const PageFileList = () => {
     const { target } = e;
     // file layout 외 영역 클릭시.. 다른 구현방법 생각해봐야될 듯
     if (!filebodyRef.current.includes(target.closest('.noteFile'))) {
-      EditorStore.setFileIndex('');
-      EditorStore.setFileElement('');
-      document.removeEventListener('click', handleSelectFile);
+      setClickFileIdx(null);
     }
   };
 
   const handleFileBodyClick = index => {
-    EditorStore.setFileElement(filebodyRef.current[index]);
-    EditorStore.selectFileElement.focus();
-    EditorStore.selectFileElement.scrollIntoView(false);
-    if (EditorStore.selectFileIdx === '')
-      document.addEventListener('click', handleSelectFile);
-    if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);
-    else {
-      EditorStore.setFileIndex('');
-      EditorStore.setFileElement('');
+    console.log('current', index);
+    console.log('click', clickFileIdx);
+    if (clickFileIdx !== index) {
+      setClickFileIdx(index);
+      changeSelectFile(index);
+    } else {
+      setClickFileIdx(null);
     }
   };
-  const changeSelectFile = ele => {
-    EditorStore.setFileElement(ele);
-    EditorStore.selectFileElement.focus();
-    EditorStore.selectFileElement.scrollIntoView(false);
+  const changeSelectFile = changeIdx => {
+    filebodyRef.current[changeIdx].focus();
+    filebodyRef.current[changeIdx].scrollIntoView(false);
   };
 
   const handleKeyDownFile = ({ fileId, index, type }) => e => {
     const { keyCode, target } = e;
-    if (EditorStore.selectFileElement === '')
-      EditorStore.setFileElement(target);
     switch (keyCode) {
       case 37: // <-
-        if (EditorStore.selectFileIdx > 0) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
-          if (EditorStore.selectFileElement.previousElementSibling !== null) {
-            changeSelectFile(
-              EditorStore.selectFileElement.previousElementSibling,
-            );
-          }
+        if (clickFileIdx === 0) return;
+        else {
+          const leftIdx = clickFileIdx - 1;
+          setClickFileIdx(leftIdx);
+          changeSelectFile(leftIdx);
         }
         break;
       case 39: // ->
-        if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
-          EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
-          if (EditorStore.selectFileElement.nextElementSibling !== null) {
-            changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
-          }
+        if (clickFileIdx === filebodyRef.current.length - 1) return;
+        else {
+          const rightIdx = clickFileIdx + 1;
+          setClickFileIdx(rightIdx);
+          changeSelectFile(rightIdx);
         }
         break;
       case 8: // backspace
       case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
-        if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
+        if (!PageStore.pageModel.isReadMode)
+          handleFileRemove(fileId, index, type);
         break;
       default:
         break;
@@ -143,40 +139,38 @@ const PageFileList = () => {
   };
 
   const onClickFileName = item => {
-    const {
-      file_id,
-      file_name,
-      file_extension: extension,
-      user_context_2,
-    } = item;
-    // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
-    if (!PageStore.isReadMode() && !isPreview(extension)) return;
-
-    if (isPreview(extension)) {
-      EditorStore.setPreviewFileMeta({
-        userId: NoteRepository.USER_ID,
-        channelId: NoteRepository.chId,
-        roomId: NoteRepository.WS_ID,
-        fileId: file_id ? file_id : user_context_2,
-        fileName: file_name,
-        fileExtension: extension,
-      });
-      EditorStore.setIsPreview(true);
-      return;
-    }
-    downloadFile(file_id ? file_id : user_context_2);
+    // const {
+    //   file_id,
+    //   file_name,
+    //   file_extension: extension,
+    //   user_context_2,
+    // } = item;
+    // // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+    // if (!PageStore.pageModel.isReadMode && !isPreview(extension)) return;
+    // if (isPreview(extension)) {
+    //   EditorStore.setPreviewFileMeta({
+    //     userId: NoteRepository.USER_ID,
+    //     channelId: NoteRepository.chId,
+    //     roomId: NoteRepository.WS_ID,
+    //     fileId: file_id ? file_id : user_context_2,
+    //     fileName: file_name,
+    //     fileExtension: extension,
+    //   });
+    //   EditorStore.setIsPreview(true);
+    //   return;
+    // }
+    // downloadFile(file_id ? file_id : user_context_2);
   };
 
   const handleFileRemove = (fileId, index, type) => async e => {
     e.stopPropagation();
-
     if (type === 'uploaded') {
       PageStore.pageModel.fileList[index].deleted = true;
       await EditorStore.deleteFile(fileId).then(dto => {
         if (dto.resultMsg === 'Success') {
           setTimeout(() => {
             PageStore.pageModel.fileList.splice(index, 1);
-            // EditorStore.isFileLength();
+            PageStore.pageModel.isFile();
             // removePostProcess();
           }, 1000);
         } else if (dto.resultMsg === 'Fail') {
@@ -200,7 +194,7 @@ const PageFileList = () => {
   );
 
   useEffect(() => {
-    console.log(filebodyRef);
+    document.addEventListener('click', handleSelectFile);
     return () => {
       document.removeEventListener('click', handleSelectFile);
     };
@@ -227,6 +221,9 @@ const PageFileList = () => {
             type: 'uploaded',
           })}
           tabIndex={index}
+          className={
+            clickFileIdx === index ? 'noteFile fileSelected' : 'noteFile'
+          }
           closable={!PageStore.pageModel.isReadMode}
         >
           <FileContent>

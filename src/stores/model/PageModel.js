@@ -102,6 +102,7 @@ class PageModel {
   @action
   setValues(data: Object) {
     set(this, data);
+    this.isFile();
   }
 
   @action
@@ -257,8 +258,8 @@ class PageModel {
     return true;
   }
 
-  @computed
-  get isFile() {
+  @action
+  isFile() {
     let checkFile;
     if (this.fileList.length > 0) {
       checkFile = this.fileList.filter(
@@ -266,11 +267,12 @@ class PageModel {
           !file.file_extension || !EditorStore.isImage(file.file_extension),
       );
     }
-    if (checkFile === undefined) return false;
-    else if (checkFile !== undefined && checkFile.length === 0) return false;
+    if (checkFile === undefined) EditorStore.setIsFile(false);
+    else if (checkFile !== undefined && checkFile.length === 0)
+      EditorStore.setIsFile(false);
     else {
       this.setFileList(checkFile);
-      return true;
+      EditorStore.setIsFile(true);
     }
   }
 

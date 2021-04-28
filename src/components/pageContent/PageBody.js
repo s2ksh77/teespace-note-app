@@ -19,7 +19,7 @@ const PageBody = () => {
     >
       <PageSubHeader />
       <Editor />
-      {PageStore.pageModel.isFile ? <PageFileList /> : null}
+      {EditorStore.isFile ? <PageFileList /> : null}
       <PageTagList />
     </PageBodyContainer>
   ));

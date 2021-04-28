@@ -69,8 +69,10 @@ export const handleUpload = flow(function* handleUpload(item) {
     targetFile = PageStore.pageModel.fileList.filter(
       file => file.file_id === item.file.uid,
     );
-    targetFile[0].progress = e.loaded / totalLength;
-    targetFile[0].status = 'pending';
+    if (item.type !== 'image') {
+      targetFile[0].progress = e.loaded / totalLength;
+      targetFile[0].status = 'pending';
+    }
   };
   try {
     console.log('item', item);
