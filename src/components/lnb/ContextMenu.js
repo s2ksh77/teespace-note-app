@@ -63,22 +63,32 @@ const ContextMenu = ({ noteType, note }) => {
       case 'page': {
         // [TODO : 다음 페이지 선택 ] 20210428 임시 첫 번째 페이지 선택
         // chapterId, id, content, editingUserId, lastUserId, modDate, name, userName
-        const page = await NoteRepository.getNoteInfoList(note.id);
-        if (!page.editingUserId) {
-          await PageStore.deletePage([{ note_id: page.id }]);
-          // 페이지 화면을 보고 있고 현재 보고 있는 페이지를 삭제한 경우
-          if (NoteStore.isPageContent && PageStore.pageModel.id === page.id) {
-            const chapter = ChapterStore.chapterMap.get(page.chapterId);
-            if (chapter.pageList.length > 0) {
-              await PageStore.fetchNoteInfoList(chapter.pageList[0]);
-            } else
-              PageStore.setPageModel(new PageModel({ chapterId: chapter.id })); // 페이지가 없는 경우
+        try {
+          const page = await NoteRepository.getNoteInfoList(note.id);
+          if (!page.editingUserId) {
+            await PageStore.deletePage([{ note_id: page.id }]);
+            // 페이지 화면을 보고 있고 현재 보고 있는 페이지를 삭제한 경우
+            if (
+              NoteStore.isPageContent &&
+              PageStore.pageModel?.id === page.id
+            ) {
+              const chapter = ChapterStore.chapterMap.get(page.chapterId);
+              if (chapter.pageList.length > 0) {
+                await PageStore.fetchNoteInfoList(chapter.pageList[0]);
+              } else
+                PageStore.setPageModel(
+                  new PageModel({ chapterId: chapter.id }),
+                ); // 페이지가 없는 경우
+            }
+          } else {
+            const res = await userStore.fetchProfile(page.editingUserId);
+            // PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+            // NoteStore.setModalInfo('confirm'); // todo
+            alert(`${res.nick ? res.nick : res.name}님이 수정 중입니다`);
           }
-        } else {
-          const res = await userStore.fetchProfile(page.editingUserId);
-          // PageStore.setEditingUserName(res.nick ? res.nick : res.name);
-          // NoteStore.setModalInfo('confirm'); // todo
-          alert(`${res.nick ? res.nick : res.name}님이 수정 중입니다`);
+        } catch (e) {
+          console.log('delete page에서 error');
+          console.log(e);
         }
         // PageStore.getNoteInfoList(note.id).then(async dto => {
         //   if (dto.is_edit === null || dto.is_edit === '') {
