@@ -44,7 +44,6 @@ const LayoutStateButton = () => {
         ChapterStore.chapterList[0].pageList[0].id,
       ); // 여기서 pageModel set한 후 seChId
       PageStore.fetchNoteTagList(ChapterStore.chapterList[0].pageList[0].id);
-      PageStore.pageModel.setChId(ChapterStore.chapterList[0].id);
     } else {
       // 페이지 없는 경우
       PageStore.setPageModel(
