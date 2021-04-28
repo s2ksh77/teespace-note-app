@@ -38,6 +38,12 @@ class NoteStore {
   @observable
   searchStr: String = '';
 
+  @observable
+  isBasicPlan: boolean = false;
+
+  @observable
+  isMailApp: boolean = false;
+
   /* init 관련 변수 Repo -> NoteStore */
   init(data: Object) {
     this.setRoomId(data.roomId);
@@ -103,6 +109,16 @@ class NoteStore {
     this.searchStr = '';
     this.isSearch = false;
     this.searchResult = [];
+  }
+
+  @action
+  setIsBasicPlan(isBasicPlan: boolean) {
+    this.isBasicPlan = isBasicPlan;
+  }
+
+  @action
+  setIsMailApp(isMailApp: boolean) {
+    this.isMailApp = isMailApp;
   }
 
   @action
