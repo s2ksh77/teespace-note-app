@@ -255,15 +255,15 @@ const EditorContainer = () => {
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
-      setTimeout(()=>{
+      setTimeout(() => {
         EditorStore.tinymce?.setMode('readonly');
         EditorStore.editor?.addEventListener('click', handleUnselect);
-      }, 100)
+      }, 100);
     } else {
-      setTimeout(()=>{
+      setTimeout(() => {
         EditorStore.tinymce?.setMode('design');
         EditorStore.editor?.removeEventListener('click', handleUnselect);
-      }, 100)
+      }, 100);
     }
   }, [PageStore.isReadMode()]);
 
@@ -329,14 +329,18 @@ const EditorContainer = () => {
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             <ReadModeIcon src={lockImg} />
-            {
-              authStore.hasPermission('notePage', 'U') 
-              ? <>
-                  <ReadModeText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}</ReadModeText>
-                  <ReadModeSubText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}</ReadModeSubText>
-                </>
-              : <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
-            }            
+            {authStore.hasPermission('notePage', 'U') ? (
+              <>
+                <ReadModeText>
+                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
+                </ReadModeText>
+                <ReadModeSubText>
+                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
+                </ReadModeSubText>
+              </>
+            ) : (
+              <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
+            )}
           </ReadModeContainer>
         ) : null}
         {EditorStore.isSearch ? (
@@ -728,10 +732,11 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
           plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table codesample insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
-        {(authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && <TagListContainer />}
+        {(authStore.hasPermission('notePage', 'U') ||
+          TagStore.notetagList.length > 0) && <TagListContainer />}
         <DriveAttachModal
           visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}

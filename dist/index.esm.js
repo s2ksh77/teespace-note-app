@@ -12750,7 +12750,7 @@ var EditorContainer = function EditorContainer() {
       onEditorChange: getEditorContent,
       apiKey: GlobalVariable.apiKey,
       plugins: "print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
-      toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
+      toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table codesample insertdatetime | insertImage insertfile"
     }), EditorStore.isFile ? /*#__PURE__*/React.createElement(FileLayout, null) : null, (authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && /*#__PURE__*/React.createElement(TagListContainer, null), /*#__PURE__*/React.createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
