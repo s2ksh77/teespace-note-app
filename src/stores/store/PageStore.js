@@ -90,18 +90,25 @@ class PageStore {
     return new PageModel(res);
   });
 
-  @action
-  async renamePage(pageId: string, pageTitle: string, chapterId: string) {
-    const res = await NoteRepository.renamePage({
+  renamePage = flow(function* renamePage({
+    pageId,
+    pageTitle,
+    chapterId,
+  }: {
+    pageId: string,
+    pageTitle: string,
+    chapterId: string,
+  }) {
+    const res = yield NoteRepository.renamePage({
       pageId,
       pageTitle,
       chapterId,
     });
     if (res) {
-      await ChapterStore.fetchChapterList();
+      yield ChapterStore.fetchChapterList();
     }
     return new PageModel(res);
-  }
+  });
 
   @action
   async movePage(pageId: String, chapterId: string) {

@@ -302,9 +302,9 @@ class NoteRepository {
         dto: {
           CH_TYPE: 'CHN0003',
           TYPE: 'RENAME',
-          USER_ID: this.USER_ID,
-          WS_ID: this.WS_ID,
-          note_channel_id: this.chId,
+          USER_ID: NoteStore.userId,
+          WS_ID: NoteStore.roomId,
+          note_channel_id: NoteStore.chId,
           note_id: pageId,
           note_title: pageTitle,
           parent_notebook: chapterId,

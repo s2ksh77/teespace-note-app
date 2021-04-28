@@ -31,7 +31,11 @@ const ContextMenu = ({ itemType, item }) => {
    * 챕터/페이지의 이름을 변경한다.
    */
   const renameComponent = () => {
-    ChapterStore.setRenameInfo({ id: item.id, pre: item.name, cur: item.name });
+    ChapterStore.setRenameInfo({
+      id: item.id,
+      pre: itemType === 'chapter' ? item.name : item.text,
+      cur: itemType === 'chapter' ? item.name : item.text,
+    });
   };
 
   /**
