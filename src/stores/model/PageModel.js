@@ -330,9 +330,9 @@ export const convertPageObjToModel = (
       chapterId: obj.parent_notebook,
     };
   }
-  if (obj.is_edit) {
+  if (Object.keys(obj).includes('is_edit')) {
     return {
-      editingUserId: obj.is_edit,
+      editingUserId: obj.is_edit ?? '',
     };
   }
   if (obj.fileList) {

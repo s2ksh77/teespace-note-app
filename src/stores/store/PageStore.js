@@ -1,9 +1,10 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, flow, observable } from 'mobx';
 import PageModel from '../model/PageModel';
 import TagModel from '../model/TagModel';
 import NoteRepository from '../repository/NoteRepository';
 import ChapterStore from './ChapterStore';
 import NoteStore from './NoteStore';
+
 // @flow
 class PageStore {
   @observable isLoading: boolean = false;
@@ -52,14 +53,13 @@ class PageStore {
     return this.pageModel;
   }
 
-  @action
-  async deletePage(pageList: Array<PageInfo>) {
-    const res = await NoteRepository.deletepage(pageList);
+  deletePage = flow(function* deletePage(pageList: Array<PageInfo>) {
+    const res = yield NoteRepository.deletePage(pageList);
     if (res) {
-      await ChapterStore.fetchChapterList();
+      yield ChapterStore.fetchChapterList();
     }
     return new PageModel(res);
-  }
+  });
 
   @action
   async renamePage(pageId: string, pageTitle: string, chapterId: string) {

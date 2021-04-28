@@ -264,19 +264,21 @@ class NoteRepository {
   }
 
   async deletePage(pageList: Array<String>): Promise<Array<String>> {
-    pageList.forEach(page => {
-      page.USER_ID = this.USER_ID;
-      page.WS_ID = this.WS_ID;
-      page.note_channel_id = this.chId;
-      page.user_name = this.USER_NAME;
-    });
     try {
       const response = await API.Post(`note-api/note?action=Delete`, {
         dto: {
-          noteList: pageList,
+          noteList: pageList.map(page => ({
+            ...page,
+            USER_ID: NoteStore.userId,
+            WS_ID: NoteStore.roomId,
+            note_channel_id: NoteStore.chId,
+            user_name: NoteStore.userName,
+          })),
         },
       });
-      return response ? convertPageObj(response.data.dto) : '';
+      // response가 좀 다름
+      return response;
+      // return response ? convertPageObj(response.data.dto) : '';
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
