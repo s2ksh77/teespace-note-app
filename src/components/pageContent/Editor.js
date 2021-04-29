@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Editor as TinyMCE } from '@tinymce/tinymce-react';
-import { API, useCoreStores } from 'teespace-core';
+import { API, useCoreStores, ComponentStore } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../stores/useNoteStore';
 import { Button, Upload } from 'antd';
@@ -10,6 +10,9 @@ import { EditorContentStyle } from '../../styles/EditorStyle';
 import StorageModel from '../../stores/model/StorageModel';
 import { isFilled } from '../../utils/validators';
 import {
+  openSaveDrive,
+  driveSaveSuccess,
+  driveSaveCancel,
   getFileInfo,
   handleUpload,
   isValidFileNameLength,
@@ -18,6 +21,8 @@ import {
 const Editor = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { authStore, configStore } = useCoreStores();
+  const FilePreview = ComponentStore.get('Drive:FilePreview');
+  const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
   const { t } = useTranslation();
 
   // document.addEventListener('visibilitychange', () => {
@@ -435,6 +440,20 @@ const Editor = () => {
         toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table insertdatetime | insertImage insertfile"
       />
       <HandleUploader />
+      {EditorStore.isPreview ? (
+        <FilePreview
+          visible={EditorStore.isPreview}
+          fileMeta={EditorStore.previewFileMeta}
+          handleClose={() => EditorStore.setIsPreview(false)}
+        />
+      ) : null}
+      <DriveSaveModal
+        visible={EditorStore.isSaveDrive}
+        successCallback={driveSaveSuccess}
+        cancelCallback={driveSaveCancel}
+        file={EditorStore.saveDriveMeta}
+        roomId={NoteStore.roomId}
+      />
     </>
   ));
 };

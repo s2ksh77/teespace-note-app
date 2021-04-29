@@ -29,8 +29,10 @@ import { Dropdown, Menu, Progress, Tooltip } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import {
   convertFileSize,
+  downloadFile,
   fileExtension,
   isPreview,
+  openSaveDrive,
 } from '../common/FileUpload';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +51,7 @@ const PageFileList = () => {
   const [hoverFileIdx, setHoverFileIdx] = useState(null);
   const [hoverTempIdx, setHoverTempIdx] = useState(null);
   const [clickFileIdx, setClickFileIdx] = useState(null);
+  const [downloadFileId, setDownLoadFileId] = useState('');
   const filebodyRef = useRef([]);
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
   // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
@@ -61,8 +64,9 @@ const PageFileList = () => {
 
   const handleFileDown = key => {
     if (key === '0') openSaveDrive();
-    if (key === '1') downloadFile(EditorStore.downloadFileId);
+    if (key === '1') downloadFile(downloadFileId);
   };
+
   const onClickContextMenu = ({ key }) => {
     handleFileDown(key);
   };
@@ -95,8 +99,6 @@ const PageFileList = () => {
   };
 
   const handleFileBodyClick = index => {
-    console.log('current', index);
-    console.log('click', clickFileIdx);
     if (clickFileIdx !== index) {
       setClickFileIdx(index);
       changeSelectFile(index);
@@ -139,27 +141,22 @@ const PageFileList = () => {
   };
 
   const onClickFileName = item => {
-    // const {
-    //   file_id,
-    //   file_name,
-    //   file_extension: extension,
-    //   user_context_2,
-    // } = item;
-    // // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
-    // if (!PageStore.pageModel.isReadMode && !isPreview(extension)) return;
-    // if (isPreview(extension)) {
-    //   EditorStore.setPreviewFileMeta({
-    //     userId: NoteRepository.USER_ID,
-    //     channelId: NoteRepository.chId,
-    //     roomId: NoteRepository.WS_ID,
-    //     fileId: file_id ? file_id : user_context_2,
-    //     fileName: file_name,
-    //     fileExtension: extension,
-    //   });
-    //   EditorStore.setIsPreview(true);
-    //   return;
-    // }
-    // downloadFile(file_id ? file_id : user_context_2);
+    const { file_id, file_name, file_extension } = item;
+    // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+    if (!PageStore.pageModel.isReadMode && !isPreview(file_extension)) return;
+    if (isPreview(file_extension)) {
+      EditorStore.setPreviewFileMeta({
+        userId: NoteStore.userId,
+        channelId: NoteStore.chId,
+        roomId: NoteStore.roomId,
+        fileId: file_id,
+        fileName: file_name,
+        fileExtension: file_extension,
+      });
+      EditorStore.setIsPreview(true);
+      return;
+    }
+    downloadFile(file_id);
   };
 
   const handleFileRemove = (fileId, index, type) => async e => {
@@ -202,8 +199,8 @@ const PageFileList = () => {
 
   const handleClickDropDown = (fileId, fileExt, fileName) => e => {
     e.stopPropagation();
-    EditorStore.setDownLoadFileId(fileId);
-    EditorStore.setSaveFileMeta(fileId, fileExt, fileName);
+    setDownLoadFileId(fileId);
+    EditorStore.setSaveDriveMeta(fileId, fileExt, fileName);
   };
 
   return useObserver(() => (

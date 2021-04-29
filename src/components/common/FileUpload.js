@@ -102,6 +102,19 @@ export const handleUpload = flow(function* handleUpload(item) {
   }
 });
 
+export const openSaveDrive = () => {
+  EditorStore.setIsSaveDrive(true);
+};
+
+export const driveSaveSuccess = () => {
+  EditorStore.setIsSaveDrive(false);
+  // EditorStore.setIsAttatch(true);
+};
+
+export const driveSaveCancel = () => {
+  EditorStore.setIsSaveDrive(false);
+};
+
 // DriveUtils.getDriveFileInfo 참고
 export const isImg = {
   ext: [
@@ -279,6 +292,32 @@ export const isValidFileNameLength = fileName => {
       : fileName.length;
   if (fileName.slice(0, targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
   return true;
+};
+
+export const downloadFile = (fileId: string) => {
+  if (fileId) {
+    window.open(
+      API.baseURL +
+        '/Storage/StorageFile?action=Download' +
+        '&fileID=' +
+        fileId +
+        '&workspaceID=' +
+        NoteStore.roomId +
+        '&channelID=' +
+        NoteStore.chId +
+        '&userID=' +
+        NoteStore.userId,
+    );
+    return;
+  }
+
+  let a = document.createElement('a');
+  document.body.appendChild(a);
+  a.style = 'display: none';
+  a.href = EditorStore.editor.selection.getNode().src;
+  a.download = EditorStore.editor.selection.getNode().getAttribute('data-name');
+  a.click();
+  document.body.removeChild(a);
 };
 
 const insertImage = (type: string, fileId: string, fileName: string) => {

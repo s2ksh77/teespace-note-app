@@ -22,6 +22,14 @@ class EditorStore {
 
   @observable uploadDTO: Object = [];
 
+  @observable previewFileMeta = '';
+
+  @observable isPreview: Boolean = false;
+
+  @observable saveDriveMeta: Object = {};
+
+  @observable isSaveDrive: Boolean = false;
+
   setEditor(editor: object) {
     this.editor = editor;
   }
@@ -49,6 +57,14 @@ class EditorStore {
     this.isFile = flag;
   }
 
+  setIsPreview(flag) {
+    this.isPreview = flag;
+  }
+
+  setPreviewFileMeta(meta) {
+    this.previewFileMeta = meta;
+  }
+
   setUploadFileDTO(model: StorageModel, file, type: string, cancelSource) {
     this.uploadDTO.push({
       model,
@@ -58,6 +74,18 @@ class EditorStore {
     });
     console.log(file);
     this.setPageFileList(model, file.uid, type);
+  }
+
+  setSaveDriveMeta(fileId: String, fileExt: String, fileName: string) {
+    this.saveDriveMeta = {
+      file_id: fileId,
+      file_extension: fileExt,
+      file_name: fileName,
+    };
+  }
+
+  setIsSaveDrive(flag) {
+    this.isSaveDrive = flag;
   }
 
   setPageFileList(model: StorageModel, uid: string, type: string) {
