@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, action } from 'mobx';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
@@ -790,6 +790,9 @@ const PageStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
+},
+{
+  set_CurrentPageData: action
 })
 
 export default PageStore;

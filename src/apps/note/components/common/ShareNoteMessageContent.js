@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCover, NoteTitle } from '../../styles/commonStyle';
+import { MessageCover, NoteTitle, TextCover, NoteType } from '../../styles/commonStyle';
 import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
 import { isFilled } from './validators';
@@ -42,7 +42,8 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   );
 };
 
-const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
+// 챕터 메타태그 추가로 prop에 type 추가
+const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
   /*
     test id
     1) 유효하지 않은 노트 id는 "123"
@@ -143,7 +144,11 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteTitle }) => {
       />
       <MessageCover id="shareNoteMessage" onClick={handleClickMessage}>
         <NoteActiveIcon />
-        <NoteTitle>{noteTitle}</NoteTitle>
+        <TextCover>
+          <NoteType>{type === 'chapter' ? t('tempItemType1') : t('tempItemType2')}</NoteType>
+          <NoteTitle>{noteTitle}</NoteTitle>
+        </TextCover>
+        
       </MessageCover>
     </>
   );

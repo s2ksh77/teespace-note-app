@@ -133,6 +133,8 @@ const languageSet = {
     NOTE_EXPORT_TITLE: 'Title',
 
     tempNoteGuest : 'This feature is not available to guests.',
+    tempItemType1: 'Chapter',
+    tempItemType2: 'Page',
 };
 
 export default languageSet;
