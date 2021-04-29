@@ -140,15 +140,18 @@ class PageStore {
       content: this.pageModel.content,
       textContent: this.pageModel.textContent,
     });
-    if (res) this.pageModel = new PageModel(res);
+    if (res) {
+      this.fetchNoteInfoList(pageId);
+    }
     return this.pageModel;
   }
 
   @action
   async editDone(dto: object) {
     const res = await NoteRepository.editDone(dto);
-    if (res) this.pageModel = new PageModel(res);
-    return this.pageModel;
+    if (res) {
+      this.fetchNoteInfoList(this.pageModel.id);
+    }
   }
 
   @action
