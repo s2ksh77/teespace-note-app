@@ -232,7 +232,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
           <ButtonIcon src={arrowTopIcon} />
         </ButtonWrapper>
       </ChapterWrapper>
-      <PageList page={chapter.pageList} chapterId={chapter.id} />
+      <PageList page={chapter.pageList} chapter={chapter} chapterIdx={index} />
     </ChapterContainer>
   ));
 };

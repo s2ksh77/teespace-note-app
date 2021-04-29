@@ -20,6 +20,10 @@ class PageStore {
 
   isCtrlKeyDown: boolean = false;
 
+  dragEnterChapterIdx: number;
+
+  dragEnterPageIdx: number;
+
   @action
   setIsLoading(isLoading: boolean) {
     this.isLoading = isLoading;
@@ -52,6 +56,14 @@ class PageStore {
 
   setIsCtrlKeyDown(isCtrlKeyDown) {
     this.isCtrlKeyDown = isCtrlKeyDown;
+  }
+
+  setDragEnterChapterIdx(dragEnterChapterIdx: number) {
+    this.dragEnterChapterIdx = dragEnterChapterIdx;
+  }
+
+  setDragEnterPageIdx(dragEnterPageIdx: number) {
+    this.dragEnterPageIdx = dragEnterPageIdx;
   }
 
   @action
@@ -137,6 +149,52 @@ class PageStore {
     const res = await NoteRepository.editDone(dto);
     if (res) this.pageModel = new PageModel(res);
     return this.pageModel;
+  }
+
+  @action
+  getSortedDragDataList() {
+    const dragDataList = [...this.dragData].map(keyValue => keyValue[1]);
+    return dragDataList.sort((a, b) => {
+      if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
+      return a.chapterIdx - b.chapterIdx;
+    });
+  }
+
+  @action
+  async movePage(
+    targetChapterId: string,
+    targetChapterIdx: number,
+    targetPageIdx: number,
+  ) {}
+
+  @action
+  // eslint-disable-next-line class-methods-use-this
+  createSharePage(targetRoomId: string, targetPageList: Array<object>) {
+    if (!targetPageList) return;
+
+    const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
+    const targetList = targetPageList.map(page => {
+      console.log(page);
+      return {
+        WS_ID: NoteStore.roomId,
+        note_id: page.note_id || page.id,
+        note_title: page.text,
+        modified_date: page.date,
+        note_channel_id: NoteStore.chId,
+        USER_ID: NoteStore.userId,
+        shared_user_id: NoteStore.userId,
+        shared_room_name: NoteStore.roomId,
+        target_workspace_id: targetRoomId,
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId,
+      };
+    });
+
+    NoteRepository.createSharePage(targetList).then(() => {
+      ChapterStore.fetchChapterList();
+      NoteStore.setIsDragging(false);
+    });
   }
 }
 

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'antd';
 import useNoteStore from '../../stores/useNoteStore';
+
+import { DRAG_TYPE } from '../../utils/const';
 import { PageWrapper, PageTitle, PageTitleInput } from '../../styles/PageStyle';
 import ContextMenu from './ContextMenu';
 import { checkWhitespace, checkMaxLength } from '../../utils/validators';
@@ -14,10 +17,84 @@ const handleFocus = e => e.target.select();
  * id, parent_notebook, children, created_date, modified_date, note_content
  * text, text_content, type, user_name
  */
-const PageItem = ({ page }) => {
+
+const PageItem = ({ page, pageIdx, chapter, chapterIdx }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+
+  const chapterDragData = {
+    item: chapter,
+    chapterIdx,
+  };
+
+  const pageDragData = {
+    item: page,
+    pageIdx,
+    chapterId: chapter.id,
+    chapterIdx,
+  };
+
+  const [, drag, preview] = useDrag({
+    item: {
+      id: page.id,
+      type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+    },
+    begin: monitor => {
+      if (!PageStore.dragData.get(page.id)) {
+        PageStore.setDragData(new Map([[page.id, pageDragData]]));
+        PageStore.setIsCtrlKeyDown(false);
+      }
+
+      NoteStore.setDraggedType('page');
+      NoteStore.setDraggedItems(
+        PageStore.getSortedDragDataList().map(data => data.item),
+      );
+      NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
+      NoteStore.setIsDragging(true);
+
+      return {
+        type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+        data: [...PageStore.dragData].map(keyValue => {
+          const { item } = keyValue[1];
+          return {
+            id: item.id,
+            text: item.text,
+            date: item.modified_date,
+          };
+        }),
+      };
+    },
+    end: async (item, monitor) => {
+      const res = monitor.getDropResult();
+      if (res && res.target === 'Platform:Friend') {
+        const roomInfo = await res.findRoom();
+        PageStore.createSharePage(roomInfo.id, item.data);
+      } else if (res && res.target === 'Platform:Room') {
+        PageStore.createSharePage(res.targetData.id, item.data);
+      }
+
+      if (!res && item.type === DRAG_TYPE.SHARED_PAGE) {
+        NoteStore.setIsDragging(false);
+      }
+      PageStore.setDragEnterPageIdx('');
+      PageStore.setDragEnterChapterIdx('');
+      NoteStore.setDraggedOffset({});
+    },
+  });
+
+  const [, drop] = useDrop({
+    accept: DRAG_TYPE.PAGE,
+    drop: () => {
+      // PageStore.moveNotePage(chapter.id, chapterIdx, index);
+    },
+    hover() {
+      // if (PageStore.dragEnterChapterIdx !== chapterIdx)
+      //   PageStore.setDragEnterChapterIdx(chapterIdx);
+      // if (PageStore.dragEnterPageIdx !== index)
+      //   PageStore.setDragEnterPageIdx(index);
+    },
+  });
 
   const handlePageClick = async () => {
     await PageStore.fetchNoteInfoList(page.id);
@@ -75,6 +152,10 @@ const PageItem = ({ page }) => {
           : ''
       }
       onClick={handlePageClick}
+      ref={
+        !PageStore.renameId &&
+        (page.type === 'note' ? node => drag(drop(node)) : drag)
+      }
     >
       {ChapterStore.renameInfo.id === page.id ? (
         <PageTitleInput
