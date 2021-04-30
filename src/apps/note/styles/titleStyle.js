@@ -81,7 +81,7 @@ export const ModifiedUser = styled.span`
 export const AutoSaveMsg = styled.span`
   color: #2e6360;
   font-size: 0.6875rem;
-  margin-right: ${props => (props.isSaving ? '0.63rem' : '0.31rem')};
+  margin-right: 0.5rem;
 `;
 
 export const ModifiedTime = styled.span`
