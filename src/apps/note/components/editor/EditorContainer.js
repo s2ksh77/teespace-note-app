@@ -6,12 +6,16 @@ import { handleFileSync } from '../common/NoteFile';
 import EditorHeader from './EditorHeader';
 import {
   EditorContainerWrapper,
+  PageContentLayoutChangeBtnArea,
+  FoldBtn,
+  FoldBtnImg,
   ReadModeContainer,
   ReadModeIcon,
   ReadModeText,
   ReadModeSubText,
   editorContentCSS,
 } from '../../styles/editorStyle';
+import foldImg from '../../assets/arrow_back_1.svg';
 import { Button, Upload } from 'antd';
 import lockImg from '../../assets/lock.svg';
 import TagListContainer from '../tag/TagListContainer';
@@ -325,6 +329,18 @@ const EditorContainer = () => {
         isFile={EditorStore.isFile}
         isSearch={EditorStore.isSearch}
       >
+        <PageContentLayoutChangeBtnArea
+          onMouseOver={() => NoteStore.setIsHoveredFoldBtnLine(true)}
+          onMouseOut={() => NoteStore.setIsHoveredFoldBtnLine(false)}
+        />
+        <FoldBtn
+          isExpanded={NoteStore.isContentExpanded}
+          show={NoteStore.layoutState !== "collapse" && NoteStore.isHoveredFoldBtnLine}
+          onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
+          onClick={() => NoteStore.toggleIsContentExpanded()}
+        >
+          <FoldBtnImg src={foldImg} />
+        </FoldBtn>
         <EditorHeader />
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>

@@ -133,6 +133,9 @@ const languageSet = {
     NOTE_EXPORT_TITLE: '제목',
 
     tempNoteGuest : '게스트 환경에서는 제공하지 않는 기능입니다.',
+    tempItemType1: '챕터',
+    tempItemType2: '페이지',
+    tempChapterMetatagDeleted: '챕터가 삭제되어 불러올 수 없습니다.'
 };
 
 export default languageSet;

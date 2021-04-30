@@ -1,5 +1,8 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
+import { useCoreStores, logEvent } from 'teespace-core';
+import Mark from 'mark.js';
+import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../store/useStore';
 import {
   EditorHeaderContainer1,
@@ -17,11 +20,7 @@ import {
 import ContentHeader from '../common/ContentHeader';
 import waplWorking from '../../assets/wapl_working.svg';
 import { handleFileSync } from '../common/NoteFile';
-import { useCoreStores } from 'teespace-core';
 import searchImg from '../../assets/search.svg';
-import Mark from 'mark.js';
-import { logEvent } from 'teespace-core';
-import { useTranslation } from 'react-i18next';
 import { checkMaxLength } from '../common/validators';
 
 const EditorHeader = () => {
@@ -30,8 +29,16 @@ const EditorHeader = () => {
   const { t } = useTranslation();
   const instance = new Mark(EditorStore.tinymce?.getBody());
 
+  const initialSearch = () => {
+    instance.unmark();
+    EditorStore.setSearchResultState(false);
+    EditorStore.setSearchValue('');
+    EditorStore.setSearchTotalCount(0);
+    EditorStore.setSearchCurrentCount(0);
+  };
+
   // 뒤로 가기 버튼
-  const handleLayoutBtn = async e => {
+  const handleLayoutBtn = async () => {
     if (PageStore.isReadMode()) {
       EditorStore.setIsSearch(false);
       initialSearch();
@@ -83,63 +90,49 @@ const EditorHeader = () => {
   const handleTitleInput = e => PageStore.setTitle(checkMaxLength(e));
 
   const handleSearchEditor = () => {
-    EditorStore.isSearch
-      ? EditorStore.setIsSearch(false)
-      : EditorStore.setIsSearch(true);
+    if (EditorStore.isSearch) EditorStore.setIsSearch(false);
+    else EditorStore.setIsSearch(true);
     initialSearch();
-  };
-  const initialSearch = () => {
-    instance.unmark();
-    EditorStore.setSearchResultState(false);
-    EditorStore.setSearchValue('');
-    EditorStore.setSearchTotalCount(0);
-    EditorStore.setSearchCurrentCount(0);
   };
 
   return useObserver(() => (
     <>
-      <ContentHeader handleBackBtn={handleLayoutBtn} alignment={'center'}>
+      <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorHeaderContainer1>
-          {authStore.hasPermission('notePage', 'U') &&
-            <EditBtn
-              data-btn="editorEditBtn"
-              onClick={handleClickBtn}
-            >
+          {authStore.hasPermission('notePage', 'U') && (
+            <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
               {PageStore.isReadMode()
                 ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
-                : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
-              }
+                : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
             </EditBtn>
-          }
+          )}
           <EditorTitle
             id="editorTitle"
             maxLength="200"
             placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
             value={PageStore.noteTitle}
             onChange={handleTitleInput}
-            disabled={!PageStore.isReadMode() ? false : true}
+            disabled={!!PageStore.isReadMode()}
             autoComplete="off"
           />
         </EditorHeaderContainer1>
         <EditorHeaderContainer2>
-          {PageStore.saveStatus.saving ? (
-            <AutoSaveMsg isSaving={true}>
-              {t('NOTE_EDIT_PAGE_AUTO_SAVE_01')}
-            </AutoSaveMsg>
-          ) : PageStore.saveStatus.saved ? (
+          {PageStore.saveStatus.saving && (
+            <AutoSaveMsg>{t('NOTE_EDIT_PAGE_AUTO_SAVE_01')}</AutoSaveMsg>
+          )}
+          {PageStore.saveStatus.saved && (
             <AutoSaveMsg>{t('NOTE_EDIT_PAGE_AUTO_SAVE_02')}</AutoSaveMsg>
-          ) : (
+          )}
+          {!PageStore.saveStatus.saved &&
             (!PageStore.isReadMode() || PageStore.otherEdit) && (
               <EditingImg src={waplWorking} />
-            )
+            )}
+          {PageStore.isReadMode() && (
+            <>
+              <ModifiedUser>{PageStore.displayName}</ModifiedUser>
+              <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
+            </>
           )}
-          {/* {(!PageStore.isReadMode() || PageStore.otherEdit) && <EditingImg src={waplWorking} />} */}
-          <ModifiedUser>
-            {!PageStore.isReadMode()
-              ? userStore.myProfile.displayName
-              : PageStore.displayName}
-          </ModifiedUser>
-          <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
           <EditorSearchIconDiv onClick={handleSearchEditor}>
             <EditorSearchIcon src={searchImg} />
           </EditorSearchIconDiv>

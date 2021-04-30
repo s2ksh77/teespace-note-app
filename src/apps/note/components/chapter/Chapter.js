@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import useNoteStore from '../../store/useStore';
 import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import ChapterColor from '../chapter/ChapterColor';
-import ChapterText from '../chapter/ChapterText';
+import useNoteStore from '../../store/useStore';
+import ChapterColor from './ChapterColor';
+import ChapterText from './ChapterText';
 import PageList from '../page/PageList';
 import {
   ChapterContainer,
@@ -13,9 +13,10 @@ import {
   ChapterTextInput,
   ChapterShareIcon,
 } from '../../styles/chpaterStyle';
+import trashImg from '../../assets/trash.svg';
 import shareImg from '../../assets/share_1.svg';
 import sharedPageImg from '../../assets/page_shared.svg';
-import { DRAG_TYPE } from '../../GlobalVariable';
+import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import NoteUtil from '../../NoteUtil';
 import { checkMaxLength } from '../common/validators';
 
@@ -71,7 +72,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       return {
         type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
         data: [...ChapterStore.moveInfoMap].map(keyValue => {
-          const item = keyValue[1].item;
+          const { item } = keyValue[1];
           return {
             id: item.id,
             text: item.text,
@@ -116,14 +117,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const handleChapterName = e => ChapterStore.setRenameText(checkMaxLength(e));
 
   const handleChapterTextInput = isEscape => () => {
-    // escape면 원래대로 돌아가기
-    if (isEscape) {
-    }
-    // 기존과 동일 이름인 경우 통과
-    else if (ChapterStore.renameText === title) {
-    }
-    // 다 통과했으면 rename 가능
-    else {
+    if (!isEscape && ChapterStore.renameText !== title) {
       ChapterStore.renameNoteChapter(color);
     }
 
@@ -178,23 +172,28 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   const renderChapterIcon = () => {
     if (!isShared) {
+      if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN)
+        return (
+          <ChapterShareIcon
+            selected={ChapterStore.currentChapterId === id}
+            src={trashImg}
+          />
+        );
       return <ChapterColor color={color} chapterId={id} />;
-    } else {
-      if (chapter.type === 'shared_page')
-        return (
-          <ChapterShareIcon
-            selected={ChapterStore.currentChapterId === id}
-            src={sharedPageImg}
-          />
-        );
-      else
-        return (
-          <ChapterShareIcon
-            selected={ChapterStore.currentChapterId === id}
-            src={shareImg}
-          />
-        );
     }
+    if (chapter.type === 'shared_page')
+      return (
+        <ChapterShareIcon
+          selected={ChapterStore.currentChapterId === id}
+          src={sharedPageImg}
+        />
+      );
+    return (
+      <ChapterShareIcon
+        selected={ChapterStore.currentChapterId === id}
+        src={shareImg}
+      />
+    );
   };
 
   const handleFoldBtnClick = e => {
@@ -224,9 +223,8 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         itemType="chapter"
       >
         <ChapterCover
-          className={
-            'chapter-div' +
-            (ChapterStore.isCtrlKeyDown
+          className={`chapter-div${
+            ChapterStore.isCtrlKeyDown
               ? ChapterStore.moveInfoMap.get(chapter.id)
                 ? ' selectedMenu'
                 : ''
@@ -236,8 +234,8 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
                     : chapter.id === ChapterStore.currentChapterId
                 )
               ? ' selectedMenu'
-              : '')
-          }
+              : ''
+          }`}
           ref={
             authStore.hasPermission('noteShareChapter', 'C') &&
             !ChapterStore.renameId
@@ -263,7 +261,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
                 else if (e.key === 'Escape') handleChapterTextInput(true)();
               }}
               onFocus={handleFocus}
-              autoFocus={true}
+              autoFocus
             />
           ) : (
             <ChapterText
@@ -275,7 +273,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
           )}
         </ChapterCover>
         <PageList
-          showNewPage={!isShared}
+          showNewPage={!isShared && !CHAPTER_TYPE.RECYCLE_BIN}
           chapter={chapter}
           chapterIdx={index}
         />

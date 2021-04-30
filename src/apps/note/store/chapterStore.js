@@ -295,7 +295,7 @@ const ChapterStore = observable({
   async getSearchList(searchStr) {
     const {
       data: { dto },
-    } = await NoteRepository.getSearchList(searchStr || ChapterStore.searchStr);
+    } = await NoteRepository.getSearchList(searchStr || this.searchStr);
     return dto;
   },
 
@@ -474,13 +474,6 @@ const ChapterStore = observable({
       JSON.stringify(newFoldedMap, NoteUtil.replacer)
     )
     return sharedChapters;
-  },
-
-  // localStorage에서 page 얻기
-  getFirstPageFromChapter(chapterId) {
-    const chapter = this.chapterList.find(chapter => chapter.id === chapterId);
-    if (!chapter || chapter.children.length === 0) return null;
-    return chapter.children[0]?.id;
   },
 
   async createNoteChapter() { 
@@ -725,9 +718,9 @@ const ChapterStore = observable({
   */
   // 처음 축소 상태에서 확대 상태로 바꿀 때
   async fetchFirstNote() {
-    ChapterStore.setLoadingPageInfo(true);
-    await ChapterStore.setFirstNoteInfo();
-    ChapterStore.setLoadingPageInfo(false);
+    this.setLoadingPageInfo(true);
+    await this.setFirstNoteInfo();
+    this.setLoadingPageInfo(false);
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
   async fetchChapterList() {
@@ -739,6 +732,39 @@ const ChapterStore = observable({
     }
     this.setLoadingPageInfo(false);
   },
+
+  // localStorage에서 page 얻기
+  getChapterFirstPageId(chapterId) {
+    const chapter = this.chapterList.find(chapter => chapter.id === chapterId);
+    if (!chapter || chapter.children.length === 0) return null;
+    return chapter.children[0]?.id;
+  },
+
+  async openNote() {
+    try {
+      switch (NoteStore.metaTagInfo.type){
+        case "chapter": // chapter, page 선택
+          NoteStore.setTargetLayout('LNB');
+          await this.getNoteChapterList();
+          this.setCurrentChapterId(NoteStore.metaTagInfo.id);
+          const pageId = this.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+          /**
+           * 현재 챕터 클릭 로직과 동일하게 함
+           * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
+           * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
+           */
+          await PageStore.fetchCurrentPageData(pageId ? pageId : '');
+          break;
+        case "page":
+          await PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);          
+          NoteStore.setTargetLayout('Content');// 챕터 없습니다 페이지 나오지 않게 하기
+          break;
+      }
+    } catch(e) {
+      console.log('e', e)
+    }
+    NoteStore.setMetaTagInfo({isOpen:false, type:'', id:''});
+  }
 });
 
 export default ChapterStore;

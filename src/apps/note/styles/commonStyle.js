@@ -166,18 +166,32 @@ export const ContextMenuIcon = styled.img`
 
 // ShareNoteMessage
 export const MessageCover = styled.div`
-  border-radius: 0.75rem;
-  background-color: white;
-  width: 15.31rem;
+  width: 14.44rem;
   height: 3.19rem;
   display: flex;
-  padding: 0.69rem 0.75rem;
+  align-items: center;
+  padding: 0.56rem 0.75rem;
   box-sizing: border-box;
+  border-radius: 12px;
   border: 1px solid #DDD9D4;
+  background-color: #FAF8F5;
   cursor: pointer;
   &:hover {
     text-decoration:underline;
   }
+`;
+
+export const TextCover = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 2.5rem);
+  overflow: hidden;
+  margin-left:0.75rem;
+`;
+
+export const NoteType = styled.span`
+  font-size: 0.563rem;
+  color: #75757F;
 `;
 
 export const NoteTitle = styled.span`
@@ -187,8 +201,7 @@ export const NoteTitle = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   font-size:0.75rem;
-  align-self: center;
-  padding-left: 0.75rem;
+  color: #000000;
 `;
 
 export const RoomShareCover = styled.div`

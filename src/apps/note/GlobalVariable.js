@@ -1,8 +1,8 @@
 const GlobalVariable = {
-  apiKey: "90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3",
+  apiKey: '90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3',
   editorWrapper: null,
   isBasicPlan: false,
-  isMailApp:false,
+  isMailApp: false,
   setEditorWrapper(ref) {
     this.editorWrapper = ref;
   },
@@ -11,8 +11,8 @@ const GlobalVariable = {
   },
   setIsMailApp(isMailApp) {
     this.isMailApp = isMailApp;
-  }
-}
+  },
+};
 
 export default GlobalVariable;
 
@@ -21,12 +21,13 @@ export const CHAPTER_TYPE = {
   DEFAULT: 'default',
   NOTEBOOK: 'notebook',
   SHARED_PAGE: 'shared_page',
-  SHARED: 'shared'
-}
+  SHARED: 'shared',
+  RECYCLE_BIN: 'recycle_bin',
+};
 
 export const DRAG_TYPE = {
   CHAPTER: 'Item:Note:Chapters',
   PAGE: 'Item:Note:Pages',
   SHARED_CHAPTER: 'Item:Note:SharedChapters',
-  SHARED_PAGE: 'Item:Note:SharedPages'
-}
+  SHARED_PAGE: 'Item:Note:SharedPages',
+};

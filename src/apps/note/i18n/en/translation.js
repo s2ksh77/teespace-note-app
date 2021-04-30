@@ -133,6 +133,10 @@ const languageSet = {
     NOTE_EXPORT_TITLE: 'Title',
 
     tempNoteGuest : 'This feature is not available to guests.',
+    tempItemType1: 'Chapter',
+    tempItemType2: 'Page',
+    tempChapterMetatagDeleted: 'Failed to get the chapter because it has deleted.',
+
 };
 
 export default languageSet;
