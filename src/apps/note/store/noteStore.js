@@ -41,12 +41,6 @@ const NoteStore = observable({
   i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
-  getNoteIdFromTalk() {
-    return this.noteIdFromTalk;
-  },
-  setNoteIdFromTalk(noteId) {
-    this.noteIdFromTalk = noteId;
-  },
   setMetaTagInfo({isOpen=false, type='', id=''}) {
     this.metaTagInfo = {isOpen, type, id};
   },
