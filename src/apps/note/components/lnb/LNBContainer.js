@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useTranslation } from 'react-i18next';
+import useNoteStore from '../../store/useStore';
 import {
   LNBCover,
   LNBChapterCover,
@@ -10,13 +13,9 @@ import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from './LNBTag';
 import LNBSearchResult from './LNBSearchResult';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import SearchingImg from '../common/SearchingImg';
 import Chapter from '../chapter/Chapter';
 import NoteUtil from '../../NoteUtil';
-import { useTranslation } from 'react-i18next';
-import LNBRecycleBin from './LNBRecyclebin';
 
 const { getChapterNumType } = NoteUtil;
 
@@ -91,13 +90,13 @@ const LNBContainer = () => {
             show={ChapterStore.isNewChapter}
             createNewChapter={createNewChapter}
           />
-          {ChapterStore.isSearching || ChapterStore.isTagSearching ? (
-            ChapterStore.isLoadingSearchResult ? (
-              <SearchingImg />
-            ) : (
-              <LNBSearchResult />
-            )
+          {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
+          ChapterStore.isLoadingSearchResult ? (
+            <SearchingImg />
           ) : (
+            <LNBSearchResult />
+          )}
+          {!ChapterStore.isSearching && !ChapterStore.isTagSearching && (
             <DndProvider backend={HTML5Backend}>
               {ChapterStore.chapterList.map((item, index) => {
                 switch (getChapterNumType(item.type)) {
@@ -109,7 +108,6 @@ const LNBContainer = () => {
                         chapter={item}
                         index={index}
                         flexOrder={1}
-                        isShared={false}
                       />
                     );
                   case 2: // SHARED_PAGE
@@ -119,8 +117,8 @@ const LNBContainer = () => {
                           key={item.id}
                           chapter={item}
                           index={index}
-                          flexOrder={4}
-                          isShared={true}
+                          flexOrder={2}
+                          isShared
                         />
                       );
                     break;
@@ -130,17 +128,24 @@ const LNBContainer = () => {
                         key={item.id}
                         chapter={item}
                         index={index}
-                        flexOrder={4}
-                        isShared={true}
+                        flexOrder={2}
+                        isShared
                       />
                     );
                   case 4:
-                    return <LNBRecycleBin key={item.id} flexOrder={2} />;
+                    return (
+                      <Chapter
+                        key={item.id}
+                        chapter={item}
+                        index={index}
+                        flexOrder={3}
+                      />
+                    );
                   default:
                     break;
                 }
               })}
-              <LNBTag flexOrder={3} />
+              <LNBTag flexOrder={4} />
             </DndProvider>
           )}
         </LNBChapterCover>
