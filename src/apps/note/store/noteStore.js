@@ -8,7 +8,7 @@ import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
 
 const NoteStore = observable({
-  noteIdFromTalk: '',
+  metaTagInfo: {isOpen:false, type:'', id:''},
   loadingNoteApp: true,
   workspaceId: '',
   notechannel_id: '',
@@ -46,6 +46,9 @@ const NoteStore = observable({
   },
   setNoteIdFromTalk(noteId) {
     this.noteIdFromTalk = noteId;
+  },
+  setMetaTagInfo({isOpen=false, type='', id=''}) {
+    this.metaTagInfo = {isOpen, type, id};
   },
   getLoadingNoteApp() {
     return this.loadingNoteApp;
@@ -92,6 +95,7 @@ const NoteStore = observable({
 
     if (typeof callback === 'function') callback();
   },
+  // metaTagInfo는 init하면 안 됨
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
@@ -300,14 +304,6 @@ const NoteStore = observable({
 
     return dto;
   },
-  async openNote(noteId) {
-    this.setLoadingNoteApp(true);
-    this.setShowPage(true);
-    this.setTargetLayout('Content');
-    await PageStore.fetchCurrentPageData(noteId);
-    this.setLoadingNoteApp(false);
-    this.setNoteIdFromTalk("");
-  }
 });
 
 export default NoteStore;

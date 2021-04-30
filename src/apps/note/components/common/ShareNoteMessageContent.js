@@ -8,6 +8,7 @@ import NoteRepository from '../../store/noteRepository';
 import NoteUtil from '../../NoteUtil';
 import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
+import { DRAG_TYPE } from '../../GlobalVariable';
 
 //platform 코드 가져왔음
 const REM_UNIT = 16;
@@ -42,96 +43,125 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   );
 };
 
+const isChapter = (type) => {
+  switch (type) {
+    case DRAG_TYPE.CHAPTER:
+    case DRAG_TYPE.SHARED_CHAPTER:
+      return true;
+      break;    
+    case DRAG_TYPE.PAGE:
+    case DRAG_TYPE.SHARED_PAGE:
+    default: // 2021 5월 정기배포 이전에는 type이 없었음 (무조건 페이지)
+      return false;
+      break;
+  }
+}
+
 // 챕터 메타태그 추가로 prop에 type 추가
+// noteId : chapterId 혹은 pageId
 const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
-  /*
-    test id
-    1) 유효하지 않은 노트 id는 "123"
-    noteId = "123"
-    2) 삭제된 노트 id test
-    noteId = "f73d1c57-2f40-4aa4-960e-212b70a894f3"
-    3) 유효한 노트 id
-    noteId = "010ddb34-ea14-4ff4-ae1d-61cfb2349625"
-  */
   // 테스트용
-  // roomId = "d2456ccd-c4f3-4b74-8645-b31c04ee82ac";
-  // if (!noteId) noteId = "0e27f084-1088-4110-bbf1-73817f1662ef"
+  // noteId = "278be57c-94fd-4cfe-9ac3-ed7e86dc0598" // 페이지 없는 chapter
+  // type='Item:Note:SharedChapters';
+  // noteId = "bb3ccb97-4403-4b3d-a8ba-74dc5480629a"; // 페이지 있는 chapter
   if (!noteId) return null;
 
   const history = useHistory();
-  const { NoteStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
   const [informDeleted, setInformDeleted] = useState(false);
-  noteTitle = NoteUtil.decodeStr(noteTitle);
 
-  // const [imgSrc, setImgSrc] = useState(noteImg);
-  // hover 효과 사라짐(혹시 몰라 남겨둠)
-  // const handleMouseOver = () => {
-  //   setImgSrc(hoverImg);
-  // }
-
-  // const handleMouseOut = () => {
-  //   setImgSrc(noteImg);
-  // }
-
-  const handleClickMessage = async e => {
-    // 해당 페이지 보고 있을 때(readMode, 수정 모드 모두) handleClickOutside editor 로직 타지 않도록
-    e.stopPropagation();
-    // 혹시나
-    if (!history) return;
-
-    const isNoteApp = history.location.search === '?sub=note';
-    // 0. 해당 페이지 보고 있었거나 다른 페이지 수정중인 경우는 Modal 먼저 띄워야
-    // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
-    if (isNoteApp && NoteStore.targetLayout !== 'LNB') {
-      if (PageStore.currentPageId === noteId) return;
-      // 다른 페이지 수정중인 경우 Modal 띄우기
-      if (!PageStore.isReadMode()) {
-        if (!EditorStore.isEditCancelOpen()) {
-          PageStore.handleNoneEdit();
-          return;
-        }
-        NoteStore.setModalInfo('editCancel');
-        return;
-      }
-    }
-
-    // 1. 해당 noteInfo를 가져온다(삭제되었는지 확인)
-    const targetChId = RoomStore.getChannelIds({ roomId })[
-      NoteRepository.CH_TYPE
-    ];
+  const isDeletedChapter = async() => {
+    const response = await ChapterStore.getChapterInfoList(noteId);
+    if (!response) return true; // valid chapterId이면 dto있고 아니면 header만 있음
+    return false;
+  }
+  const isDeletedPage = async() => {
+    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
     const {
       data: { dto: noteInfo },
     } = await API.Get(
       `note-api/noteinfo?action=List&note_id=${noteId}&note_channel_id=${targetChId}`,
     );
+    // 아직 모달을 띄울 수 없음
+    if (!noteInfo || !isFilled(noteInfo.note_id)) return true;
+    return false;
+  }
+  
+  // LNB 상에서 해당 chapter가 선택돼 있는 경우
+  const isCurrentChapter = () => {
+    if (NoteStore.targetLayout === 'LNB' && ChapterStore.currentChapterId === noteId) return true;
+    return false;
+  }
+  // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
+  const isCurrentPage = () => {
+    if (NoteStore.targetLayout !== 'LNB' && PageStore.currentPageId === noteId) return true;
+    return false;
+  }
 
-    if (!noteInfo || !isFilled(noteInfo.note_id)) {
-      // 아직 모달을 띄울 수 없음
-      setInformDeleted(true);
-      return;
-    }
+  /**
+   *  해당 페이지 보고 있었거나 다른 페이지 수정중인 경우 Modal 띄워야
+   */
+  const isEditing = () => {
+    if (NoteStore.targetLayout === 'LNB') return false;
+    if (PageStore.isReadMode()) return false; // 읽기모드이면 false
+    // 다른 페이지 수정중인 경우 Modal 띄우기
+    if (EditorStore.isEditCancelOpen()) {
+      NoteStore.setModalInfo('editCancel');
+      return true;
+    } else {
+      PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나
+      return true;
+    }    
+  }
 
-    // 2. 노트앱 열기
+  const _openNote = (isNoteApp) => {
+    // 노트앱 열기
     // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
+    NoteStore.setMetaTagInfo({isOpen:true, type:isChapter(type) ? 'chapter' : 'page', id: noteId});
     if (!isNoteApp) {
       history.push({
         pathname: history.location.pathname,
         search: `?sub=note`,
       });
-      NoteStore.setNoteIdFromTalk(noteId);
-    } else NoteStore.openNote(noteId);
+    } else {
+      ChapterStore.openNote();
+    }
   };
+  
+  const handleClickChapterTag = async e => {
+    e.stopPropagation();
+    const isNoteApp = history.location.search === '?sub=note';
+    // case 1. [ type === chapter ] LNB 상에서 해당 chapter가 선택돼 있는 경우
+    if (isNoteApp && isCurrentChapter()) return;
 
-  const handleClick = () => {
-    setInformDeleted(false);
-  };
+    if (isNoteApp && isEditing()) return;
+    
+    if (await isDeletedChapter()) return setInformDeleted(true);
+    
+    _openNote(isNoteApp);
+  }
+
+  const handleClickPageTag = async e => {
+    e.stopPropagation();
+    const isNoteApp = history.location.search === '?sub=note';
+    // case 1. [ type === page ] 해당 페이지를 이미 보고 있음
+    if (isNoteApp && isCurrentPage()) return;
+    // case 2. [ type === page ] 다른 페이지 수정 중인 경우 나가기 팝업 띄우거나 NoneEdit
+    if (isNoteApp && isEditing()) return;
+
+    if (await isDeletedPage()) return setInformDeleted(true);
+
+    _openNote(isNoteApp);
+  }
+
+  const handleClick = () => setInformDeleted(false);
 
   return (
     <>
       <Message
         visible={informDeleted}
-        title={t('TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01')}
+        title={isChapter(type) ? t('tempChapterMetatagDeleted') : t('TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01')}
         type="error"
         btns={[
           {
@@ -142,10 +172,10 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
           },
         ]}
       />
-      <MessageCover id="shareNoteMessage" onClick={handleClickMessage}>
+      <MessageCover id="shareNoteMessage" onClick={isChapter(type) ? handleClickChapterTag : handleClickPageTag}>
         <NoteActiveIcon />
         <TextCover>
-          <NoteType>{type === 'chapter' ? t('tempItemType1') : t('tempItemType2')}</NoteType>
+          <NoteType>{isChapter(type) ? t('tempItemType1') : t('tempItemType2')}</NoteType>
           <NoteTitle>{noteTitle}</NoteTitle>
         </TextCover>
         

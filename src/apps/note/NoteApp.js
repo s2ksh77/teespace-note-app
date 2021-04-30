@@ -39,10 +39,6 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     // 노트앱 -> 다른 앱 -> 노트앱일 때, 다른 앱 가기 전에 초기화해주었기 때문에 isOtherRoom === true
     const isOtherRoom = NoteStore.workspaceId !== roomId;
 
-    /* 
-      NoteStore.openNoteAfterInit : 다시 init해야하는 경우
-      ShareNoteMessage는 noteInfo 서비스콜 보내고 노트앱을 
-    */
     if (isOtherRoom) {
       const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
       const isBasicPlan = spaceStore.currentSpace?.plan === "BASIC";
@@ -51,12 +47,18 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         GlobalVariable.setIsBasicPlan(isBasicPlan);
         GlobalVariable.setIsMailApp(!isBasicPlan && configStore.isActivateComponent('Note', 'customLink:openLink'));
         NoteStore.addWWMSHandler((authStore.sessionInfo.deviceType === 'PC') ? true : false); // PC인지 아닌지
+        NoteStore.initVariables();
+        // 톡 메타태그 클릭하여 노트앱 진입시
+        if (channelId && NoteStore.metaTagInfo.isOpen) {
+          NoteStore.setLoadingNoteApp(true); // 첫 진입시에만 loading이미지 보여주기
+          await ChapterStore.openNote();
+          NoteStore.setLoadingNoteApp(false);
+          return;
+        }
         // 깜빡임 방지위해 만든 변수
         NoteStore.setLoadingNoteApp(false);
-        NoteStore.initVariables();
 
         if (!channelId) return;
-        else if (NoteStore.noteIdFromTalk) NoteStore.openNote(NoteStore.noteIdFromTalk);
         else if (layoutState === 'collapse') {
           // lnb는 따로 로딩 화면 X
           ChapterStore.getNoteChapterList();
