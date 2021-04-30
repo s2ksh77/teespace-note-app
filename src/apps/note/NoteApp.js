@@ -6,8 +6,6 @@ import { GlobalStyle, LNB, Content } from './GlobalStyles';
 import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
-import { FoldBtn, FoldBtnImg } from './styles/editorStyle';
-import foldImg from './assets/arrow_back_1.svg';
 import { WWMS, useCoreStores, Toast, ComponentStore } from 'teespace-core';
 import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
@@ -87,14 +85,6 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     return () => EditorStore.setInitialSearchState();
   }, [roomId, channelId])
 
-  const handleFoldBtn = e => {
-    const targetX = e.currentTarget.getBoundingClientRect().x;
-    if (Math.abs(targetX - e.clientX) <= 5)
-      NoteStore.setIsHoveredFoldBtnLine(true);
-    else
-      NoteStore.setIsHoveredFoldBtnLine(false);
-  };
-
   const handleCloseMailModal = () => {
     NoteStore.setIsMailShare(false);
     NoteStore.setMailShareFileObjs([]);
@@ -119,24 +109,10 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
           <Content
             id="note-content"
             show={renderCondition('Content')}
-            onMouseOver={handleFoldBtn}
-            onMouseOut={handleFoldBtn}
             isBorderLeft={NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded}
           >
-            <FoldBtn
-              isExpanded={NoteStore.isContentExpanded}
-              show={(
-                NoteStore.showPage
-                && NoteStore.layoutState !== "collapse"
-                && NoteStore.isHoveredFoldBtnLine)}
-              onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
-              onClick={() => NoteStore.toggleIsContentExpanded()}
-            >
-              <FoldBtnImg src={foldImg} />
-            </FoldBtn>
             <PageContainer />
             <TagContainer />
-            {/* {NoteStore.showPage ? <PageContainer /> : <TagContainer />} */}
           </Content>
           <Toast
             visible={NoteStore.isVisibleToast}

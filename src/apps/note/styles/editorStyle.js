@@ -33,6 +33,13 @@ export const EditorContainerWrapper = styled.div`
   `}
 `;
 
+export const PageContentLayoutChangeBtnArea = styled.span`
+  position: absolute;
+  width: 1rem;
+  height: 100%;
+  z-index: 1;
+`;
+
 export const ReadModeContainer = styled.div`
   width: 100%;
   height: 2.81rem;
