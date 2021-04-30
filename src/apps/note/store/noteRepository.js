@@ -527,6 +527,32 @@ class NoteRepository {
       },
     });
   }
+
+  async throwPage(pageId) {
+    try {
+      return await API.post(`note-api/noteRecycleBin?action=Update`, {
+        dto: {
+          note_id: pageId,
+          parent_notebook: null,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async restorePage(pageId, chapterId) {
+    try {
+      return await API.post(`note-api/noteRecycleBin?action=Update`, {
+        dto: {
+          note_id: pageId,
+          parent_notebook: chapterId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();

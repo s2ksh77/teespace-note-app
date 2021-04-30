@@ -790,6 +790,24 @@ const PageStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
+
+  async throwPage(pageId) {
+    const {
+      data: { dto },
+    } = await NoteRepository.throwPage(pageId);
+    if(dto.resultMsg === 'Success'){
+
+    }
+  },
+
+  async restorePage(pageId, chapterId) {
+    const {
+      data: { dto },
+    } = await NoteRepository.restorePage(pageId, chapterId);
+    if(dto.resultMsg === 'Success'){
+      
+    }
+  },
 },
 {
   set_CurrentPageData: action
