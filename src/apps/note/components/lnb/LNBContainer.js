@@ -16,6 +16,7 @@ import SearchingImg from '../common/SearchingImg';
 import Chapter from '../chapter/Chapter';
 import NoteUtil from '../../NoteUtil';
 import { useTranslation } from 'react-i18next';
+import LNBRecycleBin from './LNBRecyclebin';
 
 const { getChapterNumType } = NoteUtil;
 
@@ -118,7 +119,7 @@ const LNBContainer = () => {
                           key={item.id}
                           chapter={item}
                           index={index}
-                          flexOrder={3}
+                          flexOrder={4}
                           isShared={true}
                         />
                       );
@@ -129,15 +130,17 @@ const LNBContainer = () => {
                         key={item.id}
                         chapter={item}
                         index={index}
-                        flexOrder={3}
+                        flexOrder={4}
                         isShared={true}
                       />
                     );
+                  case 4:
+                    return <LNBRecycleBin key={item.id} flexOrder={2} />;
                   default:
                     break;
                 }
               })}
-              <LNBTag flexOrder={2} />
+              <LNBTag flexOrder={3} />
             </DndProvider>
           )}
         </LNBChapterCover>
