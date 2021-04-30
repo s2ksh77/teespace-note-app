@@ -39,7 +39,7 @@ const HeaderButtons = () => {
         EventBus.dispatch('onLayoutExpand');
         if (NoteStore.targetLayout === 'Content')
           ChapterStore.getNoteChapterList();
-        else if (!PageStore.currentPageId) ChapterStore.fetchFirstNote();
+        else if (!ChapterStore.currentChapterId && !PageStore.currentPageId) ChapterStore.fetchFirstNote();
         NoteStore.setTargetLayout(null);
         break;
     }
