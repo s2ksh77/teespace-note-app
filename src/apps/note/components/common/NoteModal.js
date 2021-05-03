@@ -24,13 +24,18 @@ const NoteModal = observer(() => {
   const { t } = useTranslation();
   const { targetComponent, modalName, title, // Modal, Message 공통 prop
     type, subTitle, btns, // 이 줄은 Message, 아래줄은 Modal prop 
-    className, handleCancel } = NoteStore.modalInfo;
-  // NoteMeta에서 NoteFile을 가져오면 안돼ㅓ
+    className} = NoteStore.modalInfo;
+  // NoteMeta에서 NoteFile을 가져오면 안된다
   if (modalName === 'failUploadByFileNameLen') {
     btns[0].onClick = (e) => {
       e.stopPropagation(); NoteStore.setModalInfo(null);
       if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
     };
+  }
+
+  const handleCancel = function (e) {
+    e.stopPropagation();
+    NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
   }
 
   const RenderModalContent = () => {
@@ -40,7 +45,7 @@ const NoteModal = observer(() => {
       case "forward": // 다른 룸으로 전달 팝업
         return <ForwardModal handleCancel={handleCancel} />;
       case "restore": // 페이지 복원 후 위치할 챕터 선택 팝업
-        return <RestoreModal handleCancel={handleCancel} />;
+        return <RestoreModal />;
       default:return;
     }
   };

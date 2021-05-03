@@ -17,14 +17,9 @@ const NoteMeta = {
   },
   // antd modal prop 만들기
   setModalConfig(type) {
-    const handleCancel = function (e) {
-      e.stopPropagation();
-      NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
-    }
     const initialConfig = {
       targetComponent: "Modal",
       modalName: type,
-      handleCancel
     }
     switch (type) {
       case "viewInfo":

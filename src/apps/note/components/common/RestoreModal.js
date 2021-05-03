@@ -23,7 +23,7 @@ const RightButton = styled(Button)`
 /**
  * state 관리 때문에 footer도 여기에
  */
-const RestoreModal = ({handleCancel}) => {
+const RestoreModal = () => {
   const { NoteStore, ChapterStore } = useNoteStore();
   const { t } = useTranslation();
 	const [selectedId, setSelectedId] = useState('');
@@ -32,8 +32,15 @@ const RestoreModal = ({handleCancel}) => {
 
   const chapterList = ChapterStore.chapterList.filter(chapter => NoteUtil.getChapterNumType(chapter.type) <= 1);
   
+	const handleCancel = e => {
+		e.stopPropagation();
+		NoteStore.setModalInfo(null);
+	}
+
 	const handleClickRestore = () => {
 		// 복구 로직 넣기, 선택된 챕터는 selectedId임
+
+		NoteStore.setModalInfo(null); // 임시로 넣음
 	}
 
   return (
