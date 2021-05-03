@@ -76,7 +76,7 @@ const EditorHeader = () => {
       // 수정모드 진입시 lnb 검색 결과 초기화
       if (NoteStore.layoutState !== 'collapse') ChapterStore.initSearchVar();
       if (PageStore.otherEdit) {
-        const res = await userStore.fetchProfile(PageStore.getEditingUserID());
+        const res = await userStore.getProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);
         NoteStore.setModalInfo('editingPage');
       } else PageStore.noteEditStart(PageStore.currentPageData.note_id);

@@ -48,7 +48,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             note => note.is_edit !== null && note.is_edit !== '',
           );
           if (editingList.length === 1) {
-            const res = await userStore.fetchProfile(editingList[0].is_edit);
+            const res = await userStore.getProfile(editingList[0].is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
             NoteStore.setModalInfo('confirm');
           } else if (editingList.length > 1) {
@@ -78,7 +78,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             }
             NoteStore.setModalInfo('page');
           } else {
-            const res = await userStore.fetchProfile(dto.is_edit);
+            const res = await userStore.getProfile(dto.is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
             NoteStore.setModalInfo('confirm');
           }
