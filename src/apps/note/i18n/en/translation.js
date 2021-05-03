@@ -123,20 +123,39 @@ const languageSet = {
     NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
     NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
     NOTE_GUEST_02: 'This feature is not available to guests.',
-    CM_FORWARD: 'Forward',
+    NOTE_CONTEXT_MENU_01: 'Forward',
 
-    TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: 'Failed to get the note because it has deleted.',
     DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
     
     NOTE_EDIT_PAGE_UPDATE_TIME_01: `{{time}} AM`,
     NOTE_EDIT_PAGE_UPDATE_TIME_02: `{{time}} PM`,
     NOTE_EXPORT_TITLE: 'Title',
 
-    tempNoteGuest : 'This feature is not available to guests.',
-    tempItemType1: 'Chapter',
-    tempItemType2: 'Page',
-    tempChapterMetatagDeleted: 'Failed to get the chapter because it has deleted.',
+    NOTE_CONTEXT_MENU_01: 'Forwarded to another room.',
+    NOTE_CONTEXT_MENU_02: 'Recover',
+    NOTE_CONTEXT_MENU_03: 'Empty Trash',
+    NOTE_DND_ACTION_01:'Cannot move.',
 
+    NOTE_BIN_01: 'Trash',
+    NOTE_BIN_02: 'Moved to Trash.',
+    NOTE_BIN_03: `{{num}} pages have been moved to Trash.`,
+    NOTE_BIN_04: 'Chapter deleted.',
+    NOTE_BIN_05: 'After 30 days, pages are deleted from the Trash.',
+    NOTE_BIN_06: 'Do you want to permanently delete this page?',
+    NOTE_BIN_07: 'This action cannot be undone.',
+    NOTE_BIN_08:`Do you want to permanently delete {{num}} pages?`,
+
+
+    NOTE_BIN_RESTORE_01:'Which chapter do you want to restore to?',
+    NOTE_BIN_RESTORE_02:'Page has been restored.',
+    NOTE_BIN_RESTORE_03:`{{num}} pages have been restored.`,
+    
+    NOTE_EDIT_PAGE_MENUBAR_36: 'Source Code',
+    NOTE_RECOVER_DATA_01:'There is a page being created.\nDo you want to recover?',
+    NOTE_META_TAG_01:'Chapter',
+    NOTE_META_TAG_02: 'Page',
+    NOTE_META_TAG_03: 'Unable to load the page because it has been deleted.',
+    NOTE_META_TAG_04: 'Unable to load the chapter because it has been deleted.',
 };
 
 export default languageSet;

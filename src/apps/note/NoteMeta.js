@@ -36,7 +36,7 @@ const NoteMeta = {
       case "forward":
         return {
           ...initialConfig,
-          title: i18n.t('CM_FORWARD'),
+          title: i18n.t('NOTE_CONTEXT_MENU_01'),
           className: "forwardModal"
         }
       default:
@@ -213,7 +213,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
-        dialogType.title = 'TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01';
+        dialogType.title = 'NOTE_META_TAG_03';
         dialogType.btns = this.setBtns('deletedPage');
         break;
       case 'multiFileSomeFail':
