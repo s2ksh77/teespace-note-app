@@ -251,7 +251,6 @@ export const exportData = async (isMailShare, type, exportId) => {
         type === 'chapter'
             ? await getChapterHtml(exportId)
             : await getPageHtml(exportId);
-    if (!html) return;
 
     makeExportElement(html);
     exportDownloadPDF(isMailShare, type);
