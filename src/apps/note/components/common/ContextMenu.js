@@ -177,7 +177,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
       )}
       {authStore.hasPermission('noteSharePage', 'C') && (
-        <Item key="2">{t('CM_FORWARD')}</Item>
+        <Item key="2">{t('NOTE_CONTEXT_MENU_01')}</Item>
       )}
       {GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && (
         <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
@@ -186,9 +186,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         <SubMenu
           title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
           onTitleClick={handleSubMenuClick}
-          disabled={
-            noteType === 'chapter' && !note.children.length ? true : false
-          }
         >
           <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
           <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>

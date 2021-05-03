@@ -161,7 +161,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     <>
       <Message
         visible={informDeleted}
-        title={isChapter(type) ? t('tempChapterMetatagDeleted') : t('TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01')}
+        title={isChapter(type) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03')}
         type="error"
         btns={[
           {
@@ -175,7 +175,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
       <MessageCover id="shareNoteMessage" onClick={isChapter(type) ? handleClickChapterTag : handleClickPageTag}>
         <NoteActiveIcon />
         <TextCover>
-          <NoteType>{isChapter(type) ? t('tempItemType1') : t('tempItemType2')}</NoteType>
+          <NoteType>{isChapter(type) ? t('NOTE_META_TAG_01') : t('NOTE_META_TAG_02')}</NoteType>
           <NoteTitle>{noteTitle}</NoteTitle>
         </TextCover>
         

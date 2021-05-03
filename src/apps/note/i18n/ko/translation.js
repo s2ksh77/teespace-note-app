@@ -15,7 +15,7 @@ const languageSet = {
     NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
-    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지도 삭제됩니다.',
+    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
     NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
     NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
     NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
@@ -121,21 +121,41 @@ const languageSet = {
     NOTE_ADD_TAGS_01: '태그 추가',
     NOTE_ADD_TAGS_02: '읽기 모드에서는 태그 추가를 할 수 없습니다.',
     NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
+
     NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
     NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
-    CM_FORWARD: '다른 룸으로 전달',
 
-    TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: '노트가 삭제되어 불러올 수 없습니다.',
     DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
     
     NOTE_EDIT_PAGE_UPDATE_TIME_01: `오전 {{time}}`,
     NOTE_EDIT_PAGE_UPDATE_TIME_02: `오후 {{time}}`,
     NOTE_EXPORT_TITLE: '제목',
 
-    tempNoteGuest : '게스트 환경에서는 제공하지 않는 기능입니다.',
-    tempItemType1: '챕터',
-    tempItemType2: '페이지',
-    tempChapterMetatagDeleted: '챕터가 삭제되어 불러올 수 없습니다.'
+    NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
+    NOTE_CONTEXT_MENU_02: '복구',
+    NOTE_CONTEXT_MENU_03: '휴지통 비우기',
+    NOTE_DND_ACTION_01:'이동 불가능합니다.',
+
+    NOTE_BIN_01: '휴지통',
+    NOTE_BIN_02: '휴지통으로 이동되었습니다.',
+    NOTE_BIN_03: `{{num}}개의 페이지가 휴지통으로 이동되었습니다.`,
+    NOTE_BIN_04: '챕터가 삭제되었습니다.',
+    NOTE_BIN_05: '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
+    NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
+    NOTE_BIN_07: '삭제된 페이지는 복구할 수 없습니다.',
+    NOTE_BIN_08:`{{num}}개의 페이지를 영구 삭제하시겠습니까?`,
+
+
+    NOTE_BIN_RESTORE_01:'어느 챕터로 복구하시겠습니까?',
+    NOTE_BIN_RESTORE_02:'복구되었습니다.',
+    NOTE_BIN_RESTORE_03:`{{num}}개의 페이지가 복구되었습니다.`,
+    
+    NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
+    NOTE_RECOVER_DATA_01:'작성 중인 페이지가 있습니다.\n내용을 복구하시겠습니까?',
+    NOTE_META_TAG_01:'챕터',
+    NOTE_META_TAG_02: '페이지',
+    NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
+    NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
 };
 
 export default languageSet;

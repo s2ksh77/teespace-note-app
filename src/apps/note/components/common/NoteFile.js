@@ -267,8 +267,7 @@ export const getChapterHtml = async exportId => {
         noteList.forEach((page, idx) => {
             html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${page.note_title}</span><p><br></p>${page.note_content}<span class=${idx === (noteList.length - 1) ? '' : "afterClass"}></span>`
         })
-    } else alert('하위에 속한 페이지가 없습니다.');
-
+    } else  html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${ChapterStore.exportChapterTitle}</span>`;
     return html;
 };
 
@@ -427,7 +426,7 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
       ${page.note_content}
       ${(idx === (noteList.length - 1)) ? '' : '<br />'}`
         })
-    } else return alert('하위에 속한 페이지가 없습니다.');
+    } else returnData += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</span>`;
 
     getTxtFormat(chapterTitle, returnData);
 }

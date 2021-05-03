@@ -151,6 +151,7 @@ const EditorContainer = () => {
   const DriveAttachModal = ComponentStore.get('Drive:DriveAttachModal');
   const FilePreview = ComponentStore.get('Drive:FilePreview');
   const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
+  const inputRef = useRef(null);
 
   const editorWrapperRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
@@ -321,6 +322,10 @@ const EditorContainer = () => {
     }
   }, [PageStore.isReadMode()]);
 
+  useEffect(()=>{ // WaplSearch ref prop이 없음.
+    if(EditorStore.isSearch) inputRef.current?.lastChild?.lastChild.focus();
+  },[EditorStore.isSearch])
+
   return useObserver(() => (
     <>
       <EditorContainerWrapper
@@ -360,7 +365,7 @@ const EditorContainer = () => {
           </ReadModeContainer>
         ) : null}
         {EditorStore.isSearch ? (
-          <ReadModeContainer style={{ display: 'flex' }}>
+          <ReadModeContainer ref={inputRef} style={{ display: 'flex' }}>
             <StyledWaplSearch
               onChange={handleSearchInputChange}
               placeholder={t('NOTE_EDIT_PAGE_SEARCH_03')}
