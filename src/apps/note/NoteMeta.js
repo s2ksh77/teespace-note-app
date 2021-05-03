@@ -87,6 +87,14 @@ const NoteMeta = {
         })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'deletePage': // 페이지 영구 삭제
+        eventList.push(function (e) {
+          e.stopPropagation();
+          PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
+          if (EditorStore.fileList) EditorStore.deleteAllFile();
+        })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        break;
       case 'uploadingFiles':
       case 'editCancel':
         eventList.push(function (e) {
@@ -180,6 +188,12 @@ const NoteMeta = {
       case 'page':
         dialogType.type = 'error';
         dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
+        dialogType.btns = this.setBtns('delete');
+        break;
+      case 'deletePage': // 페이지 영구 삭제
+        dialogType.type = 'error';
+        dialogType.title = 'NOTE_BIN_06';
+        dialogType.subtitle = i18n.t('NOTE_BIN_07'),
         dialogType.btns = this.setBtns('delete');
         break;
       case 'confirm':

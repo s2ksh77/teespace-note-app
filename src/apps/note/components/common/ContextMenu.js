@@ -1,16 +1,16 @@
 import React from 'react';
-import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
+import { Menu } from 'antd';
+import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
+import useNoteStore from '../../store/useStore';
 import {
   ContextMenuCover,
   ContextMenuIconCover,
   ContextMenuIcon,
 } from '../../styles/commonStyle';
 import viewMoreIcon from '../../assets/view_more.svg';
-import { Menu } from 'antd';
 import { exportData, exportPageAsTxt, exportChapterAsTxt } from './NoteFile';
-import { useCoreStores } from 'teespace-core';
-import { useTranslation } from 'react-i18next';
 import GlobalVariable from '../../GlobalVariable';
 
 const { SubMenu, Item } = Menu;
@@ -36,8 +36,28 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     targetStore.setRenameText(note.text);
   };
 
+  const setSelectableIdOfChapter = () => {
+    const selectableChapter =
+      chapterIdx > 0
+        ? ChapterStore.chapterList[chapterIdx - 1]
+        : ChapterStore.chapterList[1];
+    const selectableChapterId = selectableChapter?.id;
+    const selectablePageId = selectableChapter?.children[0]?.id;
+
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
+  const setSelectableIdOfPage = () => {
+    const selectablePageId =
+      pageIdx > 0 ? parent.children[pageIdx - 1]?.id : parent.children[1]?.id;
+
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
   /**
    * 챕터/페이지를 삭제한다.
+   * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
    */
   const deleteComponent = async () => {
     switch (noteType) {
@@ -45,7 +65,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         ChapterStore.setDeleteChapterId(note.id);
         ChapterStore.getChapterChildren(note.id).then(async dto => {
           const editingList = dto.noteList.filter(
-            note => note.is_edit !== null && note.is_edit !== '',
+            page => page.is_edit !== null && page.is_edit !== '',
           );
           if (editingList.length === 1) {
             const res = await userStore.getProfile(editingList[0].is_edit);
@@ -89,25 +109,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     }
   };
 
-  const setSelectableIdOfChapter = () => {
-    const selectableChapter =
-      chapterIdx > 0
-        ? ChapterStore.chapterList[chapterIdx - 1]
-        : ChapterStore.chapterList[1];
-    const selectableChapterId = selectableChapter?.id;
-    const selectablePageId = selectableChapter?.children[0]?.id;
-
-    ChapterStore.setSelectableChapterId(selectableChapterId);
-    PageStore.setSelectablePageId(selectablePageId);
-  };
-
-  const setSelectableIdOfPage = () => {
-    const selectablePageId =
-      pageIdx > 0 ? parent.children[pageIdx - 1]?.id : parent.children[1]?.id;
-
-    PageStore.setSelectablePageId(selectablePageId);
-  };
-
   const shareComponent = () => {
     NoteStore.setShareNoteType(noteType);
     NoteStore.setShareContent(note);
@@ -148,13 +149,16 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
 
-    if (key === '0') renameComponent();
-    else if (key === '1') deleteComponent();
-    else if (key === '2') shareComponent();
-    else if (key === '3') exportComponent(true);
-    else if (key === '4') exportComponent(false);
-    else if (key === '5') exportTxtComponent();
-    else infoComponent();
+    if (key === 'rename') renameComponent();
+    else if (key === 'throw') deleteComponent();
+    else if (key === 'forward') shareComponent();
+    else if (key === 'sendEmail') exportComponent(true);
+    else if (key === 'exportPDF') exportComponent(false);
+    else if (key === 'exportTXT') exportTxtComponent();
+    else if (key === 'viewInfo') infoComponent();
+    else if (key === 'emptyRecycleBin');
+    else if (key === 'restore');
+    else if (key === 'delete');
 
     if (key)
       NoteStore.LNBChapterCoverRef.removeEventListener(
@@ -167,35 +171,58 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     domEvent.stopPropagation();
   };
 
-  // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
-  const menu = (
-    <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-      {note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && (
-        <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
-      )}
-      {authStore.hasPermission('notePage', 'D') && (
-        <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
-      )}
-      {authStore.hasPermission('noteSharePage', 'C') && (
-        <Item key="2">{t('NOTE_CONTEXT_MENU_01')}</Item>
-      )}
-      {GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && (
-        <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
-      )}
-      {authStore.hasPermission('notePage', 'C') && (
-        <SubMenu
-          title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
-          onTitleClick={handleSubMenuClick}
-        >
-          <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
-          <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
-        </SubMenu>
-      )}
-      {note.type === 'shared' && (
-        <Item key="6">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>
-      )}
-    </Menu>
-  );
+  const menu = (() => {
+    switch (note.type) {
+      case 'recycle_bin':
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+            <Item key="emptyRecycleBin">{t('NOTE_CONTEXT_MENU_03')}</Item>
+          </Menu>
+        );
+      case 'recycle':
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+            <Item key="restore">{t('NOTE_CONTEXT_MENU_02')}</Item>
+            <Item key="delete">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
+          </Menu>
+        );
+      default:
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
+            {note.type !== 'shared_page' &&
+              authStore.hasPermission('notePage', 'U') && (
+                <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
+              )}
+            {authStore.hasPermission('noteSharePage', 'C') && (
+              <Item key="forward">{t('NOTE_CONTEXT_MENU_01')}</Item>
+            )}
+            {GlobalVariable.isMailApp &&
+              authStore.hasPermission('noteMailShare', 'C') && (
+                <Item key="sendEmail">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
+              )}
+            {authStore.hasPermission('notePage', 'C') && (
+              <SubMenu
+                title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
+                onTitleClick={handleSubMenuClick}
+              >
+                <Item key="exportPDF">
+                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}
+                </Item>
+                <Item key="exportTXT">
+                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}
+                </Item>
+              </SubMenu>
+            )}
+            {note.type === 'shared' && (
+              <Item key="viewInfo">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>
+            )}
+            {authStore.hasPermission('notePage', 'D') && (
+              <Item key="throw">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
+            )}
+          </Menu>
+        );
+    }
+  })();
 
   return useObserver(() => (
     <ContextMenuCover
