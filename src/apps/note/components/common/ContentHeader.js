@@ -1,7 +1,12 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
-import { ContentHeaderCover, PreBtnWrapper, Button, RightAligned } from '../../styles/commonStyle';
+import {
+  ContentHeaderCover,
+  PreBtnWrapper,
+  Button,
+  RightAligned,
+} from '../../styles/commonStyle';
 import HeaderButtons from './buttons';
 import preImg from '../../assets/arrow_back_1.svg';
 
@@ -10,17 +15,16 @@ const ContentHeader = ({ handleBackBtn, alignment, children }) => {
   // editor header부분은 borderBottom 없게
   return useObserver(() => (
     <>
-      <ContentHeaderCover
-        borderBottom={alignment === "center" ? false : true}
-      >
+      <ContentHeaderCover borderBottom={alignment !== 'center'}>
         <PreBtnWrapper
           show={NoteStore.layoutState === 'collapse'}
+          onClick={handleBackBtn}
         >
-          <Button src={preImg} onClick={handleBackBtn} />
+          <Button src={preImg} />
         </PreBtnWrapper>
-        {alignment === "center" ? (children) : null}
+        {alignment === 'center' ? children : null}
         <RightAligned>
-          {alignment === "right" ? (children) : null}
+          {alignment === 'right' ? children : null}
           <HeaderButtons />
         </RightAligned>
       </ContentHeaderCover>
