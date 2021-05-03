@@ -15,7 +15,7 @@ const languageSet = {
     NOTE_PAGE_LIST_DEL_PGE_CHPT_04: 'Delete',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_05: 'Cancel',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_06: 'Do you want to delete this chapter?',
-    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages that belong to the chapter are also deleted.',
+    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages belonging to the chapter are moved to Trash.',
     NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
     NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
     NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click Modify to edit this page.',

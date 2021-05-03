@@ -491,6 +491,9 @@ const ChapterStore = observable({
 
   deleteNoteChapter() {
     this.deleteChapter(this.deleteChapterId).then(() => {
+      NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
+      NoteStore.setIsVisibleToast(true);
+
       this.getNoteChapterList();
       if (this.currentChapterId === this.deleteChapterId) {
         this.setCurrentChapterId(this.selectableChapterId);

@@ -15,7 +15,7 @@ const languageSet = {
     NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
     NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
-    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지도 삭제됩니다.',
+    NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
     NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
     NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
     NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
