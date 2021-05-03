@@ -3074,7 +3074,7 @@ var languageSet = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지도 삭제됩니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
   NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
   NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
@@ -3182,19 +3182,36 @@ var languageSet = {
   NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
   NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
   NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
-  CM_FORWARD: '다른 룸으로 전달',
-  TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: '노트가 삭제되어 불러올 수 없습니다.',
   DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
   NOTE_EXPORT_TITLE: '제목',
-  tempNoteGuest: '게스트 환경에서는 제공하지 않는 기능입니다.',
-  tempItemType1: '챕터',
-  tempItemType2: '페이지',
-  tempChapterMetatagDeleted: '챕터가 삭제되어 불러올 수 없습니다.'
+  NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
+  NOTE_CONTEXT_MENU_02: '복구',
+  NOTE_CONTEXT_MENU_03: '휴지통 비우기',
+  NOTE_DND_ACTION_01: '이동 불가능합니다.',
+  NOTE_BIN_01: '휴지통',
+  NOTE_BIN_02: '휴지통으로 이동되었습니다.',
+  NOTE_BIN_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uD734\uC9C0\uD1B5\uC73C\uB85C \uC774\uB3D9\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
+  NOTE_BIN_04: '챕터가 삭제되었습니다.',
+  NOTE_BIN_05: '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
+  NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
+  NOTE_BIN_07: '삭제된 페이지는 복구할 수 없습니다.',
+  NOTE_BIN_08: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC601\uAD6C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
+  NOTE_BIN_RESTORE_01: '어느 챕터로 복구하시겠습니까?',
+  NOTE_BIN_RESTORE_02: '복구되었습니다.',
+  NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uAD6C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
+  NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
+  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\n내용을 복구하시겠습니까?',
+  NOTE_META_TAG_01: '챕터',
+  NOTE_META_TAG_02: '페이지',
+  NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
+  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.'
 };
 
-var languageSet$1 = {
+var _languageSet;
+
+var languageSet$1 = (_languageSet = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
   NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
   NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
@@ -3211,7 +3228,7 @@ var languageSet$1 = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_04: 'Delete',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_05: 'Cancel',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_06: 'Do you want to delete this chapter?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages that belong to the chapter are also deleted.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages belonging to the chapter are moved to Trash.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
   NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
   NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click Modify to edit this page.',
@@ -3319,17 +3336,12 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
   NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
   NOTE_GUEST_02: 'This feature is not available to guests.',
-  CM_FORWARD: 'Forward',
-  TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: 'Failed to get the note because it has deleted.',
+  NOTE_CONTEXT_MENU_01: 'Forward',
   DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
-  NOTE_EXPORT_TITLE: 'Title',
-  tempNoteGuest: 'This feature is not available to guests.',
-  tempItemType1: 'Chapter',
-  tempItemType2: 'Page',
-  tempChapterMetatagDeleted: 'Failed to get the chapter because it has deleted.'
-};
+  NOTE_EXPORT_TITLE: 'Title'
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _languageSet);
 
 var resources = {
   ko: {
@@ -5876,7 +5888,7 @@ var NoteMeta = {
 
       case "forward":
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
-          title: i18n.t('CM_FORWARD'),
+          title: i18n.t('NOTE_CONTEXT_MENU_01'),
           className: "forwardModal"
         });
 
@@ -6111,7 +6123,7 @@ var NoteMeta = {
         break;
 
       case 'deletedPage':
-        dialogType.title = 'TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01';
+        dialogType.title = 'NOTE_META_TAG_03';
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
