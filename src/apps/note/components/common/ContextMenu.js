@@ -38,6 +38,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
   /**
    * 챕터/페이지를 삭제한다.
+   * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
    */
   const deleteComponent = async () => {
     switch (noteType) {
