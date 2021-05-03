@@ -528,12 +528,16 @@ class NoteRepository {
     });
   }
 
-  async throwPage(pageId) {
+  async throwPage(pageList) {
+    // pageList -> pageId 리스트
+    pageList.forEach(page => {
+      page.note_channel_id = this.chId;
+      page.parent_notebook = null;
+    });
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
-          note_id: pageId,
-          parent_notebook: null,
+          noteList: pageList
         },
       });
     } catch (e) {
@@ -541,12 +545,14 @@ class NoteRepository {
     }
   }
 
-  async restorePage(pageId, chapterId) {
+  async restorePage(pageList) {
+    // pageList -> pageId 리스트, chapterId 리스트 
+    // [{note_id: asdf, parent_notebook : asdf} ... ]
+    pageList.forEach(page => page.note_channel_id = this.chId);
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
-          note_id: pageId,
-          parent_notebook: chapterId,
+          noteList: pageList
         },
       });
     } catch (e) {

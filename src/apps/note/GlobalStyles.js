@@ -399,6 +399,32 @@ export const GlobalStyle = createGlobalStyle`
     border-top: 0px solid black !important;
     padding:1.75rem 0 !important;
   }
+  .restoreModal .ant-modal-header {
+    height: 6.69rem !important;
+    border-bottom: 0px;
+  }
+  .restoreModal .ant-modal-title {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    height:100%; !important;
+  }
+  .restoreModal .ant-modal-body {
+    padding: 0rem !important;
+    height: 10.44rem !important;
+    box-sizing: border-box;
+    font-size: 0.813rem;
+  }
+  .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){
+    width: 23rem;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .restoreModal .ant-modal-footer{
+    border-top: 0px;
+  }
   #note-content .ant-upload.ant-upload-select{
     display: none;
   }

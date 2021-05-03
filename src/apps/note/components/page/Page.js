@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import useNoteStore from '../../store/useStore';
 import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
-import { getEmptyImage } from "react-dnd-html5-backend";
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import { Tooltip } from 'antd';
+import moment from 'moment-timezone';
+import useNoteStore from '../../store/useStore';
 import ContextMenu from '../common/ContextMenu';
 import { NewNoteMark } from '../../styles/chpaterStyle';
 import {
@@ -14,10 +16,8 @@ import {
   PageText,
   PageTextInput,
 } from '../../styles/pageStyle';
-import { Tooltip } from 'antd';
 import NoteUtil from '../../NoteUtil';
 import { DRAG_TYPE } from '../../GlobalVariable';
-import moment from 'moment-timezone';
 import { checkMaxLength } from '../common/validators';
 
 const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
@@ -29,37 +29,43 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const chapterMoveInfo = {
     item: chapter,
-    chapterIdx: chapterIdx,
+    chapterIdx,
   };
   const pageMoveInfo = {
     item: page,
     pageIdx: index,
     chapterId: chapter.id,
-    chapterIdx: chapterIdx,
+    chapterIdx,
   };
 
   const [, drag, preview] = useDrag({
-    item: { id: page.id, type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE },
-    begin: (monitor) => {
+    item: {
+      id: page.id,
+      type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+    },
+    begin: monitor => {
       if (!PageStore.moveInfoMap.get(page.id)) {
         PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
       NoteStore.setDraggedType('page');
-      NoteStore.setDraggedItems(PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item));
+      NoteStore.setDraggedItems(
+        PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item),
+      );
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
       return {
         type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
         data: [...PageStore.moveInfoMap].map(keyValue => {
-          const item = keyValue[1].item;
+          const { item } = keyValue[1];
           return {
             id: item.id,
             text: item.text,
             date: item.modified_date,
-          }
+            type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+          };
         }),
       };
     },
@@ -72,7 +78,8 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.createNoteSharePage(res.targetData.id, item.data);
       }
 
-      if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
+      if (!res && item.type === DRAG_TYPE.SHARED_PAGE)
+        NoteStore.setIsDragging(false);
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
@@ -96,25 +103,29 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const handleSelectPage = useCallback((e) => {
-    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
-    ChapterStore.setIsCtrlKeyDown(false);
+  const handleSelectPage = useCallback(
+    e => {
+      ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+      ChapterStore.setIsCtrlKeyDown(false);
 
-    if (e.ctrlKey) {
-      if (PageStore.moveInfoMap.get(page.id)) PageStore.deleteMoveInfoMap(page.id);
-      else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
-      PageStore.setIsCtrlKeyDown(true);
-      return;
-    }
+      if (e.ctrlKey) {
+        if (PageStore.moveInfoMap.get(page.id))
+          PageStore.deleteMoveInfoMap(page.id);
+        else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
+        PageStore.setIsCtrlKeyDown(true);
+        return;
+      }
 
-    PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
-    PageStore.setIsCtrlKeyDown(false);
-    onClick(page.id);
-  }, [page]);
+      PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
+      PageStore.setIsCtrlKeyDown(false);
+      onClick(page.id);
+    },
+    [page],
+  );
 
-  const handlePageName = (e) => PageStore.setRenameText(checkMaxLength(e));
+  const handlePageName = e => PageStore.setRenameText(checkMaxLength(e));
 
-  const handlePageTextInput = (isEscape) => {
+  const handlePageTextInput = isEscape => {
     if (!isEscape) {
       PageStore.renameNotePage(chapter.id);
     }
@@ -127,22 +138,24 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   };
 
   const handleTooltip = e => {
-    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+    setIsEllipsisActive(
+      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
+    );
   };
 
-  const handleFocus = (e) => e.target.select();
+  const handleFocus = e => e.target.select();
 
   return useObserver(() => (
     <PageCover
       ref={
         authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId
-          ? (page.type === 'note' 
-            ? (node) => drag(drop(node))
-            : drag)
+          ? page.type === 'note'
+            ? node => drag(drop(node))
+            : drag
           : null
       }
       id={page.id}
-      className={'page-li'}
+      className="page-li"
       onClick={handleSelectPage}
     >
       <PageMargin />
@@ -159,14 +172,13 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             else if (e.key === 'Escape') handlePageTextInput(true);
           }}
           onFocus={handleFocus}
-          autoFocus={true}
+          autoFocus
         />
       ) : (
         <PageTextCover
           className={
             PageStore.dragEnterChapterIdx === chapterIdx
-              ? PageStore.dragEnterPageIdx === index
-                && (page.type === 'note')
+              ? PageStore.dragEnterPageIdx === index && page.type === 'note'
                 ? 'borderTopLine'
                 : ''
               : ''
@@ -175,32 +187,34 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
           <PageTextContainer
             className={
               PageStore.isCtrlKeyDown
-                ? (PageStore.moveInfoMap.get(page.id)
-                    ? 'selected'
-                    : '')
-                : (NoteStore.showPage && (
-                    NoteStore.isDragging && PageStore.moveInfoMap.size > 0
-                      ? page.id === [...PageStore.moveInfoMap][0][0]
-                      : page.id === PageStore.currentPageId)
-                    ? 'selected'
-                    : '')
+                ? PageStore.moveInfoMap.get(page.id)
+                  ? 'selected'
+                  : ''
+                : NoteStore.showPage &&
+                  (NoteStore.isDragging && PageStore.moveInfoMap.size > 0
+                    ? page.id === [...PageStore.moveInfoMap][0][0]
+                    : page.id === PageStore.currentPageId)
+                ? 'selected'
+                : ''
             }
           >
-            <Tooltip 
-              placement='bottomLeft'
+            <Tooltip
+              placement="bottomLeft"
               title={isEllipsisActive ? page.text : null}
             >
               <PageText onMouseOver={handleTooltip}>{page.text}</PageText>
             </Tooltip>
             {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
-            {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && 
+            {(authStore.hasPermission('notePage', 'U') ||
+              page.type === 'shared') && (
               <ContextMenu
-                noteType={'page'}
+                noteType="page"
                 note={page}
                 chapterIdx={chapterIdx}
                 pageIdx={index}
                 parent={chapter}
-              />}
+              />
+            )}
           </PageTextContainer>
         </PageTextCover>
       )}

@@ -5,16 +5,27 @@ import { Message, Button } from 'teespace-core';
 import { Modal } from 'antd';
 import ViewInfoModal from './ViewInfoModal';
 import ForwardModal from './ForwardModal';
+import RestoreModal from './RestoreModal';
 import { handleUpload } from './NoteFile';
 import { useTranslation } from 'react-i18next';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+
+// core코드
+const StyledInfoIcon = styled(InfoCircleOutlined)`
+  display: block;
+  font-size: 1.25rem;
+  color: #232d3b;
+  margin-bottom: 0.94rem;
+`;
 
 const NoteModal = observer(() => {
   const { NoteStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
   const { targetComponent, modalName, title, // Modal, Message 공통 prop
     type, subTitle, btns, // 이 줄은 Message, 아래줄은 Modal prop 
-    className, handleCancel } = NoteStore.modalInfo;
-  // NoteMeta에서 NoteFile을 가져오면 안돼ㅓ
+    className} = NoteStore.modalInfo;
+  // NoteMeta에서 NoteFile을 가져오면 안된다
   if (modalName === 'failUploadByFileNameLen') {
     btns[0].onClick = (e) => {
       e.stopPropagation(); NoteStore.setModalInfo(null);
@@ -22,28 +33,66 @@ const NoteModal = observer(() => {
     };
   }
 
+  const handleCancel = function (e) {
+    e.stopPropagation();
+    NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
+  }
+
+  const RenderModalContent = () => {
+    switch (modalName) {
+      case "viewInfo": // 정보보기 팝업
+        return <ViewInfoModal />; 
+      case "forward": // 다른 룸으로 전달 팝업
+        return <ForwardModal handleCancel={handleCancel} />;
+      case "restore": // 페이지 복원 후 위치할 챕터 선택 팝업
+        return <RestoreModal />;
+      default:return;
+    }
+  };
+
+  const modalHeader = (() => {
+    switch (modalName){
+      case "restore":
+        return (
+          <>
+            <StyledInfoIcon />
+            <div>{t(title)}</div>
+          </>
+        );
+      default:
+        return t(title);
+    }
+  })();
+  
+  const modalFooter = (() => {
+    switch (modalName) {
+      case "viewInfo":
+        return [<Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')}</Button>];
+      default:
+        return null;
+    }
+  })();
+
   return (
     <>
       {(targetComponent === "Message") ?
         <Message
           visible={true}
           type={type}
-          title={t(title)}
+          title={modalHeader}
           subtitle={subTitle}
           btns={btns}
         /> :
         <Modal
           visible={true}
-          title={t(title)}
+          title={modalHeader}
           centered
-          footer={(modalName === "viewInfo") && <Button key="confirm" type="solid" shape="defualt" onClick={handleCancel}>{t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')}</Button>}
+          footer={modalFooter}
           onCancel={handleCancel}
           wrapClassName={className}
+          closable={modalName==="restore" ? false : true}
         >
-          {(modalName === "viewInfo") ? // 정보보기 팝업
-            <ViewInfoModal /> :
-            <ForwardModal handleCancel={handleCancel} /> // 다른 룸으로 전달 팝업
-          }
+          <RenderModalContent />
         </Modal>
       }
     </>

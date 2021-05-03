@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { MessageCover, NoteTitle, TextCover, NoteType } from '../../styles/commonStyle';
-import useNoteStore from '../../store/useStore';
 import { useHistory } from 'react-router-dom';
-import { isFilled } from './validators';
 import { Message, RoomStore, API } from 'teespace-core';
-import NoteRepository from '../../store/noteRepository';
-import NoteUtil from '../../NoteUtil';
 import { useTranslation } from 'react-i18next';
+import {
+  MessageCover,
+  NoteTitle,
+  TextCover,
+  NoteType,
+} from '../../styles/commonStyle';
+import useNoteStore from '../../store/useStore';
+import { isFilled } from './validators';
+import NoteRepository from '../../store/noteRepository';
 import EditorStore from '../../store/editorStore';
 import { DRAG_TYPE } from '../../GlobalVariable';
 
-//platform 코드 가져왔음
+// platform 코드 가져왔음
 const REM_UNIT = 16;
 const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   const defaultWidth = 24;
@@ -43,23 +47,22 @@ const NoteActiveIcon = ({ width = 1.75, height = 1.75, color = '#55C6FF' }) => {
   );
 };
 
-const isChapter = (type) => {
+const isChapter = type => {
   switch (type) {
     case DRAG_TYPE.CHAPTER:
     case DRAG_TYPE.SHARED_CHAPTER:
       return true;
-      break;    
     case DRAG_TYPE.PAGE:
     case DRAG_TYPE.SHARED_PAGE:
-    default: // 2021 5월 정기배포 이전에는 type이 없었음 (무조건 페이지)
+    default:
+      // 2021 5월 정기배포 이전에는 type이 없었음 (무조건 페이지)
       return false;
-      break;
   }
-}
+};
 
 // 챕터 메타태그 추가로 prop에 type 추가
 // noteId : chapterId 혹은 pageId
-const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
+const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
   // 테스트용
   // noteId = "278be57c-94fd-4cfe-9ac3-ed7e86dc0598" // 페이지 없는 chapter
   // type='Item:Note:SharedChapters';
@@ -71,13 +74,15 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
   const { t } = useTranslation();
   const [informDeleted, setInformDeleted] = useState(false);
 
-  const isDeletedChapter = async() => {
+  const isDeletedChapter = async () => {
     const response = await ChapterStore.getChapterInfoList(noteId);
     if (!response) return true; // valid chapterId이면 dto있고 아니면 header만 있음
     return false;
-  }
-  const isDeletedPage = async() => {
-    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
+  };
+  const isDeletedPage = async () => {
+    const targetChId = RoomStore.getChannelIds({ roomId })[
+      NoteRepository.CH_TYPE
+    ];
     const {
       data: { dto: noteInfo },
     } = await API.Get(
@@ -86,18 +91,23 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     // 아직 모달을 띄울 수 없음
     if (!noteInfo || !isFilled(noteInfo.note_id)) return true;
     return false;
-  }
-  
+  };
+
   // LNB 상에서 해당 chapter가 선택돼 있는 경우
   const isCurrentChapter = () => {
-    if (NoteStore.targetLayout === 'LNB' && ChapterStore.currentChapterId === noteId) return true;
+    if (
+      NoteStore.targetLayout === 'LNB' &&
+      ChapterStore.currentChapterId === noteId
+    )
+      return true;
     return false;
-  }
+  };
   // LNB를 보고 있어도 PageStore.isReadMode() === true인경우 있어
   const isCurrentPage = () => {
-    if (NoteStore.targetLayout !== 'LNB' && PageStore.currentPageId === noteId) return true;
+    if (NoteStore.targetLayout !== 'LNB' && PageStore.currentPageId === noteId)
+      return true;
     return false;
-  }
+  };
 
   /**
    *  해당 페이지 보고 있었거나 다른 페이지 수정중인 경우 Modal 띄워야
@@ -109,16 +119,19 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     if (EditorStore.isEditCancelOpen()) {
       NoteStore.setModalInfo('editCancel');
       return true;
-    } else {
-      PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나
-      return true;
-    }    
-  }
+    }
+    PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나
+    return true;
+  };
 
-  const _openNote = (isNoteApp) => {
+  const _openNote = isNoteApp => {
     // 노트앱 열기
     // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
-    NoteStore.setMetaTagInfo({isOpen:true, type:isChapter(type) ? 'chapter' : 'page', id: noteId});
+    NoteStore.setMetaTagInfo({
+      isOpen: true,
+      type: isChapter(noteType) ? 'chapter' : 'page',
+      id: noteId,
+    });
     if (!isNoteApp) {
       history.push({
         pathname: history.location.pathname,
@@ -128,7 +141,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
       ChapterStore.openNote();
     }
   };
-  
+
   const handleClickChapterTag = async e => {
     e.stopPropagation();
     const isNoteApp = history.location.search === '?sub=note';
@@ -136,11 +149,11 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     if (isNoteApp && isCurrentChapter()) return;
 
     if (isNoteApp && isEditing()) return;
-    
+
     if (await isDeletedChapter()) return setInformDeleted(true);
-    
+
     _openNote(isNoteApp);
-  }
+  };
 
   const handleClickPageTag = async e => {
     e.stopPropagation();
@@ -153,7 +166,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     if (await isDeletedPage()) return setInformDeleted(true);
 
     _openNote(isNoteApp);
-  }
+  };
 
   const handleClick = () => setInformDeleted(false);
 
@@ -161,7 +174,9 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
     <>
       <Message
         visible={informDeleted}
-        title={isChapter(type) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03')}
+        title={
+          isChapter(noteType) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03')
+        }
         type="error"
         btns={[
           {
@@ -172,13 +187,21 @@ const ShareNoteMessageContent = ({ roomId, noteId, type, noteTitle }) => {
           },
         ]}
       />
-      <MessageCover id="shareNoteMessage" onClick={isChapter(type) ? handleClickChapterTag : handleClickPageTag}>
+      <MessageCover
+        id="shareNoteMessage"
+        onClick={
+          isChapter(noteType) ? handleClickChapterTag : handleClickPageTag
+        }
+      >
         <NoteActiveIcon />
         <TextCover>
-          <NoteType>{isChapter(type) ? t('NOTE_META_TAG_01') : t('NOTE_META_TAG_02')}</NoteType>
+          <NoteType>
+            {isChapter(noteType)
+              ? t('NOTE_META_TAG_01')
+              : t('NOTE_META_TAG_02')}
+          </NoteType>
           <NoteTitle>{noteTitle}</NoteTitle>
         </TextCover>
-        
       </MessageCover>
     </>
   );

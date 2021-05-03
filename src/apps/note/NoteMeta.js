@@ -17,14 +17,9 @@ const NoteMeta = {
   },
   // antd modal prop 만들기
   setModalConfig(type) {
-    const handleCancel = function (e) {
-      e.stopPropagation();
-      NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
-    }
     const initialConfig = {
       targetComponent: "Modal",
       modalName: type,
-      handleCancel
     }
     switch (type) {
       case "viewInfo":
@@ -38,6 +33,12 @@ const NoteMeta = {
           ...initialConfig,
           title: i18n.t('NOTE_CONTEXT_MENU_01'),
           className: "forwardModal"
+        }
+      case "restore":
+        return {
+          ...initialConfig,
+          title: i18n.t('NOTE_BIN_RESTORE_01'),
+          className: "restoreModal"
         }
       default:
         return;

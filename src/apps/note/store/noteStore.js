@@ -175,6 +175,7 @@ const NoteStore = observable({
       // AntdModal로 연다
       case 'viewInfo':
       case 'forward':
+      case 'restore':
         this.modalInfo = NoteMeta.openModal(modalType);
         this.setShowModal(true);
         break;
