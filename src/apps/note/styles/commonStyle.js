@@ -313,3 +313,27 @@ export const LoaderOverlay = styled.img`
   width: 5rem;
   height: 5rem;
 `;
+
+export const RestoreModalWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+
+export const RestoreModalBody = styled.div`
+  height: 6.06rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0.63rem 1.25rem;
+  background: #F7F4EF;
+`;
+
+export const RestoreChapterText = styled.div`
+  margin-left: 1rem;
+`;
+
+export const RestoreModalFooter = styled.div`
+  display: flex;  
+  height: 4.38rem;
+  justify-content: center;
+  align-items: center;
+`;

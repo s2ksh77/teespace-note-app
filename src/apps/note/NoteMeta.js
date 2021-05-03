@@ -39,6 +39,12 @@ const NoteMeta = {
           title: i18n.t('NOTE_CONTEXT_MENU_01'),
           className: "forwardModal"
         }
+      case "restore":
+        return {
+          ...initialConfig,
+          title: i18n.t('NOTE_BIN_RESTORE_01'),
+          className: "restoreModal"
+        }
       default:
         return;
     }
