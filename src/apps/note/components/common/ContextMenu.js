@@ -186,9 +186,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         <SubMenu
           title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
           onTitleClick={handleSubMenuClick}
-          disabled={
-            noteType === 'chapter' && !note.children.length ? true : false
-          }
         >
           <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
           <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
