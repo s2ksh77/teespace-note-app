@@ -77,6 +77,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
             id: item.id,
             text: item.text,
             date: item.modified_date,
+            type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
           };
         }),
       };
