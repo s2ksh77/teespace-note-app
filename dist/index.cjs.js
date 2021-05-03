@@ -14064,7 +14064,7 @@ var isChapter = function isChapter(type) {
 var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
   var roomId = _ref2.roomId,
       noteId = _ref2.noteId,
-      type = _ref2.type,
+      noteType = _ref2.noteType,
       noteTitle = _ref2.noteTitle;
   // 테스트용
   // noteId = "278be57c-94fd-4cfe-9ac3-ed7e86dc0598" // 페이지 없는 chapter
@@ -14187,11 +14187,11 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
     if (EditorStore.isEditCancelOpen()) {
       NoteStore.setModalInfo('editCancel');
       return true;
-    } else {
-      PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나
-
-      return true;
     }
+
+    PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나
+
+    return true;
   };
 
   var _openNote = function _openNote(isNoteApp) {
@@ -14199,7 +14199,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
     // 노트앱이 열려있지 않았다면 NoteApp -> useEffect에 있는 NoteStore.init 동작에서 openNote 수행한다
     NoteStore.setMetaTagInfo({
       isOpen: true,
-      type: isChapter(type) ? 'chapter' : 'page',
+      type: isChapter(noteType) ? 'chapter' : 'page',
       id: noteId
     });
 
@@ -14325,7 +14325,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
 
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(teespaceCore.Message, {
     visible: informDeleted,
-    title: isChapter(type) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03'),
+    title: isChapter(noteType) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03'),
     type: "error",
     btns: [{
       type: 'solid',
@@ -14335,8 +14335,8 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
     }]
   }), /*#__PURE__*/React__default['default'].createElement(MessageCover, {
     id: "shareNoteMessage",
-    onClick: isChapter(type) ? handleClickChapterTag : handleClickPageTag
-  }, /*#__PURE__*/React__default['default'].createElement(NoteActiveIcon, null), /*#__PURE__*/React__default['default'].createElement(TextCover, null, /*#__PURE__*/React__default['default'].createElement(NoteType, null, isChapter(type) ? t('NOTE_META_TAG_01') : t('NOTE_META_TAG_02')), /*#__PURE__*/React__default['default'].createElement(NoteTitle, null, noteTitle))));
+    onClick: isChapter(noteType) ? handleClickChapterTag : handleClickPageTag
+  }, /*#__PURE__*/React__default['default'].createElement(NoteActiveIcon, null), /*#__PURE__*/React__default['default'].createElement(TextCover, null, /*#__PURE__*/React__default['default'].createElement(NoteType, null, isChapter(noteType) ? t('NOTE_META_TAG_01') : t('NOTE_META_TAG_02')), /*#__PURE__*/React__default['default'].createElement(NoteTitle, null, noteTitle))));
 };
 
 function ShareNoteMessage(props) {
