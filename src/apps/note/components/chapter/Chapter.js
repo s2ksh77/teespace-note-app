@@ -274,7 +274,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
           )}
         </ChapterCover>
         <PageList
-          showNewPage={!isShared && !CHAPTER_TYPE.RECYCLE_BIN}
+          showNewPage={!isShared && chapter.type !== CHAPTER_TYPE.RECYCLE_BIN}
           chapter={chapter}
           chapterIdx={index}
         />
