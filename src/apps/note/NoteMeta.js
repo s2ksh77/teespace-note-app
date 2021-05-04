@@ -148,6 +148,7 @@ const NoteMeta = {
 
     switch (type) {
       case 'delete': // chapter랑 page
+      case 'deletePage':
         return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04') }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
