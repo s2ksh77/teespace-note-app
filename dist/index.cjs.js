@@ -3244,7 +3244,7 @@ var languageSet = {
   NOTE_BIN_RESTORE_02: '복구되었습니다.',
   NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uAD6C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
-  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\n내용을 복구하시겠습니까?',
+  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복구하시겠습니까?',
   NOTE_META_TAG_01: '챕터',
   NOTE_META_TAG_02: '페이지',
   NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
@@ -3383,7 +3383,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _languageSet);
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _languageSet);
 
 var resources = {
   ko: {
@@ -6062,6 +6062,14 @@ var NoteMeta = {
       case 'failUploadByFileNameLen':
         eventList.push(function (e) {});
         break;
+
+      case 'recover':
+        eventList.push(function (e) {// 복구 로직
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
     }
 
     return eventList;
@@ -6081,10 +6089,16 @@ var NoteMeta = {
     };
 
     switch (type) {
-      case 'delete':
-        // chapter랑 page
+      case 'delete': // chapter랑 page
+
+      case 'deletePage':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')
+        }), defaultBtn2];
+
+      case 'recover':
+        return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
+          text: i18n.t('NOTE_CONTEXT_MENU_02')
         }), defaultBtn2];
 
       case 'confirm':
@@ -6216,6 +6230,10 @@ var NoteMeta = {
       case 'uploadingFiles':
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
+        dialogType.btns = this.setBtns(type);
+
+      case 'recover':
+        dialogType.title = 'NOTE_RECOVER_DATA_01';
         dialogType.btns = this.setBtns(type);
     }
 
@@ -6521,6 +6539,8 @@ var NoteStore = mobx.observable({
       case 'uploadingFiles': // todo
 
       case "deletePage":
+      case 'recover':
+        // 페이지 복구 묻는 팝업창
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
