@@ -151,7 +151,7 @@ const languageSet = {
     NOTE_BIN_RESTORE_03:`{{num}}개의 페이지가 복구되었습니다.`,
     
     NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
-    NOTE_RECOVER_DATA_01:'작성 중인 페이지가 있습니다.\n내용을 복구하시겠습니까?',
+    NOTE_RECOVER_DATA_01:'작성 중인 페이지가 있습니다.\\n내용을 복구하시겠습니까?',
     NOTE_META_TAG_01:'챕터',
     NOTE_META_TAG_02: '페이지',
     NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',

@@ -193,6 +193,7 @@ const NoteStore = observable({
       case 'failUploadByFileNameLen':
       case 'uploadingFiles': // todo
       case "deletePage":
+      case 'recover': // 페이지 복구 묻는 팝업창
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
