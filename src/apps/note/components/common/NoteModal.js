@@ -46,7 +46,7 @@ const NoteModal = observer(() => {
         return <ForwardModal handleCancel={handleCancel} />;
       case "restore": // 페이지 복원 후 위치할 챕터 선택 팝업
         return <RestoreModal />;
-      default:return;
+      default:return null;
     }
   };
 
