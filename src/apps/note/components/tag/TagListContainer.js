@@ -165,7 +165,7 @@ const TagListContainer = () => {
     setSelectedId(node.id);
     selectedTag.current = node;
     selectedTag.current?.focus();
-    selectedTag.current?.scrollIntoView(false);
+    selectedTag.current?.scrollIntoView({ inline: 'start' });
   }
 
   // tagList.current에 idx 키에 element가 있다
