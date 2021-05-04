@@ -136,6 +136,10 @@ const NoteMeta = {
       case 'failUploadByFileNameLen':
         eventList.push(function (e) { });
         break;
+      case 'recover':
+        eventList.push(function (e) { // 복구 로직
+        })
+        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
       default:
         break;
     }
@@ -148,7 +152,10 @@ const NoteMeta = {
 
     switch (type) {
       case 'delete': // chapter랑 page
+      case 'deletePage':
         return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04') }, defaultBtn2];
+      case 'recover':
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') }, defaultBtn2];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -251,6 +258,9 @@ const NoteMeta = {
       case 'uploadingFiles':
         dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
+        dialogType.btns = this.setBtns(type);
+      case 'recover':
+        dialogType.title = 'NOTE_RECOVER_DATA_01';
         dialogType.btns = this.setBtns(type);
       default:
         break;

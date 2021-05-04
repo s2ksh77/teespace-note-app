@@ -151,7 +151,7 @@ const languageSet = {
     NOTE_BIN_RESTORE_03:`{{num}} pages have been restored.`,
     
     NOTE_EDIT_PAGE_MENUBAR_36: 'Source Code',
-    NOTE_RECOVER_DATA_01:'There is a page being created.\nDo you want to recover?',
+    NOTE_RECOVER_DATA_01:'There is a page being created.\\nDo you want to recover?',
     NOTE_META_TAG_01:'Chapter',
     NOTE_META_TAG_02: 'Page',
     NOTE_META_TAG_03: 'Unable to load the page because it has been deleted.',
