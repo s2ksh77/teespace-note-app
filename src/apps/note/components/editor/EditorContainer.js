@@ -374,7 +374,6 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
-                console.log('EditorStore.tinymce.getContent()', EditorStore.tinymce.getContent())
                 editor.focus();
                 handleEditorContentsListener();
               });
