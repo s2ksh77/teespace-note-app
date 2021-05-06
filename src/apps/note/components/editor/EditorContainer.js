@@ -286,24 +286,6 @@ const EditorContainer = () => {
     };
   }, [editorWrapperRef.current]);
 
-  /*
-    **새 챕터 생성 후 [+ 새 페이지] 버튼을 눌러 본문 작성한 뒤 다른 영역을 클릭 > 팝업창에서 저장 안함을 클릭하면 해당 페이지 화면이 그대로 유지되는 이슈
-    currentPageData는 서비스 받아올 때만 set하고 PageStore.noteContent는 editorChange 이벤트시 set하는데
-    새 노트에서 작성하다가 지우면 currentPageData는 여전히 <p><br></p> 였기 때문에 
-    새로 받아오는 노트 컨텐츠도 <p><br></p>인 경우 editor content가 안바뀌는 이슈 수정
-      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)
-  */
-  useEffect(() => {
-    // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
-    if (
-      EditorStore.tinymce &&
-      PageStore.currentPageData.note_id &&
-      PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent
-    ) {
-      EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
-    }
-  }, [PageStore.currentPageData.note_id]);
-
   // Search Toggle 시 reset
   useEffect(() => {
     return () => setSearchValue('');
@@ -392,17 +374,7 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
-                // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
-                // init에도 useEffect 내용 추가
-                if (
-                  PageStore.currentPageData.note_content &&
-                  PageStore.currentPageData.note_content !==
-                    EditorStore.tinymce.getContent
-                ) {
-                  EditorStore.tinymce.setContent(
-                    PageStore.currentPageData.note_content,
-                  );
-                }
+                console.log('EditorStore.tinymce.getContent()', EditorStore.tinymce.getContent())
                 editor.focus();
                 handleEditorContentsListener();
               });
