@@ -816,13 +816,13 @@ const PageStore = observable({
 
     const targetChId = NoteStore.getTargetChId(targetRoomId);
     const targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
-
     const targetList = targetPageList.map(page => {
       return ({
         WS_ID: NoteRepository.WS_ID,
         note_id: (page.note_id || page.id),
         note_title: page.text,
         modified_date: page.date,
+        TYPE: page.type,
         note_channel_id: NoteRepository.chId,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
