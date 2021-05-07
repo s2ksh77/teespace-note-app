@@ -24,24 +24,31 @@ const RightButton = styled(Button)`
  * state 관리 때문에 footer도 여기에
  */
 const RestoreModal = () => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
-	const [selectedId, setSelectedId] = useState('');
-
-	const handleChange = e => setSelectedId(e.target.value);
+  const [selectedId, setSelectedId] = useState('');
+  const handleChange = e => setSelectedId(e.target.value);
 
   const chapterList = ChapterStore.chapterList.filter(chapter => NoteUtil.getChapterNumType(chapter.type) <= 1);
   
-	const handleCancel = e => {
-		e.stopPropagation();
+  const handleCancel = e => {
+	e.stopPropagation();
+	NoteStore.setModalInfo(null);
+  }
+
+  const handleClickRestore = async () => {
+	try{
+		const res = await PageStore.restorePage(PageStore.restorePageId, selectedId);
+		if(res.resultMsg === 'Success'){
+			ChapterStore.getNoteChapterList();
+			NoteStore.setModalInfo(null);
+		}
+	}catch(error){
+		console.log(`Error is ${error}`)
+	}finally{
 		NoteStore.setModalInfo(null);
-	}
-
-	const handleClickRestore = () => {
-		// 복구 로직 넣기, 선택된 챕터는 selectedId임
-
-		NoteStore.setModalInfo(null); // 임시로 넣음
-	}
+	}	
+  }
 
   return (
     <RestoreModalWrapper>
@@ -59,7 +66,7 @@ const RestoreModal = () => {
 					{t('NOTE_CONTEXT_MENU_02')}
 				</LeftButton>
 				<RightButton key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>
-					{t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')}
+					{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')}
 				</RightButton>
 			</RestoreModalFooter>			
     </RestoreModalWrapper>

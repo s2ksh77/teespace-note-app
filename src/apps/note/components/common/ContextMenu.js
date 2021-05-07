@@ -96,7 +96,11 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
                 setSelectableIdOfPage();
               }
             }
-            NoteStore.setModalInfo('page');
+            if (PageStore.lastSharedPageParentId) {
+              ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+              PageStore.setLastSharedPageParentId('');
+              ChapterStore.deleteNoteChapter();
+            } else PageStore.throwNotePage();
           } else {
             const res = await userStore.getProfile(dto.is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
@@ -107,6 +111,11 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       default:
         break;
     }
+  };
+
+  const restoreComponent = () => {
+    PageStore.setRestorePageId(note.id);
+    NoteStore.setModalInfo('restore');
   };
 
   const shareComponent = () => {
@@ -157,7 +166,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'exportTXT') exportTxtComponent();
     else if (key === 'viewInfo') infoComponent();
     else if (key === 'emptyRecycleBin');
-    else if (key === 'restore');
+    else if (key === 'restore') restoreComponent();
     else if (key === 'delete');
 
     if (key)

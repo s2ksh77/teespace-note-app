@@ -36,6 +36,7 @@ const PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
+  deletedDate: '',
   prevModifiedUserName: '',
   isNewPage: false,
   exportPageId: '',
@@ -43,6 +44,7 @@ const PageStore = observable({
   editingUserID: '',
   editingUserName: '',
   editingUserCount: '',
+  restorePageId: '',
 
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
@@ -256,6 +258,9 @@ const PageStore = observable({
   setExportId(pageId) {
     this.exportPageId = pageId;
   },
+  setRestorePageId(pageId){
+    this.restorePageId = pageId
+  },
 
   async getNoteInfoList(noteId) {
     const {
@@ -306,6 +311,27 @@ const PageStore = observable({
 
     return returnData;
   },
+
+  async throwPage(pageList) {
+    const {
+      data: { dto },
+    } = await NoteRepository.throwPage(pageList);
+    if(dto.resultMsg === 'Success'){
+      return dto;
+    }
+  },
+
+  async restorePage(pageId, chapterId) {
+    const pageList = [];
+    pageList.push({note_id: pageId, parent_notebook : chapterId })
+    const {
+      data: { dto },
+    } = await NoteRepository.restorePage(pageList);
+    if(dto.resultMsg === 'Success'){
+      return dto;
+    }
+  },
+
   // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
   initializeBoxColor() {
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
@@ -339,6 +365,25 @@ const PageStore = observable({
       // getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
     });
+  },
+
+  /**
+   * It throw away pages in recycle bin.
+   * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
+   */
+  async throwNotePage() {
+    await this.throwPage(this.deletePageList);
+    this.setIsEdit('');
+    if (this.currentPageId === this.deletePageList[0].note_id) {
+      this.setCurrentPageId(this.selectablePageId);
+      this.fetchCurrentPageData(this.selectablePageId)
+    }
+
+    await ChapterStore.getNoteChapterList();
+    const num = this.deletePageList.length;
+    NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', { num: num }) : i18n.t('NOTE_BIN_02'));
+    NoteStore.setIsVisibleToast(true);
+    NoteStore.setShowModal(false);
   },
 
   deleteNotePage() {
@@ -522,6 +567,8 @@ const PageStore = observable({
     this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
     this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
+    // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
+    // console.log(this.deletedDate)
     EditorStore.setFileList(
       dto.fileList,
     );
@@ -601,7 +648,8 @@ const PageStore = observable({
   async handleNoneEdit() {
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
-      this.deleteNotePage();
+      this.throwNotePage();
+      // this.deleteNotePage();
     } else {
       if (this.otherEdit) return;
       else this.noteNoneEdit(this.currentPageId);
@@ -789,24 +837,6 @@ const PageStore = observable({
       ChapterStore.getNoteChapterList();
       NoteStore.setIsDragging(false);
     });
-  },
-
-  async throwPage(pageId) {
-    const {
-      data: { dto },
-    } = await NoteRepository.throwPage(pageId);
-    if(dto.resultMsg === 'Success'){
-
-    }
-  },
-
-  async restorePage(pageId, chapterId) {
-    const {
-      data: { dto },
-    } = await NoteRepository.restorePage(pageId, chapterId);
-    if(dto.resultMsg === 'Success'){
-      
-    }
   },
 },
 {

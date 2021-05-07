@@ -531,6 +531,8 @@ class NoteRepository {
   async throwPage(pageList) {
     // pageList -> pageId 리스트
     pageList.forEach(page => {
+      page.USER_ID = this.USER_ID;
+      page.WS_ID = this.WS_ID;
       page.note_channel_id = this.chId;
       page.parent_notebook = null;
     });
@@ -548,7 +550,11 @@ class NoteRepository {
   async restorePage(pageList) {
     // pageList -> pageId 리스트, chapterId 리스트 
     // [{note_id: asdf, parent_notebook : asdf} ... ]
-    pageList.forEach(page => page.note_channel_id = this.chId);
+    pageList.forEach(page => {
+      page.note_channel_id = this.chId;
+      page.USER_ID = this.USER_ID;
+      page.WS_ID = this.WS_ID;
+    });
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
