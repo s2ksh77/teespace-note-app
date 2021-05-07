@@ -406,17 +406,17 @@ const ChapterStore = observable({
     let normalChapters = [], sharedChapters = [];
     if (notebookList.length === 0) return { normalChapters, sharedChapters };
     const { getChapterNumType } = NoteUtil;
-    // type : defalut(0), notebook(1), shared_page, shared 순으로 sort된다
+    // type : defalut(0), notebook(1), shared_page, shared, recycle_bin 순으로 sort된다
     notebookList.sort((a, b) => getChapterNumType(a.type) - getChapterNumType(b.type));
 
     notebookList = await this.checkDefaultChapterColor(notebookList);
-    const firstSharedIdx = notebookList.findIndex(chapter => [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED].includes(chapter.type));
+    const firstSharedIdx = notebookList.findIndex(chapter => [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED, CHAPTER_TYPE.RECYCLE_BIN].includes(chapter.type));
 
     switch (firstSharedIdx) {
       case 0: // 전달만 있는 경우
         sharedChapters = notebookList.slice(0);
         break;
-      case -1: // 전달 챕터/페이지 없는 경우
+      case -1: // 전달 챕터/페이지, 휴지통 없는 경우
         normalChapters = notebookList.slice(0);
         break;
       default: // 전달인거, 아닌거 다 있는 경우
@@ -501,6 +501,8 @@ const ChapterStore = observable({
       }
       this.deleteChapterId = '';
       NoteStore.setShowModal(false);
+      NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
+      NoteStore.setIsVisibleToast(true);
     });
   },
 

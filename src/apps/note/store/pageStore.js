@@ -341,6 +341,24 @@ const PageStore = observable({
     });
   },
 
+  /**
+   * It throw away pages in recycle bin.
+   * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
+   */
+  async throwNotePage() {
+    await this.throwPage(this.deletePageList);
+    this.setIsEdit('');
+    if (this.currentPageId === this.deletePageList[0].note_id) {
+      this.setCurrentPageId(this.selectablePageId);
+      this.fetchCurrentPageData(this.selectablePageId)
+    }
+
+    await ChapterStore.getNoteChapterList();
+    const num = this.deletePageList.length;
+    NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', { num: num }) : i18n.t('NOTE_BIN_02'));
+    NoteStore.setIsVisibleToast(true);
+  },
+
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
       this.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
@@ -791,19 +809,19 @@ const PageStore = observable({
     });
   },
 
-  async throwPage(pageId) {
+  async throwPage(pageList) {
     const {
       data: { dto },
-    } = await NoteRepository.throwPage(pageId);
+    } = await NoteRepository.throwPage(pageList);
     if(dto.resultMsg === 'Success'){
 
     }
   },
 
-  async restorePage(pageId, chapterId) {
+  async restorePage(pageList) {
     const {
       data: { dto },
-    } = await NoteRepository.restorePage(pageId, chapterId);
+    } = await NoteRepository.restorePage(pageList);
     if(dto.resultMsg === 'Success'){
       
     }
