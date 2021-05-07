@@ -81,7 +81,6 @@ const EditorHeader = () => {
         NoteStore.setModalInfo('editingPage');
       } else PageStore.noteEditStart(PageStore.currentPageData.note_id);
     } else {
-      // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync().then(() => PageStore.handleSave());
       logEvent('note', 'clickModifyBtn');
     }
@@ -99,7 +98,7 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorHeaderContainer1>
-          {authStore.hasPermission('notePage', 'U') && (
+          {authStore.hasPermission('notePage', 'U') && !PageStore.isRecycleBin && (
             <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
               {PageStore.isReadMode()
                 ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')

@@ -133,7 +133,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     e => {
       if (!PageStore.isReadMode()) return;
 
-      if (e.ctrlKey) {
+      if (ChapterStore.moveInfoMap.size > 0 && e.ctrlKey) {
         if (ChapterStore.moveInfoMap.get(chapter.id))
           ChapterStore.deleteMoveInfoMap(chapter.id);
         else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);

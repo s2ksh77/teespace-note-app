@@ -3,6 +3,7 @@ import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import PageStore from './pageStore';
 import TagStore from './tagStore';
+import EditorStore from './editorStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
@@ -101,6 +102,7 @@ const NoteStore = observable({
     // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
     TagStore.setAllSortedTagList([]);
     TagStore.setSortedTagList([]);
+    EditorStore.setIsSearch(false);
     this.setShowPage(true);
     this.setIsMailShare(false);
   },

@@ -117,6 +117,9 @@ const ChapterStore = observable({
   deleteMoveInfoMap(key) {
     this.moveInfoMap.delete(key);
   },
+  clearMoveInfoMap() {
+    this.moveInfoMap.clear();
+  },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
   },
@@ -657,6 +660,7 @@ const ChapterStore = observable({
     if (!targetChapterList) return;
 
     const targetChId = NoteStore.getTargetChId(targetRoomId);
+    const targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
     const targetList = targetChapterList.map(chapter => {
       return ({
         id: chapter.id,
@@ -664,11 +668,13 @@ const ChapterStore = observable({
         note_channel_id: NoteRepository.chId,
         text: chapter.text,
         color: chapter.color,
+        type: chapter.type,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
         shared_room_name: NoteRepository.WS_ID,
         target_workspace_id: targetRoomId,
-        target_channel_id: targetChId
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId,
       });
     });
 

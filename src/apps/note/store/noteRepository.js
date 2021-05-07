@@ -305,7 +305,7 @@ class NoteRepository {
     }
   }
 
-  async nonEdit(noteId, chapterId, userName, userId) {
+  async nonEdit(noteId, chapterId) {
     try {
       return await API.post(`note-api/note?action=Update`, {
         dto: {

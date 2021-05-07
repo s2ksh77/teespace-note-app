@@ -15,6 +15,7 @@ import LNBTag from './LNBTag';
 import LNBSearchResult from './LNBSearchResult';
 import SearchingImg from '../common/SearchingImg';
 import Chapter from '../chapter/Chapter';
+import RecycleBin from '../chapter/RecycleBin';
 import NoteUtil from '../../NoteUtil';
 
 const { getChapterNumType } = NoteUtil;
@@ -134,7 +135,7 @@ const LNBContainer = () => {
                     );
                   case 4:
                     return (
-                      <Chapter
+                      <RecycleBin
                         key={item.id}
                         chapter={item}
                         index={index}

@@ -56,10 +56,10 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   };
 
   /**
-   * 챕터/페이지를 삭제한다.
+   * 챕터/페이지를 휴지통으로 이동시킨다.
    * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
    */
-  const deleteComponent = async () => {
+  const throwComponent = async () => {
     switch (noteType) {
       case 'chapter':
         ChapterStore.setDeleteChapterId(note.id);
@@ -155,11 +155,20 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     NoteStore.handleSharedInfo(noteType, note.id);
   };
 
+  /**
+   * 휴지통에 있는 페이지를 영구적으로 삭제한다.
+   */
+  const deleteComponent = () => {
+    PageStore.setDeletePageList({ note_id: note.id });
+    if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
+    NoteStore.setModalInfo('deletePage');
+  };
+
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
 
     if (key === 'rename') renameComponent();
-    else if (key === 'throw') deleteComponent();
+    else if (key === 'throw') throwComponent();
     else if (key === 'forward') shareComponent();
     else if (key === 'sendEmail') exportComponent(true);
     else if (key === 'exportPDF') exportComponent(false);
@@ -167,7 +176,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'viewInfo') infoComponent();
     else if (key === 'emptyRecycleBin');
     else if (key === 'restore') restoreComponent();
-    else if (key === 'delete');
+    else if (key === 'delete') deleteComponent();
 
     if (key)
       NoteStore.LNBChapterCoverRef.removeEventListener(
