@@ -109,6 +109,11 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     }
   };
 
+  const restoreComponent = () => {
+    PageStore.setRestorePageId(note.id);
+    NoteStore.setModalInfo('restore');
+  };
+
   const shareComponent = () => {
     NoteStore.setShareNoteType(noteType);
     NoteStore.setShareContent(note);
@@ -157,7 +162,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'exportTXT') exportTxtComponent();
     else if (key === 'viewInfo') infoComponent();
     else if (key === 'emptyRecycleBin');
-    else if (key === 'restore');
+    else if (key === 'restore') restoreComponent();
     else if (key === 'delete');
 
     if (key)

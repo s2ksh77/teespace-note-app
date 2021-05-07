@@ -82,7 +82,7 @@ const NoteMeta = {
             ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
             PageStore.setLastSharedPageParentId('');
             ChapterStore.deleteNoteChapter();
-          } else PageStore.deleteNotePage();
+          } else PageStore.throwNotePage();
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
