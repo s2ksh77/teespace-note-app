@@ -117,6 +117,9 @@ const ChapterStore = observable({
   deleteMoveInfoMap(key) {
     this.moveInfoMap.delete(key);
   },
+  clearMoveInfoMap() {
+    this.moveInfoMap.clear();
+  },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
   },
