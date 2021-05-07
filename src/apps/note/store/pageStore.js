@@ -686,8 +686,7 @@ const PageStore = observable({
     this.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
-      this.throwNotePage();
-      // this.deleteNotePage();
+      this.deleteNotePage();
     } else {
       if (this.otherEdit) return;
       else this.noteNoneEdit(this.currentPageId);
