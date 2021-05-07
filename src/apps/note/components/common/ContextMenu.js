@@ -96,7 +96,11 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
                 setSelectableIdOfPage();
               }
             }
-            NoteStore.setModalInfo('page');
+            if (PageStore.lastSharedPageParentId) {
+              ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+              PageStore.setLastSharedPageParentId('');
+              ChapterStore.deleteNoteChapter();
+            } else PageStore.throwNotePage();
           } else {
             const res = await userStore.getProfile(dto.is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
