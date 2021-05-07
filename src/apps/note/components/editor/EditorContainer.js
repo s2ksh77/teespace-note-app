@@ -331,18 +331,25 @@ const EditorContainer = () => {
         <EditorHeader />
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
-            <ReadModeIcon src={lockImg} />
-            {authStore.hasPermission('notePage', 'U') ? (
-              <>
-                <ReadModeText>
-                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
-                </ReadModeText>
-                <ReadModeSubText>
-                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
-                </ReadModeSubText>
-              </>
-            ) : (
-              <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
+            {authStore.hasPermission('notePage', 'U') ? 
+              PageStore.isRecycleBin ? 
+              <ReadModeText style={{marginLeft : "1rem" }}> {t('NOTE_BIN_05')} </ReadModeText>
+                : (
+                  <>
+                    <ReadModeIcon src={lockImg} />
+                    <ReadModeText>
+                      {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
+                    </ReadModeText>
+                    <ReadModeSubText>
+                      {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
+                    </ReadModeSubText>
+                  </>
+                )
+                 : (
+                <>
+                  <ReadModeIcon src={lockImg} />
+                  <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
+                </>
             )}
           </ReadModeContainer>
         ) : null}

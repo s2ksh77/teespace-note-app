@@ -45,6 +45,7 @@ const PageStore = observable({
   editingUserName: '',
   editingUserCount: '',
   restorePageId: '',
+  isRecycleBin: false,
 
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
@@ -260,6 +261,9 @@ const PageStore = observable({
   },
   setRestorePageId(pageId){
     this.restorePageId = pageId
+  },
+  setIsRecycleBin(flag){
+    this.isRecycleBin = flag
   },
 
   async getNoteInfoList(noteId) {

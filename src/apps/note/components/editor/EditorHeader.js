@@ -99,7 +99,7 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorHeaderContainer1>
-          {authStore.hasPermission('notePage', 'U') && (
+          {authStore.hasPermission('notePage', 'U') && !PageStore.isRecycleBin && (
             <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
               {PageStore.isReadMode()
                 ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')

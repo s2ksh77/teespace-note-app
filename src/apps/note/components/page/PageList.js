@@ -33,8 +33,9 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     logEvent('note', 'clickNewPageBtn');
   };
 
-  const handleSelectPage = useCallback(async (id) => {
+  const handleSelectPage = useCallback(async (id, type) => {
     await PageStore.fetchCurrentPageData(id);
+    PageStore.setIsRecycleBin(type === 'recycle' ? true : false)
     NoteStore.setShowPage(true);
     EditorStore.setIsSearch(false);
     if (NoteStore.layoutState === 'collapse')
@@ -53,7 +54,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
               index={index}
               chapter={chapter}
               chapterIdx={chapterIdx}
-              onClick={handleSelectPage}
+              onClick={handleSelectPage.bind(null,item.id, item.type)}
             />
           ))
         }
