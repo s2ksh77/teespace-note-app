@@ -10,10 +10,11 @@ import {
   NoneImg,
 } from '../../styles/commonStyle';
 import { useTranslation } from 'react-i18next';
+import PageStore from '../../store/pageStore';
 
 // 페이지가 존재하지 않습니다
 const PageNotFound = ({ type }) => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
   const isPage = type === 'page';
 
@@ -32,11 +33,13 @@ const PageNotFound = ({ type }) => {
               ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01')
               : t('NOTE_PAGE_LIST_NO_CHPT_01')}
           </NoneTitle>
-          <NoneText>
-            {isPage
-              ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02')
-              : t('NOTE_PAGE_LIST_NO_CHPT_02')}
-          </NoneText>
+          {!PageStore.isRecycleBin && 
+            <NoneText>
+              {isPage
+                ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02')
+                : t('NOTE_PAGE_LIST_NO_CHPT_02')}
+            </NoneText>
+          }
           <NoneImg src={noPageImage} alt="page_not_found" />
         </NoneContainer>
       </ContentBodyCover>

@@ -16,6 +16,7 @@ import NoteUtil from '../../NoteUtil';
 import { useTranslation } from "react-i18next";
 import moment from 'moment-timezone';
 import { useCoreStores } from 'teespace-core';
+import { CHAPTER_TYPE } from '../../GlobalVariable';
 
 const isNew = (chapter) => {
   // 챕터 이름 변경시 업데이트
@@ -24,6 +25,11 @@ const isNew = (chapter) => {
   for (const page of chapter.children) {
     if (page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) return true;
   }
+  return false;
+}
+
+const isEmptyRecycleBin = (chapter) => {
+  if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN && chapter.children.length === 0) return true;
   return false;
 }
 
@@ -58,9 +64,11 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
           <ContextMenu noteType={'chapter'} note={chapter} chapterIdx={index} />
         )}
       </ChapterTitle>
-      <ChapterFolderBtn onClick={handleFoldBtnClick}>
-        <ChapterFoldBtnIcon src={isFolded ? arrowBottomIcon : arrowTopIcon} />
-      </ChapterFolderBtn>
+      {!isEmptyRecycleBin(chapter) && 
+        <ChapterFolderBtn onClick={handleFoldBtnClick}>
+          <ChapterFoldBtnIcon src={isFolded ? arrowBottomIcon : arrowTopIcon} />
+        </ChapterFolderBtn>
+      }
     </>
   ));
 };
