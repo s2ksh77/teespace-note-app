@@ -81,7 +81,6 @@ const EditorHeader = () => {
         NoteStore.setModalInfo('editingPage');
       } else PageStore.noteEditStart(PageStore.currentPageData.note_id);
     } else {
-      // PageStore.noteNoneEdit(PageStore.currentPageData.note_id);
       await handleFileSync().then(() => PageStore.handleSave());
       logEvent('note', 'clickModifyBtn');
     }

@@ -137,9 +137,54 @@ const NoteMeta = {
         eventList.push(function (e) { });
         break;
       case 'recover':
-        eventList.push(function (e) { // 복구 로직
-        })
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        eventList.push(async function (e) { // 복구 로직
+          e.stopPropagation();
+          try {
+            const { id, note_content } = PageStore.recoverInfo;
+            if (!id) return;
+            NoteStore.setShowPage(true);
+            if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
+            
+            // [todo] 이게 왜 ChapterStore에 있을까
+            ChapterStore.setLoadingPageInfo(true);
+            await PageStore.fetchCurrentPageData(id);
+            ChapterStore.setLoadingPageInfo(false);
+            /*
+            * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
+            * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
+            * 이 경우 recoverinfo 초기화하면 안 됨
+            */
+            if (EditorStore.tinymce?.getBody()) {
+              EditorStore.tinymce?.setContent(note_content);
+              PageStore.setRecoverInfo({});
+            }            
+          } catch(err) {
+            console.log('err', err);            
+          } finally {
+            NoteStore.setModalInfo(null);
+          };
+        });
+
+        eventList.push(async function (e) { 
+          e.stopPropagation();
+          const { parentId, id } = PageStore.recoverInfo;
+          if (!id) return;
+          NoteStore.setShowPage(true);
+          if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
+          // 복구 원하지 않으면 로컬 스토리지에서 지우자
+          localStorage.removeItem(`Note_autosave_${NoteStore.notechannel_id}_${id}`);          
+          
+          NoteStore.setModalInfo(null);
+
+          // 여기 안에서 fetchCurrentPageData한다
+          // current chapterId 없으면 에디터를 안 띄워서 await 필요
+          ChapterStore.setLoadingPageInfo(true);
+          const dto = await PageStore.noneEdit(id, parentId);
+          await PageStore.fetchCurrentPageData(id);
+          ChapterStore.setLoadingPageInfo(false);
+
+          PageStore.setRecoverInfo({});
+        });
       default:
         break;
     }

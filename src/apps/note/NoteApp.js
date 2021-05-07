@@ -14,6 +14,7 @@ import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
 import { useTranslation } from 'react-i18next';
+import PageStore from './store/pageStore';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
@@ -59,12 +60,13 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         NoteStore.setLoadingNoteApp(false);
 
         if (!channelId) return;
-        else if (layoutState === 'collapse') {
+        if (layoutState === 'collapse') {
           // lnb는 따로 로딩 화면 X
-          ChapterStore.getNoteChapterList();
+          await ChapterStore.getNoteChapterList();
           NoteStore.setTargetLayout('LNB');
         }
-        else { ChapterStore.fetchChapterList(); NoteStore.setTargetLayout(null); }
+        else { await ChapterStore.fetchChapterList(); NoteStore.setTargetLayout(null); }
+        PageStore.checkEditingPage(); // 복구할 페이지가 있는 경우 팝업창을 띄운다
       })
     }
     NoteStore.setLayoutState(layoutState);

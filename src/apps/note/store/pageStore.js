@@ -37,7 +37,7 @@ const PageStore = observable({
   dragEnterChapterIdx: '',
   modifiedDate: '',
   deletedDate: '',
-  prevModifiedUserName: '',
+  prevModifiedUserName: '', // web에서 안 씀
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -46,7 +46,10 @@ const PageStore = observable({
   editingUserCount: '',
   restorePageId: '',
   isRecycleBin: false,
-
+  recoverInfo:{}, // 복원 팝업에서 '복구'클릭시 필요
+  setRecoverInfo(info) { // parentId, id, note_content
+    this.recoverInfo = info;
+  },
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
   },
@@ -57,11 +60,11 @@ const PageStore = observable({
     this.currentPageData = pageData;
   },
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
-  set_CurrentPageData({user_name, modified_date,USER_ID}) {   
-    if (user_name) this.currentPageData.user_name = user_name;
-    if (modified_date) this.currentPageData.modified_date = modified_date;
-    if (USER_ID) this.currentPageData.USER_ID = USER_ID;
+  // {user_name, modified_date,USER_ID}
+  set_CurrentPageData(noteInfo) {
+    Object.keys(noteInfo).forEach(key => this.currentPageData[key] = noteInfo[key]);
   },
+
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
   setSaveStatus({saving=false,saved=false}) {
     this.saveStatus.saving = saving;
@@ -308,10 +311,10 @@ const PageStore = observable({
     return returnData;
   },
 
-  async noneEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId, callback) {
+  async noneEdit(noteId, parentNotebook) {
     const {
       data: { dto: returnData },
-    } = await NoteRepository.nonEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId)
+    } = await NoteRepository.nonEdit(noteId, parentNotebook)
 
     return returnData;
   },
@@ -565,8 +568,6 @@ const PageStore = observable({
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterId(dto.parent_notebook);
-    dto.note_content = NoteUtil.decodeStr(dto.note_content);
-    dto.note_title = NoteUtil.decodeStr(dto.note_title);
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
@@ -603,17 +604,49 @@ const PageStore = observable({
       this.setCurrentPageId('');
     }
   },
+  // 저장 후 지우기
+  removeLocalContent() {
+    if (!NoteStore.notechannel_id || !this.currentPageId) return;
+    localStorage.removeItem(`Note_autosave_${NoteStore.notechannel_id}_${this.currentPageId}`);
+  },
+
+  // 노트앱 진입시 수정중인 노트 확인하기
+  async checkEditingPage() {
+    try {
+      if (!NoteStore.notechannel_id || !NoteStore.user_id) return;
+      
+      // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
+      const target = Object.keys(localStorage).find(key => key.replace(/^(Note_autosave_)(.+)_(.+)$/,"$2") === NoteStore.notechannel_id);
+      if (!target) return;
+      const noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/,"$3");
+      
+      /**
+       * 챕터, 페이지 선택이 됐다가 풀려야할 때(확인했더니 is_edit이 아닌 경우)
+       * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
+       */
+      const dto = await this.getNoteInfoList(noteId);
+       
+      if (dto?.is_edit === NoteStore.user_id) {
+        this.setRecoverInfo({parentId: dto.parent_notebook, id:noteId, note_content:localStorage.getItem(target)});
+        NoteStore.setModalInfo('recover');        
+      } else { // 수정 중인 상태 아니면 스토리지에서 지우기
+        this.setRecoverInfo({});
+        localStorage.removeItem(target);
+      }
+    } catch(err) {
+      console.log('checkEditingPage, 노트 진입시 수정 중인 노트 확인하기');
+    }
+  },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart(noteId) {
-    this.prevModifiedUserName = this.currentPageData.user_name;
-    this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       // focus에서 getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) {
         EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
+        EditorStore.tinymce?.setContent(this.currentPageData.note_content);
       }
       this.initializeBoxColor();
     });
@@ -621,7 +654,8 @@ const PageStore = observable({
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone(updateDto) {
-    this.editDone(updateDto).then(dto => {
+    this.editDone(updateDto).then(dto => {      
+      this.removeLocalContent();
       if (this.moveInfoMap.get(dto.note_id)) {
         this.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
@@ -635,21 +669,21 @@ const PageStore = observable({
     this.noneEdit(
       noteId,
       this.currentPageData.parent_notebook,
-      this.prevModifiedUserName,
-      this.prevModifiedUserId).then(
-        (dto) => {
-          this.fetchCurrentPageData(dto.note_id);
-
-          const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
-          if (floatingMenu !== null) floatingMenu.click();
-          EditorStore.tinymce?.setContent(this.currentPageData.note_content);
-          NoteStore.setShowModal(false);
-          EditorStore.setIsSearch(false);
-        }
-      );
+    ).then(
+      (dto) => {
+        this.fetchCurrentPageData(dto.note_id);
+        
+        const floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
+        if (floatingMenu !== null) floatingMenu.click();
+        EditorStore.tinymce?.setContent(this.currentPageData.note_content);
+        NoteStore.setShowModal(false);
+        EditorStore.setIsSearch(false);
+      }
+    );
   },
 
   async handleNoneEdit() {
+    this.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
     if (this.isNewPage) {
       this.setDeletePageList({ note_id: this.currentPageId });
       this.throwNotePage();
@@ -687,7 +721,8 @@ const PageStore = observable({
     // currentPageData 갱신
     this.setSaveStatus({saving:true});
     this.editDone(updateDTO)
-      .then((dto) => {
+      .then((dto) => {        
+        this.removeLocalContent();
         this.setSaveStatus({saved:true});
         const {user_name, modified_date,USER_ID} = dto;
         this.set_CurrentPageData({user_name, modified_date,USER_ID});

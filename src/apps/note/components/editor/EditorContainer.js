@@ -47,6 +47,7 @@ import Mark from 'mark.js';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
+import useSave from './useSave';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -292,17 +293,7 @@ const EditorContainer = () => {
   }, [EditorStore.isSearch]);
 
   // auto save
-  useEffect(() => {
-    if (!PageStore.isReadMode()) {
-      let id = setInterval(() => {
-        PageStore.handleSave(true);
-      }, 60000);
-      return () => {
-        // console.log('clearInterval');
-        clearInterval(id);
-      };
-    }
-  }, [PageStore.isReadMode()]);
+  useSave();
 
   useEffect(()=>{ // WaplSearch ref prop이 없음.
     if(EditorStore.isSearch) inputRef.current?.lastChild?.lastChild.focus();
@@ -381,6 +372,15 @@ const EditorContainer = () => {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
+                /*
+                * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
+                * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
+                * init된 후 localStorage내용을 에디터에 set해주어야 한다
+                */
+                if (PageStore.recoverInfo.note_content) {
+                  EditorStore.tinymce?.setContent(PageStore.recoverInfo.note_content);
+                  PageStore.setRecoverInfo({});
+                }              
                 editor.focus();
                 handleEditorContentsListener();
               });
@@ -721,8 +721,6 @@ const EditorContainer = () => {
               //   args.node.appendChild(parent);
               // }
             },
-            autosave_interval: '1s',
-            autosave_prefix: `Note_autosave_${NoteStore.notechannel_id}`,
             autolink_pattern: customAutoLinkPattern(),
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
@@ -730,7 +728,7 @@ const EditorContainer = () => {
           }}
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
-          plugins="print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
+          plugins="print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
           toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table codesample insertdatetime | insertImage insertfile"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
