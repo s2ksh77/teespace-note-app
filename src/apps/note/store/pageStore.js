@@ -152,9 +152,8 @@ const PageStore = observable({
   getDeletePageList() {
     return this.deletePageList;
   },
-  setDeletePageList(page) {
-    this.deletePageList = [];
-    this.deletePageList.push(page);
+  setDeletePageList(deletePageList) {
+    this.deletePageList = deletePageList;
   },
   getSelectablePageId() {
     return this.selectablePageId;
@@ -685,7 +684,7 @@ const PageStore = observable({
   async handleNoneEdit() {
     this.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
     if (this.isNewPage) {
-      this.setDeletePageList({ note_id: this.currentPageId });
+      this.setDeletePageList([{ note_id: this.currentPageId }]);
       this.deleteNotePage();
     } else {
       if (this.otherEdit) return;

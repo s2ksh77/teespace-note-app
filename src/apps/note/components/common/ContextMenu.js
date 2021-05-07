@@ -84,7 +84,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       case 'page':
         PageStore.getNoteInfoList(note.id).then(async dto => {
           if (dto.is_edit === null || dto.is_edit === '') {
-            PageStore.setDeletePageList({ note_id: note.id });
+            PageStore.setDeletePageList([{ note_id: note.id }]);
             if (PageStore.currentPageId === note.id) {
               if (
                 parent.type === 'shared_page' &&
@@ -156,10 +156,20 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   };
 
   /**
+   * 휴지통에 있는 모든 페이지를 영구적으로 삭제한다.
+   */
+  const emptyComponent = () => {
+    PageStore.setDeletePageList(
+      note.children.map(page => ({ note_id: page.id })),
+    );
+    NoteStore.setModalInfo('emptyRecycleBin');
+  };
+
+  /**
    * 휴지통에 있는 페이지를 영구적으로 삭제한다.
    */
   const deleteComponent = () => {
-    PageStore.setDeletePageList({ note_id: note.id });
+    PageStore.setDeletePageList([{ note_id: note.id }]);
     if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
     NoteStore.setModalInfo('deletePage');
   };
@@ -174,7 +184,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'exportPDF') exportComponent(false);
     else if (key === 'exportTXT') exportTxtComponent();
     else if (key === 'viewInfo') infoComponent();
-    else if (key === 'emptyRecycleBin');
+    else if (key === 'emptyRecycleBin') emptyComponent();
     else if (key === 'restore') restoreComponent();
     else if (key === 'delete') deleteComponent();
 
