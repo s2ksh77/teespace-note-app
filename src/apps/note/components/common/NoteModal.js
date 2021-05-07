@@ -56,11 +56,11 @@ const NoteModal = observer(() => {
         return (
           <>
             <StyledInfoIcon />
-            <div>{t(title)}</div>
+            <div>{title}</div>
           </>
         );
       default:
-        return t(title);
+        return title;
     }
   })();
   

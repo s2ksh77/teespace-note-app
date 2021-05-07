@@ -196,6 +196,7 @@ const NoteStore = observable({
       case 'uploadingFiles': // todo
       case "deletePage":
       case 'recover': // 페이지 복구 묻는 팝업창
+      case 'emptyRecycleBin':
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;

@@ -39,6 +39,7 @@ const RecycleBin = ({ chapter, index, flexOrder, isShared }) => {
   const onClickRecycleBinBtn = () => {
     if (!PageStore.isReadMode()) return;
 
+    PageStore.setIsRecycleBin(true);
     ChapterStore.clearMoveInfoMap();
     ChapterStore.setIsCtrlKeyDown(false);
     ChapterStore.setCurrentChapterId(id);

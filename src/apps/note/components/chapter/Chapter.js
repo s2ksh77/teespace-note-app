@@ -143,6 +143,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
       ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
       ChapterStore.setIsCtrlKeyDown(false);
+      PageStore.setIsRecycleBin(false);
       ChapterStore.setCurrentChapterId(chapter.id);
       let pageId = '';
       if (chapter.children.length > 0) pageId = chapter.children[0].id;
