@@ -3567,9 +3567,8 @@ var PageStore = mobx.observable((_observable$1 = {
   getDeletePageList: function getDeletePageList() {
     return this.deletePageList;
   },
-  setDeletePageList: function setDeletePageList(page) {
-    this.deletePageList = [];
-    this.deletePageList.push(page);
+  setDeletePageList: function setDeletePageList(deletePageList) {
+    this.deletePageList = deletePageList;
   },
   getSelectablePageId: function getSelectablePageId() {
     return this.selectablePageId;
@@ -4505,9 +4504,9 @@ var PageStore = mobx.observable((_observable$1 = {
                 break;
               }
 
-              _this13.setDeletePageList({
+              _this13.setDeletePageList([{
                 note_id: _this13.currentPageId
-              });
+              }]);
 
               _this13.deleteNotePage();
 
@@ -6363,6 +6362,18 @@ var NoteMeta = {
             return _ref2.apply(this, arguments);
           };
         }());
+        break;
+
+      case 'emptyRecycleBin':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          PageStore.deleteNotePage();
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
+        break;
     }
 
     return eventList;
@@ -6430,27 +6441,27 @@ var NoteMeta = {
     switch (type) {
       case 'chapter':
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'deletePage':
         // 페이지 영구 삭제
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_BIN_06';
+        dialogType.title = i18n.t('NOTE_BIN_06');
         dialogType.subtitle = i18n.t('NOTE_BIN_07'), dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
@@ -6459,7 +6470,7 @@ var NoteMeta = {
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: PageStore.editingUserCount
         });
@@ -6468,12 +6479,12 @@ var NoteMeta = {
 
       case 'editCancel':
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_COMPLETE_01');
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'titleDuplicate':
-        dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_02');
         dialogType.btns = this.setBtns(type);
         break;
@@ -6484,7 +6495,7 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
-        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_CANT_EDIT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
@@ -6492,12 +6503,12 @@ var NoteMeta = {
         break;
 
       case 'deletedPage':
-        dialogType.title = 'NOTE_META_TAG_03';
+        dialogType.title = i18n.t('NOTE_META_TAG_03');
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_06');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
           uploadCnt: EditorStore.totalUploadLength,
           failCnt: EditorStore.failCount
@@ -6506,28 +6517,39 @@ var NoteMeta = {
         break;
 
       case 'sizefailUpload':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_04';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_04');
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_05';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_05');
         dialogType.btns = this.setBtns('failUpload');
         break;
 
       case 'failUploadByFileNameLen':
-        dialogType.title = 'DRIVE_UPLOAD_BTN_04';
+        dialogType.title = i18n.t('DRIVE_UPLOAD_BTN_04');
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'uploadingFiles':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_08');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
+        break;
 
       case 'recover':
-        dialogType.title = 'NOTE_RECOVER_DATA_01';
+        dialogType.title = i18n.t('NOTE_RECOVER_DATA_01');
         dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'emptyRecycleBin':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_BIN_08', {
+          num: PageStore.deletePageList.length
+        });
+        dialogType.subtitle = i18n.t('NOTE_BIN_07');
+        dialogType.btns = this.setBtns('delete');
+        break;
     }
 
     return dialogType;
@@ -6833,8 +6855,9 @@ var NoteStore = mobx.observable({
       case 'uploadingFiles': // todo
 
       case "deletePage":
-      case 'recover':
-        // 페이지 복구 묻는 팝업창
+      case 'recover': // 페이지 복구 묻는 팝업창
+
+      case 'emptyRecycleBin':
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
