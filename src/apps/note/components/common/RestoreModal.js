@@ -46,6 +46,11 @@ const RestoreModal = () => {
       if (res.resultMsg === 'Success') {
         NoteStore.setModalInfo(null);
         await ChapterStore.getNoteChapterList();
+        if (PageStore.currentPageId === PageStore.restorePageId) {
+          ChapterStore.setCurrentChapterId(selectedId);
+          PageStore.setCurrentPageId(PageStore.restorePageId);
+          PageStore.setIsRecycleBin(false);
+        }
         NoteStore.setToastText(t('NOTE_BIN_RESTORE_02'));
         NoteStore.setIsVisibleToast(true);
       }
