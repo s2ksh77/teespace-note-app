@@ -39,21 +39,11 @@ const RestoreModal = () => {
 
   const handleClickRestore = async () => {
     try {
-      const res = await PageStore.restorePage(
-        PageStore.restorePageId,
-        selectedId,
-      );
-      if (res.resultMsg === 'Success') {
-        NoteStore.setModalInfo(null);
-        await ChapterStore.getNoteChapterList();
-        if (PageStore.currentPageId === PageStore.restorePageId) {
-          ChapterStore.setCurrentChapterId(selectedId);
-          PageStore.setCurrentPageId(PageStore.restorePageId);
-          PageStore.setIsRecycleBin(false);
-        }
-        NoteStore.setToastText(t('NOTE_BIN_RESTORE_02'));
-        NoteStore.setIsVisibleToast(true);
-      }
+      PageStore.restorePageLogic({
+        chapterId: selectedId, 
+        pageId: PageStore.restorePageId, 
+        toastTxt: t('NOTE_BIN_RESTORE_02'),
+      });
     } catch (error) {
       console.log(`Error is ${error}`);
     } finally {

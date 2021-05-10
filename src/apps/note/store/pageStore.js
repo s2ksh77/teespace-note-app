@@ -875,6 +875,28 @@ const PageStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
+  /**
+   * NoteMeta에서도 쓰이고, context menu에서 복구할 챕터가 없을 때도 필요해서 store로 옮김
+   * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
+   */
+  async restorePageLogic({chapterId, pageId, toastTxt}) {
+    const res = await this.restorePage(
+      pageId,
+      chapterId,
+    );
+    if (res.resultMsg === 'Success') {
+      NoteStore.setModalInfo(null);
+      await ChapterStore.getNoteChapterList();
+      if (this.currentPageId === pageId) {
+        ChapterStore.setCurrentChapterId(chapterId);
+        this.setCurrentPageId(pageId);
+        this.setIsRecycleBin(false);
+      }
+      NoteStore.setToastText(toastTxt);
+      NoteStore.setIsVisibleToast(true);
+    }
+  },
+
   editCancel(){
     if (EditorStore.isSearch) {
       const instance = new Mark(EditorStore.tinymce?.getBody());

@@ -158,6 +158,30 @@ class NoteRepository {
     }
   }
 
+  async createRestoreChapter(chapterTitle, chapterColor) {
+    try {
+      const { data } = await API.post(
+        `note-api/children/${'none'}/notebooks`,
+        {
+          dto: {
+            id: '',
+            ws_id: this.WS_ID,
+            note_channel_id: this.chId,
+            text: chapterTitle,
+            children: [],
+            type: 'notebook',
+            USER_ID: this.USER_ID,
+            user_name: this.USER_NAME,
+            color: chapterColor,
+          },
+        },
+      );
+      return data;
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
   async deleteChapter(chapterId) {
     try {
       const { data } = await API.delete(

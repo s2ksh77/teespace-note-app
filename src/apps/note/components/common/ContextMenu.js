@@ -113,9 +113,19 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     }
   };
 
-  const restoreComponent = () => {
-    PageStore.setRestorePageId(note.id);
-    NoteStore.setModalInfo('restore');
+  const restoreComponent = async () => {
+    // 휴지통만 있는 경우
+    if (ChapterStore.chapterList.length === 1) {
+      const newChapter = await ChapterStore.createRestoreChapter(t('NOTE_PAGE_LIST_CMPNT_DEF_01'), ChapterStore.getChapterRandomColor());
+      PageStore.restorePageLogic({
+        chapterId: newChapter.id, 
+        pageId: note.id, 
+        toastTxt: t('NOTE_BIN_RESTORE_02'),
+      });
+    } else {
+      PageStore.setRestorePageId(note.id);
+      NoteStore.setModalInfo('restore');
+    }    
   };
 
   const shareComponent = () => {
