@@ -430,7 +430,7 @@ const ChapterStore = observable({
     return { normalChapters, sharedChapters };
   },
 
-  async getNoteChapterList() {
+  async getNoteChapterList(isInit=false) {
     const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
     // type순 정렬 및 반환
     let { normalChapters, sharedChapters } = await this.sortServerChapterList(notbookList);
@@ -445,14 +445,14 @@ const ChapterStore = observable({
       // isFolded state 추가
       normalChapters = this.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
     }
-
-    sharedChapters = this.getSharedFoldedState(sharedChapters);
+    // sharedChapters = shared, recylce_bin
+    sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
   },
 
-  getSharedFoldedState(sharedChapters) {
+  getTheRestFoldedState(isInit, sharedChapters) {
     if (sharedChapters.length === 0) return sharedChapters;
 
     let item = localStorage.getItem(`Note_sharedFoldedState_${NoteStore.notechannel_id}`);
@@ -466,7 +466,8 @@ const ChapterStore = observable({
     } else {
       item = JSON.parse(item, NoteUtil.reviver);
       sharedChapters.forEach((chapter) => {
-        const value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        let value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
         newFoldedMap.set(chapter.id, value);
         chapter.isFolded = value;
       })
@@ -731,9 +732,9 @@ const ChapterStore = observable({
     this.setLoadingPageInfo(false);
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
-  async fetchChapterList() {
+  async fetchChapterList(isInit=false) { // 한 군데에서만 부르긴하지만 일단 param 추가
     this.setLoadingPageInfo(true);
-    await this.getNoteChapterList();
+    await this.getNoteChapterList(isInit);
 
     if (this.chapterList.length > 0) {
       await this.setFirstNoteInfo();

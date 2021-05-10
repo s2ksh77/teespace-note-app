@@ -204,7 +204,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       channelId: NoteStore.notechannel_id,
       chapterId: id,
       isFolded: !isFolded,
-      isShared,
+      isTheRest: isShared,
     });
     setIsFolded(!isFolded);
   };

@@ -62,10 +62,12 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         if (!channelId) return;
         if (layoutState === 'collapse') {
           // lnb는 따로 로딩 화면 X
-          await ChapterStore.getNoteChapterList();
+          await ChapterStore.getNoteChapterList(true);
           NoteStore.setTargetLayout('LNB');
-        }
-        else { await ChapterStore.fetchChapterList(); NoteStore.setTargetLayout(null); }
+        } else { 
+          await ChapterStore.fetchChapterList(true); 
+          NoteStore.setTargetLayout(null);
+        }        
         PageStore.checkEditingPage(); // 복구할 페이지가 있는 경우 팝업창을 띄운다
       })
     }

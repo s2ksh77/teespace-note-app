@@ -71,7 +71,7 @@ const RecycleBin = ({ chapter, index, flexOrder, isShared }) => {
       channelId: NoteStore.notechannel_id,
       chapterId: id,
       isFolded: !isFolded,
-      isShared,
+      isTheRest: true,
     });
     setIsFolded(!isFolded);
   };

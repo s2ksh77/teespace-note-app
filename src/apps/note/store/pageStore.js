@@ -62,7 +62,7 @@ const PageStore = observable({
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
   // {user_name, modified_date,USER_ID}
   set_CurrentPageData(noteInfo) {
-    Object.keys(noteInfo).forEach(key => this.currentPageData[key] = noteInfo[key]);
+    this.currentPageData = { ...this.currentPageData, ...noteInfo };
   },
 
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}

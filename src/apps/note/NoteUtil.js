@@ -67,9 +67,9 @@ const NoteUtil = {
     return value;
   },
 
-  setLocalChapterFoldedState({ channelId, chapterId, isFolded, isShared }) {
-    if (isShared) {
-      this.setLocalSharedFoldedState({ channelId, chapterId, isFolded });
+  setLocalChapterFoldedState({ channelId, chapterId, isFolded, isTheRest }) {
+    if (isTheRest) { // default, notebook 아닌 것
+      this.setLocalRestFoldedState({ channelId, chapterId, isFolded });
       return;
     }
 
@@ -81,8 +81,8 @@ const NoteUtil = {
     item[idx]['isFolded'] = isFolded;
     localStorage.setItem(`NoteSortData_${channelId}`, JSON.stringify(item));
   },
-
-  setLocalSharedFoldedState({ channelId, chapterId, isFolded }) {
+  // shared, recylce_bin의 folded state
+  setLocalRestFoldedState({ channelId, chapterId, isFolded }) {
     let item = localStorage.getItem(`Note_sharedFoldedState_${channelId}`);
     if (!item) return;
     item = JSON.parse(item, NoteUtil.reviver);
