@@ -3946,6 +3946,8 @@ var PageStore = observable((_observable$1 = {
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
+      _this.setIsRecycleBin(false);
+
       EditorStore.setIsSearch(false);
 
       _this.setIsEdit(dto.is_edit);
