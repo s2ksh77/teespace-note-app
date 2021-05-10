@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   textarea#noteEditor {
@@ -80,23 +80,11 @@ export const GlobalStyle = createGlobalStyle`
       position: absolute;
       width: 0; 
       height: 0; 
+      bottom: 0;
       border-top: 0.375rem solid transparent;
       border-bottom: 0.375rem solid transparent;
       border-left: 0.5rem solid #FB3A3A;
-      transform: translate(-0.43rem, 2.38rem);
-    }
-  }
-  .tagBorderTopLine{
-    border-top: 0.13rem solid #FB3A3A;
-    &::before {
-      content: '';
-      position: absolute;
-      width: 0; 
-      height: 0; 
-      border-top: 0.375rem solid transparent;
-      border-bottom: 0.375rem solid transparent;
-      border-left: 0.5rem solid #FB3A3A;
-      transform: translate(-0.43rem, -1.405rem);
+      transform: translate(-0.43rem, 0.45rem);
     }
   }
   .custom-dialog-header {
@@ -441,19 +429,19 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const LNB = styled.div`
-  display:${props => props.show ? "flex" : "none"};
+  display: ${props => (props.show ? 'flex' : 'none')};
   height: 100%;
   flex: 1 1 17.06rem;
   min-width: 17.06rem;
 `;
 export const Content = styled.div`
-  display:${props => props.show ? "flex" : "none"};
-  flex-direction:column;
+  display: ${props => (props.show ? 'flex' : 'none')};
+  flex-direction: column;
   flex: 2 2 42rem;
   height: 100%;
   overflow-x: hidden;
   position: relative;
-  border-left:${props => props.isBorderLeft ? "1px solid  #DDD9D4" : "0px"};
+  border-left: ${props => (props.isBorderLeft ? '1px solid  #DDD9D4' : '0px')};
 `;
 
 export const CenterContent = styled.div`

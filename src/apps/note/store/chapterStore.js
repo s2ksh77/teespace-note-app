@@ -551,7 +551,7 @@ const ChapterStore = observable({
     return moveInfoList.sort((a, b) => a.chapterIdx - b.chapterIdx);
   },
 
-  moveChapter(moveTargetChapterIdx) {
+  moveChapter() {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
     const sortedMoveInfoList = this.getSortedMoveInfoList();
@@ -559,10 +559,10 @@ const ChapterStore = observable({
 
     const chapters = [];
     item.forEach((chapter, idx) => {
-      if (idx === moveTargetChapterIdx) chapters.push(...sortedMoveChapters);
+      if (idx === this.dragEnterChapterIdx) chapters.push(...sortedMoveChapters);
       if (!this.moveInfoMap.get(chapter.id)) chapters.push(chapter);
     });
-    if (moveTargetChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
+    if (this.dragEnterChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
 
     let moveCnt = 0;
     const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].item.id);

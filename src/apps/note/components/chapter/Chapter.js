@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useEffect, useState } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
@@ -23,6 +29,7 @@ import { checkMaxLength } from '../common/validators';
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
+  const chapterContainerRef = useRef(null);
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(
     chapter.isFolded ? chapter.isFolded : false,
@@ -42,11 +49,26 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const [, drop] = useDrop({
     accept: DRAG_TYPE.CHAPTER,
     drop: () => {
-      ChapterStore.moveChapter(index);
+      if (ChapterStore.dragEnterChapterIdx >= 0) ChapterStore.moveChapter();
     },
-    hover() {
-      if (ChapterStore.dragEnterChapterIdx !== index)
+    hover(item, monitor) {
+      if (!chapterContainerRef.current) return;
+      const hoverBoundingRect = chapterContainerRef.current.getBoundingClientRect();
+      const hoverMiddleY = hoverBoundingRect.height / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      if (
+        hoverClientY < hoverMiddleY &&
+        ChapterStore.dragEnterChapterIdx !== index
+      ) {
         ChapterStore.setDragEnterChapterIdx(index);
+      } else if (
+        hoverClientY > hoverMiddleY &&
+        Chapter.dragEnterChapterIdx !== index + 1
+      ) {
+        ChapterStore.setDragEnterChapterIdx(index + 1);
+      }
     },
   });
 
@@ -212,11 +234,17 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   return useObserver(() => (
     <>
       <ChapterContainer
-        ref={!isShared ? drop : null}
+        ref={!isShared ? drop(chapterContainerRef) : null}
         className={
           (isFolded ? 'folded ' : '') +
           (ChapterStore.dragEnterChapterIdx === index && !isShared
             ? 'borderTopLine'
+            : '') +
+          (ChapterStore.dragEnterChapterIdx === index + 1 &&
+          ChapterStore.dragEnterChapterIdx ===
+            ChapterStore.chapterList.length - ChapterStore.sharedCnt &&
+          !isShared
+            ? 'borderBottomLine'
             : '')
         }
         id={chapter.id}
