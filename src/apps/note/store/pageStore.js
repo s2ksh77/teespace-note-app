@@ -875,6 +875,29 @@ const PageStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
+  editCancel(){
+    if (EditorStore.isSearch) {
+      const instance = new Mark(EditorStore.tinymce?.getBody());
+      instance.unmark();
+    }
+    if(EditorStore.isUploading) {
+      EditorStore.uploadingFileallCancel();
+      return;
+    }
+    this.handleSave();
+    import('teespace-core')
+      .then(module => {
+        try {
+          const { logEvent } = module;
+          logEvent('note', 'clickModifyBtn')
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .catch(e => console.error(e));
+    NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
+    NoteStore.setIsVisibleToast(true);
+  }  
 },
 {
   set_CurrentPageData: action

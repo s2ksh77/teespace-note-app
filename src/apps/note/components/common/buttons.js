@@ -52,7 +52,7 @@ const HeaderButtons = () => {
         return;
       }
       if (EditorStore.isEditCancelOpen()) {
-        NoteStore.setModalInfo('editCancel');
+        PageStore.editCancel();
         return;
       }
       PageStore.handleNoneEdit();

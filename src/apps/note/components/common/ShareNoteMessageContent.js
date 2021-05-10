@@ -117,7 +117,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
     if (PageStore.isReadMode()) return false; // 읽기모드이면 false
     // 다른 페이지 수정중인 경우 Modal 띄우기
     if (EditorStore.isEditCancelOpen()) {
-      NoteStore.setModalInfo('editCancel');
+      PageStore.editCancel();
       return true;
     }
     PageStore.handleNoneEdit(); // todo: noneEdit으로 읽기모드로만 바뀌고 끝나는게 맞나

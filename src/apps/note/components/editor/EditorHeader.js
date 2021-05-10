@@ -60,7 +60,7 @@ const EditorHeader = () => {
         NoteStore.setTargetLayout('LNB');
         return;
       }
-      NoteStore.setModalInfo('editCancel');
+      PageStore.editCancel();
     }
   };
 

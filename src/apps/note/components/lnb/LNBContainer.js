@@ -41,7 +41,7 @@ const LNBContainer = () => {
       PageStore.handleNoneEdit();
       return;
     }
-    NoteStore.setModalInfo('editCancel');
+    PageStore.editCancel();
   };
 
   const handleClickOutside = e => {

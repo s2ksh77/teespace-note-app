@@ -96,7 +96,6 @@ const NoteMeta = {
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
       case 'uploadingFiles':
-      case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
           if (EditorStore.isSearch) {
@@ -220,7 +219,6 @@ const NoteMeta = {
       case 'failUploadByFileNameLen':
         return [defaultBtn1];
       case 'uploadingFiles':
-      case 'editCancel':
         return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, defaultBtn2];
       default:
         return;
@@ -266,11 +264,6 @@ const NoteMeta = {
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', { count: PageStore.editingUserCount });
-        dialogType.btns = this.setBtns(type);
-        break;
-      case 'editCancel':
-        dialogType.type = 'error';
-        dialogType.title = i18n.t('NOTE_EDIT_PAGE_COMPLETE_01');
         dialogType.btns = this.setBtns(type);
         break;
       case 'titleDuplicate':
