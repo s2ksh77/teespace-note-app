@@ -185,7 +185,6 @@ const NoteStore = observable({
       case 'confirm':
       case 'chapter':
       case 'page':
-      case 'editCancel':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'editingPage':

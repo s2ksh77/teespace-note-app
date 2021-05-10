@@ -430,7 +430,7 @@ const ChapterStore = observable({
     return { normalChapters, sharedChapters };
   },
 
-  async getNoteChapterList() {
+  async getNoteChapterList(isInit=false) {
     const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
     // type순 정렬 및 반환
     let { normalChapters, sharedChapters } = await this.sortServerChapterList(notbookList);
@@ -445,14 +445,14 @@ const ChapterStore = observable({
       // isFolded state 추가
       normalChapters = this.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
     }
-
-    sharedChapters = this.getSharedFoldedState(sharedChapters);
+    // sharedChapters = shared, recylce_bin
+    sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
   },
 
-  getSharedFoldedState(sharedChapters) {
+  getTheRestFoldedState(isInit, sharedChapters) {
     if (sharedChapters.length === 0) return sharedChapters;
 
     let item = localStorage.getItem(`Note_sharedFoldedState_${NoteStore.notechannel_id}`);
@@ -466,7 +466,8 @@ const ChapterStore = observable({
     } else {
       item = JSON.parse(item, NoteUtil.reviver);
       sharedChapters.forEach((chapter) => {
-        const value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        let value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
         newFoldedMap.set(chapter.id, value);
         chapter.isFolded = value;
       })
@@ -484,29 +485,38 @@ const ChapterStore = observable({
     this.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
     const notbookList = await this.createChapter(this.chapterNewTitle, this.isNewChapterColor);
     await this.getNoteChapterList();
-    this.setCurrentChapterId(notbookList.id);
-    PageStore.setCurrentPageId(notbookList.children[0].id);
+    // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
+    PageStore.setIsRecycleBin(false);
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
     this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
     PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
   },
-
-  deleteNoteChapter() {
-    this.deleteChapter(this.deleteChapterId).then(() => {
-      this.getNoteChapterList();
-      if (this.currentChapterId === this.deleteChapterId) {
-        this.setCurrentChapterId(this.selectableChapterId);
-        PageStore.setCurrentPageId(PageStore.selectablePageId);
+  /**
+   * 챕터 1개 남아있을 때, 챕터 삭제시 휴지통 선택 & 휴지통 맨 위 페이지 삭제하기 위해 async, await로 바꿈
+   * getNoteChapterList 후 선택하려고
+   */
+  async deleteNoteChapter() {
+    await this.deleteChapter(this.deleteChapterId)
+    await this.getNoteChapterList();
+    if (this.currentChapterId === this.deleteChapterId) {
+      // refactoring할 때 수정필요함, 혹시나해서 여러가지 조건 체크함
+      if (
+        this.chapterList.length === 1 &&
+        this.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN
+      ) {
+        PageStore.setIsRecycleBin(true);
+        PageStore.fetchCurrentPageData(this.chapterList[0]?.children[0]?.id);
+      } else {
         PageStore.fetchCurrentPageData(PageStore.selectablePageId);
-        this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
-        PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
       }
-      this.deleteChapterId = '';
-      NoteStore.setShowModal(false);
-      NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
-      NoteStore.setIsVisibleToast(true);
-    });
+      this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
+      PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
+    }
+    this.deleteChapterId = '';
+    NoteStore.setShowModal(false);
+    NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
+    NoteStore.setIsVisibleToast(true);
   },
 
   renameNoteChapter(color) {
@@ -541,7 +551,7 @@ const ChapterStore = observable({
     return moveInfoList.sort((a, b) => a.chapterIdx - b.chapterIdx);
   },
 
-  moveChapter(moveTargetChapterIdx) {
+  moveChapter() {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
     const sortedMoveInfoList = this.getSortedMoveInfoList();
@@ -549,10 +559,10 @@ const ChapterStore = observable({
 
     const chapters = [];
     item.forEach((chapter, idx) => {
-      if (idx === moveTargetChapterIdx) chapters.push(...sortedMoveChapters);
+      if (idx === this.dragEnterChapterIdx) chapters.push(...sortedMoveChapters);
       if (!this.moveInfoMap.get(chapter.id)) chapters.push(chapter);
     });
-    if (moveTargetChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
+    if (this.dragEnterChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
 
     let moveCnt = 0;
     const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].item.id);
@@ -731,9 +741,9 @@ const ChapterStore = observable({
     this.setLoadingPageInfo(false);
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
-  async fetchChapterList() {
+  async fetchChapterList(isInit=false) { // 한 군데에서만 부르긴하지만 일단 param 추가
     this.setLoadingPageInfo(true);
-    await this.getNoteChapterList();
+    await this.getNoteChapterList(isInit);
 
     if (this.chapterList.length > 0) {
       await this.setFirstNoteInfo();

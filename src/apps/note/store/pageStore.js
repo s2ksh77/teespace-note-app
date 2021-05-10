@@ -62,7 +62,7 @@ const PageStore = observable({
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
   // {user_name, modified_date,USER_ID}
   set_CurrentPageData(noteInfo) {
-    Object.keys(noteInfo).forEach(key => this.currentPageData[key] = noteInfo[key]);
+    this.currentPageData = { ...this.currentPageData, ...noteInfo };
   },
 
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
@@ -875,6 +875,29 @@ const PageStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
+  editCancel(){
+    if (EditorStore.isSearch) {
+      const instance = new Mark(EditorStore.tinymce?.getBody());
+      instance.unmark();
+    }
+    if(EditorStore.isUploading) {
+      EditorStore.uploadingFileallCancel();
+      return;
+    }
+    this.handleSave();
+    import('teespace-core')
+      .then(module => {
+        try {
+          const { logEvent } = module;
+          logEvent('note', 'clickModifyBtn')
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .catch(e => console.error(e));
+    NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
+    NoteStore.setIsVisibleToast(true);
+  }  
 },
 {
   set_CurrentPageData: action
