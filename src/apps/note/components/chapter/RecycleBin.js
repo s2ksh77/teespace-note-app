@@ -16,9 +16,7 @@ import NoteUtil from '../../NoteUtil';
 const RecycleBin = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
-  const [isFolded, setIsFolded] = useState(
-    chapter.isFolded ? chapter.isFolded : false,
-  );
+  const [isFolded, setIsFolded] = useState(true);
   const { id, children } = chapter;
 
   // When chapters/pages are dropped on recycle bin area
@@ -67,12 +65,6 @@ const RecycleBin = ({ chapter, index, flexOrder, isShared }) => {
 
   const handleFoldBtnClick = e => {
     e.stopPropagation();
-    NoteUtil.setLocalChapterFoldedState({
-      channelId: NoteStore.notechannel_id,
-      chapterId: id,
-      isFolded: !isFolded,
-      isTheRest: true,
-    });
     setIsFolded(!isFolded);
   };
 
