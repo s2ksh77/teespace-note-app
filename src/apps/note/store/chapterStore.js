@@ -485,6 +485,8 @@ const ChapterStore = observable({
     this.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
     const notbookList = await this.createChapter(this.chapterNewTitle, this.isNewChapterColor);
     await this.getNoteChapterList();
+    // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
+    PageStore.setIsRecycleBin(false);
     this.setCurrentChapterId(notbookList.id);
     PageStore.setCurrentPageId(notbookList.children[0].id);
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
