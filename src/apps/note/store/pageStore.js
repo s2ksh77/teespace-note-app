@@ -348,6 +348,7 @@ const PageStore = observable({
 
   createNotePage() {
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(dto => {
+      this.setIsRecycleBin(false);
       EditorStore.setIsSearch(false);
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
