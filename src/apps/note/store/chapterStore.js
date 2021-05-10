@@ -270,6 +270,11 @@ const ChapterStore = observable({
     const { dto } = await NoteRepository.createChapter(chapterTitle, chapterColor);
     return dto;
   },
+  // 휴지통에 있는 페이지 복구할 때 페이지 없는 챕터 생성용
+  async createRestoreChapter(chapterTitle, chapterColor) {
+    const { dto } = await NoteRepository.createRestoreChapter(chapterTitle, chapterColor);
+    return dto;
+  },
   async deleteChapter(deleteChapterId) {
     const { dto } = await NoteRepository.deleteChapter(deleteChapterId);
     return dto;
