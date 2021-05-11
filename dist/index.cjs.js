@@ -4248,7 +4248,8 @@ var PageStore = mobx.observable((_observable$1 = {
 
           _this3.setIsNewPage(false);
 
-          _this3.setCurrentPageId('');
+          _this3.fetchCurrentPageData(''); // isEdit도 갱신
+
 
           ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
@@ -4263,7 +4264,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
             _this3.fetchCurrentPageData(pageId);
           } else {
-            _this3.setCurrentPageId('');
+            _this3.fetchCurrentPageData('');
           }
         }
       }
@@ -6113,7 +6114,8 @@ var ChapterStore = mobx.observable({
                 if (targetChapter.children.length > 0) {
                   PageStore.setCurrentPageId(targetChapter.children[0].id);
                   PageStore.fetchCurrentPageData(targetChapter.children[0].id);
-                } else PageStore.setCurrentPageId('');
+                } else PageStore.fetchCurrentPageData(''); // isEdit도 갱신
+
               });
 
             case 1:
@@ -6307,7 +6309,8 @@ var ChapterStore = mobx.observable({
               _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
 
 
-              PageStore.setCurrentPageId('');
+              PageStore.fetchCurrentPageData(''); // isEdit도 갱신
+
               return _context21.abrupt("return");
 
             case 5:
@@ -7094,7 +7097,7 @@ var handleWebsocket = function handleWebsocket() {
 
                 if (firstChapter.children && firstChapter.children.length > 0) {
                   PageStore.fetchCurrentPageData(firstChapter.children[0].id);
-                } else PageStore.setCurrentPageId('');
+                } else PageStore.fetchCurrentPageData('');
               } else NoteStore.setShowPage(false);
             }, 200);
           }
@@ -7208,7 +7211,8 @@ var NoteStore = mobx.observable({
     ChapterStore.initSearchVar();
     ChapterStore.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
 
-    PageStore.setCurrentPageId('');
+    PageStore.fetchCurrentPageData(''); // isEdit도 갱신
+
     ChapterStore.setChapterList([]);
     ChapterStore.setLnbBoundary({
       beforeShared: false,
@@ -7240,8 +7244,7 @@ var NoteStore = mobx.observable({
     if (showPage === false) {
       ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
 
-      PageStore.setCurrentPageId('');
-      PageStore.setIsEdit('');
+      PageStore.fetchCurrentPageData('');
     }
   },
   setLayoutState: function setLayoutState(state) {
@@ -9246,7 +9249,7 @@ var LNBSearchResult = function LNBSearchResult() {
                 }
 
                 ChapterStore.setCurrentChapterInfo(chapterId);
-                PageStore.setCurrentPageId('');
+                PageStore.fetchCurrentPageData('');
               });
 
             case 4:
@@ -11591,19 +11594,23 @@ var Chapter = function Chapter(_ref) {
 
     ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
     ChapterStore.setIsCtrlKeyDown(false);
-    PageStore.setIsRecycleBin(false);
-    ChapterStore.setCurrentChapterId(chapter.id);
-    var pageId = '';
-    if (chapter.children.length > 0) pageId = chapter.children[0].id;
-    PageStore.setCurrentPageId(pageId);
+    var pageId = chapter.children.length > 0 ? chapter.children[0].id : '';
+    PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
+
     NoteStore.setShowPage(true);
-    PageStore.fetchCurrentPageData(pageId);
-    if (pageId) PageStore.setDragData(new Map([[pageId, {
-      item: chapter.children[0],
-      pageIdx: 0,
-      chapterId: chapter.id,
-      chapterIdx: index
-    }]]));else PageStore.clearDragData();
+
+    if (pageId) {
+      PageStore.setDragData(new Map([[pageId, {
+        item: chapter.children[0],
+        pageIdx: 0,
+        chapterId: chapter.id,
+        chapterIdx: index
+      }]]));
+    } else {
+      ChapterStore.setCurrentChapterInfo(chapter.id, false);
+      PageStore.clearDragData();
+    }
+
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
@@ -11720,9 +11727,12 @@ var RecycleBin = function RecycleBin(_ref) {
     ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
     var pageId = children.length > 0 ? children[0].id : '';
-    PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
-    PageStore.fetchCurrentPageData(pageId);
+    PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
+
+    PageStore.fetchCurrentPageData(pageId); // isEdit 갱신
+
+    if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
   };

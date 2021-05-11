@@ -165,14 +165,11 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
       ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
-      PageStore.setIsRecycleBin(false);
-      ChapterStore.setCurrentChapterId(chapter.id);
-      let pageId = '';
-      if (chapter.children.length > 0) pageId = chapter.children[0].id;
-      PageStore.setCurrentPageId(pageId);
+      
+      const pageId = chapter.children.length > 0 ? chapter.children[0].id : '';      
+      PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
       NoteStore.setShowPage(true);
-      PageStore.fetchCurrentPageData(pageId);
-      if (pageId)
+      if (pageId) {
         PageStore.setDragData(
           new Map([
             [
@@ -186,7 +183,10 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
             ],
           ]),
         );
-      else PageStore.clearDragData();
+      } else {
+        ChapterStore.setCurrentChapterInfo(chapter.id, false);
+        PageStore.clearDragData();
+      }
       PageStore.setIsCtrlKeyDown(false);
     },
     [chapter],

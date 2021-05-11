@@ -630,7 +630,7 @@ const ChapterStore = observable({
       if (targetChapter.children.length > 0) {
         PageStore.setCurrentPageId(targetChapter.children[0].id);
         PageStore.fetchCurrentPageData(targetChapter.children[0].id);
-      } else PageStore.setCurrentPageId('');
+      } else PageStore.fetchCurrentPageData(''); // isEdit도 갱신
     })
   },
   /*
@@ -740,7 +740,7 @@ const ChapterStore = observable({
     const targetChapter = this.chapterList.length > 0 ? this.chapterList[0] : null;
     if (!targetChapter) {
       this.setCurrentChapterInfo('', false);//chapterId='', isRecycleBin=false
-      PageStore.setCurrentPageId('');
+      PageStore.fetchCurrentPageData(''); // isEdit도 갱신
       return;
     }
     this.setFirstDragData(targetChapter);

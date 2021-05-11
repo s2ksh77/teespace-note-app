@@ -37,7 +37,7 @@ const LNBSearchResult = () => {
         }
       }
       ChapterStore.setCurrentChapterInfo(chapterId);
-      PageStore.setCurrentPageId('');
+      PageStore.fetchCurrentPageData('');
     })
   }
 

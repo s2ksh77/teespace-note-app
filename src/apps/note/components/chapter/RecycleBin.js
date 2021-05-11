@@ -36,9 +36,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     ChapterStore.setIsCtrlKeyDown(false);
 
     const pageId = children.length > 0 ? children[0].id : '';
-    PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
-    PageStore.fetchCurrentPageData(pageId);
+    PageStore.setIsRecycleBin(true);// 깜빡임 방지하기 위해 중복 메서드 넣음
+    PageStore.fetchCurrentPageData(pageId); // isEdit 갱신
+    if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
   };
