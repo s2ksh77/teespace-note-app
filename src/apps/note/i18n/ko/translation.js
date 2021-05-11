@@ -157,7 +157,8 @@ const languageSet = {
     NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
     NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
 
-    NOTE_SAVE_PAGE: '페이지가 저장되었습니다.'
+    NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
+    NOTE_DELIVER_DEL_PAGE: '전달받은 페이지는 영구 삭제됩니다.'
 };
 
 export default languageSet;
