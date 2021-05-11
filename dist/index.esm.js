@@ -3451,7 +3451,8 @@ var languageSet = {
   NOTE_META_TAG_02: '페이지',
   NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
   NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
-  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.'
+  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
+  NOTE_DELIVER_DEL_PAGE: '전달받은 페이지는 영구 삭제됩니다.'
 };
 
 var _languageSet;
@@ -3586,7 +3587,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _languageSet);
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_DELIVER_DEL_PAGE", 'Pages forwarded will be permanently deleted.'), _languageSet);
 
 var resources = {
   ko: {
@@ -5038,6 +5039,7 @@ var ChapterStore = observable({
   // 2panel(pageContainer용)
   chapterList: [],
   sortedChapterList: {
+    // web에서 안 씀
     roomChapterList: [],
     sharedPageList: [],
     sharedChapterList: []
@@ -5085,6 +5087,11 @@ var ChapterStore = observable({
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
+  lnbBoundary: {
+    beforeShared: false,
+    beforeRecycleBin: false
+  },
+  // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   getLoadingPageInfo: function getLoadingPageInfo() {
     return this.loadingPageInfo;
   },
@@ -5169,6 +5176,10 @@ var ChapterStore = observable({
   },
   setChapterTitle: function setChapterTitle(title) {
     this.chapterNewTitle = title;
+  },
+  setLnbBoundary: function setLnbBoundary(flags) {
+    // 형태: { beforeShared:false, beforeRecycleBin:false }
+    this.lnbBoundary = flags;
   },
   // 사용자 input이 없을 때
   // 웹에서 더이상 안씀! 모바일에서도 안씀!
@@ -5761,6 +5772,32 @@ var ChapterStore = observable({
       }, _callee13);
     }))();
   },
+  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
+  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
+  getLnbBoundary: function getLnbBoundary(_ref) {
+    var normalChapters = _ref.normalChapters,
+        sharedChapters = _ref.sharedChapters;
+
+    if (normalChapters.length) {
+      if (sharedChapters.length > 1) return {
+        beforeShared: true,
+        beforeRecycleBin: true
+      };
+      return {
+        beforeShared: false,
+        beforeRecycleBin: true
+      }; // 일반 챕터, 휴지통만 있는 경우
+    }
+
+    if (sharedChapters.length > 1) return {
+      beforeShared: false,
+      beforeRecycleBin: true
+    };
+    return {
+      beforeShared: false,
+      beforeRecycleBin: false
+    }; // 휴지통만 있는 경우    
+  },
   getNoteChapterList: function getNoteChapterList() {
     var _arguments = arguments,
         _this9 = this;
@@ -5802,13 +5839,18 @@ var ChapterStore = observable({
               } // sharedChapters = shared, recylce_bin
 
 
-              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters);
+              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters); // 화면에 경계선 그리기용
+
+              _this9.setLnbBoundary(_this9.getLnbBoundary({
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              }));
 
               _this9.setChapterList(normalChapters.concat(sharedChapters));
 
               return _context14.abrupt("return", _this9.chapterList);
 
-            case 16:
+            case 17:
             case "end":
               return _context14.stop();
           }
@@ -6480,6 +6522,7 @@ var NoteMeta = {
     var eventList = [];
 
     switch (type) {
+      case 'sharedChapter':
       case 'chapter':
         // 삭제 함수 추가
         eventList.push(function (e) {
@@ -6511,6 +6554,7 @@ var NoteMeta = {
         });
         break;
 
+      case 'sharedPage':
       case 'deletePage':
         // 페이지 영구 삭제
         eventList.push(function (e) {
@@ -6785,6 +6829,20 @@ var NoteMeta = {
       case 'page':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
+        dialogType.btns = this.setBtns('delete');
+        break;
+
+      case 'sharedChapter':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
+        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
+        dialogType.btns = this.setBtns('delete');
+        break;
+
+      case 'sharedPage':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
+        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
         dialogType.btns = this.setBtns('delete');
         break;
 
@@ -7084,6 +7142,10 @@ var NoteStore = observable({
     ChapterStore.setCurrentChapterId('');
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
+    ChapterStore.setLnbBoundary({
+      beforeShared: false,
+      beforeRecycleBin: false
+    });
     TagStore.setNoteTagList([]);
     TagStore.setTagPanelLoading(true); // 처음에 '태그 없습니다' 페이지가 보이지 않아야 함!
     // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
@@ -7175,6 +7237,8 @@ var NoteStore = observable({
       case 'confirm':
       case 'chapter':
       case 'page':
+      case 'sharedChapter':
+      case 'sharedPage':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'editingPage':
@@ -7369,6 +7433,26 @@ var useNoteStore = function useNoteStore() {
   };
 };
 
+function _templateObject17() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  order:2;\n  border-bottom: 1px solid #DDD9D4;\n  margin: 0 1rem;\n"]);
+
+  _templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject16() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  order:1;\n  border-bottom: 1px solid #DDD9D4;\n  margin: 0 1rem;\n"]);
+
+  _templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject15() {
   var data = _taggedTemplateLiteral(["\n  font-weight: 500;\n  margin-left: 2.63rem;\n"]);
 
@@ -7542,6 +7626,8 @@ var LnbRecycleContainer = styled.div(_templateObject13(), function (props) {
 });
 var RecycleBinImg = styled.img(_templateObject14());
 var RecycleBinTxt = styled.div(_templateObject15());
+var LNBShareBorder1 = styled.div(_templateObject16());
+var LNBShareBorder2 = styled.div(_templateObject17());
 
 function _templateObject18() {
   var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  border: 0rem solid #c6ced6;\n  background-color: #F7F4EF;\n  box-sizing: border-box;\n  &:focus-within {\n    background: #FFFFFF;\n    border: 1px solid #7B7671;\n  }\n  background-color: ", "\n  border: ", "\n"]);
@@ -7553,20 +7639,20 @@ function _templateObject18() {
   return data;
 }
 
-function _templateObject17() {
+function _templateObject17$1() {
   var data = _taggedTemplateLiteral(["\n  display: ", ";\n  margin-left: auto;\n"]);
 
-  _templateObject17 = function _templateObject17() {
+  _templateObject17$1 = function _templateObject17() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject16() {
+function _templateObject16$1() {
   var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.81rem !important;\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus {\n    background: #ffffff;\n    outline: none;\n  }\n  &::placeholder {\n    color: #c9c4be;\n  }\n  background-color: ", ";\n"]);
 
-  _templateObject16 = function _templateObject16() {
+  _templateObject16$1 = function _templateObject16() {
     return data;
   };
 
@@ -7742,10 +7828,10 @@ var LnbTitleSearchContainer = styled.form(_templateObject14$1(), function (props
   return props.isSearch ? '1px solid #7B7671' : '1px solid transparent';
 });
 var LnbTitleSearchIcon = styled.button(_templateObject15$1());
-var LnbTitleSearchInput = styled.input(_templateObject16(), function (props) {
+var LnbTitleSearchInput = styled.input(_templateObject16$1(), function (props) {
   return props.isSearch ? '#FFFFFF;' : 'inherit;';
 });
-var TagSearchForm = styled.form(_templateObject17(), function (props) {
+var TagSearchForm = styled.form(_templateObject17$1(), function (props) {
   return props.show ? 'block' : 'none';
 });
 var TagTitleSearchContainer = styled.div(_templateObject18(), function (props) {
@@ -8028,20 +8114,20 @@ function _templateObject18$1() {
   return data;
 }
 
-function _templateObject17$1() {
+function _templateObject17$2() {
   var data = _taggedTemplateLiteral(["\n  width:8.13rem;\n"]);
 
-  _templateObject17$1 = function _templateObject17() {
+  _templateObject17$2 = function _templateObject17() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject16$1() {
+function _templateObject16$2() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: #777777;\n  margin-bottom: 1.25rem;\n"]);
 
-  _templateObject16$1 = function _templateObject16() {
+  _templateObject16$2 = function _templateObject16() {
     return data;
   };
 
@@ -8221,8 +8307,8 @@ var SearchImgInput = styled.input(_templateObject13$2(), function (props) {
 });
 var SearchResultNotFoundCover = styled.div(_templateObject14$2());
 var SearchKeyword = styled.span(_templateObject15$2());
-var NoSearchResultTitle = styled.span(_templateObject16$1());
-var NoSearchResultImg = styled.img(_templateObject17$1());
+var NoSearchResultTitle = styled.span(_templateObject16$2());
+var NoSearchResultImg = styled.img(_templateObject17$2());
 var ContextMenuCover = styled(Dropdown)(_templateObject18$1(), function (props) {
   return props.right;
 });
@@ -8284,20 +8370,20 @@ function _templateObject18$2() {
   return data;
 }
 
-function _templateObject17$2() {
+function _templateObject17$3() {
   var data = _taggedTemplateLiteral(["\n  display:flex;\n  width:100%;\n  flex-wrap:wrap;\n"]);
 
-  _templateObject17$2 = function _templateObject17() {
+  _templateObject17$3 = function _templateObject17() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject16$2() {
+function _templateObject16$3() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  font-size:0.8125rem;\n"]);
 
-  _templateObject16$2 = function _templateObject16() {
+  _templateObject16$3 = function _templateObject16() {
     return data;
   };
 
@@ -8474,8 +8560,8 @@ var Panel = Collapse.Panel;
 var PanelHeader = styled(Panel)(_templateObject13$3());
 var StyledCollapse = styled(Collapse)(_templateObject14$3());
 var TagKeyChildren = styled.div(_templateObject15$3());
-var TagKeyContainer = styled.div(_templateObject16$2());
-var TagChipGroup = styled.div(_templateObject17$2()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
+var TagKeyContainer = styled.div(_templateObject16$3());
+var TagChipGroup = styled.div(_templateObject17$3()); // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 
 var TagChip = styled(Tag)(_templateObject18$2());
@@ -10507,7 +10593,7 @@ var ContextMenu = function ContextMenu(_ref) {
                             NoteStore.setModalInfo('chapterconfirm');
                           } else {
                             if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
-                            NoteStore.setModalInfo('chapter');
+                            if (note.type === 'shared' || note.type === 'shared_page') NoteStore.setModalInfo('sharedChapter');else NoteStore.setModalInfo('chapter');
                           }
 
                         case 10:
@@ -10554,7 +10640,7 @@ var ContextMenu = function ContextMenu(_ref) {
                             ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
                             PageStore.setLastSharedPageParentId('');
                             ChapterStore.deleteNoteChapter();
-                          } else PageStore.throwNotePage();
+                          } else if (note.type === 'shared') NoteStore.setModalInfo('sharedPage');else PageStore.throwNotePage();
 
                           _context2.next = 11;
                           break;
@@ -11119,7 +11205,7 @@ var Page = function Page(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(PageCover, {
-      ref: authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId ? page.type === 'note' ? function (node) {
+      ref: authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId && page.type !== 'recycle' ? page.type === 'note' ? function (node) {
         return drag(drop(node));
       } : drag : null,
       id: page.id,
@@ -11541,8 +11627,7 @@ var Chapter = function Chapter(_ref) {
 var RecycleBin = function RecycleBin(_ref) {
   var chapter = _ref.chapter,
       index = _ref.index,
-      flexOrder = _ref.flexOrder,
-      isShared = _ref.isShared;
+      flexOrder = _ref.flexOrder;
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
@@ -11559,7 +11644,7 @@ var RecycleBin = function RecycleBin(_ref) {
       children = chapter.children; // When chapters/pages are dropped on recycle bin area
 
   var _useDrop = useDrop({
-    accept: [DRAG_TYPE.CHAPTER, DRAG_TYPE.PAGE, DRAG_TYPE.SHARED_CHAPTER, DRAG_TYPE.SHARED_PAGE],
+    accept: [],
     drop: function drop() {},
     hover: function hover() {
       if (ChapterStore.dragEnterChapterIdx !== index) ChapterStore.setDragEnterChapterIdx(index);
@@ -11578,12 +11663,7 @@ var RecycleBin = function RecycleBin(_ref) {
     PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
-      item: children[0],
-      pageIdx: 0,
-      chapterId: id,
-      chapterIdx: index
-    }]]));else PageStore.clearMoveInfoMap();
+    PageStore.clearMoveInfoMap();
     PageStore.setIsCtrlKeyDown(false);
   };
 
@@ -11762,7 +11842,7 @@ var LNBContainer = function LNBContainer() {
             flexOrder: 3
           });
       }
-    }), /*#__PURE__*/React.createElement(LNBTag, {
+    }), ChapterStore.lnbBoundary.beforeShared && /*#__PURE__*/React.createElement(LNBShareBorder1, null), ChapterStore.lnbBoundary.beforeRecycleBin && /*#__PURE__*/React.createElement(LNBShareBorder2, null), /*#__PURE__*/React.createElement(LNBTag, {
       flexOrder: 4
     })))));
   });
@@ -12182,20 +12262,20 @@ function _templateObject18$3() {
   return data;
 }
 
-function _templateObject17$3() {
+function _templateObject17$4() {
   var data = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"]);
 
-  _templateObject17$3 = function _templateObject17() {
+  _templateObject17$4 = function _templateObject17() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject16$3() {
+function _templateObject16$4() {
   var data = _taggedTemplateLiteral(["\n      width: 12.5rem;\n      min-width: 12.5rem;\n    "]);
 
-  _templateObject16$3 = function _templateObject16() {
+  _templateObject16$4 = function _templateObject16() {
     return data;
   };
 
@@ -12373,9 +12453,9 @@ var FoldBtn = styled.div(_templateObject11$5(), function (props) {
 var FoldBtnImg = styled.img(_templateObject12$5());
 var FileBodyLayout = styled.div(_templateObject13$4());
 var FileBody = styled.div(_templateObject14$4(), function (props) {
-  return props.closable ? css(_templateObject15$4()) : css(_templateObject16$3());
+  return props.closable ? css(_templateObject15$4()) : css(_templateObject16$4());
 });
-var FileContent = styled.div(_templateObject17$3());
+var FileContent = styled.div(_templateObject17$4());
 var FileDownloadIcon = styled.div(_templateObject18$3());
 var FileErrorIcon = styled.div(_templateObject19$2());
 var ProgressWrapper = styled.div(_templateObject20$2());

@@ -11,7 +11,7 @@ const ChapterStore = observable({
   chapterColor: "",
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: {
+  sortedChapterList: { // web에서 안 씀
     roomChapterList: [],
     sharedPageList: [],
     sharedChapterList: []
@@ -56,6 +56,7 @@ const ChapterStore = observable({
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
+  lnbBoundary: { beforeShared:false, beforeRecycleBin:false }, // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   getLoadingPageInfo() {
     return this.loadingPageInfo;
   },
@@ -138,6 +139,9 @@ const ChapterStore = observable({
   },
   setChapterTitle(title) {
     this.chapterNewTitle = title;
+  },
+  setLnbBoundary(flags) { // 형태: { beforeShared:false, beforeRecycleBin:false }
+    this.lnbBoundary = flags;
   },
   // 사용자 input이 없을 때
   // 웹에서 더이상 안씀! 모바일에서도 안씀!
@@ -434,6 +438,16 @@ const ChapterStore = observable({
     }
     return { normalChapters, sharedChapters };
   },
+  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
+  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
+  getLnbBoundary({ normalChapters, sharedChapters }) {
+    if (normalChapters.length) {
+      if (sharedChapters.length>1) return { beforeShared:true, beforeRecycleBin:true };
+      return { beforeShared:false, beforeRecycleBin:true } // 일반 챕터, 휴지통만 있는 경우
+    }
+    if (sharedChapters.length>1) return { beforeShared:false, beforeRecycleBin:true };
+    return { beforeShared:false, beforeRecycleBin:false } // 휴지통만 있는 경우    
+  },
 
   async getNoteChapterList(isInit=false) {
     const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
@@ -452,6 +466,9 @@ const ChapterStore = observable({
     }
     // sharedChapters = shared, recylce_bin
     sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
+    
+    // 화면에 경계선 그리기용
+    this.setLnbBoundary(this.getLnbBoundary({ normalChapters, sharedChapters }));
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;

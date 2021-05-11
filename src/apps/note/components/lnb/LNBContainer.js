@@ -8,6 +8,8 @@ import {
   LNBCover,
   LNBChapterCover,
   LNBEditModeCover,
+  LNBShareBorder1,
+  LNBShareBorder2,
 } from '../../styles/lnbStyle';
 import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
@@ -146,6 +148,8 @@ const LNBContainer = () => {
                     break;
                 }
               })}
+              {ChapterStore.lnbBoundary.beforeShared && <LNBShareBorder1 />}
+              {ChapterStore.lnbBoundary.beforeRecycleBin && <LNBShareBorder2 />}
               <LNBTag flexOrder={4} />
             </DndProvider>
           )}
