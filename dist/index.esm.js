@@ -9059,17 +9059,26 @@ var LNBSearchResult = function LNBSearchResult() {
               ChapterStore.initSearchVar();
               NoteStore.setShowPage(true);
               ChapterStore.getChapterChildren(chapterId).then(function (data) {
-                // 어차피 이미 그려진 리스트에 없다면 첫 번째 자식 선택 못하므로 일단 그려진 애들 중 첫번째가 삭제되지 않은 경우 선택
-                var pageId = ChapterStore.getFirstPageFromChapter(chapterId);
+                var chapterInfo = ChapterStore.chapterList.find(function (chapter) {
+                  return chapter.id === chapterId;
+                });
+                if (!chapterInfo) return; // 만약의 경우
 
-                if (pageId && data.noteList && data.noteList.length > 0 && data.noteList.find(function (page) {
-                  return page.note_id === pageId;
-                })) {
-                  PageStore.fetchCurrentPageData(pageId);
-                } else {
-                  ChapterStore.setCurrentChapterId(chapterId);
-                  PageStore.setCurrentPageId('');
+                if (chapterInfo.type === CHAPTER_TYPE.RECYCLE_BIN) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
+
+                if (chapterInfo.children.length > 0) {
+                  var pageId = chapterInfo.children[0].id; // 어차피 이미 그려진 리스트에 없다면 첫 번째 자식 선택 못하므로 일단 그려진 애들 중 첫번째가 삭제되지 않은 경우 선택
+
+                  if (pageId && data.noteList && data.noteList.length > 0 && data.noteList.find(function (page) {
+                    return page.note_id === pageId;
+                  })) {
+                    PageStore.fetchCurrentPageData(pageId);
+                    return;
+                  }
                 }
+
+                ChapterStore.setCurrentChapterId(chapterId);
+                PageStore.setCurrentPageId('');
               });
 
             case 4:
