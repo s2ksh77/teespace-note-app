@@ -629,7 +629,7 @@ const ChapterStore = observable({
     this.setIsLoadingSearchResult(true);
     this.getSearchList(this.searchStr.trim()).then(dto => {
       this.setSearchResult({
-        chapter: dto.chapterList,
+        chapter: dto.chapterList.filter(chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN),
         page: dto.pageList
       });
       this.setIsLoadingSearchResult(false);

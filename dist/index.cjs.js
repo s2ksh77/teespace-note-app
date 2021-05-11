@@ -6109,7 +6109,9 @@ var ChapterStore = mobx.observable({
 
               _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
                 _this15.setSearchResult({
-                  chapter: dto.chapterList,
+                  chapter: dto.chapterList.filter(function (chapter) {
+                    return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
+                  }),
                   page: dto.pageList
                 });
 
@@ -6436,6 +6438,12 @@ var ChapterStore = mobx.observable({
         }
       }, _callee24, null, [[0, 19]]);
     }))();
+  },
+  getRoomChapterList: function getRoomChapterList() {
+    var roomChapterList = this.chapterList.filter(function (chapter) {
+      return chapter.type === 'notebook' || chapter.type === 'default';
+    });
+    return roomChapterList;
   }
 });
 
@@ -10630,7 +10638,7 @@ var ContextMenu = function ContextMenu(_ref) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              if (!(ChapterStore.chapterList.length === 1)) {
+              if (!(ChapterStore.getRoomChapterList().length === 0)) {
                 _context4.next = 7;
                 break;
               }
