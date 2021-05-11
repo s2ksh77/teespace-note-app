@@ -478,10 +478,10 @@ export const handleUnselect = () => {
     // if (TagStore.selectTagIdx !== '') {
     //     TagStore.setSelectTagIndex('')
     // }
-    if (PageStore.moveInfoMap.size > 1) {
+    if (PageStore.dragData.size > 1) {
         PageStore.handleClickOutside();
     }
-    if (ChapterStore.moveInfoMap.size > 1) {
+    if (ChapterStore.dragData.size > 1) {
         ChapterStore.handleClickOutside();
     }
     //ref 귀찮 - 임시 구현

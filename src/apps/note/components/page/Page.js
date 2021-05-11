@@ -27,11 +27,11 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
 
-  const chapterMoveInfo = {
+  const chapterDragData = {
     item: chapter,
     chapterIdx,
   };
-  const pageMoveInfo = {
+  const pageDragData = {
     item: page,
     pageIdx: index,
     chapterId: chapter.id,
@@ -44,21 +44,21 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
     },
     begin: monitor => {
-      if (!PageStore.moveInfoMap.get(page.id)) {
-        PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
+      if (!PageStore.dragData.get(page.id)) {
+        PageStore.setDragData(new Map([[page.id, pageDragData]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
       NoteStore.setDraggedType('page');
       NoteStore.setDraggedItems(
-        PageStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item),
+        PageStore.getSortedDragDataList().map(data => data.item),
       );
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
       return {
         type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
-        data: [...PageStore.moveInfoMap].map(keyValue => {
+        data: [...PageStore.dragData].map(keyValue => {
           const { item } = keyValue[1];
           return {
             id: item.id,
@@ -105,18 +105,18 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const handleSelectPage = useCallback(
     e => {
-      ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
 
       if (e.ctrlKey) {
-        if (PageStore.moveInfoMap.get(page.id))
-          PageStore.deleteMoveInfoMap(page.id);
-        else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
+        if (PageStore.dragData.get(page.id))
+          PageStore.deleteDragData(page.id);
+        else PageStore.appendDragData(page.id, pageDragData);
         PageStore.setIsCtrlKeyDown(true);
         return;
       }
 
-      PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
+      PageStore.setDragData(new Map([[page.id, pageDragData]]));
       PageStore.setIsCtrlKeyDown(false);
       onClick(page.id);
     },
@@ -189,12 +189,12 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
           <PageTextContainer
             className={
               PageStore.isCtrlKeyDown
-                ? PageStore.moveInfoMap.get(page.id)
+                ? PageStore.dragData.get(page.id)
                   ? 'selected'
                   : ''
                 : NoteStore.showPage &&
-                  (NoteStore.isDragging && PageStore.moveInfoMap.size > 0
-                    ? page.id === [...PageStore.moveInfoMap][0][0]
+                  (NoteStore.isDragging && PageStore.dragData.size > 0
+                    ? page.id === [...PageStore.dragData][0][0]
                     : page.id === PageStore.currentPageId)
                 ? 'selected'
                 : ''

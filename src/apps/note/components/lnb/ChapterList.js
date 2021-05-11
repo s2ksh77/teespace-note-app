@@ -8,10 +8,10 @@ const ChapterList = ({ type, isShared }) => {
   const { ChapterStore } = useNoteStore();
 
   const handleClickOutside = e => {
-    if (!e.target.closest('.chapter-div') && ChapterStore.moveInfoMap.size > 1) {
+    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1) {
       ChapterStore.handleClickOutside();
     }
-    if (!e.target.closest('.page-li') && PageStore.moveInfoMap.size > 1) {
+    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) {
       PageStore.handleClickOutside();
     }
   }

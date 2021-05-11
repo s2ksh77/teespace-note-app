@@ -37,7 +37,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
   // 중복체크 후 다시 입력받기 위해 ref 추가
   const { id, text: title, color } = chapter;
-  const chapterMoveInfo = useMemo(
+  const chapterDragData = useMemo(
     () => ({
       item: chapter,
       chapterIdx: index,
@@ -79,21 +79,21 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
     },
     begin: monitor => {
-      if (!ChapterStore.moveInfoMap.get(chapter.id)) {
-        ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+      if (!ChapterStore.dragData.get(chapter.id)) {
+        ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
       NoteStore.setDraggedType('chapter');
       NoteStore.setDraggedItems(
-        ChapterStore.getSortedMoveInfoList().map(moveInfo => moveInfo.item),
+        ChapterStore.getSortedDragDataList().map(data => data.item),
       );
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
       return {
         type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
-        data: [...ChapterStore.moveInfoMap].map(keyValue => {
+        data: [...ChapterStore.dragData].map(keyValue => {
           const { item } = keyValue[1];
           return {
             id: item.id,
@@ -155,15 +155,15 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     e => {
       if (!PageStore.isReadMode()) return;
 
-      if (ChapterStore.moveInfoMap.size > 0 && e.ctrlKey) {
-        if (ChapterStore.moveInfoMap.get(chapter.id))
-          ChapterStore.deleteMoveInfoMap(chapter.id);
-        else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);
+      if (ChapterStore.dragData.size > 0 && e.ctrlKey) {
+        if (ChapterStore.dragData.get(chapter.id))
+          ChapterStore.deleteDragData(chapter.id);
+        else ChapterStore.appendDragData(chapter.id, chapterDragData);
         ChapterStore.setIsCtrlKeyDown(true);
         return;
       }
 
-      ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
       PageStore.setIsRecycleBin(false);
       ChapterStore.setCurrentChapterId(chapter.id);
@@ -173,7 +173,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
       NoteStore.setShowPage(true);
       PageStore.fetchCurrentPageData(pageId);
       if (pageId)
-        PageStore.setMoveInfoMap(
+        PageStore.setDragData(
           new Map([
             [
               pageId,
@@ -186,7 +186,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
             ],
           ]),
         );
-      else PageStore.clearMoveInfoMap();
+      else PageStore.clearDragData();
       PageStore.setIsCtrlKeyDown(false);
     },
     [chapter],
@@ -255,12 +255,12 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         <ChapterCover
           className={`chapter-div${
             ChapterStore.isCtrlKeyDown
-              ? ChapterStore.moveInfoMap.get(chapter.id)
+              ? ChapterStore.dragData.get(chapter.id)
                 ? ' selectedMenu'
                 : ''
               : (
-                  NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0
-                    ? chapter.id === [...ChapterStore.moveInfoMap][0][0]
+                  NoteStore.isDragging && ChapterStore.dragData.size > 0
+                    ? chapter.id === [...ChapterStore.dragData][0][0]
                     : chapter.id === ChapterStore.currentChapterId
                 )
               ? ' selectedMenu'
