@@ -148,7 +148,9 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   return useObserver(() => (
     <PageCover
       ref={
-        authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId
+        authStore.hasPermission('noteSharePage', 'C') &&
+        !PageStore.renameId &&
+        page.type !== 'recycle'
           ? page.type === 'note'
             ? node => drag(drop(node))
             : drag
