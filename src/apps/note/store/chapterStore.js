@@ -508,7 +508,6 @@ const ChapterStore = observable({
     const notbookList = await this.createChapter(this.chapterNewTitle, this.isNewChapterColor);
     await this.getNoteChapterList();
     // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-    PageStore.setIsRecycleBin(false);
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
     this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
@@ -527,7 +526,6 @@ const ChapterStore = observable({
         this.chapterList.length === 1 &&
         this.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN
       ) {
-        PageStore.setIsRecycleBin(true);
         PageStore.fetchCurrentPageData(this.chapterList[0]?.children[0]?.id);
       } else {
         PageStore.fetchCurrentPageData(PageStore.selectablePageId);
@@ -645,8 +643,9 @@ const ChapterStore = observable({
     this.setIsSearching(true);
     this.setIsLoadingSearchResult(true);
     this.getSearchList(this.searchStr.trim()).then(dto => {
+      const filtered = dto.chapterList?.filter(chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN);
       this.setSearchResult({
-        chapter: dto.chapterList.filter(chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN),
+        chapter: (filtered && filtered.length>0) ? filtered : null,
         page: dto.pageList
       });
       this.setIsLoadingSearchResult(false);
@@ -740,7 +739,7 @@ const ChapterStore = observable({
   async setFirstNoteInfo() {
     const targetChapter = this.getFirstRenderedChapter();
     if (!targetChapter) {
-      this.setCurrentChapterId('');
+      this.setCurrentChapterInfo('', false);//chapterId='', isRecycleBin=false
       PageStore.setCurrentPageId('');
       return;
     }
@@ -751,7 +750,7 @@ const ChapterStore = observable({
     await PageStore.fetchCurrentPageData(pageId);
     // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
     // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-    this.setCurrentChapterId(chapterId);
+    this.setCurrentChapterInfo(chapterId);
   },
   /*
     loading true->false가 들어간 함수
@@ -779,6 +778,26 @@ const ChapterStore = observable({
     if (!chapter || chapter.children.length === 0) return null;
     return chapter.children[0]?.id;
   },
+  /**
+   * isRecycleBin인지 항상 같이 set해줘야해서 만든 함수
+   * computed 기능용으로 만듦
+   * param: 1st.chapterId, 2nd. isRecycleBin값(안 넘기면 recycleBin 찾아서 비교함)
+   * chapterId 없으면 isRecycleBin은 false로 세팅함
+   */
+  setCurrentChapterInfo(chapterId, isRecycleBin) {
+    this.setCurrentChapterId(chapterId);
+    if (typeof isRecycleBin === "boolean") {
+      PageStore.setIsRecycleBin(isRecycleBin);
+      return;
+    }
+    if (!chapterId) {
+      PageStore.setIsRecycleBin(false);
+      return;
+    }
+    const recycleBin = this.chapterList.find(chapter => chapter.type === CHAPTER_TYPE.RECYCLE_BIN);
+    if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);
+    else PageStore.setIsRecycleBin(false);
+  },
 
   async openNote() {
     try {
@@ -786,7 +805,8 @@ const ChapterStore = observable({
         case "chapter": // chapter, page 선택
           NoteStore.setTargetLayout('LNB');
           await this.getNoteChapterList();
-          this.setCurrentChapterId(NoteStore.metaTagInfo.id);
+          // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
+          this.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
           const pageId = this.getChapterFirstPageId(NoteStore.metaTagInfo.id);
           this.setScrollIntoViewId(NoteStore.metaTagInfo.id);
           /**

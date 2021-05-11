@@ -3672,7 +3672,7 @@ var PageStore = mobx.observable((_observable$1 = {
   renamePrevText: '',
   renameText: '',
   isMovingPage: false,
-  moveInfoMap: new Map(),
+  dragData: new Map(),
   isCtrlKeyDown: false,
   movePageId: '',
   // 이동을 원하는 page의 id
@@ -3836,20 +3836,20 @@ var PageStore = mobx.observable((_observable$1 = {
   setIsMovingPage: function setIsMovingPage(isMoving) {
     this.isMovingPage = isMoving;
   },
-  getMoveInfoMap: function getMoveInfoMap() {
-    return this.moveInfoMap;
+  getDragData: function getDragData() {
+    return this.dragData;
   },
-  setMoveInfoMap: function setMoveInfoMap(moveInfoMap) {
-    this.moveInfoMap = moveInfoMap;
+  setDragData: function setDragData(dragData) {
+    this.dragData = dragData;
   },
-  appendMoveInfoMap: function appendMoveInfoMap(key, value) {
-    this.moveInfoMap.set(key, value);
+  appendDragData: function appendDragData(key, value) {
+    this.dragData.set(key, value);
   },
-  deleteMoveInfoMap: function deleteMoveInfoMap(key) {
-    this.moveInfoMap.delete(key);
+  deleteDragData: function deleteDragData(key) {
+    this.dragData.delete(key);
   },
-  clearMoveInfoMap: function clearMoveInfoMap() {
-    this.moveInfoMap.clear();
+  clearDragData: function clearDragData() {
+    this.dragData.clear();
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -4156,14 +4156,12 @@ var PageStore = mobx.observable((_observable$1 = {
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
-      _this.setIsRecycleBin(false);
-
       EditorStore.setIsSearch(false);
 
       _this.setIsEdit(dto.is_edit);
 
       ChapterStore.getNoteChapterList();
-      ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
       _this.currentPageId = dto.note_id;
 
       _this.setIsNewPage(true);
@@ -4252,7 +4250,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
           _this3.setCurrentPageId('');
 
-          ChapterStore.setCurrentChapterId('');
+          ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
           var currentChapter = ChapterStore.chapterList.find(function (chapter) {
             return chapter.id === _this3.createParent;
@@ -4278,8 +4276,8 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this4 = this;
 
     this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(function (dto) {
-      if (_this4.moveInfoMap.get(dto.note_id)) {
-        _this4.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      if (_this4.dragData.get(dto.note_id)) {
+        _this4.dragData.get(dto.note_id).item.text = dto.note_title;
       }
 
       _this4.fetchNoteInfoList(dto.note_id);
@@ -4287,7 +4285,7 @@ var PageStore = mobx.observable((_observable$1 = {
       ChapterStore.getNoteChapterList();
     });
   },
-  createMoveInfo: function createMoveInfo(pageId, chapterId) {
+  createDragData: function createDragData(pageId, chapterId) {
     var chapterIdx = ChapterStore.chapterList.findIndex(function (chapter) {
       return chapter.id === chapterId;
     });
@@ -4307,13 +4305,13 @@ var PageStore = mobx.observable((_observable$1 = {
     this.setIsCtrlKeyDown(false);
 
     if (!this.currentPageId) {
-      this.moveInfoMap.clear();
+      this.clearDragData();
       return;
     }
 
-    var currentMoveInfo = this.moveInfoMap.get(this.currentPageId);
-    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentPageId, ChapterStore.currentChapterId);
-    this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
+    var currentDragData = this.dragData.get(this.currentPageId);
+    if (!currentDragData) currentDragData = this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
+    this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
@@ -4339,12 +4337,12 @@ var PageStore = mobx.observable((_observable$1 = {
       }, _callee11);
     }))();
   },
-  getSortedMoveInfoList: function getSortedMoveInfoList() {
-    var moveInfoList = _toConsumableArray(this.moveInfoMap).map(function (keyValue) {
+  getSortedDragDataList: function getSortedDragDataList() {
+    var dragDataList = _toConsumableArray(this.dragData).map(function (keyValue) {
       return keyValue[1];
     });
 
-    return moveInfoList.sort(function (a, b) {
+    return dragDataList.sort(function (a, b) {
       if (a.chapterIdx === b.chapterIdx) return a.pageIdx - b.pageIdx;
       return a.chapterIdx - b.chapterIdx;
     });
@@ -4353,28 +4351,28 @@ var PageStore = mobx.observable((_observable$1 = {
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var item, sortedMoveInfoList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
+      var item, sortedDragDataList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
               item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-              sortedMoveInfoList = _this5.getSortedMoveInfoList();
-              sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
-                return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
+              sortedDragDataList = _this5.getSortedDragDataList();
+              sortedMovePages = sortedDragDataList.map(function (data) {
+                return item[data.chapterIdx].children[data.pageIdx];
               });
               pageIds = []; // 갈아 끼울 페이지 아이디 리스트
 
               item[moveTargetChapterIdx].children.forEach(function (pageId, idx) {
                 if (idx === moveTargetPageIdx) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-                if (!_this5.moveInfoMap.get(pageId)) pageIds.push(pageId);
+                if (!_this5.dragData.get(pageId)) pageIds.push(pageId);
               });
               if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
               _context12.next = 8;
-              return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
-                if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
-                  item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-                  return _this5.movePage(moveInfo.item.id, moveTargetChapterId);
+              return Promise.all(sortedDragDataList.slice().reverse().map(function (data) {
+                if (data.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(data.item.id)) {
+                  item[data.chapterIdx].children.splice(data.pageIdx, 1);
+                  return _this5.movePage(data.item.id, moveTargetChapterId);
                 }
               }));
 
@@ -4383,13 +4381,13 @@ var PageStore = mobx.observable((_observable$1 = {
               moveCntInSameChapter = 0;
               moveCntToAnotherChapter = 0;
               startIdx = item[moveTargetChapterIdx].children.findIndex(function (pageId) {
-                return pageId === sortedMoveInfoList[0].item.id;
+                return pageId === sortedDragDataList[0].item.id;
               });
-              sortedMoveInfoList.map(function (moveInfo, idx) {
-                if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
+              sortedDragDataList.map(function (data, idx) {
+                if (data.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;else if (data.pageIdx !== startIdx + idx) moveCntInSameChapter++;
 
-                _this5.moveInfoMap.set(moveInfo.item.id, {
-                  item: moveInfo.item,
+                _this5.dragData.set(data.item.id, {
+                  item: data.item,
                   pageIdx: startIdx + idx,
                   chapterId: moveTargetChapterId,
                   chapterIdx: moveTargetChapterIdx
@@ -4416,7 +4414,7 @@ var PageStore = mobx.observable((_observable$1 = {
                   moveCnt: moveCntInSameChapter
                 }));
               } else {
-                ChapterStore.setMoveInfoMap(new Map([[moveTargetChapterId, ChapterStore.createMoveInfo(moveTargetChapterId)]]));
+                ChapterStore.setDragData(new Map([[moveTargetChapterId, ChapterStore.createDragData(moveTargetChapterId)]]));
                 NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_01', {
                   moveCnt: moveCnt,
                   targetPage: ChapterStore.chapterList[moveTargetChapterIdx].text
@@ -4512,7 +4510,7 @@ var PageStore = mobx.observable((_observable$1 = {
             case 11:
               _this6.setCurrentPageId(dto.note_id);
 
-              ChapterStore.setCurrentChapterId(dto.parent_notebook);
+              ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
               _this6.currentPageData = dto;
               _this6.isEdit = dto.is_edit;
               _this6.noteTitle = dto.note_title;
@@ -4522,9 +4520,9 @@ var PageStore = mobx.observable((_observable$1 = {
               EditorStore.setFileList(dto.fileList);
 
               if (_this6.isNewPage) {
-                ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
+                ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
 
-                _this6.setMoveInfoMap(new Map([[_this6.currentPageId, _this6.createMoveInfo(_this6.currentPageId, ChapterStore.currentChapterId)]]));
+                _this6.setDragData(new Map([[_this6.currentPageId, _this6.createDragData(_this6.currentPageId, ChapterStore.currentChapterId)]]));
 
                 Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
                   try {
@@ -4694,8 +4692,8 @@ var PageStore = mobx.observable((_observable$1 = {
     this.editDone(updateDto).then(function (dto) {
       _this10.removeLocalContent();
 
-      if (_this10.moveInfoMap.get(dto.note_id)) {
-        _this10.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      if (_this10.dragData.get(dto.note_id)) {
+        _this10.dragData.get(dto.note_id).item.text = dto.note_title;
       }
 
       _this10.fetchNoteInfoList(dto.note_id);
@@ -5019,11 +5017,9 @@ var PageStore = mobx.observable((_observable$1 = {
 
           case 8:
             if (_this14.currentPageId === pageId) {
-              ChapterStore.setCurrentChapterId(chapterId);
+              ChapterStore.setCurrentChapterInfo(chapterId, false);
 
               _this14.setCurrentPageId(pageId);
-
-              _this14.setIsRecycleBin(false);
             }
 
             NoteStore.setToastText(toastTxt);
@@ -5110,7 +5106,7 @@ var ChapterStore = mobx.observable({
   renamePrevText: '',
   renameText: '',
   isMovingChapter: false,
-  moveInfoMap: new Map(),
+  dragData: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
@@ -5174,20 +5170,20 @@ var ChapterStore = mobx.observable({
   setIsMovingChapter: function setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
-  getMoveInfoMap: function getMoveInfoMap() {
-    return this.moveInfoMap;
+  getDragData: function getDragData() {
+    return this.dragData;
   },
-  setMoveInfoMap: function setMoveInfoMap(moveInfoMap) {
-    this.moveInfoMap = moveInfoMap;
+  setDragData: function setDragData(dragData) {
+    this.dragData = dragData;
   },
-  appendMoveInfoMap: function appendMoveInfoMap(key, value) {
-    this.moveInfoMap.set(key, value);
+  appendDragData: function appendDragData(key, value) {
+    this.dragData.set(key, value);
   },
-  deleteMoveInfoMap: function deleteMoveInfoMap(key) {
-    this.moveInfoMap.delete(key);
+  deleteDragData: function deleteDragData(key) {
+    this.dragData.delete(key);
   },
-  clearMoveInfoMap: function clearMoveInfoMap() {
-    this.moveInfoMap.clear();
+  clearDragData: function clearDragData() {
+    this.dragData.clear();
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -5936,16 +5932,15 @@ var ChapterStore = mobx.observable({
 
             case 7:
               // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-              PageStore.setIsRecycleBin(false);
               PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
               _this10.setChapterTempUl(false);
 
-              _this10.setMoveInfoMap(new Map([[_this10.currentChapterId, _this10.createMoveInfo(_this10.currentChapterId)]]));
+              _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
 
-              PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this10.currentChapterId)]]));
+              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
 
-            case 12:
+            case 11:
             case "end":
               return _context15.stop();
           }
@@ -5979,15 +5974,14 @@ var ChapterStore = mobx.observable({
               if (_this11.currentChapterId === _this11.deleteChapterId) {
                 // refactoring할 때 수정필요함, 혹시나해서 여러가지 조건 체크함
                 if (_this11.chapterList.length === 1 && _this11.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN) {
-                  PageStore.setIsRecycleBin(true);
                   PageStore.fetchCurrentPageData((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : (_this11$chapterList$$ = _this11$chapterList$.children[0]) === null || _this11$chapterList$$ === void 0 ? void 0 : _this11$chapterList$$.id);
                 } else {
                   PageStore.fetchCurrentPageData(PageStore.selectablePageId);
                 }
 
-                _this11.setMoveInfoMap(new Map([[_this11.currentChapterId, _this11.createMoveInfo(_this11.currentChapterId)]]));
+                _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
 
-                PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
+                PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
               }
 
               _this11.deleteChapterId = '';
@@ -6007,12 +6001,12 @@ var ChapterStore = mobx.observable({
     var _this12 = this;
 
     this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
-      if (_this12.moveInfoMap.get(dto.id)) _this12.moveInfoMap.get(dto.id).item.text = dto.text;
+      if (_this12.dragData.get(dto.id)) _this12.dragData.get(dto.id).item.text = dto.text;
 
       _this12.getNoteChapterList();
     });
   },
-  createMoveInfo: function createMoveInfo(chapterId) {
+  createDragData: function createDragData(chapterId) {
     var chapterIdx = this.chapterList.findIndex(function (chapter) {
       return chapter.id === chapterId;
     });
@@ -6026,20 +6020,20 @@ var ChapterStore = mobx.observable({
     this.setIsCtrlKeyDown(false);
 
     if (!this.currentChapterId) {
-      this.moveInfoMap.clear();
+      this.clearDragData();
       return;
     }
 
-    var currentMoveInfo = this.moveInfoMap.get(this.currentChapterId);
-    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-    this.setMoveInfoMap(new Map([[this.currentChapterId, currentMoveInfo]]));
+    var currentDragData = this.dragData.get(this.currentChapterId);
+    if (!currentDragData) currentDragData = this.createDragData(this.currentChapterId);
+    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
   },
-  getSortedMoveInfoList: function getSortedMoveInfoList() {
-    var moveInfoList = _toConsumableArray(this.moveInfoMap).map(function (keyValue) {
+  getSortedDragDataList: function getSortedDragDataList() {
+    var dragDataList = _toConsumableArray(this.dragData).map(function (keyValue) {
       return keyValue[1];
     });
 
-    return moveInfoList.sort(function (a, b) {
+    return dragDataList.sort(function (a, b) {
       return a.chapterIdx - b.chapterIdx;
     });
   },
@@ -6047,25 +6041,25 @@ var ChapterStore = mobx.observable({
     var _this13 = this;
 
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-    var sortedMoveInfoList = this.getSortedMoveInfoList();
-    var sortedMoveChapters = sortedMoveInfoList.map(function (moveInfo) {
-      return item[moveInfo.chapterIdx];
+    var sortedDragDataList = this.getSortedDragDataList();
+    var sortedMoveChapters = sortedDragDataList.map(function (data) {
+      return item[data.chapterIdx];
     });
     var chapters = [];
     item.forEach(function (chapter, idx) {
       if (idx === _this13.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
-      if (!_this13.moveInfoMap.get(chapter.id)) chapters.push(chapter);
+      if (!_this13.dragData.get(chapter.id)) chapters.push(chapter);
     });
     if (this.dragEnterChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
     var moveCnt = 0;
     var startIdx = chapters.findIndex(function (chapter) {
-      return chapter.id === sortedMoveInfoList[0].item.id;
+      return chapter.id === sortedDragDataList[0].item.id;
     });
-    sortedMoveInfoList.forEach(function (moveInfo, idx) {
-      if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
+    sortedDragDataList.forEach(function (data, idx) {
+      if (data.chapterIdx !== startIdx + idx) moveCnt++;
 
-      _this13.moveInfoMap.set(moveInfo.item.id, {
-        item: moveInfo.item,
+      _this13.dragData.set(data.item.id, {
+        item: data.item,
         chapterIdx: startIdx + idx
       });
     });
@@ -6076,7 +6070,7 @@ var ChapterStore = mobx.observable({
         _this13.currentChapterId = sortedMoveChapters[0].id;
         PageStore.currentPageId = sortedMoveChapters[0].children[0];
         NoteStore.setIsDragging(false);
-        if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this13.currentChapterId)]]));
+        if (!PageStore.currentPageId) PageStore.clearDragData();else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this13.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
           NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', {
             moveCnt: moveCnt
@@ -6150,10 +6144,14 @@ var ChapterStore = mobx.observable({
               _this15.setIsLoadingSearchResult(true);
 
               _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
+                var _dto$chapterList;
+
+                var filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
+                  return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
+                });
+
                 _this15.setSearchResult({
-                  chapter: dto.chapterList.filter(function (chapter) {
-                    return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
-                  }),
+                  chapter: filtered && filtered.length > 0 ? filtered : null,
                   page: dto.pageList
                 });
 
@@ -6272,15 +6270,15 @@ var ChapterStore = mobx.observable({
     if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
-  setFirstMoveInfoMap: function setFirstMoveInfoMap(targetChapter) {
-    this.setMoveInfoMap(new Map([[targetChapter.id, {
+  setFirstDragData: function setFirstDragData(targetChapter) {
+    this.setDragData(new Map([[targetChapter.id, {
       item: targetChapter,
       chapterIdx: 0
     }]]));
 
     if (targetChapter.children.length > 0) {
       var targetPage = targetChapter.children[0];
-      PageStore.setMoveInfoMap(new Map([[targetPage.id, {
+      PageStore.setDragData(new Map([[targetPage.id, {
         item: targetPage,
         pageIdx: 0,
         chapterId: targetChapter.id,
@@ -6304,13 +6302,14 @@ var ChapterStore = mobx.observable({
                 break;
               }
 
-              _this18.setCurrentChapterId('');
+              _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
+
 
               PageStore.setCurrentPageId('');
               return _context21.abrupt("return");
 
             case 5:
-              _this18.setFirstMoveInfoMap(targetChapter);
+              _this18.setFirstDragData(targetChapter);
 
               chapterId = targetChapter.id;
               pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
@@ -6321,7 +6320,7 @@ var ChapterStore = mobx.observable({
             case 10:
               // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
               // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-              _this18.setCurrentChapterId(chapterId);
+              _this18.setCurrentChapterInfo(chapterId);
 
             case 11:
             case "end":
@@ -6409,6 +6408,31 @@ var ChapterStore = mobx.observable({
     if (!chapter || chapter.children.length === 0) return null;
     return (_chapter$children$ = chapter.children[0]) === null || _chapter$children$ === void 0 ? void 0 : _chapter$children$.id;
   },
+
+  /**
+   * isRecycleBin인지 항상 같이 set해줘야해서 만든 함수
+   * computed 기능용으로 만듦
+   * param: 1st.chapterId, 2nd. isRecycleBin값(안 넘기면 recycleBin 찾아서 비교함)
+   * chapterId 없으면 isRecycleBin은 false로 세팅함
+   */
+  setCurrentChapterInfo: function setCurrentChapterInfo(chapterId, isRecycleBin) {
+    this.setCurrentChapterId(chapterId);
+
+    if (typeof isRecycleBin === "boolean") {
+      PageStore.setIsRecycleBin(isRecycleBin);
+      return;
+    }
+
+    if (!chapterId) {
+      PageStore.setIsRecycleBin(false);
+      return;
+    }
+
+    var recycleBin = this.chapterList.find(function (chapter) {
+      return chapter.type === CHAPTER_TYPE.RECYCLE_BIN;
+    });
+    if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
+  },
   openNote: function openNote() {
     var _this21 = this;
 
@@ -6430,7 +6454,8 @@ var ChapterStore = mobx.observable({
               return _this21.getNoteChapterList();
 
             case 7:
-              _this21.setCurrentChapterId(NoteStore.metaTagInfo.id);
+              // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
+              _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
 
               pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
 
@@ -7056,7 +7081,7 @@ var handleWebsocket = function handleWebsocket() {
             setTimeout(function () {
               if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
                 var firstChapter = ChapterStore.chapterList[0];
-                ChapterStore.setCurrentChapterId(firstChapter.id);
+                ChapterStore.setCurrentChapterInfo(firstChapter.id); // 이 안에서 isRecycleBin true/false값 넣어줌
 
                 if (firstChapter.children && firstChapter.children.length > 0) {
                   PageStore.fetchCurrentPageData(firstChapter.children[0].id);
@@ -7172,7 +7197,8 @@ var NoteStore = mobx.observable({
   initVariables: function initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    ChapterStore.setCurrentChapterId('');
+    ChapterStore.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
+
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
     ChapterStore.setLnbBoundary({
@@ -7203,7 +7229,8 @@ var NoteStore = mobx.observable({
     this.showPage = showPage;
 
     if (showPage === false) {
-      ChapterStore.setCurrentChapterId('');
+      ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
+
       PageStore.setCurrentPageId('');
       PageStore.setIsEdit('');
     }
@@ -9196,8 +9223,6 @@ var LNBSearchResult = function LNBSearchResult() {
                 });
                 if (!chapterInfo) return; // 만약의 경우
 
-                if (chapterInfo.type === CHAPTER_TYPE.RECYCLE_BIN) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
-
                 if (chapterInfo.children.length > 0) {
                   var _data$noteList;
 
@@ -9211,7 +9236,7 @@ var LNBSearchResult = function LNBSearchResult() {
                   }
                 }
 
-                ChapterStore.setCurrentChapterId(chapterId);
+                ChapterStore.setCurrentChapterInfo(chapterId);
                 PageStore.setCurrentPageId('');
               });
 
@@ -9239,11 +9264,6 @@ var LNBSearchResult = function LNBSearchResult() {
 
             case 2:
               PageStore.fetchCurrentPageData(pageId).then(function () {
-                // [ todo ] computed로 currentChapterId가 휴지통이면 isrecyclebin true로 바꾸기?
-                var recycleBin = ChapterStore.chapterList.find(function (chapter) {
-                  return chapter.type === CHAPTER_TYPE.RECYCLE_BIN;
-                });
-                if (recycleBin && recycleBin.id === ChapterStore.currentChapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
                 instance.unmark();
                 instance.mark(ChapterStore.searchStr);
                 NoteStore.setShowPage(true);
@@ -10355,11 +10375,11 @@ var handleUnselect = function handleUnselect() {
   // }
 
 
-  if (PageStore.moveInfoMap.size > 1) {
+  if (PageStore.dragData.size > 1) {
     PageStore.handleClickOutside();
   }
 
-  if (ChapterStore.moveInfoMap.size > 1) {
+  if (ChapterStore.dragData.size > 1) {
     ChapterStore.handleClickOutside();
   } //ref 귀찮 - 임시 구현
 
@@ -11088,11 +11108,11 @@ var Page = function Page(_ref) {
 
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
-  var chapterMoveInfo = {
+  var chapterDragData = {
     item: chapter,
     chapterIdx: chapterIdx
   };
-  var pageMoveInfo = {
+  var pageDragData = {
     item: page,
     pageIdx: index,
     chapterId: chapter.id,
@@ -11105,20 +11125,20 @@ var Page = function Page(_ref) {
       type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE
     },
     begin: function begin(monitor) {
-      if (!PageStore.moveInfoMap.get(page.id)) {
-        PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
+      if (!PageStore.dragData.get(page.id)) {
+        PageStore.setDragData(new Map([[page.id, pageDragData]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
       NoteStore.setDraggedType('page');
-      NoteStore.setDraggedItems(PageStore.getSortedMoveInfoList().map(function (moveInfo) {
-        return moveInfo.item;
+      NoteStore.setDraggedItems(PageStore.getSortedDragDataList().map(function (data) {
+        return data.item;
       }));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
       return {
         type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
-        data: _toConsumableArray(PageStore.moveInfoMap).map(function (keyValue) {
+        data: _toConsumableArray(PageStore.dragData).map(function (keyValue) {
           var item = keyValue[1].item;
           return {
             id: item.id,
@@ -11201,16 +11221,16 @@ var Page = function Page(_ref) {
     });
   }, []);
   var handleSelectPage = React.useCallback(function (e) {
-    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+    ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
     ChapterStore.setIsCtrlKeyDown(false);
 
     if (e.ctrlKey) {
-      if (PageStore.moveInfoMap.get(page.id)) PageStore.deleteMoveInfoMap(page.id);else PageStore.appendMoveInfoMap(page.id, pageMoveInfo);
+      if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);else PageStore.appendDragData(page.id, pageDragData);
       PageStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    PageStore.setMoveInfoMap(new Map([[page.id, pageMoveInfo]]));
+    PageStore.setDragData(new Map([[page.id, pageDragData]]));
     PageStore.setIsCtrlKeyDown(false);
     onClick(page.id);
   }, [page]);
@@ -11261,7 +11281,7 @@ var Page = function Page(_ref) {
     }) : /*#__PURE__*/React__default['default'].createElement(PageTextCover, {
       className: PageStore.dragEnterChapterIdx === chapterIdx ? PageStore.dragEnterPageIdx === index && page.type === 'note' ? 'borderTopLine' : '' : ''
     }, /*#__PURE__*/React__default['default'].createElement(PageTextContainer, {
-      className: PageStore.isCtrlKeyDown ? PageStore.moveInfoMap.get(page.id) ? 'selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.moveInfoMap.size > 0 ? page.id === _toConsumableArray(PageStore.moveInfoMap)[0][0] : page.id === PageStore.currentPageId) ? 'selected' : ''
+      className: PageStore.isCtrlKeyDown ? PageStore.dragData.get(page.id) ? 'selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.dragData.size > 0 ? page.id === _toConsumableArray(PageStore.dragData)[0][0] : page.id === PageStore.currentPageId) ? 'selected' : ''
     }, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
       placement: "bottomLeft",
       title: isEllipsisActive ? page.text : null
@@ -11404,7 +11424,7 @@ var Chapter = function Chapter(_ref) {
   var id = chapter.id,
       title = chapter.text,
       color = chapter.color;
-  var chapterMoveInfo = React.useMemo(function () {
+  var chapterDragData = React.useMemo(function () {
     return {
       item: chapter,
       chapterIdx: index
@@ -11440,20 +11460,20 @@ var Chapter = function Chapter(_ref) {
       type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER
     },
     begin: function begin(monitor) {
-      if (!ChapterStore.moveInfoMap.get(chapter.id)) {
-        ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+      if (!ChapterStore.dragData.get(chapter.id)) {
+        ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
       NoteStore.setDraggedType('chapter');
-      NoteStore.setDraggedItems(ChapterStore.getSortedMoveInfoList().map(function (moveInfo) {
-        return moveInfo.item;
+      NoteStore.setDraggedItems(ChapterStore.getSortedDragDataList().map(function (data) {
+        return data.item;
       }));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
       return {
         type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
-        data: _toConsumableArray(ChapterStore.moveInfoMap).map(function (keyValue) {
+        data: _toConsumableArray(ChapterStore.dragData).map(function (keyValue) {
           var item = keyValue[1].item;
           return {
             id: item.id,
@@ -11554,13 +11574,13 @@ var Chapter = function Chapter(_ref) {
   var onClickChapterBtn = React.useCallback(function (e) {
     if (!PageStore.isReadMode()) return;
 
-    if (ChapterStore.moveInfoMap.size > 0 && e.ctrlKey) {
-      if (ChapterStore.moveInfoMap.get(chapter.id)) ChapterStore.deleteMoveInfoMap(chapter.id);else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);
+    if (ChapterStore.dragData.size > 0 && e.ctrlKey) {
+      if (ChapterStore.dragData.get(chapter.id)) ChapterStore.deleteDragData(chapter.id);else ChapterStore.appendDragData(chapter.id, chapterDragData);
       ChapterStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
+    ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
     ChapterStore.setIsCtrlKeyDown(false);
     PageStore.setIsRecycleBin(false);
     ChapterStore.setCurrentChapterId(chapter.id);
@@ -11569,12 +11589,12 @@ var Chapter = function Chapter(_ref) {
     PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
+    if (pageId) PageStore.setDragData(new Map([[pageId, {
       item: chapter.children[0],
       pageIdx: 0,
       chapterId: chapter.id,
       chapterIdx: index
-    }]]));else PageStore.clearMoveInfoMap();
+    }]]));else PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
   }, [chapter]);
 
@@ -11624,7 +11644,7 @@ var Chapter = function Chapter(_ref) {
       order: flexOrder,
       itemType: "chapter"
     }, /*#__PURE__*/React__default['default'].createElement(ChapterCover, {
-      className: "chapter-div".concat(ChapterStore.isCtrlKeyDown ? ChapterStore.moveInfoMap.get(chapter.id) ? ' selectedMenu' : '' : (NoteStore.isDragging && ChapterStore.moveInfoMap.size > 0 ? chapter.id === _toConsumableArray(ChapterStore.moveInfoMap)[0][0] : chapter.id === ChapterStore.currentChapterId) ? ' selectedMenu' : ''),
+      className: "chapter-div".concat(ChapterStore.isCtrlKeyDown ? ChapterStore.dragData.get(chapter.id) ? ' selectedMenu' : '' : (NoteStore.isDragging && ChapterStore.dragData.size > 0 ? chapter.id === _toConsumableArray(ChapterStore.dragData)[0][0] : chapter.id === ChapterStore.currentChapterId) ? ' selectedMenu' : ''),
       ref: authStore.hasPermission('noteShareChapter', 'C') && !ChapterStore.renameId ? !isShared ? function (node) {
         return drag(dropChapter(node));
       } : drag : null,
@@ -11688,15 +11708,13 @@ var RecycleBin = function RecycleBin(_ref) {
 
   var onClickRecycleBinBtn = function onClickRecycleBinBtn() {
     if (!PageStore.isReadMode()) return;
-    PageStore.setIsRecycleBin(true);
-    ChapterStore.clearMoveInfoMap();
+    ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
-    ChapterStore.setCurrentChapterId(id);
     var pageId = children.length > 0 ? children[0].id : '';
     PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    PageStore.clearMoveInfoMap();
+    PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
   };
 
@@ -11796,11 +11814,11 @@ var LNBContainer = function LNBContainer() {
   };
 
   var handleClickOutside = function handleClickOutside(e) {
-    if (!e.target.closest('.chapter-div') && ChapterStore.moveInfoMap.size > 1) {
+    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1) {
       ChapterStore.handleClickOutside();
     }
 
-    if (!e.target.closest('.page-li') && PageStore.moveInfoMap.size > 1) {
+    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) {
       PageStore.handleClickOutside();
     }
   };

@@ -32,10 +32,8 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
   const onClickRecycleBinBtn = () => {
     if (!PageStore.isReadMode()) return;
 
-    PageStore.setIsRecycleBin(true);
     ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
-    ChapterStore.setCurrentChapterId(id);
 
     const pageId = children.length > 0 ? children[0].id : '';
     PageStore.setCurrentPageId(pageId);

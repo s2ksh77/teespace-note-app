@@ -265,7 +265,7 @@ const PageStore = observable({
     this.restorePageId = pageId
   },
   setIsRecycleBin(flag){
-    this.isRecycleBin = flag
+    this.isRecycleBin = flag;
   },
 
   async getNoteInfoList(noteId) {
@@ -348,11 +348,10 @@ const PageStore = observable({
 
   createNotePage() {
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(dto => {
-      this.setIsRecycleBin(false);
       EditorStore.setIsSearch(false);
       this.setIsEdit(dto.is_edit);
       ChapterStore.getNoteChapterList();
-      ChapterStore.setCurrentChapterId(dto.parent_notebook);
+      ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
       this.currentPageId = dto.note_id;
       this.setIsNewPage(true);
       TagStore.setNoteTagList(dto.tagList);
@@ -406,7 +405,7 @@ const PageStore = observable({
           NoteStore.setTargetLayout('LNB');
           this.setIsNewPage(false);
           this.setCurrentPageId('');
-          ChapterStore.setCurrentChapterId('');
+          ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
           if (currentChapter.children.length > 1) {
@@ -567,7 +566,7 @@ const PageStore = observable({
       if (userProfile) this.displayName = userProfile.displayName;
     }
     this.setCurrentPageId(dto.note_id);
-    ChapterStore.setCurrentChapterId(dto.parent_notebook);
+    ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     this.currentPageData = dto;
     this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
@@ -889,9 +888,8 @@ const PageStore = observable({
       NoteStore.setModalInfo(null);
       await ChapterStore.getNoteChapterList();
       if (this.currentPageId === pageId) {
-        ChapterStore.setCurrentChapterId(chapterId);
+        ChapterStore.setCurrentChapterInfo(chapterId, false);
         this.setCurrentPageId(pageId);
-        this.setIsRecycleBin(false);
       }
       NoteStore.setToastText(toastTxt);
       NoteStore.setIsVisibleToast(true);
