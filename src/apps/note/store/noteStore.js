@@ -94,9 +94,10 @@ const NoteStore = observable({
   initVariables() {
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
-    ChapterStore.setCurrentChapterId('');
+    ChapterStore.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
     PageStore.setCurrentPageId('');
     ChapterStore.setChapterList([]);
+    ChapterStore.setLnbBoundary({ beforeShared:false, beforeRecycleBin:false });
     TagStore.setNoteTagList([]);
     TagStore.setTagPanelLoading(true); // 처음에 '태그 없습니다' 페이지가 보이지 않아야 함!
     // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
@@ -119,7 +120,7 @@ const NoteStore = observable({
     // true or false
     this.showPage = showPage;
     if (showPage === false) {
-      ChapterStore.setCurrentChapterId('');
+      ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
       PageStore.setCurrentPageId('');
       PageStore.setIsEdit('');
     }

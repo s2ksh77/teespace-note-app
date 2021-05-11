@@ -278,7 +278,7 @@ export const editorContentCSS = `
     height:calc(100% - 16px);
   }
   body{
-    font-family : "Noto Sans KR",sans-serif;
+    font-family : "Noto Sans KR,sans-serif";
   }
   a, img {
     cursor:pointer;
@@ -338,4 +338,6 @@ export const editorContentCSS = `
     background-color: #FFD200 !important;
   }
   .tox-notification { display: none !important }
+
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap')
 `

@@ -61,7 +61,7 @@ export const handleWebsocket = (isWeb=true) => (message) => {
                     setTimeout(() => {
                         if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
                             const firstChapter = ChapterStore.chapterList[0];
-                            ChapterStore.setCurrentChapterId(firstChapter.id);
+                            ChapterStore.setCurrentChapterInfo(firstChapter.id); // 이 안에서 isRecycleBin true/false값 넣어줌
                             if (firstChapter.children && firstChapter.children.length > 0) {
                                 PageStore.fetchCurrentPageData(firstChapter.children[0].id);
                             } else PageStore.setCurrentPageId('');

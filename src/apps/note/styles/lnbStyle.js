@@ -158,3 +158,17 @@ export const RecycleBinTxt = styled.div`
   font-weight: 500;
   margin-left: 2.63rem;
 `;
+
+export const LNBShareBorder1 = styled.div`
+  display: flex;
+  order:1;
+  border-bottom: 1px solid #DDD9D4;
+  margin: 0 1rem;
+`;
+
+export const LNBShareBorder2 = styled.div`
+  display: flex;
+  order:2;
+  border-bottom: 1px solid #DDD9D4;
+  margin: 0 1rem;
+`;

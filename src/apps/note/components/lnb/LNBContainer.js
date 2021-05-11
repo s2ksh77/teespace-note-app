@@ -8,6 +8,8 @@ import {
   LNBCover,
   LNBChapterCover,
   LNBEditModeCover,
+  LNBShareBorder1,
+  LNBShareBorder2,
 } from '../../styles/lnbStyle';
 import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
@@ -47,11 +49,11 @@ const LNBContainer = () => {
   const handleClickOutside = e => {
     if (
       !e.target.closest('.chapter-div') &&
-      ChapterStore.moveInfoMap.size > 1
+      ChapterStore.dragData.size > 1
     ) {
       ChapterStore.handleClickOutside();
     }
-    if (!e.target.closest('.page-li') && PageStore.moveInfoMap.size > 1) {
+    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) {
       PageStore.handleClickOutside();
     }
   };
@@ -146,6 +148,8 @@ const LNBContainer = () => {
                     break;
                 }
               })}
+              {ChapterStore.lnbBoundary.beforeShared && <LNBShareBorder1 />}
+              {ChapterStore.lnbBoundary.beforeRecycleBin && <LNBShareBorder2 />}
               <LNBTag flexOrder={4} />
             </DndProvider>
           )}

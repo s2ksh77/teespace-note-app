@@ -27,8 +27,6 @@ const LNBSearchResult = () => {
     ChapterStore.getChapterChildren(chapterId).then(data => {
       const chapterInfo = ChapterStore.chapterList.find(chapter => chapter.id === chapterId);
       if (!chapterInfo) return; // 만약의 경우
-      if (chapterInfo.type === CHAPTER_TYPE.RECYCLE_BIN) PageStore.setIsRecycleBin(true);
-      else PageStore.setIsRecycleBin(false);
 
       if (chapterInfo.children.length > 0) {
         const pageId = chapterInfo.children[0].id;
@@ -38,19 +36,14 @@ const LNBSearchResult = () => {
           return;
         }
       }
-      ChapterStore.setCurrentChapterId(chapterId);
+      ChapterStore.setCurrentChapterInfo(chapterId);
       PageStore.setCurrentPageId('');
     })
   }
 
   const onClickPageBtn = (pageId) => async () => {
     if (!PageStore.isReadMode()) return;
-    PageStore.fetchCurrentPageData(pageId).then(() => {
-      // [ todo ] computed로 currentChapterId가 휴지통이면 isrecyclebin true로 바꾸기?
-      const recycleBin = ChapterStore.chapterList.find(chapter=>chapter.type === CHAPTER_TYPE.RECYCLE_BIN)     
-      if (recycleBin && recycleBin.id === ChapterStore.currentChapterId) PageStore.setIsRecycleBin(true);
-      else PageStore.setIsRecycleBin(false);
-      
+    PageStore.fetchCurrentPageData(pageId).then(() => {      
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
       NoteStore.setShowPage(true);
