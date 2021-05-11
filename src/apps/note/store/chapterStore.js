@@ -714,7 +714,7 @@ const ChapterStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
-  getFirstRenderedChapter() {
+  getFirstRenderedChapter() { // web에서 안 씀
     if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
@@ -737,20 +737,20 @@ const ChapterStore = observable({
   },
 
   async setFirstNoteInfo() {
-    const targetChapter = this.getFirstRenderedChapter();
+    const targetChapter = this.chapterList.length > 0 ? this.chapterList[0] : null;
     if (!targetChapter) {
       this.setCurrentChapterInfo('', false);//chapterId='', isRecycleBin=false
       PageStore.setCurrentPageId('');
       return;
     }
     this.setFirstDragData(targetChapter);
-    const chapterId = targetChapter.id;
     const pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
-    // setCurrentPageId는 fetchNoetInfoList에서
-    await PageStore.fetchCurrentPageData(pageId);
     // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
     // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-    this.setCurrentChapterInfo(chapterId);
+    if (pageId) await PageStore.fetchCurrentPageData(pageId);
+    else {
+      this.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+    }
   },
   /*
     loading true->false가 들어간 함수

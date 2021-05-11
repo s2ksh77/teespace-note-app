@@ -4524,6 +4524,7 @@ var PageStore = mobx.observable((_observable$1 = {
 
                 _this6.setDragData(new Map([[_this6.currentPageId, _this6.createDragData(_this6.currentPageId, ChapterStore.currentChapterId)]]));
 
+                _this6.dragData.get(dto.note_id).item.text = dto.note_title;
                 Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
                   try {
                     var logEvent = module.logEvent;
@@ -6267,6 +6268,7 @@ var ChapterStore = mobx.observable({
     });
   },
   getFirstRenderedChapter: function getFirstRenderedChapter() {
+    // web에서 안 씀
     if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
@@ -6290,12 +6292,12 @@ var ChapterStore = mobx.observable({
     var _this18 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
-      var targetChapter, chapterId, pageId;
+      var targetChapter, pageId;
       return regeneratorRuntime.wrap(function _callee21$(_context21) {
         while (1) {
           switch (_context21.prev = _context21.next) {
             case 0:
-              targetChapter = _this18.getFirstRenderedChapter();
+              targetChapter = _this18.chapterList.length > 0 ? _this18.chapterList[0] : null;
 
               if (targetChapter) {
                 _context21.next = 5;
@@ -6311,18 +6313,25 @@ var ChapterStore = mobx.observable({
             case 5:
               _this18.setFirstDragData(targetChapter);
 
-              chapterId = targetChapter.id;
-              pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
+              pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
+              // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
+
+              if (!pageId) {
+                _context21.next = 12;
+                break;
+              }
 
               _context21.next = 10;
               return PageStore.fetchCurrentPageData(pageId);
 
             case 10:
-              // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
-              // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-              _this18.setCurrentChapterInfo(chapterId);
+              _context21.next = 13;
+              break;
 
-            case 11:
+            case 12:
+              _this18.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+
+            case 13:
             case "end":
               return _context21.stop();
           }
