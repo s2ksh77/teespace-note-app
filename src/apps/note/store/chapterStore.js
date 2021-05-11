@@ -771,6 +771,7 @@ const ChapterStore = observable({
           await this.getNoteChapterList();
           this.setCurrentChapterId(NoteStore.metaTagInfo.id);
           const pageId = this.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+          this.setScrollIntoViewId(NoteStore.metaTagInfo.id);
           /**
            * 현재 챕터 클릭 로직과 동일하게 함
            * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴

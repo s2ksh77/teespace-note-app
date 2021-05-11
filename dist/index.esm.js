@@ -6343,7 +6343,7 @@ var ChapterStore = observable({
             case 0:
               _context24.prev = 0;
               _context24.t0 = NoteStore.metaTagInfo.type;
-              _context24.next = _context24.t0 === "chapter" ? 4 : _context24.t0 === "page" ? 12 : 16;
+              _context24.next = _context24.t0 === "chapter" ? 4 : _context24.t0 === "page" ? 13 : 17;
               break;
 
             case 4:
@@ -6356,49 +6356,52 @@ var ChapterStore = observable({
               _this21.setCurrentChapterId(NoteStore.metaTagInfo.id);
 
               pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+
+              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
               /**
                * 현재 챕터 클릭 로직과 동일하게 함
                * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
                * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
                */
 
-              _context24.next = 11;
+
+              _context24.next = 12;
               return PageStore.fetchCurrentPageData(pageId ? pageId : '');
 
-            case 11:
-              return _context24.abrupt("break", 16);
-
             case 12:
-              _context24.next = 14;
+              return _context24.abrupt("break", 17);
+
+            case 13:
+              _context24.next = 15;
               return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
 
-            case 14:
+            case 15:
               NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
 
-              return _context24.abrupt("break", 16);
+              return _context24.abrupt("break", 17);
 
-            case 16:
-              _context24.next = 21;
+            case 17:
+              _context24.next = 22;
               break;
 
-            case 18:
-              _context24.prev = 18;
+            case 19:
+              _context24.prev = 19;
               _context24.t1 = _context24["catch"](0);
               console.log('e', _context24.t1);
 
-            case 21:
+            case 22:
               NoteStore.setMetaTagInfo({
                 isOpen: false,
                 type: '',
                 id: ''
               });
 
-            case 22:
+            case 23:
             case "end":
               return _context24.stop();
           }
         }
-      }, _callee24, null, [[0, 18]]);
+      }, _callee24, null, [[0, 19]]);
     }))();
   }
 });
