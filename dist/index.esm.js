@@ -6429,22 +6429,22 @@ var ChapterStore = observable({
             case 4:
               // chapter, page 선택
               NoteStore.setTargetLayout('LNB');
-              _context24.next = 7;
+
+              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
+
+              _context24.next = 8;
               return _this21.getNoteChapterList();
 
-            case 7:
+            case 8:
               // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
               _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
 
               pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
-
-              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
               /**
                * 현재 챕터 클릭 로직과 동일하게 함
                * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
                * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
                */
-
 
               _context24.next = 12;
               return PageStore.fetchCurrentPageData(pageId ? pageId : '');
@@ -11823,7 +11823,6 @@ var LNBContainer = function LNBContainer() {
 
     if (ChapterStore.scrollIntoViewId) {
       document.getElementById(ChapterStore.scrollIntoViewId).scrollIntoView(true);
-      ChapterStore.setScrollIntoViewId('');
     }
   }, [ChapterStore.scrollIntoViewId]);
   return useObserver(function () {

@@ -76,7 +76,6 @@ const LNBContainer = () => {
       document
         .getElementById(ChapterStore.scrollIntoViewId)
         .scrollIntoView(true);
-      ChapterStore.setScrollIntoViewId('');
     }
   }, [ChapterStore.scrollIntoViewId]);
 
