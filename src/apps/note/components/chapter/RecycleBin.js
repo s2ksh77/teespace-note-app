@@ -33,7 +33,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     if (!PageStore.isReadMode()) return;
 
     PageStore.setIsRecycleBin(true);
-    ChapterStore.clearMoveInfoMap();
+    ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
     ChapterStore.setCurrentChapterId(id);
 
@@ -41,7 +41,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     PageStore.setCurrentPageId(pageId);
     NoteStore.setShowPage(true);
     PageStore.fetchCurrentPageData(pageId);
-    PageStore.clearMoveInfoMap();
+    PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
   };
 

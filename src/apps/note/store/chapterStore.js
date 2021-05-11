@@ -46,7 +46,7 @@ const ChapterStore = observable({
   renamePrevText: '',
   renameText: '',
   isMovingChapter: false,
-  moveInfoMap: new Map(),
+  dragData: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
@@ -106,20 +106,20 @@ const ChapterStore = observable({
   setIsMovingChapter(isMoving) {
     this.isMovingChapter = isMoving;
   },
-  getMoveInfoMap() {
-    return this.moveInfoMap;
+  getDragData() {
+    return this.dragData;
   },
-  setMoveInfoMap(moveInfoMap) {
-    this.moveInfoMap = moveInfoMap;
+  setDragData(dragData) {
+    this.dragData = dragData;
   },
-  appendMoveInfoMap(key, value) {
-    this.moveInfoMap.set(key, value);
+  appendDragData(key, value) {
+    this.dragData.set(key, value);
   },
-  deleteMoveInfoMap(key) {
-    this.moveInfoMap.delete(key);
+  deleteDragData(key) {
+    this.dragData.delete(key);
   },
-  clearMoveInfoMap() {
-    this.moveInfoMap.clear();
+  clearDragData() {
+    this.dragData.clear();
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -511,8 +511,8 @@ const ChapterStore = observable({
     PageStore.setIsRecycleBin(false);
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
-    this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
-    PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
+    this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
+    PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
   },
   /**
    * 챕터 1개 남아있을 때, 챕터 삭제시 휴지통 선택 & 휴지통 맨 위 페이지 삭제하기 위해 async, await로 바꿈
@@ -532,8 +532,8 @@ const ChapterStore = observable({
       } else {
         PageStore.fetchCurrentPageData(PageStore.selectablePageId);
       }
-      this.setMoveInfoMap(new Map([[this.currentChapterId, this.createMoveInfo(this.currentChapterId)]]));
-      PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
+      this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
+      PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
     }
     this.deleteChapterId = '';
     NoteStore.setShowModal(false);
@@ -543,12 +543,12 @@ const ChapterStore = observable({
 
   renameNoteChapter(color) {
     this.renameChapter(this.renameId, this.renameText.trim(), color).then(dto => {
-      if (this.moveInfoMap.get(dto.id)) this.moveInfoMap.get(dto.id).item.text = dto.text;
+      if (this.dragData.get(dto.id)) this.dragData.get(dto.id).item.text = dto.text;
       this.getNoteChapterList();
     });
   },
 
-  createMoveInfo(chapterId) {
+  createDragData(chapterId) {
     const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
     if (chapterIdx < 0) return;
     return {
@@ -560,38 +560,38 @@ const ChapterStore = observable({
   handleClickOutside() {
     this.setIsCtrlKeyDown(false);
     if (!this.currentChapterId) {
-      this.moveInfoMap.clear();
+      this.clearDragData();
       return;
     }
-    let currentMoveInfo = this.moveInfoMap.get(this.currentChapterId);
-    if (!currentMoveInfo) currentMoveInfo = this.createMoveInfo(this.currentChapterId);
-    this.setMoveInfoMap(new Map([[this.currentChapterId, currentMoveInfo]]));
+    let currentDragData = this.dragData.get(this.currentChapterId);
+    if (!currentDragData) currentDragData = this.createDragData(this.currentChapterId);
+    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
   },
 
-  getSortedMoveInfoList() {
-    const moveInfoList = [...this.moveInfoMap].map(keyValue => keyValue[1]);
-    return moveInfoList.sort((a, b) => a.chapterIdx - b.chapterIdx);
+  getSortedDragDataList() {
+    const dragDataList = [...this.dragData].map(keyValue => keyValue[1]);
+    return dragDataList.sort((a, b) => a.chapterIdx - b.chapterIdx);
   },
 
   moveChapter() {
     const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
 
-    const sortedMoveInfoList = this.getSortedMoveInfoList();
-    const sortedMoveChapters = sortedMoveInfoList.map(moveInfo => item[moveInfo.chapterIdx]);
+    const sortedDragDataList = this.getSortedDragDataList();
+    const sortedMoveChapters = sortedDragDataList.map(data => item[data.chapterIdx]);
 
     const chapters = [];
     item.forEach((chapter, idx) => {
       if (idx === this.dragEnterChapterIdx) chapters.push(...sortedMoveChapters);
-      if (!this.moveInfoMap.get(chapter.id)) chapters.push(chapter);
+      if (!this.dragData.get(chapter.id)) chapters.push(chapter);
     });
     if (this.dragEnterChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
 
     let moveCnt = 0;
-    const startIdx = chapters.findIndex(chapter => chapter.id === sortedMoveInfoList[0].item.id);
-    sortedMoveInfoList.forEach((moveInfo, idx) => {
-      if (moveInfo.chapterIdx !== startIdx + idx) moveCnt++;
-      this.moveInfoMap.set(moveInfo.item.id, {
-        item: moveInfo.item,
+    const startIdx = chapters.findIndex(chapter => chapter.id === sortedDragDataList[0].item.id);
+    sortedDragDataList.forEach((data, idx) => {
+      if (data.chapterIdx !== startIdx + idx) moveCnt++;
+      this.dragData.set(data.item.id, {
+        item: data.item,
         chapterIdx: startIdx + idx,
       })
     });
@@ -602,8 +602,8 @@ const ChapterStore = observable({
         this.currentChapterId = sortedMoveChapters[0].id;
         PageStore.currentPageId = sortedMoveChapters[0].children[0];
         NoteStore.setIsDragging(false);
-        if (!PageStore.currentPageId) PageStore.clearMoveInfoMap();
-        else PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, this.currentChapterId)]]));
+        if (!PageStore.currentPageId) PageStore.clearDragData();
+        else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
           NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', { moveCnt: moveCnt }));
           NoteStore.setIsVisibleToast(true);
@@ -720,15 +720,15 @@ const ChapterStore = observable({
     return null;
   },
 
-  setFirstMoveInfoMap(targetChapter) {
-    this.setMoveInfoMap(new Map([[targetChapter.id, {
+  setFirstDragData(targetChapter) {
+    this.setDragData(new Map([[targetChapter.id, {
       item: targetChapter,
       chapterIdx: 0,
     }]]));
 
     if (targetChapter.children.length > 0) {
       const targetPage = targetChapter.children[0];
-      PageStore.setMoveInfoMap(new Map([[targetPage.id, {
+      PageStore.setDragData(new Map([[targetPage.id, {
         item: targetPage,
         pageIdx: 0,
         chapterId: targetChapter.id,
@@ -744,7 +744,7 @@ const ChapterStore = observable({
       PageStore.setCurrentPageId('');
       return;
     }
-    this.setFirstMoveInfoMap(targetChapter);
+    this.setFirstDragData(targetChapter);
     const chapterId = targetChapter.id;
     const pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
     // setCurrentPageId는 fetchNoetInfoList에서
