@@ -13,7 +13,7 @@ var teespaceCore = require('teespace-core');
 var ramda = require('ramda');
 var moment = require('moment-timezone');
 var i18next = require('i18next');
-var Mark = require('mark.js');
+var Mark$1 = require('mark.js');
 var styled = require('styled-components');
 var antd = require('antd');
 var html2pdf = require('html2pdf.js');
@@ -46,7 +46,7 @@ function _interopNamespace(e) {
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
 var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
-var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark);
+var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark$1);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
 
@@ -639,10 +639,10 @@ var NoteRepository = /*#__PURE__*/function () {
       return createChapter;
     }()
   }, {
-    key: "deleteChapter",
+    key: "createRestoreChapter",
     value: function () {
-      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(chapterId) {
-        var _yield$API$delete, data;
+      var _createRestoreChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(chapterTitle, chapterColor) {
+        var _yield$API$post2, data;
 
         return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
@@ -650,11 +650,23 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context7.prev = 0;
                 _context7.next = 3;
-                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID, "&ws_id=").concat(this.WS_ID));
+                return teespaceCore.API.post("note-api/children/".concat('none', "/notebooks"), {
+                  dto: {
+                    id: '',
+                    ws_id: this.WS_ID,
+                    note_channel_id: this.chId,
+                    text: chapterTitle,
+                    children: [],
+                    type: 'notebook',
+                    USER_ID: this.USER_ID,
+                    user_name: this.USER_NAME,
+                    color: chapterColor
+                  }
+                });
 
               case 3:
-                _yield$API$delete = _context7.sent;
-                data = _yield$API$delete.data;
+                _yield$API$post2 = _context7.sent;
+                data = _yield$API$post2.data;
                 return _context7.abrupt("return", data);
 
               case 8:
@@ -670,17 +682,17 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee7, this, [[0, 8]]);
       }));
 
-      function deleteChapter(_x8) {
-        return _deleteChapter.apply(this, arguments);
+      function createRestoreChapter(_x8, _x9) {
+        return _createRestoreChapter.apply(this, arguments);
       }
 
-      return deleteChapter;
+      return createRestoreChapter;
     }()
   }, {
-    key: "renameChapter",
+    key: "deleteChapter",
     value: function () {
-      var _renameChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterId, chapterTitle, color) {
-        var _yield$API$put2, data;
+      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterId) {
+        var _yield$API$delete, data;
 
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
@@ -688,22 +700,11 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 _context8.prev = 0;
                 _context8.next = 3;
-                return teespaceCore.API.put("note-api/notebooks?action=Update", {
-                  dto: {
-                    USER_ID: this.USER_ID,
-                    color: color,
-                    id: chapterId,
-                    ws_id: this.WS_ID,
-                    note_channel_id: this.chId,
-                    parent_notebook: '',
-                    text: chapterTitle,
-                    user_name: this.USER_NAME
-                  }
-                });
+                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID, "&ws_id=").concat(this.WS_ID));
 
               case 3:
-                _yield$API$put2 = _context8.sent;
-                data = _yield$API$put2.data;
+                _yield$API$delete = _context8.sent;
+                data = _yield$API$delete.data;
                 return _context8.abrupt("return", data);
 
               case 8:
@@ -719,7 +720,56 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee8, this, [[0, 8]]);
       }));
 
-      function renameChapter(_x9, _x10, _x11) {
+      function deleteChapter(_x10) {
+        return _deleteChapter.apply(this, arguments);
+      }
+
+      return deleteChapter;
+    }()
+  }, {
+    key: "renameChapter",
+    value: function () {
+      var _renameChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(chapterId, chapterTitle, color) {
+        var _yield$API$put2, data;
+
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                _context9.prev = 0;
+                _context9.next = 3;
+                return teespaceCore.API.put("note-api/notebooks?action=Update", {
+                  dto: {
+                    USER_ID: this.USER_ID,
+                    color: color,
+                    id: chapterId,
+                    ws_id: this.WS_ID,
+                    note_channel_id: this.chId,
+                    parent_notebook: '',
+                    text: chapterTitle,
+                    user_name: this.USER_NAME
+                  }
+                });
+
+              case 3:
+                _yield$API$put2 = _context9.sent;
+                data = _yield$API$put2.data;
+                return _context9.abrupt("return", data);
+
+              case 8:
+                _context9.prev = 8;
+                _context9.t0 = _context9["catch"](0);
+                throw Error(JSON.stringify(_context9.t0));
+
+              case 11:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this, [[0, 8]]);
+      }));
+
+      function renameChapter(_x11, _x12, _x13) {
         return _renameChapter.apply(this, arguments);
       }
 
@@ -728,15 +778,15 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createPage",
     value: function () {
-      var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(pageName, pageContent, chapterId) {
+      var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(pageName, pageContent, chapterId) {
         var today;
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
-                _context9.prev = 0;
+                _context10.prev = 0;
                 today = new Date();
-                return _context9.abrupt("return", teespaceCore.API.Post("note-api/note", {
+                return _context10.abrupt("return", teespaceCore.API.Post("note-api/note", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
@@ -752,19 +802,19 @@ var NoteRepository = /*#__PURE__*/function () {
                 }));
 
               case 5:
-                _context9.prev = 5;
-                _context9.t0 = _context9["catch"](0);
-                throw Error(JSON.stringify(_context9.t0));
+                _context10.prev = 5;
+                _context10.t0 = _context10["catch"](0);
+                throw Error(JSON.stringify(_context10.t0));
 
               case 8:
               case "end":
-                return _context9.stop();
+                return _context10.stop();
             }
           }
-        }, _callee9, this, [[0, 5]]);
+        }, _callee10, this, [[0, 5]]);
       }));
 
-      function createPage(_x12, _x13, _x14) {
+      function createPage(_x14, _x15, _x16) {
         return _createPage.apply(this, arguments);
       }
 
@@ -773,12 +823,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deletePage",
     value: function () {
-      var _deletePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(pageList) {
+      var _deletePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(pageList) {
         var _this = this;
 
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
                 pageList.forEach(function (page) {
                   page.USER_ID = _this.USER_ID;
@@ -786,8 +836,8 @@ var NoteRepository = /*#__PURE__*/function () {
                   page.note_channel_id = _this.chId;
                   page.user_name = _this.USER_NAME;
                 });
-                _context10.prev = 1;
-                _context10.next = 4;
+                _context11.prev = 1;
+                _context11.next = 4;
                 return teespaceCore.API.Post("note-api/note?action=Delete", {
                   dto: {
                     noteList: pageList
@@ -795,22 +845,22 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 4:
-                return _context10.abrupt("return", _context10.sent);
+                return _context11.abrupt("return", _context11.sent);
 
               case 7:
-                _context10.prev = 7;
-                _context10.t0 = _context10["catch"](1);
-                throw Error(JSON.stringify(_context10.t0));
+                _context11.prev = 7;
+                _context11.t0 = _context11["catch"](1);
+                throw Error(JSON.stringify(_context11.t0));
 
               case 10:
               case "end":
-                return _context10.stop();
+                return _context11.stop();
             }
           }
-        }, _callee10, null, [[1, 7]]);
+        }, _callee11, null, [[1, 7]]);
       }));
 
-      function deletePage(_x15) {
+      function deletePage(_x17) {
         return _deletePage.apply(this, arguments);
       }
 
@@ -819,13 +869,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "renamePage",
     value: function () {
-      var _renamePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(pageId, pageTitle, chapterId) {
-        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      var _renamePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, pageTitle, chapterId) {
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
-            switch (_context11.prev = _context11.next) {
+            switch (_context12.prev = _context12.next) {
               case 0:
-                _context11.prev = 0;
-                _context11.next = 3;
+                _context12.prev = 0;
+                _context12.next = 3;
                 return teespaceCore.API.Put("note-api/note?action=Update", {
                   dto: {
                     CH_TYPE: 'CHN0003',
@@ -836,50 +886,6 @@ var NoteRepository = /*#__PURE__*/function () {
                     note_id: pageId,
                     note_title: pageTitle,
                     parent_notebook: chapterId
-                  }
-                });
-
-              case 3:
-                return _context11.abrupt("return", _context11.sent);
-
-              case 6:
-                _context11.prev = 6;
-                _context11.t0 = _context11["catch"](0);
-                throw Error(JSON.stringify(_context11.t0));
-
-              case 9:
-              case "end":
-                return _context11.stop();
-            }
-          }
-        }, _callee11, this, [[0, 6]]);
-      }));
-
-      function renamePage(_x16, _x17, _x18) {
-        return _renamePage.apply(this, arguments);
-      }
-
-      return renamePage;
-    }()
-  }, {
-    key: "movePage",
-    value: function () {
-      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, chapterId) {
-        return regeneratorRuntime.wrap(function _callee12$(_context12) {
-          while (1) {
-            switch (_context12.prev = _context12.next) {
-              case 0:
-                _context12.prev = 0;
-                _context12.next = 3;
-                return teespaceCore.API.Put("note-api/note?action=Update", {
-                  dto: {
-                    WS_ID: this.WS_ID,
-                    CH_TYPE: 'CHN0003',
-                    note_id: pageId,
-                    parent_notebook: chapterId,
-                    user_name: this.USER_NAME,
-                    USER_ID: this.USER_ID,
-                    TYPE: 'MOVE'
                   }
                 });
 
@@ -899,33 +905,31 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee12, this, [[0, 6]]);
       }));
 
-      function movePage(_x19, _x20) {
-        return _movePage.apply(this, arguments);
+      function renamePage(_x18, _x19, _x20) {
+        return _renamePage.apply(this, arguments);
       }
 
-      return movePage;
+      return renamePage;
     }()
   }, {
-    key: "editStart",
+    key: "movePage",
     value: function () {
-      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(noteId, chapterId) {
+      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(pageId, chapterId) {
         return regeneratorRuntime.wrap(function _callee13$(_context13) {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
                 _context13.prev = 0;
                 _context13.next = 3;
-                return teespaceCore.API.post("note-api/note?action=Update", {
+                return teespaceCore.API.Put("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    user_name: this.USER_NAME,
-                    note_id: noteId,
-                    is_edit: this.USER_ID,
+                    note_id: pageId,
                     parent_notebook: chapterId,
-                    TYPE: 'EDIT_START'
+                    user_name: this.USER_NAME,
+                    USER_ID: this.USER_ID,
+                    TYPE: 'MOVE'
                   }
                 });
 
@@ -945,7 +949,53 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee13, this, [[0, 6]]);
       }));
 
-      function editStart(_x21, _x22) {
+      function movePage(_x21, _x22) {
+        return _movePage.apply(this, arguments);
+      }
+
+      return movePage;
+    }()
+  }, {
+    key: "editStart",
+    value: function () {
+      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                _context14.prev = 0;
+                _context14.next = 3;
+                return teespaceCore.API.post("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_id: noteId,
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId,
+                    TYPE: 'EDIT_START'
+                  }
+                });
+
+              case 3:
+                return _context14.abrupt("return", _context14.sent);
+
+              case 6:
+                _context14.prev = 6;
+                _context14.t0 = _context14["catch"](0);
+                throw Error(JSON.stringify(_context14.t0));
+
+              case 9:
+              case "end":
+                return _context14.stop();
+            }
+          }
+        }, _callee14, this, [[0, 6]]);
+      }));
+
+      function editStart(_x23, _x24) {
         return _editStart.apply(this, arguments);
       }
 
@@ -954,11 +1004,11 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "editDone",
     value: function () {
-      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(updateDto) {
+      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(updateDto) {
         var today;
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 today = new Date();
                 updateDto.dto.WS_ID = this.WS_ID;
@@ -967,27 +1017,27 @@ var NoteRepository = /*#__PURE__*/function () {
                 updateDto.dto.CH_TYPE = this.CH_TYPE;
                 updateDto.dto.user_name = this.USER_NAME;
                 updateDto.dto.modified_date = "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes());
-                _context14.prev = 7;
-                _context14.next = 10;
+                _context15.prev = 7;
+                _context15.next = 10;
                 return teespaceCore.API.post("note-api/note?action=Update", updateDto);
 
               case 10:
-                return _context14.abrupt("return", _context14.sent);
+                return _context15.abrupt("return", _context15.sent);
 
               case 13:
-                _context14.prev = 13;
-                _context14.t0 = _context14["catch"](7);
-                throw Error(JSON.stringify(_context14.t0));
+                _context15.prev = 13;
+                _context15.t0 = _context15["catch"](7);
+                throw Error(JSON.stringify(_context15.t0));
 
               case 16:
               case "end":
-                return _context14.stop();
+                return _context15.stop();
             }
           }
-        }, _callee14, this, [[7, 13]]);
+        }, _callee15, this, [[7, 13]]);
       }));
 
-      function editDone(_x23) {
+      function editDone(_x25) {
         return _editDone.apply(this, arguments);
       }
 
@@ -996,13 +1046,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "nonEdit",
     value: function () {
-      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(noteId, chapterId, userName, userId) {
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context15.prev = _context15.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
-                _context15.prev = 0;
-                _context15.next = 3;
+                _context16.prev = 0;
+                _context16.next = 3;
                 return teespaceCore.API.post("note-api/note?action=Update", {
                   dto: {
                     WS_ID: this.WS_ID,
@@ -1014,44 +1064,6 @@ var NoteRepository = /*#__PURE__*/function () {
                     parent_notebook: chapterId,
                     TYPE: 'NONEDIT',
                     user_name: this.USER_NAME
-                  }
-                });
-
-              case 3:
-                return _context15.abrupt("return", _context15.sent);
-
-              case 6:
-                _context15.prev = 6;
-                _context15.t0 = _context15["catch"](0);
-                throw Error(JSON.stringify(_context15.t0));
-
-              case 9:
-              case "end":
-                return _context15.stop();
-            }
-          }
-        }, _callee15, this, [[0, 6]]);
-      }));
-
-      function nonEdit(_x24, _x25, _x26, _x27) {
-        return _nonEdit.apply(this, arguments);
-      }
-
-      return nonEdit;
-    }()
-  }, {
-    key: "createTag",
-    value: function () {
-      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(targetList) {
-        return regeneratorRuntime.wrap(function _callee16$(_context16) {
-          while (1) {
-            switch (_context16.prev = _context16.next) {
-              case 0:
-                _context16.prev = 0;
-                _context16.next = 3;
-                return teespaceCore.API.post("note-api/tag", {
-                  dto: {
-                    tagList: targetList
                   }
                 });
 
@@ -1068,26 +1080,26 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context16.stop();
             }
           }
-        }, _callee16, null, [[0, 6]]);
+        }, _callee16, this, [[0, 6]]);
       }));
 
-      function createTag(_x28) {
-        return _createTag.apply(this, arguments);
+      function nonEdit(_x26, _x27) {
+        return _nonEdit.apply(this, arguments);
       }
 
-      return createTag;
+      return nonEdit;
     }()
   }, {
-    key: "deleteTag",
+    key: "createTag",
     value: function () {
-      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
+      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
         return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
                 _context17.prev = 0;
                 _context17.next = 3;
-                return teespaceCore.API.post("note-api/tag?action=Delete", {
+                return teespaceCore.API.post("note-api/tag", {
                   dto: {
                     tagList: targetList
                   }
@@ -1109,23 +1121,23 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee17, null, [[0, 6]]);
       }));
 
-      function deleteTag(_x29) {
-        return _deleteTag.apply(this, arguments);
+      function createTag(_x28) {
+        return _createTag.apply(this, arguments);
       }
 
-      return deleteTag;
+      return createTag;
     }()
   }, {
-    key: "updateTag",
+    key: "deleteTag",
     value: function () {
-      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
+      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
         return regeneratorRuntime.wrap(function _callee18$(_context18) {
           while (1) {
             switch (_context18.prev = _context18.next) {
               case 0:
                 _context18.prev = 0;
                 _context18.next = 3;
-                return teespaceCore.API.post("note-api/tag?action=Update", {
+                return teespaceCore.API.post("note-api/tag?action=Delete", {
                   dto: {
                     tagList: targetList
                   }
@@ -1147,6 +1159,44 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee18, null, [[0, 6]]);
       }));
 
+      function deleteTag(_x29) {
+        return _deleteTag.apply(this, arguments);
+      }
+
+      return deleteTag;
+    }()
+  }, {
+    key: "updateTag",
+    value: function () {
+      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(targetList) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+          while (1) {
+            switch (_context19.prev = _context19.next) {
+              case 0:
+                _context19.prev = 0;
+                _context19.next = 3;
+                return teespaceCore.API.post("note-api/tag?action=Update", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context19.abrupt("return", _context19.sent);
+
+              case 6:
+                _context19.prev = 6;
+                _context19.t0 = _context19["catch"](0);
+                throw Error(JSON.stringify(_context19.t0));
+
+              case 9:
+              case "end":
+                return _context19.stop();
+            }
+          }
+        }, _callee19, null, [[0, 6]]);
+      }));
+
       function updateTag(_x30) {
         return _updateTag.apply(this, arguments);
       }
@@ -1156,15 +1206,15 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "storageFileDeepCopy",
     value: function () {
-      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(fileId) {
+      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId) {
         var targetSRC;
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+        return regeneratorRuntime.wrap(function _callee20$(_context20) {
           while (1) {
-            switch (_context19.prev = _context19.next) {
+            switch (_context20.prev = _context20.next) {
               case 0:
                 targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
-                _context19.prev = 1;
-                _context19.next = 4;
+                _context20.prev = 1;
+                _context20.next = 4;
                 return teespaceCore.API.put(targetSRC, {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -1177,19 +1227,19 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 4:
-                return _context19.abrupt("return", _context19.sent);
+                return _context20.abrupt("return", _context20.sent);
 
               case 7:
-                _context19.prev = 7;
-                _context19.t0 = _context19["catch"](1);
-                throw Error(JSON.stringify(_context19.t0));
+                _context20.prev = 7;
+                _context20.t0 = _context20["catch"](1);
+                throw Error(JSON.stringify(_context20.t0));
 
               case 10:
               case "end":
-                return _context19.stop();
+                return _context20.stop();
             }
           }
-        }, _callee19, this, [[1, 7]]);
+        }, _callee20, this, [[1, 7]]);
       }));
 
       function storageFileDeepCopy(_x31) {
@@ -1201,56 +1251,14 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createUploadMeta",
     value: function () {
-      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(dto) {
-        return regeneratorRuntime.wrap(function _callee20$(_context20) {
-          while (1) {
-            switch (_context20.prev = _context20.next) {
-              case 0:
-                _context20.prev = 0;
-                _context20.next = 3;
-                return teespaceCore.API.post('note-api/noteFile', dto);
-
-              case 3:
-                return _context20.abrupt("return", _context20.sent);
-
-              case 6:
-                _context20.prev = 6;
-                _context20.t0 = _context20["catch"](0);
-                throw Error(JSON.stringify(_context20.t0));
-
-              case 9:
-              case "end":
-                return _context20.stop();
-            }
-          }
-        }, _callee20, null, [[0, 6]]);
-      }));
-
-      function createUploadMeta(_x32) {
-        return _createUploadMeta.apply(this, arguments);
-      }
-
-      return createUploadMeta;
-    }()
-  }, {
-    key: "createUploadStorage",
-    value: function () {
-      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(fileId, file, onUploadProgress) {
+      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(dto) {
         return regeneratorRuntime.wrap(function _callee21$(_context21) {
           while (1) {
             switch (_context21.prev = _context21.next) {
               case 0:
                 _context21.prev = 0;
                 _context21.next = 3;
-                return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
-                  headers: {
-                    'content-type': 'multipart/form-data'
-                  },
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  onUploadProgress: onUploadProgress
-                });
+                return teespaceCore.API.post('note-api/noteFile', dto);
 
               case 3:
                 return _context21.abrupt("return", _context21.sent);
@@ -1265,7 +1273,49 @@ var NoteRepository = /*#__PURE__*/function () {
                 return _context21.stop();
             }
           }
-        }, _callee21, this, [[0, 6]]);
+        }, _callee21, null, [[0, 6]]);
+      }));
+
+      function createUploadMeta(_x32) {
+        return _createUploadMeta.apply(this, arguments);
+      }
+
+      return createUploadMeta;
+    }()
+  }, {
+    key: "createUploadStorage",
+    value: function () {
+      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(fileId, file, onUploadProgress) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
+          while (1) {
+            switch (_context22.prev = _context22.next) {
+              case 0:
+                _context22.prev = 0;
+                _context22.next = 3;
+                return teespaceCore.API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+                  headers: {
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress
+                });
+
+              case 3:
+                return _context22.abrupt("return", _context22.sent);
+
+              case 6:
+                _context22.prev = 6;
+                _context22.t0 = _context22["catch"](0);
+                throw Error(JSON.stringify(_context22.t0));
+
+              case 9:
+              case "end":
+                return _context22.stop();
+            }
+          }
+        }, _callee22, this, [[0, 6]]);
       }));
 
       function createUploadStorage(_x33, _x34, _x35) {
@@ -1286,12 +1336,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "uploadFileGW",
     value: function () {
-      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(file, fileName, fileExtension, onUploadProgress, cancelSource) {
-        return regeneratorRuntime.wrap(function _callee22$(_context22) {
+      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, onUploadProgress, cancelSource) {
+        return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
-            switch (_context22.prev = _context22.next) {
+            switch (_context23.prev = _context23.next) {
               case 0:
-                _context22.next = 2;
+                _context23.next = 2;
                 return teespaceCore.API.post("/gateway-api/upload?user_id=" + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension, file, {
                   headers: {
                     // pplication/x-www-form-urlencoded; charset=UTF-8
@@ -1305,14 +1355,14 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context22.abrupt("return", _context22.sent);
+                return _context23.abrupt("return", _context23.sent);
 
               case 3:
               case "end":
-                return _context22.stop();
+                return _context23.stop();
             }
           }
-        }, _callee22, this);
+        }, _callee23, this);
       }));
 
       function uploadFileGW(_x36, _x37, _x38, _x39, _x40) {
@@ -1324,13 +1374,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteFile",
     value: function () {
-      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(deleteFileId) {
-        return regeneratorRuntime.wrap(function _callee23$(_context23) {
+      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(deleteFileId) {
+        return regeneratorRuntime.wrap(function _callee24$(_context24) {
           while (1) {
-            switch (_context23.prev = _context23.next) {
+            switch (_context24.prev = _context24.next) {
               case 0:
-                _context23.prev = 0;
-                _context23.next = 3;
+                _context24.prev = 0;
+                _context24.next = 3;
                 return teespaceCore.API.put("note-api/noteFile?action=Delete", {
                   dto: {
                     workspace_id: this.WS_ID,
@@ -1351,19 +1401,19 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 3:
-                return _context23.abrupt("return", _context23.sent);
+                return _context24.abrupt("return", _context24.sent);
 
               case 6:
-                _context23.prev = 6;
-                _context23.t0 = _context23["catch"](0);
-                throw Error(JSON.stringify(_context23.t0));
+                _context24.prev = 6;
+                _context24.t0 = _context24["catch"](0);
+                throw Error(JSON.stringify(_context24.t0));
 
               case 9:
               case "end":
-                return _context23.stop();
+                return _context24.stop();
             }
           }
-        }, _callee23, this, [[0, 6]]);
+        }, _callee24, this, [[0, 6]]);
       }));
 
       function deleteFile(_x41) {
@@ -1414,13 +1464,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getSearchList",
     value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(searchKey) {
-        return regeneratorRuntime.wrap(function _callee24$(_context24) {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(searchKey) {
+        return regeneratorRuntime.wrap(function _callee25$(_context25) {
           while (1) {
-            switch (_context24.prev = _context24.next) {
+            switch (_context25.prev = _context25.next) {
               case 0:
-                _context24.prev = 0;
-                _context24.next = 3;
+                _context25.prev = 0;
+                _context25.next = 3;
                 return teespaceCore.API.post("note-api/noteSearch?action=List", {
                   dto: {
                     note_channel_id: this.chId,
@@ -1429,19 +1479,19 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 3:
-                return _context24.abrupt("return", _context24.sent);
+                return _context25.abrupt("return", _context25.sent);
 
               case 6:
-                _context24.prev = 6;
-                _context24.t0 = _context24["catch"](0);
-                throw Error(JSON.stringify(_context24.t0));
+                _context25.prev = 6;
+                _context25.t0 = _context25["catch"](0);
+                throw Error(JSON.stringify(_context25.t0));
 
               case 9:
               case "end":
-                return _context24.stop();
+                return _context25.stop();
             }
           }
-        }, _callee24, this, [[0, 6]]);
+        }, _callee25, this, [[0, 6]]);
       }));
 
       function getSearchList(_x42) {
@@ -1453,12 +1503,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "createFileMeta",
     value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(targetList) {
-        return regeneratorRuntime.wrap(function _callee25$(_context25) {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26(targetList) {
+        return regeneratorRuntime.wrap(function _callee26$(_context26) {
           while (1) {
-            switch (_context25.prev = _context25.next) {
+            switch (_context26.prev = _context26.next) {
               case 0:
-                _context25.next = 2;
+                _context26.next = 2;
                 return teespaceCore.API.post("note-api/noteFileMeta", {
                   dto: {
                     fileList: targetList
@@ -1466,14 +1516,14 @@ var NoteRepository = /*#__PURE__*/function () {
                 });
 
               case 2:
-                return _context25.abrupt("return", _context25.sent);
+                return _context26.abrupt("return", _context26.sent);
 
               case 3:
               case "end":
-                return _context25.stop();
+                return _context26.stop();
             }
           }
-        }, _callee25);
+        }, _callee26);
       }));
 
       function createFileMeta(_x43) {
@@ -1485,62 +1535,19 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "throwPage",
     value: function () {
-      var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26(pageList) {
+      var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
         var _this2 = this;
-
-        return regeneratorRuntime.wrap(function _callee26$(_context26) {
-          while (1) {
-            switch (_context26.prev = _context26.next) {
-              case 0:
-                // pageList -> pageId 리스트
-                pageList.forEach(function (page) {
-                  page.note_channel_id = _this2.chId;
-                  page.parent_notebook = null;
-                });
-                _context26.prev = 1;
-                _context26.next = 4;
-                return teespaceCore.API.post("note-api/noteRecycleBin?action=Update", {
-                  dto: {
-                    noteList: pageList
-                  }
-                });
-
-              case 4:
-                return _context26.abrupt("return", _context26.sent);
-
-              case 7:
-                _context26.prev = 7;
-                _context26.t0 = _context26["catch"](1);
-                throw Error(JSON.stringify(_context26.t0));
-
-              case 10:
-              case "end":
-                return _context26.stop();
-            }
-          }
-        }, _callee26, null, [[1, 7]]);
-      }));
-
-      function throwPage(_x44) {
-        return _throwPage.apply(this, arguments);
-      }
-
-      return throwPage;
-    }()
-  }, {
-    key: "restorePage",
-    value: function () {
-      var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
-        var _this3 = this;
 
         return regeneratorRuntime.wrap(function _callee27$(_context27) {
           while (1) {
             switch (_context27.prev = _context27.next) {
               case 0:
-                // pageList -> pageId 리스트, chapterId 리스트 
-                // [{note_id: asdf, parent_notebook : asdf} ... ]
+                // pageList -> pageId 리스트
                 pageList.forEach(function (page) {
-                  return page.note_channel_id = _this3.chId;
+                  page.USER_ID = _this2.USER_ID;
+                  page.WS_ID = _this2.WS_ID;
+                  page.note_channel_id = _this2.chId;
+                  page.parent_notebook = null;
                 });
                 _context27.prev = 1;
                 _context27.next = 4;
@@ -1564,6 +1571,53 @@ var NoteRepository = /*#__PURE__*/function () {
             }
           }
         }, _callee27, null, [[1, 7]]);
+      }));
+
+      function throwPage(_x44) {
+        return _throwPage.apply(this, arguments);
+      }
+
+      return throwPage;
+    }()
+  }, {
+    key: "restorePage",
+    value: function () {
+      var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28(pageList) {
+        var _this3 = this;
+
+        return regeneratorRuntime.wrap(function _callee28$(_context28) {
+          while (1) {
+            switch (_context28.prev = _context28.next) {
+              case 0:
+                // pageList -> pageId 리스트, chapterId 리스트 
+                // [{note_id: asdf, parent_notebook : asdf} ... ]
+                pageList.forEach(function (page) {
+                  page.note_channel_id = _this3.chId;
+                  page.USER_ID = _this3.USER_ID;
+                  page.WS_ID = _this3.WS_ID;
+                });
+                _context28.prev = 1;
+                _context28.next = 4;
+                return teespaceCore.API.post("note-api/noteRecycleBin?action=Update", {
+                  dto: {
+                    noteList: pageList
+                  }
+                });
+
+              case 4:
+                return _context28.abrupt("return", _context28.sent);
+
+              case 7:
+                _context28.prev = 7;
+                _context28.t0 = _context28["catch"](1);
+                throw Error(JSON.stringify(_context28.t0));
+
+              case 10:
+              case "end":
+                return _context28.stop();
+            }
+          }
+        }, _callee28, null, [[1, 7]]);
       }));
 
       function restorePage(_x45) {
@@ -1691,10 +1745,11 @@ var NoteUtil = {
     var channelId = _ref.channelId,
         chapterId = _ref.chapterId,
         isFolded = _ref.isFolded,
-        isShared = _ref.isShared;
+        isTheRest = _ref.isTheRest;
 
-    if (isShared) {
-      this.setLocalSharedFoldedState({
+    if (isTheRest) {
+      // default, notebook 아닌 것
+      this.setLocalRestFoldedState({
         channelId: channelId,
         chapterId: chapterId,
         isFolded: isFolded
@@ -1712,7 +1767,8 @@ var NoteUtil = {
     item[idx]['isFolded'] = isFolded;
     localStorage.setItem("NoteSortData_".concat(channelId), JSON.stringify(item));
   },
-  setLocalSharedFoldedState: function setLocalSharedFoldedState(_ref2) {
+  // shared, recylce_bin의 folded state
+  setLocalRestFoldedState: function setLocalRestFoldedState(_ref2) {
     var channelId = _ref2.channelId,
         chapterId = _ref2.chapterId,
         isFolded = _ref2.isFolded;
@@ -3423,11 +3479,12 @@ var languageSet = {
   NOTE_BIN_RESTORE_02: '복구되었습니다.',
   NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uAD6C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
-  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\n내용을 복구하시겠습니까?',
+  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복구하시겠습니까?',
   NOTE_META_TAG_01: '챕터',
   NOTE_META_TAG_02: '페이지',
   NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
-  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.'
+  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
+  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.'
 };
 
 var _languageSet;
@@ -3562,7 +3619,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _languageSet);
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _languageSet);
 
 var resources = {
   ko: {
@@ -3621,13 +3678,23 @@ var PageStore = mobx.observable((_observable$1 = {
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
+  deletedDate: '',
   prevModifiedUserName: '',
+  // web에서 안 씀
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
   editingUserName: '',
   editingUserCount: '',
+  restorePageId: '',
+  isRecycleBin: false,
+  recoverInfo: {},
+  // 복원 팝업에서 '복구'클릭시 필요
+  setRecoverInfo: function setRecoverInfo(info) {
+    // parentId, id, note_content
+    this.recoverInfo = info;
+  },
   setNoteInfoList: function setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
   },
@@ -3638,20 +3705,16 @@ var PageStore = mobx.observable((_observable$1 = {
     this.currentPageData = pageData;
   },
   // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
-  set_CurrentPageData: function set_CurrentPageData(_ref) {
-    var user_name = _ref.user_name,
-        modified_date = _ref.modified_date,
-        USER_ID = _ref.USER_ID;
-    if (user_name) this.currentPageData.user_name = user_name;
-    if (modified_date) this.currentPageData.modified_date = modified_date;
-    if (USER_ID) this.currentPageData.USER_ID = USER_ID;
+  // {user_name, modified_date,USER_ID}
+  set_CurrentPageData: function set_CurrentPageData(noteInfo) {
+    this.currentPageData = _objectSpread2(_objectSpread2({}, this.currentPageData), noteInfo);
   },
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
-  setSaveStatus: function setSaveStatus(_ref2) {
-    var _ref2$saving = _ref2.saving,
-        saving = _ref2$saving === void 0 ? false : _ref2$saving,
-        _ref2$saved = _ref2.saved,
-        saved = _ref2$saved === void 0 ? false : _ref2$saved;
+  setSaveStatus: function setSaveStatus(_ref) {
+    var _ref$saving = _ref.saving,
+        saving = _ref$saving === void 0 ? false : _ref$saving,
+        _ref$saved = _ref.saved,
+        saved = _ref$saved === void 0 ? false : _ref$saved;
     this.saveStatus.saving = saving;
     this.saveStatus.saved = saved;
   },
@@ -3732,9 +3795,8 @@ var PageStore = mobx.observable((_observable$1 = {
   getDeletePageList: function getDeletePageList() {
     return this.deletePageList;
   },
-  setDeletePageList: function setDeletePageList(page) {
-    this.deletePageList = [];
-    this.deletePageList.push(page);
+  setDeletePageList: function setDeletePageList(deletePageList) {
+    this.deletePageList = deletePageList;
   },
   getSelectablePageId: function getSelectablePageId() {
     return this.selectablePageId;
@@ -3838,6 +3900,12 @@ var PageStore = mobx.observable((_observable$1 = {
   },
   setExportId: function setExportId(pageId) {
     this.exportPageId = pageId;
+  },
+  setRestorePageId: function setRestorePageId(pageId) {
+    this.restorePageId = pageId;
+  },
+  setIsRecycleBin: function setIsRecycleBin(flag) {
+    this.isRecycleBin = flag;
   },
   getNoteInfoList: function getNoteInfoList(noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -3983,7 +4051,7 @@ var PageStore = mobx.observable((_observable$1 = {
       }, _callee6);
     }))();
   },
-  noneEdit: function noneEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId, callback) {
+  noneEdit: function noneEdit(noteId, parentNotebook) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       var _yield$NoteRepository7, returnData;
 
@@ -3992,7 +4060,7 @@ var PageStore = mobx.observable((_observable$1 = {
           switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return NoteRepository$1.nonEdit(noteId, parentNotebook, prevModifiedUserName, prevModifiedUserId);
+              return NoteRepository$1.nonEdit(noteId, parentNotebook);
 
             case 2:
               _yield$NoteRepository7 = _context7.sent;
@@ -4005,6 +4073,71 @@ var PageStore = mobx.observable((_observable$1 = {
           }
         }
       }, _callee7);
+    }))();
+  },
+  throwPage: function throwPage(pageList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      var _yield$NoteRepository8, dto;
+
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.next = 2;
+              return NoteRepository$1.throwPage(pageList);
+
+            case 2:
+              _yield$NoteRepository8 = _context8.sent;
+              dto = _yield$NoteRepository8.data.dto;
+
+              if (!(dto.resultMsg === 'Success')) {
+                _context8.next = 6;
+                break;
+              }
+
+              return _context8.abrupt("return", dto);
+
+            case 6:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    }))();
+  },
+  restorePage: function restorePage(pageId, chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var pageList, _yield$NoteRepository9, dto;
+
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              pageList = [];
+              pageList.push({
+                note_id: pageId,
+                parent_notebook: chapterId
+              });
+              _context9.next = 4;
+              return NoteRepository$1.restorePage(pageList);
+
+            case 4:
+              _yield$NoteRepository9 = _context9.sent;
+              dto = _yield$NoteRepository9.data.dto;
+
+              if (!(dto.resultMsg === 'Success')) {
+                _context9.next = 8;
+                break;
+              }
+
+              return _context9.abrupt("return", dto);
+
+            case 8:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
     }))();
   },
   // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
@@ -4021,6 +4154,8 @@ var PageStore = mobx.observable((_observable$1 = {
 
     this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
+
+      _this.setIsRecycleBin(false);
 
       EditorStore.setIsSearch(false);
 
@@ -4050,41 +4185,86 @@ var PageStore = mobx.observable((_observable$1 = {
       if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
     });
   },
-  deleteNotePage: function deleteNotePage() {
+
+  /**
+   * It throw away pages in recycle bin.
+   * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
+   */
+  throwNotePage: function throwNotePage() {
     var _this2 = this;
 
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      var num;
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _context10.next = 2;
+              return _this2.throwPage(_this2.deletePageList);
+
+            case 2:
+              _this2.setIsEdit('');
+
+              if (_this2.currentPageId === _this2.deletePageList[0].note_id) {
+                _this2.setCurrentPageId(_this2.selectablePageId);
+
+                _this2.fetchCurrentPageData(_this2.selectablePageId);
+              }
+
+              _context10.next = 6;
+              return ChapterStore.getNoteChapterList();
+
+            case 6:
+              num = _this2.deletePageList.length;
+              NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
+                num: num
+              }) : i18n.t('NOTE_BIN_02'));
+              NoteStore.setIsVisibleToast(true);
+              NoteStore.setShowModal(false);
+
+            case 10:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, _callee10);
+    }))();
+  },
+  deleteNotePage: function deleteNotePage() {
+    var _this3 = this;
+
     this.deletePage(this.deletePageList).then(function () {
-      _this2.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
+      _this3.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
 
 
-      if (!_this2.isNewPage) {
-        if (_this2.currentPageId === _this2.deletePageList[0].note_id) {
-          _this2.setCurrentPageId(_this2.selectablePageId);
+      if (!_this3.isNewPage) {
+        if (_this3.currentPageId === _this3.deletePageList[0].note_id) {
+          _this3.setCurrentPageId(_this3.selectablePageId);
 
-          _this2.fetchCurrentPageData(_this2.selectablePageId);
+          _this3.fetchCurrentPageData(_this3.selectablePageId);
         }
       } else {
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
 
-          _this2.setIsNewPage(false);
+          _this3.setIsNewPage(false);
 
-          _this2.setCurrentPageId('');
+          _this3.setCurrentPageId('');
 
           ChapterStore.setCurrentChapterId('');
         } else {
           var currentChapter = ChapterStore.chapterList.find(function (chapter) {
-            return chapter.id === _this2.createParent;
+            return chapter.id === _this3.createParent;
           });
 
           if (currentChapter.children.length > 1) {
             var pageId = currentChapter.children[currentChapter.children.length - 2].id;
 
-            _this2.setCurrentPageId(pageId);
+            _this3.setCurrentPageId(pageId);
 
-            _this2.fetchCurrentPageData(pageId);
+            _this3.fetchCurrentPageData(pageId);
           } else {
-            _this2.setCurrentPageId('');
+            _this3.setCurrentPageId('');
           }
         }
       }
@@ -4094,14 +4274,14 @@ var PageStore = mobx.observable((_observable$1 = {
     });
   },
   renameNotePage: function renameNotePage(chapterId) {
-    var _this3 = this;
+    var _this4 = this;
 
     this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(function (dto) {
-      if (_this3.moveInfoMap.get(dto.note_id)) {
-        _this3.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      if (_this4.moveInfoMap.get(dto.note_id)) {
+        _this4.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
 
-      _this3.fetchNoteInfoList(dto.note_id);
+      _this4.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
     });
@@ -4135,27 +4315,27 @@ var PageStore = mobx.observable((_observable$1 = {
     this.setMoveInfoMap(new Map([[this.currentPageId, currentMoveInfo]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var _yield$NoteRepository8, dto;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      var _yield$NoteRepository10, dto;
 
-      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
-              _context8.next = 2;
+              _context11.next = 2;
               return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
             case 2:
-              _yield$NoteRepository8 = _context8.sent;
-              dto = _yield$NoteRepository8.data.dto;
-              return _context8.abrupt("return", dto);
+              _yield$NoteRepository10 = _context11.sent;
+              dto = _yield$NoteRepository10.data.dto;
+              return _context11.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context8.stop();
+              return _context11.stop();
           }
         }
-      }, _callee8);
+      }, _callee11);
     }))();
   },
   getSortedMoveInfoList: function getSortedMoveInfoList() {
@@ -4169,16 +4349,16 @@ var PageStore = mobx.observable((_observable$1 = {
     });
   },
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
-    var _this4 = this;
+    var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       var item, sortedMoveInfoList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-              sortedMoveInfoList = _this4.getSortedMoveInfoList();
+              sortedMoveInfoList = _this5.getSortedMoveInfoList();
               sortedMovePages = sortedMoveInfoList.map(function (moveInfo) {
                 return item[moveInfo.chapterIdx].children[moveInfo.pageIdx];
               });
@@ -4186,14 +4366,14 @@ var PageStore = mobx.observable((_observable$1 = {
 
               item[moveTargetChapterIdx].children.forEach(function (pageId, idx) {
                 if (idx === moveTargetPageIdx) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-                if (!_this4.moveInfoMap.get(pageId)) pageIds.push(pageId);
+                if (!_this5.moveInfoMap.get(pageId)) pageIds.push(pageId);
               });
               if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-              _context9.next = 8;
+              _context12.next = 8;
               return Promise.all(sortedMoveInfoList.slice().reverse().map(function (moveInfo) {
                 if (moveInfo.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(moveInfo.item.id)) {
                   item[moveInfo.chapterIdx].children.splice(moveInfo.pageIdx, 1);
-                  return _this4.movePage(moveInfo.item.id, moveTargetChapterId);
+                  return _this5.movePage(moveInfo.item.id, moveTargetChapterId);
                 }
               }));
 
@@ -4207,7 +4387,7 @@ var PageStore = mobx.observable((_observable$1 = {
               sortedMoveInfoList.map(function (moveInfo, idx) {
                 if (moveInfo.chapterId !== moveTargetChapterId) moveCntToAnotherChapter++;else if (moveInfo.pageIdx !== startIdx + idx) moveCntInSameChapter++;
 
-                _this4.moveInfoMap.set(moveInfo.item.id, {
+                _this5.moveInfoMap.set(moveInfo.item.id, {
                   item: moveInfo.item,
                   pageIdx: startIdx + idx,
                   chapterId: moveTargetChapterId,
@@ -4217,17 +4397,17 @@ var PageStore = mobx.observable((_observable$1 = {
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context9.next = 24;
+                _context12.next = 24;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-              _context9.next = 18;
+              _context12.next = 18;
               return ChapterStore.getNoteChapterList();
 
             case 18:
-              _context9.next = 20;
-              return _this4.fetchCurrentPageData(sortedMovePages[0]);
+              _context12.next = 20;
+              return _this5.fetchCurrentPageData(sortedMovePages[0]);
 
             case 20:
               if (!moveCntToAnotherChapter) {
@@ -4243,22 +4423,22 @@ var PageStore = mobx.observable((_observable$1 = {
               }
 
               NoteStore.setIsVisibleToast(true);
-              _context9.next = 25;
+              _context12.next = 25;
               break;
 
             case 24:
               // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
-              _this4.handleClickOutside();
+              _this5.handleClickOutside();
 
             case 25:
               NoteStore.setIsDragging(false);
 
             case 26:
             case "end":
-              return _context9.stop();
+              return _context12.stop();
           }
         }
-      }, _callee9);
+      }, _callee12);
     }))();
   },
   modifiedDateFormatting: function modifiedDateFormatting(date, isSharedInfo) {
@@ -4293,57 +4473,57 @@ var PageStore = mobx.observable((_observable$1 = {
     }
   },
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
-    var _this5 = this;
+    var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
       var dto, userProfile;
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
-              _context10.next = 2;
-              return _this5.getNoteInfoList(noteId);
+              _context13.next = 2;
+              return _this6.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context10.sent;
+              dto = _context13.sent;
 
               if (isFilled(dto.note_id)) {
-                _context10.next = 6;
+                _context13.next = 6;
                 break;
               }
 
-              if (_this5.currentPageId === noteId) _this5.currentPageId = '';
-              return _context10.abrupt("return");
+              if (_this6.currentPageId === noteId) _this6.currentPageId = '';
+              return _context13.abrupt("return");
 
             case 6:
               if (!dto.USER_ID) {
-                _context10.next = 11;
+                _context13.next = 11;
                 break;
               }
 
-              _context10.next = 9;
+              _context13.next = 9;
               return teespaceCore.UserStore.getProfile(dto.USER_ID);
 
             case 9:
-              userProfile = _context10.sent;
-              if (userProfile) _this5.displayName = userProfile.displayName;
+              userProfile = _context13.sent;
+              if (userProfile) _this6.displayName = userProfile.displayName;
 
             case 11:
-              _this5.setCurrentPageId(dto.note_id);
+              _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterId(dto.parent_notebook);
-              dto.note_content = NoteUtil.decodeStr(dto.note_content);
-              dto.note_title = NoteUtil.decodeStr(dto.note_title);
-              _this5.currentPageData = dto;
-              _this5.isEdit = dto.is_edit;
-              _this5.noteTitle = dto.note_title;
-              _this5.modifiedDate = _this5.modifiedDateFormatting(_this5.currentPageData.modified_date);
+              _this6.currentPageData = dto;
+              _this6.isEdit = dto.is_edit;
+              _this6.noteTitle = dto.note_title;
+              _this6.modifiedDate = _this6.modifiedDateFormatting(_this6.currentPageData.modified_date); // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
+              // console.log(this.deletedDate)
+
               EditorStore.setFileList(dto.fileList);
 
-              if (_this5.isNewPage) {
+              if (_this6.isNewPage) {
                 ChapterStore.setMoveInfoMap(new Map([[ChapterStore.currentChapterId, ChapterStore.createMoveInfo(ChapterStore.currentChapterId)]]));
 
-                _this5.setMoveInfoMap(new Map([[_this5.currentPageId, _this5.createMoveInfo(_this5.currentPageId, ChapterStore.currentChapterId)]]));
+                _this6.setMoveInfoMap(new Map([[_this6.currentPageId, _this6.createMoveInfo(_this6.currentPageId, ChapterStore.currentChapterId)]]));
 
                 Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
                   try {
@@ -4356,143 +4536,230 @@ var PageStore = mobx.observable((_observable$1 = {
                   return console.error(e);
                 });
 
-                _this5.setIsNewPage(false);
+                _this6.setIsNewPage(false);
               }
 
-            case 21:
+            case 19:
             case "end":
-              return _context10.stop();
+              return _context13.stop();
           }
         }
-      }, _callee10);
+      }, _callee13);
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
-    var _this6 = this;
+    var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
               if (!pageId) {
-                _context11.next = 7;
+                _context14.next = 7;
                 break;
               }
 
-              _context11.next = 3;
-              return _this6.fetchNoteInfoList(pageId);
+              _context14.next = 3;
+              return _this7.fetchNoteInfoList(pageId);
 
             case 3:
-              _context11.next = 5;
+              _context14.next = 5;
               return TagStore.fetchNoteTagList(pageId);
 
             case 5:
-              _context11.next = 9;
+              _context14.next = 9;
               break;
 
             case 7:
-              _this6.setIsEdit('');
+              _this7.setIsEdit('');
 
-              _this6.setCurrentPageId('');
+              _this7.setCurrentPageId('');
 
             case 9:
             case "end":
-              return _context11.stop();
+              return _context14.stop();
           }
         }
-      }, _callee11);
+      }, _callee14);
+    }))();
+  },
+  // 저장 후 지우기
+  removeLocalContent: function removeLocalContent() {
+    if (!NoteStore.notechannel_id || !this.currentPageId) return;
+    localStorage.removeItem("Note_autosave_".concat(NoteStore.notechannel_id, "_").concat(this.currentPageId));
+  },
+  // 노트앱 진입시 수정중인 노트 확인하기
+  checkEditingPage: function checkEditingPage() {
+    var _this8 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var target, noteId, dto;
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _context15.prev = 0;
+
+              if (!(!NoteStore.notechannel_id || !NoteStore.user_id)) {
+                _context15.next = 3;
+                break;
+              }
+
+              return _context15.abrupt("return");
+
+            case 3:
+              // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
+              target = Object.keys(localStorage).find(function (key) {
+                return key.replace(/^(Note_autosave_)(.+)_(.+)$/, "$2") === NoteStore.notechannel_id;
+              });
+
+              if (target) {
+                _context15.next = 6;
+                break;
+              }
+
+              return _context15.abrupt("return");
+
+            case 6:
+              noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, "$3");
+              /**
+               * 챕터, 페이지 선택이 됐다가 풀려야할 때(확인했더니 is_edit이 아닌 경우)
+               * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
+               */
+
+              _context15.next = 9;
+              return _this8.getNoteInfoList(noteId);
+
+            case 9:
+              dto = _context15.sent;
+
+              if ((dto === null || dto === void 0 ? void 0 : dto.is_edit) === NoteStore.user_id) {
+                _this8.setRecoverInfo({
+                  parentId: dto.parent_notebook,
+                  id: noteId,
+                  note_content: localStorage.getItem(target)
+                });
+
+                NoteStore.setModalInfo('recover');
+              } else {
+                // 수정 중인 상태 아니면 스토리지에서 지우기
+                _this8.setRecoverInfo({});
+
+                localStorage.removeItem(target);
+              }
+
+              _context15.next = 16;
+              break;
+
+            case 13:
+              _context15.prev = 13;
+              _context15.t0 = _context15["catch"](0);
+              console.log('checkEditingPage, 노트 진입시 수정 중인 노트 확인하기');
+
+            case 16:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15, null, [[0, 13]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart: function noteEditStart(noteId) {
-    var _this7 = this;
+    var _this9 = this;
 
-    this.prevModifiedUserName = this.currentPageData.user_name;
-    this.prevModifiedUserId = this.currentPageData.USER_ID;
     this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
       var _EditorStore$tinymce3;
 
-      _this7.fetchNoteInfoList(dto.note_id); // focus에서 getRng error가 나서 selection부터 체크
+      _this9.fetchNoteInfoList(dto.note_id); // focus에서 getRng error가 나서 selection부터 체크
 
 
       if ((_EditorStore$tinymce3 = EditorStore.tinymce) !== null && _EditorStore$tinymce3 !== void 0 && _EditorStore$tinymce3.selection) {
+        var _EditorStore$tinymce4;
+
         EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
+        (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.currentPageData.note_content);
       }
 
-      _this7.initializeBoxColor();
+      _this9.initializeBoxColor();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditDone: function noteEditDone(updateDto) {
-    var _this8 = this;
+    var _this10 = this;
 
     this.editDone(updateDto).then(function (dto) {
-      if (_this8.moveInfoMap.get(dto.note_id)) {
-        _this8.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
+      _this10.removeLocalContent();
+
+      if (_this10.moveInfoMap.get(dto.note_id)) {
+        _this10.moveInfoMap.get(dto.note_id).item.text = dto.note_title;
       }
 
-      _this8.fetchNoteInfoList(dto.note_id);
+      _this10.fetchNoteInfoList(dto.note_id);
 
       ChapterStore.getNoteChapterList();
     });
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteNoneEdit: function noteNoneEdit(noteId) {
-    var _this9 = this;
+    var _this11 = this;
 
-    this.noneEdit(noteId, this.currentPageData.parent_notebook, this.prevModifiedUserName, this.prevModifiedUserId).then(function (dto) {
-      var _EditorStore$tinymce4;
+    this.noneEdit(noteId, this.currentPageData.parent_notebook).then(function (dto) {
+      var _EditorStore$tinymce5;
 
-      _this9.fetchCurrentPageData(dto.note_id);
+      _this11.fetchCurrentPageData(dto.note_id);
 
       var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
       if (floatingMenu !== null) floatingMenu.click();
-      (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.currentPageData.note_content);
+      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this11.currentPageData.note_content);
       NoteStore.setShowModal(false);
       EditorStore.setIsSearch(false);
     });
   },
   handleNoneEdit: function handleNoneEdit() {
-    var _this10 = this;
+    var _this12 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context16.prev = _context16.next) {
             case 0:
-              if (!_this10.isNewPage) {
-                _context12.next = 5;
+              _this12.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
+
+
+              if (!_this12.isNewPage) {
+                _context16.next = 6;
                 break;
               }
 
-              _this10.setDeletePageList({
-                note_id: _this10.currentPageId
-              });
+              _this12.setDeletePageList([{
+                note_id: _this12.currentPageId
+              }]);
 
-              _this10.deleteNotePage();
+              _this12.deleteNotePage();
 
-              _context12.next = 10;
+              _context16.next = 11;
               break;
 
-            case 5:
-              if (!_this10.otherEdit) {
-                _context12.next = 9;
+            case 6:
+              if (!_this12.otherEdit) {
+                _context16.next = 10;
                 break;
               }
 
-              return _context12.abrupt("return");
-
-            case 9:
-              _this10.noteNoneEdit(_this10.currentPageId);
+              return _context16.abrupt("return");
 
             case 10:
+              _this12.noteNoneEdit(_this12.currentPageId);
+
+            case 11:
             case "end":
-              return _context12.stop();
+              return _context16.stop();
           }
         }
-      }, _callee12);
+      }, _callee16);
     }))();
   },
   getSaveDto: function getSaveDto(isAutoSave) {
@@ -4518,14 +4785,16 @@ var PageStore = mobx.observable((_observable$1 = {
     if (isAutoSave) this.handleAutoSave(updateDTO);else this.handleSaveBtn(updateDTO);
   },
   handleAutoSave: function handleAutoSave(updateDTO) {
-    var _this11 = this;
+    var _this13 = this;
 
     // currentPageData 갱신
     this.setSaveStatus({
       saving: true
     });
     this.editDone(updateDTO).then(function (dto) {
-      _this11.setSaveStatus({
+      _this13.removeLocalContent();
+
+      _this13.setSaveStatus({
         saved: true
       });
 
@@ -4533,21 +4802,21 @@ var PageStore = mobx.observable((_observable$1 = {
           modified_date = dto.modified_date,
           USER_ID = dto.USER_ID;
 
-      _this11.set_CurrentPageData({
+      _this13.set_CurrentPageData({
         user_name: user_name,
         modified_date: modified_date,
         USER_ID: USER_ID
       });
 
-      _this11.modifiedDate = _this11.modifiedDateFormatting(modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
+      _this13.modifiedDate = _this13.modifiedDateFormatting(modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
 
       setTimeout(function () {
-        _this11.setSaveStatus({});
+        _this13.setSaveStatus({});
       }, 2000);
     });
   },
   handleSaveBtn: function handleSaveBtn(updateDTO) {
-    var _EditorStore$tinymce5, _EditorStore$tinymce6;
+    var _EditorStore$tinymce6, _EditorStore$tinymce7;
 
     this.noteEditDone(updateDTO);
 
@@ -4561,8 +4830,8 @@ var PageStore = mobx.observable((_observable$1 = {
     EditorStore.setInitialSearchState();
     var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
     if (floatingMenu !== null) floatingMenu.click();
-    (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.selection.setCursorLocation();
-    (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.undoManager.clear();
+    (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
+    (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   },
   getNoteTitle: function getNoteTitle() {
     if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
@@ -4676,27 +4945,27 @@ var PageStore = mobx.observable((_observable$1 = {
 
   if (node.textContent) return node.textContent.slice(0, 200);
 }), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-    var _yield$NoteRepository9, noteList;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    var _yield$NoteRepository11, noteList;
 
-    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
       while (1) {
-        switch (_context13.prev = _context13.next) {
+        switch (_context17.prev = _context17.next) {
           case 0:
-            _context13.next = 2;
+            _context17.next = 2;
             return NoteRepository$1.createSharePage(targetList);
 
           case 2:
-            _yield$NoteRepository9 = _context13.sent;
-            noteList = _yield$NoteRepository9.data.dto.noteList;
-            return _context13.abrupt("return", noteList);
+            _yield$NoteRepository11 = _context17.sent;
+            noteList = _yield$NoteRepository11.data.dto.noteList;
+            return _context17.abrupt("return", noteList);
 
           case 5:
           case "end":
-            return _context13.stop();
+            return _context17.stop();
         }
       }
-    }, _callee13);
+    }, _callee17);
   }))();
 }), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
@@ -4708,6 +4977,7 @@ var PageStore = mobx.observable((_observable$1 = {
       note_id: page.note_id || page.id,
       note_title: page.text,
       modified_date: page.date,
+      TYPE: page.type,
       note_channel_id: NoteRepository$1.chId,
       USER_ID: NoteRepository$1.USER_ID,
       shared_user_id: NoteRepository$1.USER_ID,
@@ -4721,54 +4991,76 @@ var PageStore = mobx.observable((_observable$1 = {
     ChapterStore.getNoteChapterList();
     NoteStore.setIsDragging(false);
   });
-}), _defineProperty(_observable$1, "throwPage", function throwPage(pageId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-    var _yield$NoteRepository10, dto;
+}), _defineProperty(_observable$1, "restorePageLogic", function restorePageLogic(_ref2) {
+  var _this14 = this;
 
-    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+    var chapterId, pageId, toastTxt, res;
+    return regeneratorRuntime.wrap(function _callee18$(_context18) {
       while (1) {
-        switch (_context14.prev = _context14.next) {
+        switch (_context18.prev = _context18.next) {
           case 0:
-            _context14.next = 2;
-            return NoteRepository$1.throwPage(pageId);
+            chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
+            _context18.next = 3;
+            return _this14.restorePage(pageId, chapterId);
 
-          case 2:
-            _yield$NoteRepository10 = _context14.sent;
-            dto = _yield$NoteRepository10.data.dto;
+          case 3:
+            res = _context18.sent;
 
-            if (dto.resultMsg === 'Success') ;
+            if (!(res.resultMsg === 'Success')) {
+              _context18.next = 11;
+              break;
+            }
 
-          case 5:
+            NoteStore.setModalInfo(null);
+            _context18.next = 8;
+            return ChapterStore.getNoteChapterList();
+
+          case 8:
+            if (_this14.currentPageId === pageId) {
+              ChapterStore.setCurrentChapterId(chapterId);
+
+              _this14.setCurrentPageId(pageId);
+
+              _this14.setIsRecycleBin(false);
+            }
+
+            NoteStore.setToastText(toastTxt);
+            NoteStore.setIsVisibleToast(true);
+
+          case 11:
           case "end":
-            return _context14.stop();
+            return _context18.stop();
         }
       }
-    }, _callee14);
+    }, _callee18);
   }))();
-}), _defineProperty(_observable$1, "restorePage", function restorePage(pageId, chapterId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-    var _yield$NoteRepository11, dto;
+}), _defineProperty(_observable$1, "editCancel", function editCancel() {
+  if (EditorStore.isSearch) {
+    var _EditorStore$tinymce8;
 
-    return regeneratorRuntime.wrap(function _callee15$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            _context15.next = 2;
-            return NoteRepository$1.restorePage(pageId, chapterId);
+    var instance = new Mark((_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.getBody());
+    instance.unmark();
+  }
 
-          case 2:
-            _yield$NoteRepository11 = _context15.sent;
-            dto = _yield$NoteRepository11.data.dto;
+  if (EditorStore.isUploading) {
+    EditorStore.uploadingFileallCancel();
+    return;
+  }
 
-            if (dto.resultMsg === 'Success') ;
-
-          case 5:
-          case "end":
-            return _context15.stop();
-        }
-      }
-    }, _callee15);
-  }))();
+  this.handleSave();
+  Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
+    try {
+      var logEvent = module.logEvent;
+      logEvent('note', 'clickModifyBtn');
+    } catch (e) {
+      console.error(e);
+    }
+  }).catch(function (e) {
+    return console.error(e);
+  });
+  NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
+  NoteStore.setIsVisibleToast(true);
 }), _observable$1), {
   set_CurrentPageData: mobx.action
 });
@@ -4886,6 +5178,9 @@ var ChapterStore = mobx.observable({
   },
   deleteMoveInfoMap: function deleteMoveInfoMap(key) {
     this.moveInfoMap.delete(key);
+  },
+  clearMoveInfoMap: function clearMoveInfoMap() {
+    this.moveInfoMap.clear();
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
@@ -5109,7 +5404,8 @@ var ChapterStore = mobx.observable({
       }, _callee4);
     }))();
   },
-  deleteChapter: function deleteChapter(deleteChapterId) {
+  // 휴지통에 있는 페이지 복구할 때 페이지 없는 챕터 생성용
+  createRestoreChapter: function createRestoreChapter(chapterTitle, chapterColor) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       var _yield$NoteRepository5, dto;
 
@@ -5118,7 +5414,7 @@ var ChapterStore = mobx.observable({
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return NoteRepository$1.deleteChapter(deleteChapterId);
+              return NoteRepository$1.createRestoreChapter(chapterTitle, chapterColor);
 
             case 2:
               _yield$NoteRepository5 = _context5.sent;
@@ -5133,7 +5429,7 @@ var ChapterStore = mobx.observable({
       }, _callee5);
     }))();
   },
-  renameChapter: function renameChapter(renameId, renameText, color) {
+  deleteChapter: function deleteChapter(deleteChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
       var _yield$NoteRepository6, dto;
 
@@ -5142,7 +5438,7 @@ var ChapterStore = mobx.observable({
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
-              return NoteRepository$1.renameChapter(renameId, renameText, color);
+              return NoteRepository$1.deleteChapter(deleteChapterId);
 
             case 2:
               _yield$NoteRepository6 = _context6.sent;
@@ -5157,26 +5453,23 @@ var ChapterStore = mobx.observable({
       }, _callee6);
     }))();
   },
-  updateChapterColor: function updateChapterColor(chapterId) {
-    var _this2 = this;
-
+  renameChapter: function renameChapter(renameId, renameText, color) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-      var targetColor, _yield$NoteRepository7, dto;
+      var _yield$NoteRepository7, dto;
 
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              targetColor = _this2.getChapterRandomColor();
-              _context7.next = 3;
-              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
+              _context7.next = 2;
+              return NoteRepository$1.renameChapter(renameId, renameText, color);
 
-            case 3:
+            case 2:
               _yield$NoteRepository7 = _context7.sent;
               dto = _yield$NoteRepository7.dto;
               return _context7.abrupt("return", dto);
 
-            case 6:
+            case 5:
             case "end":
               return _context7.stop();
           }
@@ -5184,23 +5477,26 @@ var ChapterStore = mobx.observable({
       }, _callee7);
     }))();
   },
-  getChapterChildren: function getChapterChildren(chapterId) {
+  updateChapterColor: function updateChapterColor(chapterId) {
+    var _this2 = this;
+
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var _yield$NoteRepository8, dto;
+      var targetColor, _yield$NoteRepository8, dto;
 
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
-              _context8.next = 2;
-              return NoteRepository$1.getChapterChildren(chapterId);
+              targetColor = _this2.getChapterRandomColor();
+              _context8.next = 3;
+              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
 
-            case 2:
+            case 3:
               _yield$NoteRepository8 = _context8.sent;
-              dto = _yield$NoteRepository8.data.dto;
+              dto = _yield$NoteRepository8.dto;
               return _context8.abrupt("return", dto);
 
-            case 5:
+            case 6:
             case "end":
               return _context8.stop();
           }
@@ -5208,7 +5504,7 @@ var ChapterStore = mobx.observable({
       }, _callee8);
     }))();
   },
-  getChapterInfoList: function getChapterInfoList(chapterId) {
+  getChapterChildren: function getChapterChildren(chapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
       var _yield$NoteRepository9, dto;
 
@@ -5217,7 +5513,7 @@ var ChapterStore = mobx.observable({
           switch (_context9.prev = _context9.next) {
             case 0:
               _context9.next = 2;
-              return NoteRepository$1.getChapterInfoList(chapterId);
+              return NoteRepository$1.getChapterChildren(chapterId);
 
             case 2:
               _yield$NoteRepository9 = _context9.sent;
@@ -5232,9 +5528,7 @@ var ChapterStore = mobx.observable({
       }, _callee9);
     }))();
   },
-  getSearchList: function getSearchList(searchStr) {
-    var _this3 = this;
-
+  getChapterInfoList: function getChapterInfoList(chapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var _yield$NoteRepository10, dto;
 
@@ -5243,7 +5537,7 @@ var ChapterStore = mobx.observable({
           switch (_context10.prev = _context10.next) {
             case 0:
               _context10.next = 2;
-              return NoteRepository$1.getSearchList(searchStr || _this3.searchStr);
+              return NoteRepository$1.getChapterInfoList(chapterId);
 
             case 2:
               _yield$NoteRepository10 = _context10.sent;
@@ -5256,6 +5550,32 @@ var ChapterStore = mobx.observable({
           }
         }
       }, _callee10);
+    }))();
+  },
+  getSearchList: function getSearchList(searchStr) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      var _yield$NoteRepository11, dto;
+
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        while (1) {
+          switch (_context11.prev = _context11.next) {
+            case 0:
+              _context11.next = 2;
+              return NoteRepository$1.getSearchList(searchStr || _this3.searchStr);
+
+            case 2:
+              _yield$NoteRepository11 = _context11.sent;
+              dto = _yield$NoteRepository11.data.dto;
+              return _context11.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context11.stop();
+          }
+        }
+      }, _callee11);
     }))();
   },
 
@@ -5364,109 +5684,38 @@ var ChapterStore = mobx.observable({
   checkDefaultChapterColor: function checkDefaultChapterColor(notebookList) {
     var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       var _yield$_this7$updateC, color;
 
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
-        while (1) {
-          switch (_context11.prev = _context11.next) {
-            case 0:
-              if (!(notebookList.length === 0 || notebookList[0].type !== 'default')) {
-                _context11.next = 2;
-                break;
-              }
-
-              return _context11.abrupt("return", notebookList);
-
-            case 2:
-              if (!(notebookList[0].color === null && notebookList[0].id)) {
-                _context11.next = 8;
-                break;
-              }
-
-              _context11.next = 5;
-              return _this7.updateChapterColor(notebookList[0].id);
-
-            case 5:
-              _yield$_this7$updateC = _context11.sent;
-              color = _yield$_this7$updateC.color;
-              notebookList[0].color = color;
-
-            case 8:
-              return _context11.abrupt("return", notebookList);
-
-            case 9:
-            case "end":
-              return _context11.stop();
-          }
-        }
-      }, _callee11);
-    }))();
-  },
-  // type : defalut, notebook, shared_page, shared
-  // default chapterColor도 null이면 update 해준다
-  sortServerChapterList: function sortServerChapterList(notebookList) {
-    var _this8 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var normalChapters, sharedChapters, getChapterNumType, firstSharedIdx;
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              normalChapters = [], sharedChapters = [];
-
-              if (!(notebookList.length === 0)) {
-                _context12.next = 3;
+              if (!(notebookList.length === 0 || notebookList[0].type !== 'default')) {
+                _context12.next = 2;
                 break;
               }
 
-              return _context12.abrupt("return", {
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              });
+              return _context12.abrupt("return", notebookList);
 
-            case 3:
-              getChapterNumType = NoteUtil.getChapterNumType; // type : defalut(0), notebook(1), shared_page, shared 순으로 sort된다
+            case 2:
+              if (!(notebookList[0].color === null && notebookList[0].id)) {
+                _context12.next = 8;
+                break;
+              }
 
-              notebookList.sort(function (a, b) {
-                return getChapterNumType(a.type) - getChapterNumType(b.type);
-              });
-              _context12.next = 7;
-              return _this8.checkDefaultChapterColor(notebookList);
+              _context12.next = 5;
+              return _this7.updateChapterColor(notebookList[0].id);
 
-            case 7:
-              notebookList = _context12.sent;
-              firstSharedIdx = notebookList.findIndex(function (chapter) {
-                return [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED].includes(chapter.type);
-              });
-              _context12.t0 = firstSharedIdx;
-              _context12.next = _context12.t0 === 0 ? 12 : _context12.t0 === -1 ? 14 : 16;
-              break;
+            case 5:
+              _yield$_this7$updateC = _context12.sent;
+              color = _yield$_this7$updateC.color;
+              notebookList[0].color = color;
 
-            case 12:
-              // 전달만 있는 경우
-              sharedChapters = notebookList.slice(0);
-              return _context12.abrupt("break", 19);
+            case 8:
+              return _context12.abrupt("return", notebookList);
 
-            case 14:
-              // 전달 챕터/페이지 없는 경우
-              normalChapters = notebookList.slice(0);
-              return _context12.abrupt("break", 19);
-
-            case 16:
-              // 전달인거, 아닌거 다 있는 경우
-              normalChapters = notebookList.slice(0, firstSharedIdx);
-              sharedChapters = notebookList.slice(firstSharedIdx);
-              return _context12.abrupt("break", 19);
-
-            case 19:
-              return _context12.abrupt("return", {
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              });
-
-            case 20:
+            case 9:
             case "end":
               return _context12.stop();
           }
@@ -5474,27 +5723,100 @@ var ChapterStore = mobx.observable({
       }, _callee12);
     }))();
   },
-  getNoteChapterList: function getNoteChapterList() {
-    var _this9 = this;
+  // type : defalut, notebook, shared_page, shared
+  // default chapterColor도 null이면 update 해준다
+  sortServerChapterList: function sortServerChapterList(notebookList) {
+    var _this8 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-      var _yield$NoteRepository11, notbookList, _yield$_this9$sortSer, normalChapters, sharedChapters;
-
+      var normalChapters, sharedChapters, getChapterNumType, firstSharedIdx;
       return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
           switch (_context13.prev = _context13.next) {
             case 0:
-              _context13.next = 2;
+              normalChapters = [], sharedChapters = [];
+
+              if (!(notebookList.length === 0)) {
+                _context13.next = 3;
+                break;
+              }
+
+              return _context13.abrupt("return", {
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              });
+
+            case 3:
+              getChapterNumType = NoteUtil.getChapterNumType; // type : defalut(0), notebook(1), shared_page, shared, recycle_bin 순으로 sort된다
+
+              notebookList.sort(function (a, b) {
+                return getChapterNumType(a.type) - getChapterNumType(b.type);
+              });
+              _context13.next = 7;
+              return _this8.checkDefaultChapterColor(notebookList);
+
+            case 7:
+              notebookList = _context13.sent;
+              firstSharedIdx = notebookList.findIndex(function (chapter) {
+                return [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED, CHAPTER_TYPE.RECYCLE_BIN].includes(chapter.type);
+              });
+              _context13.t0 = firstSharedIdx;
+              _context13.next = _context13.t0 === 0 ? 12 : _context13.t0 === -1 ? 14 : 16;
+              break;
+
+            case 12:
+              // 전달만 있는 경우
+              sharedChapters = notebookList.slice(0);
+              return _context13.abrupt("break", 19);
+
+            case 14:
+              // 전달 챕터/페이지, 휴지통 없는 경우
+              normalChapters = notebookList.slice(0);
+              return _context13.abrupt("break", 19);
+
+            case 16:
+              // 전달인거, 아닌거 다 있는 경우
+              normalChapters = notebookList.slice(0, firstSharedIdx);
+              sharedChapters = notebookList.slice(firstSharedIdx);
+              return _context13.abrupt("break", 19);
+
+            case 19:
+              return _context13.abrupt("return", {
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              });
+
+            case 20:
+            case "end":
+              return _context13.stop();
+          }
+        }
+      }, _callee13);
+    }))();
+  },
+  getNoteChapterList: function getNoteChapterList() {
+    var _arguments = arguments,
+        _this9 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      var isInit, _yield$NoteRepository12, notbookList, _yield$_this9$sortSer, normalChapters, sharedChapters;
+
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        while (1) {
+          switch (_context14.prev = _context14.next) {
+            case 0:
+              isInit = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              _context14.next = 3;
               return NoteRepository$1.getChapterList(NoteStore.getChannelId());
 
-            case 2:
-              _yield$NoteRepository11 = _context13.sent;
-              notbookList = _yield$NoteRepository11.data.dto.notbookList;
-              _context13.next = 6;
+            case 3:
+              _yield$NoteRepository12 = _context14.sent;
+              notbookList = _yield$NoteRepository12.data.dto.notbookList;
+              _context14.next = 7;
               return _this9.sortServerChapterList(notbookList);
 
-            case 6:
-              _yield$_this9$sortSer = _context13.sent;
+            case 7:
+              _yield$_this9$sortSer = _context14.sent;
               normalChapters = _yield$_this9$sortSer.normalChapters;
               sharedChapters = _yield$_this9$sortSer.sharedChapters;
 
@@ -5510,23 +5832,24 @@ var ChapterStore = mobx.observable({
 
 
                 normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
-              }
+              } // sharedChapters = shared, recylce_bin
 
-              sharedChapters = _this9.getSharedFoldedState(sharedChapters);
+
+              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters);
 
               _this9.setChapterList(normalChapters.concat(sharedChapters));
 
-              return _context13.abrupt("return", _this9.chapterList);
+              return _context14.abrupt("return", _this9.chapterList);
 
-            case 15:
+            case 16:
             case "end":
-              return _context13.stop();
+              return _context14.stop();
           }
         }
-      }, _callee13);
+      }, _callee14);
     }))();
   },
-  getSharedFoldedState: function getSharedFoldedState(sharedChapters) {
+  getTheRestFoldedState: function getTheRestFoldedState(isInit, sharedChapters) {
     if (sharedChapters.length === 0) return sharedChapters;
     var item = localStorage.getItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id));
     var newFoldedMap = new Map();
@@ -5541,6 +5864,7 @@ var ChapterStore = mobx.observable({
       item = JSON.parse(item, NoteUtil.reviver);
       sharedChapters.forEach(function (chapter) {
         var value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
         newFoldedMap.set(chapter.id, value);
         chapter.isFolded = value;
       });
@@ -5552,26 +5876,25 @@ var ChapterStore = mobx.observable({
   createNoteChapter: function createNoteChapter() {
     var _this10 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var trimmedChapterTitle, notbookList;
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
-          switch (_context14.prev = _context14.next) {
+          switch (_context15.prev = _context15.next) {
             case 0:
               trimmedChapterTitle = _this10.chapterNewTitle.trim();
               _this10.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
-              _context14.next = 4;
+              _context15.next = 4;
               return _this10.createChapter(_this10.chapterNewTitle, _this10.isNewChapterColor);
 
             case 4:
-              notbookList = _context14.sent;
-              _context14.next = 7;
+              notbookList = _context15.sent;
+              _context15.next = 7;
               return _this10.getNoteChapterList();
 
             case 7:
-              _this10.setCurrentChapterId(notbookList.id);
-
-              PageStore.setCurrentPageId(notbookList.children[0].id);
+              // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
+              PageStore.setIsRecycleBin(false);
               PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
               _this10.setChapterTempUl(false);
@@ -5580,34 +5903,63 @@ var ChapterStore = mobx.observable({
 
               PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this10.currentChapterId)]]));
 
-            case 13:
+            case 12:
             case "end":
-              return _context14.stop();
+              return _context15.stop();
           }
         }
-      }, _callee14);
+      }, _callee15);
     }))();
   },
+
+  /**
+   * 챕터 1개 남아있을 때, 챕터 삭제시 휴지통 선택 & 휴지통 맨 위 페이지 삭제하기 위해 async, await로 바꿈
+   * getNoteChapterList 후 선택하려고
+   */
   deleteNoteChapter: function deleteNoteChapter() {
     var _this11 = this;
 
-    this.deleteChapter(this.deleteChapterId).then(function () {
-      _this11.getNoteChapterList();
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+      var _this11$chapterList$, _this11$chapterList$$;
 
-      if (_this11.currentChapterId === _this11.deleteChapterId) {
-        _this11.setCurrentChapterId(_this11.selectableChapterId);
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+        while (1) {
+          switch (_context16.prev = _context16.next) {
+            case 0:
+              _context16.next = 2;
+              return _this11.deleteChapter(_this11.deleteChapterId);
 
-        PageStore.setCurrentPageId(PageStore.selectablePageId);
-        PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+            case 2:
+              _context16.next = 4;
+              return _this11.getNoteChapterList();
 
-        _this11.setMoveInfoMap(new Map([[_this11.currentChapterId, _this11.createMoveInfo(_this11.currentChapterId)]]));
+            case 4:
+              if (_this11.currentChapterId === _this11.deleteChapterId) {
+                // refactoring할 때 수정필요함, 혹시나해서 여러가지 조건 체크함
+                if (_this11.chapterList.length === 1 && _this11.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN) {
+                  PageStore.setIsRecycleBin(true);
+                  PageStore.fetchCurrentPageData((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : (_this11$chapterList$$ = _this11$chapterList$.children[0]) === null || _this11$chapterList$$ === void 0 ? void 0 : _this11$chapterList$$.id);
+                } else {
+                  PageStore.fetchCurrentPageData(PageStore.selectablePageId);
+                }
 
-        PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
-      }
+                _this11.setMoveInfoMap(new Map([[_this11.currentChapterId, _this11.createMoveInfo(_this11.currentChapterId)]]));
 
-      _this11.deleteChapterId = '';
-      NoteStore.setShowModal(false);
-    });
+                PageStore.setMoveInfoMap(new Map([[PageStore.currentPageId, PageStore.createMoveInfo(PageStore.currentPageId, _this11.currentChapterId)]]));
+              }
+
+              _this11.deleteChapterId = '';
+              NoteStore.setShowModal(false);
+              NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
+              NoteStore.setIsVisibleToast(true);
+
+            case 9:
+            case "end":
+              return _context16.stop();
+          }
+        }
+      }, _callee16);
+    }))();
   },
   renameNoteChapter: function renameNoteChapter(color) {
     var _this12 = this;
@@ -5649,7 +6001,7 @@ var ChapterStore = mobx.observable({
       return a.chapterIdx - b.chapterIdx;
     });
   },
-  moveChapter: function moveChapter(moveTargetChapterIdx) {
+  moveChapter: function moveChapter() {
     var _this13 = this;
 
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
@@ -5659,10 +6011,10 @@ var ChapterStore = mobx.observable({
     });
     var chapters = [];
     item.forEach(function (chapter, idx) {
-      if (idx === moveTargetChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+      if (idx === _this13.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
       if (!_this13.moveInfoMap.get(chapter.id)) chapters.push(chapter);
     });
-    if (moveTargetChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+    if (this.dragEnterChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
     var moveCnt = 0;
     var startIdx = chapters.findIndex(function (chapter) {
       return chapter.id === sortedMoveInfoList[0].item.id;
@@ -5711,10 +6063,10 @@ var ChapterStore = mobx.observable({
   getChapterFirstPage: function getChapterFirstPage(targetId) {
     var _this14 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
-          switch (_context15.prev = _context15.next) {
+          switch (_context17.prev = _context17.next) {
             case 0:
               _this14.getChapterList().then(function (chapterList) {
                 var targetChapter = chapterList.filter(function (chapter) {
@@ -5729,10 +6081,10 @@ var ChapterStore = mobx.observable({
 
             case 1:
             case "end":
-              return _context15.stop();
+              return _context17.stop();
           }
         }
-      }, _callee15);
+      }, _callee17);
     }))();
   },
 
@@ -5745,10 +6097,10 @@ var ChapterStore = mobx.observable({
   getSearchResult: function getSearchResult() {
     var _this15 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
         while (1) {
-          switch (_context16.prev = _context16.next) {
+          switch (_context18.prev = _context18.next) {
             case 0:
               // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
               _this15.setIsSearching(true);
@@ -5766,19 +6118,19 @@ var ChapterStore = mobx.observable({
 
             case 3:
             case "end":
-              return _context16.stop();
+              return _context18.stop();
           }
         }
-      }, _callee16);
+      }, _callee18);
     }))();
   },
   fetchSearchResult: function fetchSearchResult() {
     var _this16 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
-          switch (_context17.prev = _context17.next) {
+          switch (_context19.prev = _context19.next) {
             case 0:
               _this16.setIsSearching(true); // 검색 결과 출력 종료까지임
 
@@ -5814,34 +6166,34 @@ var ChapterStore = mobx.observable({
 
             case 3:
             case "end":
-              return _context17.stop();
+              return _context19.stop();
           }
         }
-      }, _callee17);
+      }, _callee19);
     }))();
   },
   createShareChapter: function createShareChapter(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-      var _yield$NoteRepository12, dto;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+      var _yield$NoteRepository13, dto;
 
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
-          switch (_context18.prev = _context18.next) {
+          switch (_context20.prev = _context20.next) {
             case 0:
-              _context18.next = 2;
+              _context20.next = 2;
               return NoteRepository$1.createShareChapter(targetList);
 
             case 2:
-              _yield$NoteRepository12 = _context18.sent;
-              dto = _yield$NoteRepository12.data.dto;
-              return _context18.abrupt("return", dto);
+              _yield$NoteRepository13 = _context20.sent;
+              dto = _yield$NoteRepository13.data.dto;
+              return _context20.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context18.stop();
+              return _context20.stop();
           }
         }
-      }, _callee18);
+      }, _callee20);
     }))();
   },
   createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
@@ -5849,6 +6201,7 @@ var ChapterStore = mobx.observable({
 
     if (!targetChapterList) return;
     var targetChId = NoteStore.getTargetChId(targetRoomId);
+    var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
     var targetList = targetChapterList.map(function (chapter) {
       return {
         id: chapter.id,
@@ -5856,11 +6209,13 @@ var ChapterStore = mobx.observable({
         note_channel_id: NoteRepository$1.chId,
         text: chapter.text,
         color: chapter.color,
+        type: chapter.type,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
         shared_room_name: NoteRepository$1.WS_ID,
         target_workspace_id: targetRoomId,
-        target_channel_id: targetChId
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId
       };
     });
     this.createShareChapter(targetList).then(function () {
@@ -5892,23 +6247,23 @@ var ChapterStore = mobx.observable({
   setFirstNoteInfo: function setFirstNoteInfo() {
     var _this18 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
       var targetChapter, chapterId, pageId;
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+      return regeneratorRuntime.wrap(function _callee21$(_context21) {
         while (1) {
-          switch (_context19.prev = _context19.next) {
+          switch (_context21.prev = _context21.next) {
             case 0:
               targetChapter = _this18.getFirstRenderedChapter();
 
               if (targetChapter) {
-                _context19.next = 5;
+                _context21.next = 5;
                 break;
               }
 
               _this18.setCurrentChapterId('');
 
               PageStore.setCurrentPageId('');
-              return _context19.abrupt("return");
+              return _context21.abrupt("return");
 
             case 5:
               _this18.setFirstMoveInfoMap(targetChapter);
@@ -5916,7 +6271,7 @@ var ChapterStore = mobx.observable({
               chapterId = targetChapter.id;
               pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // setCurrentPageId는 fetchNoetInfoList에서
 
-              _context19.next = 10;
+              _context21.next = 10;
               return PageStore.fetchCurrentPageData(pageId);
 
             case 10:
@@ -5926,10 +6281,10 @@ var ChapterStore = mobx.observable({
 
             case 11:
             case "end":
-              return _context19.stop();
+              return _context21.stop();
           }
         }
-      }, _callee19);
+      }, _callee21);
     }))();
   },
 
@@ -5940,14 +6295,14 @@ var ChapterStore = mobx.observable({
   fetchFirstNote: function fetchFirstNote() {
     var _this19 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
-      return regeneratorRuntime.wrap(function _callee20$(_context20) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
+      return regeneratorRuntime.wrap(function _callee22$(_context22) {
         while (1) {
-          switch (_context20.prev = _context20.next) {
+          switch (_context22.prev = _context22.next) {
             case 0:
               _this19.setLoadingPageInfo(true);
 
-              _context20.next = 3;
+              _context22.next = 3;
               return _this19.setFirstNoteInfo();
 
             case 3:
@@ -5955,44 +6310,49 @@ var ChapterStore = mobx.observable({
 
             case 4:
             case "end":
-              return _context20.stop();
+              return _context22.stop();
           }
         }
-      }, _callee20);
+      }, _callee22);
     }))();
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
   fetchChapterList: function fetchChapterList() {
-    var _this20 = this;
+    var _arguments2 = arguments,
+        _this20 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
-      return regeneratorRuntime.wrap(function _callee21$(_context21) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
+      var isInit;
+      return regeneratorRuntime.wrap(function _callee23$(_context23) {
         while (1) {
-          switch (_context21.prev = _context21.next) {
+          switch (_context23.prev = _context23.next) {
             case 0:
+              isInit = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : false;
+
+              // 한 군데에서만 부르긴하지만 일단 param 추가
               _this20.setLoadingPageInfo(true);
 
-              _context21.next = 3;
-              return _this20.getNoteChapterList();
+              _context23.next = 4;
+              return _this20.getNoteChapterList(isInit);
 
-            case 3:
+            case 4:
               if (!(_this20.chapterList.length > 0)) {
-                _context21.next = 6;
+                _context23.next = 7;
                 break;
               }
 
-              _context21.next = 6;
+              _context23.next = 7;
               return _this20.setFirstNoteInfo();
 
-            case 6:
+            case 7:
               _this20.setLoadingPageInfo(false);
 
-            case 7:
+            case 8:
             case "end":
-              return _context21.stop();
+              return _context23.stop();
           }
         }
-      }, _callee21);
+      }, _callee23);
     }))();
   },
   // localStorage에서 page 얻기
@@ -6008,21 +6368,21 @@ var ChapterStore = mobx.observable({
   openNote: function openNote() {
     var _this21 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
       var pageId;
-      return regeneratorRuntime.wrap(function _callee22$(_context22) {
+      return regeneratorRuntime.wrap(function _callee24$(_context24) {
         while (1) {
-          switch (_context22.prev = _context22.next) {
+          switch (_context24.prev = _context24.next) {
             case 0:
-              _context22.prev = 0;
-              _context22.t0 = NoteStore.metaTagInfo.type;
-              _context22.next = _context22.t0 === "chapter" ? 4 : _context22.t0 === "page" ? 12 : 16;
+              _context24.prev = 0;
+              _context24.t0 = NoteStore.metaTagInfo.type;
+              _context24.next = _context24.t0 === "chapter" ? 4 : _context24.t0 === "page" ? 12 : 16;
               break;
 
             case 4:
               // chapter, page 선택
               NoteStore.setTargetLayout('LNB');
-              _context22.next = 7;
+              _context24.next = 7;
               return _this21.getNoteChapterList();
 
             case 7:
@@ -6035,29 +6395,29 @@ var ChapterStore = mobx.observable({
                * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
                */
 
-              _context22.next = 11;
+              _context24.next = 11;
               return PageStore.fetchCurrentPageData(pageId ? pageId : '');
 
             case 11:
-              return _context22.abrupt("break", 16);
+              return _context24.abrupt("break", 16);
 
             case 12:
-              _context22.next = 14;
+              _context24.next = 14;
               return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
 
             case 14:
               NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
 
-              return _context22.abrupt("break", 16);
+              return _context24.abrupt("break", 16);
 
             case 16:
-              _context22.next = 21;
+              _context24.next = 21;
               break;
 
             case 18:
-              _context22.prev = 18;
-              _context22.t1 = _context22["catch"](0);
-              console.log('e', _context22.t1);
+              _context24.prev = 18;
+              _context24.t1 = _context24["catch"](0);
+              console.log('e', _context24.t1);
 
             case 21:
               NoteStore.setMetaTagInfo({
@@ -6068,10 +6428,10 @@ var ChapterStore = mobx.observable({
 
             case 22:
             case "end":
-              return _context22.stop();
+              return _context24.stop();
           }
         }
-      }, _callee22, null, [[0, 18]]);
+      }, _callee24, null, [[0, 18]]);
     }))();
   }
 });
@@ -6088,16 +6448,9 @@ var NoteMeta = {
   },
   // antd modal prop 만들기
   setModalConfig: function setModalConfig(type) {
-    var handleCancel = function handleCancel(e) {
-      e.stopPropagation();
-      NoteStore.setModalInfo(null);
-      NoteStore.setIsShared(false);
-    };
-
     var initialConfig = {
       targetComponent: "Modal",
-      modalName: type,
-      handleCancel: handleCancel
+      modalName: type
     };
 
     switch (type) {
@@ -6111,6 +6464,12 @@ var NoteMeta = {
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: i18n.t('NOTE_CONTEXT_MENU_01'),
           className: "forwardModal"
+        });
+
+      case "restore":
+        return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
+          title: i18n.t('NOTE_BIN_RESTORE_01'),
+          className: "restoreModal"
         });
 
       default:
@@ -6164,7 +6523,21 @@ var NoteMeta = {
             ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
             PageStore.setLastSharedPageParentId('');
             ChapterStore.deleteNoteChapter();
-          } else PageStore.deleteNotePage();
+          } else PageStore.throwNotePage();
+
+          if (EditorStore.fileList) EditorStore.deleteAllFile();
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
+        break;
+
+      case 'deletePage':
+        // 페이지 영구 삭제
+        eventList.push(function (e) {
+          e.stopPropagation();
+          PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
 
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
@@ -6175,7 +6548,6 @@ var NoteMeta = {
         break;
 
       case 'uploadingFiles':
-      case 'editCancel':
         eventList.push(function (e) {
           e.stopPropagation();
 
@@ -6228,6 +6600,139 @@ var NoteMeta = {
       case 'failUploadByFileNameLen':
         eventList.push(function (e) {});
         break;
+
+      case 'recover':
+        eventList.push( /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+            var _EditorStore$tinymce2, _PageStore$recoverInf, id, note_content, _EditorStore$tinymce3;
+
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    // 복구 로직
+                    e.stopPropagation();
+                    _context.prev = 1;
+                    _PageStore$recoverInf = PageStore.recoverInfo, id = _PageStore$recoverInf.id, note_content = _PageStore$recoverInf.note_content;
+
+                    if (id) {
+                      _context.next = 5;
+                      break;
+                    }
+
+                    return _context.abrupt("return");
+
+                  case 5:
+                    NoteStore.setShowPage(true);
+                    if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content'); // [todo] 이게 왜 ChapterStore에 있을까
+
+                    ChapterStore.setLoadingPageInfo(true);
+                    _context.next = 10;
+                    return PageStore.fetchCurrentPageData(id);
+
+                  case 10:
+                    ChapterStore.setLoadingPageInfo(false);
+                    /*
+                    * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
+                    * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
+                    * 이 경우 recoverinfo 초기화하면 안 됨
+                    */
+
+                    if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.getBody()) {
+                      (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.setContent(note_content);
+                      PageStore.setRecoverInfo({});
+                    }
+
+                    _context.next = 17;
+                    break;
+
+                  case 14:
+                    _context.prev = 14;
+                    _context.t0 = _context["catch"](1);
+                    console.log('err', _context.t0);
+
+                  case 17:
+                    _context.prev = 17;
+                    NoteStore.setModalInfo(null);
+                    return _context.finish(17);
+
+                  case 20:
+
+                  case 21:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee, null, [[1, 14, 17, 20]]);
+          }));
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }());
+        eventList.push( /*#__PURE__*/function () {
+          var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+            var _PageStore$recoverInf2, parentId, id, dto;
+
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    e.stopPropagation();
+                    _PageStore$recoverInf2 = PageStore.recoverInfo, parentId = _PageStore$recoverInf2.parentId, id = _PageStore$recoverInf2.id;
+
+                    if (id) {
+                      _context2.next = 4;
+                      break;
+                    }
+
+                    return _context2.abrupt("return");
+
+                  case 4:
+                    NoteStore.setShowPage(true);
+                    if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content'); // 복구 원하지 않으면 로컬 스토리지에서 지우자
+
+                    localStorage.removeItem("Note_autosave_".concat(NoteStore.notechannel_id, "_").concat(id));
+                    NoteStore.setModalInfo(null); // 여기 안에서 fetchCurrentPageData한다
+                    // current chapterId 없으면 에디터를 안 띄워서 await 필요
+
+                    ChapterStore.setLoadingPageInfo(true);
+                    _context2.next = 11;
+                    return PageStore.noneEdit(id, parentId);
+
+                  case 11:
+                    dto = _context2.sent;
+                    _context2.next = 14;
+                    return PageStore.fetchCurrentPageData(id);
+
+                  case 14:
+                    ChapterStore.setLoadingPageInfo(false);
+                    PageStore.setRecoverInfo({});
+
+                  case 16:
+                  case "end":
+                    return _context2.stop();
+                }
+              }
+            }, _callee2);
+          }));
+
+          return function (_x2) {
+            return _ref2.apply(this, arguments);
+          };
+        }());
+        break;
+
+      case 'emptyRecycleBin':
+        eventList.push(function (e) {
+          e.stopPropagation();
+          PageStore.deleteNotePage();
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
+        break;
     }
 
     return eventList;
@@ -6247,10 +6752,16 @@ var NoteMeta = {
     };
 
     switch (type) {
-      case 'delete':
-        // chapter랑 page
+      case 'delete': // chapter랑 page
+
+      case 'deletePage':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')
+        }), defaultBtn2];
+
+      case 'recover':
+        return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
+          text: i18n.t('NOTE_CONTEXT_MENU_02')
         }), defaultBtn2];
 
       case 'confirm':
@@ -6265,7 +6776,6 @@ var NoteMeta = {
         return [defaultBtn1];
 
       case 'uploadingFiles':
-      case 'editCancel':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
         }), defaultBtn2];
@@ -6289,20 +6799,27 @@ var NoteMeta = {
     switch (type) {
       case 'chapter':
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_06';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
         dialogType.btns = this.setBtns('delete');
         break;
 
       case 'page':
         dialogType.type = 'error';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_03';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
         dialogType.btns = this.setBtns('delete');
+        break;
+
+      case 'deletePage':
+        // 페이지 영구 삭제
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_BIN_06');
+        dialogType.subtitle = i18n.t('NOTE_BIN_07'), dialogType.btns = this.setBtns('delete');
         break;
 
       case 'confirm':
         dialogType.type = 'info';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
@@ -6311,21 +6828,15 @@ var NoteMeta = {
 
       case 'chapterconfirm':
         dialogType.type = 'info';
-        dialogType.title = 'NOTE_PAGE_LIST_DEL_PGE_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: PageStore.editingUserCount
         });
         dialogType.btns = this.setBtns(type);
         break;
 
-      case 'editCancel':
-        dialogType.type = 'error';
-        dialogType.title = 'NOTE_EDIT_PAGE_COMPLETE_01';
-        dialogType.btns = this.setBtns(type);
-        break;
-
       case 'titleDuplicate':
-        dialogType.title = 'NOTE_PAGE_LIST_CREATE_N_CHPT_01';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_02');
         dialogType.btns = this.setBtns(type);
         break;
@@ -6336,7 +6847,7 @@ var NoteMeta = {
         break;
 
       case 'editingPage':
-        dialogType.title = 'NOTE_EDIT_PAGE_CANT_EDIT_01';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_CANT_EDIT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
           userName: PageStore.editingUserName
         });
@@ -6344,12 +6855,12 @@ var NoteMeta = {
         break;
 
       case 'deletedPage':
-        dialogType.title = 'NOTE_META_TAG_03';
+        dialogType.title = i18n.t('NOTE_META_TAG_03');
         dialogType.btns = this.setBtns('deletedPage');
         break;
 
       case 'multiFileSomeFail':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_06';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_06');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
           uploadCnt: EditorStore.totalUploadLength,
           failCnt: EditorStore.failCount
@@ -6358,24 +6869,39 @@ var NoteMeta = {
         break;
 
       case 'sizefailUpload':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_04';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_04');
         dialogType.btns = this.setBtns('sizefailUpload');
         break;
 
       case 'failUpload':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_05';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_05');
         dialogType.btns = this.setBtns('failUpload');
         break;
 
       case 'failUploadByFileNameLen':
-        dialogType.title = 'DRIVE_UPLOAD_BTN_04';
+        dialogType.title = i18n.t('DRIVE_UPLOAD_BTN_04');
         dialogType.btns = this.setBtns(type);
         break;
 
       case 'uploadingFiles':
-        dialogType.title = 'NOTE_EDIT_PAGE_ATTACH_FILE_08';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_08');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'recover':
+        dialogType.title = i18n.t('NOTE_RECOVER_DATA_01');
+        dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'emptyRecycleBin':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_BIN_08', {
+          num: PageStore.deletePageList.length
+        });
+        dialogType.subtitle = i18n.t('NOTE_BIN_07');
+        dialogType.btns = this.setBtns('delete');
+        break;
     }
 
     return dialogType;
@@ -6585,6 +7111,7 @@ var NoteStore = mobx.observable({
 
     TagStore.setAllSortedTagList([]);
     TagStore.setSortedTagList([]);
+    EditorStore.setIsSearch(false);
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
@@ -6660,6 +7187,7 @@ var NoteStore = mobx.observable({
       // AntdModal로 연다
       case 'viewInfo':
       case 'forward':
+      case 'restore':
         this.modalInfo = NoteMeta.openModal(modalType);
         this.setShowModal(true);
         break;
@@ -6668,7 +7196,6 @@ var NoteStore = mobx.observable({
       case 'confirm':
       case 'chapter':
       case 'page':
-      case 'editCancel':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'editingPage':
@@ -6676,8 +7203,12 @@ var NoteStore = mobx.observable({
       case 'failUpload':
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
-      case 'uploadingFiles':
-        // todo
+      case 'uploadingFiles': // todo
+
+      case "deletePage":
+      case 'recover': // 페이지 복구 묻는 팝업창
+
+      case 'emptyRecycleBin':
         this.modalInfo = NoteMeta.openMessage(modalType);
         this.setShowModal(true);
         break;
@@ -7184,7 +7715,7 @@ function _templateObject4$1() {
 }
 
 function _templateObject3$1() {
-  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height: 100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: inline-block;\n  width: 100%;\n  height: 100%;\n  outline: none;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  box-sizing: border-box;\n  padding: 0.1875rem 0.1875rem 0.1875rem 0rem;\n  background-image: none;\n  border-radius: 0.125rem;\n  color: inherit;\n  font-size: 0.875rem;\n  font-style: inherit;\n  font-weight: inherit;\n  background-color: #ffffff;\n  border: 0rem solid #d3dbdf !important;\n"]);
 
   _templateObject3$1 = function _templateObject3() {
     return data;
@@ -7194,7 +7725,7 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$1() {
-  var data = _taggedTemplateLiteral(["\n  width: 4.5rem;\n  height: 1.88rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #232d3b;\n  &:hover {\n    background-color: #4c535d;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 4.5rem;\n  height: 1.88rem;\n  margin-right: 1rem;\n  color: white;\n  font-size: 0.75rem;\n  align-items: center;\n  border-radius: 0.25rem;\n  border: 0px solid #ffffff;\n  background-color: #232d3b;\n  &:hover {\n    background-color: #4c535d;\n    cursor: pointer;\n  }\n  &:focus {\n    outline: none;\n  }\n  &:disabled {\n    background: #ccc;\n    color: #fff;\n    border: 0;\n    cursor: not-allowed;\n  }\n"]);
 
   _templateObject2$1 = function _templateObject2() {
     return data;
@@ -7247,6 +7778,46 @@ var TagTitleSearchContainer = styled__default['default'].div(_templateObject18()
 const img = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/search%3c/title%3e %3cg id='Icon/common/search' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.6826%2c1 C16.0216%2c1 20.3646%2c5.375 20.3646%2c10.752 C20.3646%2c13.042 19.5726%2c15.145 18.2556%2c16.81 L18.2556%2c16.81 L22.1736%2c20.76 L22.7096%2c21.301 C23.0986%2c21.693 23.0966%2c22.326 22.7036%2c22.715 C22.5086%2c22.908 22.2546%2c23.005 21.9996%2c23.005 C21.7436%2c23.005 21.4856%2c22.906 21.2896%2c22.709 L21.2896%2c22.709 L17.8786%2c19.271 C17.8786%2c19.27 17.8776%2c19.269 17.8776%2c19.269 L17.8776%2c19.269 L16.8666%2c18.249 C15.1876%2c19.656 13.0326%2c20.504 10.6826%2c20.504 C5.3436%2c20.504 0.9996%2c16.129 0.9996%2c10.752 C0.9996%2c5.375 5.3436%2c1 10.6826%2c1 Z M10.6826%2c3 C6.4466%2c3 2.9996%2c6.478 2.9996%2c10.752 C2.9996%2c15.027 6.4466%2c18.504 10.6826%2c18.504 C14.9176%2c18.504 18.3646%2c15.027 18.3646%2c10.752 C18.3646%2c6.478 14.9176%2c3 10.6826%2c3 Z M10.284%2c4.5271 C10.837%2c4.5271 11.284%2c4.9751 11.284%2c5.5271 C11.284%2c6.0791 10.837%2c6.5271 10.284%2c6.5271 C8.197%2c6.5271 6.499%2c8.2421 6.499%2c10.3511 C6.499%2c10.9031 6.052%2c11.3511 5.499%2c11.3511 C4.946%2c11.3511 4.499%2c10.9031 4.499%2c10.3511 C4.499%2c7.1401 7.094%2c4.5271 10.284%2c4.5271 Z' id='Combined-Shape' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 const img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAAXNSR0IArs4c6QAAAe1JREFUaAXtmkFOxDAMRQdYcAAuzkFgCdyMDQvwL4rUqZrEiWM7UR0pVKWp/Z7TdGak3G7RogJRgahAVCAqsGQFnon6aUJyMIFtWHuhSG/Uf6h/U3+lPjQBxetpYAALmMAGRrCK2ztF+D30Tzr3lEZuMBy5IC1qCIzqHQPj3Es6JwsmsIomAusDj8yZsId0SRY8YBW/Z7BOcsKW0jVZsIBV3DiJtB9vcwbzhLtpcsvtkdgj567W/29APL4Wa9pdNplbgFjkSD6soyaQZmyWXG6QBphGzBx/1/85gF8UGeNqjRNL++Ovxrhd54DWpDkxppBNFeEA56Q5904lK5FeVrZHennZVmmrLzCJS/WI2fugXvpGVro25ZqtVaxXeknZVIxW6aVlW6VNZB8TlfLxQTn+NOE5Hz37l5fJLGtVp1U2iS8p3Su7pDRHFrOIngTPjkvMNFcW41rGai07UdwegZ57RJCjbpaAS+4dxd8UZwTwiBhN0L2DR4KOjNXrU7xPA1AjZlGCe1ETTDM21+9unAWQRY47qdyJJYhlrlNfDwCPnJu8W2LKbp7bPOHJ82XKcKktD5fb1IJH6VLblrCcsNnr+HvV+7dqbk2LN6ZB+HJbDyGNhqqKN31tkcb+ARPYokUFogJRgahAVGC1CvwBzqyPAy8j+NAAAAAASUVORK5CYII=";
+
+function _templateObject44() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;  \n  height: 4.38rem;\n  justify-content: center;\n  align-items: center;\n"]);
+
+  _templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject43() {
+  var data = _taggedTemplateLiteral(["\n  margin-left: 1rem;\n"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = _taggedTemplateLiteral(["\n  height: 6.06rem;\n  overflow-x: hidden;\n  overflow-y: scroll;\n  padding: 0.63rem 1.25rem;\n  background: #F7F4EF;\n"]);
+
+  _templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject41() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject40() {
   var data = _taggedTemplateLiteral(["\n  width: 5rem;\n  height: 5rem;\n"]);
@@ -7699,6 +8270,10 @@ var DraggedComponent = styled__default['default'].div(_templateObject37());
 var DraggedComponentTitle = styled__default['default'].span(_templateObject38());
 var OverlayCover = styled__default['default'].div(_templateObject39());
 var LoaderOverlay = styled__default['default'].img(_templateObject40());
+var RestoreModalWrapper = styled__default['default'].div(_templateObject41());
+var RestoreModalBody = styled__default['default'].div(_templateObject42());
+var RestoreChapterText = styled__default['default'].div(_templateObject43());
+var RestoreModalFooter = styled__default['default'].div(_templateObject44());
 
 function _templateObject20$1() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  margin-left: auto;\n  color: #7B7671;\n  padding-left:0.4rem;\n  line-height:normal;\n"]);
@@ -7982,7 +8557,7 @@ var HeaderButtons = function HeaderButtons() {
       }
 
       if (EditorStore.isEditCancelOpen()) {
-        NoteStore.setModalInfo('editCancel');
+        PageStore.editCancel();
         return;
       }
 
@@ -8439,23 +9014,10 @@ var LNBTag = /*#__PURE__*/React.memo(function (_ref) {
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
-      ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
-
-  var _useDrop = reactDnd.useDrop({
-    accept: DRAG_TYPE.CHAPTER,
-    drop: function drop() {
-      ChapterStore.moveChapter(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
-    },
-    hover: function hover() {
-      if (ChapterStore.dragEnterChapterIdx !== ChapterStore.chapterList.length - ChapterStore.sharedCnt) ChapterStore.setDragEnterChapterIdx(ChapterStore.chapterList.length - ChapterStore.sharedCnt);
-    }
-  }),
-      _useDrop2 = _slicedToArray(_useDrop, 2),
-      drop = _useDrop2[1];
 
   var onClickTagMenuBtn = function onClickTagMenuBtn() {
     if (!PageStore.isReadMode()) return;
@@ -8468,8 +9030,7 @@ var LNBTag = /*#__PURE__*/React.memo(function (_ref) {
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LnbTagContainer, {
-      ref: drop,
-      className: (!NoteStore.showPage ? 'selectedMenu' : '') + (ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length - ChapterStore.sharedCnt ? ' tagBorderTopLine' : ''),
+      className: !NoteStore.showPage ? 'selectedMenu' : '',
       order: flexOrder,
       onClick: onClickTagMenuBtn
     }, /*#__PURE__*/React__default['default'].createElement(TagImg, {
@@ -9883,12 +10444,30 @@ var ContextMenu = function ContextMenu(_ref) {
     targetStore.setRenamePrevText(note.text);
     targetStore.setRenameText(note.text);
   };
+
+  var setSelectableIdOfChapter = function setSelectableIdOfChapter() {
+    var _selectableChapter$ch;
+
+    var selectableChapter = chapterIdx > 0 ? ChapterStore.chapterList[chapterIdx - 1] : ChapterStore.chapterList[1];
+    var selectableChapterId = selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id;
+    var selectablePageId = selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id;
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
+  var setSelectableIdOfPage = function setSelectableIdOfPage() {
+    var _parent$children, _parent$children$;
+
+    var selectablePageId = pageIdx > 0 ? (_parent$children = parent.children[pageIdx - 1]) === null || _parent$children === void 0 ? void 0 : _parent$children.id : (_parent$children$ = parent.children[1]) === null || _parent$children$ === void 0 ? void 0 : _parent$children$.id;
+    PageStore.setSelectablePageId(selectablePageId);
+  };
   /**
-   * 챕터/페이지를 삭제한다.
+   * 챕터/페이지를 휴지통으로 이동시킨다.
+   * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
    */
 
 
-  var deleteComponent = /*#__PURE__*/function () {
+  var throwComponent = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
@@ -9907,8 +10486,8 @@ var ContextMenu = function ContextMenu(_ref) {
                     while (1) {
                       switch (_context.prev = _context.next) {
                         case 0:
-                          editingList = dto.noteList.filter(function (note) {
-                            return note.is_edit !== null && note.is_edit !== '';
+                          editingList = dto.noteList.filter(function (page) {
+                            return page.is_edit !== null && page.is_edit !== '';
                           });
 
                           if (!(editingList.length === 1)) {
@@ -9962,9 +10541,9 @@ var ContextMenu = function ContextMenu(_ref) {
                             break;
                           }
 
-                          PageStore.setDeletePageList({
+                          PageStore.setDeletePageList([{
                             note_id: note.id
-                          });
+                          }]);
 
                           if (PageStore.currentPageId === note.id) {
                             if (parent.type === 'shared_page' && parent.children.length === 1) {
@@ -9975,7 +10554,12 @@ var ContextMenu = function ContextMenu(_ref) {
                             }
                           }
 
-                          NoteStore.setModalInfo('page');
+                          if (PageStore.lastSharedPageParentId) {
+                            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+                            PageStore.setLastSharedPageParentId('');
+                            ChapterStore.deleteNoteChapter();
+                          } else PageStore.throwNotePage();
+
                           _context2.next = 11;
                           break;
 
@@ -10013,27 +10597,52 @@ var ContextMenu = function ContextMenu(_ref) {
       }, _callee3);
     }));
 
-    return function deleteComponent() {
+    return function throwComponent() {
       return _ref2.apply(this, arguments);
     };
   }();
 
-  var setSelectableIdOfChapter = function setSelectableIdOfChapter() {
-    var _selectableChapter$ch;
+  var restoreComponent = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var newChapter;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              if (!(ChapterStore.chapterList.length === 1)) {
+                _context4.next = 7;
+                break;
+              }
 
-    var selectableChapter = chapterIdx > 0 ? ChapterStore.chapterList[chapterIdx - 1] : ChapterStore.chapterList[1];
-    var selectableChapterId = selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id;
-    var selectablePageId = selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id;
-    ChapterStore.setSelectableChapterId(selectableChapterId);
-    PageStore.setSelectablePageId(selectablePageId);
-  };
+              _context4.next = 3;
+              return ChapterStore.createRestoreChapter(t('NOTE_PAGE_LIST_CMPNT_DEF_01'), ChapterStore.getChapterRandomColor());
 
-  var setSelectableIdOfPage = function setSelectableIdOfPage() {
-    var _parent$children, _parent$children$;
+            case 3:
+              newChapter = _context4.sent;
+              PageStore.restorePageLogic({
+                chapterId: newChapter.id,
+                pageId: note.id,
+                toastTxt: t('NOTE_BIN_RESTORE_02')
+              });
+              _context4.next = 9;
+              break;
 
-    var selectablePageId = pageIdx > 0 ? (_parent$children = parent.children[pageIdx - 1]) === null || _parent$children === void 0 ? void 0 : _parent$children.id : (_parent$children$ = parent.children[1]) === null || _parent$children$ === void 0 ? void 0 : _parent$children$.id;
-    PageStore.setSelectablePageId(selectablePageId);
-  };
+            case 7:
+              PageStore.setRestorePageId(note.id);
+              NoteStore.setModalInfo('restore');
+
+            case 9:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+
+    return function restoreComponent() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   var shareComponent = function shareComponent() {
     NoteStore.setShareNoteType(noteType);
@@ -10069,44 +10678,96 @@ var ContextMenu = function ContextMenu(_ref) {
   var infoComponent = function infoComponent() {
     NoteStore.handleSharedInfo(noteType, note.id);
   };
+  /**
+   * 휴지통에 있는 모든 페이지를 영구적으로 삭제한다.
+   */
 
-  var onClickContextMenu = function onClickContextMenu(_ref5) {
-    var key = _ref5.key,
-        domEvent = _ref5.domEvent;
+
+  var emptyComponent = function emptyComponent() {
+    PageStore.setDeletePageList(note.children.map(function (page) {
+      return {
+        note_id: page.id
+      };
+    }));
+    NoteStore.setModalInfo('emptyRecycleBin');
+  };
+  /**
+   * 휴지통에 있는 페이지를 영구적으로 삭제한다.
+   */
+
+
+  var deleteComponent = function deleteComponent() {
+    PageStore.setDeletePageList([{
+      note_id: note.id
+    }]);
+    if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
+    NoteStore.setModalInfo('deletePage');
+  };
+
+  var onClickContextMenu = function onClickContextMenu(_ref6) {
+    var key = _ref6.key,
+        domEvent = _ref6.domEvent;
     domEvent.stopPropagation();
-    if (key === '0') renameComponent();else if (key === '1') deleteComponent();else if (key === '2') shareComponent();else if (key === '3') exportComponent(true);else if (key === '4') exportComponent(false);else if (key === '5') exportTxtComponent();else infoComponent();
+    if (key === 'rename') renameComponent();else if (key === 'throw') throwComponent();else if (key === 'forward') shareComponent();else if (key === 'sendEmail') exportComponent(true);else if (key === 'exportPDF') exportComponent(false);else if (key === 'exportTXT') exportTxtComponent();else if (key === 'viewInfo') infoComponent();else if (key === 'emptyRecycleBin') emptyComponent();else if (key === 'restore') restoreComponent();else if (key === 'delete') deleteComponent();
     if (key) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
-  var handleSubMenuClick = function handleSubMenuClick(_ref6) {
-    var domEvent = _ref6.domEvent;
+  var handleSubMenuClick = function handleSubMenuClick(_ref7) {
+    var domEvent = _ref7.domEvent;
     domEvent.stopPropagation();
-  }; // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
+  };
 
+  var menu = function () {
+    switch (note.type) {
+      case 'recycle_bin':
+        return /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
+          style: {
+            borderRadius: 5
+          },
+          onClick: onClickContextMenu
+        }, /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "emptyRecycleBin"
+        }, t('NOTE_CONTEXT_MENU_03')));
 
-  var menu = /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
-    style: {
-      borderRadius: 5
-    },
-    onClick: onClickContextMenu
-  }, note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "0"
-  }, t('NOTE_DELIVER_CONTEXT_MENU_01')), authStore.hasPermission('notePage', 'D') && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "1"
-  }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')), authStore.hasPermission('noteSharePage', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "2"
-  }, t('NOTE_CONTEXT_MENU_01')), GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "3"
-  }, t('NOTE_DELIVER_CONTEXT_MENU_02')), authStore.hasPermission('notePage', 'C') && /*#__PURE__*/React__default['default'].createElement(SubMenu, {
-    title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
-    onTitleClick: handleSubMenuClick
-  }, /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "4"
-  }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "5"
-  }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02'))), note.type === 'shared' && /*#__PURE__*/React__default['default'].createElement(Item, {
-    key: "6"
-  }, t('NOTE_DELIVER_CONTEXT_MENU_04')));
+      case 'recycle':
+        return /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
+          style: {
+            borderRadius: 5
+          },
+          onClick: onClickContextMenu
+        }, /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "restore"
+        }, t('NOTE_CONTEXT_MENU_02')), /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "delete"
+        }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')));
+
+      default:
+        return /*#__PURE__*/React__default['default'].createElement(antd.Menu, {
+          style: {
+            borderRadius: 5
+          },
+          onClick: onClickContextMenu
+        }, note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "rename"
+        }, t('NOTE_DELIVER_CONTEXT_MENU_01')), authStore.hasPermission('noteSharePage', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "forward"
+        }, t('NOTE_CONTEXT_MENU_01')), GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "sendEmail"
+        }, t('NOTE_DELIVER_CONTEXT_MENU_02')), authStore.hasPermission('notePage', 'C') && /*#__PURE__*/React__default['default'].createElement(SubMenu, {
+          title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
+          onTitleClick: handleSubMenuClick
+        }, /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "exportPDF"
+        }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')), /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "exportTXT"
+        }, t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02'))), note.type === 'shared' && /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "viewInfo"
+        }, t('NOTE_DELIVER_CONTEXT_MENU_04')), authStore.hasPermission('notePage', 'D') && /*#__PURE__*/React__default['default'].createElement(Item, {
+          key: "throw"
+        }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')));
+    }
+  }();
+
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(ContextMenuCover, {
       className: "ellipsisBtn",
@@ -10130,6 +10791,11 @@ var ContextMenu = function ContextMenu(_ref) {
 const img$m = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/arrow_top_1%3c/title%3e %3cg id='Icon/common/arrow_top_1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M18.0002%2c15.99161 C18.2492%2c15.99161 18.4982%2c15.89961 18.6912%2c15.71461 C19.0912%2c15.33261 19.1042%2c14.69961 18.7232%2c14.30061 L13.0632%2c8.39061 C12.4672%2c7.85961 11.5322%2c7.86161 10.8792%2c8.44661 L5.2772%2c14.30061 C4.8962%2c14.69961 4.9092%2c15.33261 5.3092%2c15.71461 C5.7062%2c16.09561 6.3412%2c16.08261 6.7232%2c15.68261 L11.9982%2c10.16561 L17.2772%2c15.68261 C17.4742%2c15.88761 17.7362%2c15.99161 18.0002%2c15.99161' id='Fill-1' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
 const img$n = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/common/arrow_bottom_1%3c/title%3e %3cg id='Icon/common/arrow_bottom_1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M10.938%2c15.60149 C11.228%2c15.85949 11.599%2c15.99149 11.978%2c15.99149 C12.376%2c15.99149 12.785%2c15.84449 13.121%2c15.54449 L18.723%2c9.69149 C19.105%2c9.29149 19.09%2c8.65949 18.691%2c8.27749 C18.292%2c7.89549 17.66%2c7.91049 17.277%2c8.30849 L12.002%2c13.82649 L6.723%2c8.30849 C6.34%2c7.91049 5.708%2c7.89549 5.309%2c8.27749 C4.91%2c8.65949 4.896%2c9.29149 5.277%2c9.69149 L10.938%2c15.60149 Z' id='Fill-1' fill='black'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
+
+var isEmptyRecycleBin = function isEmptyRecycleBin(chapter) {
+  if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN && chapter.children.length === 0) return true;
+  return false;
+};
 
 var ChapterText = function ChapterText(_ref) {
   var chapter = _ref.chapter,
@@ -10165,7 +10831,7 @@ var ChapterText = function ChapterText(_ref) {
       noteType: 'chapter',
       note: chapter,
       chapterIdx: index
-    })), /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, {
+    })), !isEmptyRecycleBin(chapter) && /*#__PURE__*/React__default['default'].createElement(ChapterFolderBtn, {
       onClick: handleFoldBtnClick
     }, /*#__PURE__*/React__default['default'].createElement(ChapterFoldBtnIcon, {
       src: isFolded ? img$n : img$m
@@ -10535,7 +11201,7 @@ var PageList = function PageList(_ref) {
   };
 
   var handleSelectPage = React.useCallback( /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id, type) {
       var _EditorStore$tinymce, _EditorStore$tinymce$;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -10546,12 +11212,13 @@ var PageList = function PageList(_ref) {
               return PageStore.fetchCurrentPageData(id);
 
             case 2:
+              PageStore.setIsRecycleBin(type === 'recycle' ? true : false);
               NoteStore.setShowPage(true);
               EditorStore.setIsSearch(false);
               if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
 
-            case 6:
+            case 7:
             case "end":
               return _context.stop();
           }
@@ -10559,7 +11226,7 @@ var PageList = function PageList(_ref) {
       }, _callee);
     }));
 
-    return function (_x) {
+    return function (_x, _x2) {
       return _ref2.apply(this, arguments);
     };
   }(), []);
@@ -10571,7 +11238,7 @@ var PageList = function PageList(_ref) {
         index: index,
         chapter: chapter,
         chapterIdx: chapterIdx,
-        onClick: handleSelectPage
+        onClick: handleSelectPage.bind(null, item.id, item.type)
       });
     });
   }), /*#__PURE__*/React__default['default'].createElement(mobxReact.Observer, null, function () {
@@ -10609,8 +11276,9 @@ var Chapter = function Chapter(_ref) {
       PageStore = _useNoteStore.PageStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
-      authStore = _useCoreStores.authStore; // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
+      authStore = _useCoreStores.authStore;
 
+  var chapterContainerRef = React.useRef(null); // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
 
   var _useState = React.useState(chapter.isFolded ? chapter.isFolded : false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -10631,10 +11299,20 @@ var Chapter = function Chapter(_ref) {
   var _useDrop = reactDnd.useDrop({
     accept: DRAG_TYPE.CHAPTER,
     drop: function drop() {
-      ChapterStore.moveChapter(index);
+      if (ChapterStore.dragEnterChapterIdx >= 0) ChapterStore.moveChapter();
     },
-    hover: function hover() {
-      if (ChapterStore.dragEnterChapterIdx !== index) ChapterStore.setDragEnterChapterIdx(index);
+    hover: function hover(item, monitor) {
+      if (!chapterContainerRef.current) return;
+      var hoverBoundingRect = chapterContainerRef.current.getBoundingClientRect();
+      var hoverMiddleY = hoverBoundingRect.height / 2;
+      var clientOffset = monitor.getClientOffset();
+      var hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      if (hoverClientY < hoverMiddleY && ChapterStore.dragEnterChapterIdx !== index) {
+        ChapterStore.setDragEnterChapterIdx(index);
+      } else if (hoverClientY > hoverMiddleY && Chapter.dragEnterChapterIdx !== index + 1) {
+        ChapterStore.setDragEnterChapterIdx(index + 1);
+      }
     }
   }),
       _useDrop2 = _slicedToArray(_useDrop, 2),
@@ -10761,7 +11439,7 @@ var Chapter = function Chapter(_ref) {
   var onClickChapterBtn = React.useCallback(function (e) {
     if (!PageStore.isReadMode()) return;
 
-    if (e.ctrlKey) {
+    if (ChapterStore.moveInfoMap.size > 0 && e.ctrlKey) {
       if (ChapterStore.moveInfoMap.get(chapter.id)) ChapterStore.deleteMoveInfoMap(chapter.id);else ChapterStore.appendMoveInfoMap(chapter.id, chapterMoveInfo);
       ChapterStore.setIsCtrlKeyDown(true);
       return;
@@ -10769,6 +11447,7 @@ var Chapter = function Chapter(_ref) {
 
     ChapterStore.setMoveInfoMap(new Map([[chapter.id, chapterMoveInfo]]));
     ChapterStore.setIsCtrlKeyDown(false);
+    PageStore.setIsRecycleBin(false);
     ChapterStore.setCurrentChapterId(chapter.id);
     var pageId = '';
     if (chapter.children.length > 0) pageId = chapter.children[0].id;
@@ -10816,15 +11495,15 @@ var Chapter = function Chapter(_ref) {
       channelId: NoteStore.notechannel_id,
       chapterId: id,
       isFolded: !isFolded,
-      isShared: isShared
+      isTheRest: isShared
     });
     setIsFolded(!isFolded);
   };
 
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ChapterContainer, {
-      ref: !isShared ? drop : null,
-      className: (isFolded ? 'folded ' : '') + (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : ''),
+      ref: !isShared ? drop(chapterContainerRef) : null,
+      className: (isFolded ? 'folded ' : '') + (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : '') + (ChapterStore.dragEnterChapterIdx === index + 1 && ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length - ChapterStore.sharedCnt && !isShared ? 'borderBottomLine' : ''),
       id: chapter.id,
       key: chapter.id,
       order: flexOrder,
@@ -10860,6 +11539,84 @@ var Chapter = function Chapter(_ref) {
       chapter: chapter,
       chapterIdx: index
     })));
+  });
+};
+
+var RecycleBin = function RecycleBin(_ref) {
+  var chapter = _ref.chapter,
+      index = _ref.index,
+      flexOrder = _ref.flexOrder,
+      isShared = _ref.isShared;
+
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      ChapterStore = _useNoteStore.ChapterStore,
+      PageStore = _useNoteStore.PageStore; // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
+
+
+  var _useState = React.useState(true),
+      _useState2 = _slicedToArray(_useState, 2),
+      isFolded = _useState2[0],
+      setIsFolded = _useState2[1];
+
+  var id = chapter.id,
+      children = chapter.children; // When chapters/pages are dropped on recycle bin area
+
+  var _useDrop = reactDnd.useDrop({
+    accept: [DRAG_TYPE.CHAPTER, DRAG_TYPE.PAGE, DRAG_TYPE.SHARED_CHAPTER, DRAG_TYPE.SHARED_PAGE],
+    drop: function drop() {},
+    hover: function hover() {
+      if (ChapterStore.dragEnterChapterIdx !== index) ChapterStore.setDragEnterChapterIdx(index);
+    }
+  }),
+      _useDrop2 = _slicedToArray(_useDrop, 2),
+      drop = _useDrop2[1];
+
+  var onClickRecycleBinBtn = function onClickRecycleBinBtn() {
+    if (!PageStore.isReadMode()) return;
+    PageStore.setIsRecycleBin(true);
+    ChapterStore.clearMoveInfoMap();
+    ChapterStore.setIsCtrlKeyDown(false);
+    ChapterStore.setCurrentChapterId(id);
+    var pageId = children.length > 0 ? children[0].id : '';
+    PageStore.setCurrentPageId(pageId);
+    NoteStore.setShowPage(true);
+    PageStore.fetchCurrentPageData(pageId);
+    if (pageId) PageStore.setMoveInfoMap(new Map([[pageId, {
+      item: children[0],
+      pageIdx: 0,
+      chapterId: id,
+      chapterIdx: index
+    }]]));else PageStore.clearMoveInfoMap();
+    PageStore.setIsCtrlKeyDown(false);
+  };
+
+  var handleFoldBtnClick = function handleFoldBtnClick(e) {
+    e.stopPropagation();
+    setIsFolded(!isFolded);
+  };
+
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(ChapterContainer, {
+      ref: drop,
+      className: isFolded ? 'folded ' : '',
+      key: id,
+      order: flexOrder
+    }, /*#__PURE__*/React__default['default'].createElement(ChapterCover, {
+      className: "chapter-div".concat(id === ChapterStore.currentChapterId ? ' selectedMenu' : ''),
+      onClick: onClickRecycleBinBtn
+    }, /*#__PURE__*/React__default['default'].createElement(ChapterShareIcon, {
+      src: img$o
+    }), /*#__PURE__*/React__default['default'].createElement(ChapterText, {
+      chapter: chapter,
+      index: index,
+      handleFoldBtnClick: handleFoldBtnClick,
+      isFolded: isFolded
+    })), /*#__PURE__*/React__default['default'].createElement(PageList, {
+      showNewPage: false,
+      chapter: chapter,
+      chapterIdx: index
+    }));
   });
 };
 
@@ -10926,7 +11683,7 @@ var LNBContainer = function LNBContainer() {
       return;
     }
 
-    NoteStore.setModalInfo('editCancel');
+    PageStore.editCancel();
   };
 
   var handleClickOutside = function handleClickOutside(e) {
@@ -11002,7 +11759,7 @@ var LNBContainer = function LNBContainer() {
           });
 
         case 4:
-          return /*#__PURE__*/React__default['default'].createElement(Chapter, {
+          return /*#__PURE__*/React__default['default'].createElement(RecycleBin, {
             key: item.id,
             chapter: item,
             index: index,
@@ -11026,7 +11783,7 @@ function _templateObject4$6() {
 }
 
 function _templateObject3$6() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  flex-direction:column;\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n  border-left:", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  flex-direction: column;\n  flex: 2 2 42rem;\n  height: 100%;\n  overflow-x: hidden;\n  position: relative;\n  border-left: ", ";\n"]);
 
   _templateObject3$6 = function _templateObject3() {
     return data;
@@ -11036,7 +11793,7 @@ function _templateObject3$6() {
 }
 
 function _templateObject2$6() {
-  var data = _taggedTemplateLiteral(["\n  display:", ";\n  height: 100%;\n  flex: 1 1 17.06rem;\n  min-width: 17.06rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  height: 100%;\n  flex: 1 1 17.06rem;\n  min-width: 17.06rem;\n"]);
 
   _templateObject2$6 = function _templateObject2() {
     return data;
@@ -11046,7 +11803,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 2.38rem);\n    }\n  }\n  .tagBorderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -1.405rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:auto !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n    border:0 !important;\n  }\n  .custom-dialog-btns #custom-link-save {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns #custom-link-save:hover {\n    background-color: #4C535D !important;\n  }\n  .custom-dialog-btns #custom-link-save.disabled-btn {\n    background-color: #CCCCCC !important;\n  }\n  .custom-dialog-btns #custom-link-cancel {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .custom-dialog-btns #custom-link-cancel:hover {\n    border:1px solid #232D3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .link-toolbar button .link-toolbar-btn {\n    margin-left: 0.5rem;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n\n  .tox .tox-dialog.custom-link-dialog {\n    max-width: 24.38rem;\n    border: 0;\n    border-radius: 0.25rem;\n    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);\n  }\n  \n  .tox .tox-dialog__header.custom-dialog-header {\n    position: relative;\n    padding: 0;\n    height: 2.69rem;\n    justify-content: center;\n  }\n\n  .tox .tox-dialog__title.custom-dialog-title {\n    font-family: 'Noto Sans KR';\n    font-weight: 500;\n    font-size: 0.88rem;\n  }\n\n  .tox .tox-dialog__header.custom-dialog-header .tox-button {\n    position: absolute;\n    right: 0;\n    top: 0;\n    padding: 0;\n    width: 2.69rem;\n    height: 2.69rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n  }\n  \n  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {\n    background-color: transparent;\n    border-color: transparent;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {\n    padding: 1rem;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {\n    font-size: 0.81rem;\n    font-weight: 500;\n  }\n\n .tox .tox-dialog.custom-link-dialog .tox-textfield {\n  border-color: #d0ccc7;\n }\n .tox .tox-dialog.custom-link-dialog .tox-textfield:focus {\n   border-color: #7B7671;\n }\n\n .tox .tox-dialog__footer.custom-dialog-footer {\n   padding: 0;\n   border-top: 1px solid #DDD9D4;\n }\n\n .tox .custom-dialog-btns.tox-button {\n   border-color: transparent;\n   width: 4.5rem;\n   height: 1.88rem;\n }\n\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    background-color: #DDD7CD;\n    border: 1px solid #7B7671;\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: #F2EFEC;\n  }\n  .selectedMenu {\n    color: #205855;\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid #EEEDEB !important;\n    padding: 0 0.75rem !important;\n    background-color: #FFFFFF;\n    color: #000000;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    width: fit-content;\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-statusbar__branding{\n    display: none !important;\n  }\n  .tox-statusbar__resize-handle{\n    display: none !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      bottom: 0;\n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 0.45rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid #DDD9D4 !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:auto !important;\n  }\n  .custom-dialog-title {\n    font-weight: bold !important;\n    margin: auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    margin-bottom:0.75rem !important;\n    font-weight: bold !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n  .custom-dialog-btns button {\n    width:4.5rem !important;\n    height:1.88rem !important;\n    font-size:0.75rem !important;\n    border:0 !important;\n  }\n  .custom-dialog-btns #custom-link-save {\n    background-color: #232D3B !important;\n    color: white !important;\n  }\n  .custom-dialog-btns #custom-link-save:hover {\n    background-color: #4C535D !important;\n  }\n  .custom-dialog-btns #custom-link-save.disabled-btn {\n    background-color: #CCCCCC !important;\n  }\n  .custom-dialog-btns #custom-link-cancel {\n    background-color:#FFFFFF !important;\n    border: 1px solid #D0CCC7 !important;\n    color: #3B3B3B !important;\n  }\n  .custom-dialog-btns #custom-link-cancel:hover {\n    border:1px solid #232D3B !important;\n  }\n  .link-toolbar {\n    flex-direction:column !important;\n    width: 118px !important;\n  }\n  .link-toolbar button {\n    width:100% !important;\n    justify-content : flex-start !important;\n  }\n  .link-toolbar button .link-toolbar-btn {\n    margin-left: 0.5rem;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n  .tox-statusbar{ display :none !important; }\n\n  .tox .tox-dialog.custom-link-dialog {\n    max-width: 24.38rem;\n    border: 0;\n    border-radius: 0.25rem;\n    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);\n  }\n  \n  .tox .tox-dialog__header.custom-dialog-header {\n    position: relative;\n    padding: 0;\n    height: 2.69rem;\n    justify-content: center;\n  }\n\n  .tox .tox-dialog__title.custom-dialog-title {\n    font-family: 'Noto Sans KR';\n    font-weight: 500;\n    font-size: 0.88rem;\n  }\n\n  .tox .tox-dialog__header.custom-dialog-header .tox-button {\n    position: absolute;\n    right: 0;\n    top: 0;\n    padding: 0;\n    width: 2.69rem;\n    height: 2.69rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n  }\n  \n  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {\n    background-color: transparent;\n    border-color: transparent;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {\n    padding: 1rem;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {\n    font-size: 0.81rem;\n    font-weight: 500;\n  }\n\n .tox .tox-dialog.custom-link-dialog .tox-textfield {\n  border-color: #d0ccc7;\n }\n .tox .tox-dialog.custom-link-dialog .tox-textfield:focus {\n   border-color: #7B7671;\n }\n\n .tox .tox-dialog__footer.custom-dialog-footer {\n   padding: 0;\n   border-top: 1px solid #DDD9D4;\n }\n\n .tox .custom-dialog-btns.tox-button {\n   border-color: transparent;\n   width: 4.5rem;\n   height: 1.88rem;\n }\n\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: #000;\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal-content{\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .restoreModal .ant-modal-header {\n    height: 6.69rem !important;\n    border-bottom: 0px;\n  }\n  .restoreModal .ant-modal-title {\n    display: flex !important;\n    flex-direction: column !important;\n    justify-content: center;\n    align-items: center;\n    height:100%; !important;\n  }\n  .restoreModal .ant-modal-body {\n    padding: 0rem !important;\n    height: 10.44rem !important;\n    box-sizing: border-box;\n    font-size: 0.813rem;\n  }\n  .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){\n    width: 23rem;\n    display: inline-block;\n    overflow: hidden;\n    text-overflow: ellipsis;\n  }\n  .restoreModal .ant-modal-footer{\n    border-top: 0px;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -11056,12 +11813,12 @@ function _templateObject$7() {
 }
 var GlobalStyle = styled.createGlobalStyle(_templateObject$7());
 var LNB = styled__default['default'].div(_templateObject2$6(), function (props) {
-  return props.show ? "flex" : "none";
+  return props.show ? 'flex' : 'none';
 });
 var Content = styled__default['default'].div(_templateObject3$6(), function (props) {
-  return props.show ? "flex" : "none";
+  return props.show ? 'flex' : 'none';
 }, function (props) {
-  return props.isBorderLeft ? "1px solid  #DDD9D4" : "0px";
+  return props.isBorderLeft ? '1px solid  #DDD9D4' : '0px';
 });
 var CenterContent = styled__default['default'].div(_templateObject4$6());
 
@@ -11166,7 +11923,7 @@ var EditorHeader = function EditorHeader() {
               return _context.abrupt("return");
 
             case 14:
-              NoteStore.setModalInfo('editCancel');
+              PageStore.editCancel();
 
             case 15:
             case "end":
@@ -11268,7 +12025,7 @@ var EditorHeader = function EditorHeader() {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
       handleBackBtn: handleLayoutBtn,
       alignment: "center"
-    }, /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer1, null, authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React__default['default'].createElement(EditBtn, {
+    }, /*#__PURE__*/React__default['default'].createElement(EditorHeaderContainer1, null, authStore.hasPermission('notePage', 'U') && !PageStore.isRecycleBin && /*#__PURE__*/React__default['default'].createElement(EditBtn, {
       "data-btn": "editorEditBtn",
       onClick: handleClickBtn
     }, PageStore.isReadMode() ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01') : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')), /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
@@ -11916,7 +12673,9 @@ var TagListContainer = function TagListContainer() {
     setSelectedId(node.id);
     selectedTag.current = node;
     (_selectedTag$current = selectedTag.current) === null || _selectedTag$current === void 0 ? void 0 : _selectedTag$current.focus();
-    (_selectedTag$current2 = selectedTag.current) === null || _selectedTag$current2 === void 0 ? void 0 : _selectedTag$current2.scrollIntoView(false);
+    (_selectedTag$current2 = selectedTag.current) === null || _selectedTag$current2 === void 0 ? void 0 : _selectedTag$current2.scrollIntoView({
+      inline: 'start'
+    });
   }; // tagList.current에 idx 키에 element가 있다
 
 
@@ -12389,6 +13148,49 @@ var FileLayout = function FileLayout() {
   });
 };
 
+/**
+ * editor setting에 있던 옵션들 제거함
+ * - plugins에서 autosave 제거
+ * - autosave_interval: '1s',
+ * - autosave_prefix: `Note_autosave_${NoteStore.notechannel_id}_${PageStore.currentPageId}`,
+ * why) 읽기모드에서도 계속 갱신됨, autosave_prefix가 한 번 mount된 이후로 바뀌지 않음(language처럼)
+ * 따라서 따로 훅 만듦
+ */
+
+var useSave = function useSave() {
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      PageStore = _useNoteStore.PageStore;
+ // auto save
+
+
+  React.useEffect(function () {
+    if (!PageStore.isReadMode()) {
+      var toServerId = setInterval(function () {
+        PageStore.handleSave(true); // 저장 후 콜백에서 localStorage.removeItem 한다
+      }, 60000); // 수정모드일 때 : localStorage에 저장하기
+
+      var toLocalId = setInterval(function () {
+        if (!NoteStore.notechannel_id || !PageStore.currentPageId) return; // 에러 방지
+        // EditorStore.tinymce?.getContent()를 넣으면 초마다 postProcess 이벤트가 터져서 PageStore.noteContent 넣음
+
+        localStorage.setItem("Note_autosave_".concat(NoteStore.notechannel_id, "_").concat(PageStore.currentPageId), PageStore.noteContent);
+      }, 1000); // test할 때 beforeunload evet도 주석처리해야함      
+      // console.log('이제부터 15초후에 비정상 종료')
+      // const testId = setTimeout(() => { 
+      // 	console.log('비정상 종료 test!')
+      // 	throw new Error('비정상 종료 test');
+      // }, 15000);
+
+      return function () {
+        // if (testId) clearTimeout(testId); // test
+        if (toServerId) clearInterval(toServerId);
+        if (toLocalId) clearInterval(toLocalId);
+      };
+    }
+  }, [PageStore.isReadMode()]);
+};
+
 function _templateObject$a() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  background-color: #f7f4ef;\n  margin: 0 0.438rem;\n  border-bottom: 0rem solid #17202b;\n  border-radius: 0.375rem;\n  &:hover:not(:focus-within) {\n    background-color: #f7f4ef !important;\n  }\n  &:focus-within {\n    background-color: #ffffff;\n    border: 1px solid #7b7671;\n  }\n"]);
 
@@ -12686,21 +13488,7 @@ var EditorContainer = function EditorContainer() {
     return function () {
       GlobalVariable.setEditorWrapper(null);
     };
-  }, [editorWrapperRef.current]);
-  /*
-    **새 챕터 생성 후 [+ 새 페이지] 버튼을 눌러 본문 작성한 뒤 다른 영역을 클릭 > 팝업창에서 저장 안함을 클릭하면 해당 페이지 화면이 그대로 유지되는 이슈
-    currentPageData는 서비스 받아올 때만 set하고 PageStore.noteContent는 editorChange 이벤트시 set하는데
-    새 노트에서 작성하다가 지우면 currentPageData는 여전히 <p><br></p> 였기 때문에 
-    새로 받아오는 노트 컨텐츠도 <p><br></p>인 경우 editor content가 안바뀌는 이슈 수정
-      && (PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent)
-  */
-
-  React.useEffect(function () {
-    // todo : 테스트 후 value를 <p><br></p>로 바꾸고 마지막 조건 없애기
-    if (EditorStore.tinymce && PageStore.currentPageData.note_id && PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent) {
-      EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
-    }
-  }, [PageStore.currentPageData.note_id]); // Search Toggle 시 reset
+  }, [editorWrapperRef.current]); // Search Toggle 시 reset
 
   React.useEffect(function () {
     return function () {
@@ -12708,17 +13496,7 @@ var EditorContainer = function EditorContainer() {
     };
   }, [EditorStore.isSearch]); // auto save
 
-  React.useEffect(function () {
-    if (!PageStore.isReadMode()) {
-      var id = setInterval(function () {
-        PageStore.handleSave(true);
-      }, 60000);
-      return function () {
-        // console.log('clearInterval');
-        clearInterval(id);
-      };
-    }
-  }, [PageStore.isReadMode()]);
+  useSave();
   React.useEffect(function () {
     var _inputRef$current, _inputRef$current$las;
 
@@ -12753,9 +13531,15 @@ var EditorContainer = function EditorContainer() {
       style: {
         display: 'flex'
       }
-    }, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
+    }, authStore.hasPermission('notePage', 'U') ? PageStore.isRecycleBin ? /*#__PURE__*/React__default['default'].createElement(ReadModeText, {
+      style: {
+        marginLeft: "1rem"
+      }
+    }, " ", t('NOTE_BIN_05'), " ") : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
       src: img$t
-    }), authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_GUEST_01'))) : null, EditorStore.isSearch ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
+    }), /*#__PURE__*/React__default['default'].createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
+      src: img$t
+    }), /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_GUEST_01')))) : null, EditorStore.isSearch ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
       ref: inputRef,
       style: {
         display: 'flex'
@@ -12783,10 +13567,16 @@ var EditorContainer = function EditorContainer() {
           setNoteEditor(editor); // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
 
           editor.on('init', function () {
-            // [축소 모드] pdf 내보내기 후 페이지 선택하면 iframe 생기기 전에 useEffect를 타서 setContent가 안 먹음
-            // init에도 useEffect 내용 추가
-            if (PageStore.currentPageData.note_content && PageStore.currentPageData.note_content !== EditorStore.tinymce.getContent) {
-              EditorStore.tinymce.setContent(PageStore.currentPageData.note_content);
+            /*
+            * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
+            * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
+            * init된 후 localStorage내용을 에디터에 set해주어야 한다
+            */
+            if (PageStore.recoverInfo.note_content) {
+              var _EditorStore$tinymce10;
+
+              (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : _EditorStore$tinymce10.setContent(PageStore.recoverInfo.note_content);
+              PageStore.setRecoverInfo({});
             }
 
             editor.focus();
@@ -13045,10 +13835,10 @@ var EditorContainer = function EditorContainer() {
         toolbar_drawer: false,
         // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
-          var _EditorStore$tinymce10, _EditorStore$tinymce11;
+          var _EditorStore$tinymce11, _EditorStore$tinymce12;
 
           // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
-          (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : (_EditorStore$tinymce11 = _EditorStore$tinymce10.undoManager) === null || _EditorStore$tinymce11 === void 0 ? void 0 : _EditorStore$tinymce11.add();
+          (_EditorStore$tinymce11 = EditorStore.tinymce) === null || _EditorStore$tinymce11 === void 0 ? void 0 : (_EditorStore$tinymce12 = _EditorStore$tinymce11.undoManager) === null || _EditorStore$tinymce12 === void 0 ? void 0 : _EditorStore$tinymce12.add();
           var target = args.node.textContent;
 
           if (checkUrlValidation(target)) {
@@ -13084,8 +13874,6 @@ var EditorContainer = function EditorContainer() {
           // }
 
         },
-        autosave_interval: '1s',
-        autosave_prefix: "Note_autosave_".concat(NoteStore.notechannel_id),
         autolink_pattern: customAutoLinkPattern(),
         contextmenu: 'link-toolbar image imagetools table',
         table_sizing_mode: 'fixed',
@@ -13094,7 +13882,7 @@ var EditorContainer = function EditorContainer() {
       },
       onEditorChange: getEditorContent,
       apiKey: GlobalVariable.apiKey,
-      plugins: "print preview paste importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
+      plugins: "print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
       toolbar: "undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table codesample insertdatetime | insertImage insertfile"
     }), EditorStore.isFile ? /*#__PURE__*/React__default['default'].createElement(FileLayout, null) : null, (authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && /*#__PURE__*/React__default['default'].createElement(TagListContainer, null), /*#__PURE__*/React__default['default'].createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
@@ -13134,7 +13922,8 @@ var PageNotFound = function PageNotFound(_ref) {
 
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
-      ChapterStore = _useNoteStore.ChapterStore;
+      ChapterStore = _useNoteStore.ChapterStore,
+      PageStore = _useNoteStore.PageStore;
 
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
@@ -13148,7 +13937,7 @@ var PageNotFound = function PageNotFound(_ref) {
 
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ContentHeader, {
     handleBackBtn: handleLayoutBtn
-  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, isPage ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01') : t('NOTE_PAGE_LIST_NO_CHPT_01')), /*#__PURE__*/React__default['default'].createElement(NoneText, null, isPage ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02') : t('NOTE_PAGE_LIST_NO_CHPT_02')), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
+  }), /*#__PURE__*/React__default['default'].createElement(ContentBodyCover, null, /*#__PURE__*/React__default['default'].createElement(NoneContainer, null, /*#__PURE__*/React__default['default'].createElement(NoneTitle, null, isPage ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01') : t('NOTE_PAGE_LIST_NO_CHPT_01')), !PageStore.isRecycleBin && /*#__PURE__*/React__default['default'].createElement(NoneText, null, isPage ? t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02') : t('NOTE_PAGE_LIST_NO_CHPT_02')), /*#__PURE__*/React__default['default'].createElement(NoneImg, {
     src: img$w,
     alt: "page_not_found"
   }))));
@@ -13642,6 +14431,124 @@ var ForwardModal = function ForwardModal(_ref) {
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05'))));
 };
 
+function _templateObject2$9() {
+  var data = _taggedTemplateLiteral(["\n  margin-left: 0.19rem;\n"]);
+
+  _templateObject2$9 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject$d() {
+  var data = _taggedTemplateLiteral(["\n  margin-right: 0.19rem;\n"]);
+
+  _templateObject$d = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+var LeftButton = styled__default['default'](teespaceCore.Button)(_templateObject$d());
+var RightButton = styled__default['default'](teespaceCore.Button)(_templateObject2$9());
+/**
+ * state 관리 때문에 footer도 여기에
+ */
+
+var RestoreModal = function RestoreModal() {
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      ChapterStore = _useNoteStore.ChapterStore,
+      PageStore = _useNoteStore.PageStore;
+
+  var _useTranslation = reactI18next.useTranslation(),
+      t = _useTranslation.t;
+
+  var _useState = React.useState(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectedId = _useState2[0],
+      setSelectedId = _useState2[1];
+
+  var handleChange = function handleChange(e) {
+    return setSelectedId(e.target.value);
+  };
+
+  var chapterList = ChapterStore.chapterList.filter(function (chapter) {
+    return NoteUtil.getChapterNumType(chapter.type) <= 1;
+  });
+
+  var handleCancel = function handleCancel(e) {
+    e.stopPropagation();
+    NoteStore.setModalInfo(null);
+  };
+
+  var handleClickRestore = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              try {
+                PageStore.restorePageLogic({
+                  chapterId: selectedId,
+                  pageId: PageStore.restorePageId,
+                  toastTxt: t('NOTE_BIN_RESTORE_02')
+                });
+              } catch (error) {
+                console.log("Error is ".concat(error));
+              } finally {
+                NoteStore.setModalInfo(null);
+              }
+
+            case 1:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleClickRestore() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/React__default['default'].createElement(RestoreModalWrapper, null, /*#__PURE__*/React__default['default'].createElement(RestoreModalBody, null, /*#__PURE__*/React__default['default'].createElement(antd.Radio.Group, {
+    onChange: handleChange,
+    value: selectedId
+  }, /*#__PURE__*/React__default['default'].createElement(antd.Space, {
+    direction: "vertical"
+  }, chapterList.map(function (chapter) {
+    return /*#__PURE__*/React__default['default'].createElement(antd.Radio, {
+      key: chapter.id,
+      value: chapter.id
+    }, chapter.text);
+  })))), /*#__PURE__*/React__default['default'].createElement(RestoreModalFooter, null, /*#__PURE__*/React__default['default'].createElement(LeftButton, {
+    key: "confirm",
+    type: "solid",
+    shape: "defualt",
+    disabled: selectedId === '',
+    onClick: handleClickRestore
+  }, t('NOTE_CONTEXT_MENU_02')), /*#__PURE__*/React__default['default'].createElement(RightButton, {
+    key: "cancel",
+    type: "oulined",
+    shape: "defualt",
+    onClick: handleCancel
+  }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05'))));
+};
+
+function _templateObject$e() {
+  var data = _taggedTemplateLiteral(["\n  display: block;\n  font-size: 1.25rem;\n  color: #232d3b;\n  margin-bottom: 0.94rem;\n"]);
+
+  _templateObject$e = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+var StyledInfoIcon = styled__default['default'](icons.InfoCircleOutlined)(_templateObject$e());
 var NoteModal = mobxReact.observer(function () {
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
@@ -13657,8 +14564,7 @@ var NoteModal = mobxReact.observer(function () {
       type = _NoteStore$modalInfo.type,
       subTitle = _NoteStore$modalInfo.subTitle,
       btns = _NoteStore$modalInfo.btns,
-      className = _NoteStore$modalInfo.className,
-      handleCancel = _NoteStore$modalInfo.handleCancel; // NoteMeta에서 NoteFile을 가져오면 안돼ㅓ
+      className = _NoteStore$modalInfo.className; // NoteMeta에서 NoteFile을 가져오면 안된다
 
   if (modalName === 'failUploadByFileNameLen') {
     btns[0].onClick = function (e) {
@@ -13668,31 +14574,73 @@ var NoteModal = mobxReact.observer(function () {
     };
   }
 
+  var handleCancel = function handleCancel(e) {
+    e.stopPropagation();
+    NoteStore.setModalInfo(null);
+    NoteStore.setIsShared(false);
+  };
+
+  var RenderModalContent = function RenderModalContent() {
+    switch (modalName) {
+      case "viewInfo":
+        // 정보보기 팝업
+        return /*#__PURE__*/React__default['default'].createElement(ViewInfoModal, null);
+
+      case "forward":
+        // 다른 룸으로 전달 팝업
+        return /*#__PURE__*/React__default['default'].createElement(ForwardModal, {
+          handleCancel: handleCancel
+        });
+
+      case "restore":
+        // 페이지 복원 후 위치할 챕터 선택 팝업
+        return /*#__PURE__*/React__default['default'].createElement(RestoreModal, null);
+
+      default:
+        return null;
+    }
+  };
+
+  var modalHeader = function () {
+    switch (modalName) {
+      case "restore":
+        return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(StyledInfoIcon, null), /*#__PURE__*/React__default['default'].createElement("div", null, title));
+
+      default:
+        return title;
+    }
+  }();
+
+  var modalFooter = function () {
+    switch (modalName) {
+      case "viewInfo":
+        return [/*#__PURE__*/React__default['default'].createElement(teespaceCore.Button, {
+          key: "confirm",
+          type: "solid",
+          shape: "defualt",
+          onClick: handleCancel
+        }, t('NOTE_PAGE_LIST_CREATE_N_CHPT_03'))];
+
+      default:
+        return null;
+    }
+  }();
+
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, targetComponent === "Message" ? /*#__PURE__*/React__default['default'].createElement(teespaceCore.Message, {
     visible: true,
     type: type,
-    title: t(title),
+    title: modalHeader,
     subtitle: subTitle,
     btns: btns
   }) : /*#__PURE__*/React__default['default'].createElement(antd.Modal, {
     visible: true,
-    title: t(title),
+    title: modalHeader,
     centered: true,
-    footer: modalName === "viewInfo" && /*#__PURE__*/React__default['default'].createElement(teespaceCore.Button, {
-      key: "confirm",
-      type: "solid",
-      shape: "defualt",
-      onClick: handleCancel
-    }, t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')),
+    footer: modalFooter,
     onCancel: handleCancel,
-    wrapClassName: className
-  }, modalName === "viewInfo" ?
-  /*#__PURE__*/
-  // 정보보기 팝업
-  React__default['default'].createElement(ViewInfoModal, null) : /*#__PURE__*/React__default['default'].createElement(ForwardModal, {
-    handleCancel: handleCancel
-  }) // 다른 룸으로 전달 팝업
-  ));
+    wrapClassName: className,
+    closable: modalName === "restore" ? false : true
+  }, /*#__PURE__*/React__default['default'].createElement(RenderModalContent, null)));
 });
 
 var Overlay = mobxReact.observer(function () {
@@ -13812,23 +14760,37 @@ var NoteApp = function NoteApp(_ref) {
                 NoteStore.setLoadingNoteApp(false);
 
                 if (channelId) {
-                  _context.next = 15;
+                  _context.next = 13;
                   break;
                 }
 
                 return _context.abrupt("return");
 
-              case 15:
-                if (layoutState === 'collapse') {
-                  // lnb는 따로 로딩 화면 X
-                  ChapterStore.getNoteChapterList();
-                  NoteStore.setTargetLayout('LNB');
-                } else {
-                  ChapterStore.fetchChapterList();
-                  NoteStore.setTargetLayout(null);
+              case 13:
+                if (!(layoutState === 'collapse')) {
+                  _context.next = 19;
+                  break;
                 }
 
+                _context.next = 16;
+                return ChapterStore.getNoteChapterList(true);
+
               case 16:
+                NoteStore.setTargetLayout('LNB');
+                _context.next = 22;
+                break;
+
+              case 19:
+                _context.next = 21;
+                return ChapterStore.fetchChapterList(true);
+
+              case 21:
+                NoteStore.setTargetLayout(null);
+
+              case 22:
+                PageStore.checkEditingPage(); // 복구할 페이지가 있는 경우 팝업창을 띄운다
+
+              case 23:
               case "end":
                 return _context.stop();
             }
@@ -13915,10 +14877,10 @@ var NoteApp$1 = function NoteApp$1(_ref) {
 
 const img$z = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='40px' height='40px' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/app_planet/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cdefs%3e %3ccircle id='path-1' cx='20' cy='20' r='20'%3e%3c/circle%3e %3cfilter x='-20.0%25' y='-20.0%25' width='140.0%25' height='140.0%25' filterUnits='objectBoundingBox' id='filter-3'%3e %3cfeOffset dx='0' dy='0' in='SourceAlpha' result='shadowOffsetOuter1'%3e%3c/feOffset%3e %3cfeGaussianBlur stdDeviation='1' in='shadowOffsetOuter1' result='shadowBlurOuter1'%3e%3c/feGaussianBlur%3e %3cfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.449221193 0 0 0 0 0.738507699 0 0 0 1 0' type='matrix' in='shadowBlurOuter1' result='shadowMatrixOuter1'%3e%3c/feColorMatrix%3e %3cfeMerge%3e %3cfeMergeNode in='shadowMatrixOuter1'%3e%3c/feMergeNode%3e %3cfeMergeNode in='SourceGraphic'%3e%3c/feMergeNode%3e %3c/feMerge%3e %3c/filter%3e %3c/defs%3e %3cg id='Icon/app_planet/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cg id='Group-2'%3e %3cg id='Group'%3e %3cmask id='mask-2' fill='white'%3e %3cuse xlink:href='%23path-1'%3e%3c/use%3e %3c/mask%3e %3cuse id='Oval' fill='%231EA8DF' xlink:href='%23path-1'%3e%3c/use%3e %3cpath d='M30.2674864%2c28.5651163 C32.1620013%2c28.8180521 35.8459876%2c28.1984249 38.2583669%2c27.9221149 C38.4371898%2c27.9016328 37.0788036%2c31.4377876 33.5358043%2c34.71428 C32.2764541%2c35.8789009 30.4660944%2c37.0683765 28.104725%2c38.2827069 C23.3480717%2c34.5292361 19.411693%2c32.4983871 16.295589%2c32.19016 C13.1794849%2c31.8819329 9.96579532%2c32.7915871 6.65452026%2c34.9191225 C6.07508216%2c34.3513228 5.66080219%2c33.9456821 5.41168034%2c33.7022004 C5.16255849%2c33.4587187 4.83170318%2c33.0689329 4.4191144%2c32.5328432 C6.61342804%2c29.1075672 10.4653048%2c27.0323459 15.9747446%2c26.3071794 C18.9157904%2c25.9200715 26.5120008%2c28.0637232 30.2674864%2c28.5651163 Z M36.2762913%2c8.40504532 C37.6298473%2c10.2563194 38.6529185%2c12.5003954 39.3455047%2c15.1372733 C40.038091%2c17.7741512 40.1657587%2c20.2053072 39.7285078%2c22.4307411 C38.015963%2c23.075421 36.0450505%2c23.3738791 33.8157703%2c23.3261155 C30.47185%2c23.2544701 27.302747%2c19.6880702 29.2957788%2c17.6745606 C30.6244667%2c16.3322209 32.9513042%2c13.2423825 36.2762913%2c8.40504532 Z M11.3133953%2c2.0686971 C18.4620509%2c-1.24913664 25.3877558%2c-0.576045104 32.0905098%2c4.08797172 C31.1587485%2c6.85505728 28.5638835%2c9.37616389 24.3059148%2c11.6512916 C20.3303252%2c13.7755377 16.2434004%2c12.9639842 11.6381726%2c14.0629582 C7.08121503%2c15.1504132 3.20351857%2c17.5672385 0.00508325094%2c21.3134341 C-0.0380355602%2c18.5142376 0.193162974%2c16.3144293 0.698678854%2c14.7140091 C2.68300461%2c8.43180305 6.15333106%2c4.46358591 11.3133953%2c2.0686971 Z' id='Combined-Shape' fill='%23008CC8' mask='url(%23mask-2)'%3e%3c/path%3e %3ccircle id='Oval-Copy-3' fill='%231EA8DF' style='mix-blend-mode: screen%3b' opacity='0.597470238' mask='url(%23mask-2)' cx='20' cy='10' r='20'%3e%3c/circle%3e %3cellipse id='Oval' fill='white' opacity='0.6' mask='url(%23mask-2)' transform='translate(10.652552%2c 7.029764) scale(-1%2c 1) rotate(35.000000) translate(-10.652552%2c -7.029764) ' cx='10.6525516' cy='7.02976381' rx='7' ry='2.5'%3e%3c/ellipse%3e %3c/g%3e %3c/g%3e %3cg id='note-2' filter='url(%23filter-3)' transform='translate(10.000000%2c 10.000000)'%3e %3cg id='note'%3e %3crect id='Rectangle' fill='white' x='2' y='0' width='18' height='20' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='8' y='5' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='8' y='9' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='8' y='13' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='0' y='5' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='0' y='9' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='0' y='13' width='6' height='2' rx='1'%3e%3c/rect%3e %3c/g%3e %3c/g%3e %3c/g%3e%3c/svg%3e";
 
-function _templateObject$d() {
+function _templateObject$f() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: center;\n  width: ", "px;\n  height: ", "px;\n  svg {\n    z-index: 100;\n  }\n  &.icon--default:hover {\n    &:after {\n      position: absolute;\n      top:50%;\n      margin-top:-16px;\n      left:50%;\n      margin-left:-16px;\n      display: inline-block;\n      content: '';\n      width: 32px;\n      height: 32px;\n      background-color: #dcddff;\n      border-radius: 50%;\n      cursor: pointer;\n      z-index: 1;\n    }\n  }\n\n"]);
 
-  _templateObject$d = function _templateObject() {
+  _templateObject$f = function _templateObject() {
     return data;
   };
 
@@ -14009,7 +14971,7 @@ function NoteIcon(_ref2) {
   }, renderIcon());
 }
 
-var IconWrapper = styled__default['default'].div(_templateObject$d(), function (props) {
+var IconWrapper = styled__default['default'].div(_templateObject$f(), function (props) {
   return props.width;
 }, function (props) {
   return props.height;
@@ -14185,7 +15147,7 @@ var ShareNoteMessageContent = function ShareNoteMessageContent(_ref2) {
     // 다른 페이지 수정중인 경우 Modal 띄우기
 
     if (EditorStore.isEditCancelOpen()) {
-      NoteStore.setModalInfo('editCancel');
+      PageStore.editCancel();
       return true;
     }
 
@@ -14372,7 +15334,7 @@ var beforeRoute = function beforeRoute(location) {
   var locationRoomId = pathname.split('/')[2];
   if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
   if (pathname === '/logout') return true;
-  NoteStore.setModalInfo('editCancel');
+  PageStore.editCancel();
   return false;
 };
 
