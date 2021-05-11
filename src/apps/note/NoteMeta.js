@@ -302,6 +302,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'uploadingFiles':
+        dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_08');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);
