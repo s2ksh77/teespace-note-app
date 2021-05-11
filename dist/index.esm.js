@@ -9096,6 +9096,11 @@ var LNBSearchResult = function LNBSearchResult() {
 
             case 2:
               PageStore.fetchCurrentPageData(pageId).then(function () {
+                // [ todo ] computed로 currentChapterId가 휴지통이면 isrecyclebin true로 바꾸기?
+                var recycleBin = ChapterStore.chapterList.find(function (chapter) {
+                  return chapter.type === CHAPTER_TYPE.RECYCLE_BIN;
+                });
+                if (recycleBin && recycleBin.id === ChapterStore.currentChapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
                 instance.unmark();
                 instance.mark(ChapterStore.searchStr);
                 NoteStore.setShowPage(true);

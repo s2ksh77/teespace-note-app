@@ -10,6 +10,7 @@ import shareImg from '../../assets/ts_share@3x.png';
 import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 import Mark from 'mark.js';
+import { CHAPTER_TYPE } from '../../GlobalVariable';
 // chapter : id, title, color, firstPageId
 // page : chapterId, chapterTitle, id, title
 const LNBSearchResult = () => {
@@ -37,6 +38,11 @@ const LNBSearchResult = () => {
   const onClickPageBtn = (pageId) => async () => {
     if (!PageStore.isReadMode()) return;
     PageStore.fetchCurrentPageData(pageId).then(() => {
+      // [ todo ] computed로 currentChapterId가 휴지통이면 isrecyclebin true로 바꾸기?
+      const recycleBin = ChapterStore.chapterList.find(chapter=>chapter.type === CHAPTER_TYPE.RECYCLE_BIN)     
+      if (recycleBin && recycleBin.id === ChapterStore.currentChapterId) PageStore.setIsRecycleBin(true);
+      else PageStore.setIsRecycleBin(false);
+      
       instance.unmark();
       instance.mark(ChapterStore.searchStr);
       NoteStore.setShowPage(true);
