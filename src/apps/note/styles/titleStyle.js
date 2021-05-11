@@ -12,6 +12,7 @@ export const EditorHeaderContainer1 = styled.div`
 export const EditBtn = styled.button`
   width: 4.5rem;
   height: 1.88rem;
+  margin-right: 1rem;
   color: white;
   font-size: 0.75rem;
   align-items: center;
@@ -42,7 +43,7 @@ export const EditorTitle = styled.input`
   text-overflow: ellipsis;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 0.1875rem 0.1875rem 0.1875rem 0.75rem;
+  padding: 0.1875rem 0.1875rem 0.1875rem 0rem;
   background-image: none;
   border-radius: 0.125rem;
   color: inherit;
