@@ -95,7 +95,7 @@ const NoteStore = observable({
     // A방에서 lnb 검색 후 B방으로 이동했을 때 init 필요
     ChapterStore.initSearchVar();
     ChapterStore.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
-    PageStore.setCurrentPageId('');
+    PageStore.fetchCurrentPageData(''); // isEdit도 갱신
     ChapterStore.setChapterList([]);
     ChapterStore.setLnbBoundary({ beforeShared:false, beforeRecycleBin:false });
     TagStore.setNoteTagList([]);
@@ -121,8 +121,7 @@ const NoteStore = observable({
     this.showPage = showPage;
     if (showPage === false) {
       ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
-      PageStore.setCurrentPageId('');
-      PageStore.setIsEdit('');
+      PageStore.fetchCurrentPageData('');
     }
   },
   setLayoutState(state) {

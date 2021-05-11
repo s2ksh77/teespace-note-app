@@ -630,7 +630,7 @@ const ChapterStore = observable({
       if (targetChapter.children.length > 0) {
         PageStore.setCurrentPageId(targetChapter.children[0].id);
         PageStore.fetchCurrentPageData(targetChapter.children[0].id);
-      } else PageStore.setCurrentPageId('');
+      } else PageStore.fetchCurrentPageData(''); // isEdit도 갱신
     })
   },
   /*
@@ -740,7 +740,7 @@ const ChapterStore = observable({
     const targetChapter = this.chapterList.length > 0 ? this.chapterList[0] : null;
     if (!targetChapter) {
       this.setCurrentChapterInfo('', false);//chapterId='', isRecycleBin=false
-      PageStore.setCurrentPageId('');
+      PageStore.fetchCurrentPageData(''); // isEdit도 갱신
       return;
     }
     this.setFirstDragData(targetChapter);
@@ -804,11 +804,11 @@ const ChapterStore = observable({
       switch (NoteStore.metaTagInfo.type){
         case "chapter": // chapter, page 선택
           NoteStore.setTargetLayout('LNB');
+          this.setScrollIntoViewId(NoteStore.metaTagInfo.id);
           await this.getNoteChapterList();
           // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
           this.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
           const pageId = this.getChapterFirstPageId(NoteStore.metaTagInfo.id);
-          this.setScrollIntoViewId(NoteStore.metaTagInfo.id);
           /**
            * 현재 챕터 클릭 로직과 동일하게 함
            * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
@@ -817,7 +817,7 @@ const ChapterStore = observable({
           await PageStore.fetchCurrentPageData(pageId ? pageId : '');
           break;
         case "page":
-          await PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);          
+          await PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
           NoteStore.setTargetLayout('Content');// 챕터 없습니다 페이지 나오지 않게 하기
           break;
       }

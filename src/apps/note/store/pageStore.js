@@ -404,7 +404,7 @@ const PageStore = observable({
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           this.setIsNewPage(false);
-          this.setCurrentPageId('');
+          this.fetchCurrentPageData(''); // isEdit도 갱신
           ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
@@ -413,7 +413,7 @@ const PageStore = observable({
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           } else {
-            this.setCurrentPageId('');
+            this.fetchCurrentPageData('');
           }
         }
       }
