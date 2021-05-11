@@ -69,6 +69,7 @@ const NoteMeta = {
   setEventConfig(type) {
     const eventList = [];
     switch (type) {
+      case 'sharedChapter':
       case 'chapter':
         // 삭제 함수 추가
         eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteNoteChapter() })
@@ -87,6 +88,7 @@ const NoteMeta = {
         })
         eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
         break;
+      case 'sharedPage':
       case 'deletePage': // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
@@ -248,6 +250,18 @@ const NoteMeta = {
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
         dialogType.btns = this.setBtns('delete');
         break;
+      case 'sharedChapter':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
+        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
+        dialogType.btns = this.setBtns('delete');
+        break;
+      case 'sharedPage':
+        dialogType.type = 'error';
+        dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
+        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
+        dialogType.btns = this.setBtns('delete');
+        break;
       case 'deletePage': // 페이지 영구 삭제
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_06');
@@ -302,6 +316,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'uploadingFiles':
+        dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_08');
         dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_09');
         dialogType.btns = this.setBtns(type);

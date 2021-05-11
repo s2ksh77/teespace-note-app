@@ -75,9 +75,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             PageStore.setEditingUserCount(editingList.length);
             NoteStore.setModalInfo('chapterconfirm');
           } else {
-            if (ChapterStore.currentChapterId === note.id)
-              setSelectableIdOfChapter();
-            NoteStore.setModalInfo('chapter');
+            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
+            if (note.type === 'shared' || note.type === 'shared_page') NoteStore.setModalInfo('sharedChapter');
+            else NoteStore.setModalInfo('chapter');
           }
         });
         break;
@@ -100,7 +100,8 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
               ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
               PageStore.setLastSharedPageParentId('');
               ChapterStore.deleteNoteChapter();
-            } else PageStore.throwNotePage();
+            } else if(note.type === 'shared') NoteStore.setModalInfo('sharedPage');
+            else PageStore.throwNotePage();
           } else {
             const res = await userStore.getProfile(dto.is_edit);
             PageStore.setEditingUserName(res.nick ? res.nick : res.name);
@@ -115,7 +116,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
   const restoreComponent = async () => {
     // 휴지통만 있는 경우
-    if (ChapterStore.chapterList.length === 1) {
+    if (ChapterStore.getRoomChapterList().length === 0) {
       const newChapter = await ChapterStore.createRestoreChapter(t('NOTE_PAGE_LIST_CMPNT_DEF_01'), ChapterStore.getChapterRandomColor());
       PageStore.restorePageLogic({
         chapterId: newChapter.id, 

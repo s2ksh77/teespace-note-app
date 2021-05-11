@@ -19,6 +19,7 @@ const LNBSearchResult = () => {
   const [selected, setSelected] = useState(null);
 
   // 챕터 검색때만 초기화
+  // children 순서도 알아야하므로 type 넘겨주지 않고 chapterList에서 chapter 찾아서 type도 알아내고, children도 알아낸다
   const onClickChapterBtn = (chapterId) => async () => {
     ChapterStore.setScrollIntoViewId(chapterId);
     ChapterStore.initSearchVar();
