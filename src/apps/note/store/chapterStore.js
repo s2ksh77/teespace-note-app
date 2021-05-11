@@ -788,6 +788,11 @@ const ChapterStore = observable({
       console.log('e', e)
     }
     NoteStore.setMetaTagInfo({isOpen:false, type:'', id:''});
+  },
+
+  getRoomChapterList() {
+    const roomChapterList = this.chapterList.filter(chapter => chapter.type === 'notebook' || chapter.type === 'default');
+    return roomChapterList;
   }
 });
 
