@@ -579,6 +579,7 @@ const PageStore = observable({
     if (this.isNewPage) {
       ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
       this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
+      this.dragData.get(dto.note_id).item.text = dto.note_title;
 
       import('teespace-core')
         .then(module => {
