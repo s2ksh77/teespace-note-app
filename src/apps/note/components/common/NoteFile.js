@@ -462,8 +462,7 @@ export const handleEditorContentsListener = () => {
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
-                if (el.tagName === 'A') el.addEventListener('click', handleClickLink.bind(null, el));
-                else if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+                if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
                 el.setAttribute('hasListener', true);
             });
         }
