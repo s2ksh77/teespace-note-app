@@ -158,7 +158,7 @@ const languageSet = {
     NOTE_META_TAG_04: 'Unable to load the chapter because it has been deleted.',
 
     NOTE_SAVE_PAGE: 'Page saved.',
-    NOTE_DELIVER_DEL_PAGE: 'Pages forwarded will be permanently deleted.'
+    NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.'
 };
 
 export default languageSet;

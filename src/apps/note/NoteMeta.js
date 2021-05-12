@@ -253,13 +253,13 @@ const NoteMeta = {
       case 'sharedChapter':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
-        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_09');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'sharedPage':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_03');
-        dialogType.subtitle = i18n.t('NOTE_DELIVER_DEL_PAGE');
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_09');
         dialogType.btns = this.setBtns('delete');
         break;
       case 'deletePage': // 페이지 영구 삭제
