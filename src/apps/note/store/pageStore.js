@@ -451,8 +451,9 @@ const PageStore = observable({
       this.clearDragData();
       return;
     }
-    let currentDragData = this.dragData.get(this.currentPageId);
-    if (!currentDragData) currentDragData = this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
+    const currentDragData =
+      this.dragData.get(this.currentPageId) ||
+      this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
     this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
 
