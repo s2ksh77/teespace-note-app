@@ -286,7 +286,7 @@ const NoteMeta = {
         dialogType.btns = this.setBtns(type);
         break;
       case 'duplicateTagName':
-        dialogType.title = 'NOTE_EDIT_PAGE_ADD_TAG_01';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ADD_TAG_01');
         dialogType.btns = this.setBtns(type);
         break;
       case 'editingPage':
