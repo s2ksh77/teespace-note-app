@@ -4101,8 +4101,7 @@ var PageStore = observable((_observable$1 = {
       return;
     }
 
-    var currentDragData = this.dragData.get(this.currentPageId);
-    if (!currentDragData) currentDragData = this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
+    var currentDragData = this.dragData.get(this.currentPageId) || this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
     this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
@@ -5817,8 +5816,7 @@ var ChapterStore = observable({
       return;
     }
 
-    var currentDragData = this.dragData.get(this.currentChapterId);
-    if (!currentDragData) currentDragData = this.createDragData(this.currentChapterId);
+    var currentDragData = this.dragData.get(this.currentChapterId) || this.createDragData(this.currentChapterId);
     this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
   },
   getSortedDragDataList: function getSortedDragDataList() {
@@ -6739,7 +6737,7 @@ var NoteMeta = {
         break;
 
       case 'duplicateTagName':
-        dialogType.title = 'NOTE_EDIT_PAGE_ADD_TAG_01';
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ADD_TAG_01');
         dialogType.btns = this.setBtns(type);
         break;
 
