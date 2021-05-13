@@ -182,10 +182,18 @@ class NoteRepository {
     }
   }
 
-  async deleteChapter(chapterId) {
+  async deleteChapter(chapterList) {
+    chapterList.forEach(chapter => {
+      chapter.USER_ID = this.USER_ID;
+      chapter.WS_ID = this.WS_ID;
+      chapter.note_channel_id = this.chId;
+    });
     try {
-      const { data } = await API.delete(
-        `note-api/notebook?action=Delete&id=${chapterId}&note_channel_id=${this.chId}&USER_ID=${this.USER_ID}&ws_id=${this.WS_ID}`,
+      const { data } = await API.post(`note-api/notebook?action=Delete`, {
+        dto: {
+          notbookList : chapterList
+        }
+      }
       );
       return data;
     } catch (e) {
