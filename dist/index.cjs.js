@@ -590,33 +590,44 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteChapter",
     value: function () {
-      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterId) {
-        var _yield$API$delete, data;
+      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterList) {
+        var _this = this;
+
+        var _yield$API$post3, data;
 
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                _context8.prev = 0;
-                _context8.next = 3;
-                return teespaceCore.API.delete("note-api/notebook?action=Delete&id=".concat(chapterId, "&note_channel_id=").concat(this.chId, "&USER_ID=").concat(this.USER_ID, "&ws_id=").concat(this.WS_ID));
+                chapterList.forEach(function (chapter) {
+                  chapter.USER_ID = _this.USER_ID;
+                  chapter.WS_ID = _this.WS_ID;
+                  chapter.note_channel_id = _this.chId;
+                });
+                _context8.prev = 1;
+                _context8.next = 4;
+                return teespaceCore.API.post("note-api/notebook?action=Delete", {
+                  dto: {
+                    notbookList: chapterList
+                  }
+                });
 
-              case 3:
-                _yield$API$delete = _context8.sent;
-                data = _yield$API$delete.data;
+              case 4:
+                _yield$API$post3 = _context8.sent;
+                data = _yield$API$post3.data;
                 return _context8.abrupt("return", data);
 
-              case 8:
-                _context8.prev = 8;
-                _context8.t0 = _context8["catch"](0);
+              case 9:
+                _context8.prev = 9;
+                _context8.t0 = _context8["catch"](1);
                 throw Error(JSON.stringify(_context8.t0));
 
-              case 11:
+              case 12:
               case "end":
                 return _context8.stop();
             }
           }
-        }, _callee8, this, [[0, 8]]);
+        }, _callee8, null, [[1, 9]]);
       }));
 
       function deleteChapter(_x10) {
@@ -723,17 +734,17 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "deletePage",
     value: function () {
       var _deletePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(pageList) {
-        var _this = this;
+        var _this2 = this;
 
         return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
                 pageList.forEach(function (page) {
-                  page.USER_ID = _this.USER_ID;
-                  page.WS_ID = _this.WS_ID;
-                  page.note_channel_id = _this.chId;
-                  page.user_name = _this.USER_NAME;
+                  page.USER_ID = _this2.USER_ID;
+                  page.WS_ID = _this2.WS_ID;
+                  page.note_channel_id = _this2.chId;
+                  page.user_name = _this2.USER_NAME;
                 });
                 _context11.prev = 1;
                 _context11.next = 4;
@@ -1435,7 +1446,7 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "throwPage",
     value: function () {
       var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
-        var _this2 = this;
+        var _this3 = this;
 
         return regeneratorRuntime.wrap(function _callee27$(_context27) {
           while (1) {
@@ -1443,9 +1454,9 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 // pageList -> pageId 리스트
                 pageList.forEach(function (page) {
-                  page.USER_ID = _this2.USER_ID;
-                  page.WS_ID = _this2.WS_ID;
-                  page.note_channel_id = _this2.chId;
+                  page.USER_ID = _this3.USER_ID;
+                  page.WS_ID = _this3.WS_ID;
+                  page.note_channel_id = _this3.chId;
                   page.parent_notebook = null;
                 });
                 _context27.prev = 1;
@@ -1482,7 +1493,7 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "restorePage",
     value: function () {
       var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28(pageList) {
-        var _this3 = this;
+        var _this4 = this;
 
         return regeneratorRuntime.wrap(function _callee28$(_context28) {
           while (1) {
@@ -1491,9 +1502,9 @@ var NoteRepository = /*#__PURE__*/function () {
                 // pageList -> pageId 리스트, chapterId 리스트 
                 // [{note_id: asdf, parent_notebook : asdf} ... ]
                 pageList.forEach(function (page) {
-                  page.note_channel_id = _this3.chId;
-                  page.USER_ID = _this3.USER_ID;
-                  page.WS_ID = _this3.WS_ID;
+                  page.note_channel_id = _this4.chId;
+                  page.USER_ID = _this4.USER_ID;
+                  page.WS_ID = _this4.WS_ID;
                 });
                 _context28.prev = 1;
                 _context28.next = 4;
