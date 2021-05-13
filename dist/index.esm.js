@@ -3133,7 +3133,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
   NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
   NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
-  NOTE_EDIT_PAGE_ATTACH_FILE_03: '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여 파일을 첨부할 수 없습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
   NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
