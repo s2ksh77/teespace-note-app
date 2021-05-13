@@ -56,7 +56,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
                 : '2.63rem'
             }
           >
-            {chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text}
+            {chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : (chapter.type === 'recycle_bin' ? t('NOTE_BIN_01') : chapter.text)}
           </ChapterTextSpan>
         </Tooltip>
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
