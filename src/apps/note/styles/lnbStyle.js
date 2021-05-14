@@ -36,7 +36,7 @@ export const LNBNewChapter = styled.div`
   width: auto;
   height: 2.81rem;
   font-weight: 500;
-  border-bottom: 0.0625rem solid #eeedeb;
+  border-bottom: 0.06rem solid #eeedeb;
 `;
 
 // search 관련
@@ -137,7 +137,7 @@ export const LnbRecycleContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  border-bottom: 0.0625rem solid #eeedeb;
+  border-bottom: 0.06rem solid #eeedeb;
   margin: 0 0.81rem;
   order: ${props => props.order};
   &:hover {
@@ -159,16 +159,9 @@ export const RecycleBinTxt = styled.div`
   margin-left: 2.63rem;
 `;
 
-export const LNBShareBorder1 = styled.div`
+export const LNBShareBorder = styled.div`
   display: flex;
-  order:1;
-  border-bottom: 1px solid #DDD9D4;
-  margin: 0 1rem;
-`;
-
-export const LNBShareBorder2 = styled.div`
-  display: flex;
-  order:2;
-  border-bottom: 1px solid #DDD9D4;
-  margin: 0 1rem;
+  order: ${({ order }) => order};
+  border-bottom: 0.06rem solid #ddd9d4;
+  margin: 0 0.81rem;
 `;
