@@ -62,7 +62,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const throwComponent = async () => {
     switch (noteType) {
       case 'chapter':
-        ChapterStore.setDeleteChapterId(note.id);
+        ChapterStore.setDeleteChapterList([{ id: note.id }]);
         ChapterStore.getChapterChildren(note.id).then(async dto => {
           const editingList = dto.noteList.filter(
             page => page.is_edit !== null && page.is_edit !== '',

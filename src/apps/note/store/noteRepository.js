@@ -185,7 +185,7 @@ class NoteRepository {
   async deleteChapter(chapterList) {
     chapterList.forEach(chapter => {
       chapter.USER_ID = this.USER_ID;
-      chapter.WS_ID = this.WS_ID;
+      chapter.ws_id = this.WS_ID;
       chapter.note_channel_id = this.chId;
     });
     try {
