@@ -173,7 +173,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     PageStore.setDeletePageList(
       note.children.map(page => ({ note_id: page.id })),
     );
-    NoteStore.setModalInfo('emptyRecycleBin');
+    if(PageStore.deletePageList.length !== 0) NoteStore.setModalInfo('emptyRecycleBin');
   };
 
   /**
