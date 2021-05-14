@@ -571,7 +571,7 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 chapterList.forEach(function (chapter) {
                   chapter.USER_ID = _this.USER_ID;
-                  chapter.WS_ID = _this.WS_ID;
+                  chapter.ws_id = _this.WS_ID;
                   chapter.note_channel_id = _this.chId;
                 });
                 _context8.prev = 1;
@@ -3269,6 +3269,7 @@ var languageSet = {
   NOTE_CONTEXT_MENU_02: '복구',
   NOTE_CONTEXT_MENU_03: '휴지통 비우기',
   NOTE_DND_ACTION_01: '이동 불가능합니다.',
+  NOTE_DND_ACTION_02: '전달받은 챕터 및 페이지는 이동 불가능합니다.',
   NOTE_BIN_01: '휴지통',
   NOTE_BIN_02: '휴지통으로 이동되었습니다.',
   NOTE_BIN_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uD734\uC9C0\uD1B5\uC73C\uB85C \uC774\uB3D9\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
@@ -3422,7 +3423,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
   NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_PAGE_LIST_DEL_PGE_CHPT_09", 'Pages forwarded will be permanently deleted.'), _languageSet);
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_DND_ACTION_02", ''), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_PAGE_LIST_DEL_PGE_CHPT_09", 'Pages forwarded will be permanently deleted.'), _languageSet);
 
 var resources = {
   ko: {
@@ -3991,11 +3992,12 @@ var PageStore = observable((_observable$1 = {
    * It throw away pages in recycle bin.
    * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
-  throwNotePage: function throwNotePage() {
+  throwNotePage: function throwNotePage(isDnd) {
     var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      var num;
+      var _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
+
       return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
           switch (_context10.prev = _context10.next) {
@@ -4004,18 +4006,33 @@ var PageStore = observable((_observable$1 = {
               return _this2.throwPage(_this2.deletePageList);
 
             case 2:
-              _this2.setIsEdit('');
-
-              if (_this2.currentPageId === _this2.deletePageList[0].note_id) {
-                _this2.setCurrentPageId(_this2.selectablePageId);
-
-                _this2.fetchCurrentPageData(_this2.selectablePageId);
-              }
-
-              _context10.next = 6;
+              _context10.next = 4;
               return ChapterStore.getNoteChapterList();
 
-            case 6:
+            case 4:
+              _this2.setIsEdit('');
+
+              if (!_this2.deletePageList.find(function (page) {
+                return page.note_id === _this2.currentPageId;
+              })) {
+                _context10.next = 12;
+                break;
+              }
+
+              pageId = isDnd ? (_ChapterStore$chapter = ChapterStore.chapterList[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : (_ChapterStore$chapter2 = _ChapterStore$chapter.children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.id : _this2.selectablePageId;
+
+              _this2.setCurrentPageId(pageId);
+
+              _context10.next = 10;
+              return _this2.fetchCurrentPageData(pageId);
+
+            case 10:
+              ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
+
+              _this2.setDragData(new Map([[_this2.currentPageId, _this2.createDragData(_this2.currentPageId, ChapterStore.currentChapterId)]]));
+
+            case 12:
+              NoteStore.setIsDragging(false);
               num = _this2.deletePageList.length;
               NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
                 num: num
@@ -4023,7 +4040,7 @@ var PageStore = observable((_observable$1 = {
               NoteStore.setIsVisibleToast(true);
               NoteStore.setShowModal(false);
 
-            case 10:
+            case 17:
             case "end":
               return _context10.stop();
           }
@@ -4903,6 +4920,7 @@ var ChapterStore = observable({
   // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {},
   // {chapter:[], page:[]} 형태
+  deleteChapterList: [],
   deleteChapterId: '',
   selectableChapterId: '',
   renameId: '',
@@ -4935,6 +4953,12 @@ var ChapterStore = observable({
   },
   setCurrentChapterId: function setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  getDeleteChapterList: function getDeleteChapterList() {
+    return this.deleteChapterList;
+  },
+  setDeleteChapterList: function setDeleteChapterList(deleteChapterList) {
+    this.deleteChapterList = deleteChapterList;
   },
   getDeleteChapterId: function getDeleteChapterId() {
     return this.deleteChapterId;
@@ -5239,7 +5263,7 @@ var ChapterStore = observable({
       }, _callee5);
     }))();
   },
-  deleteChapter: function deleteChapter(deleteChapterId) {
+  deleteChapter: function deleteChapter(chapterList) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
       var _yield$NoteRepository6, dto;
 
@@ -5248,7 +5272,7 @@ var ChapterStore = observable({
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
-              return NoteRepository$1.deleteChapter(deleteChapterId);
+              return NoteRepository$1.deleteChapter(chapterList);
 
             case 2:
               _yield$NoteRepository6 = _context6.sent;
@@ -5751,48 +5775,50 @@ var ChapterStore = observable({
       }, _callee15);
     }))();
   },
-
-  /**
-   * 챕터 1개 남아있을 때, 챕터 삭제시 휴지통 선택 & 휴지통 맨 위 페이지 삭제하기 위해 async, await로 바꿈
-   * getNoteChapterList 후 선택하려고
-   */
-  deleteNoteChapter: function deleteNoteChapter() {
+  deleteNoteChapter: function deleteNoteChapter(isDnd) {
     var _this11 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      var _this11$chapterList$, _this11$chapterList$$;
+      var _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
 
       return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
           switch (_context16.prev = _context16.next) {
             case 0:
               _context16.next = 2;
-              return _this11.deleteChapter(_this11.deleteChapterId);
+              return _this11.deleteChapter(_this11.deleteChapterList);
 
             case 2:
               _context16.next = 4;
               return _this11.getNoteChapterList();
 
             case 4:
-              if (_this11.currentChapterId === _this11.deleteChapterId) {
-                // refactoring할 때 수정필요함, 혹시나해서 여러가지 조건 체크함
-                if (_this11.chapterList.length === 1 && _this11.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN) {
-                  PageStore.fetchCurrentPageData((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : (_this11$chapterList$$ = _this11$chapterList$.children[0]) === null || _this11$chapterList$$ === void 0 ? void 0 : _this11$chapterList$$.id);
-                } else {
-                  PageStore.fetchCurrentPageData(PageStore.selectablePageId);
-                }
-
-                _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
-
-                PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
+              if (!_this11.deleteChapterList.find(function (chapter) {
+                return chapter.id === _this11.currentChapterId;
+              })) {
+                _context16.next = 10;
+                break;
               }
 
-              _this11.deleteChapterId = '';
+              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : PageStore.selectablePageId;
+              _context16.next = 8;
+              return PageStore.fetchCurrentPageData(pageId);
+
+            case 8:
+              _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
+
+              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
+
+            case 10:
+              NoteStore.setIsDragging(false);
+
+              _this11.setDeleteChapterList([]);
+
               NoteStore.setShowModal(false);
               NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
               NoteStore.setIsVisibleToast(true);
 
-            case 9:
+            case 15:
             case "end":
               return _context16.stop();
           }
@@ -7292,6 +7318,10 @@ var NoteStore = observable({
         }
       }, _callee3);
     }))();
+  },
+  floatToast: function floatToast(message) {
+    this.setToastText(message);
+    this.setIsVisibleToast(true);
   }
 });
 
