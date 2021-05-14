@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores, logEvent } from 'teespace-core';
+import { useCoreStores, logEvent, EventBus } from 'teespace-core';
 import Mark from 'mark.js';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../store/useStore';
@@ -79,10 +79,16 @@ const EditorHeader = () => {
         const res = await userStore.getProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);
         NoteStore.setModalInfo('editingPage');
-      } else PageStore.noteEditStart(PageStore.currentPageData.note_id);
+      } else {
+        PageStore.noteEditStart(PageStore.currentPageData.note_id);
+        let editModeClose = EventBus.on('Note:onEditClose', () => {
+          if (!PageStore.isReadMode()) PageStore.editCancel()
+        });
+      } 
     } else {
       await handleFileSync().then(() => PageStore.handleSave());
       logEvent('note', 'clickModifyBtn');
+      EventBus.off('Note:onEditClose', editModeClose);
     }
   };
 
@@ -93,6 +99,26 @@ const EditorHeader = () => {
     else EditorStore.setIsSearch(true);
     initialSearch();
   };
+
+  const handleOnEditCancel = (e) => {
+    e.stopPropagation();
+    PageStore.editCancel();
+    return;
+  }
+
+  useEffect( () => {
+    // 수정모드 시 룸 생성 버튼 및 메일 탭 임시 editCancel 적용
+    if (!PageStore.isReadMode()) {
+      document.querySelector('.rooms__create-button').addEventListener('click', handleOnEditCancel);
+      document.querySelectorAll('.ant-tabs-tab')[2]?.addEventListener('click', handleOnEditCancel);
+    }
+    return () => {
+      if (PageStore.isReadMode()) {
+        document.querySelector('.rooms__create-button').removeEventListener('click', handleOnEditCancel);
+        document.querySelectorAll('.ant-tabs-tab')[2]?.removeEventListener('click', handleOnEditCancel);
+      }
+    }
+  },[PageStore.isReadMode()])
 
   return useObserver(() => (
     <>
