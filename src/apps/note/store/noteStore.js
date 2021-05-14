@@ -305,6 +305,11 @@ const NoteStore = observable({
 
     return dto;
   },
+
+  floatToast(message) {
+    this.setToastText(message);
+    this.setIsVisibleToast(true);
+  },
 });
 
 export default NoteStore;
