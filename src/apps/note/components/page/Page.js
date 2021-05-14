@@ -109,9 +109,6 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       if ((page.type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey)
         return;
 
-      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
-      ChapterStore.setIsCtrlKeyDown(false);
-
       if (e.ctrlKey) {
         if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);
         else PageStore.appendDragData(page.id, pageDragData);
@@ -119,6 +116,8 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         return;
       }
 
+      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+      ChapterStore.setIsCtrlKeyDown(false);
       PageStore.setDragData(new Map([[page.id, pageDragData]]));
       PageStore.setIsCtrlKeyDown(false);
       onClick(page.id);
