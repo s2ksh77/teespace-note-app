@@ -81,7 +81,7 @@ export const TagInput = styled.input`
   margin-right: 0.38rem;
   border-radius: 1.563rem;
   padding:0 0.75rem;
-  border: 0.0625rem solid #7B7671;
+  border: 0.06rem solid #7B7671;
   background-color: #ffffff;
   font-size: 0.81rem;
   color: #000000;
@@ -99,7 +99,7 @@ export const LnbTagContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  border-bottom: 0.0625rem solid #eeedeb;
+  border-bottom: 0.06rem solid #eeedeb;
   margin: 0 0.81rem;
   order: ${props => props.order};
   color: ${props => props.color || ''};
