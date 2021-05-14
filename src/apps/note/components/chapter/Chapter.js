@@ -157,8 +157,9 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const onClickChapterBtn = useCallback(
     e => {
       if (!PageStore.isReadMode()) return;
+      if (PageStore.isRecycleBin && e.ctrlKey) return;
 
-      if (ChapterStore.dragData.size > 0 && e.ctrlKey) {
+      if (e.ctrlKey) {
         if (ChapterStore.dragData.get(chapter.id))
           ChapterStore.deleteDragData(chapter.id);
         else ChapterStore.appendDragData(chapter.id, chapterDragData);
