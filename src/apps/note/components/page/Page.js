@@ -104,10 +104,10 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const handleSelectPage = useCallback(
+  const handlePageSelect = useCallback(
     e => {
-      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
-      ChapterStore.setIsCtrlKeyDown(false);
+      if ((page.type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey)
+        return;
 
       if (e.ctrlKey) {
         if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);
@@ -116,6 +116,8 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
         return;
       }
 
+      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+      ChapterStore.setIsCtrlKeyDown(false);
       PageStore.setDragData(new Map([[page.id, pageDragData]]));
       PageStore.setIsCtrlKeyDown(false);
       onClick(page.id);
@@ -158,7 +160,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       }
       id={page.id}
       className="page-li"
-      onClick={handleSelectPage}
+      onClick={handlePageSelect}
     >
       <PageMargin />
       {PageStore.getRenameId() === page.id ? (

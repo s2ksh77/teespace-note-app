@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useObserver } from 'mobx-react';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
@@ -110,8 +110,8 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     },
   });
 
-  const onClickRecycleBinBtn = () => {
-    if (!PageStore.isReadMode()) return;
+  const onClickRecycleBinBtn = e => {
+    if (!PageStore.isReadMode() || e.ctrlKey) return;
 
     ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
