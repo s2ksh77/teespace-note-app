@@ -99,7 +99,10 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
             id: item.id,
             text: item.text,
             date: item.modified_date,
-            type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
+            type:
+              item.type === 'shared' || item.type === 'shared_page'
+                ? DRAG_TYPE.SHARED_CHAPTER
+                : DRAG_TYPE.CHAPTER,
           };
         }),
       };
@@ -165,8 +168,8 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
 
       ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
-      
-      const pageId = chapter.children.length > 0 ? chapter.children[0].id : '';      
+
+      const pageId = chapter.children.length > 0 ? chapter.children[0].id : '';
       PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
       NoteStore.setShowPage(true);
       if (pageId) {

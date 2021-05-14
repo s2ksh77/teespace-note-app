@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useDrop } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
+import { useCoreStores } from 'teespace-core';
 import useNoteStore from '../../store/useStore';
 import ChapterText from './ChapterText';
 import PageList from '../page/PageList';
@@ -15,17 +17,96 @@ import NoteUtil from '../../NoteUtil';
 
 const RecycleBin = ({ chapter, index, flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { userStore } = useCoreStores();
+  const { t } = useTranslation();
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(true);
   const { id, children } = chapter;
 
   // When chapters/pages are dropped on recycle bin area
   const [, drop] = useDrop({
-    accept: [],
-    drop: () => {},
-    hover() {
-      if (ChapterStore.dragEnterChapterIdx !== index)
-        ChapterStore.setDragEnterChapterIdx(index);
+    accept: [
+      DRAG_TYPE.CHAPTER,
+      DRAG_TYPE.PAGE,
+      DRAG_TYPE.SHARED_CHAPTER,
+      DRAG_TYPE.SHARED_PAGE,
+    ],
+    drop: async item => {
+      const { type, data } = item;
+      const editingNoteList = [];
+
+      switch (type) {
+        case DRAG_TYPE.CHAPTER: {
+          if (data.find(note => note.type === DRAG_TYPE.SHARED_CHAPTER)) {
+            NoteStore.floatToast(t('NOTE_DND_ACTION_02'));
+            break;
+          }
+
+          const deleteChapterList = await Promise.all(
+            data.map(async note => {
+              const dto = await ChapterStore.getChapterChildren(note.id);
+              editingNoteList.push(
+                ...dto.noteList.filter(page => page.is_edit),
+              );
+              return { id: note.id };
+            }),
+          );
+
+          if (editingNoteList.length === 1) {
+            const res = await userStore.getProfile(editingNoteList[0].is_edit);
+            PageStore.setEditingUserName(res.displayName);
+            NoteStore.setModalInfo('confirm');
+          } else if (editingNoteList.length > 1) {
+            PageStore.setEditingUserCount(editingNoteList.length);
+            NoteStore.setModalInfo('chapterconfirm');
+          } else {
+            ChapterStore.setDeleteChapterList(deleteChapterList);
+            ChapterStore.deleteNoteChapter(true);
+          }
+          break;
+        }
+        case DRAG_TYPE.PAGE: {
+          if (data.find(note => note.type === DRAG_TYPE.SHARED_PAGE)) {
+            NoteStore.floatToast(t('NOTE_DND_ACTION_02'));
+            break;
+          }
+
+          const deletePageList = await Promise.all(
+            data.map(async note => {
+              const dto = await PageStore.getNoteInfoList(note.id);
+              if (dto.is_edit) editingNoteList.push(dto);
+              return { note_id: note.id };
+            }),
+          );
+
+          if (editingNoteList.length === 1) {
+            const res = await userStore.getProfile(editingNoteList[0].is_edit);
+            PageStore.setEditingUserName(res.displayName);
+            NoteStore.setModalInfo('confirm');
+          } else if (editingNoteList.length > 1) {
+            PageStore.setEditingUserCount(editingNoteList.length);
+            NoteStore.setModalInfo('chapterconfirm');
+          } else {
+            PageStore.setDeletePageList(deletePageList);
+            PageStore.throwNotePage(true);
+          }
+          break;
+        }
+        case DRAG_TYPE.SHARED_CHAPTER:
+        case DRAG_TYPE.SHARED_PAGE:
+          NoteStore.floatToast(t('NOTE_DND_ACTION_02'));
+          break;
+        default:
+          break;
+      }
+    },
+    hover(item) {
+      if (item.type === DRAG_TYPE.CHAPTER) {
+        if (ChapterStore.dragEnterChapterIdx !== index)
+          ChapterStore.setDragEnterChapterIdx(index);
+        return;
+      }
+      if (PageStore.dragEnterPageIdx) PageStore.setDragEnterPageIdx('');
     },
   });
 
@@ -37,7 +118,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
 
     const pageId = children.length > 0 ? children[0].id : '';
     NoteStore.setShowPage(true);
-    PageStore.setIsRecycleBin(true);// 깜빡임 방지하기 위해 중복 메서드 넣음
+    PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
     PageStore.fetchCurrentPageData(pageId); // isEdit 갱신
     if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.clearDragData();
@@ -61,6 +142,11 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           id === ChapterStore.currentChapterId ? ' selectedMenu' : ''
         }`}
         onClick={onClickRecycleBinBtn}
+        style={
+          ChapterStore.dragEnterChapterIdx === index
+            ? { color: '#205855' }
+            : null
+        }
       >
         <ChapterShareIcon src={trashImg} />
         <ChapterText

@@ -40,6 +40,7 @@ const ChapterStore = observable({
   searchingTagName: '',
   searchStr: "", // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
+  deleteChapterList: [],
   deleteChapterId: '',
   selectableChapterId: '',
   renameId: '',
@@ -68,6 +69,12 @@ const ChapterStore = observable({
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
+  },
+  getDeleteChapterList() {
+    return this.deleteChapterList;
+  },
+  setDeleteChapterList(deleteChapterList) {
+    this.deleteChapterList = deleteChapterList;
   },
   getDeleteChapterId() {
     return this.deleteChapterId;
@@ -279,8 +286,8 @@ const ChapterStore = observable({
     const { dto } = await NoteRepository.createRestoreChapter(chapterTitle, chapterColor);
     return dto;
   },
-  async deleteChapter(deleteChapterId) {
-    const { dto } = await NoteRepository.deleteChapter(deleteChapterId);
+  async deleteChapter(chapterList) {
+    const { dto } = await NoteRepository.deleteChapter(chapterList);
     return dto;
   },
   async renameChapter(renameId, renameText, color) {
@@ -513,27 +520,22 @@ const ChapterStore = observable({
     this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
     PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
   },
-  /**
-   * 챕터 1개 남아있을 때, 챕터 삭제시 휴지통 선택 & 휴지통 맨 위 페이지 삭제하기 위해 async, await로 바꿈
-   * getNoteChapterList 후 선택하려고
-   */
-  async deleteNoteChapter() {
-    await this.deleteChapter(this.deleteChapterId)
+
+  async deleteNoteChapter(isDnd) {
+    await this.deleteChapter(this.deleteChapterList);
     await this.getNoteChapterList();
-    if (this.currentChapterId === this.deleteChapterId) {
-      // refactoring할 때 수정필요함, 혹시나해서 여러가지 조건 체크함
-      if (
-        this.chapterList.length === 1 &&
-        this.chapterList[0].type === CHAPTER_TYPE.RECYCLE_BIN
-      ) {
-        PageStore.fetchCurrentPageData(this.chapterList[0]?.children[0]?.id);
-      } else {
-        PageStore.fetchCurrentPageData(PageStore.selectablePageId);
-      }
+    if (this.deleteChapterList.find(chapter => chapter.id === this.currentChapterId)) {
+      const pageId =
+        isDnd || this.chapterList[0]?.type === CHAPTER_TYPE.RECYCLE_BIN
+          ? this.chapterList[0]?.children[0]?.id
+          : PageStore.selectablePageId;
+      await PageStore.fetchCurrentPageData(pageId);
       this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
       PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
     }
-    this.deleteChapterId = '';
+    
+    NoteStore.setIsDragging(false);
+    this.setDeleteChapterList([]);
     NoteStore.setShowModal(false);
     NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
     NoteStore.setIsVisibleToast(true);

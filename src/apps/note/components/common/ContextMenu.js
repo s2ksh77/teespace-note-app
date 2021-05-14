@@ -62,7 +62,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const throwComponent = async () => {
     switch (noteType) {
       case 'chapter':
-        ChapterStore.setDeleteChapterId(note.id);
+        ChapterStore.setDeleteChapterList([{ id: note.id }]);
         ChapterStore.getChapterChildren(note.id).then(async dto => {
           const editingList = dto.noteList.filter(
             page => page.is_edit !== null && page.is_edit !== '',
@@ -173,7 +173,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     PageStore.setDeletePageList(
       note.children.map(page => ({ note_id: page.id })),
     );
-    NoteStore.setModalInfo('emptyRecycleBin');
+    if(PageStore.deletePageList.length !== 0) NoteStore.setModalInfo('emptyRecycleBin');
   };
 
   /**

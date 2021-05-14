@@ -377,15 +377,21 @@ const PageStore = observable({
    * It throw away pages in recycle bin.
    * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
-  async throwNotePage() {
+  async throwNotePage(isDnd) {
     await this.throwPage(this.deletePageList);
+    await ChapterStore.getNoteChapterList();
     this.setIsEdit('');
-    if (this.currentPageId === this.deletePageList[0].note_id) {
-      this.setCurrentPageId(this.selectablePageId);
-      this.fetchCurrentPageData(this.selectablePageId)
+    if (this.deletePageList.find(page => page.note_id === this.currentPageId)) {
+      const pageId = isDnd
+        ? ChapterStore.chapterList[0]?.children[0]?.id
+        : this.selectablePageId;
+      this.setCurrentPageId(pageId);
+      await this.fetchCurrentPageData(pageId);
+      ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
+      this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
     }
 
-    await ChapterStore.getNoteChapterList();
+    NoteStore.setIsDragging(false);
     const num = this.deletePageList.length;
     NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', { num: num }) : i18n.t('NOTE_BIN_02'));
     NoteStore.setIsVisibleToast(true);

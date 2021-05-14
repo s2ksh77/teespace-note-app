@@ -134,7 +134,8 @@ const languageSet = {
     NOTE_CONTEXT_MENU_01: 'Forwarded to another room.',
     NOTE_CONTEXT_MENU_02: 'Recover',
     NOTE_CONTEXT_MENU_03: 'Empty Trash',
-    NOTE_DND_ACTION_01:'Cannot move.',
+    NOTE_DND_ACTION_01: 'Cannot move.',
+    NOTE_DND_ACTION_02: '',
 
     NOTE_BIN_01: 'Trash',
     NOTE_BIN_02: 'Moved to Trash.',

@@ -64,7 +64,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
             id: item.id,
             text: item.text,
             date: item.modified_date,
-            type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+            type: item.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
           };
         }),
       };
@@ -80,6 +80,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
 
       if (!res && item.type === DRAG_TYPE.SHARED_PAGE)
         NoteStore.setIsDragging(false);
+      ChapterStore.setDragEnterChapterIdx('');
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
@@ -109,8 +110,7 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
       ChapterStore.setIsCtrlKeyDown(false);
 
       if (e.ctrlKey) {
-        if (PageStore.dragData.get(page.id))
-          PageStore.deleteDragData(page.id);
+        if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);
         else PageStore.appendDragData(page.id, pageDragData);
         PageStore.setIsCtrlKeyDown(true);
         return;
