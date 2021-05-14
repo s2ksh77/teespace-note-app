@@ -79,16 +79,10 @@ const EditorHeader = () => {
         const res = await userStore.getProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(res.nick ? res.nick : res.name);
         NoteStore.setModalInfo('editingPage');
-      } else {
-        PageStore.noteEditStart(PageStore.currentPageData.note_id);
-        let editModeClose = EventBus.on('Note:onEditClose', () => {
-          if (!PageStore.isReadMode()) PageStore.editCancel()
-        });
-      } 
+      } else PageStore.noteEditStart(PageStore.currentPageData.note_id);
     } else {
       await handleFileSync().then(() => PageStore.handleSave());
       logEvent('note', 'clickModifyBtn');
-      EventBus.off('Note:onEditClose', editModeClose);
     }
   };
 
