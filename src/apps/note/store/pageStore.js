@@ -375,7 +375,7 @@ const PageStore = observable({
 
   /**
    * It throw away pages in recycle bin.
-   * WARN: If you want to delete 'New Page', you should 'deleteNotePage'!
+   * NOTE: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
   async throwNotePage(isDnd) {
     await this.throwPage(this.deletePageList);
@@ -387,8 +387,11 @@ const PageStore = observable({
         : this.selectablePageId;
       this.setCurrentPageId(pageId);
       await this.fetchCurrentPageData(pageId);
+      
       ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
       this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
+      ChapterStore.setIsCtrlKeyDown(false);
+      this.setIsCtrlKeyDown(false);
     }
 
     NoteStore.setIsDragging(false);
