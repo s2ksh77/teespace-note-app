@@ -268,6 +268,7 @@ const EditorContainer = () => {
     } else {
       setTimeout(() => {
         EditorStore.tinymce?.setMode('design');
+        EditorStore.tinymce?.undoManager?.add();
         EditorStore.editor?.removeEventListener('click', handleUnselect);
       }, 100);
     }

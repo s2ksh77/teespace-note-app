@@ -532,6 +532,8 @@ const ChapterStore = observable({
       await PageStore.fetchCurrentPageData(pageId);
       this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
       PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
+      ChapterStore.setIsCtrlKeyDown(false);
+      this.setIsCtrlKeyDown(false);
     }
     
     NoteStore.setIsDragging(false);
