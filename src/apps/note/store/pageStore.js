@@ -586,6 +586,7 @@ const PageStore = observable({
     EditorStore.setFileList(
       dto.fileList,
     );
+    TagStore.setNoteTagList(dto.tagList);
     if (this.isNewPage) {
       ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
       this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
@@ -608,7 +609,6 @@ const PageStore = observable({
   async fetchCurrentPageData(pageId) {
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
-      await TagStore.fetchNoteTagList(pageId); // tagList
     } else {
       this.setIsEdit('');
       this.setCurrentPageId('');
