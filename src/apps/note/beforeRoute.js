@@ -14,7 +14,10 @@ const beforeRoute = location => {
   }
   const locationRoomId = pathname.split('/')[2];
   if (targetApp === '' && locationRoomId === NoteStore.getWsId()) return false;
-  if (pathname === '/logout') return true;
+  if (pathname === '/logout') {
+    PageStore.editCancel();
+    return true;
+  }
   PageStore.editCancel();
   return false;
 };
