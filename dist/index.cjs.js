@@ -13864,18 +13864,19 @@ var EditorContainer = function EditorContainer() {
       }, 100);
     } else {
       setTimeout(function () {
-        var _EditorStore$tinymce7, _EditorStore$editor2;
+        var _EditorStore$tinymce7, _EditorStore$tinymce8, _EditorStore$tinymce9, _EditorStore$editor2;
 
         (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.setMode('design');
+        (_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : (_EditorStore$tinymce9 = _EditorStore$tinymce8.undoManager) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.add();
         (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
       }, 100);
     }
   }, [PageStore.isReadMode()]);
 
   var initialMode = function initialMode() {
-    var _EditorStore$tinymce8, _EditorStore$tinymce9;
+    var _EditorStore$tinymce10, _EditorStore$tinymce11;
 
-    if (PageStore.isReadMode()) (_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.setMode('readonly');else (_EditorStore$tinymce9 = EditorStore.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.setMode('design');
+    if (PageStore.isReadMode()) (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : _EditorStore$tinymce10.setMode('readonly');else (_EditorStore$tinymce11 = EditorStore.tinymce) === null || _EditorStore$tinymce11 === void 0 ? void 0 : _EditorStore$tinymce11.setMode('design');
   };
 
   React.useEffect(function () {
@@ -13971,9 +13972,9 @@ var EditorContainer = function EditorContainer() {
             * init된 후 localStorage내용을 에디터에 set해주어야 한다
             */
             if (PageStore.recoverInfo.note_content) {
-              var _EditorStore$tinymce10;
+              var _EditorStore$tinymce12;
 
-              (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : _EditorStore$tinymce10.setContent(PageStore.recoverInfo.note_content);
+              (_EditorStore$tinymce12 = EditorStore.tinymce) === null || _EditorStore$tinymce12 === void 0 ? void 0 : _EditorStore$tinymce12.setContent(PageStore.recoverInfo.note_content);
               PageStore.setRecoverInfo({});
             }
 
@@ -14233,10 +14234,10 @@ var EditorContainer = function EditorContainer() {
         toolbar_drawer: false,
         // paste_data_images: true, // add images by drag and drop
         paste_postprocess: function paste_postprocess(plugin, args) {
-          var _EditorStore$tinymce11, _EditorStore$tinymce12;
+          var _EditorStore$tinymce13, _EditorStore$tinymce14;
 
           // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
-          (_EditorStore$tinymce11 = EditorStore.tinymce) === null || _EditorStore$tinymce11 === void 0 ? void 0 : (_EditorStore$tinymce12 = _EditorStore$tinymce11.undoManager) === null || _EditorStore$tinymce12 === void 0 ? void 0 : _EditorStore$tinymce12.add();
+          (_EditorStore$tinymce13 = EditorStore.tinymce) === null || _EditorStore$tinymce13 === void 0 ? void 0 : (_EditorStore$tinymce14 = _EditorStore$tinymce13.undoManager) === null || _EditorStore$tinymce14 === void 0 ? void 0 : _EditorStore$tinymce14.add();
           var target = args.node.textContent;
 
           if (checkUrlValidation(target)) {
