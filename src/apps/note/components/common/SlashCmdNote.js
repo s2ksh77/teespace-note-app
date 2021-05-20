@@ -1,9 +1,11 @@
 import React from 'react';
 import i18n from '../../i18n/i18n';
 import useNoteStore from '../../store/useStore';
+import { logEvent, useCoreStores } from 'teespace-core';
 
 const SlashCmdNote = () => { 
     const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+    const { authStore } = useCoreStores();
     let chapterId = ''; 
 
     const getFirstChapterInfo = async (chId = NoteStore.getChannelId()) => {
@@ -25,18 +27,20 @@ const SlashCmdNote = () => {
         PageStore.setCreatePageParent(chapterId);
         PageStore.setCreatePageParentIdx(0);
         PageStore.createNotePage();
+        logEvent('note', 'clickNewPageBtn');
     }
 
     const _newChapter = async () => {
         ChapterStore.setChapterTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
         ChapterStore.getChapterRandomColor();
         await ChapterStore.createNoteChapter();
+        logEvent('note', 'clickNewChapterBtn');
     }
 
     const createTarget = async () => {
         const isNewPage = await getFirstChapterInfo();
-        if (isNewPage) _newPage();
-        else _newChapter();
+        if (isNewPage && authStore.hasPermission('notePage', 'C')) _newPage();
+        else if(!isNewPage && authStore.hasPermission('noteChapter', 'C')) _newChapter();
     }
     
     const slashCmdInit = () => {
