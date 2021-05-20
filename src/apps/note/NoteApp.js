@@ -15,6 +15,7 @@ import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
 import { useTranslation } from 'react-i18next';
 import PageStore from './store/pageStore';
+import SlashCmdNote from './components/common/SlashCmdNote';
 
 // layoutState는 collapse, expand, close가 있다
 const NoteApp = ({ layoutState, roomId, channelId, language }) => {
@@ -90,6 +91,11 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
   useEffect(() => {
     return () => EditorStore.setInitialSearchState();
   }, [roomId, channelId])
+
+  useEffect(()=>{
+    if (NoteStore.isSlashCmd) SlashCmdNote();
+    return () => NoteStore.setIsSlashCmd(false);
+  },[NoteStore.isSlashCmd])
 
   const handleCloseMailModal = () => {
     NoteStore.setIsMailShare(false);

@@ -42,6 +42,11 @@ const NoteStore = observable({
   i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
+  isSlashCmd: false,
+
+  setIsSlashCmd(flag){
+    this.isSlashCmd = flag;
+  },
   setMetaTagInfo({isOpen=false, type='', id=''}) {
     this.metaTagInfo = {isOpen, type, id};
   },
@@ -215,17 +220,17 @@ const NoteStore = observable({
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id)
     const sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
-    const { name, nick } = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
+    const { displayName } = await UserStore.getProfile({ userId: noteInfo.shared_user_id });
 
     this.sharedInfo = {
       sharedRoomName: (
         sharedRoom
           ? (sharedRoom.isMyRoom
-            ? (nick ? nick : name)
+            ? displayName
             : sharedRoom.name)
-          : (nick ? nick : name) // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+          : displayName // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
       ),
-      sharedUserName: nick ? nick : name,
+      sharedUserName: displayName,
       sharedDate: (
         !noteInfo.created_date
           ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true)

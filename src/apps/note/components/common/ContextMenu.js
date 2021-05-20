@@ -68,8 +68,8 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             page => page.is_edit !== null && page.is_edit !== '',
           );
           if (editingList.length === 1) {
-            const res = await userStore.getProfile(editingList[0].is_edit);
-            PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+            const { displayName } = await userStore.getProfile(editingList[0].is_edit);
+            PageStore.setEditingUserName(displayName);
             NoteStore.setModalInfo('confirm');
           } else if (editingList.length > 1) {
             PageStore.setEditingUserCount(editingList.length);
@@ -103,8 +103,8 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             } else if(note.type === 'shared') NoteStore.setModalInfo('sharedPage');
             else PageStore.throwNotePage();
           } else {
-            const res = await userStore.getProfile(dto.is_edit);
-            PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+            const { displayName } = await userStore.getProfile(dto.is_edit);
+            PageStore.setEditingUserName(displayName);
             NoteStore.setModalInfo('confirm');
           }
         });
