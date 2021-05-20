@@ -7154,6 +7154,10 @@ var NoteStore = observable({
   i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
+  isSlashCmd: false,
+  setIsSlashCmd: function setIsSlashCmd(flag) {
+    this.isSlashCmd = flag;
+  },
   setMetaTagInfo: function setMetaTagInfo(_ref) {
     var _ref$isOpen = _ref.isOpen,
         isOpen = _ref$isOpen === void 0 ? false : _ref$isOpen,
@@ -7345,7 +7349,7 @@ var NoteStore = observable({
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var noteInfo, sharedRoom, _yield$UserStore$getP, name, nick;
+      var noteInfo, sharedRoom, _yield$UserStore$getP, displayName;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -7381,18 +7385,17 @@ var NoteStore = observable({
 
             case 13:
               _yield$UserStore$getP = _context.sent;
-              name = _yield$UserStore$getP.name;
-              nick = _yield$UserStore$getP.nick;
+              displayName = _yield$UserStore$getP.displayName;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? nick ? nick : name : sharedRoom.name : nick ? nick : name // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? displayName : sharedRoom.name : displayName // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
                 ,
-                sharedUserName: nick ? nick : name,
+                sharedUserName: displayName,
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
 
               _this.setModalInfo('viewInfo');
 
-            case 18:
+            case 17:
             case "end":
               return _context.stop();
           }
@@ -10621,7 +10624,8 @@ var ContextMenu = function ContextMenu(_ref) {
               }]);
               ChapterStore.getChapterChildren(note.id).then( /*#__PURE__*/function () {
                 var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dto) {
-                  var editingList, res;
+                  var editingList, _yield$userStore$getP, displayName;
+
                   return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                       switch (_context.prev = _context.next) {
@@ -10631,7 +10635,7 @@ var ContextMenu = function ContextMenu(_ref) {
                           });
 
                           if (!(editingList.length === 1)) {
-                            _context.next = 9;
+                            _context.next = 10;
                             break;
                           }
 
@@ -10639,13 +10643,14 @@ var ContextMenu = function ContextMenu(_ref) {
                           return userStore.getProfile(editingList[0].is_edit);
 
                         case 4:
-                          res = _context.sent;
-                          PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+                          _yield$userStore$getP = _context.sent;
+                          displayName = _yield$userStore$getP.displayName;
+                          PageStore.setEditingUserName(displayName);
                           NoteStore.setModalInfo('confirm');
-                          _context.next = 10;
+                          _context.next = 11;
                           break;
 
-                        case 9:
+                        case 10:
                           if (editingList.length > 1) {
                             PageStore.setEditingUserCount(editingList.length);
                             NoteStore.setModalInfo('chapterconfirm');
@@ -10654,7 +10659,7 @@ var ContextMenu = function ContextMenu(_ref) {
                             if (note.type === 'shared' || note.type === 'shared_page') NoteStore.setModalInfo('sharedChapter');else NoteStore.setModalInfo('chapter');
                           }
 
-                        case 10:
+                        case 11:
                         case "end":
                           return _context.stop();
                       }
@@ -10671,7 +10676,8 @@ var ContextMenu = function ContextMenu(_ref) {
             case 6:
               PageStore.getNoteInfoList(note.id).then( /*#__PURE__*/function () {
                 var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto) {
-                  var res;
+                  var _yield$userStore$getP2, displayName;
+
                   return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
                       switch (_context2.prev = _context2.next) {
@@ -10700,7 +10706,7 @@ var ContextMenu = function ContextMenu(_ref) {
                             ChapterStore.deleteNoteChapter();
                           } else if (note.type === 'shared') NoteStore.setModalInfo('sharedPage');else PageStore.throwNotePage();
 
-                          _context2.next = 11;
+                          _context2.next = 12;
                           break;
 
                         case 6:
@@ -10708,11 +10714,12 @@ var ContextMenu = function ContextMenu(_ref) {
                           return userStore.getProfile(dto.is_edit);
 
                         case 8:
-                          res = _context2.sent;
-                          PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+                          _yield$userStore$getP2 = _context2.sent;
+                          displayName = _yield$userStore$getP2.displayName;
+                          PageStore.setEditingUserName(displayName);
                           NoteStore.setModalInfo('confirm');
 
-                        case 11:
+                        case 12:
                         case "end":
                           return _context2.stop();
                       }
@@ -12283,7 +12290,8 @@ var EditorHeader = function EditorHeader() {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
       var _EditorStore$tinymce2, _EditorStore$tinymce3;
 
-      var res;
+      var _yield$userStore$getP, displayName;
+
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -12302,7 +12310,7 @@ var EditorHeader = function EditorHeader() {
               (_EditorStore$tinymce2 = EditorStore.tinymce) === null || _EditorStore$tinymce2 === void 0 ? void 0 : (_EditorStore$tinymce3 = _EditorStore$tinymce2.undoManager) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.clear();
 
               if (!PageStore.isReadMode()) {
-                _context2.next = 19;
+                _context2.next = 20;
                 break;
               }
 
@@ -12310,7 +12318,7 @@ var EditorHeader = function EditorHeader() {
               if (NoteStore.layoutState !== 'collapse') ChapterStore.initSearchVar();
 
               if (!PageStore.otherEdit) {
-                _context2.next = 16;
+                _context2.next = 17;
                 break;
               }
 
@@ -12318,29 +12326,30 @@ var EditorHeader = function EditorHeader() {
               return userStore.getProfile(PageStore.getEditingUserID());
 
             case 11:
-              res = _context2.sent;
-              PageStore.setEditingUserName(res.nick ? res.nick : res.name);
+              _yield$userStore$getP = _context2.sent;
+              displayName = _yield$userStore$getP.displayName;
+              PageStore.setEditingUserName(displayName);
               NoteStore.setModalInfo('editingPage');
-              _context2.next = 17;
+              _context2.next = 18;
               break;
-
-            case 16:
-              PageStore.noteEditStart(PageStore.currentPageData.note_id);
 
             case 17:
-              _context2.next = 22;
+              PageStore.noteEditStart(PageStore.currentPageData.note_id);
+
+            case 18:
+              _context2.next = 23;
               break;
 
-            case 19:
-              _context2.next = 21;
+            case 20:
+              _context2.next = 22;
               return handleFileSync().then(function () {
                 return PageStore.handleSave();
               });
 
-            case 21:
+            case 22:
               logEvent('note', 'clickModifyBtn');
 
-            case 22:
+            case 23:
             case "end":
               return _context2.stop();
           }
@@ -15046,6 +15055,133 @@ var TempEditor = function TempEditor() {
   }));
 };
 
+var SlashCmdNote = function SlashCmdNote() {
+  var _useNoteStore = useNoteStore(),
+      NoteStore = _useNoteStore.NoteStore,
+      ChapterStore = _useNoteStore.ChapterStore,
+      PageStore = _useNoteStore.PageStore;
+
+  var _useCoreStores = useCoreStores(),
+      authStore = _useCoreStores.authStore;
+
+  var chapterId = '';
+
+  var getFirstChapterInfo = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var chId,
+          targetItem,
+          chapterInfo,
+          _args = arguments;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              chId = _args.length > 0 && _args[0] !== undefined ? _args[0] : NoteStore.getChannelId();
+              targetItem = JSON.parse(localStorage.getItem('NoteSortData_' + chId)); // 챕터가 하나라도 있는 경우
+
+              if (!(targetItem.length !== 0)) {
+                _context.next = 12;
+                break;
+              }
+
+              _context.next = 5;
+              return ChapterStore.getChapterInfoList(targetItem[0].id);
+
+            case 5:
+              chapterInfo = _context.sent;
+
+              if (!(chapterInfo.type !== 'shared_page' && chapterInfo.type !== 'shared')) {
+                _context.next = 11;
+                break;
+              }
+
+              chapterId = targetItem[0].id;
+              return _context.abrupt("return", true);
+
+            case 11:
+              return _context.abrupt("return", false);
+
+            case 12:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function getFirstChapterInfo() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  var _newPage = function _newPage() {
+    PageStore.setCreatePageParent(chapterId);
+    PageStore.setCreatePageParentIdx(0);
+    PageStore.createNotePage();
+    logEvent('note', 'clickNewPageBtn');
+  };
+
+  var _newChapter = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              ChapterStore.setChapterTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
+              ChapterStore.getChapterRandomColor();
+              _context2.next = 4;
+              return ChapterStore.createNoteChapter();
+
+            case 4:
+              logEvent('note', 'clickNewChapterBtn');
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function _newChapter() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  var createTarget = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var isNewPage;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return getFirstChapterInfo();
+
+            case 2:
+              isNewPage = _context3.sent;
+              if (isNewPage && authStore.hasPermission('notePage', 'C')) _newPage();else if (!isNewPage && authStore.hasPermission('noteChapter', 'C')) _newChapter();
+
+            case 4:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
+    return function createTarget() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
+  var slashCmdInit = function slashCmdInit() {
+    if (NoteStore.isSlashCmd) createTarget();else NoteStore.setIsSlashCmd(true);
+  };
+
+  slashCmdInit();
+};
+
 var NoteApp = function NoteApp(_ref) {
   var layoutState = _ref.layoutState,
       roomId = _ref.roomId,
@@ -15184,6 +15320,12 @@ var NoteApp = function NoteApp(_ref) {
       return EditorStore.setInitialSearchState();
     };
   }, [roomId, channelId]);
+  useEffect(function () {
+    if (NoteStore.isSlashCmd) SlashCmdNote();
+    return function () {
+      return NoteStore.setIsSlashCmd(false);
+    };
+  }, [NoteStore.isSlashCmd]);
 
   var handleCloseMailModal = function handleCloseMailModal() {
     NoteStore.setIsMailShare(false);
@@ -15676,6 +15818,7 @@ function ShareNoteMessage(props) {
 
 var initApp = function initApp() {
   ComponentStore.register('Note:ShareNoteMessage', ShareNoteMessage);
+  EventBus.on('onSlashCreateNote', SlashCmdNote);
 };
 
 var beforeRoute = function beforeRoute(location) {
