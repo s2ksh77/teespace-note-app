@@ -42,6 +42,11 @@ const NoteStore = observable({
   i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
+  isSlashCmd: false,
+
+  setIsSlashCmd(flag){
+    this.isSlashCmd = flag;
+  },
   setMetaTagInfo({isOpen=false, type='', id=''}) {
     this.metaTagInfo = {isOpen, type, id};
   },
