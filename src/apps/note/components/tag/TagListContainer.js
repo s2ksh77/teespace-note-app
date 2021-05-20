@@ -61,7 +61,7 @@ const TagListContainer = () => {
   
   const onClickNewTagBtn = () => {
     toggleTagInput();
-    tagListCover.current.scrollTo({ left: 0, behavior: 'smooth' });
+    tagListCover.current.scrollTo({ left: 0 });
   }
   const handleChangeAddInput = e => setValue(checkMaxLength(e));
   /*
@@ -73,6 +73,8 @@ const TagListContainer = () => {
     else if (TagStore.isValidTag(value)) {
       const result = await TagStore.createNoteTag([value], PageStore.currentPageId);
       findNSelect(result.text); // 생성된 태그에 focus
+      setValue("");
+      return;
     }
     else NoteStore.setModalInfo('duplicateTagName');
     // input창 초기화
@@ -164,8 +166,37 @@ const TagListContainer = () => {
   const selectTag = (node) => {
     setSelectedId(node.id);
     selectedTag.current = node;
-    selectedTag.current?.focus();
-    selectedTag.current?.scrollIntoView({ inline: 'start' });
+    // selectedTag.current?.focus();
+
+    const isNew = isNewTag;
+    if (isNewTag) setIsNewTag(false);
+
+    const {
+      offsetWidth: tagListOffsetWidth,
+      offsetLeft: tagListOffsetLeft,
+      scrollLeft: tagListScrollLeft,
+    } = tagListCover.current;
+    const {
+      offsetWidth: selectedTagOffsetWidth,
+      offsetLeft: selectedTagOffsetLeft,
+    } = selectedTag.current;
+
+    const selectedTagLeft = selectedTagOffsetLeft - tagListOffsetLeft;
+    const selectedTagRight = selectedTagLeft + selectedTagOffsetWidth;
+    const tagListScrollRight = tagListScrollLeft + tagListOffsetWidth;
+    
+    if (tagListScrollLeft > selectedTagLeft) {
+      tagListCover.current?.scrollTo({ left: selectedTagLeft - 50 });
+      return;
+    }
+    
+    if (tagListScrollRight < selectedTagRight) {
+      if (isNew) {
+        tagListCover.current?.scrollTo({ left: selectedTagLeft - 50 });
+        return;
+      }
+      tagListCover.current?.scrollTo({ left: selectedTagRight - tagListOffsetWidth });
+    }
   }
 
   // tagList.current에 idx 키에 element가 있다
