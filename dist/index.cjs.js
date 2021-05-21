@@ -3158,11 +3158,8 @@ var EditorStore = mobx.observable((_observable = {
 }), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
 
-  // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?
   var isEmpty = NoteUtil.isEmpty;
-  if ((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) return true;
-  if (PageStore.isNewPage && isEmpty(TagStore.notetagList) && isEmpty(this.tempFileLayoutList) && isEmpty(this.fileLayoutList)) return false;
-  if (!PageStore.isNewPage) return false;
+  if (PageStore.isNewPage && !((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
   return true;
 }), _observable));
 
