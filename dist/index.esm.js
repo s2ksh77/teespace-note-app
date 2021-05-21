@@ -12852,8 +12852,7 @@ var TagListContainer = function TagListContainer() {
   var onClickNewTagBtn = function onClickNewTagBtn() {
     toggleTagInput();
     tagListCover.current.scrollTo({
-      left: 0,
-      behavior: 'smooth'
+      left: 0
     });
   };
 
@@ -12886,12 +12885,12 @@ var TagListContainer = function TagListContainer() {
                 break;
               }
 
-              _context.next = 14;
+              _context.next = 16;
               break;
 
             case 6:
               if (!TagStore.isValidTag(value)) {
-                _context.next = 13;
+                _context.next = 15;
                 break;
               }
 
@@ -12902,18 +12901,18 @@ var TagListContainer = function TagListContainer() {
               result = _context.sent;
               findNSelect(result.text); // 생성된 태그에 focus
 
-              _context.next = 14;
-              break;
+              setValue("");
+              return _context.abrupt("return");
 
-            case 13:
+            case 15:
               NoteStore.setModalInfo('duplicateTagName');
 
-            case 14:
+            case 16:
               // input창 초기화
               setIsNewTag(false);
               setValue("");
 
-            case 16:
+            case 18:
             case "end":
               return _context.stop();
           }
@@ -13042,14 +13041,47 @@ var TagListContainer = function TagListContainer() {
   };
 
   var selectTag = function selectTag(node) {
-    var _selectedTag$current, _selectedTag$current2;
-
     setSelectedId(node.id);
-    selectedTag.current = node;
-    (_selectedTag$current = selectedTag.current) === null || _selectedTag$current === void 0 ? void 0 : _selectedTag$current.focus();
-    (_selectedTag$current2 = selectedTag.current) === null || _selectedTag$current2 === void 0 ? void 0 : _selectedTag$current2.scrollIntoView({
-      inline: 'start'
-    });
+    selectedTag.current = node; // selectedTag.current?.focus();
+
+    var isNew = isNewTag;
+    if (isNewTag) setIsNewTag(false);
+    var _tagListCover$current = tagListCover.current,
+        tagListOffsetWidth = _tagListCover$current.offsetWidth,
+        tagListOffsetLeft = _tagListCover$current.offsetLeft,
+        tagListScrollLeft = _tagListCover$current.scrollLeft;
+    var _selectedTag$current = selectedTag.current,
+        selectedTagOffsetWidth = _selectedTag$current.offsetWidth,
+        selectedTagOffsetLeft = _selectedTag$current.offsetLeft;
+    var selectedTagLeft = selectedTagOffsetLeft - tagListOffsetLeft;
+    var selectedTagRight = selectedTagLeft + selectedTagOffsetWidth;
+    var tagListScrollRight = tagListScrollLeft + tagListOffsetWidth;
+
+    if (tagListScrollLeft > selectedTagLeft) {
+      var _tagListCover$current2;
+
+      (_tagListCover$current2 = tagListCover.current) === null || _tagListCover$current2 === void 0 ? void 0 : _tagListCover$current2.scrollTo({
+        left: selectedTagLeft - 50
+      });
+      return;
+    }
+
+    if (tagListScrollRight < selectedTagRight) {
+      var _tagListCover$current4;
+
+      if (isNew) {
+        var _tagListCover$current3;
+
+        (_tagListCover$current3 = tagListCover.current) === null || _tagListCover$current3 === void 0 ? void 0 : _tagListCover$current3.scrollTo({
+          left: selectedTagLeft - 50
+        });
+        return;
+      }
+
+      (_tagListCover$current4 = tagListCover.current) === null || _tagListCover$current4 === void 0 ? void 0 : _tagListCover$current4.scrollTo({
+        left: selectedTagRight - tagListOffsetWidth
+      });
+    }
   }; // tagList.current에 idx 키에 element가 있다
 
 
@@ -13066,12 +13098,12 @@ var TagListContainer = function TagListContainer() {
   };
 
   var handleTagChipKeyDown = function handleTagChipKeyDown(e) {
-    var _selectedTag$current3, _selectedTag$current4;
+    var _selectedTag$current2, _selectedTag$current3;
 
     switch (e.keyCode) {
       // left
       case 37:
-        if ((_selectedTag$current3 = selectedTag.current) !== null && _selectedTag$current3 !== void 0 && _selectedTag$current3.previousElementSibling) {
+        if ((_selectedTag$current2 = selectedTag.current) !== null && _selectedTag$current2 !== void 0 && _selectedTag$current2.previousElementSibling) {
           selectTag(selectedTag.current.previousElementSibling);
         }
 
@@ -13079,7 +13111,7 @@ var TagListContainer = function TagListContainer() {
       // right
 
       case 39:
-        if ((_selectedTag$current4 = selectedTag.current) !== null && _selectedTag$current4 !== void 0 && _selectedTag$current4.nextElementSibling) {
+        if ((_selectedTag$current3 = selectedTag.current) !== null && _selectedTag$current3 !== void 0 && _selectedTag$current3.nextElementSibling) {
           selectTag(selectedTag.current.nextElementSibling);
         }
 
