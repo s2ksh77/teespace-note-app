@@ -107,7 +107,6 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     const editorLanguage = language === 'en' ? language : 'ko_KR';
     NoteStore.setI18nLanguage(editorLanguage);
     if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
-    i18n.changeLanguage(language);
   }, [language])
 
   return useObserver(() => (
