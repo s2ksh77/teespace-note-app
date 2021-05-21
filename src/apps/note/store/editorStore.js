@@ -539,17 +539,15 @@ const EditorStore = observable({
     })
   },
   isEditCancelOpen() {
-    // NoteUtil.isEmpty(TagStore.notetagList)하면 array가 아니라 undefined로 넘어갈 때가 있다?
     const { isEmpty } = NoteUtil;
-    if (this.tinymce?.undoManager?.hasUndo()) return true;
     if (
       PageStore.isNewPage &&
-      isEmpty(TagStore.notetagList) &&
-      isEmpty(this.tempFileLayoutList) &&
-      isEmpty(this.fileLayoutList)
+      !this.tinymce?.undoManager?.hasUndo() &&
+      isEmpty(TagStore.notetagList || []) &&
+      isEmpty(this.tempFileLayoutList || []) &&
+      isEmpty(this.fileLayoutList || [])
     )
       return false;
-    if (!PageStore.isNewPage) return false;
     return true;
   },
 });
