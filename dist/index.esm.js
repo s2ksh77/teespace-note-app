@@ -5,7 +5,7 @@ import { useObserver, observer, Observer } from 'mobx-react';
 import { useDrag, useDrop, DndProvider, DragLayer } from 'react-dnd';
 import { getEmptyImage, HTML5Backend } from 'react-dnd-html5-backend';
 import { observable, toJS, action } from 'mobx';
-import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, logEvent, WaplSearch, ComponentStore, Button as Button$2, ItemSelector, Message, Toast } from 'teespace-core';
+import { API, UserStore, WWMS, RoomStore, EventBus, useCoreStores, logEvent, WaplSearch, ComponentStore, Button as Button$2, ItemSelector, Message, Toast, i18nInit } from 'teespace-core';
 import { isNil, isEmpty as isEmpty$1 } from 'ramda';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
@@ -15370,7 +15370,6 @@ var NoteApp = function NoteApp(_ref) {
     var editorLanguage = language === 'en' ? language : 'ko_KR';
     NoteStore.setI18nLanguage(editorLanguage);
     if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
-    i18n.changeLanguage(language);
   }, [language]);
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React.createElement(LoadingImgContainer, null) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LNB, {
@@ -15849,6 +15848,7 @@ function ShareNoteMessage(props) {
 }
 
 var initApp = function initApp() {
+  i18nInit(i18n);
   ComponentStore.register('Note:ShareNoteMessage', ShareNoteMessage);
   EventBus.on('onSlashCreateNote', SlashCmdNote);
 };

@@ -15403,7 +15403,6 @@ var NoteApp = function NoteApp(_ref) {
     var editorLanguage = language === 'en' ? language : 'ko_KR';
     NoteStore.setI18nLanguage(editorLanguage);
     if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
-    i18n.changeLanguage(language);
   }, [language]);
   return mobxReact.useObserver(function () {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
@@ -15882,6 +15881,7 @@ function ShareNoteMessage(props) {
 }
 
 var initApp = function initApp() {
+  teespaceCore.i18nInit(i18n);
   teespaceCore.ComponentStore.register('Note:ShareNoteMessage', ShareNoteMessage);
   teespaceCore.EventBus.on('onSlashCreateNote', SlashCmdNote);
 };
