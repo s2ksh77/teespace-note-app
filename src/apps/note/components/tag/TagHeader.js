@@ -1,31 +1,35 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import ContentHeader from '../common/ContentHeader';
 import {
   TagSearchForm,
   TagTitleSearchContainer,
   LnbTitleSearchInput,
-  HeaderDivider
+  HeaderDivider,
 } from '../../styles/titleStyle';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
-import { useObserver } from 'mobx-react';
-import searchImg from '../../assets/search.svg';
-import { CancelBtn, SearchImgInput } from '../../styles/commonStyle';
-import cancelImg from '../../assets/ts_cancel@3x.png';
-import { useTranslation } from 'react-i18next';
+import {
+  MediumButtonWrapper as SearchButton,
+  SmallButtonWrapper as CloseButton,
+} from '../../styles/commonStyle';
+import { SearchIcon, CloseIcon } from '../icons';
 
 const TagHeader = () => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
-  const activateSearchIcon = TagStore.isSearching || value !== "";
+  const activateSearchIcon = TagStore.isSearching || value !== '';
+  const themeContext = useContext(ThemeContext);
 
   // 뒤로가기 버튼 : lnb 영역(검색X인, 초기화된 챕터 리스트 나오도록 구현함)
   const onClickBackBtn = () => {
     NoteStore.setTargetLayout('LNB');
     ChapterStore.initSearchVar();
     ChapterStore.getNoteChapterList();
-  }
+  };
 
   const onSubmitForm = e => {
     e.preventDefault();
@@ -37,7 +41,7 @@ const TagHeader = () => {
     setValue(e.target.value);
   };
 
-  const onClickCancelBtn = e => {
+  const onClickCancelBtn = () => {
     setValue('');
     TagStore.setIsSearching(false);
     TagStore.setSearchStr('');
@@ -46,7 +50,7 @@ const TagHeader = () => {
 
   const handleKeyDown = e => {
     if (e.key === 'Escape') onClickCancelBtn();
-  }
+  };
 
   useEffect(() => {
     if (NoteStore.showPage) {
@@ -58,13 +62,22 @@ const TagHeader = () => {
 
   return useObserver(() => (
     <>
-      <ContentHeader
-        handleBackBtn={onClickBackBtn}
-        alignment={"right"}
-      >
-        <TagSearchForm onSubmit={onSubmitForm} show={TagStore.allSortedTagList.length > 0} >
-          <TagTitleSearchContainer isSearch={activateSearchIcon ? true : false}>
-            <SearchImgInput type="image" border="0" alt="tagSearchIcon" src={searchImg} isSearch={activateSearchIcon ? true : false} />
+      <ContentHeader handleBackBtn={onClickBackBtn} alignment="right">
+        <TagSearchForm
+          onSubmit={onSubmitForm}
+          show={TagStore.allSortedTagList.length > 0}
+        >
+          <TagTitleSearchContainer isSearch={!!activateSearchIcon}>
+            <SearchButton onClick={onSubmitForm}>
+              <SearchIcon
+                color={
+                  ChapterStore.searchStr !== '' ||
+                  ChapterStore.isSearching
+                    ? themeContext.Iconmain
+                    : themeContext.IconHinted
+                }
+              />
+            </SearchButton>
             <LnbTitleSearchInput
               autocomplete="off"
               ref={inputRef}
@@ -72,13 +85,14 @@ const TagHeader = () => {
               onChange={onChangeInput}
               placeholder={t('NOTE_TAG_TAG_MENU_05')}
               onKeyDown={handleKeyDown}
-              isSearch={activateSearchIcon ? true : false}
+              isSearch={!!activateSearchIcon}
             />
-            <CancelBtn
-              src={cancelImg}
-              visible={activateSearchIcon}
+            <CloseButton
               onClick={onClickCancelBtn}
-            />
+              visible={activateSearchIcon}
+            >
+              <CloseIcon width={0.75} height={0.75} />
+            </CloseButton>
           </TagTitleSearchContainer>
         </TagSearchForm>
         <HeaderDivider />
