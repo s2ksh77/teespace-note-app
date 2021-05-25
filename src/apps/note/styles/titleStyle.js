@@ -161,19 +161,25 @@ export const LnbTitleSearchContainer = styled.form`
   width: 14.81rem;
   height: 1.88rem;
   border-radius: 6px;
-  border: 1px solid transparent;
-  background-color: #f7f4ef;
+  &:hover {
+    background-color: ${props => props.theme.SubStateBright};
+    path {
+      fill: ${props => props.theme.IconNormal};
+    }
+  }
   &:focus-within {
-    background: #ffffff;
-    border: 1px solid #7b7671;
+    background-color: ${props => props.theme.StateNormal};
+    border: 1px solid ${props => props.theme.SubStateVivid};
+    path {
+      fill: ${props => props.theme.IconActive};
+    }
   }
   box-sizing: border-box;
   margin: auto 0;
   flex: 1;
   min-width: 10.6rem;
-  background-color: ${props => (props.isSearch ? '#FFFFFF' : '#F7F4EF')};
-  border: ${props =>
-    props.isSearch ? '1px solid #7B7671' : '1px solid transparent'};
+  background-color: ${props => props.theme.SubStateNormal};
+  border: 1px solid ${props => props.isTagSearching ? props.theme.SubStateVivid : 'transparent'};
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -192,19 +198,19 @@ export const LnbTitleSearchInput = styled.input`
   flex: auto;
   width: 13.3rem;
   align-self: center;
-  font-size: 0.81rem !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: ${props => props.theme.TextMain};
   background-color: inherit;
   border: 0rem;
   overflow: hidden;
   outline: none;
   &:focus {
-    background: #ffffff;
     outline: none;
   }
   &::placeholder {
-    color: #c9c4be;
+    color: ${props => props.theme.TextHinted}
   }
-  background-color: ${props => (props.isSearch ? '#FFFFFF;' : 'inherit;')};
 `;
 
 export const TagSearchForm = styled.form`
@@ -219,14 +225,20 @@ export const TagTitleSearchContainer = styled.div`
   width: 10.5rem;
   height: 1.88rem;
   border-radius: 6px;
-  border: 0rem solid #c6ced6;
-  background-color: #F7F4EF;
   box-sizing: border-box;
-  &:focus-within {
-    background: #FFFFFF;
-    border: 1px solid #7B7671;
+  &:hover {
+    background-color: ${props => props.theme.SubStateBright};
+    path {
+      fill: ${props => props.theme.IconNormal};
+    }
   }
-  background-color: ${props => (props.isSearch ? '#FFFFFF;' : '#F7F4EF;')}
-  border: ${props =>
-    props.isSearch ? '1px solid #7B7671;' : '0rem solid #c6ced6;'}
+  &:focus-within {
+    background-color: ${props => props.theme.StateNormal};
+    border: 1px solid ${props => props.theme.SubStateVivid};
+    path {
+      fill: ${props => props.theme.IconActive};
+    }
+  }
+  background-color: ${props => props.theme.SubStateNormal};
+  border: 1px solid transparent;
 `;

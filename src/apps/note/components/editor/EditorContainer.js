@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useEffect, useRef, useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
@@ -44,7 +44,7 @@ import {
 } from '../common/NoteFile';
 import { ComponentStore, useCoreStores, WaplSearch } from 'teespace-core';
 import Mark from 'mark.js';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
 import useSave from './useSave';
@@ -153,6 +153,7 @@ const EditorContainer = () => {
   const FilePreview = ComponentStore.get('Drive:FilePreview');
   const DriveSaveModal = ComponentStore.get('Drive:DriveSaveModal');
   const inputRef = useRef(null);
+  const themeContext = useContext(ThemeContext);
 
   const editorWrapperRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
@@ -348,6 +349,16 @@ const EditorContainer = () => {
         {EditorStore.isSearch ? (
           <ReadModeContainer ref={inputRef} style={{ display: 'flex' }}>
             <StyledWaplSearch
+              searchIconColor={{
+                default: !EditorStore.searchValue
+                  ? themeContext.IconHinted
+                  : themeContext.Iconmain,
+              }}
+              clearIconColor={{
+                default: !EditorStore.searchValue
+                  ? themeContext.IconHinted
+                  : themeContext.Iconmain,
+              }}
               onChange={handleSearchInputChange}
               placeholder={t('NOTE_EDIT_PAGE_SEARCH_03')}
               onEnterDown={handleSearchEditor}
@@ -766,15 +777,22 @@ export default EditorContainer;
 
 const StyledWaplSearch = styled(WaplSearch)`
   width: 100%;
-  background-color: #f7f4ef;
   margin: 0 0.438rem;
-  border-bottom: 0rem solid #17202b;
   border-radius: 0.375rem;
   &:hover:not(:focus-within) {
-    background-color: #f7f4ef !important;
+    background-color: ${props => props.theme.SubStateBright};
+    path {
+      fill: ${props => props.theme.IconNormal};
+    }
   }
   &:focus-within {
-    background-color: #ffffff;
-    border: 1px solid #7b7671;
+    background-color: ${props => props.theme.StateNormal};
+    border: 1px solid ${props => props.theme.SubStateVivid};
+    path {
+      fill: ${props => props.theme.IconActive};
+    }
   }
+  color: ${props => props.theme.TextMain};
+  border: 1px solid transparent;
+  background-color: ${props => props.theme.SubStateNormal};
 `;
