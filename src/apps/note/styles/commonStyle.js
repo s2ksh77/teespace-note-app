@@ -88,7 +88,23 @@ export const ButtonDiv = styled.div`
 export const Button = styled.img`
   width: 1rem;
   height: 1rem;
-  cursor:pointer;
+  cursor: pointer;
+`;
+
+export const MediumButtonWrapper = styled.div`
+  display: flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.375rem;
+  cursor: pointer;
+`;
+
+export const SmallButtonWrapper = styled.div`
+  display: flex;
+  width: 0.75rem;
+  height: 0.75rem;
+  cursor: pointer;
+  visibility: ${props => props.visible ? 'visible' : 'hidden'};
 `;
 
 export const CancelBtn = styled.img`
@@ -103,14 +119,14 @@ export const CancelBtn = styled.img`
 
 // 돋보기모양 submit btn
 export const SearchImgInput = styled.input`
-    width: 1rem;
-    height: 1rem;
-    cursor:pointer;
-    margin-right:0.43rem;
-    filter: ${props => (props.isSearch ? "invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);" : "invert(87%) sepia(11%) saturate(177%) hue-rotate(169deg) brightness(94%) contrast(91%);")}
-    &:hover{
-      filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);
-    }
+  width: 1rem;
+  height: 1rem;
+  cursor:pointer;
+  margin-right:0.43rem;
+  filter: invert(31%) sepia(0%) saturate(1197%) hue-rotate(255deg) brightness(97%) contrast(85%);
+  &:hover{
+    filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);
+  }
 `;
 
 export const SearchResultNotFoundCover = styled.div`

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import useNoteStore from '../../store/useStore';
 import {
   LnbTitleCover,
@@ -12,6 +12,8 @@ import cancelImg from '../../assets/ts_cancel@3x.png';
 import {
   PreBtnWrapper,
   Button,
+  MediumButtonWrapper as SearchButton,
+  SmallButtonWrapper as CloseButton,
   CancelBtn,
   SearchImgInput,
 } from '../../styles/commonStyle';
@@ -20,9 +22,10 @@ import HeaderButtons from '../common/buttons';
 import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
+import { SearchIcon, CloseIcon } from '../icons';
 
 const StyledCancelBtn = styled(CancelBtn)`
   margin-left: 0.69rem;
@@ -34,6 +37,7 @@ const LNBHeader = ({ createNewChapter }) => {
   const { t } = useTranslation();
   const inputRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
+  const themeContext = useContext(ThemeContext);
 
   // 뒤로 가기 버튼
   const handleLayoutBtn = e => {
@@ -99,23 +103,18 @@ const LNBHeader = ({ createNewChapter }) => {
         )}
         <LnbTitleSearchContainer
           onSubmit={onSubmitSearchBtn}
-          isSearch={
-            ChapterStore.searchStr !== '' || ChapterStore.isSearching
-              ? true
-              : false
-          }
+          isTagSearching={ChapterStore.isTagSearching}
         >
-          <SearchImgInput
-            type="image"
-            border="0"
-            alt=" "
-            src={searchImg}
-            isSearch={
-              ChapterStore.searchStr !== '' || ChapterStore.isSearching
-                ? true
-                : false
-            }
-          />
+          <SearchButton onClick={onSubmitSearchBtn}>
+            <SearchIcon 
+              color={
+                ChapterStore.searchStr !== '' ||
+                ChapterStore.isSearching
+                  ? themeContext.Iconmain
+                  : themeContext.IconHinted
+              }
+            />
+          </SearchButton>
           {ChapterStore.isTagSearching ? (
             <SearchTagChip>
               <TagText>{ChapterStore.searchingTagName}</TagText>
@@ -139,16 +138,14 @@ const LNBHeader = ({ createNewChapter }) => {
               onKeyDown={e => (e.key === 'Escape' ? onClickCancelBtn() : null)}
             />
           )}
-          <CancelBtn
-            src={cancelImg}
-            onClick={onClickCancelBtn}
+          <CloseButton onClick={onClickCancelBtn}
             visible={
-              !(
-                (!ChapterStore.isSearching && ChapterStore.searchStr === '') ||
-                ChapterStore.isTagSearching
-              )
+              (ChapterStore.isSearching || ChapterStore.searchStr !== '') &&
+              !ChapterStore.isTagSearching
             }
-          />
+          >
+            <CloseIcon width={0.75} height={0.75} />
+          </CloseButton>
         </LnbTitleSearchContainer>
         {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
       </LnbTitleCover>
