@@ -7709,8 +7709,18 @@ var LNBShareBorder = styled.div(_templateObject16(), function (_ref) {
   return props.theme.LineMain;
 });
 
-function _templateObject18() {
+function _templateObject19() {
   var data = _taggedTemplateLiteral(["\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 10.5rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  box-sizing: border-box;\n  &:hover {\n    background-color: ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  background-color: ", ";\n  border: 1px solid transparent;\n"]);
+
+  _templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject18() {
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  margin-left: auto;\n"]);
 
   _templateObject18 = function _templateObject18() {
     return data;
@@ -7720,7 +7730,7 @@ function _templateObject18() {
 }
 
 function _templateObject17() {
-  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  margin-left: auto;\n"]);
+  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.75rem;\n  font-weight: 500;\n  color: ", ";\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus {\n    outline: none;\n  }\n  &::placeholder {\n    color: ", "\n  }\n"]);
 
   _templateObject17 = function _templateObject17() {
     return data;
@@ -7730,7 +7740,7 @@ function _templateObject17() {
 }
 
 function _templateObject16$1() {
-  var data = _taggedTemplateLiteral(["\n  flex: auto;\n  width: 13.3rem;\n  align-self: center;\n  font-size: 0.75rem;\n  font-weight: 500;\n  color: ", ";\n  background-color: inherit;\n  border: 0rem;\n  overflow: hidden;\n  outline: none;\n  &:focus {\n    outline: none;\n  }\n  &::placeholder {\n    color: ", "\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
 
   _templateObject16$1 = function _templateObject16() {
     return data;
@@ -7740,7 +7750,7 @@ function _templateObject16$1() {
 }
 
 function _templateObject15$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  user-select: none;\n  font-size: 0.82rem;\n  color: #c6ced6;\n  margin-right: 0.43rem;\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  padding: 0;\n"]);
+  var data = _taggedTemplateLiteral(["\n      &:hover {\n        background-color: ", ";\n        path {\n          fill: ", ";\n        }\n      }\n  "]);
 
   _templateObject15$1 = function _templateObject15() {
     return data;
@@ -7750,7 +7760,7 @@ function _templateObject15$1() {
 }
 
 function _templateObject14$1() {
-  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  &:hover {\n    background-color: ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex: 1;\n  min-width: 10.6rem;\n  background-color: ", ";\n  border: 1px solid ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  padding: 0 0.63rem;\n  width: 14.81rem;\n  height: 1.88rem;\n  border-radius: 6px;\n  ", "\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  box-sizing: border-box;\n  margin: auto 0;\n  flex: 1;\n  min-width: 10.6rem;\n  background-color: ", ";\n  border: 1px solid ", ";\n"]);
 
   _templateObject14$1 = function _templateObject14() {
     return data;
@@ -7929,9 +7939,11 @@ var LnbTitleNewButton = styled.button(_templateObject13$1(), function (props) {
   return props.theme.DisabledShape;
 });
 var LnbTitleSearchContainer = styled.form(_templateObject14$1(), function (props) {
-  return props.theme.SubStateBright;
-}, function (props) {
-  return props.theme.IconNormal;
+  return !props.isTagSearching && css(_templateObject15$1(), function (props) {
+    return props.theme.SubStateBright;
+  }, function (props) {
+    return props.theme.IconNormal;
+  });
 }, function (props) {
   return props.theme.StateNormal;
 }, function (props) {
@@ -7939,20 +7951,20 @@ var LnbTitleSearchContainer = styled.form(_templateObject14$1(), function (props
 }, function (props) {
   return props.theme.IconActive;
 }, function (props) {
-  return props.theme.SubStateNormal;
+  return props.isTagSearching ? props.theme.StateNormal : props.theme.SubStateNormal;
 }, function (props) {
   return props.isTagSearching ? props.theme.SubStateVivid : 'transparent';
 });
-var LnbTitleSearchIcon = styled.button(_templateObject15$1());
-var LnbTitleSearchInput = styled.input(_templateObject16$1(), function (props) {
+var LnbTitleSearchIcon = styled.button(_templateObject16$1());
+var LnbTitleSearchInput = styled.input(_templateObject17(), function (props) {
   return props.theme.TextMain;
 }, function (props) {
   return props.theme.TextHinted;
 });
-var TagSearchForm = styled.form(_templateObject17(), function (props) {
+var TagSearchForm = styled.form(_templateObject18(), function (props) {
   return props.show ? 'block' : 'none';
 });
-var TagTitleSearchContainer = styled.div(_templateObject18(), function (props) {
+var TagTitleSearchContainer = styled.div(_templateObject19(), function (props) {
   return props.theme.SubStateBright;
 }, function (props) {
   return props.theme.IconNormal;
@@ -8240,10 +8252,10 @@ function _templateObject20() {
   return data;
 }
 
-function _templateObject19() {
+function _templateObject19$1() {
   var data = _taggedTemplateLiteral(["\n  width:8.13rem;\n"]);
 
-  _templateObject19 = function _templateObject19() {
+  _templateObject19$1 = function _templateObject19() {
     return data;
   };
 
@@ -8462,7 +8474,7 @@ var SearchImgInput = styled.input(_templateObject15$2());
 var SearchResultNotFoundCover = styled.div(_templateObject16$2());
 var SearchKeyword = styled.span(_templateObject17$1());
 var NoSearchResultTitle = styled.span(_templateObject18$1());
-var NoSearchResultImg = styled.img(_templateObject19());
+var NoSearchResultImg = styled.img(_templateObject19$1());
 var ContextMenuCover = styled(Dropdown)(_templateObject20(), function (props) {
   return props.right;
 }, function (props) {
@@ -8508,10 +8520,10 @@ function _templateObject20$1() {
   return data;
 }
 
-function _templateObject19$1() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: ", ";\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  background-color: ", ";\n  border-radius: 25px;\n  &:hover{\n    color: ", ";\n    background-color: ", ";\n  }\n"]);
+function _templateObject19$2() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding:0 0.63rem;\n  height: calc(100% - 0.26rem);\n  width: fit-content;\n  max-width: calc(100% - 1.88rem) !important;\n  color: ", ";\n  font-size: 0.81rem;\n  cursor: pointer;\n  user-select: none;\n  outline: none !important;\n  border: 1px solid ", ";\n  background-color: ", ";\n  border-radius: 25px;\n  &:hover{\n    color: ", ";\n    background-color: ", ";\n  }\n"]);
 
-  _templateObject19$1 = function _templateObject19() {
+  _templateObject19$2 = function _templateObject19() {
     return data;
   };
 
@@ -8737,8 +8749,10 @@ var TagChip = styled(Tag)(_templateObject18$2(), function (props) {
 }, function (props) {
   return props.theme.SubStateBright;
 });
-var SearchTagChip = styled(Tag)(_templateObject19$1(), function (props) {
+var SearchTagChip = styled(Tag)(_templateObject19$2(), function (props) {
   return props.theme.TextSub;
+}, function (props) {
+  return props.theme.SubStateVivid;
 }, function (props) {
   return props.theme.SubStateNormal;
 }, function (props) {
@@ -12774,10 +12788,10 @@ function _templateObject20$2() {
   return data;
 }
 
-function _templateObject19$2() {
+function _templateObject19$3() {
   var data = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"]);
 
-  _templateObject19$2 = function _templateObject19() {
+  _templateObject19$3 = function _templateObject19() {
     return data;
   };
 
@@ -12995,7 +13009,7 @@ var FileBody = styled.div(_templateObject14$4(), function (props) {
 });
 var FileContent = styled.div(_templateObject17$3());
 var FileDownloadIcon = styled.div(_templateObject18$3());
-var FileErrorIcon = styled.div(_templateObject19$2());
+var FileErrorIcon = styled.div(_templateObject19$3());
 var ProgressWrapper = styled.div(_templateObject20$2());
 var FileExtensionIcon = styled.div(_templateObject21$1(), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 

@@ -197,6 +197,7 @@ export const SearchTagChip = styled(Tag)`
   cursor: pointer;
   user-select: none;
   outline: none !important;
+  border: 1px solid ${props => props.theme.SubStateVivid};
   background-color: ${props => props.theme.SubStateNormal};
   border-radius: 25px;
   &:hover{
