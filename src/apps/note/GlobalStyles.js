@@ -5,8 +5,9 @@ export const GlobalStyle = createGlobalStyle`
     flex-grow:1;
   }
   .noteFocusedTag {
-    background-color: #DDD7CD;
-    border: 1px solid #7B7671;
+    color: ${props => props.theme.TextMain};
+    background-color: ${props => props.theme.SubStateDark};
+    border: 1px solid ${props => props.theme.SubStateVivid};
   }
   .readModeIcon{
      margin-left: 1.19rem;

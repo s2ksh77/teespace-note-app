@@ -158,31 +158,31 @@ export const TagChip = styled(Tag)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding:0 0.63rem;
+  padding: 0 0.63rem;
   margin-bottom: 0.4375rem;
   margin-top: 0.4375rem;
   margin-right: 0.38rem;
-  color: #3B3B3B;
-  font-size: 0.81rem;
-  font-weight: 400;
+  color: ${props => props.theme.TextSub};
+  font-size: 0.75rem;
+  font-weight: 500;
   border-radius: 1.563rem;
   text-overflow: ellipsis;
-  overflow:hidden;
+  overflow: hidden;
   height: 1.88rem;
   z-index: 1;
   float: left;
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: #F7F4EF;
+  background-color: ${props => props.theme.SubStateNormal};
   border: 1px solid transparent;
   border-radius: 25px;
   padding: 0 0.63rem;
   transition-duration: 0s;
-  &:hover{
-    color: #000000;
-    border: 1px solid #7B7671;
-    background-color: #EBE6DF;
+  &:hover {
+    color: ${props => props.theme.TextMain};
+    border: 1px solid ${props => props.theme.SubStateVivid};
+    background-color: ${props => props.theme.SubStateBright};
   }
 `;
 
