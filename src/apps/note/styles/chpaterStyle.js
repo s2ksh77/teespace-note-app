@@ -129,7 +129,7 @@ export const ChapterFolderBtn = styled.span`
   margin-left: 0.15rem;
   cursor: pointer;
   &:hover {
-    background-color: rgba(235, 230, 223, 1);
+    background-color: ${props => props.theme.BeigeBright};
   }
 `;
 

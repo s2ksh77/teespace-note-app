@@ -124,11 +124,9 @@ export const TagTxt = styled.div`
 export const { Panel } = Collapse;
 
 export const PanelHeader = styled(Panel)`
-    font-family: 'Noto Sans KR';
-    font-style: normal;
-    font-weight: 500;
-    font-size:13px;
-    font-color:#000000;
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 500;
 `
 
 export const StyledCollapse = styled(Collapse)`
@@ -194,16 +192,16 @@ export const SearchTagChip = styled(Tag)`
   height: calc(100% - 0.26rem);
   width: fit-content;
   max-width: calc(100% - 1.88rem) !important;
-  color: #000000;
+  color: ${props => props.theme.TextSub};
   font-size: 0.81rem;
   cursor: pointer;
   user-select: none;
   outline: none !important;
-  background-color: #F7F4EF;
+  border: 1px solid ${props => props.theme.SubStateVivid};
+  background-color: ${props => props.theme.SubStateNormal};
   border-radius: 25px;
-  border: 0px solid #7B7671;
   &:hover{
-    color: #000000;
+    color: ${props => props.theme.TextMain};
     background-color: ${props => props.theme.SubStateBright};
   }
 `;
@@ -211,7 +209,7 @@ export const SearchTagChip = styled(Tag)`
 export const TagChipNum = styled.div`
   font-size: 0.688rem;
   margin-left: auto;
-  color: #7B7671;
+  color: ${props => props.theme.BeigeVivid};
   padding-left:0.4rem;
   line-height:normal;
 `;

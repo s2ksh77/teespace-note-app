@@ -4,11 +4,13 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useContext,
 } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import ChapterColor from './ChapterColor';
 import ChapterText from './ChapterText';
@@ -17,11 +19,8 @@ import {
   ChapterContainer,
   ChapterCover,
   ChapterTextInput,
-  ChapterShareIcon,
 } from '../../styles/chpaterStyle';
-import trashImg from '../../assets/trash.svg';
-import shareImg from '../../assets/share_1.svg';
-import sharedPageImg from '../../assets/page_shared.svg';
+import { TrashIcon, ShareIcon, SharedPageIcon } from '../icons';
 import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import NoteUtil from '../../NoteUtil';
 import { checkMaxLength } from '../common/validators';
@@ -29,6 +28,7 @@ import { checkMaxLength } from '../common/validators';
 const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
+  const themeContext = useContext(ThemeContext);
   const chapterContainerRef = useRef(null);
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(
@@ -202,25 +202,16 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     if (!isShared) {
       if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN)
         return (
-          <ChapterShareIcon
-            selected={ChapterStore.currentChapterId === id}
-            src={trashImg}
-          />
+          <TrashIcon color={themeContext.SubStateVivid} />
         );
       return <ChapterColor color={color} chapterId={id} />;
     }
     if (chapter.type === 'shared_page')
       return (
-        <ChapterShareIcon
-          selected={ChapterStore.currentChapterId === id}
-          src={sharedPageImg}
-        />
+        <SharedPageIcon color={themeContext.SubStateVivid} />
       );
     return (
-      <ChapterShareIcon
-        selected={ChapterStore.currentChapterId === id}
-        src={shareImg}
-      />
+      <ShareIcon color={themeContext.SubStateVivid} />
     );
   };
 

@@ -1,12 +1,15 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import tagImg from '../../assets/add_tag.svg';
 import { LnbTagContainer, TagImg, TagTxt } from '../../styles/tagStyle';
+import { AddTagIcon } from '../icons';
 
 const LNBTag = memo(({ flexOrder }) => {
   const { NoteStore, PageStore } = useNoteStore();
+  const themeContext = useContext(ThemeContext);
   const { t } = useTranslation();
 
   const onClickTagMenuBtn = () => {
@@ -24,7 +27,7 @@ const LNBTag = memo(({ flexOrder }) => {
         order={flexOrder}
         onClick={onClickTagMenuBtn}
       >
-        <TagImg showTag={!NoteStore.showPage} src={tagImg} alt="tagImg" />
+        <AddTagIcon color={themeContext.SubStateVivid} />
         <TagTxt>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</TagTxt>
       </LnbTagContainer>
     </>

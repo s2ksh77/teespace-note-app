@@ -28,14 +28,16 @@ export const GlobalStyle = createGlobalStyle`
     height: 2.81rem !important;
     display: flex;
     align-items:center;
-    border-bottom: 1px solid #EEEDEB !important;
+    border-bottom: 1px solid ${props => props.theme.LineSub} !important;
     padding: 0 0.75rem !important;
-    background-color: #FFFFFF;
-    color: #000000;
+    background-color: ${props => props.theme.StateNormal};
+    color: ${props => props.theme.TextMain} !important;
     font-size: 0.8125rem;
   }
   .ant-collapse-content {
     border:0 !important;
+    background-color: ${props => props.theme.StateNormal};
+    color: ${props => props.theme.TextMain};
   }
   .ant-collapse-content-box {
     padding: 10px 2.51rem !important;
@@ -360,7 +362,10 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0.1875rem 0.75rem;
     font-size: 0.75rem;
     line-height: 1.25rem;
-    color: #000;
+    color: ${props => props.theme.TextMain};
+    :hover {
+      background-color: inherit;
+    }
   }
   .ant-dropdown-menu-submenu-popup ul{
     margin: 0;
