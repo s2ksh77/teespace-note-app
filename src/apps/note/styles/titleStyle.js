@@ -136,17 +136,20 @@ export const LnbTitleNewButton = styled.button`
   justify-content: center;
   border: 0px solid #ffffff;
   border-radius: 0.25rem;
-  background-color: #232d3b;
+  background-color: ${props => props.theme.CoreNormal};
   min-width: 4.5rem;
   &:hover {
-    background-color: #4c535d;
+    background-color: ${props => props.theme.CoreLight};
     cursor: pointer;
+  }
+  &:active {
+    background: ${props => props.theme.CoreDark};
   }
   &:focus {
     outline: none;
   }
   &:disabled {
-    background: #ccc;
+    background: ${props => props.theme.DisabledShape};
     color: #fff;
     border: 0;
     cursor: not-allowed;

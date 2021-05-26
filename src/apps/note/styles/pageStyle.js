@@ -37,27 +37,23 @@ export const PageTextContainer = styled.span`
   border-radius: 0.31rem;
   align-items: center;
   &:hover:not(.ellipsisBtn){
-    background-color: #FAF8F7;
+    background-color: ${props => props.theme.StateBright};
     border-radius: 0.31rem;
   }
   &:active:not(.ellipsisBtn) {
-    background-color: #F2EFEC;
+    background-color: ${props => props.theme.StateDark};
   }
 `;
 
-export const PageText = styled.a`
+export const PageText = styled.span`
   display: inline-block;
   cursor: pointer;
   margin-left: 1.25rem;
   line-height: 1.1rem;
-  color: #000000 !important;
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  &:hover {
-    color: #000000;
-  }
 `;
 
 export const PageTextInput = styled.input`
@@ -91,10 +87,10 @@ export const NewPageBtn = styled.div`
   border-radius: 0.31rem;
   cursor: pointer;
   &:hover {
-    background-color: #FAF8F7;
+    background-color: ${props => props.theme.StateBright};
   }
   &:active {
-    background-color: #F2EFEC;
+    background-color: ${props => props.theme.StateDark};
   }
 `;
 
