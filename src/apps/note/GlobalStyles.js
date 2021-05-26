@@ -362,7 +362,10 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0.1875rem 0.75rem;
     font-size: 0.75rem;
     line-height: 1.25rem;
-    color: #000;
+    color: ${props => props.theme.TextMain};
+    :hover {
+      background-color: inherit;
+    }
   }
   .ant-dropdown-menu-submenu-popup ul{
     margin: 0;
