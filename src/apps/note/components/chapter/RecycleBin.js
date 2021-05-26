@@ -1,23 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import ChapterText from './ChapterText';
 import PageList from '../page/PageList';
-import {
-  ChapterContainer,
-  ChapterCover,
-  ChapterShareIcon,
-} from '../../styles/chpaterStyle';
-import trashImg from '../../assets/trash.svg';
+import { ChapterContainer, ChapterCover } from '../../styles/chpaterStyle';
+import { TrashIcon } from '../icons';
 import { DRAG_TYPE } from '../../GlobalVariable';
-import NoteUtil from '../../NoteUtil';
 
 const RecycleBin = ({ chapter, index, flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore } = useCoreStores();
+  const themeContext = useContext(ThemeContext);
   const { t } = useTranslation();
   // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(true);
@@ -148,7 +145,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             : null
         }
       >
-        <ChapterShareIcon src={trashImg} />
+        <TrashIcon color={themeContext.SubStateVivid} />
         <ChapterText
           chapter={chapter}
           index={index}
