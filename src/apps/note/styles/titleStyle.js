@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // contents가 tag일 때
 export const EditorHeaderContainer1 = styled.div`
@@ -172,12 +172,15 @@ export const LnbTitleSearchContainer = styled.form`
   width: 14.81rem;
   height: 1.88rem;
   border-radius: 6px;
-  &:hover {
-    background-color: ${props => props.theme.SubStateBright};
-    path {
-      fill: ${props => props.theme.IconNormal};
-    }
-  }
+  ${props =>
+    !props.isTagSearching && css`
+      &:hover {
+        background-color: ${props => props.theme.SubStateBright};
+        path {
+          fill: ${props => props.theme.IconNormal};
+        }
+      }
+  `}
   &:focus-within {
     background-color: ${props => props.theme.StateNormal};
     border: 1px solid ${props => props.theme.SubStateVivid};
@@ -189,7 +192,7 @@ export const LnbTitleSearchContainer = styled.form`
   margin: auto 0;
   flex: 1;
   min-width: 10.6rem;
-  background-color: ${props => props.theme.SubStateNormal};
+  background-color: ${props => props.isTagSearching ? props.theme.StateNormal : props.theme.SubStateNormal};
   border: 1px solid ${props => props.isTagSearching ? props.theme.SubStateVivid : 'transparent'};
 `;
 
