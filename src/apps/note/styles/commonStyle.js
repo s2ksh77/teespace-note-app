@@ -168,7 +168,7 @@ export const ContextMenuCover = styled(Dropdown)`
   align-items: center;
   justify-content: center;
   &:hover {
-    background-color: rgba(235, 230, 223, 1);
+    background-color: ${props => props.theme.BeigeBright};
   }
 `;
 
