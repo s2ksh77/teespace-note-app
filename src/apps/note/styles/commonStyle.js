@@ -24,7 +24,7 @@ export const PreBtnWrapper = styled.div`
   cursor:pointer;
   padding: 8px;
   &:hover{
-    background: #ebe6df;
+    background: ${props => props.theme.BeigeBright};
     border-radius: 0.25rem;
     cursor: pointer;
   }
@@ -38,7 +38,7 @@ export const ContentBodyCover = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1.25rem 0.75rem;
-  border-top: 1px solid #DDD9D4;
+  border-top: 1px solid ${props => props.theme.LineMain};
 `;
 
 export const NoneContainer = styled.div`
@@ -77,7 +77,7 @@ export const ButtonDiv = styled.div`
   height: 1.5rem;
   cursor: pointer;
   &:hover{
-    background: #ebe6df;
+    background: ${props => props.theme.BeigeBright};
     border-radius: 0.25rem;
   }
   & + div {
@@ -189,7 +189,7 @@ export const MessageCover = styled.div`
   padding: 0.56rem 0.75rem;
   box-sizing: border-box;
   border-radius: 12px;
-  border: 1px solid #DDD9D4;
+  border: 1px solid ${props => props.theme.LineMain};
   background-color: #FAF8F5;
   cursor: pointer;
   &:hover {

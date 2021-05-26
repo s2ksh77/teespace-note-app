@@ -7,6 +7,7 @@ export const EditorHeaderContainer1 = styled.div`
   position: relative;
   align-items: center;
   width: 80%;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const EditBtn = styled.button`
@@ -18,16 +19,19 @@ export const EditBtn = styled.button`
   align-items: center;
   border-radius: 0.25rem;
   border: 0px solid #ffffff;
-  background-color: #232d3b;
+  background-color: ${props => props.theme.CoreNormal};
   &:hover {
-    background-color: #4c535d;
+    background-color: ${props => props.theme.CoreBright};
     cursor: pointer;
   }
   &:focus {
     outline: none;
   }
+  &:active {
+    background: ${props => props.theme.CoreDark};
+  }
   &:disabled {
-    background: #ccc;
+    background: ${props => props.theme.DisabledShape};
     color: #fff;
     border: 0;
     cursor: not-allowed;
@@ -50,7 +54,7 @@ export const EditorTitle = styled.input`
   font-size: 0.875rem;
   font-style: inherit;
   font-weight: inherit;
-  background-color: #ffffff;
+  background-color: inherit;
   border: 0rem solid #d3dbdf !important;
 `;
 
@@ -62,11 +66,12 @@ export const EditorHeaderContainer2 = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: auto;
+  color: ${props => props.theme.TextSub};
 `;
 export const HeaderDivider = styled.div`
   width: 1px;
   height: 24px;
-  background: #ddd9d4;
+  background: ${props => props.theme.LineMain};
   margin: auto 0.56rem;
 `;
 export const EditingImg = styled.img`
@@ -74,13 +79,11 @@ export const EditingImg = styled.img`
 `;
 
 export const ModifiedUser = styled.span`
-  color: rgb(0, 0, 0);
   font-size: 0.6875rem;
   padding: 0 0.38rem 0 0 !important;
 `;
 
 export const AutoSaveMsg = styled.span`
-  color: #2e6360;
   font-size: 0.6875rem;
   margin-right: 0.5rem;
 `;
@@ -88,9 +91,8 @@ export const AutoSaveMsg = styled.span`
 export const ModifiedTime = styled.span`
   width: auto;
   height: auto;
-  color: rgb(0, 0, 0);
   font-size: 0.6875rem;
-  border-left: 1px solid #d8d8d8 !important;
+  border-left: 1px solid ${props => props.theme.LineMain} !important;
   padding: 0 0.38rem !important;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -98,16 +100,22 @@ export const ModifiedTime = styled.span`
 `;
 
 export const EditorSearchIconDiv = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   padding: 8px;
+  justify-content: center;
+  align-items: center;
   &:hover {
-    background: #ebe6df;
+    background: ${props => props.theme.BeigeBright};
     border-radius: 0.25rem;
     cursor: pointer;
   }
 `;
 
 export const EditorSearchIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
   filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg)
     brightness(93%) contrast(92%);
 `;

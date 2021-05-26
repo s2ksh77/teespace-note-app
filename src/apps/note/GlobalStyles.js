@@ -89,7 +89,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   .custom-dialog-header {
     height: 2.75rem !important;
-    border-bottom: 1px solid #DDD9D4 !important;
+    border-bottom: 1px solid ${props => props.theme.LineMain} !important;
     font-size: 0.875rem !important;
     color: #000000 !important;
   }
@@ -255,7 +255,7 @@ export const GlobalStyle = createGlobalStyle`
 
  .tox .tox-dialog__footer.custom-dialog-footer {
    padding: 0;
-   border-top: 1px solid #DDD9D4;
+   border-top: 1px solid ${props => props.theme.LineMain};
  }
 
  .tox .custom-dialog-btns.tox-button {
@@ -442,7 +442,8 @@ export const Content = styled.div`
   height: 100%;
   overflow-x: hidden;
   position: relative;
-  border-left: ${props => (props.isBorderLeft ? '1px solid  #DDD9D4' : '0px')};
+  border-left: ${props => (props.isBorderLeft ? `1px solid ${props.theme.LineMain}` : '0px')};
+  background-color: ${props => props.theme.StateNormal};
 `;
 
 export const CenterContent = styled.div`
