@@ -2,13 +2,13 @@ import { Progress } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const EditorContainerWrapper = styled.div`
-  display:flex;
-  flex-direction:column;
-  width:100%;
-  height:100%;
-  .tox-tinymce{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  .tox-tinymce {
     border-left: 0px solid black;
-    border-color: #DDD9D4;
+    border-color: ${props => props.theme.LineMain};
     flex: 1;
   }
   ${props => (!props.isReadMode && !props.isSearch) && css`
@@ -43,7 +43,7 @@ export const PageContentLayoutChangeBtnArea = styled.span`
 export const ReadModeContainer = styled.div`
   width: 100%;
   height: 2.81rem;
-  border-top: 1px solid #DDD9D4;
+  border-top: 1px solid ${props => props.theme.LineMain};
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -98,7 +98,7 @@ export const FileBodyLayout = styled.div`
   display : flex;
   align-items: center;
   height: 4.19rem;
-  border-bottom: 1px solid #DDD9D4;
+  border-bottom: 1px solid ${props => props.theme.LineMain};
   overflow: hidden;
   box-sizing :border-box;
   padding: 0rem 0.5rem;
@@ -324,7 +324,7 @@ export const editorContentCSS = `
     border: 1px solid #ccc;
   }
   .mce-content-body{
-    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem) !important;
+    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem);
     background-size: 0.625rem 0.625rem !important;
   }
   img {

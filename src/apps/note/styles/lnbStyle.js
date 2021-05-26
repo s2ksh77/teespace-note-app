@@ -21,7 +21,8 @@ export const LNBChapterCover = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #ddd9d4;
+  border-top: 1px solid ${props => props.theme.LineMain};
+  color: ${props => props.theme.TextMain};
 `;
 
 export const LNBNewChapter = styled.div`
@@ -162,6 +163,6 @@ export const RecycleBinTxt = styled.div`
 export const LNBShareBorder = styled.div`
   display: flex;
   order: ${({ order }) => order};
-  border-bottom: 0.06rem solid #ddd9d4;
+  border-bottom: 0.06rem solid ${props => props.theme.LineMain};
   margin: 0 0.81rem;
 `;

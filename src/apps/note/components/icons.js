@@ -14,7 +14,6 @@ export const SearchIcon = React.memo(
         viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
         version="1.1"
       >
-        <title>Icon/common/search</title>
         <g
           id="Icon/common/search"
           stroke="none"
@@ -47,7 +46,6 @@ export const CloseIcon = React.memo(
         viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
         version="1.1"
       >
-        <title>Icon/common/close</title>
         <g
           id="Icon/common/close"
           stroke="none"
@@ -62,6 +60,37 @@ export const CloseIcon = React.memo(
             id="Fill-1"
             fill={color}
           />
+        </g>
+      </svg>
+    );
+  },
+);
+
+export const ArrowBackIcon = React.memo(
+  ({ width = 1, height = 1, color = '#666' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/common/arrow_back_1"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth},
+          ${(height * REM_UNIT) / defaultHeight})`}
+        >
+          <path
+            d="M14.7142,5.3081 C14.3322,4.9111 13.6982,4.8951 13.3002,5.2771 L7.3912,10.9371 C6.8602,11.5331 6.8602,12.4661 7.4462,13.1201 L13.3002,18.7221 C13.4932,18.9081 13.7422,18.9991 13.9912,18.9991 C14.2542,18.9991 14.5182,18.8961 14.7142,18.6911 C15.0962,18.2911 15.0822,17.6591 14.6832,17.2771 L9.1652,12.0011 L14.6832,6.7221 C15.0822,6.3401 15.0962,5.7071 14.7142,5.3081"
+            id="Fill-1"
+            fill={color} />
         </g>
       </svg>
     );

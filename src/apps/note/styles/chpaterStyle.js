@@ -25,16 +25,16 @@ export const ChapterCover = styled.div`
   margin: 4px 0 4px 0;
   align-items: center;
   font-weight: 500;
-  border-bottom: 0.06rem solid #eeedeb;
+  border-bottom: 0.06rem solid ${props => props.theme.LineSub};
   &:hover .ellipsisBtn {
     visibility: visible;
   }
   &:hover {
-    background-color: #FAF8F7;
+    background-color: ${props => props.theme.StateBright};
     border-radius: 0.31rem;
   }
   &:active {
-    background-color: #FFFFFF;
+    background-color: ${props => props.theme.StateNormal};
     border-radius: unset;
   }
 `;
