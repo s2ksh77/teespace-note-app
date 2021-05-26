@@ -15,10 +15,10 @@ export const GlobalStyle = createGlobalStyle`
     border: 1px solid #EC6222 !important;
   }
   .selected{
-    background-color: #F2EFEC;
+    background-color: ${props => props.theme.StateDark};
   }
   .selectedMenu {
-    color: #205855;
+    color: ${props => props.theme.TextPoinGreen};
   } 
   .ant-collapse {
     border:0;
@@ -433,6 +433,7 @@ export const LNB = styled.div`
   height: 100%;
   flex: 1 1 17.06rem;
   min-width: 17.06rem;
+  background-color: ${props => props.theme.StateNormal};
 `;
 export const Content = styled.div`
   display: ${props => (props.show ? 'flex' : 'none')};

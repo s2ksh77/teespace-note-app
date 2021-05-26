@@ -99,12 +99,12 @@ export const LnbTagContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  border-bottom: 0.06rem solid #eeedeb;
+  border-bottom: 0.06rem solid ${props => props.theme.LineSub};
   margin: 0 0.81rem;
   order: ${props => props.order};
   color: ${props => props.color || ''};
   &:hover {
-    background-color: #FAF8F7;
+    background-color: ${props => props.theme.StateBright};
     border-radius: 0.31rem;
   }
 `;
@@ -204,7 +204,7 @@ export const SearchTagChip = styled(Tag)`
   border: 0px solid #7B7671;
   &:hover{
     color: #000000;
-    background-color: #EBE6DF;
+    background-color: ${props => props.theme.SubStateBright};
   }
 `;
 
