@@ -37,7 +37,7 @@ export const LNBNewChapter = styled.div`
   width: auto;
   height: 2.81rem;
   font-weight: 500;
-  border-bottom: 0.06rem solid #eeedeb;
+  border-bottom: 0.06rem solid ${props => props.theme.LineSub};
 `;
 
 // search 관련
