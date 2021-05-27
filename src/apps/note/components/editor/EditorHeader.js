@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores, logEvent, EventBus } from 'teespace-core';
+import { useCoreStores, logEvent } from 'teespace-core';
 import Mark from 'mark.js';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import {
   EditorHeaderContainer1,
@@ -14,13 +15,12 @@ import {
   ModifiedUser,
   ModifiedTime,
   EditorSearchIconDiv,
-  EditorSearchIcon,
   HeaderDivider,
 } from '../../styles/titleStyle';
+import { SearchIcon } from '../icons';
 import ContentHeader from '../common/ContentHeader';
 import waplWorking from '../../assets/wapl_working.svg';
 import { handleFileSync } from '../common/NoteFile';
-import searchImg from '../../assets/search.svg';
 import { checkMaxLength } from '../common/validators';
 
 const EditorHeader = () => {
@@ -28,6 +28,7 @@ const EditorHeader = () => {
   const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
   const instance = new Mark(EditorStore.tinymce?.getBody());
+  const themeContext = useContext(ThemeContext);
 
   const initialSearch = () => {
     instance.unmark();
@@ -94,13 +95,12 @@ const EditorHeader = () => {
     initialSearch();
   };
 
-  const handleOnEditCancel = (e) => {
+  const handleOnEditCancel = e => {
     e.stopPropagation();
     PageStore.editCancel();
-    return;
-  }
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     // 수정모드 시 룸 생성 버튼 및 메일 탭 임시 editCancel 적용
     if (!PageStore.isReadMode()) {
       document.querySelector('.rooms__create-button').addEventListener('click', handleOnEditCancel);
@@ -153,7 +153,11 @@ const EditorHeader = () => {
             </>
           )}
           <EditorSearchIconDiv onClick={handleSearchEditor}>
-            <EditorSearchIcon src={searchImg} />
+            <SearchIcon
+              width={1}
+              height={1}
+              color={themeContext.IconNormal}
+            />
           </EditorSearchIconDiv>
         </EditorHeaderContainer2>
         <HeaderDivider />

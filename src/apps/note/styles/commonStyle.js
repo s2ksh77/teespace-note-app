@@ -24,7 +24,7 @@ export const PreBtnWrapper = styled.div`
   cursor:pointer;
   padding: 8px;
   &:hover{
-    background: ${props => props.theme.BeigeBright};
+    background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
     cursor: pointer;
   }
@@ -77,7 +77,7 @@ export const ButtonDiv = styled.div`
   height: 1.5rem;
   cursor: pointer;
   &:hover{
-    background: ${props => props.theme.BeigeBright};
+    background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
   }
   & + div {

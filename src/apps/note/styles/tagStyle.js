@@ -24,11 +24,9 @@ export const EditorTagCover = styled.div`
 
 export const TagNewBtn = styled.div`
   display: flex;
-  flex: 0 0 1.25rem;
-  border: none;
+  width: 1.25rem;
+  height: 1.25rem;
   margin-right: 0.63rem;
-  align-self: center;
-  background-color: transparent;
   cursor: pointer;
 `;
 
