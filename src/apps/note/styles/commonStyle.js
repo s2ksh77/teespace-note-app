@@ -168,7 +168,7 @@ export const ContextMenuCover = styled(Dropdown)`
   align-items: center;
   justify-content: center;
   &:hover {
-    background-color: ${props => props.theme.BeigeBright};
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 
@@ -189,11 +189,10 @@ export const MessageCover = styled.div`
   padding: 0.56rem 0.75rem;
   box-sizing: border-box;
   border-radius: 12px;
-  border: 1px solid ${props => props.theme.LineMain};
-  background-color: #FAF8F5;
+  background-color: ${props => props.theme.StateNormal};
   cursor: pointer;
   &:hover {
-    text-decoration:underline;
+    text-decoration: underline;
   }
 `;
 
@@ -202,12 +201,12 @@ export const TextCover = styled.div`
   flex-direction: column;
   width: calc(100% - 2.5rem);
   overflow: hidden;
-  margin-left:0.75rem;
+  margin-left: 0.75rem;
 `;
 
 export const NoteType = styled.span`
   font-size: 0.563rem;
-  color: #75757F;
+  color: ${props => props.theme.TextSub};
 `;
 
 export const NoteTitle = styled.span`
@@ -216,8 +215,9 @@ export const NoteTitle = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size:0.75rem;
-  color: #000000;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const RoomShareCover = styled.div`

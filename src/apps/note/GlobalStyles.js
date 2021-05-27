@@ -377,6 +377,11 @@ export const GlobalStyle = createGlobalStyle`
   .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {
     background-color: unset;
   }
+  .ant-dropdown-menu-submenu-expand-icon {
+    svg {
+      fill : ${props => props.theme.BeigeVivid};
+    }
+  }
   .ant-dropdown::before{
     bottom:0 !important;
   }
