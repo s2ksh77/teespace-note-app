@@ -69,17 +69,19 @@ export const ChapterTextInput = styled.input`
   display: flex;
   width: 100%;
   height: 100%;
-  padding-left: ${(props) => props.paddingLeft};
+  padding-left: ${props => props.paddingLeft};
   padding-right: 1.69rem;
   font-weight: 500;
   border: none;
   outline: none;
+  color: ${props => props.theme.TextMain};
+  background-color: transparent;
   &::placeholder {
-    color: #D0D0D0;
+    color: ${props => props.theme.TextHinted};
   }
   &::selection {
-    background: #F2EFEC;
-    color: #000000;
+    background-color: ${props => props.theme.StateDark};
+    color: ${props => props.theme.TextMain};
   }
 `;
 
@@ -129,7 +131,7 @@ export const ChapterFolderBtn = styled.span`
   margin-left: 0.15rem;
   cursor: pointer;
   &:hover {
-    background-color: ${props => props.theme.BeigeBright};
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 
@@ -141,21 +143,20 @@ export const ChapterFoldBtnIcon = styled.img`
 
 export const ChapterInput = styled.input`
   font-size: 0.81rem !important;
-  color: #000000 !important;
+  color: ${props => props.theme.TextMain};
   width: 100%;
   height: 100%;
   overflow: hidden;
   align-self: center;
   border: 0rem !important;
-  background-color: transparent !important;
+  background-color: transparent;
   padding-left: 1.69rem;
-  // padding-right: 0.3125rem;
   &::placeholder {
-    color: #D0D0D0;
+    color: ${props => props.theme.TextHinted};
   }
   &::selection {
-    background: #F2EFEC;
-    color: #000000;
+    background: ${props => props.theme.StateDark};
+    color: ${props => props.theme.TextMain};
   }
   &:focus {
     outline: none;

@@ -65,12 +65,14 @@ export const PageTextInput = styled.input`
   font-weight: 400;
   border: none;
   outline: none;
+  color: ${props => props.theme.TextMain};
+  background-color: transparent;
   &::placeholder {
-    color: #D0D0D0;
+    color: ${props => props.theme.TextHinted};
   }
   &::selection {
-    background: #F2EFEC;
-    color: #000000;
+    background: ${props => props.theme.StateDark};
+    color: ${props => props.theme.TextMain};
   }
 `;
 
