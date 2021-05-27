@@ -103,11 +103,10 @@ export const EditorSearchIconDiv = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
-  padding: 8px;
   justify-content: center;
   align-items: center;
   &:hover {
-    background: ${props => props.theme.BeigeBright};
+    background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
     cursor: pointer;
   }

@@ -1,8 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import 'antd/dist/antd.css';
+import { Tooltip } from 'antd';
+import { logEvent, useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import {
+  EditorTagCover,
   TagChip,
   TagNewBtn,
   TagNewBtnIcon,
@@ -10,20 +15,18 @@ import {
   TagInput,
   TagText,
 } from '../../styles/tagStyle';
-import { EditorTagCover } from '../../styles/tagStyle';
+import { AddTagIcon } from '../icons';
 import tagImage from '../../assets/add_tag.svg';
-import { Tooltip } from 'antd';
-import { isFilled, checkWhitespace, checkMaxLength } from '../common/validators';
+import { checkWhitespace, checkMaxLength } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
-import { logEvent, useCoreStores } from 'teespace-core';
-import { useTranslation } from 'react-i18next';
-/** 
+/**
  * TagStore 변수 제거
  */
 const TagListContainer = () => {
   const { NoteStore, TagStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
   // 새로운 태그 만들 때
   const [value, setValue] = useState('');
   const preventBlur = useRef(false);
@@ -234,11 +237,23 @@ const TagListContainer = () => {
   return useObserver(() => (
     <>
       <EditorTagCover>
-        {authStore.hasPermission('notePage', 'U') && <Tooltip title={!PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')}>
-          <TagNewBtn>
-            <TagNewBtnIcon src={tagImage} onClick={onClickNewTagBtn} />
-          </TagNewBtn>
-        </Tooltip>}
+        {authStore.hasPermission('notePage', 'U') && (
+          <Tooltip
+            title={
+              !PageStore.isReadMode()
+                ? t('NOTE_ADD_TAGS_01')
+                : t('NOTE_ADD_TAGS_02')
+            }
+          >
+            <TagNewBtn onClick={onClickNewTagBtn}>
+              <AddTagIcon
+                width={1.25}
+                height={1.25}
+                color={themeContext.IconNormal}
+              />
+            </TagNewBtn>
+          </Tooltip>
+        )}
         {isNewTag && <TagInput
           maxLength="50"
           value={value}
