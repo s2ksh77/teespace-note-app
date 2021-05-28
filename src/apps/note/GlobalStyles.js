@@ -51,6 +51,9 @@ export const GlobalStyle = createGlobalStyle`
   .mce-tinymce iframe{
     flex: 1;
   }
+  .tox {
+    font-family : "Noto Sans KR", sans-serif !important;
+  }
   .tox-edit-area__iframe html{
     height:100% !important;
   }
@@ -99,16 +102,13 @@ export const GlobalStyle = createGlobalStyle`
   .custom-link-dialog {
     height:auto !important;
   }
-  .custom-dialog-title {
-    font-weight: bold !important;
-    margin: auto !important;
-  }
   .custom-dialog-form > .tox-form__group{
     position:relative;
   }
   .custom-dialog-form label{
-    margin-bottom:0.75rem !important;
-    font-weight: bold !important;
+    color: ${props => props.theme.TextMain} !important;
+    margin-bottom: 0.75rem !important;
+    font-weight: 500 !important;
   }
   .custom-dialog-form input{
     height:1.88rem !important;
@@ -129,23 +129,24 @@ export const GlobalStyle = createGlobalStyle`
     border:0 !important;
   }
   .custom-dialog-btns #custom-link-save {
-    background-color: #232D3B !important;
+    background-color: ${props => props.theme.CoreNormal} !important;
     color: white !important;
-  }
-  .custom-dialog-btns #custom-link-save:hover {
-    background-color: #4C535D !important;
+    :hover {
+      background-color: ${props => props.theme.CoreBright} !important;
+    }
   }
   .custom-dialog-btns #custom-link-save.disabled-btn {
-    background-color: #CCCCCC !important;
+    background-color: ${props => props.theme.DisabledShape} !important;
   }
   .custom-dialog-btns #custom-link-cancel {
-    background-color:#FFFFFF !important;
-    border: 1px solid #D0CCC7 !important;
-    color: #3B3B3B !important;
+    background-color: ${props => props.theme.StateNormal} !important;
+    border: 1px solid ${props => props.theme.LineOut} !important;
+    color: ${props => props.theme.TextSub} !important;
+    :hover {
+      background-color: ${props => props.theme.StateBright} !important;
+    }
   }
-  .custom-dialog-btns #custom-link-cancel:hover {
-    border:1px solid #232D3B !important;
-  }
+
   .link-toolbar {
     flex-direction:column !important;
     width: 118px !important;
@@ -208,6 +209,7 @@ export const GlobalStyle = createGlobalStyle`
     border: 0;
     border-radius: 0.25rem;
     box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);
+    background-color: ${props => props.theme.StateNormal};
   }
   
   .tox .tox-dialog__header.custom-dialog-header {
@@ -215,12 +217,15 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     height: 2.69rem;
     justify-content: center;
+    background-color: ${props => props.theme.StateNormal};
   }
 
   .tox .tox-dialog__title.custom-dialog-title {
+    color: ${props => props.theme.TextMain};
     font-family: 'Noto Sans KR';
     font-weight: 500;
     font-size: 0.88rem;
+    margin: auto;
   }
 
   .tox .tox-dialog__header.custom-dialog-header .tox-button {
@@ -249,16 +254,18 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: 500;
   }
 
- .tox .tox-dialog.custom-link-dialog .tox-textfield {
-  border-color: #d0ccc7;
- }
- .tox .tox-dialog.custom-link-dialog .tox-textfield:focus {
-   border-color: #7B7671;
- }
+  .tox .tox-dialog.custom-link-dialog .tox-textfield {
+    border-color: ${props => props.theme.LineOut};
+    background-color: ${props => props.theme.StateNormal};
+    :focus {
+      border-color: ${props => props.theme.SubStateVivid};
+    }
+  }
 
  .tox .tox-dialog__footer.custom-dialog-footer {
    padding: 0;
-   border-top: 1px solid ${props => props.theme.LineMain};
+   border-top: 1px solid ${props => props.theme.LineOut};
+   background-color: ${props => props.theme.StateNormal};
  }
 
  .tox .custom-dialog-btns.tox-button {
