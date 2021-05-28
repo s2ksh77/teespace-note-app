@@ -267,6 +267,18 @@ export const GlobalStyle = createGlobalStyle`
    height: 1.88rem;
  }
 
+  .tox .tox-tbtn:hover,
+  .tox-collection__item--active {
+    background: ${props => props.theme.StateBright} !important;
+  }
+ 
+  .tox .tox-tbtn--enabled,
+  .tox .tox-tbtn:focus,
+  .tox .tox-collection--toolbar .tox-collection__item--enabled,
+  .tox .tox-collection--list .tox-collection__item--enabled {
+    background: ${props => props.theme.StateDark} !important;
+  }
+
   .export {
     table { 
       max-width: 770px;
