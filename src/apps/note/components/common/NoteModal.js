@@ -15,7 +15,7 @@ import styled from 'styled-components';
 const StyledInfoIcon = styled(InfoCircleOutlined)`
   display: block;
   font-size: 1.25rem;
-  color: #232d3b;
+  color: ${props => props.theme.IconNormal2};
   margin-bottom: 0.94rem;
 `;
 
