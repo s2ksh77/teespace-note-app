@@ -6451,13 +6451,16 @@ var NoteMeta = {
     switch (type) {
       case 'sharedChapter':
       case 'chapter':
+      case 'draggedChapter':
         // 삭제 함수 추가
         eventList.push(function (e) {
           e.stopPropagation();
-          ChapterStore.deleteNoteChapter();
+          ChapterStore.deleteNoteChapter(type === 'draggedChapter');
         });
         eventList.push(function (e) {
           e.stopPropagation();
+          NoteStore.setIsDragging(false);
+          ChapterStore.setDeleteChapterList([]);
           NoteStore.setModalInfo(null);
         });
         break;
@@ -6747,6 +6750,7 @@ var NoteMeta = {
 
     switch (type) {
       case 'chapter':
+      case 'draggedChapter':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
@@ -7169,6 +7173,7 @@ var NoteStore = mobx.observable({
       case 'chapterconfirm':
       case 'confirm':
       case 'chapter':
+      case 'draggedChapter':
       case 'page':
       case 'sharedChapter':
       case 'sharedPage':
@@ -7181,7 +7186,7 @@ var NoteStore = mobx.observable({
       case 'failUploadByFileNameLen':
       case 'uploadingFiles': // todo
 
-      case "deletePage":
+      case 'deletePage':
       case 'recover': // 페이지 복구 묻는 팝업창
 
       case 'emptyRecycleBin':
