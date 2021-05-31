@@ -234,22 +234,22 @@ export const ModalSharedInfoContainer = styled.div`
 
 export const ModalSharedInfoCover = styled.div`
   display: flex;
-  align-items:flex-start;
+  align-items: flex-start;
   margin-bottom: 0.75rem;
+  font-weight: 500;
 `;
 
 export const ModalSharedInfoTitle = styled.span`
-  display:inline-flex;
+  display: inline-flex;
   width: 7rem;
   float: left;
-  color: #000000;
-  font-weight: bold;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const ModalSharedInfoContent = styled.span`
   display: inline-block;
   width: calc(100% - 7rem);
-  color: #777777;
+  color: ${props => props.theme.TextSub};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -340,7 +340,7 @@ export const RestoreModalBody = styled.div`
   overflow-x: hidden;
   overflow-y: scroll;
   padding: 0.63rem 1.25rem;
-  background: #F7F4EF;
+  background: ${props => props.theme.SubStateNormal};
 `;
 
 export const RestoreChapterText = styled.div`

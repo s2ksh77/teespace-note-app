@@ -426,19 +426,21 @@ export const GlobalStyle = createGlobalStyle`
     flex-direction: column !important;
     justify-content: center;
     align-items: center;
-    height:100%; !important;
+    height: 100%;
+    font-size: 0.938rem;
   }
   .restoreModal .ant-modal-body {
     padding: 0rem !important;
     height: 10.44rem !important;
     box-sizing: border-box;
-    font-size: 0.813rem;
   }
   .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){
     width: 23rem;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.813rem;
+    color: ${props => props.theme.TextMain};
   }
   .restoreModal .ant-modal-footer{
     border-top: 0px;
