@@ -189,6 +189,7 @@ const NoteStore = observable({
       case 'chapterconfirm':
       case 'confirm':
       case 'chapter':
+      case 'draggedChapter':
       case 'page':
       case 'sharedChapter':
       case 'sharedPage':
@@ -200,7 +201,7 @@ const NoteStore = observable({
       case 'sizefailUpload':
       case 'failUploadByFileNameLen':
       case 'uploadingFiles': // todo
-      case "deletePage":
+      case 'deletePage':
       case 'recover': // 페이지 복구 묻는 팝업창
       case 'emptyRecycleBin':
         this.modalInfo = NoteMeta.openMessage(modalType);

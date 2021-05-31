@@ -58,7 +58,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             NoteStore.setModalInfo('chapterconfirm');
           } else {
             ChapterStore.setDeleteChapterList(deleteChapterList);
-            ChapterStore.deleteNoteChapter(true);
+            NoteStore.setModalInfo('draggedChapter');
           }
           break;
         }
