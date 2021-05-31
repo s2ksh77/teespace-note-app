@@ -71,9 +71,18 @@ const NoteMeta = {
     switch (type) {
       case 'sharedChapter':
       case 'chapter':
+      case 'draggedChapter':
         // 삭제 함수 추가
-        eventList.push(function (e) { e.stopPropagation(); ChapterStore.deleteNoteChapter() })
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          ChapterStore.deleteNoteChapter(type === 'draggedChapter');
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setIsDragging(false);
+          ChapterStore.setDeleteChapterList([]);
+          NoteStore.setModalInfo(null);
+        });
         break;
       case 'page':
         // 삭제 함수 추가
@@ -240,6 +249,7 @@ const NoteMeta = {
     // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
+      case 'draggedChapter':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_06');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_07');
