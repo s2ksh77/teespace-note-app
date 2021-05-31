@@ -178,6 +178,14 @@ export const TagChip = styled(Tag)`
     border: 1px solid ${props => props.theme.SubStateVivid};
     background-color: ${props => props.theme.SubStateBright};
   }
+  svg {
+    fill: ${props => props.theme.IconNormal};
+  }
+  :focus {
+    svg {
+      fill: ${props => props.theme.IconActive};
+    }
+  }
 `;
 
 export const SearchTagChip = styled(Tag)`
