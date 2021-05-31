@@ -10,13 +10,11 @@ import {
   EditorTagCover,
   TagChip,
   TagNewBtn,
-  TagNewBtnIcon,
   TagList,
   TagInput,
   TagText,
 } from '../../styles/tagStyle';
 import { AddTagIcon } from '../icons';
-import tagImage from '../../assets/add_tag.svg';
 import { checkWhitespace, checkMaxLength } from '../common/validators';
 import NoteUtil from '../../NoteUtil';
 /**
@@ -279,7 +277,6 @@ const TagListContainer = () => {
                 <TagChip
                   key={item.tag_id}
                   className={item.tag_id === selectedId ? 'noteFocusedTag' : ''}
-                  data-idx={index} // 없어져도 되나?
                   id={item.tag_id}
                   closable={
                     PageStore.isReadMode() || !authStore.hasPermission('notePage', 'U')

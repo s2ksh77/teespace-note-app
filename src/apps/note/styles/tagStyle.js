@@ -45,12 +45,10 @@ export const TagList = styled.div`
 export const TagText = styled.span`
   width: 100%;
   display: block;
-  max-width:15.69rem;
+  max-width: 15.5rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  height:23px;
-  line-height:normal;
 `;
 
 export const TagNewBtnIcon = styled.img`
