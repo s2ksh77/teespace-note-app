@@ -75,7 +75,7 @@ const urlSaveCondition = _value => {
       }; // mailto 붙여달라고 메시지 띄우기
   }
   if (checkUrlValidation(_value)) return { result: true, message: '' }; // pass
-  return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_06') }; // 유효하지 않은 주소라고 메시지 띄우기
+  return { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_10') }; // 올바르지 않은 주소라고 메시지 띄우기
 };
 
 // errorMark 관련된 함수
