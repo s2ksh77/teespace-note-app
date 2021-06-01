@@ -5523,7 +5523,7 @@ var ChapterStore = observable({
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              if (!(notebookList.length === 0 || notebookList[0].type !== 'default')) {
+              if (!(notebookList.length === 0)) {
                 _context12.next = 2;
                 break;
               }
