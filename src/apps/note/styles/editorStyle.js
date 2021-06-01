@@ -120,7 +120,7 @@ export const FileBody = styled.div`
     `
   }
   box-sizing: border-box; 
-  border : 1px solid #dadada;
+  border : 1px solid ${props => props.theme.LineMain};
   height: 2.63rem;
   margin-left: 0.5rem;
   flex-direction : row;

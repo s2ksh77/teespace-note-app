@@ -411,7 +411,7 @@ const ChapterStore = observable({
   },
 
   async checkDefaultChapterColor(notebookList) {
-    if (notebookList.length === 0 || notebookList[0].type !== 'default') return notebookList;
+    if (notebookList.length === 0) return notebookList;
     if (notebookList[0].color === null && notebookList[0].id) {
       const { color } = await this.updateChapterColor(notebookList[0].id);
       notebookList[0].color = color;
