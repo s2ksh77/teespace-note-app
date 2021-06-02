@@ -632,7 +632,6 @@ const EditorContainer = () => {
                   EditorStore.uploaderRef.click();
                 },
               });
-
               // 이미지 다운로드/삭제
               editor.ui.registry.addMenuButton('downloadImage', {
                 icon: 'save',
@@ -753,7 +752,12 @@ const EditorContainer = () => {
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             skin: themeContext.name === 'dark' ? 'oxide-dark' : 'oxide',
-            content_style: editorContentCSS,
+            content_style: editorContentCSS + `
+              .mce-content-body {
+                background: radial-gradient(rgba(0, 0, 0, ${themeContext.name === 'dark' ? 0.9 : 0.04}) 0.063rem, ${themeContext.StateNormal} 0rem);
+                color: ${themeContext.TextMain};
+              }
+            `,
             font_formats: 'Noto Sans KR=noto sans kr, Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats;',
           }}
           onEditorChange={getEditorContent}
