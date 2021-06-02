@@ -57,11 +57,8 @@ const renderErrorMark = target => {
   return { img$: img, tooltip$: tooltip };
 };
 
-// 1 : 텍스트를 입력해 주세요 메시지 띄우기
-const textCondition = value =>
-  isFilled(value)
-    ? { result: true, message: '' }
-    : { result: false, message: i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_11') };
+// NOTE: [2021-06-02] 기획 변경에 따라 에러 메세지 제거 (임시)
+const textCondition = () => ({ result: true, message: '' });
 
 const urlSaveCondition = _value => {
   if (!isFilled(_value))
@@ -155,6 +152,7 @@ const changeLinkDialogForm = dialog => {
   [...form.childNodes].forEach(child => {
     const input$ = child.querySelector('input');
     const type = input$.getAttribute('type') === 'url' ? 'url' : 'text';
+    input$.placeholder = i18n.t('NOTE_EDIT_PAGE_INSERT_LINK_03');
     // label text 바꾸기
     child.querySelector('.tox-form__group label').textContent = formStr[type];
     // errorMark 그려주고
