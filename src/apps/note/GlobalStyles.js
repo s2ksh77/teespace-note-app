@@ -204,6 +204,10 @@ export const GlobalStyle = createGlobalStyle`
   }
   .tox-statusbar{ display :none !important; }
 
+  .tox .tox-pop__dialog {
+    border-radius: 4px !important;
+  }
+
   .tox .tox-dialog.custom-link-dialog {
     max-width: 24.38rem;
     border: 0;

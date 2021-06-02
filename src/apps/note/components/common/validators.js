@@ -22,7 +22,7 @@ const urlRegex = new RegExp(
 // localhost:3000/~ : 링크 처리 안 됨
 // $: m flag 있어야 matches the end of the string
 const urlRegex2 = new RegExp(
-  /^[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+(.com|.net|.kr|.org|.biz)$/im
+  /^[^\{\}\[\]\/\(\)\\\=\'\"\s?,;:|*~`!_+<>@#$%&]+(.com|.net|.kr|.org|.biz|.ai)$/im
 );
 
 // 잘 안되는 거 있으면 이걸로 테스트 해보기 : (\w{3,}\@[\w\.]{1,})

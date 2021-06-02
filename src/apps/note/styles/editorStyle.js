@@ -324,7 +324,6 @@ export const editorContentCSS = `
     border: 1px solid #ccc;
   }
   .mce-content-body{
-    background: radial-gradient(rgba(0,0,0,0.04) 0.063rem, transparent 0rem);
     background-size: 0.625rem 0.625rem !important;
   }
   img {
@@ -339,5 +338,5 @@ export const editorContentCSS = `
   }
   .tox-notification { display: none !important }
 
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap')
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
 `
