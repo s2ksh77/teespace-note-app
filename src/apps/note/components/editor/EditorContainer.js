@@ -316,6 +316,28 @@ const EditorContainer = () => {
     changeTheme();
   }, [themeContext.name]);
 
+  const pasteSingleImage = async src => {
+    const res = await fetch(src);
+    const blob = await res.blob();
+    const file = new File([blob], 'WAPL_image.png', { type: 'image/png' });
+    const {
+      fileName,
+      fileExtension,
+      fileSize,
+    } = EditorStore.getFileInfo(file);
+
+    EditorStore.setUploaderType('image');
+    EditorStore.setTotalUploadLength(1);
+    EditorStore.setFileLength(1);              
+    EditorStore.setUploadFileDTO(
+      { fileName, fileExtension, fileSize },
+      file,
+      'image',
+    );
+
+    handleUpload();
+  };
+
   return useObserver(() => (
     <>
       <EditorContainerWrapper
@@ -709,7 +731,15 @@ const EditorContainer = () => {
               'rotateleft rotateright flipv fliph editimage changeImage | downloadImage deleteImage',
             language: NoteStore.i18nLanguage,
             toolbar_drawer: false,
-            // paste_data_images: true, // add images by drag and drop
+            paste_data_images: true,
+            async paste_preprocess(plugin, args) {
+              const content = args.content.split('"');
+              if (content.length !== 3 || !content[0].includes('img')) return;
+              
+              // 이미지 하나만 붙여넣기 하는 경우 (임시)
+              args.content = '';
+              pasteSingleImage(content[1]);
+            },
             paste_postprocess: function (plugin, args) {
               // 복붙하고 간헐적으로 undo버튼이 활성화 안되는 현상 수정 : 페이지 삭제되지 않도록
               EditorStore.tinymce?.undoManager?.add();
