@@ -12,7 +12,7 @@ import useNoteStore from '../../store/useStore';
 import { isFilled } from './validators';
 import NoteRepository from '../../store/noteRepository';
 import EditorStore from '../../store/editorStore';
-import { DRAG_TYPE } from '../../GlobalVariable';
+import { DRAG_TYPE, CHAPTER_TYPE } from '../../GlobalVariable';
 
 // platform 코드 가져왔음
 const REM_UNIT = 16;
@@ -51,6 +51,10 @@ const isChapter = type => {
   switch (type) {
     case DRAG_TYPE.CHAPTER:
     case DRAG_TYPE.SHARED_CHAPTER:
+    case CHAPTER_TYPE.DEFAULT:
+    case CHAPTER_TYPE.NOTEBOOK:
+    case CHAPTER_TYPE.SHARED_PAGE:
+    case CHAPTER_TYPE.SHARED:
       return true;
     case DRAG_TYPE.PAGE:
     case DRAG_TYPE.SHARED_PAGE:
