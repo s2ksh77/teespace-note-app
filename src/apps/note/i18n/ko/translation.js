@@ -134,7 +134,7 @@ const languageSet = {
     NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
     NOTE_CONTEXT_MENU_02: '복구',
     NOTE_CONTEXT_MENU_03: '휴지통 비우기',
-    NOTE_DND_ACTION_01: '이동 불가능합니다.',
+    NOTE_DND_ACTION_01: '이동이 불가능합니다.',
     NOTE_DND_ACTION_02: '전달받은 챕터 및 페이지는 이동 불가능합니다.',
 
     NOTE_BIN_01: '휴지통',
