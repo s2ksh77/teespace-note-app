@@ -417,7 +417,7 @@ const EditorContainer = () => {
             menubar: false,
             toolbar_mode: 'floating',
             height: '100%',
-            setup: function (editor) {
+            setup(editor) {
               setNoteEditor(editor);
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
@@ -448,20 +448,20 @@ const EditorContainer = () => {
                   console.log(err);
                 }
               });
-              editor.on('NodeChange', function (e) {
+              editor.on('NodeChange', e => {
                 if (e.element.children[0] !== undefined) {
                   if (e.element.children[0].tagName === 'IMG') {
                     EditorStore.setImgElement(e.element.children[0]);
                   }
                 }
                 // url invalid면 red highlighting
-                if (isAnchorElement(e.element)) {
-                  if (!isOpenLink(e.element.href)) {
-                    // url이거나 basic plan 아니면서 메일인 경우
-                    e.element.classList.add('note-invalidUrl');
-                  } else {
-                    e.element.classList.remove('note-invalidUrl');
-                  }
+                if (!isAnchorElement(e.element)) return;
+                if (isOpenLink(e.element.href)) {
+                  e.element.classList.remove('note-invalidUrl');
+                } else {
+                  // 1) url
+                  // 2) basic plan 아니면서 메일인 경우
+                  e.element.classList.add('note-invalidUrl');
                 }
               });
               // Register some other event callbacks...
