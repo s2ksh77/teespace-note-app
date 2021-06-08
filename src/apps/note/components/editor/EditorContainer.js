@@ -338,6 +338,10 @@ const EditorContainer = () => {
     handleUpload();
   };
 
+  const isExternalImage = (el) => {
+    return el.getAttribute('id') === null ? true : false;
+  }
+
   return useObserver(() => (
     <>
       <EditorContainerWrapper
@@ -663,7 +667,7 @@ const EditorContainer = () => {
                     configStore.isActivateComponent(
                       'Note',
                       'EditorContainer:SaveToDrive',
-                    )
+                    ) && !isExternalImage(editor.selection.getNode())
                       ? {
                           type: 'menuitem',
                           text: t('NOTE_EDIT_PAGE_MENUBAR_32'),
