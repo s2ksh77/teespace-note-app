@@ -542,7 +542,7 @@ const EditorStore = observable({
     const { isEmpty } = NoteUtil;
     if (
       PageStore.isNewPage &&
-      !this.tinymce?.undoManager?.hasUndo() &&
+      (!this.tinymce?.undoManager?.hasUndo() || !PageStore.noteContent) &&
       isEmpty(TagStore.notetagList || []) &&
       isEmpty(this.tempFileLayoutList || []) &&
       isEmpty(this.fileLayoutList || [])
