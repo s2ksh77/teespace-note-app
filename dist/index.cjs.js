@@ -3159,7 +3159,7 @@ var EditorStore = mobx.observable((_observable = {
   var _this$tinymce, _this$tinymce$undoMan;
 
   var isEmpty = NoteUtil.isEmpty;
-  if (PageStore.isNewPage && !((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
+  if (PageStore.isNewPage && (!((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) || !PageStore.noteContent) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
   return true;
 }), _observable));
 
