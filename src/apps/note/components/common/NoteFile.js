@@ -230,18 +230,20 @@ export const handleFileDelete = async () => {
         }
     }
 }
-export const downloadFile = (fileId) => {
+export const downloadFile = async (fileId) => {
     if (fileId) {
         window.open(API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository.WS_ID +
             "&channelID=" + NoteRepository.chId + "&userID=" + NoteRepository.USER_ID);
         return;
     }
-
-    let a = document.createElement("a");
+    const res = await fetch(EditorStore.tinymce.selection.getNode().src);
+    const blob = await res.blob();
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.style = 'display: none';
+    a.href = url;
+    a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name') ? EditorStore.tinymce.selection.getNode().getAttribute('data-name') : EditorStore.tinymce.selection.getNode().getAttribute('alt');
     document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = EditorStore.tinymce.selection.getNode().src;
-    a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name');
     a.click();
     document.body.removeChild(a);
 }
