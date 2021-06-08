@@ -84,8 +84,8 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
       }
-    }
       WWMS.removeHandler('CHN0003', 'NoteWWMSHandler');
+    }
   }, [roomId, channelId, layoutState]);
 
   useEffect(() => {
