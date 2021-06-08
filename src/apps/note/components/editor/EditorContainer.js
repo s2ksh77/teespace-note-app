@@ -745,13 +745,15 @@ const EditorContainer = () => {
               EditorStore.tinymce?.undoManager?.add();
 
               const target = args.node.textContent;
-              if (checkUrlValidation(target)) {
-                let temp = document.createElement('a');
-                temp.href = target;
-                temp.setAttribute('data-mce-href', target);
-                temp.textContent = target;
-                args.node.textContent = '';
-                args.node.appendChild(temp);
+              if(args.node && args.node.childNodes.length === 1) {
+                if (checkUrlValidation(target)) {
+                  let temp = document.createElement('a');
+                  temp.href = target;
+                  temp.setAttribute('data-mce-href', target);
+                  temp.textContent = target;
+                  args.node.textContent = '';
+                  args.node.appendChild(temp);
+                }
               }
               /*
                 p tag 없이 br 태그만 있는 경우
