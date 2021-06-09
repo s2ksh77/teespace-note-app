@@ -1,10 +1,48 @@
 import { observable, toJS, action } from 'mobx';
-import { API, UserStore, WWMS, RoomStore } from 'teespace-core';
+import { API, UserStore, WWMS, RoomStore, i18nInit } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Mark$1 from 'mark.js';
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
 
 function _typeof(obj) {
   "@babel/helpers - typeof";
@@ -95,40 +133,6 @@ function _defineProperty(obj, key, value) {
   return obj;
 }
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
-}
-
 function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
@@ -146,18 +150,21 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+
+  if (_i == null) return;
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -201,8 +208,8 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-var _require = require('axios'),
-    axios = _require.default;
+var _require = require('axios');
+    _require.default;
 
 var NoteRepository = /*#__PURE__*/function () {
   // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
@@ -2467,8 +2474,8 @@ var TagStore = observable({
   }
 });
 
-var _observable;
-var EditorStore = observable((_observable = {
+var _observable$1;
+var EditorStore = observable((_observable$1 = {
   tempTinymce: null,
   contents: '',
   tinymce: null,
@@ -2702,7 +2709,7 @@ var EditorStore = observable((_observable = {
       }, _callee3);
     }))();
   }
-}, _defineProperty(_observable, "uploadFile", function () {
+}, _defineProperty(_observable$1, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(dto, file, index) {
     var _this = this;
 
@@ -2734,18 +2741,18 @@ var EditorStore = observable((_observable = {
   }
 
   return uploadFile;
-}()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
+}()), _defineProperty(_observable$1, "setDownLoadFileId", function setDownLoadFileId(fileId) {
   this.downloadFileId = fileId;
-}), _defineProperty(_observable, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
+}), _defineProperty(_observable$1, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
   this.saveFileId = fileId;
   this.saveFileExt = fileExt;
   this.saveFileName = fileName;
-}), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
+}), _defineProperty(_observable$1, "tempDeleteFile", function tempDeleteFile() {
   this.fileLayoutList.splice(this.deleteFileIndex, 1);
   if (this.fileLayoutList.length === 0) this.setIsFile(false);
-}), _defineProperty(_observable, "addDriveFileList", function addDriveFileList(fileInfo) {
+}), _defineProperty(_observable$1, "addDriveFileList", function addDriveFileList(fileInfo) {
   this.driveFileList.push(fileInfo);
-}), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
+}), _defineProperty(_observable$1, "deleteFile", function deleteFile(deleteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
     var _yield$NoteRepository4, dto;
 
@@ -2768,7 +2775,7 @@ var EditorStore = observable((_observable = {
       }
     }, _callee5);
   }))();
-}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile() {
+}), _defineProperty(_observable$1, "deleteAllFile", function deleteAllFile() {
   var _this2 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
@@ -2792,16 +2799,16 @@ var EditorStore = observable((_observable = {
       }
     }, _callee6);
   }))();
-}), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
+}), _defineProperty(_observable$1, "setFileList", function setFileList(fileList) {
   this.fileList = fileList;
   this.checkFile();
-}), _defineProperty(_observable, "getFileList", function getFileList() {
+}), _defineProperty(_observable$1, "getFileList", function getFileList() {
   return this.fileList;
-}), _defineProperty(_observable, "setFileArray", function setFileArray(filelayoutlist) {
+}), _defineProperty(_observable$1, "setFileArray", function setFileArray(filelayoutlist) {
   this.fileLayoutList = filelayoutlist;
-}), _defineProperty(_observable, "setIsFile", function setIsFile(flag) {
+}), _defineProperty(_observable$1, "setIsFile", function setIsFile(flag) {
   this.isFile = flag;
-}), _defineProperty(_observable, "checkFile", function checkFile() {
+}), _defineProperty(_observable$1, "checkFile", function checkFile() {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   var checkFile;
 
@@ -2826,19 +2833,19 @@ var EditorStore = observable((_observable = {
     });
     this.setFileArray(checkFile);
   }
-}), _defineProperty(_observable, "isFileLength", function isFileLength() {
+}), _defineProperty(_observable$1, "isFileLength", function isFileLength() {
   var temp = this.tempFileLayoutList.filter(function (file) {
     return file.type === 'file';
   }).length;
   var uploaded = this.fileLayoutList.length;
   var totalLength = temp + uploaded;
   if (totalLength === 0) this.setIsFile(false);
-}), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
+}), _defineProperty(_observable$1, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
-}), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
+}), _defineProperty(_observable$1, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
-}), _defineProperty(_observable, "getFileInfo", function getFileInfo(file) {
+}), _defineProperty(_observable$1, "getFileInfo", function getFileInfo(file) {
   var fileName = file.name;
   var dotIndex = fileName.lastIndexOf('.');
   var fileExtension = '';
@@ -2854,15 +2861,15 @@ var EditorStore = observable((_observable = {
     fileExtension: fileExtension,
     fileSize: fileSize
   };
-}), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
+}), _defineProperty(_observable$1, "setFileIndex", function setFileIndex(idx) {
   this.selectFileIdx = idx;
-}), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
+}), _defineProperty(_observable$1, "setFileElement", function setFileElement(element) {
   this.selectFileElement = element;
-}), _defineProperty(_observable, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
+}), _defineProperty(_observable$1, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
   this.deleteFileId = id;
   this.deleteFileName = name;
   this.deleteFileIndex = index;
-}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(config, file, type) {
+}), _defineProperty(_observable$1, "setUploadFileDTO", function setUploadFileDTO(config, file, type) {
   var fileName = config.fileName,
       fileExtension = config.fileExtension,
       fileSize = config.fileSize;
@@ -2916,22 +2923,22 @@ var EditorStore = observable((_observable = {
     cancelSource: cancelToken
   };
   this.setUploadDTO(uploadArr);
-}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
+}), _defineProperty(_observable$1, "setUploadDTO", function setUploadDTO(meta) {
   this.uploadDTO.push(meta);
-}), _defineProperty(_observable, "setTempFileList", function setTempFileList(target) {
+}), _defineProperty(_observable$1, "setTempFileList", function setTempFileList(target) {
   if (this.processCount !== this.uploadLength) {
     this.tempFileLayoutList.push(target);
     this.processCount++;
   } else this.processCount = 0;
 
   if (!this.isFile) this.setIsFile(true);
-}), _defineProperty(_observable, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
+}), _defineProperty(_observable$1, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
   this.tempFileLayoutList = arr;
-}), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
+}), _defineProperty(_observable$1, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
-}), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
+}), _defineProperty(_observable$1, "setTotalUploadLength", function setTotalUploadLength(length) {
   this.totalUploadLength = length;
-}), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
+}), _defineProperty(_observable$1, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
   var month = 1 + date.getMonth();
@@ -2940,20 +2947,20 @@ var EditorStore = observable((_observable = {
   day = day >= 10 ? day : '0' + day;
   var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   return year + '-' + month + '-' + day + ' ' + time;
-}), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
+}), _defineProperty(_observable$1, "convertFileSize", function convertFileSize(bytes) {
   if (bytes == 0) return '0 Bytes';
   var k = 1000,
       dm = 2,
       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
       i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}), _defineProperty(_observable, "deleteImage", function deleteImage() {
+}), _defineProperty(_observable$1, "deleteImage", function deleteImage() {
   var parent = this.tinymce.selection.getNode().parentNode;
   this.tinymce.selection.setContent('');
   if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
   this.tinymce.focus();
   NoteStore.setModalInfo(null);
-}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
+}), _defineProperty(_observable$1, "createFileMeta", function createFileMeta(fileArray, noteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
     var createCopyArray, _yield$NoteRepository5, dto;
 
@@ -2984,7 +2991,7 @@ var EditorStore = observable((_observable = {
       }
     }, _callee7);
   }))();
-}), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
+}), _defineProperty(_observable$1, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
   var _this3 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
@@ -3043,7 +3050,7 @@ var EditorStore = observable((_observable = {
       }
     }, _callee8);
   }))();
-}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
+}), _defineProperty(_observable$1, "createDriveElement", function createDriveElement(type, fileId, fileName) {
   var targetSRC = "".concat(API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
 
   switch (type) {
@@ -3055,7 +3062,7 @@ var EditorStore = observable((_observable = {
       EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
       break;
   }
-}), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
+}), _defineProperty(_observable$1, "notSaveFileDelete", function notSaveFileDelete() {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
     var deleteArr;
     return regeneratorRuntime.wrap(function _callee9$(_context9) {
@@ -3098,7 +3105,7 @@ var EditorStore = observable((_observable = {
       }
     }, _callee9, null, [[3, 8, 10, 12]]);
   }))();
-}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
+}), _defineProperty(_observable$1, "uploadingFileallCancel", function uploadingFileallCancel() {
   var _this4 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
@@ -3125,15 +3132,15 @@ var EditorStore = observable((_observable = {
       }
     }, _callee10);
   }))();
-}), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
+}), _defineProperty(_observable$1, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
 
   var isEmpty = NoteUtil.isEmpty;
   if (PageStore.isNewPage && !((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
   return true;
-}), _observable));
+}), _observable$1));
 
-var languageSet = {
+var languageSet$1 = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
   NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
   NOTE_PAGE_LIST_CMPNT_DEF_03: '(제목 없음)',
@@ -3290,7 +3297,7 @@ var languageSet = {
 
 var _languageSet;
 
-var languageSet$1 = (_languageSet = {
+var languageSet = (_languageSet = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
   NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
   NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
@@ -3424,10 +3431,10 @@ var languageSet$1 = (_languageSet = {
 
 var resources = {
   ko: {
-    translation: languageSet
+    translation: languageSet$1
   },
   en: {
-    translation: languageSet$1
+    translation: languageSet
   }
 };
 var i18n = i18next.createInstance();
@@ -3447,8 +3454,8 @@ i18n.use(initReactI18next).init({
   }
 });
 
-var _observable$1;
-var PageStore = observable((_observable$1 = {
+var _observable;
+var PageStore = observable((_observable = {
   noteInfoList: [],
   currentPageData: [],
   isEdit: '',
@@ -4666,10 +4673,10 @@ var PageStore = observable((_observable$1 = {
     }).join('');
     return this.noteTitle;
   }
-}, _defineProperty(_observable$1, "getTitle", function getTitle() {
+}, _defineProperty(_observable, "getTitle", function getTitle() {
   var contentList = EditorStore.tinymce.getBody().children;
   return this._getTitle(contentList);
-}), _defineProperty(_observable$1, "_getTitle", function _getTitle(contentList) {
+}), _defineProperty(_observable, "_getTitle", function _getTitle(contentList) {
   if (contentList) {
     // forEach 는 항상 return 값 undefined
     for (var i = 0; i < contentList.length; i++) {
@@ -4685,7 +4692,7 @@ var PageStore = observable((_observable$1 = {
       if (title !== undefined) return title;
     }
   }
-}), _defineProperty(_observable$1, "_getTableTitle", function _getTableTitle(node) {
+}), _defineProperty(_observable, "_getTableTitle", function _getTableTitle(node) {
   if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")"); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
 
   var tdList = node.getElementsByTagName('td');
@@ -4699,7 +4706,7 @@ var PageStore = observable((_observable$1 = {
       if (title !== undefined) return title;
     }
   }
-}), _defineProperty(_observable$1, "_searchInsideContainerTag", function _searchInsideContainerTag(node) {
+}), _defineProperty(_observable, "_searchInsideContainerTag", function _searchInsideContainerTag(node) {
   if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
 
   var lineBreakIdx = node.textContent.indexOf('\n');
@@ -4721,7 +4728,7 @@ var PageStore = observable((_observable$1 = {
 
     if (title !== undefined) return title;
   }
-}), _defineProperty(_observable$1, "_getTitleByTagName", function _getTitleByTagName(node) {
+}), _defineProperty(_observable, "_getTitleByTagName", function _getTitleByTagName(node) {
   switch (node.nodeName) {
     case 'BR':
       return;
@@ -4761,7 +4768,7 @@ var PageStore = observable((_observable$1 = {
   }
 
   if (node.textContent) return node.textContent.slice(0, 200);
-}), _defineProperty(_observable$1, "createSharePage", function createSharePage(targetList) {
+}), _defineProperty(_observable, "createSharePage", function createSharePage(targetList) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
     var _yield$NoteRepository11, noteList;
 
@@ -4784,7 +4791,7 @@ var PageStore = observable((_observable$1 = {
       }
     }, _callee17);
   }))();
-}), _defineProperty(_observable$1, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
+}), _defineProperty(_observable, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
   if (!targetPageList) return;
   var targetChId = NoteStore.getTargetChId(targetRoomId);
   var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
@@ -4808,7 +4815,7 @@ var PageStore = observable((_observable$1 = {
     ChapterStore.getNoteChapterList();
     NoteStore.setIsDragging(false);
   });
-}), _defineProperty(_observable$1, "restorePageLogic", function restorePageLogic(_ref2) {
+}), _defineProperty(_observable, "restorePageLogic", function restorePageLogic(_ref2) {
   var _this14 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
@@ -4850,7 +4857,7 @@ var PageStore = observable((_observable$1 = {
       }
     }, _callee18);
   }))();
-}), _defineProperty(_observable$1, "editCancel", function editCancel() {
+}), _defineProperty(_observable, "editCancel", function editCancel() {
   if (EditorStore.isSearch) {
     var _EditorStore$tinymce8;
 
@@ -4876,7 +4883,7 @@ var PageStore = observable((_observable$1 = {
   });
   NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
   NoteStore.setIsVisibleToast(true);
-}), _observable$1), {
+}), _observable), {
   set_CurrentPageData: action
 });
 
@@ -6594,7 +6601,7 @@ var NoteMeta = {
         }());
         eventList.push( /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-            var _PageStore$recoverInf2, parentId, id, dto;
+            var _PageStore$recoverInf2, parentId, id;
 
             return regeneratorRuntime.wrap(function _callee2$(_context2) {
               while (1) {
@@ -6623,7 +6630,6 @@ var NoteMeta = {
                     return PageStore.noneEdit(id, parentId);
 
                   case 11:
-                    dto = _context2.sent;
                     _context2.next = 14;
                     return PageStore.fetchCurrentPageData(id);
 
@@ -6708,7 +6714,7 @@ var NoteMeta = {
   },
   setMessageInfoConfig: function setMessageInfoConfig(type) {
     // const userName = '';
-    var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
+    EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
     var dialogType = {
       type: 'default',
@@ -6873,9 +6879,9 @@ var handleWebsocket = function handleWebsocket() {
       var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
           _message$NOTI_ETC$spl2 = _slicedToArray(_message$NOTI_ETC$spl, 4),
           eventType = _message$NOTI_ETC$spl2[0],
-          targetId = _message$NOTI_ETC$spl2[1],
-          parentId = _message$NOTI_ETC$spl2[2],
-          targetUserId = _message$NOTI_ETC$spl2[3];
+          targetId = _message$NOTI_ETC$spl2[1];
+          _message$NOTI_ETC$spl2[2];
+          var targetUserId = _message$NOTI_ETC$spl2[3];
 
       switch (eventType) {
         case EVENT_TYPE.CREATE:
@@ -7344,4 +7350,8 @@ var useNoteStore = function useNoteStore() {
   };
 };
 
-export { useNoteStore };
+var initApp = function initApp() {
+  i18nInit(i18n);
+};
+
+export { initApp as initI18n, useNoteStore };
