@@ -1,5 +1,5 @@
 import { observable, toJS, action } from 'mobx';
-import { API, UserStore, WWMS, RoomStore } from 'teespace-core';
+import { API, UserStore, WWMS, RoomStore, i18nInit } from 'teespace-core';
 import { isNil, isEmpty } from 'ramda';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
@@ -7344,4 +7344,8 @@ var useNoteStore = function useNoteStore() {
   };
 };
 
-export { useNoteStore };
+var initApp = function initApp() {
+  i18nInit(i18n);
+};
+
+export { initApp as initI18n, useNoteStore };

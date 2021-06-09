@@ -7374,4 +7374,9 @@ var useNoteStore = function useNoteStore() {
   };
 };
 
+var initApp = function initApp() {
+  teespaceCore.i18nInit(i18n);
+};
+
+exports.initI18n = initApp;
 exports.useNoteStore = useNoteStore;
