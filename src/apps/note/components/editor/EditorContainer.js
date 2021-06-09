@@ -302,11 +302,18 @@ const EditorContainer = () => {
   },[EditorStore.isSearch])
 
   const changeTheme = () => {
-    if (!EditorStore.tinymce?.dom) return;
+    if (!tinymce) return;
     if (themeContext.name !== 'dark' && themeContext.name !== 'white') return;
-    
+
+    // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
+    tinymce.settings.language = NoteStore.i18nLanguage;
+    tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
+    tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
+    tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
+
+    // theme에 맞춰 배경 및 글자색을 변경한다.
     const opacity = themeContext.name === 'dark' ? 0.9 : 0.04;
-    EditorStore.tinymce.dom.setStyle(EditorStore.tinymce.getBody(), {
+    EditorStore.tinymce.editorManager.DOM.setStyle(EditorStore.tinymce.getBody(), {
       background: `radial-gradient(rgba(0, 0, 0, ${opacity}) 0.063rem, ${themeContext.StateNormal} 0rem)`,
       color: `${themeContext.TextMain}`,
     });
@@ -314,7 +321,7 @@ const EditorContainer = () => {
 
   useEffect(() => {
     changeTheme();
-  }, [themeContext.name]);
+  }, [themeContext.name, NoteStore.i18nLanguage]);
 
   const pasteSingleImage = async src => {
     const res = await fetch(src);
@@ -430,7 +437,6 @@ const EditorContainer = () => {
                 * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
                 * init된 후 localStorage내용을 에디터에 set해주어야 한다
                 */
-                changeTheme(); // TODO: 초기 테마 설정 어떻게?
                 if (PageStore.recoverInfo.note_content) {
                   EditorStore.tinymce?.setContent(PageStore.recoverInfo.note_content);
                   PageStore.setRecoverInfo({});
