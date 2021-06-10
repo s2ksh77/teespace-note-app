@@ -7,6 +7,7 @@ import EditorStore from './editorStore';
 import NoteMeta from '../NoteMeta';
 import { WWMS, UserStore, RoomStore } from 'teespace-core';
 import { handleWebsocket } from '../components/common/Websocket';
+import i18n from '../i18n/i18n';
 
 const NoteStore = observable({
   metaTagInfo: {isOpen:false, type:'', id:''},
@@ -225,13 +226,11 @@ const NoteStore = observable({
 
     this.sharedInfo = {
       sharedRoomName: (
-        sharedRoom
-          ? (sharedRoom.isMyRoom
-            ? displayName
-            : sharedRoom.name)
-          : displayName // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
+        sharedRoom?.isMyRoom
+          ? displayName
+          : sharedRoom?.name || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01')
       ),
-      sharedUserName: displayName,
+      sharedUserName: displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
       sharedDate: (
         !noteInfo.created_date
           ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true)
