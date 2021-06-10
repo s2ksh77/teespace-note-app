@@ -290,6 +290,10 @@ export const GlobalStyle = createGlobalStyle`
     background: ${props => props.theme.StateDark} !important;
   }
 
+  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+    border-right: 1px solid transparent !important;
+  }
+
   .export {
     table { 
       max-width: 770px;
