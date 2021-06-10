@@ -573,7 +573,9 @@ const PageStore = observable({
 
     if (dto.USER_ID) {
       const userProfile = await UserStore.getProfile(dto.USER_ID);
-      if (userProfile) this.displayName = userProfile.displayName;
+      this.displayName = userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
+    } else {
+      this.displayName = '';
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
