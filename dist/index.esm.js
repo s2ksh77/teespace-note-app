@@ -4316,7 +4316,7 @@ var PageStore = observable((_observable$1 = {
 
             case 6:
               if (!dto.USER_ID) {
-                _context13.next = 11;
+                _context13.next = 13;
                 break;
               }
 
@@ -4325,9 +4325,14 @@ var PageStore = observable((_observable$1 = {
 
             case 9:
               userProfile = _context13.sent;
-              if (userProfile) _this6.displayName = userProfile.displayName;
+              _this6.displayName = (userProfile === null || userProfile === void 0 ? void 0 : userProfile.displayName) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
+              _context13.next = 14;
+              break;
 
-            case 11:
+            case 13:
+              _this6.displayName = '';
+
+            case 14:
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
@@ -4360,7 +4365,7 @@ var PageStore = observable((_observable$1 = {
                 _this6.setIsNewPage(false);
               }
 
-            case 20:
+            case 23:
             case "end":
               return _context13.stop();
           }
@@ -7213,9 +7218,8 @@ var NoteStore = observable({
               _yield$UserStore$getP = _context.sent;
               displayName = _yield$UserStore$getP.displayName;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom ? sharedRoom.isMyRoom ? displayName : sharedRoom.name : displayName // 내가 속하지 않은 방에서 전달받은 경우 룸이름 요청하는 서비스콜 기다리는 중
-                ,
-                sharedUserName: displayName,
+                sharedRoomName: sharedRoom !== null && sharedRoom !== void 0 && sharedRoom.isMyRoom ? displayName : (sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.name) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
+                sharedUserName: displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
                 sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
               };
 
