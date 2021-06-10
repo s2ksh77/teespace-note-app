@@ -579,7 +579,10 @@ const EditorContainer = () => {
                 return node.nodeName.toLowerCase() === 'a' && node.href;
               };
               const isImageElement = node => {
-                return node.nodeName === 'IMG';
+                return node.nodeName.toLowerCase() === 'img';
+              };
+              const isCodeSampleElement = node => {
+                return node.nodeName.toLowerCase() === 'pre';
               };
 
               var getAnchorElement = function () {
@@ -638,10 +641,12 @@ const EditorContainer = () => {
               // 블록 선택했을 때(커서만 깜빡일 때 X) && a태그 아닐 때 && 이미지 아닐 때
               editor.ui.registry.addContextToolbar('textselection', {
                 predicate: function (node) {
+                  if (node.nodeName.toLowerCase() === 'body') return;
                   return (
                     !editor.selection.isCollapsed() &&
                     !isAnchorElement(node) &&
-                    !isImageElement(node)
+                    !isImageElement(node) &&
+                    !isCodeSampleElement(node)
                   );
                 },
                 items:
@@ -803,7 +808,7 @@ const EditorContainer = () => {
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
           plugins="print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars"
-          toolbar="undo redo | formatselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | hr table codesample insertdatetime | insertImage insertfile"
+          toolbar="undo redo | formatselect | fontselect fontsizeselect | forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | insertImage insertfile | hr table codesample insertdatetime"
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         {(authStore.hasPermission('notePage', 'U') ||
