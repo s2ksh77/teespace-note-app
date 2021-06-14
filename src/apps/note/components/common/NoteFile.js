@@ -458,13 +458,21 @@ const handleClickImg = (el) => {
 
 export const handleEditorContentsListener = () => {
     if (EditorStore.tinymce) {
-        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll(['a', 'img']);
+        const targetList = EditorStore.tinymce.getBody()?.querySelectorAll(['a', 'img', 'pre']);
         const targetBody = EditorStore.tinymce.getBody();
         EditorStore.setEditorDOM(targetBody);
         if (targetList && targetList.length > 0) {
             Array.from(targetList).forEach((el) => {
                 if (el.getAttribute('hasListener')) return;
-                if (el.tagName === 'IMG') el.addEventListener('click', handleClickImg.bind(null, el));
+                if (el.tagName === 'IMG') {
+                  el.addEventListener('click', handleClickImg.bind(null, el));
+                }
+                else if (el.tagName === 'PRE') {
+                  el.style.backgroundColor =
+                    EditorStore.tinymce.settings.skin === 'oxide'
+                      ? '#f7f4ef'
+                      : '#171819'
+                }
                 el.setAttribute('hasListener', true);
             });
         }
