@@ -41,6 +41,8 @@ const NoteUtil = {
         return 2;
       case CHAPTER_TYPE.SHARED:
         return 3;
+      case CHAPTER_TYPE.RECYCLE_BIN:
+        return 4;
       default:
         return null;
     }

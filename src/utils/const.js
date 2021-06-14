@@ -3,6 +3,7 @@ const CHAPTER_TYPE = {
   NOTEBOOK: 'notebook',
   SHARED_PAGE: 'shared_page',
   SHARED: 'shared',
+  RECYCLE_BIN: 'recycle_bin'
 };
 export default CHAPTER_TYPE;
 

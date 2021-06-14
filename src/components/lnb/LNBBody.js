@@ -11,6 +11,7 @@ import LNBSearchResult from './LNBSearchResult';
 import ChapterItem from './ChapterItem';
 import LNBTag from './LNBTag';
 import NoteUtil from '../../utils/NoteUtil';
+import RecycleBin from './RecycleBin';
 
 const LNBBody = () => {
   const { NoteStore, ChapterStore } = useNoteStore();
@@ -56,6 +57,15 @@ const LNBBody = () => {
                       isShared
                     />
                   );
+                  case 4:
+                    return (
+                      <RecycleBin
+                        key={item.id}
+                        chapter={item}
+                        index={index}
+                        flexOrder={3}
+                      />
+                    );
                 default:
                   break;
               }
