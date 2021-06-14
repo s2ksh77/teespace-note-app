@@ -426,6 +426,7 @@ const EditorContainer = () => {
           init={{
             selector: '#noteEditor',
             menubar: false,
+            statusbar: false,
             toolbar_mode: 'floating',
             height: '100%',
             setup(editor) {

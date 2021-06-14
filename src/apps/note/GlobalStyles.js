@@ -57,12 +57,6 @@ export const GlobalStyle = createGlobalStyle`
   .tox-edit-area__iframe html{
     height:100% !important;
   }
-  .tox-statusbar__branding{
-    display: none !important;
-  }
-  .tox-statusbar__resize-handle{
-    display: none !important;
-  }
   .tox-tinymce-aux{
     z-index: 100 !important;
   }
@@ -123,40 +117,24 @@ export const GlobalStyle = createGlobalStyle`
     margin: auto !important;
   }
   .custom-dialog-btns button {
-    width:4.5rem !important;
-    height:1.88rem !important;
-    font-size:0.75rem !important;
-    border:0 !important;
-  }
-  .custom-dialog-btns #custom-link-save {
-    background-color: ${props => props.theme.CoreNormal} !important;
-    color: white !important;
-    :hover {
-      background-color: ${props => props.theme.CoreBright} !important;
-    }
-  }
-  .custom-dialog-btns #custom-link-save.disabled-btn {
-    background-color: ${props => props.theme.DisabledShape} !important;
-  }
-  .custom-dialog-btns #custom-link-cancel {
-    background-color: ${props => props.theme.StateNormal} !important;
-    border: 1px solid ${props => props.theme.LineOut} !important;
-    color: ${props => props.theme.TextSub} !important;
-    :hover {
-      background-color: ${props => props.theme.StateBright} !important;
-    }
+    width: 4.5rem !important;
+    height: 1.88rem !important;
+    font-size: 0.75rem !important;
   }
 
   .link-toolbar {
-    flex-direction:column !important;
-    width: 118px !important;
-  }
-  .link-toolbar button {
-    width:100% !important;
-    justify-content : flex-start !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+    margin: 0.15rem 0 !important;
+    button {
+      width: 100% !important;
+      justify-content: flex-start !important;
+      padding: 0 0.5rem 0 0.3rem !important;
+      margin: 0 !important;
+    }
   }
   .link-toolbar button .link-toolbar-btn {
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
   }
   .note-show-element{
     display:flex !important;
@@ -201,11 +179,6 @@ export const GlobalStyle = createGlobalStyle`
   }
   input:focus{
     outline:none;
-  }
-  .tox-statusbar{ display :none !important; }
-
-  .tox .tox-pop__dialog {
-    border-radius: 4px !important;
   }
 
   .tox .tox-dialog.custom-link-dialog {
@@ -258,14 +231,6 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: 500;
   }
 
-  .tox .tox-dialog.custom-link-dialog .tox-textfield {
-    border-color: ${props => props.theme.LineOut};
-    background-color: ${props => props.theme.StateNormal};
-    :focus {
-      border-color: ${props => props.theme.SubStateVivid};
-    }
-  }
-
  .tox .tox-dialog__footer.custom-dialog-footer {
    padding: 0;
    border-top: 1px solid ${props => props.theme.LineOut};
@@ -279,7 +244,7 @@ export const GlobalStyle = createGlobalStyle`
  }
 
   .tox .tox-tbtn:hover,
-  .tox-collection__item--active {
+  .tox-collection__item--active:not(.tox-swatch) {
     background: ${props => props.theme.StateBright} !important;
   }
  
@@ -465,6 +430,150 @@ export const GlobalStyle = createGlobalStyle`
   }
   .x-todo-box input{
     position: absolute;
+  }
+
+  .tox-tinymce-inline .tox-editor-header,
+  .tox .accessibility-issue__description,
+  .tox .tox-comment,
+  .tox .tox-menu,
+  .tox .tox-slider__rail,
+  .tox .tox-well,
+  .tox .tox-custom-editor {
+    border: 1px solid ${props => props.theme.LineOut} !important;
+  }
+
+  .tox .tox-button {
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+  }
+  .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {
+    background-color: ${props => props.theme.CoreNormal} !important;
+    border-color: ${props => props.theme.CoreNormal} !important;
+    :hover {
+      background-color: ${props => props.theme.CoreBright} !important;
+      border-color: ${props => props.theme.CoreBright} !important;
+    }
+    :active {
+      background-color: ${props => props.theme.CoreDark} !important;
+      border-color: ${props => props.theme.CoreDark} !important;
+    }
+  }
+  .tox .tox-button--secondary {
+    background-color: ${props => props.theme.StateNormal} !important;
+    border-color: ${props => props.theme.LineOut} !important;
+    color: ${props => props.theme.TextSub} !important;
+    :hover {
+      background-color: ${props => props.theme.StateBright} !important;
+    }
+    :active {
+      background-color: ${props => props.theme.StateNormal} !important;
+      border-color: ${props => props.theme.ClearActiveIcon} !important;
+      color: ${props => props.theme.TextMain} !important;
+    }
+  }
+  .tox .tox-button:not(.tox-button--icon)[disabled] {
+    background-color: ${props => props.theme.DisabledShape} !important;
+    border-color: ${props => props.theme.DisabledShape} !important;
+  }
+  .tox .tox-split-button {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  .tox .tox-menubar,
+  .tox .tox-toolbar,
+  .tox .tox-toolbar__primary,
+  .tox .tox-toolbar__overflow {
+    background: ${props => props.theme.StateNormal} !important;
+    border-bottom: 1px solid ${props => props.theme.LineMain} !important;
+  }
+  .tox.tox-tinymce-aux .tox-toolbar__overflow {
+    border: 1px solid ${props => props.theme.LineMain} !important;
+  }
+  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+    border-right: 1px solid transparent !important;
+  }
+  .tox .tox-collection,
+  .tox .tox-swatches-menu {
+    background: ${props => props.theme.StateNormal} !important;
+  }
+  .tox .tox-collection--list .tox-collection__group {
+    border-color: ${props => props.theme.LineSub} !important;
+  }
+  .tox .tox-swatches__picker-btn {
+    background: transparent !important;
+    svg {
+      fill: ${props => props.theme.TextMain} !important;
+    }
+  }
+  
+  .tox .tox-dialog {
+    background-color: ${props => props.theme.StateNormal} !important;
+  }
+  .tox .tox-dialog .tox-dialog__header {
+    background-color: inherit !important;
+  }
+  .tox .tox-selectfield select {
+    background-color: ${props => props.theme.StateNormal} !important;
+    :hover {
+      background-color: ${props => props.theme.StateBright} !important;
+    }
+    option:checked {
+      background-color: ${props => props.theme.StateDark} !important;
+    }
+  }
+  .tox .tox-dialog .tox-textfield,
+  .tox .tox-dialog .tox-textarea {
+    border-color: ${props => props.theme.LineOut} !important;
+    background-color: ${props => props.theme.StateNormal} !important;
+    :focus {
+      border-color: ${props => props.theme.SubStateVivid} !important;
+    }
+  }
+  .tox .tox-dialog__footer {
+    background-color: inherit !important;
+    border-top: 1px solid ${props => props.theme.LineOut} !important;
+  }
+  .tox .tox-dialog,
+  .tox .tox-textfield,
+  .tox .tox-toolbar-textfield,
+  .tox .tox-listboxfield .tox-listbox--select,
+  .tox .tox-textarea,
+  .tox .tox-selectfield select,
+  .tox .tox-insert-table-picker > div {
+    border-color: ${props => props.theme.LineOut} !important;
+  }
+  .tox .tox-insert-table-picker__selected {
+    background-color: ${props => props.theme.StateDark} !important;
+  }
+  .tox .tox-pop__dialog {
+    background-color: ${props => props.theme.StateNormal} !important;
+    border: 1px solid ${props => props.theme.LineOut} !important;
+    border-radius: 4px !important;
+  }
+  .tox .tox-pop.tox-pop--bottom::after {
+    border-color: ${props => props.theme.StateNormal} transparent transparent transparent !important;
+  }
+  .tox .tox-pop.tox-pop--bottom::before {
+    border-color: ${props => props.theme.LineOut} transparent transparent transparent !important;
+  }
+  .tox .tox-pop.tox-pop--top::after {
+    border-color: transparent transparent ${props => props.theme.StateNormal} transparent !important;
+  }
+  .tox .tox-pop.tox-pop--top::before {
+    border-color: transparent transparent ${props => props.theme.LineOut} transparent !important;
+  }
+  .tox .tox-pop.tox-pop--left::after {
+    border-color: transparent ${props => props.theme.StateNormal} transparent transparent !important;
+  }
+  .tox .tox-pop.tox-pop--left::before {
+    border-color: transparent ${props => props.theme.LineOut} transparent transparent !important;
+  }
+  .tox .tox-pop.tox-pop--right::after {
+    border-color: transparent transparent transparent ${props => props.theme.StateNormal} !important;
+  }
+  .tox .tox-pop.tox-pop--right::before {
+    border-color: transparent transparent transparent ${props => props.theme.LineOut} !important;
   }
 `;
 
