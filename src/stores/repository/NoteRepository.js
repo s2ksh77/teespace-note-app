@@ -617,6 +617,44 @@ class NoteRepository {
       },
     });
   }
+
+  async throwPage(pageList: Array<PageInfo>) {
+    // pageList -> pageId 리스트
+    pageList.forEach(page => {
+      page.USER_ID = NoteStore.userId;
+      page.WS_ID = NoteStore.roomId;
+      page.note_channel_id = NoteStore.chId;
+      page.parent_notebook = null;
+    });
+    try {
+      return await API.post(`note-api/noteRecycleBin?action=Update`, {
+        dto: {
+          noteList: pageList,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async restorePage(pageList) {
+    // pageList -> pageId 리스트, chapterId 리스트
+    // [{note_id: asdf, parent_notebook : asdf} ... ]
+    pageList.forEach(page => {
+      page.note_channel_id = NoteStore.chId;
+      page.USER_ID = NoteStore.userId;
+      page.WS_ID = NoteStore.roomId;
+    });
+    try {
+      return await API.post(`note-api/noteRecycleBin?action=Update`, {
+        dto: {
+          noteList: pageList,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();

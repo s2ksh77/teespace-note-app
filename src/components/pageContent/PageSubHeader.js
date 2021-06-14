@@ -21,16 +21,20 @@ const PageSubHeader = () => {
     <>
       {PageStore.pageModel?.isReadMode ? (
         <PageSubHeaderContainer>
-          <ReadModeIcon src={lockIcon} />
           {authStore.hasPermission('notePage', 'U') ? (
-            <>
-              <ReadModeText color="#999999">
-                {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
-              </ReadModeText>
-              <ReadModeSubText color="#a3a3a3">
-                {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
-              </ReadModeSubText>
-            </>
+            PageStore.isRecycleBin ? (
+              <ReadModeText>{t('NOTE_BIN_05')}</ReadModeText>
+            ) : (
+              <>
+                <ReadModeIcon src={lockIcon} />
+                <ReadModeText color="#999999">
+                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
+                </ReadModeText>
+                <ReadModeSubText color="#a3a3a3">
+                  {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
+                </ReadModeSubText>
+              </>
+            )
           ) : (
             <ReadModeText>{t('NOTE_GUEST_01')}</ReadModeText>
           )}

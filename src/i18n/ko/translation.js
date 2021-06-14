@@ -15,7 +15,7 @@ const languageSet = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지도 삭제됩니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
   NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
   NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
   NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
@@ -41,7 +41,7 @@ const languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
   NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
   NOTE_EDIT_PAGE_ATTACH_FILE_03:
-    '스페이스 공간이 부족하여 파일을 첨부할 수 없습니다.',
+    '그룹 공간이 부족하여 파일을 첨부할 수 없습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_04:
     '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
@@ -101,7 +101,7 @@ const languageSet = {
   NOTE_EDIT_PAGE_MENUBAR_30: '이미지 교체',
   NOTE_EDIT_PAGE_MENUBAR_31: '취소선',
   NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
-  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 있는 태그 이름입니다.',
+  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 존재하는 태그 이름입니다.',
   NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
   NOTE_PAGE_LIST_NO_CHPT_02: "시작하려면 '새 챕터' 버튼을 클릭하세요.",
   NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
@@ -125,16 +125,46 @@ const languageSet = {
   NOTE_ADD_TAGS_01: '태그 추가',
   NOTE_ADD_TAGS_02: '읽기 모드에서는 태그 추가를 할 수 없습니다.',
   NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
+
   NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
   NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
-  CM_FORWARD: '다른 룸으로 전달',
 
-  TALK_DEEP_FEATURE_METATAG_DELD_NOTE_01: '노트가 삭제되어 불러올 수 없습니다.',
   DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
 
   NOTE_EDIT_PAGE_UPDATE_TIME_01: `오전 {{time}}`,
   NOTE_EDIT_PAGE_UPDATE_TIME_02: `오후 {{time}}`,
   NOTE_EXPORT_TITLE: '제목',
+
+  NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
+  NOTE_CONTEXT_MENU_02: '복원',
+  NOTE_CONTEXT_MENU_03: '휴지통 비우기',
+  NOTE_DND_ACTION_01: '이동이 불가능합니다.',
+  NOTE_DND_ACTION_02: '전달받은 챕터 및 페이지는 이동 불가능합니다.',
+
+  NOTE_BIN_01: '휴지통',
+  NOTE_BIN_02: '휴지통으로 이동되었습니다.',
+  NOTE_BIN_03: `{{num}}개의 페이지가 휴지통으로 이동되었습니다.`,
+  NOTE_BIN_04: '챕터가 삭제되었습니다.',
+  NOTE_BIN_05:
+    '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
+  NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
+  NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
+  NOTE_BIN_08: `{{num}}개의 페이지를 영구 삭제하시겠습니까?`,
+
+  NOTE_BIN_RESTORE_01: '어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_02: '복원되었습니다.',
+  NOTE_BIN_RESTORE_03: `{{num}}개의 페이지가 복원되었습니다.`,
+
+  NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
+  NOTE_RECOVER_DATA_01:
+    '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
+  NOTE_META_TAG_01: '챕터',
+  NOTE_META_TAG_02: '페이지',
+  NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
+  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
+
+  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.',
 };
 
 export default languageSet;

@@ -20,6 +20,9 @@ class PageStore {
 
   isCtrlKeyDown: boolean = false;
 
+  @observable
+  isRecycleBin: boolean = false;
+
   dragEnterChapterIdx: number;
 
   dragEnterPageIdx: number;
@@ -64,6 +67,10 @@ class PageStore {
 
   setDragEnterPageIdx(dragEnterPageIdx: number) {
     this.dragEnterPageIdx = dragEnterPageIdx;
+  }
+
+  setIsRecycleBin(flag: Boolean) {
+    this.isRecycleBin = flag;
   }
 
   @action
@@ -151,6 +158,28 @@ class PageStore {
     const res = await NoteRepository.editDone(dto);
     if (res) {
       this.fetchNoteInfoList(this.pageModel.id);
+    }
+  }
+
+  @action
+  async throwPage(pageList: Array<PageInfo>) {
+    const {
+      data: { dto },
+    } = await NoteRepository.throwPage(pageList);
+    if (dto.resultMsg === 'Success') {
+      return dto;
+    }
+  }
+
+  @action
+  async restorePage(pageId: string, chapterId: string) {
+    const pageList = [];
+    pageList.push({ note_id: pageId, parent_notebook: chapterId });
+    const {
+      data: { dto },
+    } = await NoteRepository.restorePage(pageList);
+    if (dto.resultMsg === 'Success') {
+      return dto;
     }
   }
 

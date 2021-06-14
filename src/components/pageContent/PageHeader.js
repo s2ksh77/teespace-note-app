@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
@@ -90,40 +90,47 @@ const PageHeader = () => {
 
   const handleSearch = () => {};
 
+  useEffect(() => {
+    console.log(PageStore.isRecycleBin);
+  });
+
   return useObserver(() => (
-    <ContentHeader handleBackBtnClick={handleBackBtnClick}>
-      {authStore.hasPermission('notePage', 'U') && (
-        <EditButton onClick={handleEditBtnClick}>
-          {PageStore.pageModel.isReadMode
-            ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
-            : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
-        </EditButton>
-      )}
-      <PageContentTitle
-        maxLength="200"
-        placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
-        value={PageStore.pageModel.name}
-        disabled={PageStore.pageModel.isReadMode}
-        onChange={handleChange}
-      />
-      {/* <AutoSaveMessage /> */}
-      {PageStore.pageModel.isReadMode ? (
-        <>
-          <ModifiedUser>{PageStore.pageModel.userName}</ModifiedUser>
-          <ModifiedTime>
-            {NoteUtil.convertDateFormat(PageStore.pageModel.modDate)}
-          </ModifiedTime>
-        </>
-      ) : (
-        <EditingIcon src={editingIcon} />
-      )}
-      <SearchButtonWrapper
-        style={{ marginRight: '0.75rem' }}
-        onClick={handleSearch}
-      >
-        <SearchButtonIcon src={searchIcon} />
-      </SearchButtonWrapper>
-    </ContentHeader>
+    <>
+      <ContentHeader handleBackBtnClick={handleBackBtnClick}>
+        {authStore.hasPermission('notePage', 'U') &&
+          !PageStore.isRecycleBin && (
+            <EditButton onClick={handleEditBtnClick}>
+              {PageStore.pageModel.isReadMode
+                ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
+                : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
+            </EditButton>
+          )}
+        <PageContentTitle
+          maxLength="200"
+          placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
+          value={PageStore.pageModel.name}
+          disabled={PageStore.pageModel.isReadMode}
+          onChange={handleChange}
+        />
+        {/* <AutoSaveMessage /> */}
+        {PageStore.pageModel.isReadMode ? (
+          <>
+            <ModifiedUser>{PageStore.pageModel.userName}</ModifiedUser>
+            <ModifiedTime>
+              {NoteUtil.convertDateFormat(PageStore.pageModel.modDate)}
+            </ModifiedTime>
+          </>
+        ) : (
+          <EditingIcon src={editingIcon} />
+        )}
+        <SearchButtonWrapper
+          style={{ marginRight: '0.75rem' }}
+          onClick={handleSearch}
+        >
+          <SearchButtonIcon src={searchIcon} />
+        </SearchButtonWrapper>
+      </ContentHeader>
+    </>
   ));
 };
 

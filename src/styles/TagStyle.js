@@ -99,7 +99,7 @@ export const PageTagListWrapper = styled.div`
   overflow: hidden;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0rem;
 `;
 
 /** 여기 아래부터 아직 안 쓰이는 곳 */

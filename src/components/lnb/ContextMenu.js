@@ -39,109 +39,64 @@ const ContextMenu = ({ itemType, item }) => {
   };
 
   /**
-   * 챕터/페이지를 삭제한다.
+   * 챕터/페이지를 삭제한다. 하위 페이지들은 휴지통으로
+   * 전달받은 챕터/페이지는 영구 삭제
    */
-  const deleteComponent = async () => {
+  const throwComponent = async () => {
     switch (itemType) {
-      case 'chapter': {
-        try {
-          const children = await NoteRepository.getChapterChildren(item.id);
-          const editingList = children.filter(
-            _note => _note.editingUserId !== '',
+      case 'chapter':
+        ChapterStore.setDeleteChapterList([{ id: item.id }]);
+        ChapterStore.getChapterChildren(item.id).then(async dto => {
+          const editingList = dto.noteList.filter(
+            page => page.is_edit !== null && page.is_edit !== '',
           );
-          if (editingList.length === 0) {
-            alert(`해당 chapter를 삭제합니다`);
-            await ChapterStore.deleteChapter(item.id);
-            // [ TODO ] : 다음 챕터 선택하기, 일단 임시 코드 넣음
-            if (
-              !NoteStore.isPageContent ||
-              PageStore.pageModel?.chapterId !== item.id
-            )
-              return; // 새로 선택 안해도 되는 경우
-            // 챕터가 없는 경우
-            if (ChapterStore.chapterList.length === 0) {
-              PageStore.setPageModel(new PageModel({}));
-              return;
-            }
-            // 첫 번째 챕터 선택 - 1) 첫 번째 페이지 선택, 2) 페이지X
-            const chapter = ChapterStore.chapterList[0];
-            if (chapter.pageList.length > 0) {
-              await PageStore.fetchNoteInfoList(chapter.pageList[0].id);
-              PageStore.fetchNoteTagList(chapter.pageList[0].id);
-            } else
-              PageStore.setPageModel(new PageModel({ chapterId: chapter.id })); // 페이지가 없는 경우
-
-            return;
-          }
           if (editingList.length === 1) {
-            const res = await userStore.fetchProfile(editingList[0].is_edit);
-            // PageStore.setEditingUserName(res.nick ? res.nick : res.name);
-            // NoteStore.setModalInfo('confirm');
-            alert('하위 페이지를 수정 중인 사용자가 있습니다.'); // temp
-            return;
-          }
-
-          if (editingList.length > 1) {
+            const { displayName } = await userStore.getProfile(
+              editingList[0].is_edit,
+            );
+            PageStore.setEditingUserName(displayName);
+            NoteStore.setModalInfo('confirm');
+          } else if (editingList.length > 1) {
             PageStore.setEditingUserCount(editingList.length);
-            //     NoteStore.setModalInfo('chapterconfirm');
-            alert('하위 페이지를 수정 중인 사용자가 있습니다.'); // temp
-            return;
-          }
-        } catch (e) {
-          console.log('챕터 삭제');
-          console.log(e);
-        }
-        break;
-      }
-      case 'page': {
-        // [TODO : 다음 페이지 선택 ] 20210428 임시 첫 번째 페이지 선택
-        // chapterId, id, content, editingUserId, lastUserId, modDate, name, userName
-        try {
-          const page = await NoteRepository.getNoteInfoList(item.id);
-          if (!page.editingUserId) {
-            await PageStore.deletePage([{ note_id: page.id }]);
-            // 페이지 화면을 보고 있고 현재 보고 있는 페이지를 삭제한 경우
-            if (
-              NoteStore.isPageContent &&
-              PageStore.pageModel?.id === page.id
-            ) {
-              const chapter = ChapterStore.chapterMap.get(page.chapterId);
-              if (chapter.pageList.length > 0) {
-                await PageStore.fetchNoteInfoList(chapter.pageList[0]);
-              } else
-                PageStore.setPageModel(
-                  new PageModel({ chapterId: chapter.id }),
-                ); // 페이지가 없는 경우
-            }
+            NoteStore.setModalInfo('chapterconfirm');
           } else {
-            const res = await userStore.fetchProfile(page.editingUserId);
-            // PageStore.setEditingUserName(res.nick ? res.nick : res.name);
-            // NoteStore.setModalInfo('confirm'); // todo
-            alert(`${res.nick ? res.nick : res.name}님이 수정 중입니다`);
+            if (ChapterStore.currentChapterId === item.id)
+              setSelectableIdOfChapter();
+            if (item.type === 'shared' || item.type === 'shared_page')
+              NoteStore.setModalInfo('sharedChapter');
+            else NoteStore.setModalInfo('chapter');
           }
-        } catch (e) {
-          console.log('delete page에서 error');
-          console.log(e);
-        }
-        // PageStore.getNoteInfoList(item.id).then(async dto => {
-        //   if (dto.is_edit === null || dto.is_edit === '') {
-        //     PageStore.setDeletePageList({ note_id: item.id });
-        //     if (PageStore.currentPageId === item.id) {
-        //       if (
-        //         parent.type === 'shared_page' &&
-        //         parent.children.length === 1
-        //       ) {
-        //         setSelectableIdOfChapter();
-        //         PageStore.setLastSharedPageParentId(parent.id);
-        //       } else {
-        //         setSelectableIdOfPage();
-        //       }
-        //     }
-        //     NoteStore.setModalInfo('page');
-        //   }
-        // });
+        });
         break;
-      }
+      case 'page':
+        PageStore.getNoteInfoList(item.id).then(async dto => {
+          if (dto.is_edit === null || dto.is_edit === '') {
+            PageStore.setDeletePageList([{ note_id: item.id }]);
+            if (PageStore.currentPageId === item.id) {
+              if (
+                parent.type === 'shared_page' &&
+                parent.children.length === 1
+              ) {
+                setSelectableIdOfChapter();
+                PageStore.setLastSharedPageParentId(parent.id);
+              } else {
+                setSelectableIdOfPage();
+              }
+            }
+            if (PageStore.lastSharedPageParentId) {
+              ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+              PageStore.setLastSharedPageParentId('');
+              ChapterStore.deleteNoteChapter();
+            } else if (item.type === 'shared')
+              NoteStore.setModalInfo('sharedPage');
+            else PageStore.throwNotePage();
+          } else {
+            const { displayName } = await userStore.getProfile(dto.is_edit);
+            PageStore.setEditingUserName(displayName);
+            NoteStore.setModalInfo('confirm');
+          }
+        });
+        break;
       default:
         break;
     }
@@ -149,31 +104,16 @@ const ContextMenu = ({ itemType, item }) => {
 
   const handleClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
-    switch (key) {
-      case '0':
-        renameComponent();
-        break;
-      case '1':
-        deleteComponent();
-        break;
-      case '2':
-        // shareComponent();
-        break;
-      case '3':
-        // exportComponent(true);
-        break;
-      case '4':
-        // exportComponent(false);
-        break;
-      case '5':
-        // exportTxtComponent();
-        break;
-      case '6':
-        // infoComponent();
-        break;
-      default:
-        break;
-    }
+    if (key === 'rename') renameComponent();
+    else if (key === 'throw') throwComponent();
+    // else if (key === 'forward') shareComponent();
+    // else if (key === 'sendEmail') exportComponent(true);
+    // else if (key === 'exportPDF') exportComponent(false);
+    // else if (key === 'exportTXT') exportTxtComponent();
+    // else if (key === 'viewInfo') infoComponent();
+    // else if (key === 'emptyRecycleBin') emptyComponent();
+    else if (key === 'restore') restoreComponent();
+    else if (key === 'delete') deleteComponent();
 
     // if (key)
     //   NoteStore.LNBChapterCoverRef.removeEventListener(
@@ -182,41 +122,81 @@ const ContextMenu = ({ itemType, item }) => {
     //   );
   };
 
+  const restoreComponent = async () => {
+    // 휴지통만 있는 경우
+    if (ChapterStore.getRoomChapterList().length === 0) {
+      const newChapter = await ChapterStore.createRestoreChapter(
+        t('NOTE_PAGE_LIST_CMPNT_DEF_01'),
+        ChapterStore.getChapterRandomColor(),
+      );
+      PageStore.restorePageLogic({
+        chapterId: newChapter.id,
+        pageId: note.id,
+        toastTxt: t('NOTE_BIN_RESTORE_02'),
+      });
+    } else {
+      PageStore.setRestorePageId(note.id);
+      NoteStore.setModalInfo('restore');
+    }
+  };
+
   const handleSubMenuClick = ({ domEvent }) => {
     domEvent.stopPropagation();
   };
 
   // 순서는 이름 변경, 삭제, 다른 룸으로 전달, TeeMail로 전달, 내보내기, (정보 보기)
-  const menu = (
-    <Menu style={{ borderRadius: 5 }} onClick={handleClickContextMenu}>
-      {item.type !== 'shared_page' &&
-        authStore.hasPermission('notePage', 'U') && (
-          <Item key="0">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
-        )}
-      {authStore.hasPermission('notePage', 'D') && (
-        <Item key="1">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
-      )}
-      {/* {authStore.hasPermission('noteSharePage', 'C') && (
-        <Item key="2">{t('CM_FORWARD')}</Item>
-      )}
-      {NoteStore.isMailApp && authStore.hasPermission('noteMailShare', 'C') && (
-        <Item key="3">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
-      )}
-      {authStore.hasPermission('notePage', 'C') && (
-        <SubMenu
-          title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
-          onTitleClick={handleSubMenuClick}
-          disabled={!!(itemType === 'chapter' && !item.children.length)}
-        >
-          <Item key="4">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
-          <Item key="5">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
-        </SubMenu>
-      )}
-      {item.type === 'shared' && (
-        <Item key="6">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>
-      )} */}
-    </Menu>
-  );
+  const menu = (() => {
+    switch (item.type) {
+      case 'recycle_bin':
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={handleClickContextMenu}>
+            <Item key="emptyRecycleBin">{t('NOTE_CONTEXT_MENU_03')}</Item>
+          </Menu>
+        );
+      case 'recycle':
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={handleClickContextMenu}>
+            <Item key="restore">{t('NOTE_CONTEXT_MENU_02')}</Item>
+            <Item key="delete">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
+          </Menu>
+        );
+      default:
+        return (
+          <Menu style={{ borderRadius: 5 }} onClick={handleClickContextMenu}>
+            {item.type !== 'shared_page' &&
+              authStore.hasPermission('notePage', 'U') && (
+                <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
+              )}
+            {/* {authStore.hasPermission('noteSharePage', 'C') && (
+              <Item key="forward">{t('NOTE_CONTEXT_MENU_01')}</Item>
+            )}
+            {GlobalVariable.isMailApp &&
+              authStore.hasPermission('noteMailShare', 'C') && (
+                <Item key="sendEmail">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
+              )}
+            {authStore.hasPermission('notePage', 'C') && (
+              <SubMenu
+                title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
+                onTitleClick={handleSubMenuClick}
+              >
+                <Item key="exportPDF">
+                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}
+                </Item>
+                <Item key="exportTXT">
+                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}
+                </Item>
+              </SubMenu>
+            )}
+            {item.type === 'shared' && (
+              <Item key="viewInfo">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>
+            )} */}
+            {authStore.hasPermission('notePage', 'D') && (
+              <Item key="throw">{t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04')}</Item>
+            )}
+          </Menu>
+        );
+    }
+  })();
 
   return useObserver(() => (
     <ContextMenuWrapper className="contextMenu" onClick={handleClickWrapper}>
