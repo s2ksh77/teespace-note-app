@@ -17,7 +17,7 @@ import PageModel from '../../stores/model/PageModel';
  * chapter = {chId, color, id, isFolded, modDate, name, pageList, roomId, shareRoomId, sharedUserId, sharedDate, targetChId, targetRoomId, type, userId, userName}
  * @returns
  */
-const ContextMenu = ({ itemType, item }) => {
+const ContextMenu = ({ itemType, item, parent }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
@@ -36,6 +36,25 @@ const ContextMenu = ({ itemType, item }) => {
       pre: itemType === 'chapter' ? item.name : item.text,
       cur: itemType === 'chapter' ? item.name : item.text,
     });
+  };
+
+  const setSelectableIdOfChapter = () => {
+    const selectableChapter =
+      chapterIdx > 0
+        ? ChapterStore.chapterList[chapterIdx - 1]
+        : ChapterStore.chapterList[1];
+    const selectableChapterId = selectableChapter?.id;
+    const selectablePageId = selectableChapter?.children[0]?.id;
+
+    ChapterStore.setSelectableChapterId(selectableChapterId);
+    PageStore.setSelectablePageId(selectablePageId);
+  };
+
+  const setSelectableIdOfPage = () => {
+    const selectablePageId =
+      pageIdx > 0 ? parent.children[pageIdx - 1]?.id : parent.children[1]?.id;
+
+    PageStore.setSelectablePageId(selectablePageId);
   };
 
   /**
@@ -69,29 +88,33 @@ const ContextMenu = ({ itemType, item }) => {
         });
         break;
       case 'page':
-        PageStore.getNoteInfoList(item.id).then(async dto => {
-          if (dto.is_edit === null || dto.is_edit === '') {
-            PageStore.setDeletePageList([{ note_id: item.id }]);
-            if (PageStore.currentPageId === item.id) {
-              if (
-                parent.type === 'shared_page' &&
-                parent.children.length === 1
-              ) {
-                setSelectableIdOfChapter();
-                PageStore.setLastSharedPageParentId(parent.id);
-              } else {
-                setSelectableIdOfPage();
-              }
-            }
-            if (PageStore.lastSharedPageParentId) {
-              ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-              PageStore.setLastSharedPageParentId('');
-              ChapterStore.deleteNoteChapter();
-            } else if (item.type === 'shared')
-              NoteStore.setModalInfo('sharedPage');
-            else PageStore.throwNotePage();
+        PageStore.getNoteInfoList(item.id).then(async model => {
+          if (model.editingUserId === null || model.editingUserId === '') {
+            // PageStore.setDeletePageList([{ note_id: item.id }]);
+            // if (PageStore.pageModel.id === item.id) {
+            //   if (
+            //     parent.type === 'shared_page' &&
+            //     parent.children.length === 1
+            //   ) {
+            //     setSelectableIdOfChapter();
+            //     PageStore.setLastSharedPageParentId(parent.id);
+            //   } else {
+            //     setSelectableIdOfPage();
+            //   }
+            // }
+            // if (PageStore.lastSharedPageParentId) {
+            //   ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+            //   PageStore.setLastSharedPageParentId('');
+            //   ChapterStore.deleteNoteChapter();
+            // } else if (item.type === 'shared')
+            //   NoteStore.setModalInfo('sharedPage');
+            // else PageStore.throwNotePage(model);
+            console.log(model);
+            PageStore.throwPage(model);
           } else {
-            const { displayName } = await userStore.getProfile(dto.is_edit);
+            const { displayName } = await userStore.getProfile(
+              model.editingUserId,
+            );
             PageStore.setEditingUserName(displayName);
             NoteStore.setModalInfo('confirm');
           }

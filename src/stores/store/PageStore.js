@@ -73,11 +73,17 @@ class PageStore {
     this.isRecycleBin = flag;
   }
 
-  @action
+  @action // model 까지 반영
   async fetchNoteInfoList(pageId: string) {
     const res = await NoteRepository.getNoteInfoList(pageId);
     this.pageModel = new PageModel(res);
     console.log(this.pageModel);
+  }
+
+  @action // 단순 데이터 조회
+  async getNoteInfoList(pageId: string) {
+    const res = await NoteRepository.getNoteInfoList(pageId);
+    return new PageModel(res);
   }
 
   @action
@@ -162,10 +168,10 @@ class PageStore {
   }
 
   @action
-  async throwPage(pageList: Array<PageInfo>) {
+  async throwPage(page: PageModel) {
     const {
       data: { dto },
-    } = await NoteRepository.throwPage(pageList);
+    } = await NoteRepository.throwPage(page);
     if (dto.resultMsg === 'Success') {
       return dto;
     }

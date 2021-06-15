@@ -90,10 +90,6 @@ const PageHeader = () => {
 
   const handleSearch = () => {};
 
-  useEffect(() => {
-    console.log(PageStore.isRecycleBin);
-  });
-
   return useObserver(() => (
     <>
       <ContentHeader handleBackBtnClick={handleBackBtnClick}>

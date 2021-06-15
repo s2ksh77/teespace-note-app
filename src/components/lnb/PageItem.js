@@ -179,7 +179,7 @@ const PageItem = ({ page, pageIdx, chapter, chapterIdx }) => {
         </Tooltip>
       )}
       {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && (
-        <ContextMenu itemType="page" item={page} />
+        <ContextMenu itemType="page" item={page} parent={chapter} />
       )}
     </PageWrapper>
   ));

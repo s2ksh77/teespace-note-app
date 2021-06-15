@@ -2,7 +2,7 @@ import { API } from 'teespace-core';
 import ChapterModel, {
   convertChapterObjToModel as chapterConverter,
 } from '../model/ChapterModel';
-import {
+import PageModel, {
   convertPageObjToModel as pageConverter,
   convertPageModelToObj,
 } from '../model/PageModel';
@@ -36,6 +36,19 @@ const convertPageObj = (dtoObj: PageInfoDTO): PageInfo => {
       const obj = {};
       obj[key] = dtoObj[key];
       Object.assign(result, pageConverter({ ...obj }));
+    }
+  });
+  return result;
+};
+
+const convertPageModel = (dtoObj: PageInfoDTO): PageInfo => {
+  const result: $Shape<PageInfo> = {};
+
+  Object.keys(dtoObj).forEach(key => {
+    if ({}.hasOwnProperty.call(dtoObj, key)) {
+      const obj = {};
+      obj[key] = dtoObj[key];
+      Object.assign(result, convertPageModelToObj({ ...obj }));
     }
   });
   return result;
@@ -618,18 +631,17 @@ class NoteRepository {
     });
   }
 
-  async throwPage(pageList: Array<PageInfo>) {
-    // pageList -> pageId 리스트
-    pageList.forEach(page => {
-      page.USER_ID = NoteStore.userId;
-      page.WS_ID = NoteStore.roomId;
-      page.note_channel_id = NoteStore.chId;
-      page.parent_notebook = null;
-    });
+  async throwPage(page: PageModel) {
+    page.userId = NoteStore.userId;
+    page.roomId = NoteStore.roomId;
+    page.chId = NoteStore.chId;
+    page.chapterId = null;
+    console.log('전달받은', page);
+    console.log('convert obj', convertPageModel(page));
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
-          noteList: pageList,
+          noteList: [convertPageModel(page)],
         },
       });
     } catch (e) {
