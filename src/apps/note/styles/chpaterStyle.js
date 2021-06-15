@@ -39,30 +39,25 @@ export const ChapterCover = styled.div`
   }
 `;
 
+export const ChapterColor = styled.span`
+  position: absolute;
+  left: 0.19rem;
+  display: flex;
+  width: 0.38rem;
+  height: 2.5rem;
+  align-items: center;
+  align-self: center;
+  border-radius: 10px;
+  margin: 0.31rem 0;
+  background: ${props => props.background};
+  min-width: 0.25rem;
+`;
+
 export const ChapterShareIcon = styled.img`
   position: absolute;
   width: 1rem;
   left: 1rem;
   filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
-`
-
-export const ColorCover = styled.span`
-  position:absolute;
-  display: flex;
-  width: fit-content;
-  left: 0;
-  align-items: center;
-`;
-
-export const Color = styled.span`
-  width: 0.25rem;
-  height: 2.19rem;
-  align-self: center;
-  border-radius: 0.13rem / 0.13rem;
-  margin: 0.31rem 0;
-  color: ${(props) => props.color};
-  background: ${(props) => props.background};
-  min-width: 0.25rem;
 `;
 
 export const ChapterTextInput = styled.input`

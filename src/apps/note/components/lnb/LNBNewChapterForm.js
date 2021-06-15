@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import useNoteStore from "../../store/useStore";
 import { LNBNewChapter } from "../../styles/lnbStyle";
 import { observer } from 'mobx-react';
-import ChapterColor from "../chapter/ChapterColor";
 import {
+  ChapterColor,
   ChapterInput,
   ChapterTitle,
 } from "../../styles/chpaterStyle";
@@ -59,7 +59,7 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
     <>
       <LNBNewChapter>
         <ChapterTitle>
-          <ChapterColor color={ChapterStore.isNewChapterColor} />
+          <ChapterColor background={ChapterStore.isNewChapterColor} />
           <ChapterInput
             ref={titleRef}
             placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_01')}

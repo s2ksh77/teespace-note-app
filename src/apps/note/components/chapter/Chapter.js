@@ -12,12 +12,12 @@ import { useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
-import ChapterColor from './ChapterColor';
 import ChapterText from './ChapterText';
 import PageList from '../page/PageList';
 import {
   ChapterContainer,
   ChapterCover,
+  ChapterColor,
   ChapterTextInput,
 } from '../../styles/chpaterStyle';
 import { TrashIcon, ShareIcon, SharedPageIcon } from '../icons';
@@ -204,7 +204,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         return (
           <TrashIcon color={themeContext.SubStateVivid} />
         );
-      return <ChapterColor color={color} chapterId={id} />;
+      return <ChapterColor background={color} />;
     }
     if (chapter.type === 'shared_page')
       return (
