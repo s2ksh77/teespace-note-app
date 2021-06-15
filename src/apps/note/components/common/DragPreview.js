@@ -2,13 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { DragLayer } from "react-dnd";
-import ChapterColor from '../chapter/ChapterColor'
 import {
   DraggedComponentContainer,
   DraggedComponent,
   DraggedComponentTitle,
 } from "../../styles/commonStyle";
-import { ChapterShareIcon } from '../../styles/chpaterStyle';
+import { ChapterColor, ChapterShareIcon } from '../../styles/chpaterStyle';
 import sharedPageIcon from '../../assets/page_shared.svg';
 import sharedIcon from '../../assets/share_1.svg';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +50,7 @@ const DragPreview = ({ items }) => {
   }, [previewRef]);
 
   const renderChapterIcon = item => {
-    if (item.color) return <ChapterColor color={item.color} id={item.id} />;
+    if (item.color) return <ChapterColor background={item.color} />;
     if (item.type === 'shared_page') return <ChapterShareIcon src={sharedPageIcon} />
     return <ChapterShareIcon src={sharedIcon} />
   };
