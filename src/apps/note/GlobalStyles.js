@@ -255,9 +255,9 @@ export const GlobalStyle = createGlobalStyle`
     background: ${props => props.theme.StateDark} !important;
   }
 
-  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
-    border-right: 1px solid transparent !important;
-  }
+  // .tox .tox-tbtn--select[aria-label="Font sizes"] {
+  //   width: 4rem;
+  // }
 
   .export {
     table { 
@@ -377,11 +377,14 @@ export const GlobalStyle = createGlobalStyle`
   .ant-dropdown::before{
     bottom:0 !important;
   }
-  .forwardModal .ant-modal-content{
+  .forwardModal .ant-modal {
     width:32.5rem !important;
   }
   .forwardModal .ant-modal-body {
     padding: 0rem !important;
+  }
+  .viewInfoModal .ant-modal {
+    width: 24.375rem !important;
   }
   .viewInfoModal .ant-modal-body {
     padding: 1.69rem 3.44rem 0 3.44rem !important;
@@ -389,6 +392,9 @@ export const GlobalStyle = createGlobalStyle`
   .viewInfoModal .ant-modal-footer{
     border-top: 0px solid black !important;
     padding:1.75rem 0 !important;
+  }
+  .restoreModal .ant-modal {
+    width: 22.5rem !important;
   }
   .restoreModal .ant-modal-header {
     height: 6.69rem !important;
