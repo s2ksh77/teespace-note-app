@@ -30,12 +30,10 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   const { authStore } = useCoreStores();
   const themeContext = useContext(ThemeContext);
   const chapterContainerRef = useRef(null);
-  // 주의: ChapterStore.chapterList의 isFolded는 getNoteChapterList때만 정확한 정보 담고 있음
   const [isFolded, setIsFolded] = useState(
     chapter.isFolded ? chapter.isFolded : false,
   );
 
-  // 중복체크 후 다시 입력받기 위해 ref 추가
   const { id, text: title, color } = chapter;
   const chapterDragData = useMemo(
     () => ({
@@ -53,7 +51,8 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     },
     hover(item, monitor) {
       if (!chapterContainerRef.current) return;
-      const hoverBoundingRect = chapterContainerRef.current.getBoundingClientRect();
+      const hoverBoundingRect =
+        chapterContainerRef.current.getBoundingClientRect();
       const hoverMiddleY = hoverBoundingRect.height / 2;
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
@@ -140,21 +139,10 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const handleChapterName = e => ChapterStore.setRenameText(checkMaxLength(e));
+  const chapterWrapperRef = node =>
+    isShared ? drag(node) : drag(dropChapter(node));
 
-  const handleChapterTextInput = isEscape => () => {
-    if (!isEscape && ChapterStore.renameText !== title) {
-      ChapterStore.renameNoteChapter(color);
-    }
-
-    ChapterStore.setRenameId('');
-    NoteStore.LNBChapterCoverRef.removeEventListener(
-      'wheel',
-      NoteStore.disableScroll,
-    );
-  };
-
-  const onClickChapterBtn = useCallback(
+  const handleChapterClick = useCallback(
     e => {
       if (!PageStore.isReadMode()) return;
       if (PageStore.isRecycleBin && e.ctrlKey) return;
@@ -196,24 +184,34 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
     [chapter],
   );
 
-  const handleFocus = e => e.target.select();
-
-  const renderChapterIcon = () => {
-    if (!isShared) {
-      if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN)
-        return (
-          <TrashIcon color={themeContext.SubStateVivid} />
-        );
-      return <ChapterColor background={color} />;
+  const ChapterIcon = () => {
+    switch (chapter.type) {
+      case CHAPTER_TYPE.SHARED_PAGE:
+        return <SharedPageIcon color={themeContext.SubStateVivid} />;
+      case CHAPTER_TYPE.SHARED:
+        return <ShareIcon color={themeContext.SubStateVivid} />;
+      case CHAPTER_TYPE.RECYCLE_BIN:
+        return <TrashIcon color={themeContext.SubStateVivid} />;
+      default:
+        return <ChapterColor background={color} />;
     }
-    if (chapter.type === 'shared_page')
-      return (
-        <SharedPageIcon color={themeContext.SubStateVivid} />
-      );
-    return (
-      <ShareIcon color={themeContext.SubStateVivid} />
+  };
+
+  const handleTitleChange = e => ChapterStore.setRenameText(checkMaxLength(e));
+
+  const handleTitleUpdate = isEscape => () => {
+    if (!isEscape && ChapterStore.renameText !== title) {
+      ChapterStore.renameNoteChapter(color);
+    }
+
+    ChapterStore.setRenameId('');
+    NoteStore.LNBChapterCoverRef.removeEventListener(
+      'wheel',
+      NoteStore.disableScroll,
     );
   };
+
+  const handleFocus = e => e.target.select();
 
   const handleFoldBtnClick = e => {
     e.stopPropagation();
@@ -227,83 +225,68 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   };
 
   return useObserver(() => (
-    <>
-      <ChapterContainer
-        ref={!isShared ? drop(chapterContainerRef) : null}
-        className={
-          (isFolded ? 'folded ' : '') +
-          (ChapterStore.dragEnterChapterIdx === index && !isShared
-            ? 'borderTopLine'
-            : '') +
-          (ChapterStore.dragEnterChapterIdx === index + 1 &&
-          ChapterStore.dragEnterChapterIdx ===
-            ChapterStore.chapterList.length - ChapterStore.sharedCnt &&
-          !isShared
-            ? 'borderBottomLine'
-            : '')
+    <ChapterContainer
+      ref={!isShared ? drop(chapterContainerRef) : null}
+      className={
+        (isFolded ? 'folded ' : '') +
+        (ChapterStore.dragEnterChapterIdx === index && !isShared
+          ? 'borderTopLine'
+          : '') +
+        (ChapterStore.dragEnterChapterIdx === index + 1 &&
+        ChapterStore.dragEnterChapterIdx ===
+          ChapterStore.chapterList.length - ChapterStore.sharedCnt &&
+        !isShared
+          ? 'borderBottomLine'
+          : '')
+      }
+      id={chapter.id}
+      key={chapter.id}
+      order={flexOrder}
+    >
+      <ChapterCover
+        className={`chapter-div${
+          ChapterStore.dragData.get(chapter.id) ? ' selectedMenu' : ''
+        }`}
+        ref={
+          authStore.hasPermission('noteShareChapter', 'C') &&
+          !ChapterStore.renameId
+            ? node => chapterWrapperRef(node)
+            : null
         }
-        id={chapter.id}
-        key={chapter.id}
-        order={flexOrder}
-        itemType="chapter"
+        onClick={handleChapterClick}
       >
-        <ChapterCover
-          className={`chapter-div${
-            ChapterStore.isCtrlKeyDown
-              ? ChapterStore.dragData.get(chapter.id)
-                ? ' selectedMenu'
-                : ''
-              : (
-                  NoteStore.isDragging && ChapterStore.dragData.size > 0
-                    ? chapter.id === [...ChapterStore.dragData][0][0]
-                    : chapter.id === ChapterStore.currentChapterId
-                )
-              ? ' selectedMenu'
-              : ''
-          }`}
-          ref={
-            authStore.hasPermission('noteShareChapter', 'C') &&
-            !ChapterStore.renameId
-              ? !isShared
-                ? node => drag(dropChapter(node))
-                : drag
-              : null
-          }
-          onClick={onClickChapterBtn}
-        >
-          {renderChapterIcon()}
-          {ChapterStore.getRenameId() === id ? (
-            <ChapterTextInput
-              paddingLeft={isShared ? '2.63rem' : '1.69rem'}
-              maxLength="200"
-              placeholder={ChapterStore.renamePrevText}
-              value={ChapterStore.renameText}
-              onClick={e => e.stopPropagation()}
-              onChange={handleChapterName}
-              onBlur={handleChapterTextInput(false)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') handleChapterTextInput(false)();
-                else if (e.key === 'Escape') handleChapterTextInput(true)();
-              }}
-              onFocus={handleFocus}
-              autoFocus
-            />
-          ) : (
-            <ChapterText
-              chapter={chapter}
-              index={index}
-              handleFoldBtnClick={handleFoldBtnClick}
-              isFolded={isFolded}
-            />
-          )}
-        </ChapterCover>
-        <PageList
-          showNewPage={!isShared && chapter.type !== CHAPTER_TYPE.RECYCLE_BIN}
-          chapter={chapter}
-          chapterIdx={index}
-        />
-      </ChapterContainer>
-    </>
+        <ChapterIcon />
+        {ChapterStore.getRenameId() === id ? (
+          <ChapterTextInput
+            paddingLeft={isShared ? '2.63rem' : '1.69rem'}
+            maxLength="200"
+            placeholder={ChapterStore.renamePrevText}
+            value={ChapterStore.renameText}
+            onClick={e => e.stopPropagation()}
+            onChange={handleTitleChange}
+            onBlur={handleTitleUpdate(false)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleTitleUpdate(false)();
+              else if (e.key === 'Escape') handleTitleUpdate(true)();
+            }}
+            onFocus={handleFocus}
+            autoFocus
+          />
+        ) : (
+          <ChapterText
+            chapter={chapter}
+            index={index}
+            handleFoldBtnClick={handleFoldBtnClick}
+            isFolded={isFolded}
+          />
+        )}
+      </ChapterCover>
+      <PageList
+        showNewPage={!isShared && chapter.type !== CHAPTER_TYPE.RECYCLE_BIN}
+        chapter={chapter}
+        chapterIdx={index}
+      />
+    </ChapterContainer>
   ));
 };
 
