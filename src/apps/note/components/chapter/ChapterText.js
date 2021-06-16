@@ -1,22 +1,21 @@
-import React, { useState } from "react";
-import useNoteStore from "../../store/useStore";
-import { useObserver } from "mobx-react";
+import React, { useState, useContext } from 'react';
+import { useObserver } from 'mobx-react';
+import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment-timezone';
+import { useCoreStores } from 'teespace-core';
+import { ThemeContext } from 'styled-components';
+import useNoteStore from '../../store/useStore';
 import {
   ChapterTitle,
   ChapterTextSpan,
   NewNoteMark,
-  ChapterFolderBtn,
-  ChapterFoldBtnIcon,
-} from "../../styles/chpaterStyle";
-import ContextMenu from "../common/ContextMenu";
-import arrowTopIcon from '../../assets/arrow_top_1.svg';
-import arrowBottomIcon from '../../assets/arrow_bottom_1.svg';
-import { Tooltip } from "antd";
+} from '../../styles/chpaterStyle';
+import { ButtonWrapper } from '../../styles/commonStyle';
+import ContextMenu from '../common/ContextMenu';
 import NoteUtil from '../../NoteUtil';
-import { useTranslation } from "react-i18next";
-import moment from 'moment-timezone';
-import { useCoreStores } from 'teespace-core';
 import { CHAPTER_TYPE } from '../../GlobalVariable';
+import { ArrowTopIcon, ArrowBottomIcon } from '../icons';
 
 const isNew = (chapter) => {
   // 챕터 이름 변경시 업데이트
@@ -28,47 +27,69 @@ const isNew = (chapter) => {
   return false;
 }
 
-const isEmptyRecycleBin = (chapter) => {
-  if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN && chapter.children.length === 0) return true;
-  return false;
-}
+const isEmptyRecycleBin = chapter =>
+  chapter.type === CHAPTER_TYPE.RECYCLE_BIN && chapter.children.length === 0;
 
 const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
-  const { ChapterStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const { t } = useTranslation();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  const themeContext = useContext(ThemeContext);
   chapter.text = NoteUtil.decodeStr(chapter.text);
 
+  const title = (() => {
+    if (chapter.type === CHAPTER_TYPE.SHARED_PAGE) {
+      return t('NOTE_PAGE_LIST_CMPNT_DEF_07');
+    }
+    if (chapter.type === CHAPTER_TYPE.RECYCLE_BIN) {
+      return t('NOTE_BIN_01');
+    }
+    return chapter.text;
+  })();
+
   const handleTooltip = e => {
-    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth)
+    setIsEllipsisActive(
+      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
+    );
   };
 
   return useObserver(() => (
     <>
       <ChapterTitle>
-        <Tooltip title={isEllipsisActive ? chapter.text : null} placement='bottomLeft'>
+        <Tooltip
+          title={isEllipsisActive ? chapter.text : null}
+          placement="bottomLeft"
+        >
           <ChapterTextSpan
             onMouseOver={handleTooltip}
             marginLeft={
-              chapter.type === 'notebook' || chapter.type === 'default'
+              chapter.type === CHAPTER_TYPE.NOTEBOOK ||
+              chapter.type === CHAPTER_TYPE.DEFAULT
                 ? '1.69rem'
                 : '2.63rem'
             }
           >
-            {chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : (chapter.type === 'recycle_bin' ? t('NOTE_BIN_01') : chapter.text)}
+            {title}
           </ChapterTextSpan>
         </Tooltip>
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
-        {(authStore.hasPermission('noteChapter', 'U') || NoteUtil.getChapterNumType(chapter.type) === 3) && (
-          <ContextMenu noteType={'chapter'} note={chapter} chapterIdx={index} />
+        {(authStore.hasPermission('noteChapter', 'U') ||
+          chapter.type === CHAPTER_TYPE.SHARED) && (
+          <ContextMenu noteType="chapter" note={chapter} chapterIdx={index} />
         )}
       </ChapterTitle>
-      {!isEmptyRecycleBin(chapter) && 
-        <ChapterFolderBtn onClick={handleFoldBtnClick}>
-          <ChapterFoldBtnIcon src={isFolded ? arrowBottomIcon : arrowTopIcon} />
-        </ChapterFolderBtn>
-      }
+      {!isEmptyRecycleBin(chapter) && (
+        <ButtonWrapper
+          style={{ marginLeft: '0.15rem' }}
+          onClick={handleFoldBtnClick}
+        >
+          {isFolded ? (
+            <ArrowBottomIcon color={themeContext.IconNormal} />
+          ) : (
+            <ArrowTopIcon color={themeContext.IconNormal} />
+          )}
+        </ButtonWrapper>
+      )}
     </>
   ));
 };

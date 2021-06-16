@@ -1,6 +1,20 @@
 import styled, { css } from 'styled-components';
 import { Dropdown } from 'antd';
 
+export const ButtonWrapper = styled.span`
+  display: flex;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.38rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    background-color: ${props => props.theme.StateLight};
+  }
+`;
+
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;

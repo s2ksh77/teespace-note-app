@@ -66,6 +66,70 @@ export const CloseIcon = React.memo(
   },
 );
 
+export const ArrowTopIcon = React.memo(
+  ({ width = 1, height = 1, color = '#666' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/common/arrow_top_1"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth},
+          ${(height * REM_UNIT) / defaultHeight})`}
+        >
+          <path
+            d="M18.0002,15.99161 C18.2492,15.99161 18.4982,15.89961 18.6912,15.71461 C19.0912,15.33261 19.1042,14.69961 18.7232,14.30061 L13.0632,8.39061 C12.4672,7.85961 11.5322,7.86161 10.8792,8.44661 L5.2772,14.30061 C4.8962,14.69961 4.9092,15.33261 5.3092,15.71461 C5.7062,16.09561 6.3412,16.08261 6.7232,15.68261 L11.9982,10.16561 L17.2772,15.68261 C17.4742,15.88761 17.7362,15.99161 18.0002,15.99161"
+            id="Fill-1"
+            fill={color}
+          />
+        </g>
+      </svg>
+    );
+  },
+);
+
+export const ArrowBottomIcon = React.memo(
+  ({ width = 1, height = 1, color = '#666' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/common/arrow_bottom_1"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth},
+          ${(height * REM_UNIT) / defaultHeight})`}
+        >
+          <path
+            d="M10.938,15.60149 C11.228,15.85949 11.599,15.99149 11.978,15.99149 C12.376,15.99149 12.785,15.84449 13.121,15.54449 L18.723,9.69149 C19.105,9.29149 19.09,8.65949 18.691,8.27749 C18.292,7.89549 17.66,7.91049 17.277,8.30849 L12.002,13.82649 L6.723,8.30849 C6.34,7.91049 5.708,7.89549 5.309,8.27749 C4.91,8.65949 4.896,9.29149 5.277,9.69149 L10.938,15.60149 Z"
+            id="Fill-1"
+            fill={color}
+          />
+        </g>
+      </svg>
+    );
+  },
+);
+
 export const ArrowBackIcon = React.memo(
   ({ width = 1, height = 1, color = '#666' }) => {
     const defaultWidth = 24;
