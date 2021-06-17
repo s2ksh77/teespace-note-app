@@ -43,7 +43,6 @@
   },
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop-rn",
     "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop-rn"
   },
