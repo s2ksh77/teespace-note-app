@@ -1,4 +1,10 @@
-import React, { useLayoutEffect, useEffect, useRef, useState, useContext } from 'react';
+import React, {
+  useLayoutEffect,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+} from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
@@ -42,12 +48,13 @@ import {
   openSaveDrive,
   isValidFileNameLength,
 } from '../common/NoteFile';
-import { ComponentStore, useCoreStores, WaplSearch } from 'teespace-core';
+import { ComponentStore, useCoreStores, WaplSearch, API } from 'teespace-core';
 import Mark from 'mark.js';
 import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
 import useSave from './useSave';
+import StorageModel from '../../store/model/StorageModel';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -109,18 +116,26 @@ const HandleUploader = props => {
               fileExtension && EditorStore.uploadFileIsImage(fileExtension)
                 ? 'image'
                 : 'file';
-            EditorStore.setUploadFileDTO(
-              { fileName, fileExtension, fileSize },
-              file,
-              type,
-            );
+            const cancelToken = new API.CancelToken.source();
+            const model = new StorageModel({
+              workspace_id: NoteRepository.WS_ID,
+              channel_id: NoteRepository.chId,
+              storageFileInfo: {
+                user_id: NoteRepository.USER_ID,
+                file_last_update_user_id: NoteRepository.USER_ID,
+                file_name: fileName,
+                file_extension: fileExtension,
+                file_size: fileSize,
+              },
+            });
+            EditorStore.setUploadFileDTO(model, file, type, cancelToken);
           })(filtered[i]);
         }
         if (fileList.length !== filtered.length) {
           EditorStore.failCount = fileList.length - filtered.length;
           NoteStore.setModalInfo('failUploadByFileNameLen');
         } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength)
-          handleUpload();
+          EditorStore.uploadDTO.forEach(item => handleUpload(item));
       }
 
       return false;
@@ -297,9 +312,10 @@ const EditorContainer = () => {
   // auto save
   useSave();
 
-  useEffect(()=>{ // WaplSearch ref prop이 없음.
-    if(EditorStore.isSearch) inputRef.current?.lastChild?.lastChild.focus();
-  },[EditorStore.isSearch])
+  useEffect(() => {
+    // WaplSearch ref prop이 없음.
+    if (EditorStore.isSearch) inputRef.current?.lastChild?.lastChild.focus();
+  }, [EditorStore.isSearch]);
 
   const changeTheme = () => {
     if (!tinymce) return;
@@ -307,16 +323,20 @@ const EditorContainer = () => {
 
     // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
     tinymce.settings.language = NoteStore.i18nLanguage;
-    tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
+    tinymce.settings.skin =
+      themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
     tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
     tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
 
     // theme에 맞춰 배경 및 글자색을 변경한다.
     const opacity = themeContext.name === 'dark' ? 0.9 : 0.04;
-    EditorStore.tinymce.editorManager.DOM.setStyle(EditorStore.tinymce.getBody(), {
-      background: `radial-gradient(rgba(0, 0, 0, ${opacity}) 0.063rem, ${themeContext.StateNormal} 0rem)`,
-      color: `${themeContext.TextMain}`,
-    });
+    EditorStore.tinymce.editorManager.DOM.setStyle(
+      EditorStore.tinymce.getBody(),
+      {
+        background: `radial-gradient(rgba(0, 0, 0, ${opacity}) 0.063rem, ${themeContext.StateNormal} 0rem)`,
+        color: `${themeContext.TextMain}`,
+      },
+    );
   };
 
   useEffect(() => {
@@ -327,15 +347,11 @@ const EditorContainer = () => {
     const res = await fetch(src);
     const blob = await res.blob();
     const file = new File([blob], 'WAPL_image.png', { type: 'image/png' });
-    const {
-      fileName,
-      fileExtension,
-      fileSize,
-    } = EditorStore.getFileInfo(file);
+    const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
 
     EditorStore.setUploaderType('image');
     EditorStore.setTotalUploadLength(1);
-    EditorStore.setFileLength(1);              
+    EditorStore.setFileLength(1);
     EditorStore.setUploadFileDTO(
       { fileName, fileExtension, fileSize },
       file,
@@ -345,9 +361,9 @@ const EditorContainer = () => {
     handleUpload();
   };
 
-  const isExternalImage = (el) => {
+  const isExternalImage = el => {
     return el.getAttribute('id') === null ? true : false;
-  }
+  };
 
   return useObserver(() => (
     <>
@@ -363,7 +379,10 @@ const EditorContainer = () => {
         />
         <FoldBtn
           isExpanded={NoteStore.isContentExpanded}
-          show={NoteStore.layoutState !== "collapse" && NoteStore.isHoveredFoldBtnLine}
+          show={
+            NoteStore.layoutState !== 'collapse' &&
+            NoteStore.isHoveredFoldBtnLine
+          }
           onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
           onClick={() => NoteStore.toggleIsContentExpanded()}
         >
@@ -372,25 +391,28 @@ const EditorContainer = () => {
         <EditorHeader />
         {PageStore.isReadMode() && !EditorStore.isSearch ? (
           <ReadModeContainer style={{ display: 'flex' }}>
-            {authStore.hasPermission('notePage', 'U') ? 
-              PageStore.isRecycleBin ? 
-              <ReadModeText style={{marginLeft : "1rem" }}> {t('NOTE_BIN_05')} </ReadModeText>
-                : (
-                  <>
-                    <ReadModeIcon src={lockImg} />
-                    <ReadModeText>
-                      {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
-                    </ReadModeText>
-                    <ReadModeSubText>
-                      {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
-                    </ReadModeSubText>
-                  </>
-                )
-                 : (
+            {authStore.hasPermission('notePage', 'U') ? (
+              PageStore.isRecycleBin ? (
+                <ReadModeText style={{ marginLeft: '1rem' }}>
+                  {' '}
+                  {t('NOTE_BIN_05')}{' '}
+                </ReadModeText>
+              ) : (
                 <>
                   <ReadModeIcon src={lockImg} />
-                  <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
+                  <ReadModeText>
+                    {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
+                  </ReadModeText>
+                  <ReadModeSubText>
+                    {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
+                  </ReadModeSubText>
                 </>
+              )
+            ) : (
+              <>
+                <ReadModeIcon src={lockImg} />
+                <ReadModeSubText>{t('NOTE_GUEST_01')}</ReadModeSubText>
+              </>
             )}
           </ReadModeContainer>
         ) : null}
@@ -434,14 +456,16 @@ const EditorContainer = () => {
               // init 함수 : 처음 에디터 켰을 때, 그리고 태그 화면 가서 새 페이지 추가 버튼 눌렀을 때 동작한다.
               editor.on('init', () => {
                 /*
-                * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
-                * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
-                * init된 후 localStorage내용을 에디터에 set해주어야 한다
-                */
+                 * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
+                 * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
+                 * init된 후 localStorage내용을 에디터에 set해주어야 한다
+                 */
                 if (PageStore.recoverInfo.note_content) {
-                  EditorStore.tinymce?.setContent(PageStore.recoverInfo.note_content);
+                  EditorStore.tinymce?.setContent(
+                    PageStore.recoverInfo.note_content,
+                  );
                   PageStore.setRecoverInfo({});
-                }              
+                }
                 editor.focus();
                 handleEditorContentsListener();
               });
@@ -751,7 +775,7 @@ const EditorContainer = () => {
             async paste_preprocess(plugin, args) {
               const content = args.content.split('"');
               if (content.length !== 3 || !content[0].includes('img')) return;
-              
+
               // 이미지 하나만 붙여넣기 하는 경우 (임시)
               args.content = '';
               pasteSingleImage(content[1]);
@@ -761,13 +785,17 @@ const EditorContainer = () => {
               EditorStore.tinymce?.undoManager?.add();
 
               const target = args.node.textContent;
-              if(checkUrlValidation(target) && args.node && args.node.childNodes.length === 1) {
-                  let temp = document.createElement('a');
-                  temp.href = target;
-                  temp.setAttribute('data-mce-href', target);
-                  temp.textContent = target;
-                  args.node.textContent = '';
-                  args.node.appendChild(temp);
+              if (
+                checkUrlValidation(target) &&
+                args.node &&
+                args.node.childNodes.length === 1
+              ) {
+                let temp = document.createElement('a');
+                temp.href = target;
+                temp.setAttribute('data-mce-href', target);
+                temp.textContent = target;
+                args.node.textContent = '';
+                args.node.appendChild(temp);
               }
               /*
                 p tag 없이 br 태그만 있는 경우
@@ -798,13 +826,18 @@ const EditorContainer = () => {
             contextmenu: 'link-toolbar image imagetools table',
             table_sizing_mode: 'fixed', // only impacts the width of tables and cells
             skin: themeContext.name === 'dark' ? 'oxide-dark' : 'oxide',
-            content_style: editorContentCSS + `
+            content_style:
+              editorContentCSS +
+              `
               .mce-content-body {
-                background: radial-gradient(rgba(0, 0, 0, ${themeContext.name === 'dark' ? 0.9 : 0.04}) 0.063rem, ${themeContext.StateNormal} 0rem);
+                background: radial-gradient(rgba(0, 0, 0, ${
+                  themeContext.name === 'dark' ? 0.9 : 0.04
+                }) 0.063rem, ${themeContext.StateNormal} 0rem);
                 color: ${themeContext.TextMain};
               }
             `,
-            font_formats: 'Noto Sans KR=noto sans kr, Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats;',
+            font_formats:
+              'Noto Sans KR=noto sans kr, Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats;',
           }}
           onEditorChange={getEditorContent}
           apiKey={GlobalVariable.apiKey}
