@@ -133,7 +133,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
           {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
-          <TempEditor />
+          {/* <TempEditor /> */}
           {NoteStore.isExporting && <Overlay />}
           {NoteStore.showModal && <NoteModal />}
           {NoteStore.isMailShare && <MailWriteModal

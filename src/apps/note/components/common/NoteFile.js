@@ -459,35 +459,12 @@ const downloadTxt = (title, data) => {
   );
   link.click();
 };
-// txt로 내보내기 전에 setContent해줄 tempEditor init
-export const createTempEditor = () => {
-  const frag = document.createElement('div');
-  frag.setAttribute('id', 'exportTxtParent');
-  const area = document.createElement('textarea');
-  area.setAttribute('id', 'exportTxt');
-  document.body.appendChild(frag);
-  frag.appendChild(area);
-
-  EditorStore.tempTinymce.editorManager.init({
-    target: area,
-    setup: function (editor) {
-      EditorStore.setTempTinymce(editor);
-    },
-  });
-  const targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
-  return targetEditor;
-};
 
 export const getTxtFormat = (title, contents) => {
-  const targetEditor = createTempEditor();
-  targetEditor.setContent(contents);
-  let exportText = targetEditor.getContent({ format: 'text' });
-  exportText = exportText.replace(/\n\n/g, '\n');
-  downloadTxt(title, exportText);
-  // loading 화면 끝나요
+  const div = document.createElement('div');
+  div.innerHTML = contents;
+  downloadTxt(title, div.innerText);
   NoteStore.setIsExporting(false);
-  EditorStore.tempTinymce.remove('#exportTxt');
-  document.getElementById('exportTxtParent').remove();
 };
 
 export const exportPageAsTxt = async noteId => {
