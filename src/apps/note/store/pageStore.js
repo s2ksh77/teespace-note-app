@@ -12,15 +12,13 @@ import i18n from '../i18n/i18n';
 
 const PageStore = observable({
   noteInfoList: [],
-  currentPageData: [],
-  isEdit: '',
+  currentPageData: {},
   saveStatus:{saving : false, saved:false},
   displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
-  createPageId: '', // web에서 안 씀
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -37,7 +35,6 @@ const PageStore = observable({
   dragEnterChapterIdx: '',
   modifiedDate: '',
   deletedDate: '',
-  prevModifiedUserName: '', // web에서 안 씀
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -70,30 +67,25 @@ const PageStore = observable({
     this.saveStatus.saving = saving;
     this.saveStatus.saved = saved;
   },
-  getIsEdit() {
-    return this.isEdit;
-  },
-  setIsEdit(id) {
-    this.isEdit = id;
-  },
-  isReadMode() {
-    if (this.isEdit === null || this.isEdit === '') {
-      this.setOtherEdit(false);
-      return true;
-    }
-    // createNotePage에서 createPage 하고 EditorContainer.js의 setNoteEditor-initialMode한 후 getNoteInfoList에서 currentPageData를 set한다.
-    // 그래서 getCurrentPageData().is_edit으로 확인하면 initialMode에서 isReadMode() === true가 된다.
-    // this.isEdit으로 수정
-    else if (this.isEdit !== null && NoteRepository.USER_ID === this.isEdit) {
-      this.setOtherEdit(false);
-      return false;
-    }
-    else {
-      this.setEditingUserID(PageStore.getCurrentPageData().is_edit);
+
+    /**
+     * [임시]
+     * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
+     * @returns 해당 페이지에 대한 자신의 읽기모드 여부
+     */
+    isReadMode() {
+      if (!this.currentPageData.is_edit) {
+        this.setOtherEdit(false);
+        return true;
+      }
+      if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
+        this.setOtherEdit(false);
+        return false;
+      }
+      this.setEditingUserID(this.currentPageData.is_edit);
       this.setOtherEdit(true);
       return true;
-    };
-  },
+    },
   setOtherEdit(flag) {
     this.otherEdit = flag;
   },
@@ -237,12 +229,6 @@ const PageStore = observable({
   setModifiedDate(date) {
     this.modifiedDate = date;
   },
-  getPrevModifiedUserName() {
-    return this.prevModifiedUserName;
-  },
-  setPrevModifiedUserName(userName) {
-    this.prevModifiedUserName = userName;
-  },
   getIsNewPage() {
     return this.isNewPage;
   },
@@ -338,40 +324,43 @@ const PageStore = observable({
     }
   },
 
-  // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
-  initializeBoxColor() {
-    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
-    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
-    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
-    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
-  },
+    /**
+     * 에디터의 텍스트/배경 색상을 초기화한다.
+     */
+    initializeBoxColor() {
+      document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+      document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
+      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
+      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
+    },
 
-  createNotePage() {
-    this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(dto => {
+    async createNotePage() {
+      const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
+      this.currentPageData = {
+        ...dto,
+        note_content: NoteUtil.decodeStr('<p><br></p>'),
+        note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')),
+      };
+
+      this.setIsNewPage(true);
       EditorStore.setIsSearch(false);
-      this.setIsEdit(dto.is_edit);
+
       ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
       this.currentPageId = dto.note_id;
-      this.setIsNewPage(true);
-      TagStore.setNoteTagList(dto.tagList);
-      EditorStore.setFileList(dto.fileList);
-      this.initializeBoxColor();
-
-      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-      this.currentPageData = dto;
+      TagStore.setNoteTagList(dto.tagList); // []
+      EditorStore.setFileList(dto.fileList); // null
       this.noteTitle = '';
-      this.prevModifiedUserName = this.currentPageData.user_name;
-      this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false);
+      this.modifiedDate = this.modifiedDateFormatting(dto.modified_date, false);
 
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
+
+      // initialize editor properties
+      this.initializeBoxColor();
       EditorStore.tinymce?.undoManager?.clear();
-      // getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
-    });
-  },
+    },
 
   /**
    * It throw away pages in recycle bin.
@@ -380,7 +369,6 @@ const PageStore = observable({
   async throwNotePage(isDnd) {
     await this.throwPage(this.deletePageList);
     await ChapterStore.getNoteChapterList();
-    this.setIsEdit('');
     if (this.deletePageList.find(page => page.note_id === this.currentPageId)) {
       const pageId = isDnd
         ? ChapterStore.chapterList[0]?.children[0]?.id
@@ -403,7 +391,6 @@ const PageStore = observable({
 
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
-      this.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
       if (!this.isNewPage) {
         if (this.currentPageId === this.deletePageList[0].note_id) {
           this.setCurrentPageId(this.selectablePageId);
@@ -413,7 +400,7 @@ const PageStore = observable({
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           this.setIsNewPage(false);
-          this.fetchCurrentPageData(''); // isEdit도 갱신
+          this.fetchCurrentPageData('');
           ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
@@ -580,7 +567,6 @@ const PageStore = observable({
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     this.currentPageData = dto;
-    this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
     this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
     // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
@@ -612,7 +598,7 @@ const PageStore = observable({
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
     } else {
-      this.setIsEdit('');
+      this.currentPageData = {};
       this.setCurrentPageId('');
     }
   },
@@ -713,7 +699,7 @@ const PageStore = observable({
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: "text" }),
         parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: isAutoSave ? this.isEdit : '',
+        is_edit: isAutoSave ? this.currentPageData.is_edit : '',
         TYPE: 'EDIT_DONE',
       }
     }
