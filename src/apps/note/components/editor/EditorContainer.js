@@ -318,7 +318,7 @@ const EditorContainer = () => {
   }, [EditorStore.isSearch]);
 
   const changeTheme = () => {
-    if (!tinymce) return;
+    if (!EditorStore.tinymce) return;
     if (themeContext.name !== 'dark' && themeContext.name !== 'white') return;
 
     // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
