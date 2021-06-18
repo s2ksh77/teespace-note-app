@@ -472,10 +472,10 @@ export const exportPageAsTxt = async noteId => {
   const {
     data: { dto },
   } = response;
-  // PageStore.exportPageTitle = dto.note_title
-  let returnData = `<span style="font-size:24px;">${i18n.t(
-    'NOTE_EXPORT_TITLE',
-  )} : ${dto.note_title}</span><br />${dto.note_content}`;
+
+  const returnData = `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
+    dto.note_title
+  }</p>\n${dto.note_content}`;
 
   getTxtFormat(dto.note_title, returnData);
 };
@@ -489,17 +489,12 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
   } = await NoteRepository.getChapterChildren(chapterId);
   if (noteList.length > 0) {
     noteList.forEach((page, idx) => {
-      returnData += `<span style="font-size:24px;">${i18n.t(
-        'NOTE_EXPORT_TITLE',
-      )} : ${page.note_title}</span>
-      <br />
-      ${page.note_content}
-      ${idx === noteList.length - 1 ? '' : '<br />'}`;
+      returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
+        page.note_title
+      }</p>\n${page.note_content}${idx === noteList.length - 1 ? '' : '\n\n'}`;
     });
   } else
-    returnData += `<span style="font-size:24px;">${i18n.t(
-      'NOTE_EXPORT_TITLE',
-    )} : ${chapterTitle}</span>`;
+    returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;
 
   getTxtFormat(chapterTitle, returnData);
 };
