@@ -2499,7 +2499,6 @@ var TagStore = mobx.observable({
 
 var _observable;
 var EditorStore = mobx.observable((_observable = {
-  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -2550,12 +2549,6 @@ var EditorStore = mobx.observable((_observable = {
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
-  getTempTinymce: function getTempTinymce() {
-    return this.tempTinymce;
-  },
-  setTempTinymce: function setTempTinymce(editor) {
-    this.tempTinymce = editor;
-  },
   setContents: function setContents(content) {
     this.contents = content;
   },

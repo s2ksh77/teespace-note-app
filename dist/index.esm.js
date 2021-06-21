@@ -2469,7 +2469,6 @@ var TagStore = observable({
 
 var _observable;
 var EditorStore = observable((_observable = {
-  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -2520,12 +2519,6 @@ var EditorStore = observable((_observable = {
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
-  getTempTinymce: function getTempTinymce() {
-    return this.tempTinymce;
-  },
-  setTempTinymce: function setTempTinymce(editor) {
-    this.tempTinymce = editor;
-  },
   setContents: function setContents(content) {
     this.contents = content;
   },
