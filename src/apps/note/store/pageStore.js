@@ -678,7 +678,7 @@ const PageStore = observable({
 
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave(isAutoSave=false) {
-    this.getNoteTitle();
+    this.getTitleFromPageContent();
     const updateDTO = this.getSaveDto(isAutoSave);
     
     if (isAutoSave) this.handleAutoSave(updateDTO);
@@ -717,60 +717,57 @@ const PageStore = observable({
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
   },
-    
-  getNoteTitle() {
-    if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
-      else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
-        if (EditorStore.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore.tempFileLayoutList[0].file_name
-            + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
-        } else if (EditorStore.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore.fileLayoutList[0].file_name
-            + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
+
+    /**
+     * 페이지 제목이 입력되지 않은 경우,
+     * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
+     * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
+     * @returns 입력 개체에 따른 제목
+     */
+    getTitleFromPageContent() {
+      if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
+        const title = this._getTitleFromEditor();
+        if (title) PageStore.setTitle(title);
+        else if (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0) {
+          const firstFile =
+            EditorStore.tempFileLayoutList.length > 0
+              ? EditorStore.tempFileLayoutList[0]
+              : EditorStore.fileLayoutList[0];
+          this.setTitle(
+            firstFile.file_name +
+              (firstFile.file_extension ? `.${firstFile.file_extension}` : ''),
+          );
+        } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
+      }
+      this.noteTitle = [].filter.call(this.noteTitle, function (c) {
+        return c.charCodeAt(0) !== 65279;
+      }).join('');
+      return this.noteTitle;
+    },
+
+    _getTitleFromEditor() {
+      for (const node of EditorStore.tinymce.getBody().children) {
+        if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
+        if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) continue;
+        if (node.tagName === 'BR') continue;
+        const title = this._getTitleByTagName(node);
+        if (title) return title;
+      }
+      return;
+    },
+
+    _getTitleFromTable(node) {
+      if (!node.textContent && node.getElementsByTagName('IMG').length === 0)
+        return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
+  
+      for(const td of node.getElementsByTagName('td')) {
+        for(const node of td.childNodes) {
+          const title = this._getTitleByTagName(node);
+          if (title) return title;
         }
-      } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-    }
-    this.noteTitle = [].filter.call(this.noteTitle, function (c) {
-      return c.charCodeAt(0) !== 65279;
-    }).join('');
-    return this.noteTitle;
-  },
-
-  getTitle() {
-    const contentList = EditorStore.tinymce.getBody().children;
-    return this._getTitle(contentList);
-  },
-  _getTitle(contentList) {
-    if (contentList) {
-      // forEach 는 항상 return 값 undefined
-      for (let i = 0; i < contentList.length; i++) {
-        // 표는 무조건 return
-        if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]);
-        // early return        
-        if (!contentList[i].textContent &&
-          (contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length === 0)) continue;
-        if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
-
-        // 표 제외, 이미지나 텍스트가 있을 때만 탄다
-        let title = this._getTitleByTagName(contentList[i]);
-        if (title !== undefined) return title;
       }
-    }
-  },
-  // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
-  _getTableTitle(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
-    // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
-    const tdList = node.getElementsByTagName('td');
-    for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-      const tdChildren = tdList[tdIndex].childNodes;
-      for (let j = 0; j < tdChildren.length; j++) {
-        let title = this._getTitleByTagName(tdChildren[j]);
-        if (title !== undefined) return title;
-      }
-    }
-  },
+      return;
+    },
   // div, pre, p 
   _searchInsideContainerTag(node) {
     if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return;
@@ -802,7 +799,7 @@ const PageStore = observable({
       case 'OL': case 'UL':
         return node.children[0].textContent;
       case 'TABLE':
-        let tableTitle = this._getTableTitle(node);
+        let tableTitle = this._getTitleFromTable(node);
         if (tableTitle !== undefined) return tableTitle;
       case 'DIV': case 'PRE': case "P":
         let title = this._searchInsideContainerTag(node);
