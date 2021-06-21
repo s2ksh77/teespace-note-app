@@ -40,12 +40,11 @@ const DragPreview = ({ items }) => {
     const offset = JSON.parse(JSON.stringify(NoteStore.draggedOffset));
 
     if (NoteStore.layoutState === 'collapse') {
-      dragPreviewRef.style['top'] = (offset.y + 30) + 'px';
-      dragPreviewRef.style['left'] = (offset.x + 20) + 'px';
-    }
-    else {
-      dragPreviewRef.style['top'] = (offset.y - 41) + 'px';
-      dragPreviewRef.style['left'] = (offset.x - 346) + 'px';
+      dragPreviewRef.style.top = `${offset.y + 4}px`;
+      dragPreviewRef.style.left = `${offset.x + 4}px`;
+    } else {
+      dragPreviewRef.style.top = `${offset.y - 56}px`;
+      dragPreviewRef.style.left = `${offset.x - 366}px`;
     }
   }, [previewRef]);
 
