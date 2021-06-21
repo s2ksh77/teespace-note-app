@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx';
+import { UserStore } from 'teespace-core';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
@@ -6,8 +7,7 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
-import NoteUtil from '../NoteUtil';
-import { UserStore } from 'teespace-core';
+import NoteUtil, { get12HourFormat } from '../NoteUtil';
 import i18n from '../i18n/i18n';
 
 const PageStore = observable({
@@ -351,7 +351,7 @@ const PageStore = observable({
       TagStore.setNoteTagList(dto.tagList); // []
       EditorStore.setFileList(dto.fileList); // null
       this.noteTitle = '';
-      this.modifiedDate = this.modifiedDateFormatting(dto.modified_date, false);
+      this.modifiedDate = get12HourFormat(dto.modified_date);
 
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
@@ -524,35 +524,8 @@ const PageStore = observable({
     NoteStore.setIsDragging(false);
   },
 
-  modifiedDateFormatting(date, isSharedInfo) {
-    const mDate = date.split(' ')[0];
-    const mTime = date.split(' ')[1];
-    const mYear = parseInt(mDate.split('.')[0]);
-    const mMonth = parseInt(mDate.split('.')[1]);
-    const mDay = parseInt(mDate.split('.')[2]);
-    const mHour = parseInt(mTime.split(':')[0]);
-    const mMinute = parseInt(mTime.split(':')[1]);
-    const curDate = new Date();
-    const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
-    const m12Hour = mHour > 12 ? mHour - 12 : mHour;
-
-    const hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    const basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', { time: hhmm }) : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', { time: hhmm });
-
-    if (date === this.currentPageData.modified_date
-      && mYear === curDate.getFullYear()
-      && !isSharedInfo) { // 같은 해
-      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
-      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
-    }
-    else { // 다른 해, 정보 보기
-      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate;
-    }
-  },
-
   async fetchNoteInfoList(noteId) {
     const dto = await this.getNoteInfoList(noteId);
-    // 없는 노트일 때 && 가져오려했던 noteId가 currentPageId일 때 초기화하기
     if (!isFilled(dto.note_id)) {
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
@@ -560,7 +533,8 @@ const PageStore = observable({
 
     if (dto.USER_ID) {
       const userProfile = await UserStore.getProfile(dto.USER_ID);
-      this.displayName = userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
+      this.displayName =
+        userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
     } else {
       this.displayName = '';
     }
@@ -568,13 +542,10 @@ const PageStore = observable({
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     this.currentPageData = dto;
     this.noteTitle = dto.note_title;
-    this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
-    // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
-    // console.log(this.deletedDate)
-    EditorStore.setFileList(
-      dto.fileList,
-    );
+    this.modifiedDate = get12HourFormat(this.currentPageData.modified_date);
+    EditorStore.setFileList(dto.fileList);
     TagStore.setNoteTagList(dto.tagList);
+
     if (this.isNewPage) {
       ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
       this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
@@ -723,7 +694,7 @@ const PageStore = observable({
         this.setSaveStatus({saved:true});
         const {user_name, modified_date,USER_ID} = dto;
         this.set_CurrentPageData({user_name, modified_date,USER_ID});
-        this.modifiedDate = this.modifiedDateFormatting(modified_date);        
+        this.modifiedDate = get12HourFormat(modified_date);        
         // 2초 후 수정 중 인터렉션으로 바꾸기
         setTimeout(() => {
           this.setSaveStatus({});

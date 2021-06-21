@@ -1,5 +1,6 @@
-import { CHAPTER_TYPE } from './GlobalVariable';
 import moment from 'moment-timezone';
+import i18n from './i18n/i18n';
+import { CHAPTER_TYPE } from './GlobalVariable';
 
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -96,6 +97,39 @@ const NoteUtil = {
   isEmpty(arr) {
     return arr?.length === 0 ? true : false;
   },
+};
+
+/**
+ * 날짜를 같은 연월일을 생략한 12시간 형식으로 변환한다.
+ * NOTE: showAllDates가 true인 경우에는 같은 연월일이라도 생략하지 않는다.
+ * @param {string} date yyyy.mm.dd hh:mm:ss
+ * @param {boolean} showsAllDates 연월일 표시 여부
+ * @returns 12시간 형식의 날짜
+ */
+export const get12HourFormat = (date, showsAllDates = false) => {
+  const [ mDate, mTime ] = date.split(' ');
+  const mYear = parseInt(mDate.split('.')[0], 10);
+  const mMonth = parseInt(mDate.split('.')[1], 10);
+  const mDay = parseInt(mDate.split('.')[2], 10);
+  const mHour = parseInt(mTime.split(':')[0], 10);
+  const mMinute = parseInt(mTime.split(':')[1], 10);
+  const curDate = new Date();
+  const convertTwoDigit = digit => `0${digit}`.slice(-2);
+
+  const hhmm = `${convertTwoDigit(
+    mHour > 12 ? mHour - 12 : mHour === 0 ? 12 : mHour,
+  )}:${convertTwoDigit(mMinute)}`;
+  const basicDate =
+    mHour < 12
+      ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', { time: hhmm })
+      : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', { time: hhmm });
+
+  if (mYear === curDate.getFullYear() && !showsAllDates) {
+    if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate())
+      return basicDate;
+    return `${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
+  }
+  return `${mYear}.${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
 };
 
 export default NoteUtil;
