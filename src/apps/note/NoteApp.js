@@ -10,7 +10,6 @@ import { WWMS, useCoreStores, Toast, ComponentStore } from 'teespace-core';
 import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
 import Overlay from './components/common/Overlay';
-import TempEditor from './components/editor/TempEditor';
 import LoadingImgContainer from './components/common/LoadingImgContainer';
 import GlobalVariable from './GlobalVariable';
 import { useTranslation } from 'react-i18next';
@@ -133,7 +132,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
           {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length
             ? <DragPreview items={NoteStore.draggedItems} />
             : null}
-          <TempEditor />
+          {/* <TempEditor /> */}
           {NoteStore.isExporting && <Overlay />}
           {NoteStore.showModal && <NoteModal />}
           {NoteStore.isMailShare && <MailWriteModal

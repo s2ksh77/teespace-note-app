@@ -8,7 +8,6 @@ import NoteStore from './noteStore';
 import NoteUtil from '../NoteUtil';
 
 const EditorStore = observable({
-  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -59,12 +58,6 @@ const EditorStore = observable({
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
-  getTempTinymce() {
-    return this.tempTinymce;
-  },
-  setTempTinymce(editor) {
-    this.tempTinymce = editor;
-  },
   setContents(content) {
     this.contents = content;
   },

@@ -459,35 +459,12 @@ const downloadTxt = (title, data) => {
   );
   link.click();
 };
-// txt로 내보내기 전에 setContent해줄 tempEditor init
-export const createTempEditor = () => {
-  const frag = document.createElement('div');
-  frag.setAttribute('id', 'exportTxtParent');
-  const area = document.createElement('textarea');
-  area.setAttribute('id', 'exportTxt');
-  document.body.appendChild(frag);
-  frag.appendChild(area);
-
-  EditorStore.tempTinymce.editorManager.init({
-    target: area,
-    setup: function (editor) {
-      EditorStore.setTempTinymce(editor);
-    },
-  });
-  const targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
-  return targetEditor;
-};
 
 export const getTxtFormat = (title, contents) => {
-  const targetEditor = createTempEditor();
-  targetEditor.setContent(contents);
-  let exportText = targetEditor.getContent({ format: 'text' });
-  exportText = exportText.replace(/\n\n/g, '\n');
-  downloadTxt(title, exportText);
-  // loading 화면 끝나요
+  const div = document.createElement('div');
+  div.innerHTML = contents;
+  downloadTxt(title, div.innerText);
   NoteStore.setIsExporting(false);
-  EditorStore.tempTinymce.remove('#exportTxt');
-  document.getElementById('exportTxtParent').remove();
 };
 
 export const exportPageAsTxt = async noteId => {
@@ -495,10 +472,10 @@ export const exportPageAsTxt = async noteId => {
   const {
     data: { dto },
   } = response;
-  // PageStore.exportPageTitle = dto.note_title
-  let returnData = `<span style="font-size:24px;">${i18n.t(
-    'NOTE_EXPORT_TITLE',
-  )} : ${dto.note_title}</span><br />${dto.note_content}`;
+
+  const returnData = `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
+    dto.note_title
+  }</p>\n${dto.note_content}`;
 
   getTxtFormat(dto.note_title, returnData);
 };
@@ -512,17 +489,12 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
   } = await NoteRepository.getChapterChildren(chapterId);
   if (noteList.length > 0) {
     noteList.forEach((page, idx) => {
-      returnData += `<span style="font-size:24px;">${i18n.t(
-        'NOTE_EXPORT_TITLE',
-      )} : ${page.note_title}</span>
-      <br />
-      ${page.note_content}
-      ${idx === noteList.length - 1 ? '' : '<br />'}`;
+      returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
+        page.note_title
+      }</p>\n${page.note_content}${idx === noteList.length - 1 ? '' : '\n\n'}`;
     });
   } else
-    returnData += `<span style="font-size:24px;">${i18n.t(
-      'NOTE_EXPORT_TITLE',
-    )} : ${chapterTitle}</span>`;
+    returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;
 
   getTxtFormat(chapterTitle, returnData);
 };
