@@ -20,6 +20,7 @@ var html2pdf = require('html2pdf.js');
 require('antd/dist/antd.css');
 var tinymceReact = require('@tinymce/tinymce-react');
 var icons = require('@ant-design/icons');
+var autobind = require('autobind-decorator');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -49,6 +50,7 @@ var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark$1);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
+var autobind__default = /*#__PURE__*/_interopDefaultLegacy(autobind);
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -337,6 +339,45 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       }
     }
   };
+}
+
+function _initializerDefineProperty(target, property, descriptor, context) {
+  if (!descriptor) return;
+  Object.defineProperty(target, property, {
+    enumerable: descriptor.enumerable,
+    configurable: descriptor.configurable,
+    writable: descriptor.writable,
+    value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+  });
+}
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object.keys(descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object.defineProperty(target, property, desc);
+    desc = null;
+  }
+
+  return desc;
 }
 
 var _require = require('axios');
@@ -1651,6 +1692,320 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
+var languageSet$1 = {
+  NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
+  NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
+  NOTE_PAGE_LIST_CMPNT_DEF_03: '(제목 없음)',
+  NOTE_PAGE_LIST_CMPNT_DEF_04: '새 페이지 추가',
+  NOTE_PAGE_LIST_CMPNT_DEF_05: '페이지, 챕터 검색',
+  NOTE_PAGE_LIST_CMPNT_DEF_06: '태그',
+  NOTE_PAGE_LIST_CMPNT_DEF_07: '전달받은 페이지',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_01: '중복된 이름이 있습니다.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_02: '다른 이름을 입력하세요.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_03: '확인',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: '삭제할 수 없습니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: '페이지를 삭제하시겠습니까?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_04: '저장',
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}}(\uC73C)\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 \'새 페이지 추가\' 버튼을 클릭하세요.',
+  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
+  NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
+  NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
+  NOTE_EDIT_PAGE_SEARCH_03: '내용 검색',
+  NOTE_EDIT_PAGE_INSERT_LINK_01: '링크 삽입',
+  NOTE_EDIT_PAGE_INSERT_LINK_02: '완료',
+  NOTE_EDIT_PAGE_INSERT_LINK_03: '텍스트를 입력하세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_04: '텍스트',
+  NOTE_EDIT_PAGE_INSERT_LINK_05: '링크',
+  NOTE_EDIT_PAGE_INSERT_LINK_06: '해당 URL은 유효하지 않습니다.',
+  NOTE_EDIT_PAGE_INSERT_LINK_07: '링크 편집',
+  NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
+  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
+  NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
+  NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_COMPLETE_02: '저장 안 함',
+  NOTE_DELIVER_CONTEXT_MENU_01: '이름 변경',
+  NOTE_DELIVER_CONTEXT_MENU_02: 'Mail로 전달',
+  NOTE_DELIVER_CONTEXT_MENU_03: '내보내기',
+  NOTE_DELIVER_CONTEXT_MENU_04: '정보 보기',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: '출처 룸',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: '전달한 멤버',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: '전달 날짜',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_01: '별명 검색',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_02: '룸',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_03: '프렌즈',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_04: '나에게',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_05: '프렌즈/룸 목록에서\n선택해 주세요.',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_06: '룸 이름, 멤버 검색',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_07: '전달',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_08: '즐겨찾기',
+  NOTE_TAG_TAG_MENU_01: 'ㄱ~ㅎ',
+  NOTE_TAG_TAG_MENU_02: 'A~Z',
+  NOTE_TAG_TAG_MENU_03: '0~9',
+  NOTE_TAG_TAG_MENU_04: '기타',
+  NOTE_TAG_TAG_MENU_05: '태그 검색',
+  NOTE_TAG_NO_CONTENTS_01: '태그가 없습니다.',
+  NOTE_TAG_NO_CONTENTS_02: '페이지 하단에 태그를 입력하여 추가하세요.',
+  NOTE_EDIT_PAGE_MENUBAR_01: '실행 취소',
+  NOTE_EDIT_PAGE_MENUBAR_02: '다시 실행',
+  NOTE_EDIT_PAGE_MENUBAR_03: '본문 스타일',
+  NOTE_EDIT_PAGE_MENUBAR_04: '폰트 종류',
+  NOTE_EDIT_PAGE_MENUBAR_05: '폰트 크기',
+  NOTE_EDIT_PAGE_MENUBAR_06: '글자색',
+  NOTE_EDIT_PAGE_MENUBAR_07: '배경색',
+  NOTE_EDIT_PAGE_MENUBAR_08: '볼드체',
+  NOTE_EDIT_PAGE_MENUBAR_09: '이탤릭체',
+  NOTE_EDIT_PAGE_MENUBAR_10: '밑줄체',
+  NOTE_EDIT_PAGE_MENUBAR_11: '왼쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_12: '가운데 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_13: '오른쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_14: '양쪽 정렬',
+  NOTE_EDIT_PAGE_MENUBAR_15: '번호 매기기',
+  NOTE_EDIT_PAGE_MENUBAR_16: '글머리 기호',
+  NOTE_EDIT_PAGE_MENUBAR_17: '체크리스트',
+  NOTE_EDIT_PAGE_MENUBAR_18: '들여쓰기',
+  NOTE_EDIT_PAGE_MENUBAR_19: '내어쓰기',
+  NOTE_EDIT_PAGE_MENUBAR_20: '구분선',
+  NOTE_EDIT_PAGE_MENUBAR_21: '표',
+  NOTE_EDIT_PAGE_MENUBAR_22: '현재 시간 입력',
+  NOTE_EDIT_PAGE_MENUBAR_23: '이미지 삽입',
+  NOTE_EDIT_PAGE_MENUBAR_24: '파일 첨부',
+  NOTE_EDIT_PAGE_MENUBAR_25: '반시계 방향 90도 회전',
+  NOTE_EDIT_PAGE_MENUBAR_26: '시계 방향 90도 회전',
+  NOTE_EDIT_PAGE_MENUBAR_27: '상하 반전',
+  NOTE_EDIT_PAGE_MENUBAR_28: '좌우 반전',
+  NOTE_EDIT_PAGE_MENUBAR_29: '이미지 편집',
+  NOTE_EDIT_PAGE_MENUBAR_30: '이미지 교체',
+  NOTE_EDIT_PAGE_MENUBAR_31: '취소선',
+  NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
+  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 존재하는 태그 이름입니다.',
+  NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
+  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 \'새 챕터\' 버튼을 클릭하세요.',
+  NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
+  NOTE_EDIT_PAGE_MENUBAR_33: '내 PC에 저장',
+  NOTE_EDIT_PAGE_MENUBAR_34: '다운로드',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "{{count}}\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF 형식(.pdf)',
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
+  NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: "업로드 완료된 파일은 페이지에 저장됩니다.",
+  NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: '이메일의 경우, 앞에 \'mailto:\'를 붙여주세요.',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: '저장 중',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: '저장되었습니다.',
+  NOTE_EDIT_PAGE_CANT_EDIT_01: '수정할 수 없습니다.',
+  NOTE_ADD_TAGS_01: '태그 추가',
+  NOTE_ADD_TAGS_02: '읽기 모드에서는 태그 추가를 할 수 없습니다.',
+  NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
+  NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
+  NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
+  DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
+  NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
+  NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
+  NOTE_EXPORT_TITLE: '제목',
+  NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
+  NOTE_CONTEXT_MENU_02: '복원',
+  NOTE_CONTEXT_MENU_03: '휴지통 비우기',
+  NOTE_DND_ACTION_01: '이동이 불가능합니다.',
+  NOTE_DND_ACTION_02: '전달받은 챕터 및 페이지는 이동 불가능합니다.',
+  NOTE_BIN_01: '휴지통',
+  NOTE_BIN_02: '휴지통으로 이동되었습니다.',
+  NOTE_BIN_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uD734\uC9C0\uD1B5\uC73C\uB85C \uC774\uB3D9\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
+  NOTE_BIN_04: '챕터가 삭제되었습니다.',
+  NOTE_BIN_05: '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
+  NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
+  NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
+  NOTE_BIN_08: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC601\uAD6C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
+  NOTE_BIN_RESTORE_01: '어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_02: '복원되었습니다.',
+  NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uC6D0\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
+  NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
+  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
+  NOTE_META_TAG_01: '챕터',
+  NOTE_META_TAG_02: '페이지',
+  NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
+  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
+  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.'
+};
+
+var _languageSet;
+
+var languageSet = (_languageSet = {
+  NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
+  NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
+  NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
+  NOTE_PAGE_LIST_CMPNT_DEF_04: 'Add New Page',
+  NOTE_PAGE_LIST_CMPNT_DEF_05: 'Search page or chapter',
+  NOTE_PAGE_LIST_CMPNT_DEF_06: 'Tag',
+  NOTE_PAGE_LIST_CMPNT_DEF_07: 'Page Received',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_01: 'Duplicate name exists.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_02: 'Enter another name.',
+  NOTE_PAGE_LIST_CREATE_N_CHPT_03: 'OK',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: 'Unable to delete.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "It is currently being modified by {{userName}}",
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: 'Do you want to delete this page?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: 'Delete',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: 'Cancel',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: 'Do you want to delete this chapter?',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages belonging to the chapter are moved to Trash.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click Modify to edit this page.',
+  NOTE_PAGE_LIST_ADD_NEW_PGE_04: 'Save',
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}} pages moved to {{targetPage}}.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}} chapters moved.",
+  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}} pages moved.",
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: 'No page exists.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click \'Add New Page\'.',
+  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(Unregistered Member)',
+  NOTE_EDIT_PAGE_SEARCH_01: 'No search results found.',
+  NOTE_EDIT_PAGE_SEARCH_02: 'Searching...',
+  NOTE_EDIT_PAGE_SEARCH_03: 'Search keyword',
+  NOTE_EDIT_PAGE_INSERT_LINK_01: 'Insert Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_02: 'Done',
+  NOTE_EDIT_PAGE_INSERT_LINK_03: 'Enter a text.',
+  NOTE_EDIT_PAGE_INSERT_LINK_04: 'Text',
+  NOTE_EDIT_PAGE_INSERT_LINK_05: 'Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_06: 'The URL is not valid.',
+  NOTE_EDIT_PAGE_INSERT_LINK_07: 'Edit Link',
+  NOTE_EDIT_PAGE_INSERT_LINK_08: 'Delete Link',
+  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Attach from Drive',
+  NOTE_EDIT_PAGE_ATTACH_FILE_02: 'Attach from My PC',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: 'There is not enough storage space to attach the file.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_04: 'You can attach up to 20 GB files at a time.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_05: 'You can attach up to 30 files at a time.',
+  NOTE_EDIT_PAGE_COMPLETE_01: 'Do you want to save this page and exit?',
+  NOTE_EDIT_PAGE_COMPLETE_02: 'Not Save',
+  NOTE_DELIVER_CONTEXT_MENU_01: 'Rename',
+  NOTE_DELIVER_CONTEXT_MENU_02: 'Send Email',
+  NOTE_DELIVER_CONTEXT_MENU_03: 'Export',
+  NOTE_DELIVER_CONTEXT_MENU_04: 'View Information',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: 'Room',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: 'Member',
+  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: 'Date',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_01: 'Search nickname',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_02: 'Rooms',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_03: 'Friends',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_04: 'Me',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_05: 'Select people from the Friends/Rooms list.',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_06: 'Search room name or member',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_07: 'Send',
+  NOTE_DELIVER_TO_ANOTHER_ROOM_08: 'Favorites',
+  NOTE_TAG_TAG_MENU_01: 'ㄱ-ㅎ',
+  NOTE_TAG_TAG_MENU_02: 'A-Z',
+  NOTE_TAG_TAG_MENU_03: '0-9',
+  NOTE_TAG_TAG_MENU_04: 'Others',
+  NOTE_TAG_TAG_MENU_05: 'Search tag',
+  NOTE_TAG_NO_CONTENTS_01: 'No tag found.',
+  NOTE_TAG_NO_CONTENTS_02: 'Enter a tag at the bottom of the page or choose one from the list.',
+  NOTE_EDIT_PAGE_MENUBAR_01: 'Undo',
+  NOTE_EDIT_PAGE_MENUBAR_02: 'Redo',
+  NOTE_EDIT_PAGE_MENUBAR_03: 'Body Style',
+  NOTE_EDIT_PAGE_MENUBAR_04: 'Font Type',
+  NOTE_EDIT_PAGE_MENUBAR_05: 'Font Size',
+  NOTE_EDIT_PAGE_MENUBAR_06: 'Character Color',
+  NOTE_EDIT_PAGE_MENUBAR_07: 'Background Color',
+  NOTE_EDIT_PAGE_MENUBAR_08: 'Bold',
+  NOTE_EDIT_PAGE_MENUBAR_09: 'Italics',
+  NOTE_EDIT_PAGE_MENUBAR_10: 'Underline',
+  NOTE_EDIT_PAGE_MENUBAR_11: 'Left',
+  NOTE_EDIT_PAGE_MENUBAR_12: 'Middle',
+  NOTE_EDIT_PAGE_MENUBAR_13: 'Right',
+  NOTE_EDIT_PAGE_MENUBAR_14: 'Both',
+  NOTE_EDIT_PAGE_MENUBAR_15: 'Numbering',
+  NOTE_EDIT_PAGE_MENUBAR_16: 'Bullet Point',
+  NOTE_EDIT_PAGE_MENUBAR_17: 'Checklist',
+  NOTE_EDIT_PAGE_MENUBAR_18: 'Indent',
+  NOTE_EDIT_PAGE_MENUBAR_19: 'Outdent',
+  NOTE_EDIT_PAGE_MENUBAR_20: 'Delimiter',
+  NOTE_EDIT_PAGE_MENUBAR_21: 'Tables',
+  NOTE_EDIT_PAGE_MENUBAR_22: 'Enter Current time',
+  NOTE_EDIT_PAGE_MENUBAR_23: 'Insert Images/Videos',
+  NOTE_EDIT_PAGE_MENUBAR_24: 'Attach Files',
+  NOTE_EDIT_PAGE_MENUBAR_25: 'Rotate by 90 Degrees Counterclockwise',
+  NOTE_EDIT_PAGE_MENUBAR_26: 'Rotate by 90 Degrees Clockwise',
+  NOTE_EDIT_PAGE_MENUBAR_27: 'Flip Vertically',
+  NOTE_EDIT_PAGE_MENUBAR_28: 'Flip Horizontally',
+  NOTE_EDIT_PAGE_MENUBAR_29: 'Edit Image',
+  NOTE_EDIT_PAGE_MENUBAR_30: 'Replace Image',
+  NOTE_EDIT_PAGE_MENUBAR_31: 'Strikethrough',
+  NOTE_EDIT_PAGE_INSERT_LINK_09: 'Move to Link',
+  NOTE_EDIT_PAGE_ADD_TAG_01: 'The tag name already exists.',
+  NOTE_PAGE_LIST_NO_CHPT_01: 'No chapter exists.',
+  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click \'New Chapter\'.',
+  NOTE_EDIT_PAGE_MENUBAR_32: 'Save to Drive',
+  NOTE_EDIT_PAGE_MENUBAR_33: 'Save to My PC',
+  NOTE_EDIT_PAGE_MENUBAR_34: 'Download',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "It is currently being modified by {{count}}.",
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF Format(.pdf)',
+  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT Format(.txt)',
+  NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
+  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
+  NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
+  NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
+  NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: 'Add \'mailto:\' in an email.',
+  NOTE_EDIT_PAGE_AUTO_SAVE_01: 'Saving…',
+  NOTE_EDIT_PAGE_AUTO_SAVE_02: 'Page saved.',
+  NOTE_EDIT_PAGE_CANT_EDIT_01: 'Unable to Modify.',
+  NOTE_ADD_TAGS_01: 'Add Tag',
+  NOTE_ADD_TAGS_02: 'You cannot add tags in read mode.',
+  NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
+  NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
+  NOTE_GUEST_02: 'This feature is not available to guests.',
+  NOTE_CONTEXT_MENU_01: 'Forward',
+  DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
+  NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
+  NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
+  NOTE_EXPORT_TITLE: 'Title'
+}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_DND_ACTION_02", ''), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_PAGE_LIST_DEL_PGE_CHPT_09", 'Pages forwarded will be permanently deleted.'), _languageSet);
+
+var resources = {
+  ko: {
+    translation: languageSet$1
+  },
+  en: {
+    translation: languageSet
+  }
+};
+var i18n = i18next__default['default'].createInstance();
+i18n.use(reactI18next.initReactI18next).init({
+  debug: true,
+  resources: resources,
+  lng: 'ko',
+  fallbackLng: 'en',
+  ns: ['translation'],
+  defaultNS: 'translation',
+  keySeparator: false,
+  interpolation: {
+    escapeValue: false
+  },
+  react: {
+    useSuspense: false
+  }
+});
+
 var GlobalVariable = {
   apiKey: '90655irb9nds5o8ycj2bpivk0v2y34e2oa6qta82nclxrnx3',
   editorWrapper: null,
@@ -1799,6 +2154,47 @@ var NoteUtil = {
   isEmpty: function isEmpty(arr) {
     return (arr === null || arr === void 0 ? void 0 : arr.length) === 0 ? true : false;
   }
+};
+/**
+ * 날짜를 같은 연월일을 생략한 12시간 형식으로 변환한다.
+ * NOTE: showAllDates가 true인 경우에는 같은 연월일이라도 생략하지 않는다.
+ * @param {string} date yyyy.mm.dd hh:mm:ss
+ * @param {boolean} showsAllDates 연월일 표시 여부
+ * @returns 12시간 형식의 날짜
+ */
+
+var get12HourFormat = function get12HourFormat(date) {
+  var showsAllDates = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+  var _date$split = date.split(' '),
+      _date$split2 = _slicedToArray(_date$split, 2),
+      mDate = _date$split2[0],
+      mTime = _date$split2[1];
+
+  var mYear = parseInt(mDate.split('.')[0], 10);
+  var mMonth = parseInt(mDate.split('.')[1], 10);
+  var mDay = parseInt(mDate.split('.')[2], 10);
+  var mHour = parseInt(mTime.split(':')[0], 10);
+  var mMinute = parseInt(mTime.split(':')[1], 10);
+  var curDate = new Date();
+
+  var convertTwoDigit = function convertTwoDigit(digit) {
+    return "0".concat(digit).slice(-2);
+  };
+
+  var hhmm = "".concat(convertTwoDigit(mHour > 12 ? mHour - 12 : mHour === 0 ? 12 : mHour), ":").concat(convertTwoDigit(mMinute));
+  var basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', {
+    time: hhmm
+  }) : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', {
+    time: hhmm
+  });
+
+  if (mYear === curDate.getFullYear() && !showsAllDates) {
+    if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate;
+    return "".concat(convertTwoDigit(mMonth), ".").concat(convertTwoDigit(mDay), " ").concat(basicDate);
+  }
+
+  return "".concat(mYear, ".").concat(convertTwoDigit(mMonth), ".").concat(convertTwoDigit(mDay), " ").concat(basicDate);
 };
 
 var checkMaxLength = function checkMaxLength(e) {
@@ -2683,9 +3079,8 @@ var TagStore = mobx.observable({
   }
 });
 
-var _observable$1;
-var EditorStore = mobx.observable((_observable$1 = {
-  tempTinymce: null,
+var _observable;
+var EditorStore = mobx.observable((_observable = {
   contents: '',
   tinymce: null,
   editor: null,
@@ -2736,12 +3131,6 @@ var EditorStore = mobx.observable((_observable$1 = {
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
-  getTempTinymce: function getTempTinymce() {
-    return this.tempTinymce;
-  },
-  setTempTinymce: function setTempTinymce(editor) {
-    this.tempTinymce = editor;
-  },
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -2918,7 +3307,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       }, _callee3);
     }))();
   }
-}, _defineProperty(_observable$1, "uploadFile", function () {
+}, _defineProperty(_observable, "uploadFile", function () {
   var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(dto, file, index) {
     var _this = this;
 
@@ -2950,18 +3339,18 @@ var EditorStore = mobx.observable((_observable$1 = {
   }
 
   return uploadFile;
-}()), _defineProperty(_observable$1, "setDownLoadFileId", function setDownLoadFileId(fileId) {
+}()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
   this.downloadFileId = fileId;
-}), _defineProperty(_observable$1, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
+}), _defineProperty(_observable, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
   this.saveFileId = fileId;
   this.saveFileExt = fileExt;
   this.saveFileName = fileName;
-}), _defineProperty(_observable$1, "tempDeleteFile", function tempDeleteFile() {
+}), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
   this.fileLayoutList.splice(this.deleteFileIndex, 1);
   if (this.fileLayoutList.length === 0) this.setIsFile(false);
-}), _defineProperty(_observable$1, "addDriveFileList", function addDriveFileList(fileInfo) {
+}), _defineProperty(_observable, "addDriveFileList", function addDriveFileList(fileInfo) {
   this.driveFileList.push(fileInfo);
-}), _defineProperty(_observable$1, "deleteFile", function deleteFile(deleteId) {
+}), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
     var _yield$NoteRepository4, dto;
 
@@ -2984,7 +3373,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee5);
   }))();
-}), _defineProperty(_observable$1, "deleteAllFile", function deleteAllFile() {
+}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile() {
   var _this2 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
@@ -2993,7 +3382,7 @@ var EditorStore = mobx.observable((_observable$1 = {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.next = 2;
-            return NoteRepository$1.deleteAllFile(_this2.fileList).then(function (response) {
+            return NoteRepository$1.deleteAllFile(_this2.deleteFileList).then(function (response) {
               var dto = response.data.dto;
 
               if (dto.resultMsg === 'Success') {
@@ -3008,16 +3397,16 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee6);
   }))();
-}), _defineProperty(_observable$1, "setFileList", function setFileList(fileList) {
+}), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
   this.fileList = fileList;
   this.checkFile();
-}), _defineProperty(_observable$1, "getFileList", function getFileList() {
+}), _defineProperty(_observable, "getFileList", function getFileList() {
   return this.fileList;
-}), _defineProperty(_observable$1, "setFileArray", function setFileArray(filelayoutlist) {
+}), _defineProperty(_observable, "setFileArray", function setFileArray(filelayoutlist) {
   this.fileLayoutList = filelayoutlist;
-}), _defineProperty(_observable$1, "setIsFile", function setIsFile(flag) {
+}), _defineProperty(_observable, "setIsFile", function setIsFile(flag) {
   this.isFile = flag;
-}), _defineProperty(_observable$1, "checkFile", function checkFile() {
+}), _defineProperty(_observable, "checkFile", function checkFile() {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   var checkFile;
 
@@ -3042,19 +3431,19 @@ var EditorStore = mobx.observable((_observable$1 = {
     });
     this.setFileArray(checkFile);
   }
-}), _defineProperty(_observable$1, "isFileLength", function isFileLength() {
+}), _defineProperty(_observable, "isFileLength", function isFileLength() {
   var temp = this.tempFileLayoutList.filter(function (file) {
     return file.type === 'file';
   }).length;
   var uploaded = this.fileLayoutList.length;
   var totalLength = temp + uploaded;
   if (totalLength === 0) this.setIsFile(false);
-}), _defineProperty(_observable$1, "uploadFileIsImage", function uploadFileIsImage(ext) {
+}), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
   var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
   return ImageExt.includes(ext.toLowerCase());
-}), _defineProperty(_observable$1, "readerIsImage", function readerIsImage(type) {
+}), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
   return type.includes('image/');
-}), _defineProperty(_observable$1, "getFileInfo", function getFileInfo(file) {
+}), _defineProperty(_observable, "getFileInfo", function getFileInfo(file) {
   var fileName = file.name;
   var dotIndex = fileName.lastIndexOf('.');
   var fileExtension = '';
@@ -3070,84 +3459,54 @@ var EditorStore = mobx.observable((_observable$1 = {
     fileExtension: fileExtension,
     fileSize: fileSize
   };
-}), _defineProperty(_observable$1, "setFileIndex", function setFileIndex(idx) {
+}), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
   this.selectFileIdx = idx;
-}), _defineProperty(_observable$1, "setFileElement", function setFileElement(element) {
+}), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
   this.selectFileElement = element;
-}), _defineProperty(_observable$1, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
+}), _defineProperty(_observable, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
   this.deleteFileId = id;
   this.deleteFileName = name;
   this.deleteFileIndex = index;
-}), _defineProperty(_observable$1, "setUploadFileDTO", function setUploadFileDTO(config, file, type) {
-  var fileName = config.fileName,
-      fileExtension = config.fileExtension,
-      fileSize = config.fileSize;
-  var gwMeta = {
-    file_name: fileName,
-    file_extension: fileExtension,
-    file_size: fileSize
-  };
-  var uploadMeta = {
-    dto: {
-      workspace_id: NoteRepository$1.WS_ID,
-      channel_id: NoteRepository$1.chId,
-      storageFileInfo: {
-        user_id: NoteRepository$1.USER_ID,
-        file_last_update_user_id: NoteRepository$1.USER_ID,
-        file_id: '',
-        file_name: fileName,
-        file_extension: fileExtension,
-        file_created_at: '',
-        file_updated_at: '',
-        file_size: fileSize,
-        user_context_1: PageStore.currentPageId,
-        user_context_2: '',
-        user_context_3: ''
-      }
-    }
-  };
-  var tempMeta = {
-    user_id: NoteRepository$1.USER_ID,
-    file_last_update_user_id: NoteRepository$1.USER_ID,
-    file_id: '',
-    file_name: fileName,
-    file_extension: fileExtension,
-    file_created_at: '',
-    file_updated_at: this.getTempTimeFormat(),
-    file_size: fileSize,
-    user_context_1: '',
-    user_context_2: '',
-    user_context_3: '',
-    progress: 0,
-    type: type,
-    error: false
-  };
-  this.setTempFileList(tempMeta);
-  var cancelToken = new teespaceCore.API.CancelToken.source();
-  var uploadArr = {
-    gwMeta: gwMeta,
-    uploadMeta: uploadMeta,
+}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(model, file, type, cancelSource) {
+  this.uploadDTO.push({
+    model: model,
     file: file,
     type: type,
-    cancelSource: cancelToken
+    cancelSource: cancelSource
+  });
+  this.setPageFileList(model, file.uid, type, cancelSource);
+}), _defineProperty(_observable, "setPageFileList", function setPageFileList(model, uid, type, cancelSource) {
+  var obj = {
+    file_id: uid,
+    file_name: model.storageFileInfo.file_name,
+    file_extension: model.storageFileInfo.file_extension,
+    file_size: model.storageFileInfo.file_size,
+    user_id: model.storageFileInfo.user_id,
+    progress: 0,
+    type: type,
+    error: false,
+    cancelSource: cancelSource
   };
-  this.setUploadDTO(uploadArr);
-}), _defineProperty(_observable$1, "setUploadDTO", function setUploadDTO(meta) {
+
+  if (type !== 'image') {
+    this.addFileList(obj);
+  }
+}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
   this.uploadDTO.push(meta);
-}), _defineProperty(_observable$1, "setTempFileList", function setTempFileList(target) {
+}), _defineProperty(_observable, "addFileList", function addFileList(target) {
   if (this.processCount !== this.uploadLength) {
-    this.tempFileLayoutList.push(target);
+    this.fileLayoutList.unshift(target);
     this.processCount++;
   } else this.processCount = 0;
 
   if (!this.isFile) this.setIsFile(true);
-}), _defineProperty(_observable$1, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
+}), _defineProperty(_observable, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
   this.tempFileLayoutList = arr;
-}), _defineProperty(_observable$1, "setFileLength", function setFileLength(length) {
+}), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
   this.uploadLength = length;
-}), _defineProperty(_observable$1, "setTotalUploadLength", function setTotalUploadLength(length) {
+}), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
   this.totalUploadLength = length;
-}), _defineProperty(_observable$1, "getTempTimeFormat", function getTempTimeFormat() {
+}), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
   var month = 1 + date.getMonth();
@@ -3156,20 +3515,23 @@ var EditorStore = mobx.observable((_observable$1 = {
   day = day >= 10 ? day : '0' + day;
   var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   return year + '-' + month + '-' + day + ' ' + time;
-}), _defineProperty(_observable$1, "convertFileSize", function convertFileSize(bytes) {
+}), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
   if (bytes == 0) return '0 Bytes';
   var k = 1000,
       dm = 2,
       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
       i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}), _defineProperty(_observable$1, "deleteImage", function deleteImage() {
+}), _defineProperty(_observable, "deleteImage", function deleteImage() {
+  var _EditorStore$tinymce, _EditorStore$tinymce$;
+
   var parent = this.tinymce.selection.getNode().parentNode;
   this.tinymce.selection.setContent('');
   if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
   this.tinymce.focus();
+  (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.add();
   NoteStore$1.setModalInfo(null);
-}), _defineProperty(_observable$1, "createFileMeta", function createFileMeta(fileArray, noteId) {
+}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
     var createCopyArray, _yield$NoteRepository5, dto;
 
@@ -3200,7 +3562,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee7);
   }))();
-}), _defineProperty(_observable$1, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
+}), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
   var _this3 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
@@ -3259,7 +3621,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee8);
   }))();
-}), _defineProperty(_observable$1, "createDriveElement", function createDriveElement(type, fileId, fileName) {
+}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
   var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
 
   switch (type) {
@@ -3271,7 +3633,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
       break;
   }
-}), _defineProperty(_observable$1, "notSaveFileDelete", function notSaveFileDelete() {
+}), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
     var deleteArr;
     return regeneratorRuntime.wrap(function _callee9$(_context9) {
@@ -3314,7 +3676,7 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee9, null, [[3, 8, 10, 12]]);
   }))();
-}), _defineProperty(_observable$1, "uploadingFileallCancel", function uploadingFileallCancel() {
+}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
   var _this4 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
@@ -3341,333 +3703,17 @@ var EditorStore = mobx.observable((_observable$1 = {
       }
     }, _callee10);
   }))();
-}), _defineProperty(_observable$1, "isEditCancelOpen", function isEditCancelOpen() {
+}), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
 
   var isEmpty = NoteUtil.isEmpty;
   if (PageStore.isNewPage && (!((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) || !PageStore.noteContent) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
   return true;
-}), _observable$1));
+}), _observable));
 
-var languageSet$1 = {
-  NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
-  NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
-  NOTE_PAGE_LIST_CMPNT_DEF_03: '(제목 없음)',
-  NOTE_PAGE_LIST_CMPNT_DEF_04: '새 페이지 추가',
-  NOTE_PAGE_LIST_CMPNT_DEF_05: '페이지, 챕터 검색',
-  NOTE_PAGE_LIST_CMPNT_DEF_06: '태그',
-  NOTE_PAGE_LIST_CMPNT_DEF_07: '전달받은 페이지',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_01: '중복된 이름이 있습니다.',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_02: '다른 이름을 입력하세요.',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_03: '확인',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: '삭제할 수 없습니다.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "{{userName}} \uB2D8\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: '페이지를 삭제하시겠습니까?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: '삭제',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: '취소',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: '챕터를 삭제하시겠습니까?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: '챕터에 속한 페이지는 휴지통으로 이동됩니다.',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_01: '수정',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_02: '읽기 모드',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_03: '편집하려면 수정 버튼을 클릭해 주세요.',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_04: '저장',
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C {{targetPage}}(\uC73C)\uB85C \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 \'새 페이지 추가\' 버튼을 클릭하세요.',
-  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
-  NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
-  NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
-  NOTE_EDIT_PAGE_SEARCH_03: '내용 검색',
-  NOTE_EDIT_PAGE_INSERT_LINK_01: '링크 삽입',
-  NOTE_EDIT_PAGE_INSERT_LINK_02: '완료',
-  NOTE_EDIT_PAGE_INSERT_LINK_03: '텍스트를 입력하세요.',
-  NOTE_EDIT_PAGE_INSERT_LINK_04: '텍스트',
-  NOTE_EDIT_PAGE_INSERT_LINK_05: '링크',
-  NOTE_EDIT_PAGE_INSERT_LINK_06: '해당 URL은 유효하지 않습니다.',
-  NOTE_EDIT_PAGE_INSERT_LINK_07: '링크 편집',
-  NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
-  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
-  NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
-  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여 파일을 첨부할 수 없습니다.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
-  NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_COMPLETE_02: '저장 안 함',
-  NOTE_DELIVER_CONTEXT_MENU_01: '이름 변경',
-  NOTE_DELIVER_CONTEXT_MENU_02: 'Mail로 전달',
-  NOTE_DELIVER_CONTEXT_MENU_03: '내보내기',
-  NOTE_DELIVER_CONTEXT_MENU_04: '정보 보기',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: '출처 룸',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: '전달한 멤버',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: '전달 날짜',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_01: '별명 검색',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_02: '룸',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_03: '프렌즈',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_04: '나에게',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_05: '프렌즈/룸 목록에서\n선택해 주세요.',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_06: '룸 이름, 멤버 검색',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_07: '전달',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_08: '즐겨찾기',
-  NOTE_TAG_TAG_MENU_01: 'ㄱ~ㅎ',
-  NOTE_TAG_TAG_MENU_02: 'A~Z',
-  NOTE_TAG_TAG_MENU_03: '0~9',
-  NOTE_TAG_TAG_MENU_04: '기타',
-  NOTE_TAG_TAG_MENU_05: '태그 검색',
-  NOTE_TAG_NO_CONTENTS_01: '태그가 없습니다.',
-  NOTE_TAG_NO_CONTENTS_02: '페이지 하단에 태그를 입력하여 추가하세요.',
-  NOTE_EDIT_PAGE_MENUBAR_01: '실행 취소',
-  NOTE_EDIT_PAGE_MENUBAR_02: '다시 실행',
-  NOTE_EDIT_PAGE_MENUBAR_03: '본문 스타일',
-  NOTE_EDIT_PAGE_MENUBAR_04: '폰트 종류',
-  NOTE_EDIT_PAGE_MENUBAR_05: '폰트 크기',
-  NOTE_EDIT_PAGE_MENUBAR_06: '글자색',
-  NOTE_EDIT_PAGE_MENUBAR_07: '배경색',
-  NOTE_EDIT_PAGE_MENUBAR_08: '볼드체',
-  NOTE_EDIT_PAGE_MENUBAR_09: '이탤릭체',
-  NOTE_EDIT_PAGE_MENUBAR_10: '밑줄체',
-  NOTE_EDIT_PAGE_MENUBAR_11: '왼쪽 정렬',
-  NOTE_EDIT_PAGE_MENUBAR_12: '가운데 정렬',
-  NOTE_EDIT_PAGE_MENUBAR_13: '오른쪽 정렬',
-  NOTE_EDIT_PAGE_MENUBAR_14: '양쪽 정렬',
-  NOTE_EDIT_PAGE_MENUBAR_15: '번호 매기기',
-  NOTE_EDIT_PAGE_MENUBAR_16: '글머리 기호',
-  NOTE_EDIT_PAGE_MENUBAR_17: '체크리스트',
-  NOTE_EDIT_PAGE_MENUBAR_18: '들여쓰기',
-  NOTE_EDIT_PAGE_MENUBAR_19: '내어쓰기',
-  NOTE_EDIT_PAGE_MENUBAR_20: '구분선',
-  NOTE_EDIT_PAGE_MENUBAR_21: '표',
-  NOTE_EDIT_PAGE_MENUBAR_22: '현재 시간 입력',
-  NOTE_EDIT_PAGE_MENUBAR_23: '이미지 삽입',
-  NOTE_EDIT_PAGE_MENUBAR_24: '파일 첨부',
-  NOTE_EDIT_PAGE_MENUBAR_25: '반시계 방향 90도 회전',
-  NOTE_EDIT_PAGE_MENUBAR_26: '시계 방향 90도 회전',
-  NOTE_EDIT_PAGE_MENUBAR_27: '상하 반전',
-  NOTE_EDIT_PAGE_MENUBAR_28: '좌우 반전',
-  NOTE_EDIT_PAGE_MENUBAR_29: '이미지 편집',
-  NOTE_EDIT_PAGE_MENUBAR_30: '이미지 교체',
-  NOTE_EDIT_PAGE_MENUBAR_31: '취소선',
-  NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
-  NOTE_EDIT_PAGE_ADD_TAG_01: '이미 존재하는 태그 이름입니다.',
-  NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
-  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 \'새 챕터\' 버튼을 클릭하세요.',
-  NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
-  NOTE_EDIT_PAGE_MENUBAR_33: '내 PC에 저장',
-  NOTE_EDIT_PAGE_MENUBAR_34: '다운로드',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "{{count}}\uBA85\uC774 \uC218\uC815 \uC911\uC785\uB2C8\uB2E4.",
-  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF 형식(.pdf)',
-  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT 형식(.txt)',
-  NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: "업로드 완료된 파일은 페이지에 저장됩니다.",
-  NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
-  NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
-  NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: '이메일의 경우, 앞에 \'mailto:\'를 붙여주세요.',
-  NOTE_EDIT_PAGE_AUTO_SAVE_01: '저장 중',
-  NOTE_EDIT_PAGE_AUTO_SAVE_02: '저장되었습니다.',
-  NOTE_EDIT_PAGE_CANT_EDIT_01: '수정할 수 없습니다.',
-  NOTE_ADD_TAGS_01: '태그 추가',
-  NOTE_ADD_TAGS_02: '읽기 모드에서는 태그 추가를 할 수 없습니다.',
-  NOTE_EDIT_PAGE_MENUBAR_35: '정렬',
-  NOTE_GUEST_01: '게스트는 챕터 및 페이지를 편집할 수 없습니다.',
-  NOTE_GUEST_02: '게스트는 사용할 수 없는 기능입니다.',
-  DRIVE_UPLOAD_BTN_04: '파일명이 70자를 넘는 경우 업로드할 수 없습니다.',
-  NOTE_EDIT_PAGE_UPDATE_TIME_01: "\uC624\uC804 {{time}}",
-  NOTE_EDIT_PAGE_UPDATE_TIME_02: "\uC624\uD6C4 {{time}}",
-  NOTE_EXPORT_TITLE: '제목',
-  NOTE_CONTEXT_MENU_01: '다른 룸으로 전달',
-  NOTE_CONTEXT_MENU_02: '복원',
-  NOTE_CONTEXT_MENU_03: '휴지통 비우기',
-  NOTE_DND_ACTION_01: '이동이 불가능합니다.',
-  NOTE_DND_ACTION_02: '전달받은 챕터 및 페이지는 이동 불가능합니다.',
-  NOTE_BIN_01: '휴지통',
-  NOTE_BIN_02: '휴지통으로 이동되었습니다.',
-  NOTE_BIN_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uD734\uC9C0\uD1B5\uC73C\uB85C \uC774\uB3D9\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
-  NOTE_BIN_04: '챕터가 삭제되었습니다.',
-  NOTE_BIN_05: '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
-  NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
-  NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
-  NOTE_BIN_08: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC601\uAD6C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
-  NOTE_BIN_RESTORE_01: '어느 챕터로 복원하시겠습니까?',
-  NOTE_BIN_RESTORE_02: '복원되었습니다.',
-  NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uC6D0\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
-  NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
-  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
-  NOTE_META_TAG_01: '챕터',
-  NOTE_META_TAG_02: '페이지',
-  NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
-  NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
-  NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.'
-};
-
-var _languageSet;
-
-var languageSet = (_languageSet = {
-  NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
-  NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
-  NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
-  NOTE_PAGE_LIST_CMPNT_DEF_04: 'Add New Page',
-  NOTE_PAGE_LIST_CMPNT_DEF_05: 'Search page or chapter',
-  NOTE_PAGE_LIST_CMPNT_DEF_06: 'Tag',
-  NOTE_PAGE_LIST_CMPNT_DEF_07: 'Page Received',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_01: 'Duplicate name exists.',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_02: 'Enter another name.',
-  NOTE_PAGE_LIST_CREATE_N_CHPT_03: 'OK',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_01: 'Unable to delete.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_02: "It is currently being modified by {{userName}}",
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_03: 'Do you want to delete this page?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_04: 'Delete',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_05: 'Cancel',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_06: 'Do you want to delete this chapter?',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_07: 'The pages belonging to the chapter are moved to Trash.',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_01: 'Modify',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_02: 'Read Mode',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_03: 'Click Modify to edit this page.',
-  NOTE_PAGE_LIST_ADD_NEW_PGE_04: 'Save',
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_01: "{{moveCnt}} pages moved to {{targetPage}}.",
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}} chapters moved.",
-  NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}} pages moved.",
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: 'No page exists.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click \'Add New Page\'.',
-  NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(Unregistered Member)',
-  NOTE_EDIT_PAGE_SEARCH_01: 'No search results found.',
-  NOTE_EDIT_PAGE_SEARCH_02: 'Searching...',
-  NOTE_EDIT_PAGE_SEARCH_03: 'Search keyword',
-  NOTE_EDIT_PAGE_INSERT_LINK_01: 'Insert Link',
-  NOTE_EDIT_PAGE_INSERT_LINK_02: 'Done',
-  NOTE_EDIT_PAGE_INSERT_LINK_03: 'Enter a text.',
-  NOTE_EDIT_PAGE_INSERT_LINK_04: 'Text',
-  NOTE_EDIT_PAGE_INSERT_LINK_05: 'Link',
-  NOTE_EDIT_PAGE_INSERT_LINK_06: 'The URL is not valid.',
-  NOTE_EDIT_PAGE_INSERT_LINK_07: 'Edit Link',
-  NOTE_EDIT_PAGE_INSERT_LINK_08: 'Delete Link',
-  NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Attach from Drive',
-  NOTE_EDIT_PAGE_ATTACH_FILE_02: 'Attach from My PC',
-  NOTE_EDIT_PAGE_ATTACH_FILE_03: 'There is not enough storage space to attach the file.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_04: 'You can attach up to 20 GB files at a time.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_05: 'You can attach up to 30 files at a time.',
-  NOTE_EDIT_PAGE_COMPLETE_01: 'Do you want to save this page and exit?',
-  NOTE_EDIT_PAGE_COMPLETE_02: 'Not Save',
-  NOTE_DELIVER_CONTEXT_MENU_01: 'Rename',
-  NOTE_DELIVER_CONTEXT_MENU_02: 'Send Email',
-  NOTE_DELIVER_CONTEXT_MENU_03: 'Export',
-  NOTE_DELIVER_CONTEXT_MENU_04: 'View Information',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_01: 'Room',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_02: 'Member',
-  NOTE_DELIVER_CONTEXT_MENU_NOTE_INFO_03: 'Date',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_01: 'Search nickname',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_02: 'Rooms',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_03: 'Friends',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_04: 'Me',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_05: 'Select people from the Friends/Rooms list.',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_06: 'Search room name or member',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_07: 'Send',
-  NOTE_DELIVER_TO_ANOTHER_ROOM_08: 'Favorites',
-  NOTE_TAG_TAG_MENU_01: 'ㄱ-ㅎ',
-  NOTE_TAG_TAG_MENU_02: 'A-Z',
-  NOTE_TAG_TAG_MENU_03: '0-9',
-  NOTE_TAG_TAG_MENU_04: 'Others',
-  NOTE_TAG_TAG_MENU_05: 'Search tag',
-  NOTE_TAG_NO_CONTENTS_01: 'No tag found.',
-  NOTE_TAG_NO_CONTENTS_02: 'Enter a tag at the bottom of the page or choose one from the list.',
-  NOTE_EDIT_PAGE_MENUBAR_01: 'Undo',
-  NOTE_EDIT_PAGE_MENUBAR_02: 'Redo',
-  NOTE_EDIT_PAGE_MENUBAR_03: 'Body Style',
-  NOTE_EDIT_PAGE_MENUBAR_04: 'Font Type',
-  NOTE_EDIT_PAGE_MENUBAR_05: 'Font Size',
-  NOTE_EDIT_PAGE_MENUBAR_06: 'Character Color',
-  NOTE_EDIT_PAGE_MENUBAR_07: 'Background Color',
-  NOTE_EDIT_PAGE_MENUBAR_08: 'Bold',
-  NOTE_EDIT_PAGE_MENUBAR_09: 'Italics',
-  NOTE_EDIT_PAGE_MENUBAR_10: 'Underline',
-  NOTE_EDIT_PAGE_MENUBAR_11: 'Left',
-  NOTE_EDIT_PAGE_MENUBAR_12: 'Middle',
-  NOTE_EDIT_PAGE_MENUBAR_13: 'Right',
-  NOTE_EDIT_PAGE_MENUBAR_14: 'Both',
-  NOTE_EDIT_PAGE_MENUBAR_15: 'Numbering',
-  NOTE_EDIT_PAGE_MENUBAR_16: 'Bullet Point',
-  NOTE_EDIT_PAGE_MENUBAR_17: 'Checklist',
-  NOTE_EDIT_PAGE_MENUBAR_18: 'Indent',
-  NOTE_EDIT_PAGE_MENUBAR_19: 'Outdent',
-  NOTE_EDIT_PAGE_MENUBAR_20: 'Delimiter',
-  NOTE_EDIT_PAGE_MENUBAR_21: 'Tables',
-  NOTE_EDIT_PAGE_MENUBAR_22: 'Enter Current time',
-  NOTE_EDIT_PAGE_MENUBAR_23: 'Insert Images/Videos',
-  NOTE_EDIT_PAGE_MENUBAR_24: 'Attach Files',
-  NOTE_EDIT_PAGE_MENUBAR_25: 'Rotate by 90 Degrees Counterclockwise',
-  NOTE_EDIT_PAGE_MENUBAR_26: 'Rotate by 90 Degrees Clockwise',
-  NOTE_EDIT_PAGE_MENUBAR_27: 'Flip Vertically',
-  NOTE_EDIT_PAGE_MENUBAR_28: 'Flip Horizontally',
-  NOTE_EDIT_PAGE_MENUBAR_29: 'Edit Image',
-  NOTE_EDIT_PAGE_MENUBAR_30: 'Replace Image',
-  NOTE_EDIT_PAGE_MENUBAR_31: 'Strikethrough',
-  NOTE_EDIT_PAGE_INSERT_LINK_09: 'Move to Link',
-  NOTE_EDIT_PAGE_ADD_TAG_01: 'The tag name already exists.',
-  NOTE_PAGE_LIST_NO_CHPT_01: 'No chapter exists.',
-  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click \'New Chapter\'.',
-  NOTE_EDIT_PAGE_MENUBAR_32: 'Save to Drive',
-  NOTE_EDIT_PAGE_MENUBAR_33: 'Save to My PC',
-  NOTE_EDIT_PAGE_MENUBAR_34: 'Download',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_08: "It is currently being modified by {{count}}.",
-  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01: 'PDF Format(.pdf)',
-  NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02: 'TXT Format(.txt)',
-  NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
-  NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
-  NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
-  NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
-  NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: 'Add \'mailto:\' in an email.',
-  NOTE_EDIT_PAGE_AUTO_SAVE_01: 'Saving…',
-  NOTE_EDIT_PAGE_AUTO_SAVE_02: 'Page saved.',
-  NOTE_EDIT_PAGE_CANT_EDIT_01: 'Unable to Modify.',
-  NOTE_ADD_TAGS_01: 'Add Tag',
-  NOTE_ADD_TAGS_02: 'You cannot add tags in read mode.',
-  NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
-  NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
-  NOTE_GUEST_02: 'This feature is not available to guests.',
-  NOTE_CONTEXT_MENU_01: 'Forward',
-  DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
-  NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
-  NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
-  NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_DND_ACTION_02", ''), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_PAGE_LIST_DEL_PGE_CHPT_09", 'Pages forwarded will be permanently deleted.'), _languageSet);
-
-var resources = {
-  ko: {
-    translation: languageSet$1
-  },
-  en: {
-    translation: languageSet
-  }
-};
-var i18n = i18next__default['default'].createInstance();
-i18n.use(reactI18next.initReactI18next).init({
-  debug: true,
-  resources: resources,
-  lng: 'ko',
-  fallbackLng: 'en',
-  ns: ['translation'],
-  defaultNS: 'translation',
-  keySeparator: false,
-  interpolation: {
-    escapeValue: false
-  },
-  react: {
-    useSuspense: false
-  }
-});
-
-var _observable;
-var PageStore = mobx.observable((_observable = {
+var PageStore = mobx.observable({
   noteInfoList: [],
-  currentPageData: [],
-  isEdit: '',
+  currentPageData: {},
   saveStatus: {
     saving: false,
     saved: false
@@ -3677,8 +3723,6 @@ var PageStore = mobx.observable((_observable = {
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
-  createPageId: '',
-  // web에서 안 씀
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -3696,8 +3740,6 @@ var PageStore = mobx.observable((_observable = {
   dragEnterChapterIdx: '',
   modifiedDate: '',
   deletedDate: '',
-  prevModifiedUserName: '',
-  // web에서 안 씀
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -3735,27 +3777,26 @@ var PageStore = mobx.observable((_observable = {
     this.saveStatus.saving = saving;
     this.saveStatus.saved = saved;
   },
-  getIsEdit: function getIsEdit() {
-    return this.isEdit;
-  },
-  setIsEdit: function setIsEdit(id) {
-    this.isEdit = id;
-  },
+
+  /**
+   * [임시]
+   * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
+   * @returns 해당 페이지에 대한 자신의 읽기모드 여부
+   */
   isReadMode: function isReadMode() {
-    if (this.isEdit === null || this.isEdit === '') {
+    if (!this.currentPageData.is_edit) {
       this.setOtherEdit(false);
       return true;
-    } // createNotePage에서 createPage 하고 EditorContainer.js의 setNoteEditor-initialMode한 후 getNoteInfoList에서 currentPageData를 set한다.
-    // 그래서 getCurrentPageData().is_edit으로 확인하면 initialMode에서 isReadMode() === true가 된다.
-    // this.isEdit으로 수정
-    else if (this.isEdit !== null && NoteRepository$1.USER_ID === this.isEdit) {
-        this.setOtherEdit(false);
-        return false;
-      } else {
-        this.setEditingUserID(PageStore.getCurrentPageData().is_edit);
-        this.setOtherEdit(true);
-        return true;
-      }
+    }
+
+    if (NoteRepository$1.USER_ID === this.currentPageData.is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    }
+
+    this.setEditingUserID(this.currentPageData.is_edit);
+    this.setOtherEdit(true);
+    return true;
   },
   setOtherEdit: function setOtherEdit(flag) {
     this.otherEdit = flag;
@@ -3788,8 +3829,9 @@ var PageStore = mobx.observable((_observable = {
     return this.noteTitle;
   },
   setTitle: function setTitle(title) {
-    if (title.length > 256) title = title.substring(0, 256);
-    this.noteTitle = title;
+    this.noteTitle = [].filter.call(title.slice(0, 200), function (c) {
+      return c.charCodeAt(0) !== 65279;
+    }).join('');
   },
   getCurrentPageId: function getCurrentPageId() {
     return this.currentPageId;
@@ -3893,12 +3935,6 @@ var PageStore = mobx.observable((_observable = {
   },
   setModifiedDate: function setModifiedDate(date) {
     this.modifiedDate = date;
-  },
-  getPrevModifiedUserName: function getPrevModifiedUserName() {
-    return this.prevModifiedUserName;
-  },
-  setPrevModifiedUserName: function setPrevModifiedUserName(userName) {
-    this.prevModifiedUserName = userName;
   },
   getIsNewPage: function getIsNewPage() {
     return this.isNewPage;
@@ -4157,7 +4193,10 @@ var PageStore = mobx.observable((_observable = {
       }, _callee9);
     }))();
   },
-  // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
+
+  /**
+   * 에디터의 텍스트/배경 색상을 초기화한다.
+   */
   initializeBoxColor: function initializeBoxColor() {
     var _document$getElementB, _document$getElementB2, _document$getElementB3, _document$getElementB4;
 
@@ -4169,36 +4208,51 @@ var PageStore = mobx.observable((_observable = {
   createNotePage: function createNotePage() {
     var _this = this;
 
-    this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(function (dto) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
-      EditorStore.setIsSearch(false);
+      var dto;
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _context10.next = 2;
+              return _this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, _this.createParent);
 
-      _this.setIsEdit(dto.is_edit);
+            case 2:
+              dto = _context10.sent;
+              _this.currentPageData = _objectSpread2(_objectSpread2({}, dto), {}, {
+                note_content: NoteUtil.decodeStr('<p><br></p>'),
+                note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'))
+              });
 
-      ChapterStore$1.getNoteChapterList();
-      ChapterStore$1.setCurrentChapterInfo(dto.parent_notebook, false);
-      _this.currentPageId = dto.note_id;
+              _this.setIsNewPage(true);
 
-      _this.setIsNewPage(true);
+              EditorStore.setIsSearch(false);
+              ChapterStore$1.getNoteChapterList();
+              ChapterStore$1.setCurrentChapterInfo(dto.parent_notebook, false);
+              _this.currentPageId = dto.note_id;
+              TagStore.setNoteTagList(dto.tagList); // []
 
-      TagStore.setNoteTagList(dto.tagList);
-      EditorStore.setFileList(dto.fileList);
+              EditorStore.setFileList(dto.fileList); // null
 
-      _this.initializeBoxColor();
+              _this.noteTitle = '';
+              _this.modifiedDate = get12HourFormat(dto.modified_date);
+              NoteStore$1.setTargetLayout('Content');
+              NoteStore$1.setShowPage(true); // initialize editor properties
 
-      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-      _this.currentPageData = dto;
-      _this.noteTitle = '';
-      _this.prevModifiedUserName = _this.currentPageData.user_name;
-      _this.modifiedDate = _this.modifiedDateFormatting(_this.currentPageData.modified_date, false);
-      NoteStore$1.setTargetLayout('Content');
-      NoteStore$1.setShowPage(true);
-      (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear(); // getRng error가 나서 selection부터 체크
+              _this.initializeBoxColor();
 
-      if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
-    });
+              (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
+              if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
+
+            case 18:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, _callee10);
+    }))();
   },
 
   /**
@@ -4208,27 +4262,25 @@ var PageStore = mobx.observable((_observable = {
   throwNotePage: function throwNotePage(isDnd) {
     var _this2 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
       var _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
 
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
-              _context10.next = 2;
+              _context11.next = 2;
               return _this2.throwPage(_this2.deletePageList);
 
             case 2:
-              _context10.next = 4;
+              _context11.next = 4;
               return ChapterStore$1.getNoteChapterList();
 
             case 4:
-              _this2.setIsEdit('');
-
               if (!_this2.deletePageList.find(function (page) {
                 return page.note_id === _this2.currentPageId;
               })) {
-                _context10.next = 14;
+                _context11.next = 13;
                 break;
               }
 
@@ -4236,10 +4288,10 @@ var PageStore = mobx.observable((_observable = {
 
               _this2.setCurrentPageId(pageId);
 
-              _context10.next = 10;
+              _context11.next = 9;
               return _this2.fetchCurrentPageData(pageId);
 
-            case 10:
+            case 9:
               ChapterStore$1.setDragData(new Map([[ChapterStore$1.currentChapterId, ChapterStore$1.createDragData(ChapterStore$1.currentChapterId)]]));
 
               _this2.setDragData(new Map([[_this2.currentPageId, _this2.createDragData(_this2.currentPageId, ChapterStore$1.currentChapterId)]]));
@@ -4248,7 +4300,7 @@ var PageStore = mobx.observable((_observable = {
 
               _this2.setIsCtrlKeyDown(false);
 
-            case 14:
+            case 13:
               NoteStore$1.setIsDragging(false);
               num = _this2.deletePageList.length;
               NoteStore$1.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
@@ -4257,21 +4309,18 @@ var PageStore = mobx.observable((_observable = {
               NoteStore$1.setIsVisibleToast(true);
               NoteStore$1.setShowModal(false);
 
-            case 19:
+            case 18:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
         }
-      }, _callee10);
+      }, _callee11);
     }))();
   },
   deleteNotePage: function deleteNotePage() {
     var _this3 = this;
 
     this.deletePage(this.deletePageList).then(function () {
-      _this3.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
-
-
       if (!_this3.isNewPage) {
         if (_this3.currentPageId === _this3.deletePageList[0].note_id) {
           _this3.setCurrentPageId(_this3.selectablePageId);
@@ -4284,8 +4333,7 @@ var PageStore = mobx.observable((_observable = {
 
           _this3.setIsNewPage(false);
 
-          _this3.fetchCurrentPageData(''); // isEdit도 갱신
-
+          _this3.fetchCurrentPageData('');
 
           ChapterStore$1.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
@@ -4350,27 +4398,27 @@ var PageStore = mobx.observable((_observable = {
     this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       var _yield$NoteRepository10, dto;
 
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
-              _context11.next = 2;
+              _context12.next = 2;
               return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
             case 2:
-              _yield$NoteRepository10 = _context11.sent;
+              _yield$NoteRepository10 = _context12.sent;
               dto = _yield$NoteRepository10.data.dto;
-              return _context11.abrupt("return", dto);
+              return _context12.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
         }
-      }, _callee11);
+      }, _callee12);
     }))();
   },
   getSortedDragDataList: function getSortedDragDataList() {
@@ -4386,11 +4434,11 @@ var PageStore = mobx.observable((_observable = {
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
       var item, sortedDragDataList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
               item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore$1.getChannelId()));
               sortedDragDataList = _this5.getSortedDragDataList();
@@ -4404,7 +4452,7 @@ var PageStore = mobx.observable((_observable = {
                 if (!_this5.dragData.get(pageId)) pageIds.push(pageId);
               });
               if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-              _context12.next = 8;
+              _context13.next = 8;
               return Promise.all(sortedDragDataList.slice().reverse().map(function (data) {
                 if (data.chapterId !== moveTargetChapterId && ChapterStore$1.pageMap.get(data.item.id)) {
                   item[data.chapterIdx].children.splice(data.pageIdx, 1);
@@ -4432,16 +4480,16 @@ var PageStore = mobx.observable((_observable = {
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context12.next = 24;
+                _context13.next = 24;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore$1.getChannelId(), JSON.stringify(item));
-              _context12.next = 18;
+              _context13.next = 18;
               return ChapterStore$1.getNoteChapterList();
 
             case 18:
-              _context12.next = 20;
+              _context13.next = 20;
               return _this5.fetchCurrentPageData(sortedMovePages[0]);
 
             case 20:
@@ -4458,7 +4506,7 @@ var PageStore = mobx.observable((_observable = {
               }
 
               NoteStore$1.setIsVisibleToast(true);
-              _context12.next = 25;
+              _context13.next = 25;
               break;
 
             case 24:
@@ -4470,79 +4518,48 @@ var PageStore = mobx.observable((_observable = {
 
             case 26:
             case "end":
-              return _context12.stop();
+              return _context13.stop();
           }
         }
-      }, _callee12);
+      }, _callee13);
     }))();
-  },
-  modifiedDateFormatting: function modifiedDateFormatting(date, isSharedInfo) {
-    var mDate = date.split(' ')[0];
-    var mTime = date.split(' ')[1];
-    var mYear = parseInt(mDate.split('.')[0]);
-    var mMonth = parseInt(mDate.split('.')[1]);
-    var mDay = parseInt(mDate.split('.')[2]);
-    var mHour = parseInt(mTime.split(':')[0]);
-    var mMinute = parseInt(mTime.split(':')[1]);
-    var curDate = new Date();
-
-    var convertTwoDigit = function convertTwoDigit(digit) {
-      return ('0' + digit).slice(-2);
-    };
-
-    var m12Hour = mHour > 12 ? mHour - 12 : mHour;
-    var hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    var basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', {
-      time: hhmm
-    }) : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', {
-      time: hhmm
-    });
-
-    if (date === this.currentPageData.modified_date && mYear === curDate.getFullYear() && !isSharedInfo) {
-      // 같은 해
-      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
-      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
-    } else {
-      // 다른 해, 정보 보기
-      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate;
-    }
   },
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
       var dto, userProfile;
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
-              _context13.next = 2;
+              _context14.next = 2;
               return _this6.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context13.sent;
+              dto = _context14.sent;
 
               if (isFilled(dto.note_id)) {
-                _context13.next = 6;
+                _context14.next = 6;
                 break;
               }
 
               if (_this6.currentPageId === noteId) _this6.currentPageId = '';
-              return _context13.abrupt("return");
+              return _context14.abrupt("return");
 
             case 6:
               if (!dto.USER_ID) {
-                _context13.next = 13;
+                _context14.next = 13;
                 break;
               }
 
-              _context13.next = 9;
+              _context14.next = 9;
               return teespaceCore.UserStore.getProfile(dto.USER_ID);
 
             case 9:
-              userProfile = _context13.sent;
+              userProfile = _context14.sent;
               _this6.displayName = (userProfile === null || userProfile === void 0 ? void 0 : userProfile.displayName) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
-              _context13.next = 14;
+              _context14.next = 14;
               break;
 
             case 13:
@@ -4553,11 +4570,8 @@ var PageStore = mobx.observable((_observable = {
 
               ChapterStore$1.setCurrentChapterInfo(dto.parent_notebook);
               _this6.currentPageData = dto;
-              _this6.isEdit = dto.is_edit;
               _this6.noteTitle = dto.note_title;
-              _this6.modifiedDate = _this6.modifiedDateFormatting(_this6.currentPageData.modified_date); // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
-              // console.log(this.deletedDate)
-
+              _this6.modifiedDate = get12HourFormat(_this6.currentPageData.modified_date);
               EditorStore.setFileList(dto.fileList);
               TagStore.setNoteTagList(dto.tagList);
 
@@ -4581,45 +4595,45 @@ var PageStore = mobx.observable((_observable = {
                 _this6.setIsNewPage(false);
               }
 
-            case 23:
-            case "end":
-              return _context13.stop();
-          }
-        }
-      }, _callee13);
-    }))();
-  },
-  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
-    var _this7 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
-        while (1) {
-          switch (_context14.prev = _context14.next) {
-            case 0:
-              if (!pageId) {
-                _context14.next = 5;
-                break;
-              }
-
-              _context14.next = 3;
-              return _this7.fetchNoteInfoList(pageId);
-
-            case 3:
-              _context14.next = 7;
-              break;
-
-            case 5:
-              _this7.setIsEdit('');
-
-              _this7.setCurrentPageId('');
-
-            case 7:
+            case 22:
             case "end":
               return _context14.stop();
           }
         }
       }, _callee14);
+    }))();
+  },
+  fetchCurrentPageData: function fetchCurrentPageData(pageId) {
+    var _this7 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              if (!pageId) {
+                _context15.next = 5;
+                break;
+              }
+
+              _context15.next = 3;
+              return _this7.fetchNoteInfoList(pageId);
+
+            case 3:
+              _context15.next = 7;
+              break;
+
+            case 5:
+              _this7.currentPageData = {};
+
+              _this7.setCurrentPageId('');
+
+            case 7:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15);
     }))();
   },
   // 저장 후 지우기
@@ -4631,20 +4645,20 @@ var PageStore = mobx.observable((_observable = {
   checkEditingPage: function checkEditingPage() {
     var _this8 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
       var target, noteId, dto;
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
-          switch (_context15.prev = _context15.next) {
+          switch (_context16.prev = _context16.next) {
             case 0:
-              _context15.prev = 0;
+              _context16.prev = 0;
 
               if (!(!NoteStore$1.notechannel_id || !NoteStore$1.user_id)) {
-                _context15.next = 3;
+                _context16.next = 3;
                 break;
               }
 
-              return _context15.abrupt("return");
+              return _context16.abrupt("return");
 
             case 3:
               // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
@@ -4653,11 +4667,11 @@ var PageStore = mobx.observable((_observable = {
               });
 
               if (target) {
-                _context15.next = 6;
+                _context16.next = 6;
                 break;
               }
 
-              return _context15.abrupt("return");
+              return _context16.abrupt("return");
 
             case 6:
               noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, "$3");
@@ -4666,11 +4680,11 @@ var PageStore = mobx.observable((_observable = {
                * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
                */
 
-              _context15.next = 9;
+              _context16.next = 9;
               return _this8.getNoteInfoList(noteId);
 
             case 9:
-              dto = _context15.sent;
+              dto = _context16.sent;
 
               if ((dto === null || dto === void 0 ? void 0 : dto.is_edit) === NoteStore$1.user_id) {
                 _this8.setRecoverInfo({
@@ -4687,20 +4701,20 @@ var PageStore = mobx.observable((_observable = {
                 localStorage.removeItem(target);
               }
 
-              _context15.next = 16;
+              _context16.next = 16;
               break;
 
             case 13:
-              _context15.prev = 13;
-              _context15.t0 = _context15["catch"](0);
+              _context16.prev = 13;
+              _context16.t0 = _context16["catch"](0);
               console.log('checkEditingPage, 노트 진입시 수정 중인 노트 확인하기');
 
             case 16:
             case "end":
-              return _context15.stop();
+              return _context16.stop();
           }
         }
-      }, _callee15, null, [[0, 13]]);
+      }, _callee16, null, [[0, 13]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -4759,16 +4773,16 @@ var PageStore = mobx.observable((_observable = {
   handleNoneEdit: function handleNoneEdit() {
     var _this12 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
-          switch (_context16.prev = _context16.next) {
+          switch (_context17.prev = _context17.next) {
             case 0:
               _this12.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
 
 
               if (!_this12.isNewPage) {
-                _context16.next = 6;
+                _context17.next = 6;
                 break;
               }
 
@@ -4778,26 +4792,26 @@ var PageStore = mobx.observable((_observable = {
 
               _this12.deleteNotePage();
 
-              _context16.next = 11;
+              _context17.next = 11;
               break;
 
             case 6:
               if (!_this12.otherEdit) {
-                _context16.next = 10;
+                _context17.next = 10;
                 break;
               }
 
-              return _context16.abrupt("return");
+              return _context17.abrupt("return");
 
             case 10:
               _this12.noteNoneEdit(_this12.currentPageId);
 
             case 11:
             case "end":
-              return _context16.stop();
+              return _context17.stop();
           }
         }
-      }, _callee16);
+      }, _callee17);
     }))();
   },
   getSaveDto: function getSaveDto(isAutoSave) {
@@ -4810,7 +4824,7 @@ var PageStore = mobx.observable((_observable = {
           format: "text"
         }),
         parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: isAutoSave ? this.isEdit : '',
+        is_edit: isAutoSave ? this.currentPageData.is_edit : '',
         TYPE: 'EDIT_DONE'
       }
     };
@@ -4818,7 +4832,7 @@ var PageStore = mobx.observable((_observable = {
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave: function handleSave() {
     var isAutoSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    this.getNoteTitle();
+    if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) this.setTitle(this.getTitleFromPageContent());
     var updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);else this.handleSaveBtn(updateDTO);
   },
@@ -4846,7 +4860,7 @@ var PageStore = mobx.observable((_observable = {
         USER_ID: USER_ID
       });
 
-      _this13.modifiedDate = _this13.modifiedDateFormatting(modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
+      _this13.modifiedDate = get12HourFormat(modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
 
       setTimeout(function () {
         _this13.setSaveStatus({});
@@ -4871,233 +4885,273 @@ var PageStore = mobx.observable((_observable = {
     (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
     (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   },
-  getNoteTitle: function getNoteTitle() {
-    if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
-        if (EditorStore.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore.tempFileLayoutList[0].file_name + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
-        } else if (EditorStore.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore.fileLayoutList[0].file_name + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
-        }
-      } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-    }
 
-    this.noteTitle = [].filter.call(this.noteTitle, function (c) {
-      return c.charCodeAt(0) !== 65279;
-    }).join('');
-    return this.noteTitle;
-  }
-}, _defineProperty(_observable, "getTitle", function getTitle() {
-  var contentList = EditorStore.tinymce.getBody().children;
-  return this._getTitle(contentList);
-}), _defineProperty(_observable, "_getTitle", function _getTitle(contentList) {
-  if (contentList) {
-    // forEach 는 항상 return 값 undefined
-    for (var i = 0; i < contentList.length; i++) {
-      // 표는 무조건 return
-      if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]); // early return        
+  /**
+   * 페이지 제목이 입력되지 않은 경우,
+   * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
+   * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
+   * @returns 입력 개체에 따른 제목
+   */
+  getTitleFromPageContent: function getTitleFromPageContent() {
+    return this._getTitleFromEditor() || this._getTitleFromFiles() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
+  },
+  _getTitleFromEditor: function _getTitleFromEditor() {
+    var _iterator = _createForOfIteratorHelper(EditorStore.tinymce.getBody().children),
+        _step;
 
-      if (!contentList[i].textContent && contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length === 0) continue;
-      if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
-      // 표 제외, 이미지나 텍스트가 있을 때만 탄다
-
-      var title = this._getTitleByTagName(contentList[i]);
-
-      if (title !== undefined) return title;
-    }
-  }
-}), _defineProperty(_observable, "_getTableTitle", function _getTableTitle(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")"); // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
-
-  var tdList = node.getElementsByTagName('td');
-
-  for (var tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-    var tdChildren = tdList[tdIndex].childNodes;
-
-    for (var j = 0; j < tdChildren.length; j++) {
-      var title = this._getTitleByTagName(tdChildren[j]);
-
-      if (title !== undefined) return title;
-    }
-  }
-}), _defineProperty(_observable, "_searchInsideContainerTag", function _searchInsideContainerTag(node) {
-  if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
-
-  var lineBreakIdx = node.textContent.indexOf('\n');
-  if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx); // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
-  // 즉 node 단위로 title을 뽑아낼 때
-
-  var hasLineBreak = false;
-  if (Array.from(node.childNodes).some(function (child) {
-    return ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName);
-  })) hasLineBreak = true; // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
-
-  if (!hasLineBreak) return node.textContent.slice(0, 200);
-
-  for (var _i = 0, _Array$from = Array.from(node.childNodes); _i < _Array$from.length; _i++) {
-    var item = _Array$from[_i];
-    if (!item.textContent && item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length === 0) continue;
-
-    var title = this._getTitleByTagName(item);
-
-    if (title !== undefined) return title;
-  }
-}), _defineProperty(_observable, "_getTitleByTagName", function _getTitleByTagName(node) {
-  switch (node.nodeName) {
-    case 'BR':
-      return;
-
-    case 'IMG':
-      return node.dataset.name ? node.dataset.name : node.src;
-
-    case 'SPAN':
-    case 'A':
-    case '#text':
-    case 'STRONG':
-    case 'BLOCKQUOTE':
-    case 'EM':
-    case 'H1':
-    case 'H2':
-    case 'H3':
-    case 'H4':
-    case 'H5':
-    case 'H6':
-      return node.textContent.slice(0, 200);
-
-    case 'OL':
-    case 'UL':
-      return node.children[0].textContent;
-
-    case 'TABLE':
-      var tableTitle = this._getTableTitle(node);
-
-      if (tableTitle !== undefined) return tableTitle;
-
-    case 'DIV':
-    case 'PRE':
-    case "P":
-      var title = this._searchInsideContainerTag(node);
-
-      if (title !== undefined) return title;
-  }
-
-  if (node.textContent) return node.textContent.slice(0, 200);
-}), _defineProperty(_observable, "createSharePage", function createSharePage(targetList) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-    var _yield$NoteRepository11, noteList;
-
-    return regeneratorRuntime.wrap(function _callee17$(_context17) {
-      while (1) {
-        switch (_context17.prev = _context17.next) {
-          case 0:
-            _context17.next = 2;
-            return NoteRepository$1.createSharePage(targetList);
-
-          case 2:
-            _yield$NoteRepository11 = _context17.sent;
-            noteList = _yield$NoteRepository11.data.dto.noteList;
-            return _context17.abrupt("return", noteList);
-
-          case 5:
-          case "end":
-            return _context17.stop();
-        }
-      }
-    }, _callee17);
-  }))();
-}), _defineProperty(_observable, "createNoteSharePage", function createNoteSharePage(targetRoomId, targetPageList) {
-  if (!targetPageList) return;
-  var targetChId = NoteStore$1.getTargetChId(targetRoomId);
-  var targetTalkChId = NoteStore$1.getTargetChId(targetRoomId, 'CHN0001');
-  var targetList = targetPageList.map(function (page) {
-    return {
-      WS_ID: NoteRepository$1.WS_ID,
-      note_id: page.note_id || page.id,
-      note_title: page.text,
-      modified_date: page.date,
-      TYPE: page.type,
-      note_channel_id: NoteRepository$1.chId,
-      USER_ID: NoteRepository$1.USER_ID,
-      shared_user_id: NoteRepository$1.USER_ID,
-      shared_room_name: NoteRepository$1.WS_ID,
-      target_workspace_id: targetRoomId,
-      target_channel_id: targetChId,
-      messenger_id: targetTalkChId
-    };
-  });
-  this.createSharePage(targetList).then(function () {
-    ChapterStore$1.getNoteChapterList();
-    NoteStore$1.setIsDragging(false);
-  });
-}), _defineProperty(_observable, "restorePageLogic", function restorePageLogic(_ref2) {
-  var _this14 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-    var chapterId, pageId, toastTxt, res;
-    return regeneratorRuntime.wrap(function _callee18$(_context18) {
-      while (1) {
-        switch (_context18.prev = _context18.next) {
-          case 0:
-            chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
-            _context18.next = 3;
-            return _this14.restorePage(pageId, chapterId);
-
-          case 3:
-            res = _context18.sent;
-
-            if (!(res.resultMsg === 'Success')) {
-              _context18.next = 11;
-              break;
-            }
-
-            NoteStore$1.setModalInfo(null);
-            _context18.next = 8;
-            return ChapterStore$1.getNoteChapterList();
-
-          case 8:
-            if (_this14.currentPageId === pageId) {
-              ChapterStore$1.setCurrentChapterInfo(chapterId, false);
-
-              _this14.setCurrentPageId(pageId);
-            }
-
-            NoteStore$1.setToastText(toastTxt);
-            NoteStore$1.setIsVisibleToast(true);
-
-          case 11:
-          case "end":
-            return _context18.stop();
-        }
-      }
-    }, _callee18);
-  }))();
-}), _defineProperty(_observable, "editCancel", function editCancel() {
-  if (EditorStore.isSearch) {
-    var _EditorStore$tinymce8;
-
-    var instance = new Mark((_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.getBody());
-    instance.unmark();
-  }
-
-  if (EditorStore.isUploading) {
-    EditorStore.uploadingFileallCancel();
-    return;
-  }
-
-  this.handleSave();
-  Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
     try {
-      var logEvent = module.logEvent;
-      logEvent('note', 'clickModifyBtn');
-    } catch (e) {
-      console.error(e);
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var node = _step.value;
+        if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
+        if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) continue;
+
+        var title = this._getTitleByTagName(node);
+
+        if (title) return title;
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
     }
-  }).catch(function (e) {
-    return console.error(e);
-  });
-  NoteStore$1.setToastText(i18n.t('NOTE_SAVE_PAGE'));
-  NoteStore$1.setIsVisibleToast(true);
-}), _observable), {
+
+    return;
+  },
+
+  /**
+   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
+   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
+   * @param {element} node 
+   * @returns 테이블로부터 추출된 title
+   */
+  _getTitleFromTable: function _getTitleFromTable(node) {
+    var _iterator2 = _createForOfIteratorHelper(node.getElementsByTagName('td')),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var td = _step2.value;
+
+        var _iterator3 = _createForOfIteratorHelper(td.childNodes),
+            _step3;
+
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _node = _step3.value;
+
+            var title = this._getTitleByTagName(_node);
+
+            if (title) return title;
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")");
+  },
+  _getTitleFromFiles: function _getTitleFromFiles() {
+    if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return;
+    var firstFile = EditorStore.tempFileLayoutList.length > 0 ? EditorStore.tempFileLayoutList[0] : EditorStore.fileLayoutList[0];
+    return firstFile.file_name + (firstFile.file_extension ? ".".concat(firstFile.file_extension) : '');
+  },
+  // div, pre, p 
+  _searchInsideContainerTag: function _searchInsideContainerTag(node) {
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
+
+    var lineBreakIdx = node.textContent.indexOf('\n');
+    if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx); // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
+    // 즉 node 단위로 title을 뽑아낼 때
+
+    var hasLineBreak = false;
+    if (Array.from(node.childNodes).some(function (child) {
+      return ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName);
+    })) hasLineBreak = true; // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
+
+    if (!hasLineBreak) return node.textContent.slice(0, 200);
+
+    for (var _i = 0, _Array$from = Array.from(node.childNodes); _i < _Array$from.length; _i++) {
+      var item = _Array$from[_i];
+      if (!item.textContent && item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length === 0) continue;
+
+      var title = this._getTitleByTagName(item);
+
+      if (title !== undefined) return title;
+    }
+  },
+  _getTitleByTagName: function _getTitleByTagName(node) {
+    switch (node.nodeName) {
+      case 'BR':
+        return;
+
+      case 'IMG':
+        return node.dataset.name ? node.dataset.name : node.src;
+
+      case 'SPAN':
+      case 'A':
+      case '#text':
+      case 'STRONG':
+      case 'BLOCKQUOTE':
+      case 'EM':
+      case 'H1':
+      case 'H2':
+      case 'H3':
+      case 'H4':
+      case 'H5':
+      case 'H6':
+        return node.textContent.slice(0, 200);
+
+      case 'OL':
+      case 'UL':
+        return node.children[0].textContent;
+
+      case 'TABLE':
+        var tableTitle = this._getTitleFromTable(node);
+
+        if (tableTitle !== undefined) return tableTitle;
+
+      case 'DIV':
+      case 'PRE':
+      case "P":
+        var title = this._searchInsideContainerTag(node);
+
+        if (title !== undefined) return title;
+    }
+
+    if (node.textContent) return node.textContent.slice(0, 200);
+  },
+  createSharePage: function createSharePage(targetList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      var _yield$NoteRepository11, noteList;
+
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        while (1) {
+          switch (_context18.prev = _context18.next) {
+            case 0:
+              _context18.next = 2;
+              return NoteRepository$1.createSharePage(targetList);
+
+            case 2:
+              _yield$NoteRepository11 = _context18.sent;
+              noteList = _yield$NoteRepository11.data.dto.noteList;
+              return _context18.abrupt("return", noteList);
+
+            case 5:
+            case "end":
+              return _context18.stop();
+          }
+        }
+      }, _callee18);
+    }))();
+  },
+  createNoteSharePage: function createNoteSharePage(targetRoomId, targetPageList) {
+    if (!targetPageList) return;
+    var targetChId = NoteStore$1.getTargetChId(targetRoomId);
+    var targetTalkChId = NoteStore$1.getTargetChId(targetRoomId, 'CHN0001');
+    var targetList = targetPageList.map(function (page) {
+      return {
+        WS_ID: NoteRepository$1.WS_ID,
+        note_id: page.note_id || page.id,
+        note_title: page.text,
+        modified_date: page.date,
+        TYPE: page.type,
+        note_channel_id: NoteRepository$1.chId,
+        USER_ID: NoteRepository$1.USER_ID,
+        shared_user_id: NoteRepository$1.USER_ID,
+        shared_room_name: NoteRepository$1.WS_ID,
+        target_workspace_id: targetRoomId,
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId
+      };
+    });
+    this.createSharePage(targetList).then(function () {
+      ChapterStore$1.getNoteChapterList();
+      NoteStore$1.setIsDragging(false);
+    });
+  },
+
+  /**
+   * NoteMeta에서도 쓰이고, context menu에서 복구할 챕터가 없을 때도 필요해서 store로 옮김
+   * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
+   */
+  restorePageLogic: function restorePageLogic(_ref2) {
+    var _this14 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      var chapterId, pageId, toastTxt, res;
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+        while (1) {
+          switch (_context19.prev = _context19.next) {
+            case 0:
+              chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
+              _context19.next = 3;
+              return _this14.restorePage(pageId, chapterId);
+
+            case 3:
+              res = _context19.sent;
+
+              if (!(res.resultMsg === 'Success')) {
+                _context19.next = 11;
+                break;
+              }
+
+              NoteStore$1.setModalInfo(null);
+              _context19.next = 8;
+              return ChapterStore$1.getNoteChapterList();
+
+            case 8:
+              if (_this14.currentPageId === pageId) {
+                ChapterStore$1.setCurrentChapterInfo(chapterId, false);
+
+                _this14.setCurrentPageId(pageId);
+              }
+
+              NoteStore$1.setToastText(toastTxt);
+              NoteStore$1.setIsVisibleToast(true);
+
+            case 11:
+            case "end":
+              return _context19.stop();
+          }
+        }
+      }, _callee19);
+    }))();
+  },
+  editCancel: function editCancel() {
+    if (EditorStore.isSearch) {
+      var _EditorStore$tinymce8;
+
+      var instance = new Mark((_EditorStore$tinymce8 = EditorStore.tinymce) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.getBody());
+      instance.unmark();
+    }
+
+    if (EditorStore.isUploading) {
+      EditorStore.uploadingFileallCancel();
+      return;
+    }
+
+    this.handleSave();
+    Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('teespace-core')); }).then(function (module) {
+      try {
+        var logEvent = module.logEvent;
+        logEvent('note', 'clickModifyBtn');
+      } catch (e) {
+        console.error(e);
+      }
+    }).catch(function (e) {
+      return console.error(e);
+    });
+    NoteStore$1.setToastText(i18n.t('NOTE_SAVE_PAGE'));
+    NoteStore$1.setIsVisibleToast(true);
+  }
+}, {
   set_CurrentPageData: mobx.action
 });
 
@@ -6162,8 +6216,7 @@ var ChapterStore$1 = mobx.observable({
                 if (targetChapter.children.length > 0) {
                   PageStore.setCurrentPageId(targetChapter.children[0].id);
                   PageStore.fetchCurrentPageData(targetChapter.children[0].id);
-                } else PageStore.fetchCurrentPageData(''); // isEdit도 갱신
-
+                } else PageStore.fetchCurrentPageData('');
               });
 
             case 1:
@@ -6357,8 +6410,7 @@ var ChapterStore$1 = mobx.observable({
               _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
 
 
-              PageStore.fetchCurrentPageData(''); // isEdit도 갱신
-
+              PageStore.fetchCurrentPageData('');
               return _context21.abrupt("return");
 
             case 5:
@@ -7266,8 +7318,7 @@ var NoteStore$1 = mobx.observable({
     ChapterStore$1.initSearchVar();
     ChapterStore$1.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
 
-    PageStore.fetchCurrentPageData(''); // isEdit도 갱신
-
+    PageStore.fetchCurrentPageData('');
     ChapterStore$1.setChapterList([]);
     ChapterStore$1.setLnbBoundary({
       beforeShared: false,
@@ -7435,7 +7486,7 @@ var NoteStore$1 = mobx.observable({
               _this.sharedInfo = {
                 sharedRoomName: sharedRoom !== null && sharedRoom !== void 0 && sharedRoom.isMyRoom ? displayName : (sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.name) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
                 sharedUserName: displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
-                sharedDate: !noteInfo.created_date ? PageStore.modifiedDateFormatting(noteInfo.shared_date, true) : PageStore.modifiedDateFormatting(noteInfo.created_date, true)
+                sharedDate: !noteInfo.created_date ? get12HourFormat(noteInfo.shared_date, true) : get12HourFormat(noteInfo.created_date, true)
               };
 
               _this.setModalInfo('viewInfo');
@@ -9034,141 +9085,131 @@ var img$c = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3
 
 var img$b = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='24px' height='24px' viewBox='0 0 24 24' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3ctitle%3eIcon/attachment/audio%3c/title%3e %3cg id='Icon/attachment/audio' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cpath d='M17.014%2c0.9997 C20.314%2c0.9997 23%2c3.6857 23%2c6.9867 L23%2c6.9867 L23%2c17.0137 C23%2c20.3147 20.314%2c22.9997 17.014%2c22.9997 L17.014%2c22.9997 L6.986%2c22.9997 C3.686%2c22.9997 1%2c20.3147 1%2c17.0137 L1%2c17.0137 L1%2c6.9867 C1%2c3.6857 3.686%2c0.9997 6.986%2c0.9997 L6.986%2c0.9997 Z M17.014%2c2.9997 L6.986%2c2.9997 C4.788%2c2.9997 3%2c4.7877 3%2c6.9867 L3%2c6.9867 L3%2c17.0137 C3%2c19.2117 4.788%2c20.9997 6.986%2c20.9997 L6.986%2c20.9997 L17.014%2c20.9997 C19.212%2c20.9997 21%2c19.2117 21%2c17.0137 L21%2c17.0137 L21%2c6.9867 C21%2c4.7877 19.212%2c2.9997 17.014%2c2.9997 L17.014%2c2.9997 Z M13.167%2c5.9265 C14.095%2c5.6175 15.078%2c5.7675 15.869%2c6.3385 C16.661%2c6.9095 17.115%2c7.7955 17.115%2c8.7725 L17.115%2c8.7725 L17.115%2c13.9985 C17.115%2c14.0715 17.089%2c14.1345 17.074%2c14.2035 C17.095%2c14.3375 17.115%2c14.4725 17.115%2c14.6135 C17.115%2c16.0555 15.942%2c17.2285 14.5%2c17.2285 C13.058%2c17.2285 11.885%2c16.0555 11.885%2c14.6135 C11.885%2c13.1705 13.058%2c11.9985 14.5%2c11.9985 C14.713%2c11.9985 14.917%2c12.0305 15.115%2c12.0795 L15.115%2c12.0795 L15.115%2c8.7725 C15.115%2c8.4475 14.964%2c8.1515 14.7%2c7.9605 C14.437%2c7.7715 14.109%2c7.7245 13.8%2c7.8235 L13.8%2c7.8235 L11.8%2c8.4905 C11.391%2c8.6265 11.115%2c9.0085 11.115%2c9.4395 L11.115%2c9.4395 L11.115%2c14.9985 C11.115%2c15.0715 11.089%2c15.1345 11.074%2c15.2035 C11.095%2c15.3375 11.115%2c15.4725 11.115%2c15.6135 C11.115%2c17.0555 9.942%2c18.2285 8.5%2c18.2285 C7.058%2c18.2285 5.885%2c17.0555 5.885%2c15.6135 C5.885%2c14.1705 7.058%2c12.9985 8.5%2c12.9985 C8.713%2c12.9985 8.917%2c13.0305 9.115%2c13.0795 L9.115%2c13.0795 L9.115%2c9.4395 C9.115%2c8.1465 9.939%2c7.0015 11.167%2c6.5935 L11.167%2c6.5935 Z M8.5%2c14.9985 C8.161%2c14.9985 7.885%2c15.2745 7.885%2c15.6135 C7.885%2c15.9525 8.161%2c16.2285 8.5%2c16.2285 C8.839%2c16.2285 9.115%2c15.9525 9.115%2c15.6135 C9.115%2c15.2745 8.839%2c14.9985 8.5%2c14.9985 Z M14.5%2c13.9985 C14.161%2c13.9985 13.885%2c14.2745 13.885%2c14.6135 C13.885%2c14.9525 14.161%2c15.2285 14.5%2c15.2285 C14.839%2c15.2285 15.115%2c14.9525 15.115%2c14.6135 C15.115%2c14.2745 14.839%2c13.9985 14.5%2c13.9985 Z' id='Combined-Shape' fill='%23009F92'%3e%3c/path%3e %3c/g%3e%3c/svg%3e";
 
-var handleUpload = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var _loop, i;
+var handleUpload = mobx.flow( /*#__PURE__*/regeneratorRuntime.mark(function handleUpload(item) {
+  var targetFile, handleUploadProgress, result, fileId, fileName;
+  return regeneratorRuntime.wrap(function handleUpload$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          handleUploadProgress = function handleUploadProgress(e) {
+            var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
+            targetFile = EditorStore.fileLayoutList.filter(function (file) {
+              return file.file_id === item.file.uid;
+            })[0];
 
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            if (EditorStore.uploadDTO) {
-              EditorStore.setIsUploading(true);
+            if (item.type !== 'image') {
+              targetFile.progress = e.loaded / totalLength;
+              targetFile.status = 'pending';
+            }
+          };
 
-              _loop = function _loop(i) {
-                (function (item) {
-                  var handleUploadProgress = function handleUploadProgress(e) {
-                    var totalLength = e.lengthComputable ? e.total : e.target.getResponseHeader('content-length') || e.target.getResponseHeader('x-decompressed-content-length');
-                    EditorStore.tempFileLayoutList[i].progress = e.loaded / totalLength;
-                    EditorStore.tempFileLayoutList[i].status = 'pending';
-                  };
+          _context.prev = 1;
+          _context.next = 4;
+          return EditorStore.uploadFileGW(item.file, item.model.storageFileInfo.file_name, item.model.storageFileInfo.file_extension, handleUploadProgress, item.cancelSource).catch(function (e) {
+            if (e !== 'Network Error') {
+              if (!targetFile) return;
+              targetFile.error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
+              targetFile.status = 'canceled';
+              EditorStore.failCount += 1;
+              EditorStore.processLength += 1;
+              var hasPending = EditorStore.fileLayoutList.some(function (file) {
+                return file['status'] === 'pending';
+              });
 
-                  EditorStore.uploadFileGW(item.file, item.gwMeta.file_name, item.gwMeta.file_extension, handleUploadProgress, item.cancelSource).then( /*#__PURE__*/function () {
-                    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(result) {
-                      return regeneratorRuntime.wrap(function _callee$(_context) {
-                        while (1) {
-                          switch (_context.prev = _context.next) {
-                            case 0:
-                              if (!(result.resultMsg === 'Success')) {
-                                _context.next = 9;
-                                break;
-                              }
+              if (!hasPending) {
+                // 업로드 중인것이 하나도 없을 때
+                EditorStore.uploadDTO = [];
+                EditorStore.setProcessLength(0);
+                EditorStore.setIsUploading(false);
 
-                              if (item.type === 'image') EditorStore.createDriveElement('image', result.storageFileInfoList[0].file_id, EditorStore.tempFileLayoutList[i].file_name + '.' + EditorStore.tempFileLayoutList[i].file_extension);
-                              EditorStore.tempFileLayoutList[i].progress = 0;
-                              EditorStore.tempFileLayoutList[i].file_id = result.storageFileInfoList[0].file_id;
-                              EditorStore.tempFileLayoutList[i].status = 'uploaded';
-                              _context.next = 7;
-                              return EditorStore.createFileMeta([result.storageFileInfoList[0].file_id], PageStore.getCurrentPageId());
+                if (EditorStore.failCount > 0) {
+                  NoteStore$1.setModalInfo('multiFileSomeFail');
+                }
 
-                            case 7:
-                              _context.next = 10;
-                              break;
-
-                            case 9:
-                              if (dto.resultMsg === 'Fail') {
-                                EditorStore.failCount += 1;
-                                EditorStore.tempFileLayoutList[i].progress = 0;
-                                EditorStore.tempFileLayoutList[i].error = true;
-                                EditorStore.tempFileLayoutList[i].status = 'failed';
-                              }
-
-                            case 10:
-                              EditorStore.processLength += 1;
-
-                              if (EditorStore.processLength == EditorStore.uploadLength) {
-                                EditorStore.uploadDTO = [];
-                                EditorStore.setProcessLength(0);
-                                EditorStore.setIsUploading(false);
-
-                                if (EditorStore.failCount > 0) {
-                                  NoteStore$1.setModalInfo('multiFileSomeFail');
-                                  initialFileList();
-                                } else if (EditorStore.failCount === 0) initialFileList();
-                              }
-
-                            case 12:
-                            case "end":
-                              return _context.stop();
-                          }
-                        }
-                      }, _callee);
-                    }));
-
-                    return function (_x) {
-                      return _ref2.apply(this, arguments);
-                    };
-                  }()).catch(function (e) {
-                    if (e !== 'Network Error') {
-                      if (!EditorStore.tempFileLayoutList[i]) return;
-                      EditorStore.tempFileLayoutList[i].error = teespaceCore.API.isCancel(e) ? teespaceCore.API.isCancel(e) : true;
-                      EditorStore.failCount += 1;
-                      EditorStore.processLength += 1;
-                      EditorStore.tempFileLayoutList[i].status = 'canceled';
-                      var hasPending = EditorStore.tempFileLayoutList.some(function (file) {
-                        return file['status'] === 'pending';
-                      });
-
-                      if (!hasPending) {
-                        // 업로드 중인것이 하나도 없을 때
-                        EditorStore.uploadDTO = [];
-                        EditorStore.setProcessLength(0);
-                        EditorStore.setIsUploading(false);
-
-                        if (EditorStore.failCount > 0) {
-                          NoteStore$1.setModalInfo('multiFileSomeFail');
-                        }
-
-                        initialFileList();
-                      }
-                    }
-                  });
-                })(EditorStore.uploadDTO[i]);
-              };
-
-              for (i = 0; i < EditorStore.uploadDTO.length; i++) {
-                _loop(i);
+                initialFileList();
               }
             }
+          });
 
-          case 1:
-          case "end":
-            return _context2.stop();
-        }
+        case 4:
+          result = _context.sent;
+
+          if (!result) {
+            _context.next = 18;
+            break;
+          }
+
+          fileId = result.storageFileInfoList[0].file_id;
+          fileName = result.storageFileInfoList[0].file_name + '.' + result.storageFileInfoList[0].file_extension;
+
+          if (!(result.resultMsg === 'Success')) {
+            _context.next = 15;
+            break;
+          }
+
+          if (item.type === 'image') EditorStore.createDriveElement('image', fileId, fileName);
+          _context.next = 12;
+          return EditorStore.createFileMeta([fileId], PageStore.getCurrentPageId());
+
+        case 12:
+          if (item.type !== 'image') {
+            targetFile.file_id = fileId;
+            targetFile.status = 'uploaded';
+          }
+
+          _context.next = 16;
+          break;
+
+        case 15:
+          if (result.resultMsg === 'Fail') {
+            EditorStore.failCount += 1;
+            targetFile.progress = 0;
+            targetFile.error = true;
+            targetFile.status = 'failed';
+          }
+
+        case 16:
+          EditorStore.processLength += 1;
+
+          if (EditorStore.processLength == EditorStore.uploadLength) {
+            EditorStore.uploadDTO = [];
+            EditorStore.setProcessLength(0);
+            EditorStore.setIsUploading(false);
+
+            if (EditorStore.failCount > 0) {
+              NoteStore$1.setModalInfo('multiFileSomeFail');
+              initialFileList();
+            } else if (EditorStore.failCount === 0) initialFileList();
+          }
+
+        case 18:
+          _context.next = 23;
+          break;
+
+        case 20:
+          _context.prev = 20;
+          _context.t0 = _context["catch"](1);
+          console.log(_context.t0);
+
+        case 23:
+        case "end":
+          return _context.stop();
       }
-    }, _callee2);
-  }));
-
-  return function handleUpload() {
-    return _ref.apply(this, arguments);
-  };
-}();
+    }
+  }, handleUpload, null, [[1, 20]]);
+}));
 
 var initialFileList = function initialFileList() {
   if (EditorStore.uploadFileCancelStatus) {
     PageStore.handleSave();
     EditorStore.uploadFileCancelStatus = false;
-    EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
     EditorStore.setProcessCount(0);
     EditorStore.setFailCount(0);
-    EditorStore.setTempFileLayoutList([]);
   } else {
     PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(function (dto) {
       EditorStore.setFileList(dto.fileList);
-      EditorStore.notSaveFileList = EditorStore.tempFileLayoutList;
       EditorStore.setProcessCount(0);
       EditorStore.setFailCount(0);
-      EditorStore.setTempFileLayoutList([]);
     });
   }
 };
@@ -9228,24 +9269,24 @@ var isValidFileNameLength = function isValidFileNameLength(fileName) {
   return true;
 };
 var handleDriveCopy = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var copyArr, resultArray;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    return regeneratorRuntime.wrap(function _callee$(_context2) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             copyArr = [];
             resultArray = [];
 
             if (!EditorStore.driveFileList) {
-              _context3.next = 6;
+              _context2.next = 6;
               break;
             }
 
             copyArr = mobx.toJS(EditorStore.driveFileList).map(function (item) {
               return EditorStore.storageFileDeepCopy(item.file_id, item.type);
             });
-            _context3.next = 6;
+            _context2.next = 6;
             return Promise.all(copyArr).then(function (results) {
               if (EditorStore.driveFileList.length === results.length) {
                 for (var i = 0; i < results.length; i++) {
@@ -9272,28 +9313,28 @@ var handleDriveCopy = /*#__PURE__*/function () {
 
           case 6:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
       }
-    }, _callee3);
+    }, _callee);
   }));
 
   return function handleDriveCopy() {
-    return _ref3.apply(this, arguments);
+    return _ref.apply(this, arguments);
   };
 }();
 var handleFileDelete = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
     var imgTarget, fileTarget, imgArray, fileArray, deleteArr;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    return regeneratorRuntime.wrap(function _callee2$(_context3) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            _context4.next = 2;
+            _context3.next = 2;
             return EditorStore.tinymce.dom.doc.images;
 
           case 2:
-            imgTarget = _context4.sent;
+            imgTarget = _context3.sent;
             fileTarget = document.querySelectorAll('div #fileLayout [id]');
             imgArray = _toConsumableArray(imgTarget);
             fileArray = _toConsumableArray(fileTarget);
@@ -9309,15 +9350,15 @@ var handleFileDelete = /*#__PURE__*/function () {
             });
 
             if (!EditorStore.deleteFileList) {
-              _context4.next = 21;
+              _context3.next = 21;
               break;
             }
 
             deleteArr = mobx.toJS(EditorStore.deleteFileList).map(function (item) {
               return EditorStore.deleteFile(item.file_id);
             });
-            _context4.prev = 12;
-            _context4.next = 15;
+            _context3.prev = 12;
+            _context3.next = 15;
             return Promise.all(deleteArr).then(function () {
               EditorStore.deleteFileList = [];
               EditorStore.tempFileList = [];
@@ -9325,55 +9366,55 @@ var handleFileDelete = /*#__PURE__*/function () {
             });
 
           case 15:
-            _context4.next = 19;
+            _context3.next = 19;
             break;
 
           case 17:
-            _context4.prev = 17;
-            _context4.t0 = _context4["catch"](12);
+            _context3.prev = 17;
+            _context3.t0 = _context3["catch"](12);
 
           case 19:
-            _context4.prev = 19;
-            return _context4.finish(19);
+            _context3.prev = 19;
+            return _context3.finish(19);
 
           case 21:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
       }
-    }, _callee4, null, [[12, 17, 19, 21]]);
+    }, _callee2, null, [[12, 17, 19, 21]]);
   }));
 
   return function handleFileDelete() {
-    return _ref4.apply(this, arguments);
+    return _ref2.apply(this, arguments);
   };
 }();
 var downloadFile = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(fileId) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(fileId) {
     var res, blob, url, a;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    return regeneratorRuntime.wrap(function _callee3$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             if (!fileId) {
-              _context5.next = 3;
+              _context4.next = 3;
               break;
             }
 
-            window.open(teespaceCore.API.baseURL + "/Storage/StorageFile?action=Download" + "&fileID=" + fileId + "&workspaceID=" + NoteRepository$1.WS_ID + "&channelID=" + NoteRepository$1.chId + "&userID=" + NoteRepository$1.USER_ID);
-            return _context5.abrupt("return");
+            window.open(teespaceCore.API.baseURL + '/Storage/StorageFile?action=Download' + '&fileID=' + fileId + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + NoteRepository$1.chId + '&userID=' + NoteRepository$1.USER_ID);
+            return _context4.abrupt("return");
 
           case 3:
-            _context5.next = 5;
+            _context4.next = 5;
             return fetch(EditorStore.tinymce.selection.getNode().src);
 
           case 5:
-            res = _context5.sent;
-            _context5.next = 8;
+            res = _context4.sent;
+            _context4.next = 8;
             return res.blob();
 
           case 8:
-            blob = _context5.sent;
+            blob = _context4.sent;
             url = URL.createObjectURL(blob);
             a = document.createElement('a');
             a.style = 'display: none';
@@ -9385,52 +9426,52 @@ var downloadFile = /*#__PURE__*/function () {
 
           case 17:
           case "end":
-            return _context5.stop();
+            return _context4.stop();
         }
       }
-    }, _callee5);
+    }, _callee3);
   }));
 
-  return function downloadFile(_x2) {
-    return _ref5.apply(this, arguments);
+  return function downloadFile(_x) {
+    return _ref3.apply(this, arguments);
   };
 }();
 var exportData = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(isMailShare, type, exportId) {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(isMailShare, type, exportId) {
     var html;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+    return regeneratorRuntime.wrap(function _callee4$(_context5) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             if (!(type === 'chapter')) {
-              _context6.next = 6;
+              _context5.next = 6;
               break;
             }
 
-            _context6.next = 3;
+            _context5.next = 3;
             return getChapterHtml(exportId);
 
           case 3:
-            _context6.t0 = _context6.sent;
-            _context6.next = 9;
+            _context5.t0 = _context5.sent;
+            _context5.next = 9;
             break;
 
           case 6:
-            _context6.next = 8;
+            _context5.next = 8;
             return getPageHtml(exportId);
 
           case 8:
-            _context6.t0 = _context6.sent;
+            _context5.t0 = _context5.sent;
 
           case 9:
-            html = _context6.t0;
+            html = _context5.t0;
 
             if (html) {
-              _context6.next = 12;
+              _context5.next = 12;
               break;
             }
 
-            return _context6.abrupt("return");
+            return _context5.abrupt("return");
 
           case 12:
             makeExportElement(html);
@@ -9438,81 +9479,81 @@ var exportData = /*#__PURE__*/function () {
 
           case 14:
           case "end":
-            return _context6.stop();
+            return _context5.stop();
         }
       }
-    }, _callee6);
+    }, _callee4);
   }));
 
-  return function exportData(_x3, _x4, _x5) {
-    return _ref6.apply(this, arguments);
+  return function exportData(_x2, _x3, _x4) {
+    return _ref4.apply(this, arguments);
   };
 }();
 var getChapterHtml = /*#__PURE__*/function () {
-  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(exportId) {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(exportId) {
     var html, _yield$NoteRepository, noteList;
 
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+    return regeneratorRuntime.wrap(function _callee5$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            html = '';
+            _context6.next = 3;
+            return NoteRepository$1.getChapterChildren(exportId);
+
+          case 3:
+            _yield$NoteRepository = _context6.sent;
+            noteList = _yield$NoteRepository.data.dto.noteList;
+
+            if (noteList.length > 0) {
+              noteList.forEach(function (page, idx) {
+                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><p><br></p>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : 'afterClass', "></span>");
+              });
+            } else html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(ChapterStore$1.exportChapterTitle, "</span>");
+
+            return _context6.abrupt("return", html);
+
+          case 7:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee5);
+  }));
+
+  return function getChapterHtml(_x5) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+var getPageHtml = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(exportId) {
+    var html, _yield$NoteRepository2, dto;
+
+    return regeneratorRuntime.wrap(function _callee6$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             html = '';
             _context7.next = 3;
-            return NoteRepository$1.getChapterChildren(exportId);
+            return NoteRepository$1.getNoteInfoList(exportId);
 
           case 3:
-            _yield$NoteRepository = _context7.sent;
-            noteList = _yield$NoteRepository.data.dto.noteList;
-
-            if (noteList.length > 0) {
-              noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><p><br></p>").concat(page.note_content, "<span class=").concat(idx === noteList.length - 1 ? '' : "afterClass", "></span>");
-              });
-            } else html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(ChapterStore$1.exportChapterTitle, "</span>");
-
+            _yield$NoteRepository2 = _context7.sent;
+            dto = _yield$NoteRepository2.data.dto;
+            PageStore.exportPageTitle = dto.note_title;
+            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><p><br></p>").concat(dto.note_content);
             return _context7.abrupt("return", html);
 
-          case 7:
+          case 8:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7);
+    }, _callee6);
   }));
 
-  return function getChapterHtml(_x6) {
-    return _ref7.apply(this, arguments);
-  };
-}();
-var getPageHtml = /*#__PURE__*/function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(exportId) {
-    var html, _yield$NoteRepository2, dto;
-
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            html = '';
-            _context8.next = 3;
-            return NoteRepository$1.getNoteInfoList(exportId);
-
-          case 3:
-            _yield$NoteRepository2 = _context8.sent;
-            dto = _yield$NoteRepository2.data.dto;
-            PageStore.exportPageTitle = dto.note_title;
-            html = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><p><br></p>").concat(dto.note_content);
-            return _context8.abrupt("return", html);
-
-          case 8:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8);
-  }));
-
-  return function getPageHtml(_x7) {
-    return _ref8.apply(this, arguments);
+  return function getPageHtml(_x6) {
+    return _ref6.apply(this, arguments);
   };
 }();
 var makeExportElement = function makeExportElement(html) {
@@ -9538,18 +9579,18 @@ var preloadingImage = function preloadingImage(el) {
 };
 
 var exportDownloadPDF = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(isMailShare, type) {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(isMailShare, type) {
     var imgElementList, opt, requests, element;
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+    return regeneratorRuntime.wrap(function _callee7$(_context8) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
             imgElementList = document.getElementById('exportTargetDiv').querySelectorAll('img');
             opt = getExportOpt(type);
             requests = [];
 
             if (!(imgElementList && imgElementList.length > 0)) {
-              _context9.next = 9;
+              _context8.next = 9;
               break;
             }
 
@@ -9557,14 +9598,14 @@ var exportDownloadPDF = /*#__PURE__*/function () {
               return preloadingImage(el);
             }); // setTimeout(async () => {
 
-            _context9.next = 7;
+            _context8.next = 7;
             return Promise.all(requests).then(function () {
               var element = document.getElementById('exportTargetDiv');
               htmlToPdf(isMailShare, element, opt);
             });
 
           case 7:
-            _context9.next = 11;
+            _context8.next = 11;
             break;
 
           case 9:
@@ -9573,14 +9614,14 @@ var exportDownloadPDF = /*#__PURE__*/function () {
 
           case 11:
           case "end":
-            return _context9.stop();
+            return _context8.stop();
         }
       }
-    }, _callee9);
+    }, _callee7);
   }));
 
-  return function exportDownloadPDF(_x8, _x9) {
-    return _ref9.apply(this, arguments);
+  return function exportDownloadPDF(_x7, _x8) {
+    return _ref7.apply(this, arguments);
   };
 }();
 
@@ -9643,105 +9684,80 @@ var htmlToPdf = function htmlToPdf(isMailShare, element, opt) {
 
 var downloadTxt = function downloadTxt(title, data) {
   var link = document.createElement('a');
-  var mimeType = "text/plain;charset=utf-8";
+  var mimeType = 'text/plain;charset=utf-8';
   link.setAttribute('download', "".concat(title, ".txt"));
   link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
   link.click();
-}; // txt로 내보내기 전에 setContent해줄 tempEditor init
-
-
-var createTempEditor = function createTempEditor() {
-  var frag = document.createElement('div');
-  frag.setAttribute('id', 'exportTxtParent');
-  var area = document.createElement('textarea');
-  area.setAttribute('id', 'exportTxt');
-  document.body.appendChild(frag);
-  frag.appendChild(area);
-  EditorStore.tempTinymce.editorManager.init({
-    target: area,
-    setup: function setup(editor) {
-      EditorStore.setTempTinymce(editor);
-    }
-  });
-  var targetEditor = EditorStore.tempTinymce.editorManager.get('exportTxt');
-  return targetEditor;
 };
-var getTxtFormat = function getTxtFormat(title, contents) {
-  var targetEditor = createTempEditor();
-  targetEditor.setContent(contents);
-  var exportText = targetEditor.getContent({
-    format: "text"
-  });
-  exportText = exportText.replace(/\n\n/g, '\n');
-  downloadTxt(title, exportText); // loading 화면 끝나요   
 
+var getTxtFormat = function getTxtFormat(title, contents) {
+  var div = document.createElement('div');
+  div.innerHTML = contents;
+  downloadTxt(title, div.innerText);
   NoteStore$1.setIsExporting(false);
-  EditorStore.tempTinymce.remove('#exportTxt');
-  document.getElementById('exportTxtParent').remove();
 };
 var exportPageAsTxt = /*#__PURE__*/function () {
-  var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(noteId) {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(noteId) {
     var response, dto, returnData;
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return regeneratorRuntime.wrap(function _callee8$(_context9) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context10.next = 2;
+            _context9.next = 2;
             return NoteRepository$1.getNoteInfoList(noteId);
 
           case 2:
-            response = _context10.sent;
-            dto = response.data.dto; // PageStore.exportPageTitle = dto.note_title
-
-            returnData = "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</span><br />").concat(dto.note_content);
+            response = _context9.sent;
+            dto = response.data.dto;
+            returnData = "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(dto.note_title, "</p>\n").concat(dto.note_content);
             getTxtFormat(dto.note_title, returnData);
 
           case 6:
           case "end":
-            return _context10.stop();
+            return _context9.stop();
         }
       }
-    }, _callee10);
+    }, _callee8);
   }));
 
-  return function exportPageAsTxt(_x10) {
-    return _ref10.apply(this, arguments);
+  return function exportPageAsTxt(_x9) {
+    return _ref8.apply(this, arguments);
   };
 }();
 var exportChapterAsTxt = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(chapterTitle, chapterId) {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(chapterTitle, chapterId) {
     var returnData, _yield$NoteRepository3, noteList;
 
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    return regeneratorRuntime.wrap(function _callee9$(_context10) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
             returnData = '';
-            _context11.next = 3;
+            _context10.next = 3;
             return NoteRepository$1.getChapterChildren(chapterId);
 
           case 3:
-            _yield$NoteRepository3 = _context11.sent;
+            _yield$NoteRepository3 = _context10.sent;
             noteList = _yield$NoteRepository3.data.dto.noteList;
 
             if (noteList.length > 0) {
               noteList.forEach(function (page, idx) {
-                returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span>\n      <br />\n      ").concat(page.note_content, "\n      ").concat(idx === noteList.length - 1 ? '' : '<br />');
+                returnData += "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</p>\n").concat(page.note_content).concat(idx === noteList.length - 1 ? '' : '\n\n');
               });
-            } else returnData += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(chapterTitle, "</span>");
+            } else returnData += "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(chapterTitle, "</p>");
 
             getTxtFormat(chapterTitle, returnData);
 
           case 7:
           case "end":
-            return _context11.stop();
+            return _context10.stop();
         }
       }
-    }, _callee11);
+    }, _callee9);
   }));
 
-  return function exportChapterAsTxt(_x11, _x12) {
-    return _ref11.apply(this, arguments);
+  return function exportChapterAsTxt(_x10, _x11) {
+    return _ref9.apply(this, arguments);
   };
 }();
 
@@ -9788,13 +9804,10 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
   }
 };
 var handleUnselect = function handleUnselect() {
-  if (EditorStore.selectFileElement !== '') {
-    EditorStore.setFileIndex('');
-    EditorStore.setFileElement('');
-  } // if (TagStore.selectTagIdx !== '') {
+  var selectEle = document.querySelector('.fileSelected');
+  if (selectEle) selectEle.classList.remove('fileSelected'); // if (TagStore.selectTagIdx !== '') {
   //     TagStore.setSelectTagIndex('')
   // }
-
 
   if (PageStore.dragData.size > 1) {
     PageStore.handleClickOutside();
@@ -9815,24 +9828,24 @@ var handleUnselect = function handleUnselect() {
   });
 };
 var handleFileSync = /*#__PURE__*/function () {
-  var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+    return regeneratorRuntime.wrap(function _callee10$(_context11) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            _context12.next = 2;
+            _context11.next = 2;
             return handleFileDelete();
 
           case 2:
           case "end":
-            return _context12.stop();
+            return _context11.stop();
         }
       }
-    }, _callee12);
+    }, _callee10);
   }));
 
   return function handleFileSync() {
-    return _ref12.apply(this, arguments);
+    return _ref10.apply(this, arguments);
   };
 }();
 var openSaveDrive = function openSaveDrive() {
@@ -9921,7 +9934,7 @@ var isPreview = function isPreview(extension) {
     return fileCategory[cat]['ext'].includes(extension);
   });
   if (!cat) return false;
-  return fileCategory[cat]["isPreview"];
+  return fileCategory[cat]['isPreview'];
 };
 var fileExtension = function fileExtension(extension) {
   // driveGetFileIcon(fileName)
@@ -11273,8 +11286,7 @@ var RecycleBin = function RecycleBin(_ref) {
     NoteStore.setShowPage(true);
     PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
 
-    PageStore.fetchCurrentPageData(pageId); // isEdit 갱신
-
+    PageStore.fetchCurrentPageData(pageId);
     if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
@@ -11808,11 +11820,11 @@ var EditorHeader = function EditorHeader() {
   }();
 
   var handleTitleInput = function handleTitleInput(e) {
-    return PageStore.setTitle(checkMaxLength(e));
+    return PageStore.setTitle(e.target.value);
   };
 
   var handleSearchEditor = function handleSearchEditor() {
-    if (EditorStore.isSearch) EditorStore.setIsSearch(false);else EditorStore.setIsSearch(true);
+    EditorStore.setIsSearch(!EditorStore.isSearch);
     initialSearch();
   };
 
@@ -11901,7 +11913,7 @@ var FileBody = styled__default['default'].div(_templateObject14 || (_templateObj
 });
 var FileContent = styled__default['default'].div(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["\n  min-width: calc(100% - 1.325rem);\n  display: flex;\n  margin-left: 0px;\n"])));
 var FileDownloadIcon = styled__default['default'].div(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.38rem;\n  margin-right: 0.375rem;\n  width: 1.88rem;\n  height: 1.88rem;\n"])));
-var FileErrorIcon = styled__default['default'].div(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"])));
+styled__default['default'].div(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["\n  .anticon-exclamation-circle {\n    position: absolute;\n    left : 1.5rem;\n    top:1.5rem;\n    font-size: 0.875rem;\n    color: #FB3A3A;\n  }\n"])));
 var ProgressWrapper = styled__default['default'].div(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral([" \n  width: 100%;\n  position: relative !important;\n  display: flex;\n"])));
 styled__default['default'].div(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n  cursor: pointer;\n  margin-right: 0.375rem;\n  margin-top: 0;\n  width: 30px;\n  height: 40px;\n  ", ":hover & {\n    display:none;\n  }\n"])), FileDownloadIcon); // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 
@@ -12357,16 +12369,26 @@ var FileLayout = function FileLayout() {
       setHoverFileIdx = _useState6[1];
 
   var _useState7 = React.useState(null),
-      _useState8 = _slicedToArray(_useState7, 2),
-      hoverTempIdx = _useState8[0],
-      setHoverTempIdx = _useState8[1];
+      _useState8 = _slicedToArray(_useState7, 2);
+      _useState8[0];
+      _useState8[1];
+
+  var _useState9 = React.useState(null),
+      _useState10 = _slicedToArray(_useState9, 2),
+      clickFileIdx = _useState10[0],
+      setClickFileIdx = _useState10[1];
+
+  var _useState11 = React.useState(''),
+      _useState12 = _slicedToArray(_useState11, 2);
+      _useState12[0];
+      _useState12[1];
 
   var filebodyRef = React.useRef([]);
 
-  var _useState9 = React.useState(false),
-      _useState10 = _slicedToArray(_useState9, 2),
-      isEllipsisActive = _useState10[0],
-      setIsEllipsisActive = _useState10[1]; // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
+  var _useState13 = React.useState(false),
+      _useState14 = _slicedToArray(_useState13, 2),
+      isEllipsisActive = _useState14[0],
+      setIsEllipsisActive = _useState14[1]; // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
 
 
   var handleTooltip = function handleTooltip(e) {
@@ -12402,39 +12424,28 @@ var FileLayout = function FileLayout() {
     setHover(false);
   };
 
-  var handleTempMouseHover = function handleTempMouseHover(idx) {
-    setHoverTempIdx(idx);
-  };
-
-  var handleTempMouseLeave = function handleTempMouseLeave(idx) {
-    setHoverTempIdx(null);
-  };
-
   var handleSelectFile = function handleSelectFile(e) {
     var target = e.target; // file layout 외 영역 클릭시.. 다른 구현방법 생각해봐야될 듯
 
     if (!filebodyRef.current.includes(target.closest('.noteFile'))) {
-      EditorStore.setFileIndex('');
-      EditorStore.setFileElement('');
-      document.removeEventListener('click', handleSelectFile);
+      setClickFileIdx(null);
     }
   };
 
   var handleFileBodyClick = function handleFileBodyClick(index) {
-    EditorStore.setFileElement(filebodyRef.current[index]);
-    EditorStore.selectFileElement.focus();
-    EditorStore.selectFileElement.scrollIntoView(false);
-    if (EditorStore.selectFileIdx === '') document.addEventListener('click', handleSelectFile);
-    if (index !== EditorStore.selectFileIdx) EditorStore.setFileIndex(index);else {
-      EditorStore.setFileIndex('');
-      EditorStore.setFileElement('');
+    if (clickFileIdx !== index) {
+      setClickFileIdx(index);
+      changeSelectFile(index);
+    } else {
+      setClickFileIdx(null);
     }
   };
 
-  var changeSelectFile = function changeSelectFile(ele) {
-    EditorStore.setFileElement(ele);
-    EditorStore.selectFileElement.focus();
-    EditorStore.selectFileElement.scrollIntoView(false);
+  var changeSelectFile = function changeSelectFile(changeIdx) {
+    var _filebodyRef$current$, _filebodyRef$current$2;
+
+    (_filebodyRef$current$ = filebodyRef.current[changeIdx]) === null || _filebodyRef$current$ === void 0 ? void 0 : _filebodyRef$current$.focus();
+    (_filebodyRef$current$2 = filebodyRef.current[changeIdx]) === null || _filebodyRef$current$2 === void 0 ? void 0 : _filebodyRef$current$2.scrollIntoView(false);
   };
 
   var handleKeyDownFile = function handleKeyDownFile(_ref2) {
@@ -12442,33 +12453,26 @@ var FileLayout = function FileLayout() {
         index = _ref2.index,
         type = _ref2.type;
     return function (e) {
-      var keyCode = e.keyCode,
-          target = e.target;
-      if (EditorStore.selectFileElement === '') EditorStore.setFileElement(target);
+      var keyCode = e.keyCode;
+          e.target;
 
       switch (keyCode) {
         case 37:
           // <-
-          if (EditorStore.selectFileIdx > 0) {
-            EditorStore.setFileIndex(EditorStore.selectFileIdx - 1);
-
-            if (EditorStore.selectFileElement.previousElementSibling !== null) {
-              changeSelectFile(EditorStore.selectFileElement.previousElementSibling);
-            }
+          if (clickFileIdx === 0) return;else {
+            var leftIdx = clickFileIdx - 1;
+            setClickFileIdx(leftIdx);
+            changeSelectFile(leftIdx);
           }
-
           break;
 
         case 39:
           // ->
-          if (EditorStore.selectFileIdx < EditorStore.fileLayoutList.length - 1) {
-            EditorStore.setFileIndex(EditorStore.selectFileIdx + 1);
-
-            if (EditorStore.selectFileElement.nextElementSibling !== null) {
-              changeSelectFile(EditorStore.selectFileElement.nextElementSibling);
-            }
+          if (clickFileIdx === filebodyRef.current.length - 1) return;else {
+            var rightIdx = clickFileIdx + 1;
+            setClickFileIdx(rightIdx);
+            changeSelectFile(rightIdx);
           }
-
           break;
 
         case 8: // backspace
@@ -12484,8 +12488,8 @@ var FileLayout = function FileLayout() {
   var onClickFileName = function onClickFileName(item) {
     var file_id = item.file_id,
         file_name = item.file_name,
-        extension = item.file_extension,
-        user_context_2 = item.user_context_2; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
+        extension = item.file_extension;
+        item.user_context_2; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
 
     if (!PageStore.isReadMode() && !isPreview(extension)) return;
 
@@ -12494,7 +12498,7 @@ var FileLayout = function FileLayout() {
         userId: NoteRepository$1.USER_ID,
         channelId: NoteRepository$1.chId,
         roomId: NoteRepository$1.WS_ID,
-        fileId: file_id ? file_id : user_context_2,
+        fileId: file_id,
         fileName: file_name,
         fileExtension: extension
       });
@@ -12502,7 +12506,7 @@ var FileLayout = function FileLayout() {
       return;
     }
 
-    downloadFile(file_id ? file_id : user_context_2);
+    downloadFile(file_id);
   };
 
   var handleFileRemove = /*#__PURE__*/function () {
@@ -12529,18 +12533,18 @@ var FileLayout = function FileLayout() {
                 }
               };
 
-              if (!(type === 'temp' && EditorStore.tempFileLayoutList.length > 0)) {
+              if (!(type === 'pending' && EditorStore.fileLayoutList.length > 0)) {
                 _context.next = 6;
                 break;
               }
 
-              EditorStore.uploadDTO[index].cancelSource.cancel();
-              EditorStore.tempFileLayoutList[index].deleted = true;
+              EditorStore.fileLayoutList[index].cancelSource.cancel();
+              EditorStore.fileLayoutList[index].deleted = true;
               _context.next = 10;
               break;
 
             case 6:
-              if (!(type === 'uploaded' && EditorStore.fileLayoutList.length > 0)) {
+              if (!((type === 'uploaded' || type === undefined) && EditorStore.fileLayoutList.length > 0)) {
                 _context.next = 10;
                 break;
               }
@@ -12582,6 +12586,7 @@ var FileLayout = function FileLayout() {
     key: "1"
   }, t('NOTE_EDIT_PAGE_MENUBAR_33')));
   React.useEffect(function () {
+    document.addEventListener('click', handleSelectFile);
     return function () {
       document.removeEventListener('click', handleSelectFile);
     };
@@ -12596,52 +12601,11 @@ var FileLayout = function FileLayout() {
   };
 
   return mobxReact.useObserver(function () {
+    var _EditorStore$fileLayo;
+
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(FileBodyLayout, {
       id: "fileLayout"
-    }, EditorStore.tempFileLayoutList.map(function (item, index) {
-      return item.type === 'file' ? /*#__PURE__*/React__default['default'].createElement(FileBody, {
-        id: item.file_id ? item.file_id : item.user_context_2,
-        key: index,
-        className: index === EditorStore.selectFileIdx ? 'fileSelected' : '',
-        onKeyDown: handleKeyDownFile({
-          fileId: item.file_id ? item.file_id : item.user_context_2,
-          index: index,
-          type: 'temp'
-        }),
-        tabIndex: index,
-        closable: !PageStore.isReadMode(),
-        onMouseEnter: handleTempMouseHover.bind(null, index),
-        onMouseLeave: handleTempMouseLeave
-      }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
-        src: fileExtension(item.file_extension)
-      })) : /*#__PURE__*/React__default['default'].createElement(antd.Dropdown, {
-        overlay: menu,
-        trigger: ['click'],
-        placement: "bottomCenter",
-        onClick: handleClickDropDown(item.file_id)
-      }, /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, hover && index === hoverTempIdx ? /*#__PURE__*/React__default['default'].createElement(FileDownloadBtn, {
-        src: img$7
-      }) : /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
-        src: fileExtension(item.file_extension)
-      }))), item.error ? /*#__PURE__*/React__default['default'].createElement(FileErrorIcon, null, /*#__PURE__*/React__default['default'].createElement(icons.ExclamationCircleFilled, null)) : null, /*#__PURE__*/React__default['default'].createElement(FileData, null, /*#__PURE__*/React__default['default'].createElement(FileDataName, null, /*#__PURE__*/React__default['default'].createElement(FileName, {
-        onClick: onClickFileName.bind(null, item)
-      }, item.file_name, item.file_extension && ".".concat(item.file_extension))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '취소 중'), /*#__PURE__*/React__default['default'].createElement(FileProgress, null, (item.progress * 100).toFixed(1) !== '0.0' ? (item.progress * 100).toFixed(1) + '%' : '')), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
-        percent: item.progress * 100,
-        showInfo: false,
-        strokeWidth: '0.25rem',
-        trailColor: "#E3E4E9",
-        strokeColor: "#232D3B"
-      }) : null)), /*#__PURE__*/React__default['default'].createElement(FileClose, {
-        style: !PageStore.isReadMode() && index === hoverTempIdx ? {
-          display: 'flex'
-        } : {
-          display: 'none'
-        }
-      }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
-        src: img$r,
-        onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'temp')
-      })))) : null;
-    }), EditorStore.fileLayoutList.map(function (item, index) {
+    }, (_EditorStore$fileLayo = EditorStore.fileLayoutList) === null || _EditorStore$fileLayo === void 0 ? void 0 : _EditorStore$fileLayo.map(function (item, index) {
       return /*#__PURE__*/React__default['default'].createElement(FileBody, {
         id: item.file_id ? item.file_id : item.user_context_2,
         ref: function ref(el) {
@@ -12649,7 +12613,6 @@ var FileLayout = function FileLayout() {
         },
         key: index,
         onClick: handleFileBodyClick.bind(null, index),
-        className: index === EditorStore.selectFileIdx ? 'noteFile fileSelected' : 'noteFile',
         onMouseEnter: handleMouseHover.bind(null, item.file_id),
         onMouseLeave: handleMouseLeave,
         onKeyDown: handleKeyDownFile({
@@ -12658,6 +12621,7 @@ var FileLayout = function FileLayout() {
           type: 'uploaded'
         }),
         tabIndex: index,
+        className: index === clickFileIdx ? 'noteFile fileSelected' : 'noteFile',
         closable: !PageStore.isReadMode()
       }, /*#__PURE__*/React__default['default'].createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React__default['default'].createElement(FileDownloadIcon, null, /*#__PURE__*/React__default['default'].createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
@@ -12681,7 +12645,13 @@ var FileLayout = function FileLayout() {
       }, /*#__PURE__*/React__default['default'].createElement(FileName, {
         onClick: onClickFileName.bind(null, item),
         onMouseOver: handleTooltip
-      }, item.file_name, item.file_extension && ".".concat(item.file_extension)))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : '삭제 중'))), /*#__PURE__*/React__default['default'].createElement(FileClose, {
+      }, item.file_name, item.file_extension && ".".concat(item.file_extension)))), /*#__PURE__*/React__default['default'].createElement(FileDataTime, null, /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.status === 'pending' && item.progress && item.file_size ? EditorStore.convertFileSize(item.progress * item.file_size) + '/' : null), /*#__PURE__*/React__default['default'].createElement(FileTime, null, item.deleted === undefined && item.file_size ? EditorStore.convertFileSize(item.file_size) : item.status === 'canceled' ? '취소 중' : '삭제 중'), /*#__PURE__*/React__default['default'].createElement(FileProgress, null, item.status === 'pending' && (item.progress * 100).toFixed(1) !== '0.0' ? (item.progress * 100).toFixed(1) + '%' : '')), /*#__PURE__*/React__default['default'].createElement(ProgressWrapper, null, item.progress && item.status === 'pending' ? /*#__PURE__*/React__default['default'].createElement(antd.Progress, {
+        percent: item.progress * 100,
+        showInfo: false,
+        strokeWidth: '0.25rem',
+        trailColor: "#E3E4E9",
+        strokeColor: "#232D3B"
+      }) : null)), /*#__PURE__*/React__default['default'].createElement(FileClose, {
         style: !PageStore.isReadMode() && item.file_id === hoverFileId ? {
           display: 'flex'
         } : {
@@ -12689,7 +12659,7 @@ var FileLayout = function FileLayout() {
         }
       }, /*#__PURE__*/React__default['default'].createElement(FileCloseBtn, {
         src: img$r,
-        onClick: handleFileRemove.bind(null, item.file_id ? item.file_id : item.user_context_2, index, 'uploaded')
+        onClick: handleFileRemove.bind(null, item.file_id, index, item.status)
       }))));
     })));
   });
@@ -12738,6 +12708,134 @@ var useSave = function useSave() {
     }
   }, [PageStore.isReadMode()]);
 };
+
+var _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
+
+var StorageModel = autobind__default['default'](_class = (_class2 = /*#__PURE__*/function () {
+  function StorageModel(data) {
+    _classCallCheck(this, StorageModel);
+
+    _initializerDefineProperty(this, "workspace_id", _descriptor, this);
+
+    _initializerDefineProperty(this, "channel_id", _descriptor2, this);
+
+    _initializerDefineProperty(this, "storageFileInfo", _descriptor3, this);
+
+    _initializerDefineProperty(this, "progress", _descriptor4, this);
+
+    _initializerDefineProperty(this, "type", _descriptor5, this);
+
+    _initializerDefineProperty(this, "error", _descriptor6, this);
+
+    this.setValues(data);
+  }
+
+  _createClass(StorageModel, [{
+    key: "setValues",
+    value: function setValues(data) {
+      mobx.set(this, data);
+    }
+  }, {
+    key: "setRoomId",
+    value: function setRoomId(data) {
+      this.workspace_id = NoteRepository$1.WS_ID;
+    }
+  }, {
+    key: "setChId",
+    value: function setChId(data) {
+      this.channel_id = NoteRepository$1.chId;
+    }
+  }, {
+    key: "setUserId",
+    value: function setUserId(data) {
+      this.storageFileInfo.user_id = NoteRepository$1.USER_ID;
+    }
+  }, {
+    key: "setLastUpdateUserId",
+    value: function setLastUpdateUserId(data) {
+      this.storageFileInfo.file_last_update_user_id = NoteRepository$1.USER_ID;
+    }
+  }, {
+    key: "setFileId",
+    value: function setFileId(data) {
+      this.storageFileInfo.file_id = data;
+    }
+  }, {
+    key: "setFileName",
+    value: function setFileName(data) {
+      this.storageFileInfo.file_name = data;
+    }
+  }, {
+    key: "setFileExtension",
+    value: function setFileExtension(data) {
+      this.storageFileInfo.file_extension = data;
+    }
+  }, {
+    key: "setFileCreatedAt",
+    value: function setFileCreatedAt(data) {
+      this.storageFileInfo.file_created_at = data;
+    }
+  }, {
+    key: "setFileUpdatedAt",
+    value: function setFileUpdatedAt(data) {
+      this.storageFileInfo.file_updated_at = data;
+    }
+  }, {
+    key: "setFileSize",
+    value: function setFileSize(data) {
+      this.storageFileInfo.file_size = data;
+    }
+  }, {
+    key: "setUserContext1",
+    value: function setUserContext1(data) {
+      this.storageFileInfo.user_context_1 = data;
+    }
+  }, {
+    key: "setUserContext2",
+    value: function setUserContext2(data) {
+      this.storageFileInfo.user_context_2 = data;
+    }
+  }, {
+    key: "setUserContext3",
+    value: function setUserContext3(data) {
+      this.storageFileInfo.user_context_3 = data;
+    }
+  }]);
+
+  return StorageModel;
+}(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "workspace_id", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "channel_id", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "storageFileInfo", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: function initializer() {
+    return {};
+  }
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "progress", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "type", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "error", [mobx.observable], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _applyDecoratedDescriptor(_class2.prototype, "setValues", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setValues"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setRoomId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setRoomId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setChId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setChId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setLastUpdateUserId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setLastUpdateUserId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileName", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileName"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileExtension", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileExtension"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileCreatedAt", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileCreatedAt"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileUpdatedAt", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileUpdatedAt"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileSize", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileSize"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext1", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext1"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext2", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext2"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext3", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext3"), _class2.prototype)), _class2)) || _class;
 
 var _templateObject$5;
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -12831,18 +12929,28 @@ var HandleUploader = function HandleUploader(props) {
                         fileSize = _EditorStore$getFileI.fileSize;
 
                     var type = fileExtension && EditorStore.uploadFileIsImage(fileExtension) ? 'image' : 'file';
-                    EditorStore.setUploadFileDTO({
-                      fileName: fileName,
-                      fileExtension: fileExtension,
-                      fileSize: fileSize
-                    }, file, type);
+                    var cancelToken = new teespaceCore.API.CancelToken.source();
+                    var model = new StorageModel({
+                      workspace_id: NoteRepository$1.WS_ID,
+                      channel_id: NoteRepository$1.chId,
+                      storageFileInfo: {
+                        user_id: NoteRepository$1.USER_ID,
+                        file_last_update_user_id: NoteRepository$1.USER_ID,
+                        file_name: fileName,
+                        file_extension: fileExtension,
+                        file_size: fileSize
+                      }
+                    });
+                    EditorStore.setUploadFileDTO(model, file, type, cancelToken);
                   })(filtered[_i]);
                 }
 
                 if (fileList.length !== filtered.length) {
                   EditorStore.failCount = fileList.length - filtered.length;
                   NoteStore.setModalInfo('failUploadByFileNameLen');
-                } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) handleUpload();
+                } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) EditorStore.uploadDTO.forEach(function (item) {
+                  return handleUpload(item);
+                });
 
               case 20:
                 return _context.abrupt("return", false);
@@ -13047,7 +13155,7 @@ var EditorContainer = function EditorContainer() {
   }, [EditorStore.isSearch]);
 
   var changeTheme = function changeTheme() {
-    if (!tinymce) return;
+    if (!EditorStore.tinymce) return;
     if (themeContext.name !== 'dark' && themeContext.name !== 'white') return; // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
 
     tinymce.settings.language = NoteStore.i18nLanguage;
@@ -13130,7 +13238,7 @@ var EditorContainer = function EditorContainer() {
       }
     }), /*#__PURE__*/React__default['default'].createElement(FoldBtn, {
       isExpanded: NoteStore.isContentExpanded,
-      show: NoteStore.layoutState !== "collapse" && NoteStore.isHoveredFoldBtnLine,
+      show: NoteStore.layoutState !== 'collapse' && NoteStore.isHoveredFoldBtnLine,
       onMouseMove: function onMouseMove() {
         return NoteStore.setIsHoveredFoldBtnLine(true);
       },
@@ -13145,9 +13253,9 @@ var EditorContainer = function EditorContainer() {
       }
     }, authStore.hasPermission('notePage', 'U') ? PageStore.isRecycleBin ? /*#__PURE__*/React__default['default'].createElement(ReadModeText, {
       style: {
-        marginLeft: "1rem"
+        marginLeft: '1rem'
       }
-    }, " ", t('NOTE_BIN_05'), " ") : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
+    }, ' ', t('NOTE_BIN_05'), ' ') : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
       src: img$8
     }), /*#__PURE__*/React__default['default'].createElement(ReadModeText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')), /*#__PURE__*/React__default['default'].createElement(ReadModeSubText, null, t('NOTE_PAGE_LIST_ADD_NEW_PGE_03'))) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ReadModeIcon, {
       src: img$8
@@ -13187,10 +13295,10 @@ var EditorContainer = function EditorContainer() {
 
           editor.on('init', function () {
             /*
-            * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
-            * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
-            * init된 후 localStorage내용을 에디터에 set해주어야 한다
-            */
+             * initialMode();  // [ todo ] initialMode 메서드 호출이 init전 setup이 아니라 여기서 이루어져야 하는거 아닌지 확인해주세요
+             * 복구 버튼 눌렀을 때 editor가 init되기 전인 경우
+             * init된 후 localStorage내용을 에디터에 set해주어야 한다
+             */
             if (PageStore.recoverInfo.note_content) {
               var _EditorStore$tinymce12;
 
@@ -13936,11 +14044,11 @@ var DragPreview = function DragPreview(_ref) {
     var offset = JSON.parse(JSON.stringify(NoteStore.draggedOffset));
 
     if (NoteStore.layoutState === 'collapse') {
-      dragPreviewRef.style['top'] = offset.y + 30 + 'px';
-      dragPreviewRef.style['left'] = offset.x + 20 + 'px';
+      dragPreviewRef.style.top = "".concat(offset.y + 4, "px");
+      dragPreviewRef.style.left = "".concat(offset.x + 4, "px");
     } else {
-      dragPreviewRef.style['top'] = offset.y - 41 + 'px';
-      dragPreviewRef.style['left'] = offset.x - 346 + 'px';
+      dragPreviewRef.style.top = "".concat(offset.y - 56, "px");
+      dragPreviewRef.style.left = "".concat(offset.x - 366, "px");
     }
   }, [previewRef]);
 
@@ -14287,22 +14395,6 @@ var Overlay = mobxReact.observer(function () {
   }));
 });
 
-var TempEditor = function TempEditor() {
-  return /*#__PURE__*/React__default['default'].createElement("div", {
-    style: {
-      display: "none"
-    }
-  }, /*#__PURE__*/React__default['default'].createElement(tinymceReact.Editor, {
-    id: "tempEditor",
-    apiKey: GlobalVariable.apiKey,
-    init: {
-      setup: function setup(editor) {
-        EditorStore.setTempTinymce(editor);
-      }
-    }
-  }));
-};
-
 var SlashCmdNote = function SlashCmdNote() {
   var chapterId = '';
 
@@ -14596,7 +14688,7 @@ var NoteApp$1 = function NoteApp(_ref) {
       }
     }), NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? /*#__PURE__*/React__default['default'].createElement(DragPreview$1, {
       items: NoteStore.draggedItems
-    }) : null, /*#__PURE__*/React__default['default'].createElement(TempEditor, null), NoteStore.isExporting && /*#__PURE__*/React__default['default'].createElement(Overlay, null), NoteStore.showModal && /*#__PURE__*/React__default['default'].createElement(NoteModal, null), NoteStore.isMailShare && /*#__PURE__*/React__default['default'].createElement(MailWriteModal, {
+    }) : null, NoteStore.isExporting && /*#__PURE__*/React__default['default'].createElement(Overlay, null), NoteStore.showModal && /*#__PURE__*/React__default['default'].createElement(NoteModal, null), NoteStore.isMailShare && /*#__PURE__*/React__default['default'].createElement(MailWriteModal, {
       uploadFiles: NoteStore.mailShareFileObjs,
       sender: {
         mailAddr: NoteStore.userEmail,
