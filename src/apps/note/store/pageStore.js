@@ -117,8 +117,9 @@ const PageStore = observable({
     return this.noteTitle;
   },
   setTitle(title) {
-    if (title.length > 256) title = title.substring(0, 256);
-    this.noteTitle = title;
+    this.noteTitle = [].filter
+      .call(title.slice(0, 200), c => c.charCodeAt(0) !== 65279)
+      .join('');
   },
 
   getCurrentPageId() {
@@ -678,7 +679,8 @@ const PageStore = observable({
 
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave(isAutoSave=false) {
-    this.getTitleFromPageContent();
+    if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'))
+      this.setTitle(this.getTitleFromPageContent());
     const updateDTO = this.getSaveDto(isAutoSave);
     
     if (isAutoSave) this.handleAutoSave(updateDTO);
@@ -725,48 +727,51 @@ const PageStore = observable({
      * @returns 입력 개체에 따른 제목
      */
     getTitleFromPageContent() {
-      if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
-        const title = this._getTitleFromEditor();
-        if (title) PageStore.setTitle(title);
-        else if (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0) {
-          const firstFile =
-            EditorStore.tempFileLayoutList.length > 0
-              ? EditorStore.tempFileLayoutList[0]
-              : EditorStore.fileLayoutList[0];
-          this.setTitle(
-            firstFile.file_name +
-              (firstFile.file_extension ? `.${firstFile.file_extension}` : ''),
-          );
-        } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-      }
-      this.noteTitle = [].filter.call(this.noteTitle, function (c) {
-        return c.charCodeAt(0) !== 65279;
-      }).join('');
-      return this.noteTitle;
+      return (
+        this._getTitleFromEditor() ||
+        this._getTitleFromFiles() ||
+        i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
+      );
     },
 
     _getTitleFromEditor() {
       for (const node of EditorStore.tinymce.getBody().children) {
         if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
-        if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) continue;
-        if (node.tagName === 'BR') continue;
+        if (
+          !node.textContent &&
+          node.nodeName !== 'IMG' &&
+          !node.getElementsByTagName('IMG').length
+        )
+          continue;
         const title = this._getTitleByTagName(node);
         if (title) return title;
       }
       return;
     },
 
+    /**
+     * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
+     * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
+     * @param {element} node 
+     * @returns 테이블로부터 추출된 title
+     */
     _getTitleFromTable(node) {
-      if (!node.textContent && node.getElementsByTagName('IMG').length === 0)
-        return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
-  
       for(const td of node.getElementsByTagName('td')) {
         for(const node of td.childNodes) {
           const title = this._getTitleByTagName(node);
           if (title) return title;
         }
       }
-      return;
+      return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
+    },
+
+    _getTitleFromFiles() {
+      if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return;
+      const firstFile =
+        EditorStore.tempFileLayoutList.length > 0
+          ? EditorStore.tempFileLayoutList[0]
+          : EditorStore.fileLayoutList[0];
+      return firstFile.file_name + (firstFile.file_extension ? `.${firstFile.file_extension}` : '');
     },
   // div, pre, p 
   _searchInsideContainerTag(node) {

@@ -87,7 +87,7 @@ const EditorHeader = () => {
     }
   };
 
-  const handleTitleInput = e => PageStore.setTitle(checkMaxLength(e));
+  const handleTitleInput = e => PageStore.setTitle(e.target.value);
 
   const handleSearchEditor = () => {
     EditorStore.setIsSearch(!EditorStore.isSearch);
