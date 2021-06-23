@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx';
+import { UserStore } from 'teespace-core';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
@@ -6,21 +7,18 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable from '../GlobalVariable';
-import NoteUtil from '../NoteUtil';
-import { UserStore } from 'teespace-core';
+import NoteUtil, { get12HourFormat } from '../NoteUtil';
 import i18n from '../i18n/i18n';
 
 const PageStore = observable({
   noteInfoList: [],
-  currentPageData: [],
-  isEdit: '',
+  currentPageData: {},
   saveStatus:{saving : false, saved:false},
   displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
   currentPageId: '',
-  createPageId: '', // web에서 안 씀
   createParent: '',
   createParentIdx: '',
   deletePageList: [],
@@ -37,7 +35,6 @@ const PageStore = observable({
   dragEnterChapterIdx: '',
   modifiedDate: '',
   deletedDate: '',
-  prevModifiedUserName: '', // web에서 안 씀
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -70,30 +67,25 @@ const PageStore = observable({
     this.saveStatus.saving = saving;
     this.saveStatus.saved = saved;
   },
-  getIsEdit() {
-    return this.isEdit;
-  },
-  setIsEdit(id) {
-    this.isEdit = id;
-  },
-  isReadMode() {
-    if (this.isEdit === null || this.isEdit === '') {
-      this.setOtherEdit(false);
-      return true;
-    }
-    // createNotePage에서 createPage 하고 EditorContainer.js의 setNoteEditor-initialMode한 후 getNoteInfoList에서 currentPageData를 set한다.
-    // 그래서 getCurrentPageData().is_edit으로 확인하면 initialMode에서 isReadMode() === true가 된다.
-    // this.isEdit으로 수정
-    else if (this.isEdit !== null && NoteRepository.USER_ID === this.isEdit) {
-      this.setOtherEdit(false);
-      return false;
-    }
-    else {
-      this.setEditingUserID(PageStore.getCurrentPageData().is_edit);
+
+    /**
+     * [임시]
+     * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
+     * @returns 해당 페이지에 대한 자신의 읽기모드 여부
+     */
+    isReadMode() {
+      if (!this.currentPageData.is_edit) {
+        this.setOtherEdit(false);
+        return true;
+      }
+      if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
+        this.setOtherEdit(false);
+        return false;
+      }
+      this.setEditingUserID(this.currentPageData.is_edit);
       this.setOtherEdit(true);
       return true;
-    };
-  },
+    },
   setOtherEdit(flag) {
     this.otherEdit = flag;
   },
@@ -125,8 +117,9 @@ const PageStore = observable({
     return this.noteTitle;
   },
   setTitle(title) {
-    if (title.length > 256) title = title.substring(0, 256);
-    this.noteTitle = title;
+    this.noteTitle = [].filter
+      .call(title.slice(0, 200), c => c.charCodeAt(0) !== 65279)
+      .join('');
   },
 
   getCurrentPageId() {
@@ -237,12 +230,6 @@ const PageStore = observable({
   setModifiedDate(date) {
     this.modifiedDate = date;
   },
-  getPrevModifiedUserName() {
-    return this.prevModifiedUserName;
-  },
-  setPrevModifiedUserName(userName) {
-    this.prevModifiedUserName = userName;
-  },
   getIsNewPage() {
     return this.isNewPage;
   },
@@ -338,40 +325,43 @@ const PageStore = observable({
     }
   },
 
-  // note 처음 진입해서 축소 상태에서 새 페이지 추가 버튼 누르면 없다
-  initializeBoxColor() {
-    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
-    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
-    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
-    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
-  },
+    /**
+     * 에디터의 텍스트/배경 색상을 초기화한다.
+     */
+    initializeBoxColor() {
+      document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+      document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
+      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
+      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
+    },
 
-  createNotePage() {
-    this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent).then(dto => {
+    async createNotePage() {
+      const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
+      this.currentPageData = {
+        ...dto,
+        note_content: NoteUtil.decodeStr('<p><br></p>'),
+        note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')),
+      };
+
+      this.setIsNewPage(true);
       EditorStore.setIsSearch(false);
-      this.setIsEdit(dto.is_edit);
+
       ChapterStore.getNoteChapterList();
       ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
       this.currentPageId = dto.note_id;
-      this.setIsNewPage(true);
-      TagStore.setNoteTagList(dto.tagList);
-      EditorStore.setFileList(dto.fileList);
-      this.initializeBoxColor();
-
-      dto.note_content = NoteUtil.decodeStr('<p><br></p>');
-      dto.note_title = NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-      this.currentPageData = dto;
+      TagStore.setNoteTagList(dto.tagList); // []
+      EditorStore.setFileList(dto.fileList); // null
       this.noteTitle = '';
-      this.prevModifiedUserName = this.currentPageData.user_name;
-      this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date, false);
+      this.modifiedDate = get12HourFormat(dto.modified_date);
 
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
+
+      // initialize editor properties
+      this.initializeBoxColor();
       EditorStore.tinymce?.undoManager?.clear();
-      // getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
-    });
-  },
+    },
 
   /**
    * It throw away pages in recycle bin.
@@ -380,7 +370,6 @@ const PageStore = observable({
   async throwNotePage(isDnd) {
     await this.throwPage(this.deletePageList);
     await ChapterStore.getNoteChapterList();
-    this.setIsEdit('');
     if (this.deletePageList.find(page => page.note_id === this.currentPageId)) {
       const pageId = isDnd
         ? ChapterStore.chapterList[0]?.children[0]?.id
@@ -403,7 +392,6 @@ const PageStore = observable({
 
   deleteNotePage() {
     this.deletePage(this.deletePageList).then(() => {
-      this.setIsEdit(null); // 축소모드에서 뒤로가기로 페이지 삭제한 후 isEdit이 갱신안되는 이슈 수정
       if (!this.isNewPage) {
         if (this.currentPageId === this.deletePageList[0].note_id) {
           this.setCurrentPageId(this.selectablePageId);
@@ -413,7 +401,7 @@ const PageStore = observable({
         if (NoteStore.layoutState === "collapse") {
           NoteStore.setTargetLayout('LNB');
           this.setIsNewPage(false);
-          this.fetchCurrentPageData(''); // isEdit도 갱신
+          this.fetchCurrentPageData('');
           ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
         } else {
           const currentChapter = ChapterStore.chapterList.find(chapter => chapter.id === this.createParent);
@@ -537,35 +525,8 @@ const PageStore = observable({
     NoteStore.setIsDragging(false);
   },
 
-  modifiedDateFormatting(date, isSharedInfo) {
-    const mDate = date.split(' ')[0];
-    const mTime = date.split(' ')[1];
-    const mYear = parseInt(mDate.split('.')[0]);
-    const mMonth = parseInt(mDate.split('.')[1]);
-    const mDay = parseInt(mDate.split('.')[2]);
-    const mHour = parseInt(mTime.split(':')[0]);
-    const mMinute = parseInt(mTime.split(':')[1]);
-    const curDate = new Date();
-    const convertTwoDigit = (digit) => ('0' + digit).slice(-2);
-    const m12Hour = mHour > 12 ? mHour - 12 : mHour;
-
-    const hhmm = convertTwoDigit(m12Hour) + ':' + convertTwoDigit(mMinute);
-    const basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', { time: hhmm }) : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', { time: hhmm });
-
-    if (date === this.currentPageData.modified_date
-      && mYear === curDate.getFullYear()
-      && !isSharedInfo) { // 같은 해
-      if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate; // 같은 날
-      else return convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate; // 다른 날
-    }
-    else { // 다른 해, 정보 보기
-      return mYear + '.' + convertTwoDigit(mMonth) + '.' + convertTwoDigit(mDay) + ' ' + basicDate;
-    }
-  },
-
   async fetchNoteInfoList(noteId) {
     const dto = await this.getNoteInfoList(noteId);
-    // 없는 노트일 때 && 가져오려했던 noteId가 currentPageId일 때 초기화하기
     if (!isFilled(dto.note_id)) {
       if (this.currentPageId === noteId) this.currentPageId = '';
       return;
@@ -573,22 +534,19 @@ const PageStore = observable({
 
     if (dto.USER_ID) {
       const userProfile = await UserStore.getProfile(dto.USER_ID);
-      this.displayName = userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
+      this.displayName =
+        userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
     } else {
       this.displayName = '';
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     this.currentPageData = dto;
-    this.isEdit = dto.is_edit;
     this.noteTitle = dto.note_title;
-    this.modifiedDate = this.modifiedDateFormatting(this.currentPageData.modified_date);
-    // this.deletedDate = this.currentPageData.note_deleted_at !== null ? this.modifiedDateFormatting(this.currentPageData.note_deleted_at) : '';
-    // console.log(this.deletedDate)
-    EditorStore.setFileList(
-      dto.fileList,
-    );
+    this.modifiedDate = get12HourFormat(this.currentPageData.modified_date);
+    EditorStore.setFileList(dto.fileList);
     TagStore.setNoteTagList(dto.tagList);
+
     if (this.isNewPage) {
       ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
       this.setDragData(new Map([[this.currentPageId, this.createDragData(this.currentPageId, ChapterStore.currentChapterId)]]));
@@ -612,7 +570,7 @@ const PageStore = observable({
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
     } else {
-      this.setIsEdit('');
+      this.currentPageData = {};
       this.setCurrentPageId('');
     }
   },
@@ -713,7 +671,7 @@ const PageStore = observable({
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: "text" }),
         parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: isAutoSave ? this.isEdit : '',
+        is_edit: isAutoSave ? this.currentPageData.is_edit : '',
         TYPE: 'EDIT_DONE',
       }
     }
@@ -721,7 +679,8 @@ const PageStore = observable({
 
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave(isAutoSave=false) {
-    this.getNoteTitle();
+    if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'))
+      this.setTitle(this.getTitleFromPageContent());
     const updateDTO = this.getSaveDto(isAutoSave);
     
     if (isAutoSave) this.handleAutoSave(updateDTO);
@@ -737,7 +696,7 @@ const PageStore = observable({
         this.setSaveStatus({saved:true});
         const {user_name, modified_date,USER_ID} = dto;
         this.set_CurrentPageData({user_name, modified_date,USER_ID});
-        this.modifiedDate = this.modifiedDateFormatting(modified_date);        
+        this.modifiedDate = get12HourFormat(modified_date);        
         // 2초 후 수정 중 인터렉션으로 바꾸기
         setTimeout(() => {
           this.setSaveStatus({});
@@ -760,60 +719,60 @@ const PageStore = observable({
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
   },
-    
-  getNoteTitle() {
-    if (this.noteTitle === '' || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) {
-      if (this.getTitle() !== undefined) PageStore.setTitle(this.getTitle());
-      else if (this.getTitle() === undefined && (EditorStore.tempFileLayoutList.length > 0 || EditorStore.fileLayoutList.length > 0)) {
-        if (EditorStore.tempFileLayoutList.length > 0) {
-          this.setTitle(EditorStore.tempFileLayoutList[0].file_name
-            + (EditorStore.tempFileLayoutList[0].file_extension ? '.' + EditorStore.tempFileLayoutList[0].file_extension : ''));
-        } else if (EditorStore.fileLayoutList.length > 0) {
-          this.setTitle(EditorStore.fileLayoutList[0].file_name
-            + (EditorStore.fileLayoutList[0].file_extension ? '.' + EditorStore.fileLayoutList[0].file_extension : ''));
+
+    /**
+     * 페이지 제목이 입력되지 않은 경우,
+     * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
+     * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
+     * @returns 입력 개체에 따른 제목
+     */
+    getTitleFromPageContent() {
+      return (
+        this._getTitleFromEditor() ||
+        this._getTitleFromFiles() ||
+        i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
+      );
+    },
+
+    _getTitleFromEditor() {
+      for (const node of EditorStore.tinymce.getBody().children) {
+        if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
+        if (
+          !node.textContent &&
+          node.nodeName !== 'IMG' &&
+          !node.getElementsByTagName('IMG').length
+        )
+          continue;
+        const title = this._getTitleByTagName(node);
+        if (title) return title;
+      }
+      return;
+    },
+
+    /**
+     * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
+     * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
+     * @param {element} node 
+     * @returns 테이블로부터 추출된 title
+     */
+    _getTitleFromTable(node) {
+      for(const td of node.getElementsByTagName('td')) {
+        for(const node of td.childNodes) {
+          const title = this._getTitleByTagName(node);
+          if (title) return title;
         }
-      } else this.setTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'));
-    }
-    this.noteTitle = [].filter.call(this.noteTitle, function (c) {
-      return c.charCodeAt(0) !== 65279;
-    }).join('');
-    return this.noteTitle;
-  },
-
-  getTitle() {
-    const contentList = EditorStore.tinymce.getBody().children;
-    return this._getTitle(contentList);
-  },
-  _getTitle(contentList) {
-    if (contentList) {
-      // forEach 는 항상 return 값 undefined
-      for (let i = 0; i < contentList.length; i++) {
-        // 표는 무조건 return
-        if (contentList[i].tagName === 'TABLE') return this._getTableTitle(contentList[i]);
-        // early return        
-        if (!contentList[i].textContent &&
-          (contentList[i].nodeName !== 'IMG' && contentList[i].getElementsByTagName('IMG').length === 0)) continue;
-        if (contentList[i].tagName === 'BR') continue; // getTitleByTagName에도 있지만 앞서 거르기
-
-        // 표 제외, 이미지나 텍스트가 있을 때만 탄다
-        let title = this._getTitleByTagName(contentList[i]);
-        if (title !== undefined) return title;
       }
-    }
-  },
-  // ims 250801 : 새 페이지 추가 후 표 삽입 -> 이미지 삽입 후 저장을 누르면 제목이 이미지명으로 표시되는 이슈
-  _getTableTitle(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
-    // td(표 셀 1개) 안에 <p></p>가 두 개이고, 첫 번째 p태그에 <br>등만 있고 아무것도 없는 경우 (제목 없음)이 출력돼서 수정
-    const tdList = node.getElementsByTagName('td');
-    for (let tdIndex = 0; tdIndex < tdList.length; tdIndex++) {
-      const tdChildren = tdList[tdIndex].childNodes;
-      for (let j = 0; j < tdChildren.length; j++) {
-        let title = this._getTitleByTagName(tdChildren[j]);
-        if (title !== undefined) return title;
-      }
-    }
-  },
+      return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
+    },
+
+    _getTitleFromFiles() {
+      if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return;
+      const firstFile =
+        EditorStore.tempFileLayoutList.length > 0
+          ? EditorStore.tempFileLayoutList[0]
+          : EditorStore.fileLayoutList[0];
+      return firstFile.file_name + (firstFile.file_extension ? `.${firstFile.file_extension}` : '');
+    },
   // div, pre, p 
   _searchInsideContainerTag(node) {
     if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return;
@@ -845,7 +804,7 @@ const PageStore = observable({
       case 'OL': case 'UL':
         return node.children[0].textContent;
       case 'TABLE':
-        let tableTitle = this._getTableTitle(node);
+        let tableTitle = this._getTitleFromTable(node);
         if (tableTitle !== undefined) return tableTitle;
       case 'DIV': case 'PRE': case "P":
         let title = this._searchInsideContainerTag(node);

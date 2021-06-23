@@ -8,7 +8,6 @@ import NoteStore from './noteStore';
 import NoteUtil from '../NoteUtil';
 
 const EditorStore = observable({
-  tempTinymce: null,
   contents: '',
   tinymce: null,
   editor: null,
@@ -59,12 +58,6 @@ const EditorStore = observable({
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
-  getTempTinymce() {
-    return this.tempTinymce;
-  },
-  setTempTinymce(editor) {
-    this.tempTinymce = editor;
-  },
   setContents(content) {
     this.contents = content;
   },
@@ -231,7 +224,7 @@ const EditorStore = observable({
     return dto;
   },
   async deleteAllFile() {
-    await NoteRepository.deleteAllFile(this.fileList).then(response => {
+    await NoteRepository.deleteAllFile(this.deleteFileList).then(response => {
       const {
         data: { dto },
       } = response;
@@ -317,65 +310,41 @@ const EditorStore = observable({
     this.deleteFileName = name;
     this.deleteFileIndex = index;
   },
-  setUploadFileDTO(config, file, type) {
-    const { fileName, fileExtension, fileSize } = config;
-    const gwMeta = {
-      file_name: fileName,
-      file_extension: fileExtension,
-      file_size: fileSize,
-    };
-    const uploadMeta = {
-      dto: {
-        workspace_id: NoteRepository.WS_ID,
-        channel_id: NoteRepository.chId,
-        storageFileInfo: {
-          user_id: NoteRepository.USER_ID,
-          file_last_update_user_id: NoteRepository.USER_ID,
-          file_id: '',
-          file_name: fileName,
-          file_extension: fileExtension,
-          file_created_at: '',
-          file_updated_at: '',
-          file_size: fileSize,
-          user_context_1: PageStore.currentPageId,
-          user_context_2: '',
-          user_context_3: '',
-        },
-      },
-    };
-    const tempMeta = {
-      user_id: NoteRepository.USER_ID,
-      file_last_update_user_id: NoteRepository.USER_ID,
-      file_id: '',
-      file_name: fileName,
-      file_extension: fileExtension,
-      file_created_at: '',
-      file_updated_at: this.getTempTimeFormat(),
-      file_size: fileSize,
-      user_context_1: '',
-      user_context_2: '',
-      user_context_3: '',
+
+  setUploadFileDTO(model, file, type, cancelSource) {
+    this.uploadDTO.push({
+      model,
+      file,
+      type,
+      cancelSource,
+    });
+    this.setPageFileList(model, file.uid, type, cancelSource);
+  },
+
+  setPageFileList(model, uid, type, cancelSource) {
+    const obj = {
+      file_id: uid,
+      file_name: model.storageFileInfo.file_name,
+      file_extension: model.storageFileInfo.file_extension,
+      file_size: model.storageFileInfo.file_size,
+      user_id: model.storageFileInfo.user_id,
       progress: 0,
       type: type,
       error: false,
+      cancelSource,
     };
-    this.setTempFileList(tempMeta);
-    const cancelToken = new API.CancelToken.source();
-    const uploadArr = {
-      gwMeta,
-      uploadMeta,
-      file,
-      type,
-      cancelSource: cancelToken,
-    };
-    this.setUploadDTO(uploadArr);
+    if (type !== 'image') {
+      this.addFileList(obj);
+    }
   },
+
   setUploadDTO(meta) {
     this.uploadDTO.push(meta);
   },
-  setTempFileList(target) {
+
+  addFileList(target) {
     if (this.processCount !== this.uploadLength) {
-      this.tempFileLayoutList.push(target);
+      this.fileLayoutList.unshift(target);
       this.processCount++;
     } else this.processCount = 0;
     if (!this.isFile) this.setIsFile(true);
@@ -415,6 +384,7 @@ const EditorStore = observable({
     this.tinymce.selection.setContent('');
     if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
     this.tinymce.focus();
+    EditorStore.tinymce?.undoManager?.add();
     NoteStore.setModalInfo(null);
   },
   /**
@@ -528,15 +498,17 @@ const EditorStore = observable({
       }
     }
   },
-  async uploadingFileallCancel(){
-    await Promise.all(EditorStore.uploadDTO.map((file,idx) => {
-      if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
-        EditorStore.tempFileLayoutList[idx].deleted = true;
-        return file?.cancelSource?.cancel();
-      }
-    })).then(()=> {
+  async uploadingFileallCancel() {
+    await Promise.all(
+      EditorStore.uploadDTO.map((file, idx) => {
+        if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
+          EditorStore.tempFileLayoutList[idx].deleted = true;
+          return file?.cancelSource?.cancel();
+        }
+      }),
+    ).then(() => {
       this.uploadFileCancelStatus = true;
-    })
+    });
   },
   isEditCancelOpen() {
     const { isEmpty } = NoteUtil;
