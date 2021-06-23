@@ -116,7 +116,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     const pageId = children.length > 0 ? children[0].id : '';
     NoteStore.setShowPage(true);
     PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
-    PageStore.fetchCurrentPageData(pageId); // isEdit 갱신
+    PageStore.fetchCurrentPageData(pageId);
     if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
     PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
