@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { observable, action } from 'mobx';
 import { UserStore } from 'teespace-core';
 import NoteRepository from './noteRepository';
@@ -68,24 +69,24 @@ const PageStore = observable({
     this.saveStatus.saved = saved;
   },
 
-    /**
-     * [임시]
-     * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
-     * @returns 해당 페이지에 대한 자신의 읽기모드 여부
-     */
-    isReadMode() {
-      if (!this.currentPageData.is_edit) {
-        this.setOtherEdit(false);
-        return true;
-      }
-      if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
-        this.setOtherEdit(false);
-        return false;
-      }
-      this.setEditingUserID(this.currentPageData.is_edit);
-      this.setOtherEdit(true);
+  /**
+   * [임시]
+   * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
+   * @returns 해당 페이지에 대한 자신의 읽기모드 여부
+   */
+  isReadMode() {
+    if (!this.currentPageData.is_edit) {
+      this.setOtherEdit(false);
       return true;
-    },
+    }
+    if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    }
+    this.setEditingUserID(this.currentPageData.is_edit);
+    this.setOtherEdit(true);
+    return true;
+  },
   setOtherEdit(flag) {
     this.otherEdit = flag;
   },
@@ -325,43 +326,43 @@ const PageStore = observable({
     }
   },
 
-    /**
-     * 에디터의 텍스트/배경 색상을 초기화한다.
-     */
-    initializeBoxColor() {
-      document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
-      document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
-      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
-      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
-    },
+  /**
+   * 에디터의 텍스트/배경 색상을 초기화한다.
+   */
+  initializeBoxColor() {
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
+  },
 
-    async createNotePage() {
-      const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
-      this.currentPageData = {
-        ...dto,
-        note_content: NoteUtil.decodeStr('<p><br></p>'),
-        note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')),
-      };
+  async createNotePage() {
+    const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
+    this.currentPageData = {
+      ...dto,
+      note_content: NoteUtil.decodeStr('<p><br></p>'),
+      note_title: '',
+    };
 
-      this.setIsNewPage(true);
-      EditorStore.setIsSearch(false);
+    this.setIsNewPage(true);
+    EditorStore.setIsSearch(false);
 
-      ChapterStore.getNoteChapterList();
-      ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
-      this.currentPageId = dto.note_id;
-      TagStore.setNoteTagList(dto.tagList); // []
-      EditorStore.setFileList(dto.fileList); // null
-      this.noteTitle = '';
-      this.modifiedDate = get12HourFormat(dto.modified_date);
+    ChapterStore.getNoteChapterList();
+    ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
+    this.currentPageId = dto.note_id;
+    TagStore.setNoteTagList(dto.tagList); // []
+    EditorStore.setFileList(dto.fileList); // null
+    this.noteTitle = '';
+    this.modifiedDate = get12HourFormat(dto.modified_date);
 
-      NoteStore.setTargetLayout('Content');
-      NoteStore.setShowPage(true);
+    NoteStore.setTargetLayout('Content');
+    NoteStore.setShowPage(true);
 
-      // initialize editor properties
-      this.initializeBoxColor();
-      EditorStore.tinymce?.undoManager?.clear();
-      if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
-    },
+    // initialize editor properties
+    this.initializeBoxColor();
+    EditorStore.tinymce?.undoManager?.clear();
+    if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
+  },
 
   /**
    * It throw away pages in recycle bin.
@@ -891,9 +892,6 @@ const PageStore = observable({
     NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
     NoteStore.setIsVisibleToast(true);
   }  
-},
-{
-  set_CurrentPageData: action
-})
+});
 
 export default PageStore;
