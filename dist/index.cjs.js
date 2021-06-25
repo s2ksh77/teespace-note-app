@@ -4053,7 +4053,7 @@ var PageStore = mobx.observable({
               dto = _context10.sent;
               _this.currentPageData = _objectSpread2(_objectSpread2({}, dto), {}, {
                 note_content: NoteUtil.decodeStr('<p><br></p>'),
-                note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'))
+                note_title: ''
               });
 
               _this.setIsNewPage(true);
@@ -4726,18 +4726,76 @@ var PageStore = mobx.observable({
     return this._getTitleFromEditor() || this._getTitleFromFiles() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
   },
   _getTitleFromEditor: function _getTitleFromEditor() {
-    var _iterator = _createForOfIteratorHelper(EditorStore.tinymce.getBody().children),
+    var _this14 = this;
+
+    return this._getTitleByTagName(_toConsumableArray(EditorStore.tinymce.getBody().children).find(function (node) {
+      return _this14._hasTitle(node);
+    }));
+  },
+  _hasTitle: function _hasTitle(node) {
+    if (node.tagName === 'TABLE') return true;
+    if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) return false;
+    return this._getTitleByTagName(node);
+  },
+  _getTitleByTagName: function _getTitleByTagName(node) {
+    var _node$children$;
+
+    if (!node) return '';
+
+    switch (node.nodeName) {
+      case 'BR':
+        return '';
+
+      case 'IMG':
+        return node.dataset.name ? node.dataset.name : node.src;
+
+      case 'OL':
+      case 'UL':
+        return (_node$children$ = node.children[0]) === null || _node$children$ === void 0 ? void 0 : _node$children$.textContent;
+
+      case 'TABLE':
+        return this._getTitleFromTable(node);
+
+      case 'DIV':
+      case 'PRE':
+      case 'P':
+        return this._searchInsideContainerTag(node);
+
+      default:
+        return node.textContent.slice(0, 200);
+    }
+  },
+
+  /**
+   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
+   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
+   * @param {element} node
+   * @returns 테이블로부터 추출된 title
+   */
+  _getTitleFromTable: function _getTitleFromTable(node) {
+    var _iterator = _createForOfIteratorHelper(node.getElementsByTagName('td')),
         _step;
 
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var node = _step.value;
-        if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
-        if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) continue;
+        var td = _step.value;
 
-        var title = this._getTitleByTagName(node);
+        var _iterator2 = _createForOfIteratorHelper(td.childNodes),
+            _step2;
 
-        if (title) return title;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _node = _step2.value;
+
+            var title = this._getTitleByTagName(_node);
+
+            if (title) return title;
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
       }
     } catch (err) {
       _iterator.e(err);
@@ -4745,56 +4803,10 @@ var PageStore = mobx.observable({
       _iterator.f();
     }
 
-    return;
-  },
-
-  /**
-   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
-   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-   * @param {element} node 
-   * @returns 테이블로부터 추출된 title
-   */
-  _getTitleFromTable: function _getTitleFromTable(node) {
-    var _iterator2 = _createForOfIteratorHelper(node.getElementsByTagName('td')),
-        _step2;
-
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var td = _step2.value;
-
-        var _iterator3 = _createForOfIteratorHelper(td.childNodes),
-            _step3;
-
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var _node = _step3.value;
-
-            var title = this._getTitleByTagName(_node);
-
-            if (title) return title;
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
-
     return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")");
   },
-  _getTitleFromFiles: function _getTitleFromFiles() {
-    if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return;
-    var firstFile = EditorStore.tempFileLayoutList.length > 0 ? EditorStore.tempFileLayoutList[0] : EditorStore.fileLayoutList[0];
-    return firstFile.file_name + (firstFile.file_extension ? ".".concat(firstFile.file_extension) : '');
-  },
-  // div, pre, p 
   _searchInsideContainerTag: function _searchInsideContainerTag(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return ''; // 명시적인 줄바꿈이 있는 경우
 
     var lineBreakIdx = node.textContent.indexOf('\n');
     if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx); // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
@@ -4815,47 +4827,13 @@ var PageStore = mobx.observable({
 
       if (title !== undefined) return title;
     }
+
+    return '';
   },
-  _getTitleByTagName: function _getTitleByTagName(node) {
-    switch (node.nodeName) {
-      case 'BR':
-        return;
-
-      case 'IMG':
-        return node.dataset.name ? node.dataset.name : node.src;
-
-      case 'SPAN':
-      case 'A':
-      case '#text':
-      case 'STRONG':
-      case 'BLOCKQUOTE':
-      case 'EM':
-      case 'H1':
-      case 'H2':
-      case 'H3':
-      case 'H4':
-      case 'H5':
-      case 'H6':
-        return node.textContent.slice(0, 200);
-
-      case 'OL':
-      case 'UL':
-        return node.children[0].textContent;
-
-      case 'TABLE':
-        var tableTitle = this._getTitleFromTable(node);
-
-        if (tableTitle !== undefined) return tableTitle;
-
-      case 'DIV':
-      case 'PRE':
-      case "P":
-        var title = this._searchInsideContainerTag(node);
-
-        if (title !== undefined) return title;
-    }
-
-    if (node.textContent) return node.textContent.slice(0, 200);
+  _getTitleFromFiles: function _getTitleFromFiles() {
+    if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return '';
+    var firstFile = EditorStore.tempFileLayoutList.length > 0 ? EditorStore.tempFileLayoutList[0] : EditorStore.fileLayoutList[0];
+    return firstFile.file_name + (firstFile.file_extension ? ".".concat(firstFile.file_extension) : '');
   },
   createSharePage: function createSharePage(targetList) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
@@ -4912,7 +4890,7 @@ var PageStore = mobx.observable({
    * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
    */
   restorePageLogic: function restorePageLogic(_ref2) {
-    var _this14 = this;
+    var _this15 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
       var chapterId, pageId, toastTxt, res;
@@ -4922,7 +4900,7 @@ var PageStore = mobx.observable({
             case 0:
               chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
               _context19.next = 3;
-              return _this14.restorePage(pageId, chapterId);
+              return _this15.restorePage(pageId, chapterId);
 
             case 3:
               res = _context19.sent;
@@ -4937,10 +4915,10 @@ var PageStore = mobx.observable({
               return ChapterStore.getNoteChapterList();
 
             case 8:
-              if (_this14.currentPageId === pageId) {
+              if (_this15.currentPageId === pageId) {
                 ChapterStore.setCurrentChapterInfo(chapterId, false);
 
-                _this14.setCurrentPageId(pageId);
+                _this15.setCurrentPageId(pageId);
               }
 
               NoteStore.setToastText(toastTxt);
@@ -4981,8 +4959,6 @@ var PageStore = mobx.observable({
     NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
     NoteStore.setIsVisibleToast(true);
   }
-}, {
-  set_CurrentPageData: mobx.action
 });
 
 var ChapterStore = mobx.observable({
