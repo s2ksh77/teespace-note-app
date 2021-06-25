@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { observable, action } from 'mobx';
 import { UserStore } from 'teespace-core';
 import NoteRepository from './noteRepository';
@@ -68,24 +69,24 @@ const PageStore = observable({
     this.saveStatus.saved = saved;
   },
 
-    /**
-     * [임시]
-     * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
-     * @returns 해당 페이지에 대한 자신의 읽기모드 여부
-     */
-    isReadMode() {
-      if (!this.currentPageData.is_edit) {
-        this.setOtherEdit(false);
-        return true;
-      }
-      if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
-        this.setOtherEdit(false);
-        return false;
-      }
-      this.setEditingUserID(this.currentPageData.is_edit);
-      this.setOtherEdit(true);
+  /**
+   * [임시]
+   * 본인 또는 다른 사람이 해당 페이지를 수정하고 있는지 확인한다.
+   * @returns 해당 페이지에 대한 자신의 읽기모드 여부
+   */
+  isReadMode() {
+    if (!this.currentPageData.is_edit) {
+      this.setOtherEdit(false);
       return true;
-    },
+    }
+    if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
+      this.setOtherEdit(false);
+      return false;
+    }
+    this.setEditingUserID(this.currentPageData.is_edit);
+    this.setOtherEdit(true);
+    return true;
+  },
   setOtherEdit(flag) {
     this.otherEdit = flag;
   },
@@ -325,43 +326,43 @@ const PageStore = observable({
     }
   },
 
-    /**
-     * 에디터의 텍스트/배경 색상을 초기화한다.
-     */
-    initializeBoxColor() {
-      document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
-      document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
-      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
-      document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
-    },
+  /**
+   * 에디터의 텍스트/배경 색상을 초기화한다.
+   */
+  initializeBoxColor() {
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-highlight-bg-color__color')?.removeAttribute('stroke');
+  },
 
-    async createNotePage() {
-      const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
-      this.currentPageData = {
-        ...dto,
-        note_content: NoteUtil.decodeStr('<p><br></p>'),
-        note_title: NoteUtil.decodeStr(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')),
-      };
+  async createNotePage() {
+    const dto = await this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, this.createParent);
+    this.currentPageData = {
+      ...dto,
+      note_content: NoteUtil.decodeStr('<p><br></p>'),
+      note_title: '',
+    };
 
-      this.setIsNewPage(true);
-      EditorStore.setIsSearch(false);
+    this.setIsNewPage(true);
+    EditorStore.setIsSearch(false);
 
-      ChapterStore.getNoteChapterList();
-      ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
-      this.currentPageId = dto.note_id;
-      TagStore.setNoteTagList(dto.tagList); // []
-      EditorStore.setFileList(dto.fileList); // null
-      this.noteTitle = '';
-      this.modifiedDate = get12HourFormat(dto.modified_date);
+    ChapterStore.getNoteChapterList();
+    ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
+    this.currentPageId = dto.note_id;
+    TagStore.setNoteTagList(dto.tagList); // []
+    EditorStore.setFileList(dto.fileList); // null
+    this.noteTitle = '';
+    this.modifiedDate = get12HourFormat(dto.modified_date);
 
-      NoteStore.setTargetLayout('Content');
-      NoteStore.setShowPage(true);
+    NoteStore.setTargetLayout('Content');
+    NoteStore.setShowPage(true);
 
-      // initialize editor properties
-      this.initializeBoxColor();
-      EditorStore.tinymce?.undoManager?.clear();
-      if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
-    },
+    // initialize editor properties
+    this.initializeBoxColor();
+    EditorStore.tinymce?.undoManager?.clear();
+    if (EditorStore.tinymce?.selection) EditorStore.tinymce.focus();
+  },
 
   /**
    * It throw away pages in recycle bin.
@@ -720,62 +721,78 @@ const PageStore = observable({
     EditorStore.tinymce?.undoManager.clear();
   },
 
-    /**
-     * 페이지 제목이 입력되지 않은 경우,
-     * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
-     * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
-     * @returns 입력 개체에 따른 제목
-     */
-    getTitleFromPageContent() {
-      return (
-        this._getTitleFromEditor() ||
-        this._getTitleFromFiles() ||
-        i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
-      );
-    },
+  /**
+   * 페이지 제목이 입력되지 않은 경우,
+   * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
+   * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
+   * @returns 입력 개체에 따른 제목
+   */
+  getTitleFromPageContent() {
+    return (
+      this._getTitleFromEditor() ||
+      this._getTitleFromFiles() ||
+      i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
+    );
+  },
 
-    _getTitleFromEditor() {
-      for (const node of EditorStore.tinymce.getBody().children) {
-        if (node.tagName === 'TABLE') return this._getTitleFromTable(node);
-        if (
-          !node.textContent &&
-          node.nodeName !== 'IMG' &&
-          !node.getElementsByTagName('IMG').length
-        )
-          continue;
+  _getTitleFromEditor() {
+    return this._getTitleByTagName(
+      [...EditorStore.tinymce.getBody().children].find(node =>
+        this._hasTitle(node),
+      ),
+    );
+  },
+
+  _hasTitle(node) {
+    if (node.tagName === 'TABLE') return true;
+    if (
+      !node.textContent &&
+      node.nodeName !== 'IMG' &&
+      !node.getElementsByTagName('IMG').length
+    )
+      return false;
+    return this._getTitleByTagName(node);
+  },
+
+  _getTitleByTagName(node) {
+    if (!node) return '';
+    switch (node.nodeName) {
+      case 'BR':
+        return '';
+      case 'IMG':
+        return node.dataset.name ? node.dataset.name : node.src;
+      case 'OL':
+      case 'UL':
+        return node.children[0]?.textContent;
+      case 'TABLE':
+        return this._getTitleFromTable(node);
+      case 'DIV':
+      case 'PRE':
+      case 'P':
+        return this._searchInsideContainerTag(node);
+      default:
+        return node.textContent.slice(0, 200);
+    }
+  },
+
+  /**
+   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
+   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
+   * @param {element} node
+   * @returns 테이블로부터 추출된 title
+   */
+  _getTitleFromTable(node) {
+    for(const td of node.getElementsByTagName('td')) {
+      for(const node of td.childNodes) {
         const title = this._getTitleByTagName(node);
         if (title) return title;
       }
-      return;
-    },
+    }
+    return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
+  },
 
-    /**
-     * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
-     * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-     * @param {element} node 
-     * @returns 테이블로부터 추출된 title
-     */
-    _getTitleFromTable(node) {
-      for(const td of node.getElementsByTagName('td')) {
-        for(const node of td.childNodes) {
-          const title = this._getTitleByTagName(node);
-          if (title) return title;
-        }
-      }
-      return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
-    },
-
-    _getTitleFromFiles() {
-      if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return;
-      const firstFile =
-        EditorStore.tempFileLayoutList.length > 0
-          ? EditorStore.tempFileLayoutList[0]
-          : EditorStore.fileLayoutList[0];
-      return firstFile.file_name + (firstFile.file_extension ? `.${firstFile.file_extension}` : '');
-    },
-  // div, pre, p 
   _searchInsideContainerTag(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return;
+    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return '';
     // 명시적인 줄바꿈이 있는 경우
     const lineBreakIdx = node.textContent.indexOf('\n');
     if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx);
@@ -792,27 +809,25 @@ const PageStore = observable({
       let title = this._getTitleByTagName(item);
       if (title !== undefined) return title;
     }
+    return '';
   },
-  _getTitleByTagName(node) {
-    switch (node.nodeName) {
-      case 'BR': return;
-      case 'IMG':
-        return node.dataset.name ? node.dataset.name : node.src;
-      case 'SPAN': case 'A': case '#text':
-      case 'STRONG': case 'BLOCKQUOTE': case 'EM': case 'H1': case 'H2': case 'H3': case 'H4': case 'H5': case 'H6':
-        return node.textContent.slice(0, 200);
-      case 'OL': case 'UL':
-        return node.children[0].textContent;
-      case 'TABLE':
-        let tableTitle = this._getTitleFromTable(node);
-        if (tableTitle !== undefined) return tableTitle;
-      case 'DIV': case 'PRE': case "P":
-        let title = this._searchInsideContainerTag(node);
-        if (title !== undefined) return title;
-      default: break;
-    }
-    if (node.textContent) return node.textContent.slice(0, 200);
+
+  _getTitleFromFiles() {
+    if (
+      !EditorStore.tempFileLayoutList.length &&
+      !EditorStore.fileLayoutList.length
+    )
+      return '';
+    const firstFile =
+      EditorStore.tempFileLayoutList.length > 0
+        ? EditorStore.tempFileLayoutList[0]
+        : EditorStore.fileLayoutList[0];
+    return (
+      firstFile.file_name +
+      (firstFile.file_extension ? `.${firstFile.file_extension}` : '')
+    );
   },
+
   async createSharePage(targetList) {
     const {
       data: { dto: { noteList } }
@@ -891,9 +906,6 @@ const PageStore = observable({
     NoteStore.setToastText(i18n.t('NOTE_SAVE_PAGE'));
     NoteStore.setIsVisibleToast(true);
   }  
-},
-{
-  set_CurrentPageData: action
-})
+});
 
 export default PageStore;
