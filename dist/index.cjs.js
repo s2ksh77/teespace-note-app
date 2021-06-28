@@ -1937,6 +1937,12 @@ var CHAPTER_TYPE = {
   SHARED: 'shared',
   RECYCLE_BIN: 'recycle_bin'
 };
+var DRAG_TYPE = {
+  CHAPTER: 'Item:Note:Chapters',
+  PAGE: 'Item:Note:Pages',
+  SHARED_CHAPTER: 'Item:Note:SharedChapters',
+  SHARED_PAGE: 'Item:Note:SharedPages'
+};
 
 var NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -4158,7 +4164,7 @@ var PageStore = mobx.observable({
           _this3.fetchCurrentPageData(_this3.selectablePageId);
         }
       } else {
-        if (NoteStore.layoutState === "collapse") {
+        if (NoteStore.layoutState === 'collapse') {
           NoteStore.setTargetLayout('LNB');
 
           _this3.setIsNewPage(false);
@@ -4493,7 +4499,7 @@ var PageStore = mobx.observable({
             case 3:
               // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
               target = Object.keys(localStorage).find(function (key) {
-                return key.replace(/^(Note_autosave_)(.+)_(.+)$/, "$2") === NoteStore.notechannel_id;
+                return key.replace(/^(Note_autosave_)(.+)_(.+)$/, '$2') === NoteStore.notechannel_id;
               });
 
               if (target) {
@@ -4504,7 +4510,7 @@ var PageStore = mobx.observable({
               return _context16.abrupt("return");
 
             case 6:
-              noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, "$3");
+              noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, '$3');
               /**
                * 챕터, 페이지 선택이 됐다가 풀려야할 때(확인했더니 is_edit이 아닌 경우)
                * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
@@ -4651,7 +4657,7 @@ var PageStore = mobx.observable({
         note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({
-          format: "text"
+          format: 'text'
         }),
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: isAutoSave ? this.currentPageData.is_edit : '',
@@ -4869,7 +4875,7 @@ var PageStore = mobx.observable({
         note_id: page.note_id || page.id,
         note_title: page.text,
         modified_date: page.date,
-        TYPE: page.type,
+        TYPE: page.type === 'shared' ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
         note_channel_id: NoteRepository$1.chId,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
@@ -4962,7 +4968,7 @@ var PageStore = mobx.observable({
 });
 
 var ChapterStore = mobx.observable({
-  chapterColor: "",
+  chapterColor: '',
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
@@ -4972,22 +4978,22 @@ var ChapterStore = mobx.observable({
     sharedPageList: [],
     sharedChapterList: []
   },
-  currentChapterId: "",
-  chapterNewTitle: "",
-  isNewChapterColor: "",
+  currentChapterId: '',
+  chapterNewTitle: '',
+  isNewChapterColor: '',
   isNewChapter: false,
   colorArray: {
-    1: "#C84847",
-    2: "#F29274",
-    3: "#F6C750",
-    4: "#77B69B",
-    5: "#679886",
-    6: "#3A7973",
-    7: "#77BED3",
-    8: "#5C83DA",
-    9: "#8F91E7",
-    10: "#DF97AA",
-    11: "#CA6D6D"
+    1: '#C84847',
+    2: '#F29274',
+    3: '#F6C750',
+    4: '#77B69B',
+    5: '#679886',
+    6: '#3A7973',
+    7: '#77BED3',
+    8: '#5C83DA',
+    9: '#8F91E7',
+    10: '#DF97AA',
+    11: '#CA6D6D'
   },
   // 검색 실행 화면 필요
   isLoadingSearchResult: false,
@@ -4995,7 +5001,7 @@ var ChapterStore = mobx.observable({
   isTagSearching: false,
   //tag chip 클릭해서 tag chip 띄울 때 씀
   searchingTagName: '',
-  searchStr: "",
+  searchStr: '',
   // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {},
   // {chapter:[], page:[]} 형태
@@ -5130,17 +5136,17 @@ var ChapterStore = mobx.observable({
       if (chapterTitle === '새 챕터') {
         isNotAvailable[0] = 1;
       } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, "$1"));
+        temp = parseInt(chapterTitle.replace(re, '$1'));
 
         if (temp <= fullLength) {
           isNotAvailable[temp] = 1;
         }
       }
     });
-    if (!isNotAvailable[0]) return "새 챕터";
+    if (!isNotAvailable[0]) return '새 챕터';
 
     for (var i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return "새 챕터 " + i;
+      if (!isNotAvailable[i]) return '새 챕터 ' + i;
     }
   },
   getChapterId: function getChapterId(e) {
@@ -5731,7 +5737,7 @@ var ChapterStore = mobx.observable({
     return {
       beforeShared: false,
       beforeRecycleBin: false
-    }; // 휴지통만 있는 경우    
+    }; // 휴지통만 있는 경우
   },
   getNoteChapterList: function getNoteChapterList() {
     var _arguments = arguments,
@@ -6004,7 +6010,7 @@ var ChapterStore = mobx.observable({
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
-    this.setSearchStr("");
+    this.setSearchStr('');
   },
   getChapterFirstPage: function getChapterFirstPage(targetId) {
     var _this14 = this;
@@ -6048,7 +6054,7 @@ var ChapterStore = mobx.observable({
         while (1) {
           switch (_context18.prev = _context18.next) {
             case 0:
-              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
               _this15.setIsSearching(true);
 
               _this15.setIsLoadingSearchResult(true);
@@ -6161,7 +6167,7 @@ var ChapterStore = mobx.observable({
         note_channel_id: NoteRepository$1.chId,
         text: chapter.text,
         color: chapter.color,
-        type: chapter.type,
+        type: chapter.type === 'shared_page' || chapter.type === 'shared' ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
         shared_room_name: NoteRepository$1.WS_ID,
@@ -6336,7 +6342,7 @@ var ChapterStore = mobx.observable({
   setCurrentChapterInfo: function setCurrentChapterInfo(chapterId, isRecycleBin) {
     this.setCurrentChapterId(chapterId);
 
-    if (typeof isRecycleBin === "boolean") {
+    if (typeof isRecycleBin === 'boolean') {
       PageStore.setIsRecycleBin(isRecycleBin);
       return;
     }
@@ -6362,7 +6368,7 @@ var ChapterStore = mobx.observable({
             case 0:
               _context24.prev = 0;
               _context24.t0 = NoteStore.metaTagInfo.type;
-              _context24.next = _context24.t0 === "chapter" ? 4 : _context24.t0 === "page" ? 13 : 17;
+              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
               break;
 
             case 4:
