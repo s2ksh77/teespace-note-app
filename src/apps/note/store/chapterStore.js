@@ -1,44 +1,45 @@
-import { observable } from "mobx";
-import NoteRepository from "./noteRepository";
-import NoteStore from "./noteStore";
-import PageStore from "./pageStore";
+import { observable } from 'mobx';
+import NoteRepository from './noteRepository';
+import NoteStore from './noteStore';
+import PageStore from './pageStore';
 import { checkNotDuplicate } from '../components/common/validators';
-import { CHAPTER_TYPE } from '../GlobalVariable';
+import { CHAPTER_TYPE, DRAG_TYPE } from '../GlobalVariable';
 import NoteUtil from '../NoteUtil';
 import i18n from '../i18n/i18n';
 
 const ChapterStore = observable({
-  chapterColor: "",
+  chapterColor: '',
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: { // web에서 안 씀
+  sortedChapterList: {
+    // web에서 안 씀
     roomChapterList: [],
     sharedPageList: [],
-    sharedChapterList: []
+    sharedChapterList: [],
   },
-  currentChapterId: "",
-  chapterNewTitle: "",
-  isNewChapterColor: "",
+  currentChapterId: '',
+  chapterNewTitle: '',
+  isNewChapterColor: '',
   isNewChapter: false,
   colorArray: {
-    1: "#C84847",
-    2: "#F29274",
-    3: "#F6C750",
-    4: "#77B69B",
-    5: "#679886",
-    6: "#3A7973",
-    7: "#77BED3",
-    8: "#5C83DA",
-    9: "#8F91E7",
-    10: "#DF97AA",
-    11: "#CA6D6D",
+    1: '#C84847',
+    2: '#F29274',
+    3: '#F6C750',
+    4: '#77B69B',
+    5: '#679886',
+    6: '#3A7973',
+    7: '#77BED3',
+    8: '#5C83DA',
+    9: '#8F91E7',
+    10: '#DF97AA',
+    11: '#CA6D6D',
   },
   // 검색 실행 화면 필요
   isLoadingSearchResult: false,
   isSearching: false,
-  isTagSearching: false,//tag chip 클릭해서 tag chip 띄울 때 씀
+  isTagSearching: false, //tag chip 클릭해서 tag chip 띄울 때 씀
   searchingTagName: '',
-  searchStr: "", // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
+  searchStr: '', // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
   deleteChapterList: [],
   deleteChapterId: '',
@@ -57,7 +58,7 @@ const ChapterStore = observable({
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
-  lnbBoundary: { beforeShared:false, beforeRecycleBin:false }, // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
+  lnbBoundary: { beforeShared: false, beforeRecycleBin: false }, // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   getLoadingPageInfo() {
     return this.loadingPageInfo;
   },
@@ -138,7 +139,9 @@ const ChapterStore = observable({
     this.dragEnterChapterIdx = chapterIdx;
   },
   setChapterListChildren(chapterId) {
-    this.chapterChildren = this.chapterList.filter(chapter => chapter.id === chapterId)[0].children;
+    this.chapterChildren = this.chapterList.filter(
+      chapter => chapter.id === chapterId,
+    )[0].children;
   },
   setChapterTempUl(flag) {
     this.isNewChapter = flag;
@@ -147,7 +150,8 @@ const ChapterStore = observable({
   setChapterTitle(title) {
     this.chapterNewTitle = title;
   },
-  setLnbBoundary(flags) { // 형태: { beforeShared:false, beforeRecycleBin:false }
+  setLnbBoundary(flags) {
+    // 형태: { beforeShared:false, beforeRecycleBin:false }
     this.lnbBoundary = flags;
   },
   // 사용자 input이 없을 때
@@ -159,21 +163,21 @@ const ChapterStore = observable({
     let fullLength = this.chapterList.length;
     isNotAvailable.length = fullLength + 1;
 
-    this.chapterList.forEach((chapter) => {
+    this.chapterList.forEach(chapter => {
       chapterTitle = chapter.text;
       if (chapterTitle === '새 챕터') {
         isNotAvailable[0] = 1;
       } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, "$1"));
+        temp = parseInt(chapterTitle.replace(re, '$1'));
         if (temp <= fullLength) {
           isNotAvailable[temp] = 1;
         }
       }
-    })
+    });
 
-    if (!isNotAvailable[0]) return "새 챕터";
+    if (!isNotAvailable[0]) return '새 챕터';
     for (let i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return "새 챕터 " + i;
+      if (!isNotAvailable[i]) return '새 챕터 ' + i;
     }
   },
   getChapterId(e) {
@@ -190,13 +194,13 @@ const ChapterStore = observable({
   },
   async getChapterColor(chapterId) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.getChapterColor(chapterId);
     return dto.color;
   },
   async getChapterName(chapterId) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.getChapterText(chapterId);
     return dto.text;
   },
@@ -259,9 +263,9 @@ const ChapterStore = observable({
    */
   async getChapterList() {
     const {
-      data: { dto:
-        { notbookList }
-      }
+      data: {
+        dto: { notbookList },
+      },
     } = await NoteRepository.getChapterList(NoteStore.getChannelId());
 
     this.setChapterList(notbookList);
@@ -278,12 +282,18 @@ const ChapterStore = observable({
   },
 
   async createChapter(chapterTitle, chapterColor) {
-    const { dto } = await NoteRepository.createChapter(chapterTitle, chapterColor);
+    const { dto } = await NoteRepository.createChapter(
+      chapterTitle,
+      chapterColor,
+    );
     return dto;
   },
   // 휴지통에 있는 페이지 복구할 때 페이지 없는 챕터 생성용
   async createRestoreChapter(chapterTitle, chapterColor) {
-    const { dto } = await NoteRepository.createRestoreChapter(chapterTitle, chapterColor);
+    const { dto } = await NoteRepository.createRestoreChapter(
+      chapterTitle,
+      chapterColor,
+    );
     return dto;
   },
   async deleteChapter(chapterList) {
@@ -291,17 +301,24 @@ const ChapterStore = observable({
     return dto;
   },
   async renameChapter(renameId, renameText, color) {
-    const { dto } = await NoteRepository.renameChapter(renameId, renameText, color)
+    const { dto } = await NoteRepository.renameChapter(
+      renameId,
+      renameText,
+      color,
+    );
     return dto;
   },
   async updateChapterColor(chapterId) {
     const targetColor = this.getChapterRandomColor();
-    const { dto } = await NoteRepository.updateChapterColor(chapterId, targetColor)
+    const { dto } = await NoteRepository.updateChapterColor(
+      chapterId,
+      targetColor,
+    );
     return dto;
   },
   async getChapterChildren(chapterId) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.getChapterChildren(chapterId);
     return dto;
   },
@@ -342,72 +359,95 @@ const ChapterStore = observable({
       chapter.isFolded = false;
       return {
         id: chapter.id,
-        children: chapter.children.map((page) => page.id),
-        isFolded: false
-      }
+        children: chapter.children.map(page => page.id),
+        isFolded: false,
+      };
     });
-    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
+    localStorage.setItem(
+      'NoteSortData_' + targetChannelId,
+      JSON.stringify(newChapters),
+    );
   },
 
   // notebookList의 chapter.type은 default, notebook만 있음
   applyDifference(targetChannelId, normalChapters) {
-    let item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    let item = JSON.parse(
+      localStorage.getItem('NoteSortData_' + targetChannelId),
+    );
 
     // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
     const createdChapterIds = [];
-    let chapterIdxMap = item.reduce((m, chapter, idx) => m.set(chapter.id, idx), new Map());
-    normalChapters.forEach((chapter) => {
+    let chapterIdxMap = item.reduce(
+      (m, chapter, idx) => m.set(chapter.id, idx),
+      new Map(),
+    );
+    normalChapters.forEach(chapter => {
       if (!chapterIdxMap.has(chapter.id)) {
         createdChapterIds.push({
           id: chapter.id,
-          children: chapter.children.map((page) => page.id),
-          isFolded: false
+          children: chapter.children.map(page => page.id),
+          isFolded: false,
         });
       } else {
         const createdPageIds = [];
         const chapterIdx = chapterIdxMap.get(chapter.id);
-        chapter.children.slice().reverse().forEach((page) => {
-          if (!item[chapterIdx].children.includes(page.id)) {
-            createdPageIds.push(page.id);
-          }
-        });
-        item[chapterIdx].children = item[chapterIdx].children.concat(createdPageIds);
+        chapter.children
+          .slice()
+          .reverse()
+          .forEach(page => {
+            if (!item[chapterIdx].children.includes(page.id)) {
+              createdPageIds.push(page.id);
+            }
+          });
+        item[chapterIdx].children =
+          item[chapterIdx].children.concat(createdPageIds);
       }
     });
     item = createdChapterIds.concat(item);
 
     // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
-    item.slice().forEach((chapter) => {
-      chapterIdxMap = item.reduce((m, chapter, idx) => m.set(chapter.id, idx), new Map());
+    item.slice().forEach(chapter => {
+      chapterIdxMap = item.reduce(
+        (m, chapter, idx) => m.set(chapter.id, idx),
+        new Map(),
+      );
       if (this.chapterMap.get(chapter.id) === undefined) {
         item.splice(chapterIdxMap.get(chapter.id), 1);
       } else {
-        chapter.children.slice().forEach((pageId) => {
+        chapter.children.slice().forEach(pageId => {
           const pageIds = chapter.children;
-          if (this.pageMap.get(pageId) === undefined
-            || this.pageMap.get(pageId).parent !== chapter.id) {
+          if (
+            this.pageMap.get(pageId) === undefined ||
+            this.pageMap.get(pageId).parent !== chapter.id
+          ) {
             chapter.children.splice(pageIds.indexOf(pageId), 1);
           }
         });
       }
     });
 
-    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
+    localStorage.setItem(
+      'NoteSortData_' + targetChannelId,
+      JSON.stringify(item),
+    );
   },
 
   getLocalOrderChapterList(targetChannelId, normalChapters) {
-    const item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    const item = JSON.parse(
+      localStorage.getItem('NoteSortData_' + targetChannelId),
+    );
 
-    return item.map((chapter) => {
+    return item.map(chapter => {
       const chapterIdx = this.chapterMap.get(chapter.id);
       return {
         ...normalChapters[chapterIdx],
-        children: chapter.children.map((pageId) =>
-          normalChapters[chapterIdx].children[this.pageMap.get(pageId).idx]
+        children: chapter.children.map(
+          pageId =>
+            normalChapters[chapterIdx].children[this.pageMap.get(pageId).idx],
         ),
-        isFolded: chapter.isFolded ? chapter.isFolded : false
-      }
-    })
+        isFolded: chapter.isFolded ? chapter.isFolded : false,
+      };
+    });
   },
 
   async checkDefaultChapterColor(notebookList) {
@@ -422,14 +462,23 @@ const ChapterStore = observable({
   // type : defalut, notebook, shared_page, shared
   // default chapterColor도 null이면 update 해준다
   async sortServerChapterList(notebookList) {
-    let normalChapters = [], sharedChapters = [];
+    let normalChapters = [],
+      sharedChapters = [];
     if (notebookList.length === 0) return { normalChapters, sharedChapters };
     const { getChapterNumType } = NoteUtil;
     // type : defalut(0), notebook(1), shared_page, shared, recycle_bin 순으로 sort된다
-    notebookList.sort((a, b) => getChapterNumType(a.type) - getChapterNumType(b.type));
+    notebookList.sort(
+      (a, b) => getChapterNumType(a.type) - getChapterNumType(b.type),
+    );
 
     notebookList = await this.checkDefaultChapterColor(notebookList);
-    const firstSharedIdx = notebookList.findIndex(chapter => [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED, CHAPTER_TYPE.RECYCLE_BIN].includes(chapter.type));
+    const firstSharedIdx = notebookList.findIndex(chapter =>
+      [
+        CHAPTER_TYPE.SHARED_PAGE,
+        CHAPTER_TYPE.SHARED,
+        CHAPTER_TYPE.RECYCLE_BIN,
+      ].includes(chapter.type),
+    );
 
     switch (firstSharedIdx) {
       case 0: // 전달만 있는 경우
@@ -438,7 +487,8 @@ const ChapterStore = observable({
       case -1: // 전달 챕터/페이지, 휴지통 없는 경우
         normalChapters = notebookList.slice(0);
         break;
-      default: // 전달인거, 아닌거 다 있는 경우
+      default:
+        // 전달인거, 아닌거 다 있는 경우
         normalChapters = notebookList.slice(0, firstSharedIdx);
         sharedChapters = notebookList.slice(firstSharedIdx);
         break;
@@ -449,17 +499,25 @@ const ChapterStore = observable({
   // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
   getLnbBoundary({ normalChapters, sharedChapters }) {
     if (normalChapters.length) {
-      if (sharedChapters.length>1) return { beforeShared:true, beforeRecycleBin:true };
-      return { beforeShared:false, beforeRecycleBin:true } // 일반 챕터, 휴지통만 있는 경우
+      if (sharedChapters.length > 1)
+        return { beforeShared: true, beforeRecycleBin: true };
+      return { beforeShared: false, beforeRecycleBin: true }; // 일반 챕터, 휴지통만 있는 경우
     }
-    if (sharedChapters.length>1) return { beforeShared:false, beforeRecycleBin:true };
-    return { beforeShared:false, beforeRecycleBin:false } // 휴지통만 있는 경우    
+    if (sharedChapters.length > 1)
+      return { beforeShared: false, beforeRecycleBin: true };
+    return { beforeShared: false, beforeRecycleBin: false }; // 휴지통만 있는 경우
   },
 
-  async getNoteChapterList(isInit=false) {
-    const { data: { dto: { notbookList } } } = await NoteRepository.getChapterList(NoteStore.getChannelId());
+  async getNoteChapterList(isInit = false) {
+    const {
+      data: {
+        dto: { notbookList },
+      },
+    } = await NoteRepository.getChapterList(NoteStore.getChannelId());
     // type순 정렬 및 반환
-    let { normalChapters, sharedChapters } = await this.sortServerChapterList(notbookList);
+    let { normalChapters, sharedChapters } = await this.sortServerChapterList(
+      notbookList,
+    );
     this.createMap(normalChapters);
     this.sharedCnt = sharedChapters.length;
 
@@ -469,13 +527,18 @@ const ChapterStore = observable({
     } else {
       this.applyDifference(NoteStore.getChannelId(), normalChapters);
       // isFolded state 추가
-      normalChapters = this.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
+      normalChapters = this.getLocalOrderChapterList(
+        NoteStore.getChannelId(),
+        normalChapters,
+      );
     }
     // sharedChapters = shared, recylce_bin
     sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
-    
+
     // 화면에 경계선 그리기용
-    this.setLnbBoundary(this.getLnbBoundary({ normalChapters, sharedChapters }));
+    this.setLnbBoundary(
+      this.getLnbBoundary({ normalChapters, sharedChapters }),
+    );
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
@@ -484,58 +547,96 @@ const ChapterStore = observable({
   getTheRestFoldedState(isInit, sharedChapters) {
     if (sharedChapters.length === 0) return sharedChapters;
 
-    let item = localStorage.getItem(`Note_sharedFoldedState_${NoteStore.notechannel_id}`);
+    let item = localStorage.getItem(
+      `Note_sharedFoldedState_${NoteStore.notechannel_id}`,
+    );
     const newFoldedMap = new Map();
     if (!item) {
       // sharedChapters의 foldedState는 false로
-      sharedChapters.forEach((chapter) => {
+      sharedChapters.forEach(chapter => {
         newFoldedMap.set(chapter.id, false);
         chapter.isFolded = false;
-      })
+      });
     } else {
       item = JSON.parse(item, NoteUtil.reviver);
-      sharedChapters.forEach((chapter) => {
+      sharedChapters.forEach(chapter => {
         let value = item.get(chapter.id) ? item.get(chapter.id) : false;
         if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
         newFoldedMap.set(chapter.id, value);
         chapter.isFolded = value;
-      })
+      });
     }
 
     localStorage.setItem(
       `Note_sharedFoldedState_${NoteStore.notechannel_id}`,
-      JSON.stringify(newFoldedMap, NoteUtil.replacer)
-    )
+      JSON.stringify(newFoldedMap, NoteUtil.replacer),
+    );
     return sharedChapters;
   },
 
-  async createNoteChapter() { 
+  async createNoteChapter() {
     const trimmedChapterTitle = this.chapterNewTitle.trim();
-    this.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
-    const notbookList = await this.createChapter(this.chapterNewTitle, this.isNewChapterColor);
+    this.chapterNewTitle =
+      trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
+    const notbookList = await this.createChapter(
+      this.chapterNewTitle,
+      this.isNewChapterColor,
+    );
     await this.getNoteChapterList();
     // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
     PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
-    this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
-    PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
+    this.setDragData(
+      new Map([
+        [this.currentChapterId, this.createDragData(this.currentChapterId)],
+      ]),
+    );
+    PageStore.setDragData(
+      new Map([
+        [
+          PageStore.currentPageId,
+          PageStore.createDragData(
+            PageStore.currentPageId,
+            this.currentChapterId,
+          ),
+        ],
+      ]),
+    );
   },
 
   async deleteNoteChapter(isDnd) {
     await this.deleteChapter(this.deleteChapterList);
     await this.getNoteChapterList();
-    if (this.deleteChapterList.find(chapter => chapter.id === this.currentChapterId)) {
+    if (
+      this.deleteChapterList.find(
+        chapter => chapter.id === this.currentChapterId,
+      )
+    ) {
       const pageId =
         isDnd || this.chapterList[0]?.type === CHAPTER_TYPE.RECYCLE_BIN
           ? this.chapterList[0]?.children[0]?.id
           : PageStore.selectablePageId;
       await PageStore.fetchCurrentPageData(pageId);
-      this.setDragData(new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]));
-      PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
+      this.setDragData(
+        new Map([
+          [this.currentChapterId, this.createDragData(this.currentChapterId)],
+        ]),
+      );
+      PageStore.setDragData(
+        new Map([
+          [
+            PageStore.currentPageId,
+            PageStore.createDragData(
+              PageStore.currentPageId,
+              this.currentChapterId,
+            ),
+          ],
+        ]),
+      );
       ChapterStore.setIsCtrlKeyDown(false);
       this.setIsCtrlKeyDown(false);
     }
-    
+
     NoteStore.setIsDragging(false);
     this.setDeleteChapterList([]);
     NoteStore.setShowModal(false);
@@ -544,14 +645,19 @@ const ChapterStore = observable({
   },
 
   renameNoteChapter(color) {
-    this.renameChapter(this.renameId, this.renameText.trim(), color).then(dto => {
-      if (this.dragData.get(dto.id)) this.dragData.get(dto.id).item.text = dto.text;
-      this.getNoteChapterList();
-    });
+    this.renameChapter(this.renameId, this.renameText.trim(), color).then(
+      dto => {
+        if (this.dragData.get(dto.id))
+          this.dragData.get(dto.id).item.text = dto.text;
+        this.getNoteChapterList();
+      },
+    );
   },
 
   createDragData(chapterId) {
-    const chapterIdx = this.chapterList.findIndex(chapter => chapter.id === chapterId);
+    const chapterIdx = this.chapterList.findIndex(
+      chapter => chapter.id === chapterId,
+    );
     if (chapterIdx < 0) return;
     return {
       item: this.chapterList[chapterIdx],
@@ -577,40 +683,66 @@ const ChapterStore = observable({
   },
 
   moveChapter() {
-    const item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+    const item = JSON.parse(
+      localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()),
+    );
 
     const sortedDragDataList = this.getSortedDragDataList();
-    const sortedMoveChapters = sortedDragDataList.map(data => item[data.chapterIdx]);
+    const sortedMoveChapters = sortedDragDataList.map(
+      data => item[data.chapterIdx],
+    );
 
     const chapters = [];
     item.forEach((chapter, idx) => {
-      if (idx === this.dragEnterChapterIdx) chapters.push(...sortedMoveChapters);
+      if (idx === this.dragEnterChapterIdx)
+        chapters.push(...sortedMoveChapters);
       if (!this.dragData.get(chapter.id)) chapters.push(chapter);
     });
-    if (this.dragEnterChapterIdx >= chapters.length) chapters.push(...sortedMoveChapters);
+    if (this.dragEnterChapterIdx >= chapters.length)
+      chapters.push(...sortedMoveChapters);
 
     let moveCnt = 0;
-    const startIdx = chapters.findIndex(chapter => chapter.id === sortedDragDataList[0].item.id);
+    const startIdx = chapters.findIndex(
+      chapter => chapter.id === sortedDragDataList[0].item.id,
+    );
     sortedDragDataList.forEach((data, idx) => {
       if (data.chapterIdx !== startIdx + idx) moveCnt++;
       this.dragData.set(data.item.id, {
         item: data.item,
         chapterIdx: startIdx + idx,
-      })
+      });
     });
 
     if (moveCnt > 0) {
-      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
+      localStorage.setItem(
+        'NoteSortData_' + NoteStore.getChannelId(),
+        JSON.stringify(chapters),
+      );
       this.getNoteChapterList().then(() => {
         this.currentChapterId = sortedMoveChapters[0].id;
         PageStore.currentPageId = sortedMoveChapters[0].children[0];
         NoteStore.setIsDragging(false);
         if (!PageStore.currentPageId) PageStore.clearDragData();
-        else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, this.currentChapterId)]]));
-        PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(() => {
-          NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', { moveCnt: moveCnt }));
-          NoteStore.setIsVisibleToast(true);
-        });
+        else
+          PageStore.setDragData(
+            new Map([
+              [
+                PageStore.currentPageId,
+                PageStore.createDragData(
+                  PageStore.currentPageId,
+                  this.currentChapterId,
+                ),
+              ],
+            ]),
+          );
+        PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(
+          () => {
+            NoteStore.setToastText(
+              i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', { moveCnt: moveCnt }),
+            );
+            NoteStore.setIsVisibleToast(true);
+          },
+        );
       });
     } else {
       this.handleClickOutside();
@@ -627,16 +759,18 @@ const ChapterStore = observable({
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
-    this.setSearchStr("");
+    this.setSearchStr('');
   },
   async getChapterFirstPage(targetId) {
     this.getChapterList().then(chapterList => {
-      const targetChapter = chapterList.filter(chapter => chapter.id === targetId)[0];
+      const targetChapter = chapterList.filter(
+        chapter => chapter.id === targetId,
+      )[0];
       if (targetChapter.children.length > 0) {
         PageStore.setCurrentPageId(targetChapter.children[0].id);
         PageStore.fetchCurrentPageData(targetChapter.children[0].id);
       } else PageStore.fetchCurrentPageData('');
-    })
+    });
   },
   /*
     태그와 챕터리스트 isSearching이 다름
@@ -644,17 +778,20 @@ const ChapterStore = observable({
     태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
     isSearching이 검색 시작 ~ 검색 결과 출력전까지임
   */
-  async getSearchResult() { // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+  async getSearchResult() {
+    // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
     this.setIsSearching(true);
     this.setIsLoadingSearchResult(true);
     this.getSearchList(this.searchStr.trim()).then(dto => {
-      const filtered = dto.chapterList?.filter(chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN);
+      const filtered = dto.chapterList?.filter(
+        chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN,
+      );
       this.setSearchResult({
-        chapter: (filtered && filtered.length>0) ? filtered : null,
-        page: dto.pageList
+        chapter: filtered && filtered.length > 0 ? filtered : null,
+        page: dto.pageList,
       });
       this.setIsLoadingSearchResult(false);
-    })
+    });
   },
 
   async fetchSearchResult() {
@@ -664,30 +801,32 @@ const ChapterStore = observable({
     this.getSearchList(this.searchStr.trim()).then(dto => {
       if (dto.pageList && dto.pageList.length > 0) {
         dto.pageList.map(page => {
-          this.getChapterInfoList(page.parent_notebook).then(dto => {
-            page.parentColor = dto.color;
-            page.parentText = dto.text;
-          }).then(() => {
-            this.setSearchResult({
-              chapter: dto.chapterList,
-              page: dto.pageList
+          this.getChapterInfoList(page.parent_notebook)
+            .then(dto => {
+              page.parentColor = dto.color;
+              page.parentText = dto.text;
+            })
+            .then(() => {
+              this.setSearchResult({
+                chapter: dto.chapterList,
+                page: dto.pageList,
+              });
+              this.setIsLoadingSearchResult(false);
             });
-            this.setIsLoadingSearchResult(false);
-          })
-        })
+        });
       } else {
         this.setSearchResult({
           chapter: dto.chapterList,
-          page: dto.pageList
+          page: dto.pageList,
         });
         this.setIsLoadingSearchResult(false);
       }
-    })
+    });
   },
 
   async createShareChapter(targetList) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.createShareChapter(targetList);
     return dto;
   },
@@ -698,20 +837,23 @@ const ChapterStore = observable({
     const targetChId = NoteStore.getTargetChId(targetRoomId);
     const targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
     const targetList = targetChapterList.map(chapter => {
-      return ({
+      return {
         id: chapter.id,
         ws_id: NoteRepository.WS_ID,
         note_channel_id: NoteRepository.chId,
         text: chapter.text,
         color: chapter.color,
-        type: chapter.type,
+        type:
+          chapter.type === 'shared_page' || chapter.type === 'shared'
+            ? DRAG_TYPE.SHARED_CHAPTER
+            : DRAG_TYPE.CHAPTER,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,
         shared_room_name: NoteRepository.WS_ID,
         target_workspace_id: targetRoomId,
         target_channel_id: targetChId,
         messenger_id: targetTalkChId,
-      });
+      };
     });
 
     this.createShareChapter(targetList).then(() => {
@@ -719,42 +861,62 @@ const ChapterStore = observable({
       NoteStore.setIsDragging(false);
     });
   },
-  getFirstRenderedChapter() { // web에서 안 씀
+  getFirstRenderedChapter() {
+    // web에서 안 씀
     if (this.chapterList.length > 0) return this.chapterList[0];
     return null;
   },
 
   setFirstDragData(targetChapter) {
-    this.setDragData(new Map([[targetChapter.id, {
-      item: targetChapter,
-      chapterIdx: 0,
-    }]]));
+    this.setDragData(
+      new Map([
+        [
+          targetChapter.id,
+          {
+            item: targetChapter,
+            chapterIdx: 0,
+          },
+        ],
+      ]),
+    );
 
     if (targetChapter.children.length > 0) {
       const targetPage = targetChapter.children[0];
-      PageStore.setDragData(new Map([[targetPage.id, {
-        item: targetPage,
-        pageIdx: 0,
-        chapterId: targetChapter.id,
-        chapterIdx: 0,
-      }]]));
+      PageStore.setDragData(
+        new Map([
+          [
+            targetPage.id,
+            {
+              item: targetPage,
+              pageIdx: 0,
+              chapterId: targetChapter.id,
+              chapterIdx: 0,
+            },
+          ],
+        ]),
+      );
     }
   },
 
   async setFirstNoteInfo() {
-    const targetChapter = this.chapterList.length > 0 ? this.chapterList[0] : null;
+    const targetChapter =
+      this.chapterList.length > 0 ? this.chapterList[0] : null;
     if (!targetChapter) {
-      this.setCurrentChapterInfo('', false);//chapterId='', isRecycleBin=false
+      this.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
       PageStore.fetchCurrentPageData('');
       return;
     }
     this.setFirstDragData(targetChapter);
-    const pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
+    const pageId =
+      targetChapter.children.length > 0 ? targetChapter.children[0].id : '';
     // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
     // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
     if (pageId) await PageStore.fetchCurrentPageData(pageId);
     else {
-      this.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+      this.setCurrentChapterInfo(
+        targetChapter.id,
+        targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false,
+      );
     }
   },
   /*
@@ -767,7 +929,8 @@ const ChapterStore = observable({
     this.setLoadingPageInfo(false);
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
-  async fetchChapterList(isInit=false) { // 한 군데에서만 부르긴하지만 일단 param 추가
+  async fetchChapterList(isInit = false) {
+    // 한 군데에서만 부르긴하지만 일단 param 추가
     this.setLoadingPageInfo(true);
     await this.getNoteChapterList(isInit);
 
@@ -791,7 +954,7 @@ const ChapterStore = observable({
    */
   setCurrentChapterInfo(chapterId, isRecycleBin) {
     this.setCurrentChapterId(chapterId);
-    if (typeof isRecycleBin === "boolean") {
+    if (typeof isRecycleBin === 'boolean') {
       PageStore.setIsRecycleBin(isRecycleBin);
       return;
     }
@@ -799,15 +962,18 @@ const ChapterStore = observable({
       PageStore.setIsRecycleBin(false);
       return;
     }
-    const recycleBin = this.chapterList.find(chapter => chapter.type === CHAPTER_TYPE.RECYCLE_BIN);
-    if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);
+    const recycleBin = this.chapterList.find(
+      chapter => chapter.type === CHAPTER_TYPE.RECYCLE_BIN,
+    );
+    if (recycleBin && recycleBin.id === chapterId)
+      PageStore.setIsRecycleBin(true);
     else PageStore.setIsRecycleBin(false);
   },
 
   async openNote() {
     try {
-      switch (NoteStore.metaTagInfo.type){
-        case "chapter": // chapter, page 선택
+      switch (NoteStore.metaTagInfo.type) {
+        case 'chapter': // chapter, page 선택
           NoteStore.setTargetLayout('LNB');
           this.setScrollIntoViewId(NoteStore.metaTagInfo.id);
           await this.getNoteChapterList();
@@ -821,21 +987,23 @@ const ChapterStore = observable({
            */
           await PageStore.fetchCurrentPageData(pageId ? pageId : '');
           break;
-        case "page":
+        case 'page':
           await PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
-          NoteStore.setTargetLayout('Content');// 챕터 없습니다 페이지 나오지 않게 하기
+          NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
           break;
       }
-    } catch(e) {
-      console.log('e', e)
+    } catch (e) {
+      console.log('e', e);
     }
-    NoteStore.setMetaTagInfo({isOpen:false, type:'', id:''});
+    NoteStore.setMetaTagInfo({ isOpen: false, type: '', id: '' });
   },
 
   getRoomChapterList() {
-    const roomChapterList = this.chapterList.filter(chapter => chapter.type === 'notebook' || chapter.type === 'default');
+    const roomChapterList = this.chapterList.filter(
+      chapter => chapter.type === 'notebook' || chapter.type === 'default',
+    );
     return roomChapterList;
-  }
+  },
 });
 
 export default ChapterStore;
