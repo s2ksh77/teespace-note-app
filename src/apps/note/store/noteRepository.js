@@ -1,5 +1,6 @@
 import { API } from 'teespace-core';
 import NoteStore from './noteStore';
+import PageStore from './pageStore';
 
 const { default: axios } = require('axios');
 
@@ -85,9 +86,9 @@ class NoteRepository {
   // }
   async getAllSortedTagList() {
     return await API.Get(
-      `note-api/tagSort?action=List&note_channel_id=${
-        this.chId
-      }&t=${new Date().getTime().toString()}`,
+      `note-api/tagSort?action=List&note_channel_id=${this.chId}&t=${new Date()
+        .getTime()
+        .toString()}`,
     );
   }
 
@@ -160,22 +161,19 @@ class NoteRepository {
 
   async createRestoreChapter(chapterTitle, chapterColor) {
     try {
-      const { data } = await API.post(
-        `note-api/children/${'none'}/notebooks`,
-        {
-          dto: {
-            id: '',
-            ws_id: this.WS_ID,
-            note_channel_id: this.chId,
-            text: chapterTitle,
-            children: [],
-            type: 'notebook',
-            USER_ID: this.USER_ID,
-            user_name: this.USER_NAME,
-            color: chapterColor,
-          },
+      const { data } = await API.post(`note-api/children/${'none'}/notebooks`, {
+        dto: {
+          id: '',
+          ws_id: this.WS_ID,
+          note_channel_id: this.chId,
+          text: chapterTitle,
+          children: [],
+          type: 'notebook',
+          USER_ID: this.USER_ID,
+          user_name: this.USER_NAME,
+          color: chapterColor,
         },
-      );
+      });
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -191,10 +189,9 @@ class NoteRepository {
     try {
       const { data } = await API.post(`note-api/notebook?action=Delete`, {
         dto: {
-          notbookList : chapterList
-        }
-      }
-      );
+          notbookList: chapterList,
+        },
+      });
       return data;
     } catch (e) {
       throw Error(JSON.stringify(e));
@@ -330,6 +327,7 @@ class NoteRepository {
     updateDto.dto.modified_date = `${today.getFullYear()}.${
       today.getMonth() + 1
     }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
+    if (PageStore.isNewPage) updateDto.dto.is_favorite = 'isNewPage';
     try {
       return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {
@@ -571,7 +569,7 @@ class NoteRepository {
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
-          noteList: pageList
+          noteList: pageList,
         },
       });
     } catch (e) {
@@ -580,7 +578,7 @@ class NoteRepository {
   }
 
   async restorePage(pageList) {
-    // pageList -> pageId 리스트, chapterId 리스트 
+    // pageList -> pageId 리스트, chapterId 리스트
     // [{note_id: asdf, parent_notebook : asdf} ... ]
     pageList.forEach(page => {
       page.note_channel_id = this.chId;
@@ -590,7 +588,7 @@ class NoteRepository {
     try {
       return await API.post(`note-api/noteRecycleBin?action=Update`, {
         dto: {
-          noteList: pageList
+          noteList: pageList,
         },
       });
     } catch (e) {
