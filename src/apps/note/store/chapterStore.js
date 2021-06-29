@@ -789,6 +789,7 @@ const ChapterStore = observable({
       this.setSearchResult({
         chapter: filtered && filtered.length > 0 ? filtered : null,
         page: dto.pageList,
+        tag: dto.tagList,
       });
       this.setIsLoadingSearchResult(false);
     });
