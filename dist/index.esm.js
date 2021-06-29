@@ -7257,13 +7257,19 @@ var NoteStore = observable({
 
             case 9:
               noteInfo = _context.t0;
-              sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
-              _context.next = 13;
+              _context.next = 12;
+              return RoomStore.fetchRoomForShare({
+                roomId: noteInfo.shared_room_name
+              });
+
+            case 12:
+              sharedRoom = _context.sent;
+              _context.next = 15;
               return UserStore.getProfile({
                 userId: noteInfo.shared_user_id
               });
 
-            case 13:
+            case 15:
               _yield$UserStore$getP = _context.sent;
               displayName = _yield$UserStore$getP.displayName;
               _this.sharedInfo = {
@@ -7274,7 +7280,7 @@ var NoteStore = observable({
 
               _this.setModalInfo('viewInfo');
 
-            case 17:
+            case 19:
             case "end":
               return _context.stop();
           }
