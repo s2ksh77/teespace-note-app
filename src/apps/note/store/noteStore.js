@@ -222,7 +222,9 @@ const NoteStore = observable({
       type === 'chapter'
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id);
-    const sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
+    const sharedRoom = await RoomStore.fetchRoomForShare({
+      roomId: noteInfo.shared_room_name,
+    });
     const { displayName } = await UserStore.getProfile({
       userId: noteInfo.shared_user_id,
     });
