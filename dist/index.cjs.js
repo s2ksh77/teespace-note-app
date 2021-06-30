@@ -7138,20 +7138,21 @@ var handleWebsocket = function handleWebsocket() {
       var loginUserId = NoteRepository$1.USER_ID;
 
       var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
-          _message$NOTI_ETC$spl2 = _slicedToArray(_message$NOTI_ETC$spl, 4),
+          _message$NOTI_ETC$spl2 = _slicedToArray(_message$NOTI_ETC$spl, 5),
           eventType = _message$NOTI_ETC$spl2[0],
           targetId = _message$NOTI_ETC$spl2[1],
           parentId = _message$NOTI_ETC$spl2[2],
-          targetUserId = _message$NOTI_ETC$spl2[3];
+          targetUserId = _message$NOTI_ETC$spl2[3],
+          device = _message$NOTI_ETC$spl2[4];
 
       switch (eventType) {
         case EVENT_TYPE.CREATE:
-          if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+          if (device === 'PC' && targetUserId === loginUserId) return;
           ChapterStore.getNoteChapterList();
           break;
 
         case EVENT_TYPE.DELETE:
-          if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+          if (device === 'PC' && targetUserId === loginUserId) return;
 
           if (PageStore.getCurrentPageId() === targetId) {
             ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
@@ -7164,7 +7165,7 @@ var handleWebsocket = function handleWebsocket() {
         case EVENT_TYPE.EDIT_DONE:
         case EVENT_TYPE.NONEDIT:
         case EVENT_TYPE.EDIT_START:
-          if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+          if (device === 'PC' && targetUserId === loginUserId) return;
 
           if (PageStore.getCurrentPageId() === targetId) {
             PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
@@ -7179,12 +7180,12 @@ var handleWebsocket = function handleWebsocket() {
 
         case EVENT_TYPE.CHAPTER_CREATE:
         case EVENT_TYPE.CHAPTER_RENAME:
-          if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+          if (device === 'PC' && targetUserId === loginUserId) return;
           ChapterStore.getNoteChapterList();
           break;
 
         case EVENT_TYPE.CHAPTER_DELETE:
-          if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+          if (device === 'PC' && targetUserId === loginUserId) return;
           ChapterStore.getNoteChapterList();
 
           if (ChapterStore.getCurrentChapterId() === targetId) {
