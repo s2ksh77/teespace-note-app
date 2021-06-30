@@ -4294,7 +4294,7 @@ var PageStore = observable({
           _this3.fetchCurrentPageData(_this3.selectablePageId);
         }
       } else {
-        if (NoteStore$1.layoutState === "collapse") {
+        if (NoteStore$1.layoutState === 'collapse') {
           NoteStore$1.setTargetLayout('LNB');
 
           _this3.setIsNewPage(false);
@@ -4629,7 +4629,7 @@ var PageStore = observable({
             case 3:
               // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
               target = Object.keys(localStorage).find(function (key) {
-                return key.replace(/^(Note_autosave_)(.+)_(.+)$/, "$2") === NoteStore$1.notechannel_id;
+                return key.replace(/^(Note_autosave_)(.+)_(.+)$/, '$2') === NoteStore$1.notechannel_id;
               });
 
               if (target) {
@@ -4640,7 +4640,7 @@ var PageStore = observable({
               return _context16.abrupt("return");
 
             case 6:
-              noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, "$3");
+              noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, '$3');
               /**
                * 챕터, 페이지 선택이 됐다가 풀려야할 때(확인했더니 is_edit이 아닌 경우)
                * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
@@ -4787,7 +4787,7 @@ var PageStore = observable({
         note_title: this.noteTitle.trim(),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({
-          format: "text"
+          format: 'text'
         }),
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: isAutoSave ? this.currentPageData.is_edit : '',
@@ -4887,7 +4887,7 @@ var PageStore = observable({
   /**
    * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
    * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-   * @param {element} node 
+   * @param {element} node
    * @returns 테이블로부터 추출된 title
    */
   _getTitleFromTable: function _getTitleFromTable(node) {
@@ -4928,7 +4928,7 @@ var PageStore = observable({
     var firstFile = EditorStore.tempFileLayoutList.length > 0 ? EditorStore.tempFileLayoutList[0] : EditorStore.fileLayoutList[0];
     return firstFile.file_name + (firstFile.file_extension ? ".".concat(firstFile.file_extension) : '');
   },
-  // div, pre, p 
+  // div, pre, p
   _searchInsideContainerTag: function _searchInsideContainerTag(node) {
     if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return; // 명시적인 줄바꿈이 있는 경우
 
@@ -4985,7 +4985,7 @@ var PageStore = observable({
 
       case 'DIV':
       case 'PRE':
-      case "P":
+      case 'P':
         var title = this._searchInsideContainerTag(node);
 
         if (title !== undefined) return title;
@@ -5027,7 +5027,7 @@ var PageStore = observable({
         note_id: page.note_id || page.id,
         note_title: page.text,
         modified_date: page.date,
-        TYPE: page.type,
+        TYPE: page.type === 'shared' ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
         note_channel_id: NoteRepository$1.chId,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
@@ -5122,7 +5122,7 @@ var PageStore = observable({
 });
 
 var ChapterStore$1 = observable({
-  chapterColor: "",
+  chapterColor: '',
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
@@ -5132,22 +5132,22 @@ var ChapterStore$1 = observable({
     sharedPageList: [],
     sharedChapterList: []
   },
-  currentChapterId: "",
-  chapterNewTitle: "",
-  isNewChapterColor: "",
+  currentChapterId: '',
+  chapterNewTitle: '',
+  isNewChapterColor: '',
   isNewChapter: false,
   colorArray: {
-    1: "#C84847",
-    2: "#F29274",
-    3: "#F6C750",
-    4: "#77B69B",
-    5: "#679886",
-    6: "#3A7973",
-    7: "#77BED3",
-    8: "#5C83DA",
-    9: "#8F91E7",
-    10: "#DF97AA",
-    11: "#CA6D6D"
+    1: '#C84847',
+    2: '#F29274',
+    3: '#F6C750',
+    4: '#77B69B',
+    5: '#679886',
+    6: '#3A7973',
+    7: '#77BED3',
+    8: '#5C83DA',
+    9: '#8F91E7',
+    10: '#DF97AA',
+    11: '#CA6D6D'
   },
   // 검색 실행 화면 필요
   isLoadingSearchResult: false,
@@ -5155,7 +5155,7 @@ var ChapterStore$1 = observable({
   isTagSearching: false,
   //tag chip 클릭해서 tag chip 띄울 때 씀
   searchingTagName: '',
-  searchStr: "",
+  searchStr: '',
   // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {},
   // {chapter:[], page:[]} 형태
@@ -5290,17 +5290,17 @@ var ChapterStore$1 = observable({
       if (chapterTitle === '새 챕터') {
         isNotAvailable[0] = 1;
       } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, "$1"));
+        temp = parseInt(chapterTitle.replace(re, '$1'));
 
         if (temp <= fullLength) {
           isNotAvailable[temp] = 1;
         }
       }
     });
-    if (!isNotAvailable[0]) return "새 챕터";
+    if (!isNotAvailable[0]) return '새 챕터';
 
     for (var i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return "새 챕터 " + i;
+      if (!isNotAvailable[i]) return '새 챕터 ' + i;
     }
   },
   getChapterId: function getChapterId(e) {
@@ -5891,7 +5891,7 @@ var ChapterStore$1 = observable({
     return {
       beforeShared: false,
       beforeRecycleBin: false
-    }; // 휴지통만 있는 경우    
+    }; // 휴지통만 있는 경우
   },
   getNoteChapterList: function getNoteChapterList() {
     var _arguments = arguments,
@@ -6164,7 +6164,7 @@ var ChapterStore$1 = observable({
     this.setIsSearching(false);
     this.setIsTagSearching(false);
     this.setSearchResult({});
-    this.setSearchStr("");
+    this.setSearchStr('');
   },
   getChapterFirstPage: function getChapterFirstPage(targetId) {
     var _this14 = this;
@@ -6208,7 +6208,7 @@ var ChapterStore$1 = observable({
         while (1) {
           switch (_context18.prev = _context18.next) {
             case 0:
-              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정 
+              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
               _this15.setIsSearching(true);
 
               _this15.setIsLoadingSearchResult(true);
@@ -6321,7 +6321,7 @@ var ChapterStore$1 = observable({
         note_channel_id: NoteRepository$1.chId,
         text: chapter.text,
         color: chapter.color,
-        type: chapter.type,
+        type: chapter.type === 'shared_page' || chapter.type === 'shared' ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
         shared_room_name: NoteRepository$1.WS_ID,
@@ -6496,7 +6496,7 @@ var ChapterStore$1 = observable({
   setCurrentChapterInfo: function setCurrentChapterInfo(chapterId, isRecycleBin) {
     this.setCurrentChapterId(chapterId);
 
-    if (typeof isRecycleBin === "boolean") {
+    if (typeof isRecycleBin === 'boolean') {
       PageStore.setIsRecycleBin(isRecycleBin);
       return;
     }
@@ -6522,7 +6522,7 @@ var ChapterStore$1 = observable({
             case 0:
               _context24.prev = 0;
               _context24.t0 = NoteStore$1.metaTagInfo.type;
-              _context24.next = _context24.t0 === "chapter" ? 4 : _context24.t0 === "page" ? 13 : 17;
+              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
               break;
 
             case 4:
@@ -7440,13 +7440,19 @@ var NoteStore$1 = observable({
 
             case 9:
               noteInfo = _context.t0;
-              sharedRoom = RoomStore.getRoom(noteInfo.shared_room_name);
-              _context.next = 13;
+              _context.next = 12;
+              return RoomStore.fetchRoomForShare({
+                roomId: noteInfo.shared_room_name
+              });
+
+            case 12:
+              sharedRoom = _context.sent;
+              _context.next = 15;
               return UserStore.getProfile({
                 userId: noteInfo.shared_user_id
               });
 
-            case 13:
+            case 15:
               _yield$UserStore$getP = _context.sent;
               displayName = _yield$UserStore$getP.displayName;
               _this.sharedInfo = {
@@ -7457,7 +7463,7 @@ var NoteStore$1 = observable({
 
               _this.setModalInfo('viewInfo');
 
-            case 17:
+            case 19:
             case "end":
               return _context.stop();
           }
@@ -13634,7 +13640,7 @@ var EditorContainer = function EditorContainer() {
     }), /*#__PURE__*/React.createElement(HandleUploader, null)));
   });
 };
-var StyledWaplSearch = styled(WaplSearch)(_templateObject$5 || (_templateObject$5 = _taggedTemplateLiteral(["\n  width: 100%;\n  margin: 0 0.438rem;\n  border-radius: 0.375rem;\n  &:hover:not(:focus-within) {\n    background-color: ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  color: ", ";\n  border: 1px solid transparent;\n  background-color: ", ";\n"])), function (props) {
+var StyledWaplSearch = styled(WaplSearch)(_templateObject$5 || (_templateObject$5 = _taggedTemplateLiteral(["\n  width: 100%;\n  margin: 0 0.438rem;\n  border-radius: 0.375rem;\n  padding: 0.38rem 0.625rem;\n  &:hover:not(:focus-within) {\n    background-color: ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  color: ", ";\n  border: 1px solid transparent;\n  background-color: ", ";\n"])), function (props) {
   return props.theme.SubStateBright;
 }, function (props) {
   return props.theme.IconNormal;
