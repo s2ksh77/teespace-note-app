@@ -107,11 +107,8 @@ const HandleUploader = props => {
 
         for (let i = 0; i < filtered.length; i++) {
           (function (file) {
-            const {
-              fileName,
-              fileExtension,
-              fileSize,
-            } = EditorStore.getFileInfo(file);
+            const { fileName, fileExtension, fileSize } =
+              EditorStore.getFileInfo(file);
             const type =
               fileExtension && EditorStore.uploadFileIsImage(fileExtension)
                 ? 'image'
@@ -521,8 +518,8 @@ const EditorContainer = () => {
                   case 'Space':
                     const target = getAnchorElement();
                     if (target) {
-                      const curCaretPosition = editor.selection.getRng()
-                        .endOffset;
+                      const curCaretPosition =
+                        editor.selection.getRng().endOffset;
                       const _length = target.textContent.length;
                       // anchor tag앞에 caret 놓으면 getAnchorElement() === null
                       if (curCaretPosition === _length - 1) {
@@ -879,6 +876,7 @@ const StyledWaplSearch = styled(WaplSearch)`
   width: 100%;
   margin: 0 0.438rem;
   border-radius: 0.375rem;
+  padding: 0.38rem 0.625rem;
   &:hover:not(:focus-within) {
     background-color: ${props => props.theme.SubStateBright};
     path {
