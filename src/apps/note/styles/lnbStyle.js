@@ -41,6 +41,19 @@ export const LNBNewChapter = styled.div`
 `;
 
 // search 관련
+export const SearchDivision = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 1.5rem);
+  height: 26px;
+  font-size: 12px;
+  color: #666666;
+  margin: 0 0.75rem;
+`;
+export const SearchDivisionSpan = styled.span`
+  margin: 0.25rem 0;
+`;
+
 export const ChapterSearchResult = styled.div`
   position: relative;
   width: calc(100% - 1.5rem);
@@ -123,9 +136,27 @@ export const PageSearchResultChapterTitle = styled.div`
 export const SearchResultBotttom = styled.div`
   border-bottom: 1px solid #e3e7eb;
   position: absolute;
-  left: 1.69rem;
-  right: 1.69rem;
+  left: ${props => (props.isLast ? '0.1rem' : '1.69rem')};
+  right: 0.1rem;
   bottom: 0;
+`;
+
+export const TagSearchResult = styled.div`
+  position: relative;
+  width: calc(100% - 1.5rem);
+  height: 6rem;
+  margin: 0 0.75rem;
+  padding: 0.75rem 1.69rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: pointer;
+  &:hover {
+    background-color: #faf8f7;
+  }
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
 `;
 
 export const LnbRecycleContainer = styled.div`
