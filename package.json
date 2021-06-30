@@ -40,13 +40,12 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210617-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210617"
   },
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210617-rn",
-    "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#hotfix-210617-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210617"
   },
   "scripts": {
     "start": "craco start",
