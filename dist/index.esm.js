@@ -4791,7 +4791,8 @@ var PageStore = observable({
         }),
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: isAutoSave ? this.currentPageData.is_edit : '',
-        TYPE: 'EDIT_DONE'
+        TYPE: 'EDIT_DONE',
+        is_favorite: !isAutoSave && this.isNewPage ? 'isNewPage' : ''
       }
     };
   },
