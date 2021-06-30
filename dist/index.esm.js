@@ -258,1318 +258,6 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
   };
 }
 
-var _require = require('axios'),
-    axios = _require.default;
-
-var NoteRepository = /*#__PURE__*/function () {
-  // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
-  // CH_TYPE = 'CHN0003';
-  // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
-  function NoteRepository(url) {
-    _classCallCheck(this, NoteRepository);
-
-    this.URL = 'http://222.122.67.176:8080/CMS/Note';
-    this.FILE_URL = process.env.REACT_APP_DEV_SERVICE_DOMAIN;
-    this.WS_ID = '';
-    this.CH_TYPE = 'CHN0003';
-    this.USER_ID = '';
-    this.chId = '';
-    this.USER_NAME = '';
-    this.USER_EMAIL = '';
-    this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
-  }
-
-  _createClass(NoteRepository, [{
-    key: "setWsId",
-    value: function setWsId(targetWsId) {
-      this.WS_ID = targetWsId;
-    }
-  }, {
-    key: "setChannelId",
-    value: function setChannelId(targetchId) {
-      this.chId = targetchId;
-    }
-  }, {
-    key: "setUserId",
-    value: function setUserId(targetUserId) {
-      this.USER_ID = targetUserId;
-    }
-  }, {
-    key: "setUserName",
-    value: function setUserName(targetUserName) {
-      this.USER_NAME = targetUserName;
-    }
-  }, {
-    key: "setUserEmail",
-    value: function setUserEmail(targetUserEmail) {
-      this.USER_EMAIL = targetUserEmail;
-    }
-  }, {
-    key: "getChannelId",
-    value: function getChannelId() {
-      return this.chId;
-    }
-  }, {
-    key: "getChapterList",
-    value: function () {
-      var _getChapterList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(chId) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return API.get("note-api/noteChapter?action=List&note_channel_id=".concat(chId));
-
-              case 3:
-                return _context.abrupt("return", _context.sent);
-
-              case 6:
-                _context.prev = 6;
-                _context.t0 = _context["catch"](0);
-                throw Error(JSON.stringify(_context.t0));
-
-              case 9:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 6]]);
-      }));
-
-      function getChapterList(_x) {
-        return _getChapterList.apply(this, arguments);
-      }
-
-      return getChapterList;
-    }()
-  }, {
-    key: "getNoteInfoList",
-    value: function () {
-      var _getNoteInfoList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(noteId) {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.prev = 0;
-                _context2.next = 3;
-                return API.Get("note-api/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
-
-              case 3:
-                return _context2.abrupt("return", _context2.sent);
-
-              case 6:
-                _context2.prev = 6;
-                _context2.t0 = _context2["catch"](0);
-                throw Error(JSON.stringify(_context2.t0));
-
-              case 9:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this, [[0, 6]]);
-      }));
-
-      function getNoteInfoList(_x2) {
-        return _getNoteInfoList.apply(this, arguments);
-      }
-
-      return getNoteInfoList;
-    }()
-  }, {
-    key: "getNoteTagList",
-    value: function getNoteTagList(noteId) {
-      return API.Get("note-api/tag?action=List&note_id=".concat(noteId, "&t=").concat(new Date().getTime().toString()));
-    } // 태그 컨텐츠 관련
-    // getAllTagList() {
-    //   return API.Get(
-    //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
-    //   )
-    // }
-
-  }, {
-    key: "getAllSortedTagList",
-    value: function () {
-      var _getAllSortedTagList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return API.Get("note-api/tagSort?action=List&note_channel_id=".concat(this.chId, "&t=").concat(new Date().getTime().toString()));
-
-              case 2:
-                return _context3.abrupt("return", _context3.sent);
-
-              case 3:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function getAllSortedTagList() {
-        return _getAllSortedTagList.apply(this, arguments);
-      }
-
-      return getAllSortedTagList;
-    }()
-  }, {
-    key: "getTagNoteList",
-    value: function getTagNoteList(tagId) {
-      return API.Get("note-api/tagnote?action=List&tag_id=".concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
-    }
-  }, {
-    key: "getChapterChildren",
-    value: function () {
-      var _getChapterChildren = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(chapterId) {
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.prev = 0;
-                _context4.next = 3;
-                return API.Get("note-api/note?action=List&note_channel_id=".concat(this.chId, "&parent_notebook=").concat(chapterId));
-
-              case 3:
-                return _context4.abrupt("return", _context4.sent);
-
-              case 6:
-                _context4.prev = 6;
-                _context4.t0 = _context4["catch"](0);
-                throw Error(JSON.stringify(_context4.t0));
-
-              case 9:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this, [[0, 6]]);
-      }));
-
-      function getChapterChildren(_x3) {
-        return _getChapterChildren.apply(this, arguments);
-      }
-
-      return getChapterChildren;
-    }()
-  }, {
-    key: "getChapterInfoList",
-    value: function getChapterInfoList(chapterId) {
-      return API.Get("note-api/chaptershare?action=List&id=".concat(chapterId));
-    }
-  }, {
-    key: "getChapterColor",
-    value: function getChapterColor(chapterId) {
-      return API.get("note-api/chaptershare?action=List&id=".concat(chapterId));
-    }
-  }, {
-    key: "updateChapterColor",
-    value: function () {
-      var _updateChapterColor = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(chapterId, targetColor) {
-        var _yield$API$put, data;
-
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _context5.prev = 0;
-                _context5.next = 3;
-                return API.put("note-api/notebooks?action=Update", {
-                  dto: {
-                    id: chapterId,
-                    ws_id: this.WS_ID,
-                    color: targetColor
-                  }
-                });
-
-              case 3:
-                _yield$API$put = _context5.sent;
-                data = _yield$API$put.data;
-                return _context5.abrupt("return", data);
-
-              case 8:
-                _context5.prev = 8;
-                _context5.t0 = _context5["catch"](0);
-                throw Error(JSON.stringify(_context5.t0));
-
-              case 11:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5, this, [[0, 8]]);
-      }));
-
-      function updateChapterColor(_x4, _x5) {
-        return _updateChapterColor.apply(this, arguments);
-      }
-
-      return updateChapterColor;
-    }()
-  }, {
-    key: "getChapterText",
-    value: function getChapterText(chapterId) {
-      return API.get("note-api/chaptershare?action=List&id=".concat(chapterId));
-    }
-  }, {
-    key: "createChapter",
-    value: function () {
-      var _createChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(chapterTitle, chapterColor) {
-        var _yield$API$post, data;
-
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                _context6.prev = 0;
-                _context6.next = 3;
-                return API.post("note-api/langauge/".concat(NoteStore.i18nLanguage, "/notebooks"), {
-                  dto: {
-                    id: '',
-                    ws_id: this.WS_ID,
-                    note_channel_id: this.chId,
-                    text: chapterTitle,
-                    children: [],
-                    type: 'notebook',
-                    USER_ID: this.USER_ID,
-                    user_name: this.USER_NAME,
-                    color: chapterColor
-                  }
-                });
-
-              case 3:
-                _yield$API$post = _context6.sent;
-                data = _yield$API$post.data;
-                return _context6.abrupt("return", data);
-
-              case 8:
-                _context6.prev = 8;
-                _context6.t0 = _context6["catch"](0);
-                throw Error(JSON.stringify(_context6.t0));
-
-              case 11:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6, this, [[0, 8]]);
-      }));
-
-      function createChapter(_x6, _x7) {
-        return _createChapter.apply(this, arguments);
-      }
-
-      return createChapter;
-    }()
-  }, {
-    key: "createRestoreChapter",
-    value: function () {
-      var _createRestoreChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(chapterTitle, chapterColor) {
-        var _yield$API$post2, data;
-
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                _context7.prev = 0;
-                _context7.next = 3;
-                return API.post("note-api/children/".concat('none', "/notebooks"), {
-                  dto: {
-                    id: '',
-                    ws_id: this.WS_ID,
-                    note_channel_id: this.chId,
-                    text: chapterTitle,
-                    children: [],
-                    type: 'notebook',
-                    USER_ID: this.USER_ID,
-                    user_name: this.USER_NAME,
-                    color: chapterColor
-                  }
-                });
-
-              case 3:
-                _yield$API$post2 = _context7.sent;
-                data = _yield$API$post2.data;
-                return _context7.abrupt("return", data);
-
-              case 8:
-                _context7.prev = 8;
-                _context7.t0 = _context7["catch"](0);
-                throw Error(JSON.stringify(_context7.t0));
-
-              case 11:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7, this, [[0, 8]]);
-      }));
-
-      function createRestoreChapter(_x8, _x9) {
-        return _createRestoreChapter.apply(this, arguments);
-      }
-
-      return createRestoreChapter;
-    }()
-  }, {
-    key: "deleteChapter",
-    value: function () {
-      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterList) {
-        var _this = this;
-
-        var _yield$API$post3, data;
-
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                chapterList.forEach(function (chapter) {
-                  chapter.USER_ID = _this.USER_ID;
-                  chapter.ws_id = _this.WS_ID;
-                  chapter.note_channel_id = _this.chId;
-                });
-                _context8.prev = 1;
-                _context8.next = 4;
-                return API.post("note-api/notebook?action=Delete", {
-                  dto: {
-                    notbookList: chapterList
-                  }
-                });
-
-              case 4:
-                _yield$API$post3 = _context8.sent;
-                data = _yield$API$post3.data;
-                return _context8.abrupt("return", data);
-
-              case 9:
-                _context8.prev = 9;
-                _context8.t0 = _context8["catch"](1);
-                throw Error(JSON.stringify(_context8.t0));
-
-              case 12:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8, null, [[1, 9]]);
-      }));
-
-      function deleteChapter(_x10) {
-        return _deleteChapter.apply(this, arguments);
-      }
-
-      return deleteChapter;
-    }()
-  }, {
-    key: "renameChapter",
-    value: function () {
-      var _renameChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(chapterId, chapterTitle, color) {
-        var _yield$API$put2, data;
-
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                _context9.prev = 0;
-                _context9.next = 3;
-                return API.put("note-api/notebooks?action=Update", {
-                  dto: {
-                    USER_ID: this.USER_ID,
-                    color: color,
-                    id: chapterId,
-                    ws_id: this.WS_ID,
-                    note_channel_id: this.chId,
-                    parent_notebook: '',
-                    text: chapterTitle,
-                    user_name: this.USER_NAME
-                  }
-                });
-
-              case 3:
-                _yield$API$put2 = _context9.sent;
-                data = _yield$API$put2.data;
-                return _context9.abrupt("return", data);
-
-              case 8:
-                _context9.prev = 8;
-                _context9.t0 = _context9["catch"](0);
-                throw Error(JSON.stringify(_context9.t0));
-
-              case 11:
-              case "end":
-                return _context9.stop();
-            }
-          }
-        }, _callee9, this, [[0, 8]]);
-      }));
-
-      function renameChapter(_x11, _x12, _x13) {
-        return _renameChapter.apply(this, arguments);
-      }
-
-      return renameChapter;
-    }()
-  }, {
-    key: "createPage",
-    value: function () {
-      var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(pageName, pageContent, chapterId) {
-        var today;
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
-          while (1) {
-            switch (_context10.prev = _context10.next) {
-              case 0:
-                _context10.prev = 0;
-                today = new Date();
-                return _context10.abrupt("return", API.Post("note-api/note", {
-                  dto: {
-                    WS_ID: this.WS_ID,
-                    CH_TYPE: 'CHN0003',
-                    modified_date: "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes()),
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    user_name: this.USER_NAME,
-                    note_title: pageName,
-                    note_content: pageContent ? pageContent : '',
-                    is_edit: this.USER_ID,
-                    parent_notebook: chapterId
-                  }
-                }));
-
-              case 5:
-                _context10.prev = 5;
-                _context10.t0 = _context10["catch"](0);
-                throw Error(JSON.stringify(_context10.t0));
-
-              case 8:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10, this, [[0, 5]]);
-      }));
-
-      function createPage(_x14, _x15, _x16) {
-        return _createPage.apply(this, arguments);
-      }
-
-      return createPage;
-    }()
-  }, {
-    key: "deletePage",
-    value: function () {
-      var _deletePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(pageList) {
-        var _this2 = this;
-
-        return regeneratorRuntime.wrap(function _callee11$(_context11) {
-          while (1) {
-            switch (_context11.prev = _context11.next) {
-              case 0:
-                pageList.forEach(function (page) {
-                  page.USER_ID = _this2.USER_ID;
-                  page.WS_ID = _this2.WS_ID;
-                  page.note_channel_id = _this2.chId;
-                  page.user_name = _this2.USER_NAME;
-                });
-                _context11.prev = 1;
-                _context11.next = 4;
-                return API.Post("note-api/note?action=Delete", {
-                  dto: {
-                    noteList: pageList
-                  }
-                });
-
-              case 4:
-                return _context11.abrupt("return", _context11.sent);
-
-              case 7:
-                _context11.prev = 7;
-                _context11.t0 = _context11["catch"](1);
-                throw Error(JSON.stringify(_context11.t0));
-
-              case 10:
-              case "end":
-                return _context11.stop();
-            }
-          }
-        }, _callee11, null, [[1, 7]]);
-      }));
-
-      function deletePage(_x17) {
-        return _deletePage.apply(this, arguments);
-      }
-
-      return deletePage;
-    }()
-  }, {
-    key: "renamePage",
-    value: function () {
-      var _renamePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, pageTitle, chapterId) {
-        return regeneratorRuntime.wrap(function _callee12$(_context12) {
-          while (1) {
-            switch (_context12.prev = _context12.next) {
-              case 0:
-                _context12.prev = 0;
-                _context12.next = 3;
-                return API.Put("note-api/note?action=Update", {
-                  dto: {
-                    CH_TYPE: 'CHN0003',
-                    TYPE: 'RENAME',
-                    USER_ID: this.USER_ID,
-                    WS_ID: this.WS_ID,
-                    note_channel_id: this.chId,
-                    note_id: pageId,
-                    note_title: pageTitle,
-                    parent_notebook: chapterId
-                  }
-                });
-
-              case 3:
-                return _context12.abrupt("return", _context12.sent);
-
-              case 6:
-                _context12.prev = 6;
-                _context12.t0 = _context12["catch"](0);
-                throw Error(JSON.stringify(_context12.t0));
-
-              case 9:
-              case "end":
-                return _context12.stop();
-            }
-          }
-        }, _callee12, this, [[0, 6]]);
-      }));
-
-      function renamePage(_x18, _x19, _x20) {
-        return _renamePage.apply(this, arguments);
-      }
-
-      return renamePage;
-    }()
-  }, {
-    key: "movePage",
-    value: function () {
-      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(pageId, chapterId) {
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
-          while (1) {
-            switch (_context13.prev = _context13.next) {
-              case 0:
-                _context13.prev = 0;
-                _context13.next = 3;
-                return API.Put("note-api/note?action=Update", {
-                  dto: {
-                    WS_ID: this.WS_ID,
-                    CH_TYPE: 'CHN0003',
-                    note_id: pageId,
-                    parent_notebook: chapterId,
-                    user_name: this.USER_NAME,
-                    USER_ID: this.USER_ID,
-                    TYPE: 'MOVE'
-                  }
-                });
-
-              case 3:
-                return _context13.abrupt("return", _context13.sent);
-
-              case 6:
-                _context13.prev = 6;
-                _context13.t0 = _context13["catch"](0);
-                throw Error(JSON.stringify(_context13.t0));
-
-              case 9:
-              case "end":
-                return _context13.stop();
-            }
-          }
-        }, _callee13, this, [[0, 6]]);
-      }));
-
-      function movePage(_x21, _x22) {
-        return _movePage.apply(this, arguments);
-      }
-
-      return movePage;
-    }()
-  }, {
-    key: "editStart",
-    value: function () {
-      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(noteId, chapterId) {
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
-          while (1) {
-            switch (_context14.prev = _context14.next) {
-              case 0:
-                _context14.prev = 0;
-                _context14.next = 3;
-                return API.post("note-api/note?action=Update", {
-                  dto: {
-                    WS_ID: this.WS_ID,
-                    CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    user_name: this.USER_NAME,
-                    note_id: noteId,
-                    is_edit: this.USER_ID,
-                    parent_notebook: chapterId,
-                    TYPE: 'EDIT_START'
-                  }
-                });
-
-              case 3:
-                return _context14.abrupt("return", _context14.sent);
-
-              case 6:
-                _context14.prev = 6;
-                _context14.t0 = _context14["catch"](0);
-                throw Error(JSON.stringify(_context14.t0));
-
-              case 9:
-              case "end":
-                return _context14.stop();
-            }
-          }
-        }, _callee14, this, [[0, 6]]);
-      }));
-
-      function editStart(_x23, _x24) {
-        return _editStart.apply(this, arguments);
-      }
-
-      return editStart;
-    }()
-  }, {
-    key: "editDone",
-    value: function () {
-      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(updateDto) {
-        var today;
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
-          while (1) {
-            switch (_context15.prev = _context15.next) {
-              case 0:
-                today = new Date();
-                updateDto.dto.WS_ID = this.WS_ID;
-                updateDto.dto.note_channel_id = this.chId;
-                updateDto.dto.USER_ID = this.USER_ID;
-                updateDto.dto.CH_TYPE = this.CH_TYPE;
-                updateDto.dto.user_name = this.USER_NAME;
-                updateDto.dto.modified_date = "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes());
-                _context15.prev = 7;
-                _context15.next = 10;
-                return API.post("note-api/note?action=Update", updateDto);
-
-              case 10:
-                return _context15.abrupt("return", _context15.sent);
-
-              case 13:
-                _context15.prev = 13;
-                _context15.t0 = _context15["catch"](7);
-                throw Error(JSON.stringify(_context15.t0));
-
-              case 16:
-              case "end":
-                return _context15.stop();
-            }
-          }
-        }, _callee15, this, [[7, 13]]);
-      }));
-
-      function editDone(_x25) {
-        return _editDone.apply(this, arguments);
-      }
-
-      return editDone;
-    }()
-  }, {
-    key: "nonEdit",
-    value: function () {
-      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(noteId, chapterId) {
-        return regeneratorRuntime.wrap(function _callee16$(_context16) {
-          while (1) {
-            switch (_context16.prev = _context16.next) {
-              case 0:
-                _context16.prev = 0;
-                _context16.next = 3;
-                return API.post("note-api/note?action=Update", {
-                  dto: {
-                    WS_ID: this.WS_ID,
-                    CH_TYPE: 'CHN0003',
-                    USER_ID: this.USER_ID,
-                    note_channel_id: this.chId,
-                    note_id: noteId,
-                    is_edit: '',
-                    parent_notebook: chapterId,
-                    TYPE: 'NONEDIT',
-                    user_name: this.USER_NAME
-                  }
-                });
-
-              case 3:
-                return _context16.abrupt("return", _context16.sent);
-
-              case 6:
-                _context16.prev = 6;
-                _context16.t0 = _context16["catch"](0);
-                throw Error(JSON.stringify(_context16.t0));
-
-              case 9:
-              case "end":
-                return _context16.stop();
-            }
-          }
-        }, _callee16, this, [[0, 6]]);
-      }));
-
-      function nonEdit(_x26, _x27) {
-        return _nonEdit.apply(this, arguments);
-      }
-
-      return nonEdit;
-    }()
-  }, {
-    key: "createTag",
-    value: function () {
-      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
-        return regeneratorRuntime.wrap(function _callee17$(_context17) {
-          while (1) {
-            switch (_context17.prev = _context17.next) {
-              case 0:
-                _context17.prev = 0;
-                _context17.next = 3;
-                return API.post("note-api/tag", {
-                  dto: {
-                    tagList: targetList
-                  }
-                });
-
-              case 3:
-                return _context17.abrupt("return", _context17.sent);
-
-              case 6:
-                _context17.prev = 6;
-                _context17.t0 = _context17["catch"](0);
-                throw Error(JSON.stringify(_context17.t0));
-
-              case 9:
-              case "end":
-                return _context17.stop();
-            }
-          }
-        }, _callee17, null, [[0, 6]]);
-      }));
-
-      function createTag(_x28) {
-        return _createTag.apply(this, arguments);
-      }
-
-      return createTag;
-    }()
-  }, {
-    key: "deleteTag",
-    value: function () {
-      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
-          while (1) {
-            switch (_context18.prev = _context18.next) {
-              case 0:
-                _context18.prev = 0;
-                _context18.next = 3;
-                return API.post("note-api/tag?action=Delete", {
-                  dto: {
-                    tagList: targetList
-                  }
-                });
-
-              case 3:
-                return _context18.abrupt("return", _context18.sent);
-
-              case 6:
-                _context18.prev = 6;
-                _context18.t0 = _context18["catch"](0);
-                throw Error(JSON.stringify(_context18.t0));
-
-              case 9:
-              case "end":
-                return _context18.stop();
-            }
-          }
-        }, _callee18, null, [[0, 6]]);
-      }));
-
-      function deleteTag(_x29) {
-        return _deleteTag.apply(this, arguments);
-      }
-
-      return deleteTag;
-    }()
-  }, {
-    key: "updateTag",
-    value: function () {
-      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(targetList) {
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
-          while (1) {
-            switch (_context19.prev = _context19.next) {
-              case 0:
-                _context19.prev = 0;
-                _context19.next = 3;
-                return API.post("note-api/tag?action=Update", {
-                  dto: {
-                    tagList: targetList
-                  }
-                });
-
-              case 3:
-                return _context19.abrupt("return", _context19.sent);
-
-              case 6:
-                _context19.prev = 6;
-                _context19.t0 = _context19["catch"](0);
-                throw Error(JSON.stringify(_context19.t0));
-
-              case 9:
-              case "end":
-                return _context19.stop();
-            }
-          }
-        }, _callee19, null, [[0, 6]]);
-      }));
-
-      function updateTag(_x30) {
-        return _updateTag.apply(this, arguments);
-      }
-
-      return updateTag;
-    }()
-  }, {
-    key: "storageFileDeepCopy",
-    value: function () {
-      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId) {
-        var targetSRC;
-        return regeneratorRuntime.wrap(function _callee20$(_context20) {
-          while (1) {
-            switch (_context20.prev = _context20.next) {
-              case 0:
-                targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
-                _context20.prev = 1;
-                _context20.next = 4;
-                return API.put(targetSRC, {
-                  dto: {
-                    workspace_id: this.WS_ID,
-                    channel_id: this.chId,
-                    storageFileInfo: {
-                      user_id: this.USER_ID,
-                      file_id: fileId
-                    }
-                  }
-                });
-
-              case 4:
-                return _context20.abrupt("return", _context20.sent);
-
-              case 7:
-                _context20.prev = 7;
-                _context20.t0 = _context20["catch"](1);
-                throw Error(JSON.stringify(_context20.t0));
-
-              case 10:
-              case "end":
-                return _context20.stop();
-            }
-          }
-        }, _callee20, this, [[1, 7]]);
-      }));
-
-      function storageFileDeepCopy(_x31) {
-        return _storageFileDeepCopy.apply(this, arguments);
-      }
-
-      return storageFileDeepCopy;
-    }()
-  }, {
-    key: "createUploadMeta",
-    value: function () {
-      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(dto) {
-        return regeneratorRuntime.wrap(function _callee21$(_context21) {
-          while (1) {
-            switch (_context21.prev = _context21.next) {
-              case 0:
-                _context21.prev = 0;
-                _context21.next = 3;
-                return API.post('note-api/noteFile', dto);
-
-              case 3:
-                return _context21.abrupt("return", _context21.sent);
-
-              case 6:
-                _context21.prev = 6;
-                _context21.t0 = _context21["catch"](0);
-                throw Error(JSON.stringify(_context21.t0));
-
-              case 9:
-              case "end":
-                return _context21.stop();
-            }
-          }
-        }, _callee21, null, [[0, 6]]);
-      }));
-
-      function createUploadMeta(_x32) {
-        return _createUploadMeta.apply(this, arguments);
-      }
-
-      return createUploadMeta;
-    }()
-  }, {
-    key: "createUploadStorage",
-    value: function () {
-      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(fileId, file, onUploadProgress) {
-        return regeneratorRuntime.wrap(function _callee22$(_context22) {
-          while (1) {
-            switch (_context22.prev = _context22.next) {
-              case 0:
-                _context22.prev = 0;
-                _context22.next = 3;
-                return API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
-                  headers: {
-                    'content-type': 'multipart/form-data'
-                  },
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  onUploadProgress: onUploadProgress
-                });
-
-              case 3:
-                return _context22.abrupt("return", _context22.sent);
-
-              case 6:
-                _context22.prev = 6;
-                _context22.t0 = _context22["catch"](0);
-                throw Error(JSON.stringify(_context22.t0));
-
-              case 9:
-              case "end":
-                return _context22.stop();
-            }
-          }
-        }, _callee22, this, [[0, 6]]);
-      }));
-
-      function createUploadStorage(_x33, _x34, _x35) {
-        return _createUploadStorage.apply(this, arguments);
-      }
-
-      return createUploadStorage;
-    }()
-    /**
-     *
-     * @param {*} file
-     * @param {*} fileName
-     * @param {*} fileExtension
-     * @param {*} onUploadProgress
-     * @param {*} cancelSource
-     */
-
-  }, {
-    key: "uploadFileGW",
-    value: function () {
-      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, onUploadProgress, cancelSource) {
-        return regeneratorRuntime.wrap(function _callee23$(_context23) {
-          while (1) {
-            switch (_context23.prev = _context23.next) {
-              case 0:
-                _context23.next = 2;
-                return API.post("/gateway-api/upload?user_id=" + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension, file, {
-                  headers: {
-                    // pplication/x-www-form-urlencoded; charset=UTF-8
-                    'content-type': 'multipart/form-data'
-                  },
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  onUploadProgress: onUploadProgress,
-                  cancelToken: cancelSource.token
-                });
-
-              case 2:
-                return _context23.abrupt("return", _context23.sent);
-
-              case 3:
-              case "end":
-                return _context23.stop();
-            }
-          }
-        }, _callee23, this);
-      }));
-
-      function uploadFileGW(_x36, _x37, _x38, _x39, _x40) {
-        return _uploadFileGW.apply(this, arguments);
-      }
-
-      return uploadFileGW;
-    }()
-  }, {
-    key: "deleteFile",
-    value: function () {
-      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(deleteFileId) {
-        return regeneratorRuntime.wrap(function _callee24$(_context24) {
-          while (1) {
-            switch (_context24.prev = _context24.next) {
-              case 0:
-                _context24.prev = 0;
-                _context24.next = 3;
-                return API.put("note-api/noteFile?action=Delete", {
-                  dto: {
-                    workspace_id: this.WS_ID,
-                    channel_id: this.chId,
-                    storageFileInfo: {
-                      user_id: '',
-                      file_last_update_user_id: '',
-                      file_id: deleteFileId,
-                      file_name: '',
-                      file_extension: '',
-                      file_created_at: '',
-                      file_updated_at: '',
-                      user_context_1: '',
-                      user_context_2: '',
-                      user_context_3: ''
-                    }
-                  }
-                });
-
-              case 3:
-                return _context24.abrupt("return", _context24.sent);
-
-              case 6:
-                _context24.prev = 6;
-                _context24.t0 = _context24["catch"](0);
-                throw Error(JSON.stringify(_context24.t0));
-
-              case 9:
-              case "end":
-                return _context24.stop();
-            }
-          }
-        }, _callee24, this, [[0, 6]]);
-      }));
-
-      function deleteFile(_x41) {
-        return _deleteFile.apply(this, arguments);
-      }
-
-      return deleteFile;
-    }()
-  }, {
-    key: "deleteAllFile",
-    value: function deleteAllFile(fileList) {
-      var deleteFileList = [];
-
-      if (fileList) {
-        fileList.map(function (file) {
-          return deleteFileList.push(file.file_id);
-        });
-        return API.put("Storage/StorageFile?action=MultiDelete", {
-          dto: {
-            workspace_id: this.WS_ID,
-            channel_id: this.chId,
-            file_id: deleteFileList,
-            user_id: this.USER_ID
-          }
-        });
-      } else {
-        return Promise.resolve();
-      }
-    }
-  }, {
-    key: "createShareChapter",
-    value: function createShareChapter(chapterList) {
-      return API.post("note-api/chaptershare", {
-        dto: {
-          notbookList: chapterList
-        }
-      });
-    }
-  }, {
-    key: "createSharePage",
-    value: function createSharePage(pageList) {
-      return API.post("note-api/noteshare", {
-        dto: {
-          noteList: pageList
-        }
-      });
-    }
-  }, {
-    key: "getSearchList",
-    value: function () {
-      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(searchKey) {
-        return regeneratorRuntime.wrap(function _callee25$(_context25) {
-          while (1) {
-            switch (_context25.prev = _context25.next) {
-              case 0:
-                _context25.prev = 0;
-                _context25.next = 3;
-                return API.post("note-api/noteSearch?action=List", {
-                  dto: {
-                    note_channel_id: this.chId,
-                    text: searchKey
-                  }
-                });
-
-              case 3:
-                return _context25.abrupt("return", _context25.sent);
-
-              case 6:
-                _context25.prev = 6;
-                _context25.t0 = _context25["catch"](0);
-                throw Error(JSON.stringify(_context25.t0));
-
-              case 9:
-              case "end":
-                return _context25.stop();
-            }
-          }
-        }, _callee25, this, [[0, 6]]);
-      }));
-
-      function getSearchList(_x42) {
-        return _getSearchList.apply(this, arguments);
-      }
-
-      return getSearchList;
-    }()
-  }, {
-    key: "createFileMeta",
-    value: function () {
-      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26(targetList) {
-        return regeneratorRuntime.wrap(function _callee26$(_context26) {
-          while (1) {
-            switch (_context26.prev = _context26.next) {
-              case 0:
-                _context26.next = 2;
-                return API.post("note-api/noteFileMeta", {
-                  dto: {
-                    fileList: targetList
-                  }
-                });
-
-              case 2:
-                return _context26.abrupt("return", _context26.sent);
-
-              case 3:
-              case "end":
-                return _context26.stop();
-            }
-          }
-        }, _callee26);
-      }));
-
-      function createFileMeta(_x43) {
-        return _createFileMeta.apply(this, arguments);
-      }
-
-      return createFileMeta;
-    }()
-  }, {
-    key: "throwPage",
-    value: function () {
-      var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
-        var _this3 = this;
-
-        return regeneratorRuntime.wrap(function _callee27$(_context27) {
-          while (1) {
-            switch (_context27.prev = _context27.next) {
-              case 0:
-                // pageList -> pageId 리스트
-                pageList.forEach(function (page) {
-                  page.USER_ID = _this3.USER_ID;
-                  page.WS_ID = _this3.WS_ID;
-                  page.note_channel_id = _this3.chId;
-                  page.parent_notebook = null;
-                });
-                _context27.prev = 1;
-                _context27.next = 4;
-                return API.post("note-api/noteRecycleBin?action=Update", {
-                  dto: {
-                    noteList: pageList
-                  }
-                });
-
-              case 4:
-                return _context27.abrupt("return", _context27.sent);
-
-              case 7:
-                _context27.prev = 7;
-                _context27.t0 = _context27["catch"](1);
-                throw Error(JSON.stringify(_context27.t0));
-
-              case 10:
-              case "end":
-                return _context27.stop();
-            }
-          }
-        }, _callee27, null, [[1, 7]]);
-      }));
-
-      function throwPage(_x44) {
-        return _throwPage.apply(this, arguments);
-      }
-
-      return throwPage;
-    }()
-  }, {
-    key: "restorePage",
-    value: function () {
-      var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28(pageList) {
-        var _this4 = this;
-
-        return regeneratorRuntime.wrap(function _callee28$(_context28) {
-          while (1) {
-            switch (_context28.prev = _context28.next) {
-              case 0:
-                // pageList -> pageId 리스트, chapterId 리스트 
-                // [{note_id: asdf, parent_notebook : asdf} ... ]
-                pageList.forEach(function (page) {
-                  page.note_channel_id = _this4.chId;
-                  page.USER_ID = _this4.USER_ID;
-                  page.WS_ID = _this4.WS_ID;
-                });
-                _context28.prev = 1;
-                _context28.next = 4;
-                return API.post("note-api/noteRecycleBin?action=Update", {
-                  dto: {
-                    noteList: pageList
-                  }
-                });
-
-              case 4:
-                return _context28.abrupt("return", _context28.sent);
-
-              case 7:
-                _context28.prev = 7;
-                _context28.t0 = _context28["catch"](1);
-                throw Error(JSON.stringify(_context28.t0));
-
-              case 10:
-              case "end":
-                return _context28.stop();
-            }
-          }
-        }, _callee28, null, [[1, 7]]);
-      }));
-
-      function restorePage(_x45) {
-        return _restorePage.apply(this, arguments);
-      }
-
-      return restorePage;
-    }()
-  }]);
-
-  return NoteRepository;
-}();
-
-var NoteRepository$1 = new NoteRepository();
-
 var languageSet = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
   NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
@@ -2095,6 +783,1478 @@ var checkDuplicateIgnoreCase = function checkDuplicateIgnoreCase(targetArr, key,
     return NoteUtil.encodeStr(item[key].toUpperCase()) === NoteUtil.encodeStr(value.toUpperCase());
   }) ? false : true;
 };
+
+var ChapterStore = observable({
+  chapterColor: '',
+  loadingPageInfo: false,
+  // 2panel(pageContainer용)
+  chapterList: [],
+  sortedChapterList: {
+    // web에서 안 씀
+    roomChapterList: [],
+    sharedPageList: [],
+    sharedChapterList: []
+  },
+  currentChapterId: '',
+  chapterNewTitle: '',
+  isNewChapterColor: '',
+  isNewChapter: false,
+  colorArray: {
+    1: '#C84847',
+    2: '#F29274',
+    3: '#F6C750',
+    4: '#77B69B',
+    5: '#679886',
+    6: '#3A7973',
+    7: '#77BED3',
+    8: '#5C83DA',
+    9: '#8F91E7',
+    10: '#DF97AA',
+    11: '#CA6D6D'
+  },
+  // 검색 실행 화면 필요
+  isLoadingSearchResult: false,
+  isSearching: false,
+  isTagSearching: false,
+  //tag chip 클릭해서 tag chip 띄울 때 씀
+  searchingTagName: '',
+  searchStr: '',
+  // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
+  searchResult: {},
+  // {chapter:[], page:[]} 형태
+  deleteChapterList: [],
+  deleteChapterId: '',
+  selectableChapterId: '',
+  renameId: '',
+  renamePrevText: '',
+  renameText: '',
+  isMovingChapter: false,
+  dragData: new Map(),
+  isCtrlKeyDown: false,
+  dragEnterChapterIdx: '',
+  chapterMap: new Map(),
+  pageMap: new Map(),
+  chapterChildren: [],
+  exportChapterId: '',
+  exportChapterTitle: '',
+  sharedCnt: 0,
+  scrollIntoViewId: '',
+  lnbBoundary: {
+    beforeShared: false,
+    beforeRecycleBin: false
+  },
+  // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
+  getLoadingPageInfo: function getLoadingPageInfo() {
+    return this.loadingPageInfo;
+  },
+  setLoadingPageInfo: function setLoadingPageInfo(isLoading) {
+    this.loadingPageInfo = isLoading;
+  },
+  getCurrentChapterId: function getCurrentChapterId() {
+    return this.currentChapterId;
+  },
+  setCurrentChapterId: function setCurrentChapterId(chapterId) {
+    this.currentChapterId = chapterId;
+  },
+  getDeleteChapterList: function getDeleteChapterList() {
+    return this.deleteChapterList;
+  },
+  setDeleteChapterList: function setDeleteChapterList(deleteChapterList) {
+    this.deleteChapterList = deleteChapterList;
+  },
+  getDeleteChapterId: function getDeleteChapterId() {
+    return this.deleteChapterId;
+  },
+  setDeleteChapterId: function setDeleteChapterId(chapter) {
+    this.deleteChapterId = chapter;
+  },
+  getSelectableChapterId: function getSelectableChapterId() {
+    return this.selectableChapterId;
+  },
+  setSelectableChapterId: function setSelectableChapterId(chapterId) {
+    this.selectableChapterId = chapterId;
+  },
+  getRenameId: function getRenameId() {
+    return this.renameId;
+  },
+  setRenameId: function setRenameId(chapterId) {
+    this.renameId = chapterId;
+  },
+  getRenamePrevText: function getRenamePrevText() {
+    return this.renamePrevText;
+  },
+  setRenamePrevText: function setRenamePrevText(chapterText) {
+    this.renamePrevText = chapterText;
+  },
+  getRenameText: function getRenameText() {
+    return this.renameText;
+  },
+  setRenameText: function setRenameText(chapterText) {
+    if (chapterText.length > 256) chapterText = chapterText.substring(0, 256);
+    this.renameText = chapterText;
+  },
+  getIsMovingChapter: function getIsMovingChapter() {
+    return this.isMovingChapter;
+  },
+  setIsMovingChapter: function setIsMovingChapter(isMoving) {
+    this.isMovingChapter = isMoving;
+  },
+  getDragData: function getDragData() {
+    return this.dragData;
+  },
+  setDragData: function setDragData(dragData) {
+    this.dragData = dragData;
+  },
+  appendDragData: function appendDragData(key, value) {
+    this.dragData.set(key, value);
+  },
+  deleteDragData: function deleteDragData(key) {
+    this.dragData.delete(key);
+  },
+  clearDragData: function clearDragData() {
+    this.dragData.clear();
+  },
+  setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
+    this.isCtrlKeyDown = flag;
+  },
+  getDragEnterChapterIdx: function getDragEnterChapterIdx() {
+    return this.dragEnterChapterIdx;
+  },
+  setDragEnterChapterIdx: function setDragEnterChapterIdx(chapterIdx) {
+    this.dragEnterChapterIdx = chapterIdx;
+  },
+  setChapterListChildren: function setChapterListChildren(chapterId) {
+    this.chapterChildren = this.chapterList.filter(function (chapter) {
+      return chapter.id === chapterId;
+    })[0].children;
+  },
+  setChapterTempUl: function setChapterTempUl(flag) {
+    this.isNewChapter = flag;
+    if (flag === false) this.setChapterTitle('');
+  },
+  setChapterTitle: function setChapterTitle(title) {
+    this.chapterNewTitle = title;
+  },
+  setLnbBoundary: function setLnbBoundary(flags) {
+    // 형태: { beforeShared:false, beforeRecycleBin:false }
+    this.lnbBoundary = flags;
+  },
+  // 사용자 input이 없을 때
+  // 웹에서 더이상 안씀! 모바일에서도 안씀!
+  getNewChapterTitle: function getNewChapterTitle() {
+    var re = /^새 챕터 (\d+)$/gm;
+    var chapterTitle, temp;
+    var isNotAvailable = [];
+    var fullLength = this.chapterList.length;
+    isNotAvailable.length = fullLength + 1;
+    this.chapterList.forEach(function (chapter) {
+      chapterTitle = chapter.text;
+
+      if (chapterTitle === '새 챕터') {
+        isNotAvailable[0] = 1;
+      } else if (re.test(chapterTitle)) {
+        temp = parseInt(chapterTitle.replace(re, '$1'));
+
+        if (temp <= fullLength) {
+          isNotAvailable[temp] = 1;
+        }
+      }
+    });
+    if (!isNotAvailable[0]) return '새 챕터';
+
+    for (var i = 1; i <= fullLength; i++) {
+      if (!isNotAvailable[i]) return '새 챕터 ' + i;
+    }
+  },
+  getChapterId: function getChapterId(e) {
+    var id = e.target.id;
+    return id;
+  },
+  getChapterRandomColor: function getChapterRandomColor() {
+    var COLOR_ARRAY = Object.values(this.colorArray);
+    this.isNewChapterColor = COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
+    return this.isNewChapterColor;
+  },
+  getChapterColor: function getChapterColor(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _yield$NoteRepository, dto;
+
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return NoteRepository$1.getChapterColor(chapterId);
+
+            case 2:
+              _yield$NoteRepository = _context.sent;
+              dto = _yield$NoteRepository.data.dto;
+              return _context.abrupt("return", dto.color);
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  getChapterName: function getChapterName(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _yield$NoteRepository2, dto;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return NoteRepository$1.getChapterText(chapterId);
+
+            case 2:
+              _yield$NoteRepository2 = _context2.sent;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", dto.text);
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
+  },
+  getIsLoadingSearchResult: function getIsLoadingSearchResult() {
+    return this.isLoadingSearching;
+  },
+  setIsLoadingSearchResult: function setIsLoadingSearchResult(isLoadingSearchResult) {
+    this.isLoadingSearchResult = isLoadingSearchResult;
+  },
+  getIsSearching: function getIsSearching() {
+    return this.isSearching;
+  },
+  setIsSearching: function setIsSearching(isSearching) {
+    this.isSearching = isSearching;
+  },
+  getSearchStr: function getSearchStr() {
+    return this.searchStr;
+  },
+  setSearchStr: function setSearchStr(str) {
+    this.searchStr = str;
+  },
+  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
+  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
+  setSearchResult: function setSearchResult(result) {
+    this.searchResult = result;
+  },
+  // 태그칩 클릭해서 lnblist 띄우기
+  getSearchingTagName: function getSearchingTagName() {
+    return this.searchingTagName;
+  },
+  setSearchingTagName: function setSearchingTagName(str) {
+    this.searchingTagName = str;
+  },
+  getIsTagSearching: function getIsTagSearching() {
+    return this.isTagSearching;
+  },
+  setIsTagSearching: function setIsTagSearching(isSearching) {
+    this.isTagSearching = isSearching;
+  },
+  isValidChapterText: function isValidChapterText(targetText) {
+    return checkNotDuplicate(this.chapterList, 'text', targetText);
+  },
+  setExportId: function setExportId(chapterId) {
+    this.exportChapterId = chapterId;
+  },
+  setExportTitle: function setExportTitle(chapterTitle) {
+    this.exportChapterTitle = chapterTitle;
+  },
+  changePageList: function changePageList(chapterIdx, pageList) {
+    this.chapterList[chapterIdx].children = pageList;
+  },
+  setScrollIntoViewId: function setScrollIntoViewId(chapterId) {
+    this.scrollIntoViewId = chapterId;
+  },
+
+  /**
+   *  ChapterStore Method : getChapterList, createChapter, deleteChapter, renameChapter
+   */
+  getChapterList: function getChapterList() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _yield$NoteRepository3, notbookList;
+
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
+
+            case 2:
+              _yield$NoteRepository3 = _context3.sent;
+              notbookList = _yield$NoteRepository3.data.dto.notbookList;
+
+              _this.setChapterList(notbookList);
+
+              return _context3.abrupt("return", notbookList);
+
+            case 6:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  },
+  setChapterList: function setChapterList(chapterList) {
+    this.chapterList = chapterList;
+  },
+  getSortedChapterList: function getSortedChapterList() {
+    return this.sortedChapterList;
+  },
+  setSortedChapterList: function setSortedChapterList(obj) {
+    this.sortedChapterList = obj;
+  },
+  createChapter: function createChapter(chapterTitle, chapterColor) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _yield$NoteRepository4, dto;
+
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return NoteRepository$1.createChapter(chapterTitle, chapterColor);
+
+            case 2:
+              _yield$NoteRepository4 = _context4.sent;
+              dto = _yield$NoteRepository4.dto;
+              return _context4.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  // 휴지통에 있는 페이지 복구할 때 페이지 없는 챕터 생성용
+  createRestoreChapter: function createRestoreChapter(chapterTitle, chapterColor) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      var _yield$NoteRepository5, dto;
+
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return NoteRepository$1.createRestoreChapter(chapterTitle, chapterColor);
+
+            case 2:
+              _yield$NoteRepository5 = _context5.sent;
+              dto = _yield$NoteRepository5.dto;
+              return _context5.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }))();
+  },
+  deleteChapter: function deleteChapter(chapterList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _yield$NoteRepository6, dto;
+
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return NoteRepository$1.deleteChapter(chapterList);
+
+            case 2:
+              _yield$NoteRepository6 = _context6.sent;
+              dto = _yield$NoteRepository6.dto;
+              return _context6.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }))();
+  },
+  renameChapter: function renameChapter(renameId, renameText, color) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var _yield$NoteRepository7, dto;
+
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              _context7.next = 2;
+              return NoteRepository$1.renameChapter(renameId, renameText, color);
+
+            case 2:
+              _yield$NoteRepository7 = _context7.sent;
+              dto = _yield$NoteRepository7.dto;
+              return _context7.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }))();
+  },
+  updateChapterColor: function updateChapterColor(chapterId) {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      var targetColor, _yield$NoteRepository8, dto;
+
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              targetColor = _this2.getChapterRandomColor();
+              _context8.next = 3;
+              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
+
+            case 3:
+              _yield$NoteRepository8 = _context8.sent;
+              dto = _yield$NoteRepository8.dto;
+              return _context8.abrupt("return", dto);
+
+            case 6:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    }))();
+  },
+  getChapterChildren: function getChapterChildren(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _yield$NoteRepository9, dto;
+
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              _context9.next = 2;
+              return NoteRepository$1.getChapterChildren(chapterId);
+
+            case 2:
+              _yield$NoteRepository9 = _context9.sent;
+              dto = _yield$NoteRepository9.data.dto;
+              return _context9.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }))();
+  },
+  getChapterInfoList: function getChapterInfoList(chapterId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      var _yield$NoteRepository10, dto;
+
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _context10.next = 2;
+              return NoteRepository$1.getChapterInfoList(chapterId);
+
+            case 2:
+              _yield$NoteRepository10 = _context10.sent;
+              dto = _yield$NoteRepository10.data.dto;
+              return _context10.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, _callee10);
+    }))();
+  },
+  getSearchList: function getSearchList(searchStr) {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      var _yield$NoteRepository11, dto;
+
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        while (1) {
+          switch (_context11.prev = _context11.next) {
+            case 0:
+              _context11.next = 2;
+              return NoteRepository$1.getSearchList(searchStr || _this3.searchStr);
+
+            case 2:
+              _yield$NoteRepository11 = _context11.sent;
+              dto = _yield$NoteRepository11.data.dto;
+              return _context11.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context11.stop();
+          }
+        }
+      }, _callee11);
+    }))();
+  },
+
+  /**
+   * ChapterStore Business Logic in NoteApp
+   */
+  // normalChapters = type이 defualt, notebook인 chapter
+  createMap: function createMap(normalChapters) {
+    var _this4 = this;
+
+    // chapterMap: {key: chapterId, value: chapterIndex on server}
+    // pageMap: {key: pageId, value: {parent: chapterId, idx: pageIndex on server}}
+    this.chapterMap.clear();
+    this.pageMap.clear();
+    normalChapters.forEach(function (chapter, i) {
+      _this4.chapterMap.set(chapter.id, i);
+
+      chapter.children.forEach(function (page, j) {
+        _this4.pageMap.set(page.id, {
+          parent: chapter.id,
+          idx: j
+        });
+      });
+    });
+  },
+  setLocalStorageItem: function setLocalStorageItem(targetChannelId, normalChapters) {
+    // normalChapters: includes only [chapterType: notebook, default]
+    var newChapters = normalChapters.map(function (chapter) {
+      chapter.isFolded = false;
+      return {
+        id: chapter.id,
+        children: chapter.children.map(function (page) {
+          return page.id;
+        }),
+        isFolded: false
+      };
+    });
+    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
+  },
+  // notebookList의 chapter.type은 default, notebook만 있음
+  applyDifference: function applyDifference(targetChannelId, normalChapters) {
+    var _this5 = this;
+
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId)); // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
+
+    var createdChapterIds = [];
+    var chapterIdxMap = item.reduce(function (m, chapter, idx) {
+      return m.set(chapter.id, idx);
+    }, new Map());
+    normalChapters.forEach(function (chapter) {
+      if (!chapterIdxMap.has(chapter.id)) {
+        createdChapterIds.push({
+          id: chapter.id,
+          children: chapter.children.map(function (page) {
+            return page.id;
+          }),
+          isFolded: false
+        });
+      } else {
+        var createdPageIds = [];
+        var chapterIdx = chapterIdxMap.get(chapter.id);
+        chapter.children.slice().reverse().forEach(function (page) {
+          if (!item[chapterIdx].children.includes(page.id)) {
+            createdPageIds.push(page.id);
+          }
+        });
+        item[chapterIdx].children = item[chapterIdx].children.concat(createdPageIds);
+      }
+    });
+    item = createdChapterIds.concat(item); // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
+
+    item.slice().forEach(function (chapter) {
+      chapterIdxMap = item.reduce(function (m, chapter, idx) {
+        return m.set(chapter.id, idx);
+      }, new Map());
+
+      if (_this5.chapterMap.get(chapter.id) === undefined) {
+        item.splice(chapterIdxMap.get(chapter.id), 1);
+      } else {
+        chapter.children.slice().forEach(function (pageId) {
+          var pageIds = chapter.children;
+
+          if (_this5.pageMap.get(pageId) === undefined || _this5.pageMap.get(pageId).parent !== chapter.id) {
+            chapter.children.splice(pageIds.indexOf(pageId), 1);
+          }
+        });
+      }
+    });
+    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
+  },
+  getLocalOrderChapterList: function getLocalOrderChapterList(targetChannelId, normalChapters) {
+    var _this6 = this;
+
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    return item.map(function (chapter) {
+      var chapterIdx = _this6.chapterMap.get(chapter.id);
+
+      return _objectSpread2(_objectSpread2({}, normalChapters[chapterIdx]), {}, {
+        children: chapter.children.map(function (pageId) {
+          return normalChapters[chapterIdx].children[_this6.pageMap.get(pageId).idx];
+        }),
+        isFolded: chapter.isFolded ? chapter.isFolded : false
+      });
+    });
+  },
+  checkDefaultChapterColor: function checkDefaultChapterColor(notebookList) {
+    var _this7 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      var _yield$_this7$updateC, color;
+
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+        while (1) {
+          switch (_context12.prev = _context12.next) {
+            case 0:
+              if (!(notebookList.length === 0)) {
+                _context12.next = 2;
+                break;
+              }
+
+              return _context12.abrupt("return", notebookList);
+
+            case 2:
+              if (!(notebookList[0].color === null && notebookList[0].id)) {
+                _context12.next = 8;
+                break;
+              }
+
+              _context12.next = 5;
+              return _this7.updateChapterColor(notebookList[0].id);
+
+            case 5:
+              _yield$_this7$updateC = _context12.sent;
+              color = _yield$_this7$updateC.color;
+              notebookList[0].color = color;
+
+            case 8:
+              return _context12.abrupt("return", notebookList);
+
+            case 9:
+            case "end":
+              return _context12.stop();
+          }
+        }
+      }, _callee12);
+    }))();
+  },
+  // type : defalut, notebook, shared_page, shared
+  // default chapterColor도 null이면 update 해준다
+  sortServerChapterList: function sortServerChapterList(notebookList) {
+    var _this8 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      var normalChapters, sharedChapters, getChapterNumType, firstSharedIdx;
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+        while (1) {
+          switch (_context13.prev = _context13.next) {
+            case 0:
+              normalChapters = [], sharedChapters = [];
+
+              if (!(notebookList.length === 0)) {
+                _context13.next = 3;
+                break;
+              }
+
+              return _context13.abrupt("return", {
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              });
+
+            case 3:
+              getChapterNumType = NoteUtil.getChapterNumType; // type : defalut(0), notebook(1), shared_page, shared, recycle_bin 순으로 sort된다
+
+              notebookList.sort(function (a, b) {
+                return getChapterNumType(a.type) - getChapterNumType(b.type);
+              });
+              _context13.next = 7;
+              return _this8.checkDefaultChapterColor(notebookList);
+
+            case 7:
+              notebookList = _context13.sent;
+              firstSharedIdx = notebookList.findIndex(function (chapter) {
+                return [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED, CHAPTER_TYPE.RECYCLE_BIN].includes(chapter.type);
+              });
+              _context13.t0 = firstSharedIdx;
+              _context13.next = _context13.t0 === 0 ? 12 : _context13.t0 === -1 ? 14 : 16;
+              break;
+
+            case 12:
+              // 전달만 있는 경우
+              sharedChapters = notebookList.slice(0);
+              return _context13.abrupt("break", 19);
+
+            case 14:
+              // 전달 챕터/페이지, 휴지통 없는 경우
+              normalChapters = notebookList.slice(0);
+              return _context13.abrupt("break", 19);
+
+            case 16:
+              // 전달인거, 아닌거 다 있는 경우
+              normalChapters = notebookList.slice(0, firstSharedIdx);
+              sharedChapters = notebookList.slice(firstSharedIdx);
+              return _context13.abrupt("break", 19);
+
+            case 19:
+              return _context13.abrupt("return", {
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              });
+
+            case 20:
+            case "end":
+              return _context13.stop();
+          }
+        }
+      }, _callee13);
+    }))();
+  },
+  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
+  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
+  getLnbBoundary: function getLnbBoundary(_ref) {
+    var normalChapters = _ref.normalChapters,
+        sharedChapters = _ref.sharedChapters;
+
+    if (normalChapters.length) {
+      if (sharedChapters.length > 1) return {
+        beforeShared: true,
+        beforeRecycleBin: true
+      };
+      return {
+        beforeShared: false,
+        beforeRecycleBin: true
+      }; // 일반 챕터, 휴지통만 있는 경우
+    }
+
+    if (sharedChapters.length > 1) return {
+      beforeShared: false,
+      beforeRecycleBin: true
+    };
+    return {
+      beforeShared: false,
+      beforeRecycleBin: false
+    }; // 휴지통만 있는 경우
+  },
+  getNoteChapterList: function getNoteChapterList() {
+    var _arguments = arguments,
+        _this9 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      var isInit, _yield$NoteRepository12, notbookList, _yield$_this9$sortSer, normalChapters, sharedChapters;
+
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        while (1) {
+          switch (_context14.prev = _context14.next) {
+            case 0:
+              isInit = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              _context14.next = 3;
+              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
+
+            case 3:
+              _yield$NoteRepository12 = _context14.sent;
+              notbookList = _yield$NoteRepository12.data.dto.notbookList;
+              _context14.next = 7;
+              return _this9.sortServerChapterList(notbookList);
+
+            case 7:
+              _yield$_this9$sortSer = _context14.sent;
+              normalChapters = _yield$_this9$sortSer.normalChapters;
+              sharedChapters = _yield$_this9$sortSer.sharedChapters;
+
+              _this9.createMap(normalChapters);
+
+              _this9.sharedCnt = sharedChapters.length;
+
+              if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+                // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
+                _this9.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+              } else {
+                _this9.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
+
+
+                normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
+              } // sharedChapters = shared, recylce_bin
+
+
+              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters); // 화면에 경계선 그리기용
+
+              _this9.setLnbBoundary(_this9.getLnbBoundary({
+                normalChapters: normalChapters,
+                sharedChapters: sharedChapters
+              }));
+
+              _this9.setChapterList(normalChapters.concat(sharedChapters));
+
+              return _context14.abrupt("return", _this9.chapterList);
+
+            case 17:
+            case "end":
+              return _context14.stop();
+          }
+        }
+      }, _callee14);
+    }))();
+  },
+  getTheRestFoldedState: function getTheRestFoldedState(isInit, sharedChapters) {
+    if (sharedChapters.length === 0) return sharedChapters;
+    var item = localStorage.getItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id));
+    var newFoldedMap = new Map();
+
+    if (!item) {
+      // sharedChapters의 foldedState는 false로
+      sharedChapters.forEach(function (chapter) {
+        newFoldedMap.set(chapter.id, false);
+        chapter.isFolded = false;
+      });
+    } else {
+      item = JSON.parse(item, NoteUtil.reviver);
+      sharedChapters.forEach(function (chapter) {
+        var value = item.get(chapter.id) ? item.get(chapter.id) : false;
+        if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
+        newFoldedMap.set(chapter.id, value);
+        chapter.isFolded = value;
+      });
+    }
+
+    localStorage.setItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id), JSON.stringify(newFoldedMap, NoteUtil.replacer));
+    return sharedChapters;
+  },
+  createNoteChapter: function createNoteChapter() {
+    var _this10 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var trimmedChapterTitle, notbookList;
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              trimmedChapterTitle = _this10.chapterNewTitle.trim();
+              _this10.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
+              _context15.next = 4;
+              return _this10.createChapter(_this10.chapterNewTitle, _this10.isNewChapterColor);
+
+            case 4:
+              notbookList = _context15.sent;
+              _context15.next = 7;
+              return _this10.getNoteChapterList();
+
+            case 7:
+              // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
+              PageStore.fetchCurrentPageData(notbookList.children[0].id);
+
+              _this10.setChapterTempUl(false);
+
+              _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
+
+              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
+
+            case 11:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15);
+    }))();
+  },
+  deleteNoteChapter: function deleteNoteChapter(isDnd) {
+    var _this11 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+      var _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
+
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+        while (1) {
+          switch (_context16.prev = _context16.next) {
+            case 0:
+              _context16.next = 2;
+              return _this11.deleteChapter(_this11.deleteChapterList);
+
+            case 2:
+              _context16.next = 4;
+              return _this11.getNoteChapterList();
+
+            case 4:
+              if (!_this11.deleteChapterList.find(function (chapter) {
+                return chapter.id === _this11.currentChapterId;
+              })) {
+                _context16.next = 12;
+                break;
+              }
+
+              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : PageStore.selectablePageId;
+              _context16.next = 8;
+              return PageStore.fetchCurrentPageData(pageId);
+
+            case 8:
+              _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
+
+              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
+              ChapterStore.setIsCtrlKeyDown(false);
+
+              _this11.setIsCtrlKeyDown(false);
+
+            case 12:
+              NoteStore.setIsDragging(false);
+
+              _this11.setDeleteChapterList([]);
+
+              NoteStore.setShowModal(false);
+              NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
+              NoteStore.setIsVisibleToast(true);
+
+            case 17:
+            case "end":
+              return _context16.stop();
+          }
+        }
+      }, _callee16);
+    }))();
+  },
+  renameNoteChapter: function renameNoteChapter(color) {
+    var _this12 = this;
+
+    this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
+      if (_this12.dragData.get(dto.id)) _this12.dragData.get(dto.id).item.text = dto.text;
+
+      _this12.getNoteChapterList();
+    });
+  },
+  createDragData: function createDragData(chapterId) {
+    var chapterIdx = this.chapterList.findIndex(function (chapter) {
+      return chapter.id === chapterId;
+    });
+    if (chapterIdx < 0) return;
+    return {
+      item: this.chapterList[chapterIdx],
+      chapterIdx: chapterIdx
+    };
+  },
+  handleClickOutside: function handleClickOutside() {
+    this.setIsCtrlKeyDown(false);
+
+    if (!this.currentChapterId) {
+      this.clearDragData();
+      return;
+    }
+
+    var currentDragData = this.dragData.get(this.currentChapterId) || this.createDragData(this.currentChapterId);
+    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
+  },
+  getSortedDragDataList: function getSortedDragDataList() {
+    var dragDataList = _toConsumableArray(this.dragData).map(function (keyValue) {
+      return keyValue[1];
+    });
+
+    return dragDataList.sort(function (a, b) {
+      return a.chapterIdx - b.chapterIdx;
+    });
+  },
+  moveChapter: function moveChapter() {
+    var _this13 = this;
+
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
+    var sortedDragDataList = this.getSortedDragDataList();
+    var sortedMoveChapters = sortedDragDataList.map(function (data) {
+      return item[data.chapterIdx];
+    });
+    var chapters = [];
+    item.forEach(function (chapter, idx) {
+      if (idx === _this13.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+      if (!_this13.dragData.get(chapter.id)) chapters.push(chapter);
+    });
+    if (this.dragEnterChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+    var moveCnt = 0;
+    var startIdx = chapters.findIndex(function (chapter) {
+      return chapter.id === sortedDragDataList[0].item.id;
+    });
+    sortedDragDataList.forEach(function (data, idx) {
+      if (data.chapterIdx !== startIdx + idx) moveCnt++;
+
+      _this13.dragData.set(data.item.id, {
+        item: data.item,
+        chapterIdx: startIdx + idx
+      });
+    });
+
+    if (moveCnt > 0) {
+      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
+      this.getNoteChapterList().then(function () {
+        _this13.currentChapterId = sortedMoveChapters[0].id;
+        PageStore.currentPageId = sortedMoveChapters[0].children[0];
+        NoteStore.setIsDragging(false);
+        if (!PageStore.currentPageId) PageStore.clearDragData();else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this13.currentChapterId)]]));
+        PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
+          NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', {
+            moveCnt: moveCnt
+          }));
+          NoteStore.setIsVisibleToast(true);
+        });
+      });
+    } else {
+      this.handleClickOutside();
+      NoteStore.setIsDragging(false);
+    }
+  },
+
+  /* 
+    - search 관련
+    - 방 바꼈을 때 변수 init 필요
+    - 검색 후 방 바뀌었을 때 변수 init이 안됨
+  */
+  initSearchVar: function initSearchVar() {
+    this.setIsLoadingSearchResult(false);
+    this.setIsSearching(false);
+    this.setIsTagSearching(false);
+    this.setSearchResult({});
+    this.setSearchStr('');
+  },
+  getChapterFirstPage: function getChapterFirstPage(targetId) {
+    var _this14 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+        while (1) {
+          switch (_context17.prev = _context17.next) {
+            case 0:
+              _this14.getChapterList().then(function (chapterList) {
+                var targetChapter = chapterList.filter(function (chapter) {
+                  return chapter.id === targetId;
+                })[0];
+
+                if (targetChapter.children.length > 0) {
+                  PageStore.setCurrentPageId(targetChapter.children[0].id);
+                  PageStore.fetchCurrentPageData(targetChapter.children[0].id);
+                } else PageStore.fetchCurrentPageData('');
+              });
+
+            case 1:
+            case "end":
+              return _context17.stop();
+          }
+        }
+      }, _callee17);
+    }))();
+  },
+
+  /*
+    태그와 챕터리스트 isSearching이 다름
+    chapterStore에서 isSearching은 검색 시작 ~ 검색 결과나온 후 더는 안 보려고 결과 초기화하는 동작까지임
+    태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
+    isSearching이 검색 시작 ~ 검색 결과 출력전까지임
+  */
+  getSearchResult: function getSearchResult() {
+    var _this15 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        while (1) {
+          switch (_context18.prev = _context18.next) {
+            case 0:
+              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
+              _this15.setIsSearching(true);
+
+              _this15.setIsLoadingSearchResult(true);
+
+              _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
+                var _dto$chapterList;
+
+                var filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
+                  return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
+                });
+
+                _this15.setSearchResult({
+                  chapter: filtered && filtered.length > 0 ? filtered : null,
+                  page: dto.pageList,
+                  tag: dto.tagList
+                });
+
+                _this15.setIsLoadingSearchResult(false);
+              });
+
+            case 3:
+            case "end":
+              return _context18.stop();
+          }
+        }
+      }, _callee18);
+    }))();
+  },
+  fetchSearchResult: function fetchSearchResult() {
+    var _this16 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+        while (1) {
+          switch (_context19.prev = _context19.next) {
+            case 0:
+              _this16.setIsSearching(true); // 검색 결과 출력 종료까지임
+
+
+              _this16.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+              // await this.getSearchResult();
+
+
+              _this16.getSearchList(_this16.searchStr.trim()).then(function (dto) {
+                if (dto.pageList && dto.pageList.length > 0) {
+                  dto.pageList.map(function (page) {
+                    _this16.getChapterInfoList(page.parent_notebook).then(function (dto) {
+                      page.parentColor = dto.color;
+                      page.parentText = dto.text;
+                    }).then(function () {
+                      _this16.setSearchResult({
+                        chapter: dto.chapterList,
+                        page: dto.pageList
+                      });
+
+                      _this16.setIsLoadingSearchResult(false);
+                    });
+                  });
+                } else {
+                  _this16.setSearchResult({
+                    chapter: dto.chapterList,
+                    page: dto.pageList
+                  });
+
+                  _this16.setIsLoadingSearchResult(false);
+                }
+              });
+
+            case 3:
+            case "end":
+              return _context19.stop();
+          }
+        }
+      }, _callee19);
+    }))();
+  },
+  createShareChapter: function createShareChapter(targetList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+      var _yield$NoteRepository13, dto;
+
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
+        while (1) {
+          switch (_context20.prev = _context20.next) {
+            case 0:
+              _context20.next = 2;
+              return NoteRepository$1.createShareChapter(targetList);
+
+            case 2:
+              _yield$NoteRepository13 = _context20.sent;
+              dto = _yield$NoteRepository13.data.dto;
+              return _context20.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context20.stop();
+          }
+        }
+      }, _callee20);
+    }))();
+  },
+  createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
+    var _this17 = this;
+
+    if (!targetChapterList) return;
+    var targetChId = NoteStore.getTargetChId(targetRoomId);
+    var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
+    var targetList = targetChapterList.map(function (chapter) {
+      return {
+        id: chapter.id,
+        ws_id: NoteRepository$1.WS_ID,
+        note_channel_id: NoteRepository$1.chId,
+        text: chapter.text,
+        color: chapter.color,
+        type: chapter.type === 'shared_page' || chapter.type === 'shared' ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
+        USER_ID: NoteRepository$1.USER_ID,
+        shared_user_id: NoteRepository$1.USER_ID,
+        shared_room_name: NoteRepository$1.WS_ID,
+        target_workspace_id: targetRoomId,
+        target_channel_id: targetChId,
+        messenger_id: targetTalkChId
+      };
+    });
+    this.createShareChapter(targetList).then(function () {
+      _this17.getNoteChapterList();
+
+      NoteStore.setIsDragging(false);
+    });
+  },
+  getFirstRenderedChapter: function getFirstRenderedChapter() {
+    // web에서 안 씀
+    if (this.chapterList.length > 0) return this.chapterList[0];
+    return null;
+  },
+  setFirstDragData: function setFirstDragData(targetChapter) {
+    this.setDragData(new Map([[targetChapter.id, {
+      item: targetChapter,
+      chapterIdx: 0
+    }]]));
+
+    if (targetChapter.children.length > 0) {
+      var targetPage = targetChapter.children[0];
+      PageStore.setDragData(new Map([[targetPage.id, {
+        item: targetPage,
+        pageIdx: 0,
+        chapterId: targetChapter.id,
+        chapterIdx: 0
+      }]]));
+    }
+  },
+  setFirstNoteInfo: function setFirstNoteInfo() {
+    var _this18 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
+      var targetChapter, pageId;
+      return regeneratorRuntime.wrap(function _callee21$(_context21) {
+        while (1) {
+          switch (_context21.prev = _context21.next) {
+            case 0:
+              targetChapter = _this18.chapterList.length > 0 ? _this18.chapterList[0] : null;
+
+              if (targetChapter) {
+                _context21.next = 5;
+                break;
+              }
+
+              _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
+
+
+              PageStore.fetchCurrentPageData('');
+              return _context21.abrupt("return");
+
+            case 5:
+              _this18.setFirstDragData(targetChapter);
+
+              pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
+              // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
+
+              if (!pageId) {
+                _context21.next = 12;
+                break;
+              }
+
+              _context21.next = 10;
+              return PageStore.fetchCurrentPageData(pageId);
+
+            case 10:
+              _context21.next = 13;
+              break;
+
+            case 12:
+              _this18.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+
+            case 13:
+            case "end":
+              return _context21.stop();
+          }
+        }
+      }, _callee21);
+    }))();
+  },
+
+  /*
+    loading true->false가 들어간 함수
+  */
+  // 처음 축소 상태에서 확대 상태로 바꿀 때
+  fetchFirstNote: function fetchFirstNote() {
+    var _this19 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
+      return regeneratorRuntime.wrap(function _callee22$(_context22) {
+        while (1) {
+          switch (_context22.prev = _context22.next) {
+            case 0:
+              _this19.setLoadingPageInfo(true);
+
+              _context22.next = 3;
+              return _this19.setFirstNoteInfo();
+
+            case 3:
+              _this19.setLoadingPageInfo(false);
+
+            case 4:
+            case "end":
+              return _context22.stop();
+          }
+        }
+      }, _callee22);
+    }))();
+  },
+  // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
+  fetchChapterList: function fetchChapterList() {
+    var _arguments2 = arguments,
+        _this20 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
+      var isInit;
+      return regeneratorRuntime.wrap(function _callee23$(_context23) {
+        while (1) {
+          switch (_context23.prev = _context23.next) {
+            case 0:
+              isInit = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : false;
+
+              // 한 군데에서만 부르긴하지만 일단 param 추가
+              _this20.setLoadingPageInfo(true);
+
+              _context23.next = 4;
+              return _this20.getNoteChapterList(isInit);
+
+            case 4:
+              if (!(_this20.chapterList.length > 0)) {
+                _context23.next = 7;
+                break;
+              }
+
+              _context23.next = 7;
+              return _this20.setFirstNoteInfo();
+
+            case 7:
+              _this20.setLoadingPageInfo(false);
+
+            case 8:
+            case "end":
+              return _context23.stop();
+          }
+        }
+      }, _callee23);
+    }))();
+  },
+  // localStorage에서 page 얻기
+  getChapterFirstPageId: function getChapterFirstPageId(chapterId) {
+    var _chapter$children$;
+
+    var chapter = this.chapterList.find(function (chapter) {
+      return chapter.id === chapterId;
+    });
+    if (!chapter || chapter.children.length === 0) return null;
+    return (_chapter$children$ = chapter.children[0]) === null || _chapter$children$ === void 0 ? void 0 : _chapter$children$.id;
+  },
+
+  /**
+   * isRecycleBin인지 항상 같이 set해줘야해서 만든 함수
+   * computed 기능용으로 만듦
+   * param: 1st.chapterId, 2nd. isRecycleBin값(안 넘기면 recycleBin 찾아서 비교함)
+   * chapterId 없으면 isRecycleBin은 false로 세팅함
+   */
+  setCurrentChapterInfo: function setCurrentChapterInfo(chapterId, isRecycleBin) {
+    this.setCurrentChapterId(chapterId);
+
+    if (typeof isRecycleBin === 'boolean') {
+      PageStore.setIsRecycleBin(isRecycleBin);
+      return;
+    }
+
+    if (!chapterId) {
+      PageStore.setIsRecycleBin(false);
+      return;
+    }
+
+    var recycleBin = this.chapterList.find(function (chapter) {
+      return chapter.type === CHAPTER_TYPE.RECYCLE_BIN;
+    });
+    if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
+  },
+  openNote: function openNote() {
+    var _this21 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
+      var pageId;
+      return regeneratorRuntime.wrap(function _callee24$(_context24) {
+        while (1) {
+          switch (_context24.prev = _context24.next) {
+            case 0:
+              _context24.prev = 0;
+              _context24.t0 = NoteStore.metaTagInfo.type;
+              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
+              break;
+
+            case 4:
+              // chapter, page 선택
+              NoteStore.setTargetLayout('LNB');
+
+              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
+
+              _context24.next = 8;
+              return _this21.getNoteChapterList();
+
+            case 8:
+              // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
+              _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
+
+              pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+              /**
+               * 현재 챕터 클릭 로직과 동일하게 함
+               * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
+               * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
+               */
+
+              _context24.next = 12;
+              return PageStore.fetchCurrentPageData(pageId ? pageId : '');
+
+            case 12:
+              return _context24.abrupt("break", 17);
+
+            case 13:
+              _context24.next = 15;
+              return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
+
+            case 15:
+              NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
+
+              return _context24.abrupt("break", 17);
+
+            case 17:
+              _context24.next = 22;
+              break;
+
+            case 19:
+              _context24.prev = 19;
+              _context24.t1 = _context24["catch"](0);
+              console.log('e', _context24.t1);
+
+            case 22:
+              NoteStore.setMetaTagInfo({
+                isOpen: false,
+                type: '',
+                id: ''
+              });
+
+            case 23:
+            case "end":
+              return _context24.stop();
+          }
+        }
+      }, _callee24, null, [[0, 19]]);
+    }))();
+  },
+  getRoomChapterList: function getRoomChapterList() {
+    var roomChapterList = this.chapterList.filter(function (chapter) {
+      return chapter.type === 'notebook' || chapter.type === 'default';
+    });
+    return roomChapterList;
+  }
+});
 
 var TagStore = observable({
   // note에 딸린 tagList
@@ -4937,1476 +5097,1318 @@ var PageStore = observable({
   }
 });
 
-var ChapterStore = observable({
-  chapterColor: '',
-  loadingPageInfo: false,
-  // 2panel(pageContainer용)
-  chapterList: [],
-  sortedChapterList: {
-    // web에서 안 씀
-    roomChapterList: [],
-    sharedPageList: [],
-    sharedChapterList: []
-  },
-  currentChapterId: '',
-  chapterNewTitle: '',
-  isNewChapterColor: '',
-  isNewChapter: false,
-  colorArray: {
-    1: '#C84847',
-    2: '#F29274',
-    3: '#F6C750',
-    4: '#77B69B',
-    5: '#679886',
-    6: '#3A7973',
-    7: '#77BED3',
-    8: '#5C83DA',
-    9: '#8F91E7',
-    10: '#DF97AA',
-    11: '#CA6D6D'
-  },
-  // 검색 실행 화면 필요
-  isLoadingSearchResult: false,
-  isSearching: false,
-  isTagSearching: false,
-  //tag chip 클릭해서 tag chip 띄울 때 씀
-  searchingTagName: '',
-  searchStr: '',
-  // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
-  searchResult: {},
-  // {chapter:[], page:[]} 형태
-  deleteChapterList: [],
-  deleteChapterId: '',
-  selectableChapterId: '',
-  renameId: '',
-  renamePrevText: '',
-  renameText: '',
-  isMovingChapter: false,
-  dragData: new Map(),
-  isCtrlKeyDown: false,
-  dragEnterChapterIdx: '',
-  chapterMap: new Map(),
-  pageMap: new Map(),
-  chapterChildren: [],
-  exportChapterId: '',
-  exportChapterTitle: '',
-  sharedCnt: 0,
-  scrollIntoViewId: '',
-  lnbBoundary: {
-    beforeShared: false,
-    beforeRecycleBin: false
-  },
-  // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
-  getLoadingPageInfo: function getLoadingPageInfo() {
-    return this.loadingPageInfo;
-  },
-  setLoadingPageInfo: function setLoadingPageInfo(isLoading) {
-    this.loadingPageInfo = isLoading;
-  },
-  getCurrentChapterId: function getCurrentChapterId() {
-    return this.currentChapterId;
-  },
-  setCurrentChapterId: function setCurrentChapterId(chapterId) {
-    this.currentChapterId = chapterId;
-  },
-  getDeleteChapterList: function getDeleteChapterList() {
-    return this.deleteChapterList;
-  },
-  setDeleteChapterList: function setDeleteChapterList(deleteChapterList) {
-    this.deleteChapterList = deleteChapterList;
-  },
-  getDeleteChapterId: function getDeleteChapterId() {
-    return this.deleteChapterId;
-  },
-  setDeleteChapterId: function setDeleteChapterId(chapter) {
-    this.deleteChapterId = chapter;
-  },
-  getSelectableChapterId: function getSelectableChapterId() {
-    return this.selectableChapterId;
-  },
-  setSelectableChapterId: function setSelectableChapterId(chapterId) {
-    this.selectableChapterId = chapterId;
-  },
-  getRenameId: function getRenameId() {
-    return this.renameId;
-  },
-  setRenameId: function setRenameId(chapterId) {
-    this.renameId = chapterId;
-  },
-  getRenamePrevText: function getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText: function setRenamePrevText(chapterText) {
-    this.renamePrevText = chapterText;
-  },
-  getRenameText: function getRenameText() {
-    return this.renameText;
-  },
-  setRenameText: function setRenameText(chapterText) {
-    if (chapterText.length > 256) chapterText = chapterText.substring(0, 256);
-    this.renameText = chapterText;
-  },
-  getIsMovingChapter: function getIsMovingChapter() {
-    return this.isMovingChapter;
-  },
-  setIsMovingChapter: function setIsMovingChapter(isMoving) {
-    this.isMovingChapter = isMoving;
-  },
-  getDragData: function getDragData() {
-    return this.dragData;
-  },
-  setDragData: function setDragData(dragData) {
-    this.dragData = dragData;
-  },
-  appendDragData: function appendDragData(key, value) {
-    this.dragData.set(key, value);
-  },
-  deleteDragData: function deleteDragData(key) {
-    this.dragData.delete(key);
-  },
-  clearDragData: function clearDragData() {
-    this.dragData.clear();
-  },
-  setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
-    this.isCtrlKeyDown = flag;
-  },
-  getDragEnterChapterIdx: function getDragEnterChapterIdx() {
-    return this.dragEnterChapterIdx;
-  },
-  setDragEnterChapterIdx: function setDragEnterChapterIdx(chapterIdx) {
-    this.dragEnterChapterIdx = chapterIdx;
-  },
-  setChapterListChildren: function setChapterListChildren(chapterId) {
-    this.chapterChildren = this.chapterList.filter(function (chapter) {
-      return chapter.id === chapterId;
-    })[0].children;
-  },
-  setChapterTempUl: function setChapterTempUl(flag) {
-    this.isNewChapter = flag;
-    if (flag === false) this.setChapterTitle('');
-  },
-  setChapterTitle: function setChapterTitle(title) {
-    this.chapterNewTitle = title;
-  },
-  setLnbBoundary: function setLnbBoundary(flags) {
-    // 형태: { beforeShared:false, beforeRecycleBin:false }
-    this.lnbBoundary = flags;
-  },
-  // 사용자 input이 없을 때
-  // 웹에서 더이상 안씀! 모바일에서도 안씀!
-  getNewChapterTitle: function getNewChapterTitle() {
-    var re = /^새 챕터 (\d+)$/gm;
-    var chapterTitle, temp;
-    var isNotAvailable = [];
-    var fullLength = this.chapterList.length;
-    isNotAvailable.length = fullLength + 1;
-    this.chapterList.forEach(function (chapter) {
-      chapterTitle = chapter.text;
-
-      if (chapterTitle === '새 챕터') {
-        isNotAvailable[0] = 1;
-      } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, '$1'));
-
-        if (temp <= fullLength) {
-          isNotAvailable[temp] = 1;
-        }
-      }
-    });
-    if (!isNotAvailable[0]) return '새 챕터';
-
-    for (var i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return '새 챕터 ' + i;
-    }
-  },
-  getChapterId: function getChapterId(e) {
-    var id = e.target.id;
-    return id;
-  },
-  getChapterRandomColor: function getChapterRandomColor() {
-    var COLOR_ARRAY = Object.values(this.colorArray);
-    this.isNewChapterColor = COLOR_ARRAY[Math.floor(Math.random() * COLOR_ARRAY.length)];
-    return this.isNewChapterColor;
-  },
-  getChapterColor: function getChapterColor(chapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var _yield$NoteRepository, dto;
-
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return NoteRepository$1.getChapterColor(chapterId);
-
-            case 2:
-              _yield$NoteRepository = _context.sent;
-              dto = _yield$NoteRepository.data.dto;
-              return _context.abrupt("return", dto.color);
-
-            case 5:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
-  },
-  getChapterName: function getChapterName(chapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var _yield$NoteRepository2, dto;
-
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return NoteRepository$1.getChapterText(chapterId);
-
-            case 2:
-              _yield$NoteRepository2 = _context2.sent;
-              dto = _yield$NoteRepository2.data.dto;
-              return _context2.abrupt("return", dto.text);
-
-            case 5:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }))();
-  },
-  getIsLoadingSearchResult: function getIsLoadingSearchResult() {
-    return this.isLoadingSearching;
-  },
-  setIsLoadingSearchResult: function setIsLoadingSearchResult(isLoadingSearchResult) {
-    this.isLoadingSearchResult = isLoadingSearchResult;
-  },
-  getIsSearching: function getIsSearching() {
-    return this.isSearching;
-  },
-  setIsSearching: function setIsSearching(isSearching) {
-    this.isSearching = isSearching;
-  },
-  getSearchStr: function getSearchStr() {
-    return this.searchStr;
-  },
-  setSearchStr: function setSearchStr(str) {
-    this.searchStr = str;
-  },
-  // 태그칩 선택시 사용 목적 : 해당 태그가 들어있는 페이지 리스트 보여주기
-  // tagStore에서 setSearchResult({chapter:[],page:[page1,page2..]})
-  setSearchResult: function setSearchResult(result) {
-    this.searchResult = result;
-  },
-  // 태그칩 클릭해서 lnblist 띄우기
-  getSearchingTagName: function getSearchingTagName() {
-    return this.searchingTagName;
-  },
-  setSearchingTagName: function setSearchingTagName(str) {
-    this.searchingTagName = str;
-  },
-  getIsTagSearching: function getIsTagSearching() {
-    return this.isTagSearching;
-  },
-  setIsTagSearching: function setIsTagSearching(isSearching) {
-    this.isTagSearching = isSearching;
-  },
-  isValidChapterText: function isValidChapterText(targetText) {
-    return checkNotDuplicate(this.chapterList, 'text', targetText);
-  },
-  setExportId: function setExportId(chapterId) {
-    this.exportChapterId = chapterId;
-  },
-  setExportTitle: function setExportTitle(chapterTitle) {
-    this.exportChapterTitle = chapterTitle;
-  },
-  changePageList: function changePageList(chapterIdx, pageList) {
-    this.chapterList[chapterIdx].children = pageList;
-  },
-  setScrollIntoViewId: function setScrollIntoViewId(chapterId) {
-    this.scrollIntoViewId = chapterId;
-  },
-
-  /**
-   *  ChapterStore Method : getChapterList, createChapter, deleteChapter, renameChapter
-   */
-  getChapterList: function getChapterList() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _yield$NoteRepository3, notbookList;
-
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
-
-            case 2:
-              _yield$NoteRepository3 = _context3.sent;
-              notbookList = _yield$NoteRepository3.data.dto.notbookList;
-
-              _this.setChapterList(notbookList);
-
-              return _context3.abrupt("return", notbookList);
-
-            case 6:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }))();
-  },
-  setChapterList: function setChapterList(chapterList) {
-    this.chapterList = chapterList;
-  },
-  getSortedChapterList: function getSortedChapterList() {
-    return this.sortedChapterList;
-  },
-  setSortedChapterList: function setSortedChapterList(obj) {
-    this.sortedChapterList = obj;
-  },
-  createChapter: function createChapter(chapterTitle, chapterColor) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var _yield$NoteRepository4, dto;
-
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return NoteRepository$1.createChapter(chapterTitle, chapterColor);
-
-            case 2:
-              _yield$NoteRepository4 = _context4.sent;
-              dto = _yield$NoteRepository4.dto;
-              return _context4.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
-    }))();
-  },
-  // 휴지통에 있는 페이지 복구할 때 페이지 없는 챕터 생성용
-  createRestoreChapter: function createRestoreChapter(chapterTitle, chapterColor) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      var _yield$NoteRepository5, dto;
-
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              _context5.next = 2;
-              return NoteRepository$1.createRestoreChapter(chapterTitle, chapterColor);
-
-            case 2:
-              _yield$NoteRepository5 = _context5.sent;
-              dto = _yield$NoteRepository5.dto;
-              return _context5.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, _callee5);
-    }))();
-  },
-  deleteChapter: function deleteChapter(chapterList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var _yield$NoteRepository6, dto;
-
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              _context6.next = 2;
-              return NoteRepository$1.deleteChapter(chapterList);
-
-            case 2:
-              _yield$NoteRepository6 = _context6.sent;
-              dto = _yield$NoteRepository6.dto;
-              return _context6.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context6.stop();
-          }
-        }
-      }, _callee6);
-    }))();
-  },
-  renameChapter: function renameChapter(renameId, renameText, color) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-      var _yield$NoteRepository7, dto;
-
-      return regeneratorRuntime.wrap(function _callee7$(_context7) {
-        while (1) {
-          switch (_context7.prev = _context7.next) {
-            case 0:
-              _context7.next = 2;
-              return NoteRepository$1.renameChapter(renameId, renameText, color);
-
-            case 2:
-              _yield$NoteRepository7 = _context7.sent;
-              dto = _yield$NoteRepository7.dto;
-              return _context7.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context7.stop();
-          }
-        }
-      }, _callee7);
-    }))();
-  },
-  updateChapterColor: function updateChapterColor(chapterId) {
-    var _this2 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var targetColor, _yield$NoteRepository8, dto;
-
-      return regeneratorRuntime.wrap(function _callee8$(_context8) {
-        while (1) {
-          switch (_context8.prev = _context8.next) {
-            case 0:
-              targetColor = _this2.getChapterRandomColor();
-              _context8.next = 3;
-              return NoteRepository$1.updateChapterColor(chapterId, targetColor);
-
-            case 3:
-              _yield$NoteRepository8 = _context8.sent;
-              dto = _yield$NoteRepository8.dto;
-              return _context8.abrupt("return", dto);
-
-            case 6:
-            case "end":
-              return _context8.stop();
-          }
-        }
-      }, _callee8);
-    }))();
-  },
-  getChapterChildren: function getChapterChildren(chapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var _yield$NoteRepository9, dto;
-
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
-        while (1) {
-          switch (_context9.prev = _context9.next) {
-            case 0:
-              _context9.next = 2;
-              return NoteRepository$1.getChapterChildren(chapterId);
-
-            case 2:
-              _yield$NoteRepository9 = _context9.sent;
-              dto = _yield$NoteRepository9.data.dto;
-              return _context9.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context9.stop();
-          }
-        }
-      }, _callee9);
-    }))();
-  },
-  getChapterInfoList: function getChapterInfoList(chapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-      var _yield$NoteRepository10, dto;
-
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
-        while (1) {
-          switch (_context10.prev = _context10.next) {
-            case 0:
-              _context10.next = 2;
-              return NoteRepository$1.getChapterInfoList(chapterId);
-
-            case 2:
-              _yield$NoteRepository10 = _context10.sent;
-              dto = _yield$NoteRepository10.data.dto;
-              return _context10.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context10.stop();
-          }
-        }
-      }, _callee10);
-    }))();
-  },
-  getSearchList: function getSearchList(searchStr) {
-    var _this3 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      var _yield$NoteRepository11, dto;
-
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
-        while (1) {
-          switch (_context11.prev = _context11.next) {
-            case 0:
-              _context11.next = 2;
-              return NoteRepository$1.getSearchList(searchStr || _this3.searchStr);
-
-            case 2:
-              _yield$NoteRepository11 = _context11.sent;
-              dto = _yield$NoteRepository11.data.dto;
-              return _context11.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context11.stop();
-          }
-        }
-      }, _callee11);
-    }))();
-  },
-
-  /**
-   * ChapterStore Business Logic in NoteApp
-   */
-  // normalChapters = type이 defualt, notebook인 chapter
-  createMap: function createMap(normalChapters) {
-    var _this4 = this;
-
-    // chapterMap: {key: chapterId, value: chapterIndex on server}
-    // pageMap: {key: pageId, value: {parent: chapterId, idx: pageIndex on server}}
-    this.chapterMap.clear();
-    this.pageMap.clear();
-    normalChapters.forEach(function (chapter, i) {
-      _this4.chapterMap.set(chapter.id, i);
-
-      chapter.children.forEach(function (page, j) {
-        _this4.pageMap.set(page.id, {
-          parent: chapter.id,
-          idx: j
-        });
-      });
-    });
-  },
-  setLocalStorageItem: function setLocalStorageItem(targetChannelId, normalChapters) {
-    // normalChapters: includes only [chapterType: notebook, default]
-    var newChapters = normalChapters.map(function (chapter) {
-      chapter.isFolded = false;
-      return {
-        id: chapter.id,
-        children: chapter.children.map(function (page) {
-          return page.id;
-        }),
-        isFolded: false
-      };
-    });
-    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(newChapters));
-  },
-  // notebookList의 chapter.type은 default, notebook만 있음
-  applyDifference: function applyDifference(targetChannelId, normalChapters) {
-    var _this5 = this;
-
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId)); // 로컬 스토리지에 없는 챕터/페이지가 있는지 확인한다. (생성된 챕터/페이지 확인)
-
-    var createdChapterIds = [];
-    var chapterIdxMap = item.reduce(function (m, chapter, idx) {
-      return m.set(chapter.id, idx);
-    }, new Map());
-    normalChapters.forEach(function (chapter) {
-      if (!chapterIdxMap.has(chapter.id)) {
-        createdChapterIds.push({
-          id: chapter.id,
-          children: chapter.children.map(function (page) {
-            return page.id;
-          }),
-          isFolded: false
-        });
-      } else {
-        var createdPageIds = [];
-        var chapterIdx = chapterIdxMap.get(chapter.id);
-        chapter.children.slice().reverse().forEach(function (page) {
-          if (!item[chapterIdx].children.includes(page.id)) {
-            createdPageIds.push(page.id);
-          }
-        });
-        item[chapterIdx].children = item[chapterIdx].children.concat(createdPageIds);
-      }
-    });
-    item = createdChapterIds.concat(item); // 서버에 없는 챕터/페이지가 있는지 확인한다. (삭제된 챕터/페이지 확인)
-
-    item.slice().forEach(function (chapter) {
-      chapterIdxMap = item.reduce(function (m, chapter, idx) {
-        return m.set(chapter.id, idx);
-      }, new Map());
-
-      if (_this5.chapterMap.get(chapter.id) === undefined) {
-        item.splice(chapterIdxMap.get(chapter.id), 1);
-      } else {
-        chapter.children.slice().forEach(function (pageId) {
-          var pageIds = chapter.children;
-
-          if (_this5.pageMap.get(pageId) === undefined || _this5.pageMap.get(pageId).parent !== chapter.id) {
-            chapter.children.splice(pageIds.indexOf(pageId), 1);
-          }
-        });
-      }
-    });
-    localStorage.setItem('NoteSortData_' + targetChannelId, JSON.stringify(item));
-  },
-  getLocalOrderChapterList: function getLocalOrderChapterList(targetChannelId, normalChapters) {
-    var _this6 = this;
-
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
-    return item.map(function (chapter) {
-      var chapterIdx = _this6.chapterMap.get(chapter.id);
-
-      return _objectSpread2(_objectSpread2({}, normalChapters[chapterIdx]), {}, {
-        children: chapter.children.map(function (pageId) {
-          return normalChapters[chapterIdx].children[_this6.pageMap.get(pageId).idx];
-        }),
-        isFolded: chapter.isFolded ? chapter.isFolded : false
-      });
-    });
-  },
-  checkDefaultChapterColor: function checkDefaultChapterColor(notebookList) {
-    var _this7 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$_this7$updateC, color;
-
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
-        while (1) {
-          switch (_context12.prev = _context12.next) {
-            case 0:
-              if (!(notebookList.length === 0)) {
-                _context12.next = 2;
-                break;
-              }
-
-              return _context12.abrupt("return", notebookList);
-
-            case 2:
-              if (!(notebookList[0].color === null && notebookList[0].id)) {
-                _context12.next = 8;
-                break;
-              }
-
-              _context12.next = 5;
-              return _this7.updateChapterColor(notebookList[0].id);
-
-            case 5:
-              _yield$_this7$updateC = _context12.sent;
-              color = _yield$_this7$updateC.color;
-              notebookList[0].color = color;
-
-            case 8:
-              return _context12.abrupt("return", notebookList);
-
-            case 9:
-            case "end":
-              return _context12.stop();
-          }
-        }
-      }, _callee12);
-    }))();
-  },
-  // type : defalut, notebook, shared_page, shared
-  // default chapterColor도 null이면 update 해준다
-  sortServerChapterList: function sortServerChapterList(notebookList) {
-    var _this8 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-      var normalChapters, sharedChapters, getChapterNumType, firstSharedIdx;
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
-        while (1) {
-          switch (_context13.prev = _context13.next) {
-            case 0:
-              normalChapters = [], sharedChapters = [];
-
-              if (!(notebookList.length === 0)) {
-                _context13.next = 3;
-                break;
-              }
-
-              return _context13.abrupt("return", {
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              });
-
-            case 3:
-              getChapterNumType = NoteUtil.getChapterNumType; // type : defalut(0), notebook(1), shared_page, shared, recycle_bin 순으로 sort된다
-
-              notebookList.sort(function (a, b) {
-                return getChapterNumType(a.type) - getChapterNumType(b.type);
-              });
-              _context13.next = 7;
-              return _this8.checkDefaultChapterColor(notebookList);
-
-            case 7:
-              notebookList = _context13.sent;
-              firstSharedIdx = notebookList.findIndex(function (chapter) {
-                return [CHAPTER_TYPE.SHARED_PAGE, CHAPTER_TYPE.SHARED, CHAPTER_TYPE.RECYCLE_BIN].includes(chapter.type);
-              });
-              _context13.t0 = firstSharedIdx;
-              _context13.next = _context13.t0 === 0 ? 12 : _context13.t0 === -1 ? 14 : 16;
-              break;
-
-            case 12:
-              // 전달만 있는 경우
-              sharedChapters = notebookList.slice(0);
-              return _context13.abrupt("break", 19);
-
-            case 14:
-              // 전달 챕터/페이지, 휴지통 없는 경우
-              normalChapters = notebookList.slice(0);
-              return _context13.abrupt("break", 19);
-
-            case 16:
-              // 전달인거, 아닌거 다 있는 경우
-              normalChapters = notebookList.slice(0, firstSharedIdx);
-              sharedChapters = notebookList.slice(firstSharedIdx);
-              return _context13.abrupt("break", 19);
-
-            case 19:
-              return _context13.abrupt("return", {
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              });
-
-            case 20:
-            case "end":
-              return _context13.stop();
-          }
-        }
-      }, _callee13);
-    }))();
-  },
-  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
-  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
-  getLnbBoundary: function getLnbBoundary(_ref) {
-    var normalChapters = _ref.normalChapters,
-        sharedChapters = _ref.sharedChapters;
-
-    if (normalChapters.length) {
-      if (sharedChapters.length > 1) return {
-        beforeShared: true,
-        beforeRecycleBin: true
-      };
-      return {
-        beforeShared: false,
-        beforeRecycleBin: true
-      }; // 일반 챕터, 휴지통만 있는 경우
-    }
-
-    if (sharedChapters.length > 1) return {
-      beforeShared: false,
-      beforeRecycleBin: true
-    };
-    return {
-      beforeShared: false,
-      beforeRecycleBin: false
-    }; // 휴지통만 있는 경우
-  },
-  getNoteChapterList: function getNoteChapterList() {
-    var _arguments = arguments,
-        _this9 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var isInit, _yield$NoteRepository12, notbookList, _yield$_this9$sortSer, normalChapters, sharedChapters;
-
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
-        while (1) {
-          switch (_context14.prev = _context14.next) {
-            case 0:
-              isInit = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
-              _context14.next = 3;
-              return NoteRepository$1.getChapterList(NoteStore.getChannelId());
-
-            case 3:
-              _yield$NoteRepository12 = _context14.sent;
-              notbookList = _yield$NoteRepository12.data.dto.notbookList;
-              _context14.next = 7;
-              return _this9.sortServerChapterList(notbookList);
-
-            case 7:
-              _yield$_this9$sortSer = _context14.sent;
-              normalChapters = _yield$_this9$sortSer.normalChapters;
-              sharedChapters = _yield$_this9$sortSer.sharedChapters;
-
-              _this9.createMap(normalChapters);
-
-              _this9.sharedCnt = sharedChapters.length;
-
-              if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-                // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
-                _this9.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
-              } else {
-                _this9.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
-
-
-                normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
-              } // sharedChapters = shared, recylce_bin
-
-
-              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters); // 화면에 경계선 그리기용
-
-              _this9.setLnbBoundary(_this9.getLnbBoundary({
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              }));
-
-              _this9.setChapterList(normalChapters.concat(sharedChapters));
-
-              return _context14.abrupt("return", _this9.chapterList);
-
-            case 17:
-            case "end":
-              return _context14.stop();
-          }
-        }
-      }, _callee14);
-    }))();
-  },
-  getTheRestFoldedState: function getTheRestFoldedState(isInit, sharedChapters) {
-    if (sharedChapters.length === 0) return sharedChapters;
-    var item = localStorage.getItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id));
-    var newFoldedMap = new Map();
-
-    if (!item) {
-      // sharedChapters의 foldedState는 false로
-      sharedChapters.forEach(function (chapter) {
-        newFoldedMap.set(chapter.id, false);
-        chapter.isFolded = false;
-      });
-    } else {
-      item = JSON.parse(item, NoteUtil.reviver);
-      sharedChapters.forEach(function (chapter) {
-        var value = item.get(chapter.id) ? item.get(chapter.id) : false;
-        if (isInit && chapter.type === CHAPTER_TYPE.RECYCLE_BIN) value = true;
-        newFoldedMap.set(chapter.id, value);
-        chapter.isFolded = value;
-      });
-    }
-
-    localStorage.setItem("Note_sharedFoldedState_".concat(NoteStore.notechannel_id), JSON.stringify(newFoldedMap, NoteUtil.replacer));
-    return sharedChapters;
-  },
-  createNoteChapter: function createNoteChapter() {
-    var _this10 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var trimmedChapterTitle, notbookList;
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
-        while (1) {
-          switch (_context15.prev = _context15.next) {
-            case 0:
-              trimmedChapterTitle = _this10.chapterNewTitle.trim();
-              _this10.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
-              _context15.next = 4;
-              return _this10.createChapter(_this10.chapterNewTitle, _this10.isNewChapterColor);
-
-            case 4:
-              notbookList = _context15.sent;
-              _context15.next = 7;
-              return _this10.getNoteChapterList();
-
-            case 7:
-              // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-              PageStore.fetchCurrentPageData(notbookList.children[0].id);
-
-              _this10.setChapterTempUl(false);
-
-              _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
-
-              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
-
-            case 11:
-            case "end":
-              return _context15.stop();
-          }
-        }
-      }, _callee15);
-    }))();
-  },
-  deleteNoteChapter: function deleteNoteChapter(isDnd) {
-    var _this11 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      var _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
-
-      return regeneratorRuntime.wrap(function _callee16$(_context16) {
-        while (1) {
-          switch (_context16.prev = _context16.next) {
-            case 0:
-              _context16.next = 2;
-              return _this11.deleteChapter(_this11.deleteChapterList);
-
-            case 2:
-              _context16.next = 4;
-              return _this11.getNoteChapterList();
-
-            case 4:
-              if (!_this11.deleteChapterList.find(function (chapter) {
-                return chapter.id === _this11.currentChapterId;
-              })) {
-                _context16.next = 12;
-                break;
-              }
-
-              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : PageStore.selectablePageId;
-              _context16.next = 8;
-              return PageStore.fetchCurrentPageData(pageId);
-
-            case 8:
-              _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
-
-              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
-              ChapterStore.setIsCtrlKeyDown(false);
-
-              _this11.setIsCtrlKeyDown(false);
-
-            case 12:
-              NoteStore.setIsDragging(false);
-
-              _this11.setDeleteChapterList([]);
-
-              NoteStore.setShowModal(false);
-              NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
-              NoteStore.setIsVisibleToast(true);
-
-            case 17:
-            case "end":
-              return _context16.stop();
-          }
-        }
-      }, _callee16);
-    }))();
-  },
-  renameNoteChapter: function renameNoteChapter(color) {
-    var _this12 = this;
-
-    this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
-      if (_this12.dragData.get(dto.id)) _this12.dragData.get(dto.id).item.text = dto.text;
-
-      _this12.getNoteChapterList();
-    });
-  },
-  createDragData: function createDragData(chapterId) {
-    var chapterIdx = this.chapterList.findIndex(function (chapter) {
-      return chapter.id === chapterId;
-    });
-    if (chapterIdx < 0) return;
-    return {
-      item: this.chapterList[chapterIdx],
-      chapterIdx: chapterIdx
-    };
-  },
-  handleClickOutside: function handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-
-    if (!this.currentChapterId) {
-      this.clearDragData();
-      return;
-    }
-
-    var currentDragData = this.dragData.get(this.currentChapterId) || this.createDragData(this.currentChapterId);
-    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
-  },
-  getSortedDragDataList: function getSortedDragDataList() {
-    var dragDataList = _toConsumableArray(this.dragData).map(function (keyValue) {
-      return keyValue[1];
-    });
-
-    return dragDataList.sort(function (a, b) {
-      return a.chapterIdx - b.chapterIdx;
-    });
-  },
-  moveChapter: function moveChapter() {
-    var _this13 = this;
-
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
-    var sortedDragDataList = this.getSortedDragDataList();
-    var sortedMoveChapters = sortedDragDataList.map(function (data) {
-      return item[data.chapterIdx];
-    });
-    var chapters = [];
-    item.forEach(function (chapter, idx) {
-      if (idx === _this13.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
-      if (!_this13.dragData.get(chapter.id)) chapters.push(chapter);
-    });
-    if (this.dragEnterChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
-    var moveCnt = 0;
-    var startIdx = chapters.findIndex(function (chapter) {
-      return chapter.id === sortedDragDataList[0].item.id;
-    });
-    sortedDragDataList.forEach(function (data, idx) {
-      if (data.chapterIdx !== startIdx + idx) moveCnt++;
-
-      _this13.dragData.set(data.item.id, {
-        item: data.item,
-        chapterIdx: startIdx + idx
-      });
-    });
-
-    if (moveCnt > 0) {
-      localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
-      this.getNoteChapterList().then(function () {
-        _this13.currentChapterId = sortedMoveChapters[0].id;
-        PageStore.currentPageId = sortedMoveChapters[0].children[0];
-        NoteStore.setIsDragging(false);
-        if (!PageStore.currentPageId) PageStore.clearDragData();else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this13.currentChapterId)]]));
-        PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
-          NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', {
-            moveCnt: moveCnt
-          }));
-          NoteStore.setIsVisibleToast(true);
-        });
-      });
-    } else {
-      this.handleClickOutside();
-      NoteStore.setIsDragging(false);
-    }
-  },
-
-  /* 
-    - search 관련
-    - 방 바꼈을 때 변수 init 필요
-    - 검색 후 방 바뀌었을 때 변수 init이 안됨
-  */
-  initSearchVar: function initSearchVar() {
-    this.setIsLoadingSearchResult(false);
-    this.setIsSearching(false);
-    this.setIsTagSearching(false);
-    this.setSearchResult({});
-    this.setSearchStr('');
-  },
-  getChapterFirstPage: function getChapterFirstPage(targetId) {
-    var _this14 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      return regeneratorRuntime.wrap(function _callee17$(_context17) {
-        while (1) {
-          switch (_context17.prev = _context17.next) {
-            case 0:
-              _this14.getChapterList().then(function (chapterList) {
-                var targetChapter = chapterList.filter(function (chapter) {
-                  return chapter.id === targetId;
-                })[0];
-
-                if (targetChapter.children.length > 0) {
-                  PageStore.setCurrentPageId(targetChapter.children[0].id);
-                  PageStore.fetchCurrentPageData(targetChapter.children[0].id);
-                } else PageStore.fetchCurrentPageData('');
-              });
-
-            case 1:
-            case "end":
-              return _context17.stop();
-          }
-        }
-      }, _callee17);
-    }))();
-  },
-
-  /*
-    태그와 챕터리스트 isSearching이 다름
-    chapterStore에서 isSearching은 검색 시작 ~ 검색 결과나온 후 더는 안 보려고 결과 초기화하는 동작까지임
-    태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
-    isSearching이 검색 시작 ~ 검색 결과 출력전까지임
-  */
-  getSearchResult: function getSearchResult() {
-    var _this15 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
-        while (1) {
-          switch (_context18.prev = _context18.next) {
-            case 0:
-              // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
-              _this15.setIsSearching(true);
-
-              _this15.setIsLoadingSearchResult(true);
-
-              _this15.getSearchList(_this15.searchStr.trim()).then(function (dto) {
-                var _dto$chapterList;
-
-                var filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
-                  return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
-                });
-
-                _this15.setSearchResult({
-                  chapter: filtered && filtered.length > 0 ? filtered : null,
-                  page: dto.pageList
-                });
-
-                _this15.setIsLoadingSearchResult(false);
-              });
-
-            case 3:
-            case "end":
-              return _context18.stop();
-          }
-        }
-      }, _callee18);
-    }))();
-  },
-  fetchSearchResult: function fetchSearchResult() {
-    var _this16 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
-        while (1) {
-          switch (_context19.prev = _context19.next) {
-            case 0:
-              _this16.setIsSearching(true); // 검색 결과 출력 종료까지임
-
-
-              _this16.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-              // await this.getSearchResult();
-
-
-              _this16.getSearchList(_this16.searchStr.trim()).then(function (dto) {
-                if (dto.pageList && dto.pageList.length > 0) {
-                  dto.pageList.map(function (page) {
-                    _this16.getChapterInfoList(page.parent_notebook).then(function (dto) {
-                      page.parentColor = dto.color;
-                      page.parentText = dto.text;
-                    }).then(function () {
-                      _this16.setSearchResult({
-                        chapter: dto.chapterList,
-                        page: dto.pageList
-                      });
-
-                      _this16.setIsLoadingSearchResult(false);
-                    });
-                  });
-                } else {
-                  _this16.setSearchResult({
-                    chapter: dto.chapterList,
-                    page: dto.pageList
-                  });
-
-                  _this16.setIsLoadingSearchResult(false);
-                }
-              });
-
-            case 3:
-            case "end":
-              return _context19.stop();
-          }
-        }
-      }, _callee19);
-    }))();
-  },
-  createShareChapter: function createShareChapter(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
-      var _yield$NoteRepository13, dto;
-
-      return regeneratorRuntime.wrap(function _callee20$(_context20) {
-        while (1) {
-          switch (_context20.prev = _context20.next) {
-            case 0:
-              _context20.next = 2;
-              return NoteRepository$1.createShareChapter(targetList);
-
-            case 2:
-              _yield$NoteRepository13 = _context20.sent;
-              dto = _yield$NoteRepository13.data.dto;
-              return _context20.abrupt("return", dto);
-
-            case 5:
-            case "end":
-              return _context20.stop();
-          }
-        }
-      }, _callee20);
-    }))();
-  },
-  createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
-    var _this17 = this;
-
-    if (!targetChapterList) return;
-    var targetChId = NoteStore.getTargetChId(targetRoomId);
-    var targetTalkChId = NoteStore.getTargetChId(targetRoomId, 'CHN0001');
-    var targetList = targetChapterList.map(function (chapter) {
-      return {
-        id: chapter.id,
-        ws_id: NoteRepository$1.WS_ID,
-        note_channel_id: NoteRepository$1.chId,
-        text: chapter.text,
-        color: chapter.color,
-        type: chapter.type === 'shared_page' || chapter.type === 'shared' ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
-        USER_ID: NoteRepository$1.USER_ID,
-        shared_user_id: NoteRepository$1.USER_ID,
-        shared_room_name: NoteRepository$1.WS_ID,
-        target_workspace_id: targetRoomId,
-        target_channel_id: targetChId,
-        messenger_id: targetTalkChId
-      };
-    });
-    this.createShareChapter(targetList).then(function () {
-      _this17.getNoteChapterList();
-
-      NoteStore.setIsDragging(false);
-    });
-  },
-  getFirstRenderedChapter: function getFirstRenderedChapter() {
-    // web에서 안 씀
-    if (this.chapterList.length > 0) return this.chapterList[0];
-    return null;
-  },
-  setFirstDragData: function setFirstDragData(targetChapter) {
-    this.setDragData(new Map([[targetChapter.id, {
-      item: targetChapter,
-      chapterIdx: 0
-    }]]));
-
-    if (targetChapter.children.length > 0) {
-      var targetPage = targetChapter.children[0];
-      PageStore.setDragData(new Map([[targetPage.id, {
-        item: targetPage,
-        pageIdx: 0,
-        chapterId: targetChapter.id,
-        chapterIdx: 0
-      }]]));
-    }
-  },
-  setFirstNoteInfo: function setFirstNoteInfo() {
-    var _this18 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
-      var targetChapter, pageId;
-      return regeneratorRuntime.wrap(function _callee21$(_context21) {
-        while (1) {
-          switch (_context21.prev = _context21.next) {
-            case 0:
-              targetChapter = _this18.chapterList.length > 0 ? _this18.chapterList[0] : null;
-
-              if (targetChapter) {
-                _context21.next = 5;
-                break;
-              }
-
-              _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
-
-
-              PageStore.fetchCurrentPageData('');
-              return _context21.abrupt("return");
-
-            case 5:
-              _this18.setFirstDragData(targetChapter);
-
-              pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
-              // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
-
-              if (!pageId) {
-                _context21.next = 12;
-                break;
-              }
-
-              _context21.next = 10;
-              return PageStore.fetchCurrentPageData(pageId);
-
-            case 10:
-              _context21.next = 13;
-              break;
-
-            case 12:
-              _this18.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
-
-            case 13:
-            case "end":
-              return _context21.stop();
-          }
-        }
-      }, _callee21);
-    }))();
-  },
-
-  /*
-    loading true->false가 들어간 함수
-  */
-  // 처음 축소 상태에서 확대 상태로 바꿀 때
-  fetchFirstNote: function fetchFirstNote() {
-    var _this19 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
-      return regeneratorRuntime.wrap(function _callee22$(_context22) {
-        while (1) {
-          switch (_context22.prev = _context22.next) {
-            case 0:
-              _this19.setLoadingPageInfo(true);
-
-              _context22.next = 3;
-              return _this19.setFirstNoteInfo();
-
-            case 3:
-              _this19.setLoadingPageInfo(false);
-
-            case 4:
-            case "end":
-              return _context22.stop();
-          }
-        }
-      }, _callee22);
-    }))();
-  },
-  // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
-  fetchChapterList: function fetchChapterList() {
-    var _arguments2 = arguments,
-        _this20 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
-      var isInit;
-      return regeneratorRuntime.wrap(function _callee23$(_context23) {
-        while (1) {
-          switch (_context23.prev = _context23.next) {
-            case 0:
-              isInit = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : false;
-
-              // 한 군데에서만 부르긴하지만 일단 param 추가
-              _this20.setLoadingPageInfo(true);
-
-              _context23.next = 4;
-              return _this20.getNoteChapterList(isInit);
-
-            case 4:
-              if (!(_this20.chapterList.length > 0)) {
-                _context23.next = 7;
-                break;
-              }
-
-              _context23.next = 7;
-              return _this20.setFirstNoteInfo();
-
-            case 7:
-              _this20.setLoadingPageInfo(false);
-
-            case 8:
-            case "end":
-              return _context23.stop();
-          }
-        }
-      }, _callee23);
-    }))();
-  },
-  // localStorage에서 page 얻기
-  getChapterFirstPageId: function getChapterFirstPageId(chapterId) {
-    var _chapter$children$;
-
-    var chapter = this.chapterList.find(function (chapter) {
-      return chapter.id === chapterId;
-    });
-    if (!chapter || chapter.children.length === 0) return null;
-    return (_chapter$children$ = chapter.children[0]) === null || _chapter$children$ === void 0 ? void 0 : _chapter$children$.id;
-  },
-
-  /**
-   * isRecycleBin인지 항상 같이 set해줘야해서 만든 함수
-   * computed 기능용으로 만듦
-   * param: 1st.chapterId, 2nd. isRecycleBin값(안 넘기면 recycleBin 찾아서 비교함)
-   * chapterId 없으면 isRecycleBin은 false로 세팅함
-   */
-  setCurrentChapterInfo: function setCurrentChapterInfo(chapterId, isRecycleBin) {
-    this.setCurrentChapterId(chapterId);
-
-    if (typeof isRecycleBin === 'boolean') {
-      PageStore.setIsRecycleBin(isRecycleBin);
-      return;
-    }
-
-    if (!chapterId) {
-      PageStore.setIsRecycleBin(false);
-      return;
-    }
-
-    var recycleBin = this.chapterList.find(function (chapter) {
-      return chapter.type === CHAPTER_TYPE.RECYCLE_BIN;
-    });
-    if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
-  },
-  openNote: function openNote() {
-    var _this21 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
-      var pageId;
-      return regeneratorRuntime.wrap(function _callee24$(_context24) {
-        while (1) {
-          switch (_context24.prev = _context24.next) {
-            case 0:
-              _context24.prev = 0;
-              _context24.t0 = NoteStore.metaTagInfo.type;
-              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
-              break;
-
-            case 4:
-              // chapter, page 선택
-              NoteStore.setTargetLayout('LNB');
-
-              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
-
-              _context24.next = 8;
-              return _this21.getNoteChapterList();
-
-            case 8:
-              // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
-              _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
-
-              pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
-              /**
-               * 현재 챕터 클릭 로직과 동일하게 함
-               * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
-               * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
-               */
-
-              _context24.next = 12;
-              return PageStore.fetchCurrentPageData(pageId ? pageId : '');
-
-            case 12:
-              return _context24.abrupt("break", 17);
-
-            case 13:
-              _context24.next = 15;
-              return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
-
-            case 15:
-              NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
-
-              return _context24.abrupt("break", 17);
-
-            case 17:
-              _context24.next = 22;
-              break;
-
-            case 19:
-              _context24.prev = 19;
-              _context24.t1 = _context24["catch"](0);
-              console.log('e', _context24.t1);
-
-            case 22:
-              NoteStore.setMetaTagInfo({
-                isOpen: false,
-                type: '',
-                id: ''
-              });
-
-            case 23:
-            case "end":
-              return _context24.stop();
-          }
-        }
-      }, _callee24, null, [[0, 19]]);
-    }))();
-  },
-  getRoomChapterList: function getRoomChapterList() {
-    var roomChapterList = this.chapterList.filter(function (chapter) {
-      return chapter.type === 'notebook' || chapter.type === 'default';
-    });
-    return roomChapterList;
+var _require = require('axios'),
+    axios = _require.default;
+
+var NoteRepository = /*#__PURE__*/function () {
+  // WS_ID = 'e4920305-cc0b-45ea-85ba-79e0b8514491';
+  // CH_TYPE = 'CHN0003';
+  // USER_ID = 'd9f5eda3-6cc1-4bed-b727-bdf43bbae2b7';
+  function NoteRepository(url) {
+    _classCallCheck(this, NoteRepository);
+
+    this.URL = 'http://222.122.67.176:8080/CMS/Note';
+    this.FILE_URL = process.env.REACT_APP_DEV_SERVICE_DOMAIN;
+    this.WS_ID = '';
+    this.CH_TYPE = 'CHN0003';
+    this.USER_ID = '';
+    this.chId = '';
+    this.USER_NAME = '';
+    this.USER_EMAIL = '';
+    this.URL = url || process.env.REACT_APP_DEV_SERVICE_DOMAIN;
   }
-});
+
+  _createClass(NoteRepository, [{
+    key: "setWsId",
+    value: function setWsId(targetWsId) {
+      this.WS_ID = targetWsId;
+    }
+  }, {
+    key: "setChannelId",
+    value: function setChannelId(targetchId) {
+      this.chId = targetchId;
+    }
+  }, {
+    key: "setUserId",
+    value: function setUserId(targetUserId) {
+      this.USER_ID = targetUserId;
+    }
+  }, {
+    key: "setUserName",
+    value: function setUserName(targetUserName) {
+      this.USER_NAME = targetUserName;
+    }
+  }, {
+    key: "setUserEmail",
+    value: function setUserEmail(targetUserEmail) {
+      this.USER_EMAIL = targetUserEmail;
+    }
+  }, {
+    key: "getChannelId",
+    value: function getChannelId() {
+      return this.chId;
+    }
+  }, {
+    key: "getChapterList",
+    value: function () {
+      var _getChapterList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(chId) {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return API.get("note-api/noteChapter?action=List&note_channel_id=".concat(chId));
+
+              case 3:
+                return _context.abrupt("return", _context.sent);
+
+              case 6:
+                _context.prev = 6;
+                _context.t0 = _context["catch"](0);
+                throw Error(JSON.stringify(_context.t0));
+
+              case 9:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 6]]);
+      }));
+
+      function getChapterList(_x) {
+        return _getChapterList.apply(this, arguments);
+      }
+
+      return getChapterList;
+    }()
+  }, {
+    key: "getNoteInfoList",
+    value: function () {
+      var _getNoteInfoList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(noteId) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                _context2.next = 3;
+                return API.Get("note-api/noteinfo?action=List&note_id=".concat(noteId, "&note_channel_id=").concat(this.chId));
+
+              case 3:
+                return _context2.abrupt("return", _context2.sent);
+
+              case 6:
+                _context2.prev = 6;
+                _context2.t0 = _context2["catch"](0);
+                throw Error(JSON.stringify(_context2.t0));
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[0, 6]]);
+      }));
+
+      function getNoteInfoList(_x2) {
+        return _getNoteInfoList.apply(this, arguments);
+      }
+
+      return getNoteInfoList;
+    }()
+  }, {
+    key: "getNoteTagList",
+    value: function getNoteTagList(noteId) {
+      return API.Get("note-api/tag?action=List&note_id=".concat(noteId, "&t=").concat(new Date().getTime().toString()));
+    } // 태그 컨텐츠 관련
+    // getAllTagList() {
+    //   return API.Get(
+    //     `note-api/alltag?action=List&note_channel_id=${this.chId}`
+    //   )
+    // }
+
+  }, {
+    key: "getAllSortedTagList",
+    value: function () {
+      var _getAllSortedTagList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return API.Get("note-api/tagSort?action=List&note_channel_id=".concat(this.chId, "&t=").concat(new Date().getTime().toString()));
+
+              case 2:
+                return _context3.abrupt("return", _context3.sent);
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function getAllSortedTagList() {
+        return _getAllSortedTagList.apply(this, arguments);
+      }
+
+      return getAllSortedTagList;
+    }()
+  }, {
+    key: "getTagNoteList",
+    value: function getTagNoteList(tagId) {
+      return API.Get("note-api/tagnote?action=List&tag_id=".concat(tagId, "&USER_ID=").concat(this.USER_ID, "\n      &note_channel_id=").concat(this.chId));
+    }
+  }, {
+    key: "getChapterChildren",
+    value: function () {
+      var _getChapterChildren = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(chapterId) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.prev = 0;
+                _context4.next = 3;
+                return API.Get("note-api/note?action=List&note_channel_id=".concat(this.chId, "&parent_notebook=").concat(chapterId));
+
+              case 3:
+                return _context4.abrupt("return", _context4.sent);
+
+              case 6:
+                _context4.prev = 6;
+                _context4.t0 = _context4["catch"](0);
+                throw Error(JSON.stringify(_context4.t0));
+
+              case 9:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this, [[0, 6]]);
+      }));
+
+      function getChapterChildren(_x3) {
+        return _getChapterChildren.apply(this, arguments);
+      }
+
+      return getChapterChildren;
+    }()
+  }, {
+    key: "getChapterInfoList",
+    value: function getChapterInfoList(chapterId) {
+      return API.Get("note-api/chaptershare?action=List&id=".concat(chapterId));
+    }
+  }, {
+    key: "getChapterColor",
+    value: function getChapterColor(chapterId) {
+      return API.get("note-api/chaptershare?action=List&id=".concat(chapterId));
+    }
+  }, {
+    key: "updateChapterColor",
+    value: function () {
+      var _updateChapterColor = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(chapterId, targetColor) {
+        var _yield$API$put, data;
+
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.prev = 0;
+                _context5.next = 3;
+                return API.put("note-api/notebooks?action=Update", {
+                  dto: {
+                    id: chapterId,
+                    ws_id: this.WS_ID,
+                    color: targetColor
+                  }
+                });
+
+              case 3:
+                _yield$API$put = _context5.sent;
+                data = _yield$API$put.data;
+                return _context5.abrupt("return", data);
+
+              case 8:
+                _context5.prev = 8;
+                _context5.t0 = _context5["catch"](0);
+                throw Error(JSON.stringify(_context5.t0));
+
+              case 11:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this, [[0, 8]]);
+      }));
+
+      function updateChapterColor(_x4, _x5) {
+        return _updateChapterColor.apply(this, arguments);
+      }
+
+      return updateChapterColor;
+    }()
+  }, {
+    key: "getChapterText",
+    value: function getChapterText(chapterId) {
+      return API.get("note-api/chaptershare?action=List&id=".concat(chapterId));
+    }
+  }, {
+    key: "createChapter",
+    value: function () {
+      var _createChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(chapterTitle, chapterColor) {
+        var _yield$API$post, data;
+
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.prev = 0;
+                _context6.next = 3;
+                return API.post("note-api/langauge/".concat(NoteStore.i18nLanguage, "/notebooks"), {
+                  dto: {
+                    id: '',
+                    ws_id: this.WS_ID,
+                    note_channel_id: this.chId,
+                    text: chapterTitle,
+                    children: [],
+                    type: 'notebook',
+                    USER_ID: this.USER_ID,
+                    user_name: this.USER_NAME,
+                    color: chapterColor
+                  }
+                });
+
+              case 3:
+                _yield$API$post = _context6.sent;
+                data = _yield$API$post.data;
+                return _context6.abrupt("return", data);
+
+              case 8:
+                _context6.prev = 8;
+                _context6.t0 = _context6["catch"](0);
+                throw Error(JSON.stringify(_context6.t0));
+
+              case 11:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this, [[0, 8]]);
+      }));
+
+      function createChapter(_x6, _x7) {
+        return _createChapter.apply(this, arguments);
+      }
+
+      return createChapter;
+    }()
+  }, {
+    key: "createRestoreChapter",
+    value: function () {
+      var _createRestoreChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(chapterTitle, chapterColor) {
+        var _yield$API$post2, data;
+
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                _context7.prev = 0;
+                _context7.next = 3;
+                return API.post("note-api/children/".concat('none', "/notebooks"), {
+                  dto: {
+                    id: '',
+                    ws_id: this.WS_ID,
+                    note_channel_id: this.chId,
+                    text: chapterTitle,
+                    children: [],
+                    type: 'notebook',
+                    USER_ID: this.USER_ID,
+                    user_name: this.USER_NAME,
+                    color: chapterColor
+                  }
+                });
+
+              case 3:
+                _yield$API$post2 = _context7.sent;
+                data = _yield$API$post2.data;
+                return _context7.abrupt("return", data);
+
+              case 8:
+                _context7.prev = 8;
+                _context7.t0 = _context7["catch"](0);
+                throw Error(JSON.stringify(_context7.t0));
+
+              case 11:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this, [[0, 8]]);
+      }));
+
+      function createRestoreChapter(_x8, _x9) {
+        return _createRestoreChapter.apply(this, arguments);
+      }
+
+      return createRestoreChapter;
+    }()
+  }, {
+    key: "deleteChapter",
+    value: function () {
+      var _deleteChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(chapterList) {
+        var _this = this;
+
+        var _yield$API$post3, data;
+
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                chapterList.forEach(function (chapter) {
+                  chapter.USER_ID = _this.USER_ID;
+                  chapter.ws_id = _this.WS_ID;
+                  chapter.note_channel_id = _this.chId;
+                });
+                _context8.prev = 1;
+                _context8.next = 4;
+                return API.post("note-api/notebook?action=Delete", {
+                  dto: {
+                    notbookList: chapterList
+                  }
+                });
+
+              case 4:
+                _yield$API$post3 = _context8.sent;
+                data = _yield$API$post3.data;
+                return _context8.abrupt("return", data);
+
+              case 9:
+                _context8.prev = 9;
+                _context8.t0 = _context8["catch"](1);
+                throw Error(JSON.stringify(_context8.t0));
+
+              case 12:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, null, [[1, 9]]);
+      }));
+
+      function deleteChapter(_x10) {
+        return _deleteChapter.apply(this, arguments);
+      }
+
+      return deleteChapter;
+    }()
+  }, {
+    key: "renameChapter",
+    value: function () {
+      var _renameChapter = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(chapterId, chapterTitle, color) {
+        var _yield$API$put2, data;
+
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                _context9.prev = 0;
+                _context9.next = 3;
+                return API.put("note-api/notebooks?action=Update", {
+                  dto: {
+                    USER_ID: this.USER_ID,
+                    color: color,
+                    id: chapterId,
+                    ws_id: this.WS_ID,
+                    note_channel_id: this.chId,
+                    parent_notebook: '',
+                    text: chapterTitle,
+                    user_name: this.USER_NAME
+                  }
+                });
+
+              case 3:
+                _yield$API$put2 = _context9.sent;
+                data = _yield$API$put2.data;
+                return _context9.abrupt("return", data);
+
+              case 8:
+                _context9.prev = 8;
+                _context9.t0 = _context9["catch"](0);
+                throw Error(JSON.stringify(_context9.t0));
+
+              case 11:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this, [[0, 8]]);
+      }));
+
+      function renameChapter(_x11, _x12, _x13) {
+        return _renameChapter.apply(this, arguments);
+      }
+
+      return renameChapter;
+    }()
+  }, {
+    key: "createPage",
+    value: function () {
+      var _createPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(pageName, pageContent, chapterId) {
+        var today;
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                _context10.prev = 0;
+                today = new Date();
+                return _context10.abrupt("return", API.Post("note-api/note", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    modified_date: "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes()),
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_title: pageName,
+                    note_content: pageContent ? pageContent : '',
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId
+                  }
+                }));
+
+              case 5:
+                _context10.prev = 5;
+                _context10.t0 = _context10["catch"](0);
+                throw Error(JSON.stringify(_context10.t0));
+
+              case 8:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this, [[0, 5]]);
+      }));
+
+      function createPage(_x14, _x15, _x16) {
+        return _createPage.apply(this, arguments);
+      }
+
+      return createPage;
+    }()
+  }, {
+    key: "deletePage",
+    value: function () {
+      var _deletePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(pageList) {
+        var _this2 = this;
+
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                pageList.forEach(function (page) {
+                  page.USER_ID = _this2.USER_ID;
+                  page.WS_ID = _this2.WS_ID;
+                  page.note_channel_id = _this2.chId;
+                  page.user_name = _this2.USER_NAME;
+                });
+                _context11.prev = 1;
+                _context11.next = 4;
+                return API.Post("note-api/note?action=Delete", {
+                  dto: {
+                    noteList: pageList
+                  }
+                });
+
+              case 4:
+                return _context11.abrupt("return", _context11.sent);
+
+              case 7:
+                _context11.prev = 7;
+                _context11.t0 = _context11["catch"](1);
+                throw Error(JSON.stringify(_context11.t0));
+
+              case 10:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11, null, [[1, 7]]);
+      }));
+
+      function deletePage(_x17) {
+        return _deletePage.apply(this, arguments);
+      }
+
+      return deletePage;
+    }()
+  }, {
+    key: "renamePage",
+    value: function () {
+      var _renamePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(pageId, pageTitle, chapterId) {
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                _context12.prev = 0;
+                _context12.next = 3;
+                return API.Put("note-api/note?action=Update", {
+                  dto: {
+                    CH_TYPE: 'CHN0003',
+                    TYPE: 'RENAME',
+                    USER_ID: this.USER_ID,
+                    WS_ID: this.WS_ID,
+                    note_channel_id: this.chId,
+                    note_id: pageId,
+                    note_title: pageTitle,
+                    parent_notebook: chapterId
+                  }
+                });
+
+              case 3:
+                return _context12.abrupt("return", _context12.sent);
+
+              case 6:
+                _context12.prev = 6;
+                _context12.t0 = _context12["catch"](0);
+                throw Error(JSON.stringify(_context12.t0));
+
+              case 9:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this, [[0, 6]]);
+      }));
+
+      function renamePage(_x18, _x19, _x20) {
+        return _renamePage.apply(this, arguments);
+      }
+
+      return renamePage;
+    }()
+  }, {
+    key: "movePage",
+    value: function () {
+      var _movePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(pageId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                _context13.prev = 0;
+                _context13.next = 3;
+                return API.Put("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    note_id: pageId,
+                    parent_notebook: chapterId,
+                    user_name: this.USER_NAME,
+                    USER_ID: this.USER_ID,
+                    TYPE: 'MOVE'
+                  }
+                });
+
+              case 3:
+                return _context13.abrupt("return", _context13.sent);
+
+              case 6:
+                _context13.prev = 6;
+                _context13.t0 = _context13["catch"](0);
+                throw Error(JSON.stringify(_context13.t0));
+
+              case 9:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this, [[0, 6]]);
+      }));
+
+      function movePage(_x21, _x22) {
+        return _movePage.apply(this, arguments);
+      }
+
+      return movePage;
+    }()
+  }, {
+    key: "editStart",
+    value: function () {
+      var _editStart = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                _context14.prev = 0;
+                _context14.next = 3;
+                return API.post("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    user_name: this.USER_NAME,
+                    note_id: noteId,
+                    is_edit: this.USER_ID,
+                    parent_notebook: chapterId,
+                    TYPE: 'EDIT_START'
+                  }
+                });
+
+              case 3:
+                return _context14.abrupt("return", _context14.sent);
+
+              case 6:
+                _context14.prev = 6;
+                _context14.t0 = _context14["catch"](0);
+                throw Error(JSON.stringify(_context14.t0));
+
+              case 9:
+              case "end":
+                return _context14.stop();
+            }
+          }
+        }, _callee14, this, [[0, 6]]);
+      }));
+
+      function editStart(_x23, _x24) {
+        return _editStart.apply(this, arguments);
+      }
+
+      return editStart;
+    }()
+  }, {
+    key: "editDone",
+    value: function () {
+      var _editDone = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(updateDto) {
+        var today;
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
+          while (1) {
+            switch (_context15.prev = _context15.next) {
+              case 0:
+                today = new Date();
+                updateDto.dto.WS_ID = this.WS_ID;
+                updateDto.dto.note_channel_id = this.chId;
+                updateDto.dto.USER_ID = this.USER_ID;
+                updateDto.dto.CH_TYPE = this.CH_TYPE;
+                updateDto.dto.user_name = this.USER_NAME;
+                updateDto.dto.modified_date = "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes());
+                if (PageStore.isNewPage) updateDto.dto.is_favorite = 'isNewPage';
+                _context15.prev = 8;
+                _context15.next = 11;
+                return API.post("note-api/note?action=Update", updateDto);
+
+              case 11:
+                return _context15.abrupt("return", _context15.sent);
+
+              case 14:
+                _context15.prev = 14;
+                _context15.t0 = _context15["catch"](8);
+                throw Error(JSON.stringify(_context15.t0));
+
+              case 17:
+              case "end":
+                return _context15.stop();
+            }
+          }
+        }, _callee15, this, [[8, 14]]);
+      }));
+
+      function editDone(_x25) {
+        return _editDone.apply(this, arguments);
+      }
+
+      return editDone;
+    }()
+  }, {
+    key: "nonEdit",
+    value: function () {
+      var _nonEdit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(noteId, chapterId) {
+        return regeneratorRuntime.wrap(function _callee16$(_context16) {
+          while (1) {
+            switch (_context16.prev = _context16.next) {
+              case 0:
+                _context16.prev = 0;
+                _context16.next = 3;
+                return API.post("note-api/note?action=Update", {
+                  dto: {
+                    WS_ID: this.WS_ID,
+                    CH_TYPE: 'CHN0003',
+                    USER_ID: this.USER_ID,
+                    note_channel_id: this.chId,
+                    note_id: noteId,
+                    is_edit: '',
+                    parent_notebook: chapterId,
+                    TYPE: 'NONEDIT',
+                    user_name: this.USER_NAME
+                  }
+                });
+
+              case 3:
+                return _context16.abrupt("return", _context16.sent);
+
+              case 6:
+                _context16.prev = 6;
+                _context16.t0 = _context16["catch"](0);
+                throw Error(JSON.stringify(_context16.t0));
+
+              case 9:
+              case "end":
+                return _context16.stop();
+            }
+          }
+        }, _callee16, this, [[0, 6]]);
+      }));
+
+      function nonEdit(_x26, _x27) {
+        return _nonEdit.apply(this, arguments);
+      }
+
+      return nonEdit;
+    }()
+  }, {
+    key: "createTag",
+    value: function () {
+      var _createTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(targetList) {
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                _context17.prev = 0;
+                _context17.next = 3;
+                return API.post("note-api/tag", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context17.abrupt("return", _context17.sent);
+
+              case 6:
+                _context17.prev = 6;
+                _context17.t0 = _context17["catch"](0);
+                throw Error(JSON.stringify(_context17.t0));
+
+              case 9:
+              case "end":
+                return _context17.stop();
+            }
+          }
+        }, _callee17, null, [[0, 6]]);
+      }));
+
+      function createTag(_x28) {
+        return _createTag.apply(this, arguments);
+      }
+
+      return createTag;
+    }()
+  }, {
+    key: "deleteTag",
+    value: function () {
+      var _deleteTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(targetList) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                _context18.prev = 0;
+                _context18.next = 3;
+                return API.post("note-api/tag?action=Delete", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context18.abrupt("return", _context18.sent);
+
+              case 6:
+                _context18.prev = 6;
+                _context18.t0 = _context18["catch"](0);
+                throw Error(JSON.stringify(_context18.t0));
+
+              case 9:
+              case "end":
+                return _context18.stop();
+            }
+          }
+        }, _callee18, null, [[0, 6]]);
+      }));
+
+      function deleteTag(_x29) {
+        return _deleteTag.apply(this, arguments);
+      }
+
+      return deleteTag;
+    }()
+  }, {
+    key: "updateTag",
+    value: function () {
+      var _updateTag = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(targetList) {
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+          while (1) {
+            switch (_context19.prev = _context19.next) {
+              case 0:
+                _context19.prev = 0;
+                _context19.next = 3;
+                return API.post("note-api/tag?action=Update", {
+                  dto: {
+                    tagList: targetList
+                  }
+                });
+
+              case 3:
+                return _context19.abrupt("return", _context19.sent);
+
+              case 6:
+                _context19.prev = 6;
+                _context19.t0 = _context19["catch"](0);
+                throw Error(JSON.stringify(_context19.t0));
+
+              case 9:
+              case "end":
+                return _context19.stop();
+            }
+          }
+        }, _callee19, null, [[0, 6]]);
+      }));
+
+      function updateTag(_x30) {
+        return _updateTag.apply(this, arguments);
+      }
+
+      return updateTag;
+    }()
+  }, {
+    key: "storageFileDeepCopy",
+    value: function () {
+      var _storageFileDeepCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(fileId) {
+        var targetSRC;
+        return regeneratorRuntime.wrap(function _callee20$(_context20) {
+          while (1) {
+            switch (_context20.prev = _context20.next) {
+              case 0:
+                targetSRC = "Storage/StorageFile?action=Copy&Type=Deep";
+                _context20.prev = 1;
+                _context20.next = 4;
+                return API.put(targetSRC, {
+                  dto: {
+                    workspace_id: this.WS_ID,
+                    channel_id: this.chId,
+                    storageFileInfo: {
+                      user_id: this.USER_ID,
+                      file_id: fileId
+                    }
+                  }
+                });
+
+              case 4:
+                return _context20.abrupt("return", _context20.sent);
+
+              case 7:
+                _context20.prev = 7;
+                _context20.t0 = _context20["catch"](1);
+                throw Error(JSON.stringify(_context20.t0));
+
+              case 10:
+              case "end":
+                return _context20.stop();
+            }
+          }
+        }, _callee20, this, [[1, 7]]);
+      }));
+
+      function storageFileDeepCopy(_x31) {
+        return _storageFileDeepCopy.apply(this, arguments);
+      }
+
+      return storageFileDeepCopy;
+    }()
+  }, {
+    key: "createUploadMeta",
+    value: function () {
+      var _createUploadMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(dto) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
+          while (1) {
+            switch (_context21.prev = _context21.next) {
+              case 0:
+                _context21.prev = 0;
+                _context21.next = 3;
+                return API.post('note-api/noteFile', dto);
+
+              case 3:
+                return _context21.abrupt("return", _context21.sent);
+
+              case 6:
+                _context21.prev = 6;
+                _context21.t0 = _context21["catch"](0);
+                throw Error(JSON.stringify(_context21.t0));
+
+              case 9:
+              case "end":
+                return _context21.stop();
+            }
+          }
+        }, _callee21, null, [[0, 6]]);
+      }));
+
+      function createUploadMeta(_x32) {
+        return _createUploadMeta.apply(this, arguments);
+      }
+
+      return createUploadMeta;
+    }()
+  }, {
+    key: "createUploadStorage",
+    value: function () {
+      var _createUploadStorage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(fileId, file, onUploadProgress) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
+          while (1) {
+            switch (_context22.prev = _context22.next) {
+              case 0:
+                _context22.prev = 0;
+                _context22.next = 3;
+                return API.post("Storage/StorageFile?action=Create&fileID=" + fileId + '&workspaceID=' + this.WS_ID + '&channelID=' + this.chId + '&userID=' + this.USER_ID, file, {
+                  headers: {
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress
+                });
+
+              case 3:
+                return _context22.abrupt("return", _context22.sent);
+
+              case 6:
+                _context22.prev = 6;
+                _context22.t0 = _context22["catch"](0);
+                throw Error(JSON.stringify(_context22.t0));
+
+              case 9:
+              case "end":
+                return _context22.stop();
+            }
+          }
+        }, _callee22, this, [[0, 6]]);
+      }));
+
+      function createUploadStorage(_x33, _x34, _x35) {
+        return _createUploadStorage.apply(this, arguments);
+      }
+
+      return createUploadStorage;
+    }()
+    /**
+     *
+     * @param {*} file
+     * @param {*} fileName
+     * @param {*} fileExtension
+     * @param {*} onUploadProgress
+     * @param {*} cancelSource
+     */
+
+  }, {
+    key: "uploadFileGW",
+    value: function () {
+      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, onUploadProgress, cancelSource) {
+        return regeneratorRuntime.wrap(function _callee23$(_context23) {
+          while (1) {
+            switch (_context23.prev = _context23.next) {
+              case 0:
+                _context23.next = 2;
+                return API.post("/gateway-api/upload?user_id=" + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension, file, {
+                  headers: {
+                    // pplication/x-www-form-urlencoded; charset=UTF-8
+                    'content-type': 'multipart/form-data'
+                  },
+                  xhrFields: {
+                    withCredentials: true
+                  },
+                  onUploadProgress: onUploadProgress,
+                  cancelToken: cancelSource.token
+                });
+
+              case 2:
+                return _context23.abrupt("return", _context23.sent);
+
+              case 3:
+              case "end":
+                return _context23.stop();
+            }
+          }
+        }, _callee23, this);
+      }));
+
+      function uploadFileGW(_x36, _x37, _x38, _x39, _x40) {
+        return _uploadFileGW.apply(this, arguments);
+      }
+
+      return uploadFileGW;
+    }()
+  }, {
+    key: "deleteFile",
+    value: function () {
+      var _deleteFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(deleteFileId) {
+        return regeneratorRuntime.wrap(function _callee24$(_context24) {
+          while (1) {
+            switch (_context24.prev = _context24.next) {
+              case 0:
+                _context24.prev = 0;
+                _context24.next = 3;
+                return API.put("note-api/noteFile?action=Delete", {
+                  dto: {
+                    workspace_id: this.WS_ID,
+                    channel_id: this.chId,
+                    storageFileInfo: {
+                      user_id: '',
+                      file_last_update_user_id: '',
+                      file_id: deleteFileId,
+                      file_name: '',
+                      file_extension: '',
+                      file_created_at: '',
+                      file_updated_at: '',
+                      user_context_1: '',
+                      user_context_2: '',
+                      user_context_3: ''
+                    }
+                  }
+                });
+
+              case 3:
+                return _context24.abrupt("return", _context24.sent);
+
+              case 6:
+                _context24.prev = 6;
+                _context24.t0 = _context24["catch"](0);
+                throw Error(JSON.stringify(_context24.t0));
+
+              case 9:
+              case "end":
+                return _context24.stop();
+            }
+          }
+        }, _callee24, this, [[0, 6]]);
+      }));
+
+      function deleteFile(_x41) {
+        return _deleteFile.apply(this, arguments);
+      }
+
+      return deleteFile;
+    }()
+  }, {
+    key: "deleteAllFile",
+    value: function deleteAllFile(fileList) {
+      var deleteFileList = [];
+
+      if (fileList) {
+        fileList.map(function (file) {
+          return deleteFileList.push(file.file_id);
+        });
+        return API.put("Storage/StorageFile?action=MultiDelete", {
+          dto: {
+            workspace_id: this.WS_ID,
+            channel_id: this.chId,
+            file_id: deleteFileList,
+            user_id: this.USER_ID
+          }
+        });
+      } else {
+        return Promise.resolve();
+      }
+    }
+  }, {
+    key: "createShareChapter",
+    value: function createShareChapter(chapterList) {
+      return API.post("note-api/chaptershare", {
+        dto: {
+          notbookList: chapterList
+        }
+      });
+    }
+  }, {
+    key: "createSharePage",
+    value: function createSharePage(pageList) {
+      return API.post("note-api/noteshare", {
+        dto: {
+          noteList: pageList
+        }
+      });
+    }
+  }, {
+    key: "getSearchList",
+    value: function () {
+      var _getSearchList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(searchKey) {
+        return regeneratorRuntime.wrap(function _callee25$(_context25) {
+          while (1) {
+            switch (_context25.prev = _context25.next) {
+              case 0:
+                _context25.prev = 0;
+                _context25.next = 3;
+                return API.post("note-api/noteSearch?action=List", {
+                  dto: {
+                    note_channel_id: this.chId,
+                    text: searchKey
+                  }
+                });
+
+              case 3:
+                return _context25.abrupt("return", _context25.sent);
+
+              case 6:
+                _context25.prev = 6;
+                _context25.t0 = _context25["catch"](0);
+                throw Error(JSON.stringify(_context25.t0));
+
+              case 9:
+              case "end":
+                return _context25.stop();
+            }
+          }
+        }, _callee25, this, [[0, 6]]);
+      }));
+
+      function getSearchList(_x42) {
+        return _getSearchList.apply(this, arguments);
+      }
+
+      return getSearchList;
+    }()
+  }, {
+    key: "createFileMeta",
+    value: function () {
+      var _createFileMeta = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26(targetList) {
+        return regeneratorRuntime.wrap(function _callee26$(_context26) {
+          while (1) {
+            switch (_context26.prev = _context26.next) {
+              case 0:
+                _context26.next = 2;
+                return API.post("note-api/noteFileMeta", {
+                  dto: {
+                    fileList: targetList
+                  }
+                });
+
+              case 2:
+                return _context26.abrupt("return", _context26.sent);
+
+              case 3:
+              case "end":
+                return _context26.stop();
+            }
+          }
+        }, _callee26);
+      }));
+
+      function createFileMeta(_x43) {
+        return _createFileMeta.apply(this, arguments);
+      }
+
+      return createFileMeta;
+    }()
+  }, {
+    key: "throwPage",
+    value: function () {
+      var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
+        var _this3 = this;
+
+        return regeneratorRuntime.wrap(function _callee27$(_context27) {
+          while (1) {
+            switch (_context27.prev = _context27.next) {
+              case 0:
+                // pageList -> pageId 리스트
+                pageList.forEach(function (page) {
+                  page.USER_ID = _this3.USER_ID;
+                  page.WS_ID = _this3.WS_ID;
+                  page.note_channel_id = _this3.chId;
+                  page.parent_notebook = null;
+                });
+                _context27.prev = 1;
+                _context27.next = 4;
+                return API.post("note-api/noteRecycleBin?action=Update", {
+                  dto: {
+                    noteList: pageList
+                  }
+                });
+
+              case 4:
+                return _context27.abrupt("return", _context27.sent);
+
+              case 7:
+                _context27.prev = 7;
+                _context27.t0 = _context27["catch"](1);
+                throw Error(JSON.stringify(_context27.t0));
+
+              case 10:
+              case "end":
+                return _context27.stop();
+            }
+          }
+        }, _callee27, null, [[1, 7]]);
+      }));
+
+      function throwPage(_x44) {
+        return _throwPage.apply(this, arguments);
+      }
+
+      return throwPage;
+    }()
+  }, {
+    key: "restorePage",
+    value: function () {
+      var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28(pageList) {
+        var _this4 = this;
+
+        return regeneratorRuntime.wrap(function _callee28$(_context28) {
+          while (1) {
+            switch (_context28.prev = _context28.next) {
+              case 0:
+                // pageList -> pageId 리스트, chapterId 리스트
+                // [{note_id: asdf, parent_notebook : asdf} ... ]
+                pageList.forEach(function (page) {
+                  page.note_channel_id = _this4.chId;
+                  page.USER_ID = _this4.USER_ID;
+                  page.WS_ID = _this4.WS_ID;
+                });
+                _context28.prev = 1;
+                _context28.next = 4;
+                return API.post("note-api/noteRecycleBin?action=Update", {
+                  dto: {
+                    noteList: pageList
+                  }
+                });
+
+              case 4:
+                return _context28.abrupt("return", _context28.sent);
+
+              case 7:
+                _context28.prev = 7;
+                _context28.t0 = _context28["catch"](1);
+                throw Error(JSON.stringify(_context28.t0));
+
+              case 10:
+              case "end":
+                return _context28.stop();
+            }
+          }
+        }, _callee28, null, [[1, 7]]);
+      }));
+
+      function restorePage(_x45) {
+        return _restorePage.apply(this, arguments);
+      }
+
+      return restorePage;
+    }()
+  }]);
+
+  return NoteRepository;
+}();
+
+var NoteRepository$1 = new NoteRepository();
 
 /*
   target 컴포넌트가 계속 바뀌어서 헷갈림
