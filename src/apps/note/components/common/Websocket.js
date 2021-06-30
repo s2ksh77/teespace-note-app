@@ -23,15 +23,15 @@ export const handleWebsocket = (isWeb=true) => (message) => {
     }
     if (message.NOTI_ETC) {
         const loginUserId = NoteRepository.USER_ID;
-        const [eventType, targetId, parentId, targetUserId] = message.NOTI_ETC.split(',');
+        const [eventType, targetId, parentId, targetUserId, device] = message.NOTI_ETC.split(',');
 
         switch (eventType) {
             case EVENT_TYPE.CREATE:
-                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (device === 'PC' && targetUserId === loginUserId) return;
                 ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.DELETE:
-                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (device === 'PC' && targetUserId === loginUserId) return;
                 if (PageStore.getCurrentPageId() === targetId) {
                     ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
                 }
@@ -41,7 +41,7 @@ export const handleWebsocket = (isWeb=true) => (message) => {
             case EVENT_TYPE.EDIT_DONE:
             case EVENT_TYPE.NONEDIT:
             case EVENT_TYPE.EDIT_START:
-                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (device === 'PC' && targetUserId === loginUserId) return;
                 if (PageStore.getCurrentPageId() === targetId) {
                     PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
                 }
@@ -51,11 +51,11 @@ export const handleWebsocket = (isWeb=true) => (message) => {
                 break;
             case EVENT_TYPE.CHAPTER_CREATE:
             case EVENT_TYPE.CHAPTER_RENAME:
-                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (device === 'PC' && targetUserId === loginUserId) return;
                 ChapterStore.getNoteChapterList();
                 break;
             case EVENT_TYPE.CHAPTER_DELETE:
-                if (message.TYPE === 'PC' && targetUserId === loginUserId) return;
+                if (device === 'PC' && targetUserId === loginUserId) return;
                 ChapterStore.getNoteChapterList();
                 if (ChapterStore.getCurrentChapterId() === targetId) {
                     setTimeout(() => {
