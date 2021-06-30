@@ -4791,7 +4791,8 @@ var PageStore = observable({
         }),
         parent_notebook: this.currentPageData.parent_notebook,
         is_edit: isAutoSave ? this.currentPageData.is_edit : '',
-        TYPE: 'EDIT_DONE'
+        TYPE: 'EDIT_DONE',
+        is_favorite: !isAutoSave && this.isNewPage ? 'isNewPage' : ''
       }
     };
   },
@@ -5793,25 +5794,24 @@ var NoteRepository = /*#__PURE__*/function () {
                 updateDto.dto.CH_TYPE = this.CH_TYPE;
                 updateDto.dto.user_name = this.USER_NAME;
                 updateDto.dto.modified_date = "".concat(today.getFullYear(), ".").concat(today.getMonth() + 1, ".").concat(today.getDate(), " ").concat(today.getHours(), ":").concat(today.getMinutes());
-                if (PageStore.isNewPage) updateDto.dto.is_favorite = 'isNewPage';
-                _context15.prev = 8;
-                _context15.next = 11;
+                _context15.prev = 7;
+                _context15.next = 10;
                 return API.post("note-api/note?action=Update", updateDto);
 
-              case 11:
+              case 10:
                 return _context15.abrupt("return", _context15.sent);
 
-              case 14:
-                _context15.prev = 14;
-                _context15.t0 = _context15["catch"](8);
+              case 13:
+                _context15.prev = 13;
+                _context15.t0 = _context15["catch"](7);
                 throw Error(JSON.stringify(_context15.t0));
 
-              case 17:
+              case 16:
               case "end":
                 return _context15.stop();
             }
           }
-        }, _callee15, this, [[8, 14]]);
+        }, _callee15, this, [[7, 13]]);
       }));
 
       function editDone(_x25) {
