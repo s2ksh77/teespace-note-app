@@ -327,7 +327,6 @@ class NoteRepository {
     updateDto.dto.modified_date = `${today.getFullYear()}.${
       today.getMonth() + 1
     }.${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
-    if (PageStore.isNewPage) updateDto.dto.is_favorite = 'isNewPage';
     try {
       return await API.post(`note-api/note?action=Update`, updateDto);
     } catch (e) {
