@@ -48,7 +48,6 @@ export const ChapterColor = styled.span`
   align-items: center;
   align-self: center;
   border-radius: 10px;
-  margin: 0.31rem 0;
   background: ${props => props.background};
   min-width: 0.25rem;
 `;
