@@ -413,8 +413,16 @@ export const GlobalStyle = createGlobalStyle`
     height: 10.44rem !important;
     box-sizing: border-box;
   }
+  .restoreModal .ant-space-vertical,
+  .restoreModal .ant-radio-group {
+    width: 100%;
+  }
+  .restoreModal .ant-radio-wrapper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
   .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){
-    width: 23rem;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
