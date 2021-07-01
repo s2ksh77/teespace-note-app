@@ -434,7 +434,7 @@ const EditorStore = observable({
         type: isImage ? 'image' : 'file',
         error: false,
       };
-      this.setTempFileList(tempMeta);
+      this.addFileList(tempMeta);
       if (isImage)
         EditorStore.createDriveElement(
           'image',
