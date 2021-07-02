@@ -3599,7 +3599,7 @@ var EditorStore = mobx.observable((_observable = {
               error: false
             };
 
-            _this3.setTempFileList(tempMeta);
+            _this3.addFileList(tempMeta);
 
             if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
             return _context8.abrupt("return", {
