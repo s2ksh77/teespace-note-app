@@ -112,7 +112,11 @@ const LNBSearchResult = () => {
                         : null
                     }
                   >
-                    {chapter.text}
+                    {chapter.type === 'shared_page'
+                      ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                      : chapter.type === 'recycle_bin'
+                      ? t('NOTE_BIN_01')
+                      : chapter.text}
                   </ChapterSearchResultTitle>
                   <SearchResultBotttom
                     isLast={
@@ -140,7 +144,11 @@ const LNBSearchResult = () => {
                   onClick={onClickPageBtn(page.note_id)}
                 >
                   <PageSearchResultChapterTitle>
-                    {page.text}
+                    {page.TYPE === 'shared_page'
+                      ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                      : page.TYPE === 'recycle_bin'
+                      ? t('NOTE_BIN_01')
+                      : page.text}
                   </PageSearchResultChapterTitle>
                   <PageSearchResultPageTitle>
                     {page.note_title}
