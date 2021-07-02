@@ -310,7 +310,7 @@ export const exportData = async (isMailShare, type, exportId) => {
 };
 
 export const getChapterHtml = async exportId => {
-  let html = '';
+  let html = '<div style="color: #000;">';
   const {
     data: {
       dto: { noteList },
@@ -329,7 +329,7 @@ export const getChapterHtml = async exportId => {
     html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${
       ChapterStore.exportChapterTitle
     }</span>`;
-  return html;
+  return `${html}</div>`;
 };
 
 export const getPageHtml = async exportId => {
@@ -339,9 +339,9 @@ export const getPageHtml = async exportId => {
   } = await NoteRepository.getNoteInfoList(exportId);
 
   PageStore.exportPageTitle = dto.note_title;
-  html = `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${
-    dto.note_title
-  }</span><p><br></p>${dto.note_content}`;
+  html = `<div style="color: #000;"><span style="font-size:24px;">${i18n.t(
+    'NOTE_EXPORT_TITLE',
+  )} : ${dto.note_title}</span><p><br></p>${dto.note_content}<div/>`;
 
   return html;
 };
