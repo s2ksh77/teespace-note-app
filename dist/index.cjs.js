@@ -3031,23 +3031,23 @@ var TagStore = mobx.observable({
       }, _callee14);
     }))();
   },
-  setTagNoteSearchResult: function setTagNoteSearchResult(tagId) {
+  setTagNoteSearchResult: function setTagNoteSearchResult(tagName) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var _yield$NoteRepository8, noteList;
+      var _yield$NoteRepository8, tagList;
 
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
           switch (_context15.prev = _context15.next) {
             case 0:
               _context15.next = 2;
-              return NoteRepository$1.getTagNoteList(tagId);
+              return NoteRepository$1.getSearchList(tagName);
 
             case 2:
               _yield$NoteRepository8 = _context15.sent;
-              noteList = _yield$NoteRepository8.data.dto.noteList;
+              tagList = _yield$NoteRepository8.data.dto.tagList;
               ChapterStore.setSearchResult({
                 chapter: null,
-                page: noteList
+                page: tagList
               });
 
             case 5:
