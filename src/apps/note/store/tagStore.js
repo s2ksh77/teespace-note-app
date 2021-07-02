@@ -435,13 +435,13 @@ const TagStore = observable({
     this.setIsSearchLoading(false);
   },
 
-  async setTagNoteSearchResult(tagId) {
+  async setTagNoteSearchResult(tagName) {
     const {
       data: {
-        dto: { noteList },
+        dto: { tagList },
       },
-    } = await NoteRepository.getTagNoteList(tagId);
-    ChapterStore.setSearchResult({ chapter: null, page: noteList });
+    } = await NoteRepository.getSearchList(tagName);
+    ChapterStore.setSearchResult({ chapter: null, page: tagList });
   },
   setEditCreateTag() {
     // add Tag List 갱신

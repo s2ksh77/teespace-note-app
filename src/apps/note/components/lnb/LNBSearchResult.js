@@ -179,7 +179,11 @@ const LNBSearchResult = () => {
                 onClick={onClickPageBtn(tag.note_id)}
               >
                 <PageSearchResultChapterTitle>
-                  {tag.text}
+                  {tag.TYPE === 'shared_page'
+                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                    : tag.TYPE === 'recycle_bin'
+                    ? t('NOTE_BIN_01')
+                    : tag.text}
                 </PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>
                   {tag.note_title}

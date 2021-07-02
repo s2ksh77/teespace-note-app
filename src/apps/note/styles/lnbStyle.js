@@ -131,6 +131,7 @@ export const PageSearchResultChapterTitle = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  line-height: 1.7;
 `;
 
 export const SearchResultBotttom = styled.div`
