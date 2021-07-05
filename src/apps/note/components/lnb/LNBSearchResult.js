@@ -181,7 +181,7 @@ const LNBSearchResult = () => {
                 <PageSearchResultPageTitle>
                   {tag.note_title}
                 </PageSearchResultPageTitle>
-                <TagList key={`tag_${pageListIdx}`}>
+                <TagList>
                   {tag.tagList.map((item, index) => {
                     return (
                       <TagChip id={item.tag_id} key={`${pageListIdx}_${index}`}>
