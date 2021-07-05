@@ -20,6 +20,7 @@ import docs from '../../assets/word.svg';
 import hangul from '../../assets/hangul.svg';
 import video from '../../assets/movie.svg';
 import audio from '../../assets/audio.svg';
+import NoteUtil from '../../NoteUtil';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 // @flow
@@ -475,7 +476,7 @@ export const exportPageAsTxt = async noteId => {
 
   const returnData = `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
     dto.note_title
-  }</p>\n${dto.note_content}`;
+  }</p>\n${NoteUtil.decodeStr(dto.note_content)}`;
 
   getTxtFormat(dto.note_title, returnData);
 };
@@ -491,7 +492,9 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     noteList.forEach((page, idx) => {
       returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
         page.note_title
-      }</p>\n${page.note_content}${idx === noteList.length - 1 ? '' : '\n\n'}`;
+      }</p>\n${NoteUtil.decodeStr(page.note_content)}${
+        idx === noteList.length - 1 ? '' : '\n\n'
+      }`;
     });
   } else
     returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;

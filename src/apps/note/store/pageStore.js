@@ -9,6 +9,9 @@ import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable, { DRAG_TYPE } from '../GlobalVariable';
 import NoteUtil, { get12HourFormat } from '../NoteUtil';
+import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
+import emojiRegex from 'emoji-regex/index.js';
+import emojiRegexText from 'emoji-regex/text.js';
 import i18n from '../i18n/i18n';
 
 const PageStore = observable({
@@ -621,6 +624,7 @@ const PageStore = observable({
     }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
+    dto.note_content = NoteUtil.decodeStr(dto.note_content);
     this.currentPageData = dto;
     this.noteTitle = dto.note_title;
     this.modifiedDate = get12HourFormat(this.currentPageData.modified_date);
@@ -790,8 +794,9 @@ const PageStore = observable({
       this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
     )
       this.setTitle(this.getTitleFromPageContent());
-    const updateDTO = this.getSaveDto(isAutoSave);
 
+    this._checkEmojiContent();
+    const updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);
     else this.handleSaveBtn(updateDTO);
   },
@@ -828,6 +833,19 @@ const PageStore = observable({
     if (floatingMenu !== null) floatingMenu.click();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
+  },
+
+  _checkEmojiContent() {
+    const regRGI = emojiRegexRGI();
+    const reg = emojiRegex();
+    const regText = emojiRegexText();
+
+    this.noteContent = this.noteContent.replace(
+      regRGI && reg && regText,
+      (m, idx) => {
+        return NoteUtil.encodeStr(m);
+      },
+    );
   },
 
   /**
