@@ -93,41 +93,36 @@ const LNBSearchResult = () => {
           ) : null}
           {ChapterStore.searchResult?.['chapter']?.map((chapter, index) => {
             return (
-              <>
-                <ChapterSearchResult
-                  key={chapter.id}
-                  onClick={onClickChapterBtn(chapter.id)}
+              <ChapterSearchResult
+                key={chapter.id}
+                onClick={onClickChapterBtn(chapter.id)}
+              >
+                {chapter.type === 'shared' || chapter.type === 'shared_page' ? (
+                  <ChapterSearchShareIcon src={shareImg} />
+                ) : (
+                  <ChapterSearchResultColor backgroundColor={chapter.color} />
+                )}
+                <ChapterSearchResultTitle
+                  style={
+                    chapter.type === 'shared' || chapter.type === 'shared_page'
+                      ? { paddingLeft: '0.59rem' }
+                      : null
+                  }
                 >
-                  {chapter.type === 'shared' ||
-                  chapter.type === 'shared_page' ? (
-                    <ChapterSearchShareIcon src={shareImg} />
-                  ) : (
-                    <ChapterSearchResultColor backgroundColor={chapter.color} />
-                  )}
-                  <ChapterSearchResultTitle
-                    style={
-                      chapter.type === 'shared' ||
-                      chapter.type === 'shared_page'
-                        ? { paddingLeft: '0.59rem' }
-                        : null
-                    }
-                  >
-                    {chapter.type === 'shared_page'
-                      ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                      : chapter.type === 'recycle_bin'
-                      ? t('NOTE_BIN_01')
-                      : chapter.text}
-                  </ChapterSearchResultTitle>
-                  <SearchResultBotttom
-                    isLast={
-                      index ===
-                      ChapterStore.searchResult?.['chapter'].length - 1
-                        ? true
-                        : false
-                    }
-                  />
-                </ChapterSearchResult>
-              </>
+                  {chapter.type === 'shared_page'
+                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                    : chapter.type === 'recycle_bin'
+                    ? t('NOTE_BIN_01')
+                    : chapter.text}
+                </ChapterSearchResultTitle>
+                <SearchResultBotttom
+                  isLast={
+                    index === ChapterStore.searchResult?.['chapter'].length - 1
+                      ? true
+                      : false
+                  }
+                />
+              </ChapterSearchResult>
             );
           })}
           {ChapterStore.searchResult?.['page'] ? (
@@ -137,31 +132,29 @@ const LNBSearchResult = () => {
           ) : null}
           {ChapterStore.searchResult?.['page']?.map((page, index) => {
             return (
-              <>
-                <PageSearchResult
-                  key={page.note_id}
-                  isSelected={selected === page.note_id ? true : false}
-                  onClick={onClickPageBtn(page.note_id)}
-                >
-                  <PageSearchResultChapterTitle>
-                    {page.TYPE === 'shared_page'
-                      ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                      : page.TYPE === 'recycle_bin'
-                      ? t('NOTE_BIN_01')
-                      : page.text}
-                  </PageSearchResultChapterTitle>
-                  <PageSearchResultPageTitle>
-                    {page.note_title}
-                  </PageSearchResultPageTitle>
-                  <SearchResultBotttom
-                    isLast={
-                      index === ChapterStore.searchResult?.['page'].length - 1
-                        ? true
-                        : false
-                    }
-                  />
-                </PageSearchResult>
-              </>
+              <PageSearchResult
+                key={page.note_id}
+                isSelected={selected === page.note_id ? true : false}
+                onClick={onClickPageBtn(page.note_id)}
+              >
+                <PageSearchResultChapterTitle>
+                  {page.TYPE === 'shared_page'
+                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                    : page.TYPE === 'recycle_bin'
+                    ? t('NOTE_BIN_01')
+                    : page.text}
+                </PageSearchResultChapterTitle>
+                <PageSearchResultPageTitle>
+                  {page.note_title}
+                </PageSearchResultPageTitle>
+                <SearchResultBotttom
+                  isLast={
+                    index === ChapterStore.searchResult?.['page'].length - 1
+                      ? true
+                      : false
+                  }
+                />
+              </PageSearchResult>
             );
           })}
           {ChapterStore.searchResult?.['tag'] ? (
@@ -171,10 +164,10 @@ const LNBSearchResult = () => {
               </SearchDivisionSpan>
             </SearchDivision>
           ) : null}
-          {ChapterStore.searchResult?.['tag']?.map((tag, index) => {
+          {ChapterStore.searchResult?.['tag']?.map((tag, pageListIdx) => {
             return (
               <TagSearchResult
-                key={tag.note_id}
+                key={pageListIdx}
                 isSelected={selected === tag.note_id ? true : false}
                 onClick={onClickPageBtn(tag.note_id)}
               >
@@ -188,10 +181,10 @@ const LNBSearchResult = () => {
                 <PageSearchResultPageTitle>
                   {tag.note_title}
                 </PageSearchResultPageTitle>
-                <TagList>
+                <TagList key={`tag_${pageListIdx}`}>
                   {tag.tagList.map((item, index) => {
                     return (
-                      <TagChip id={item.tag_id} key={item.tag_id}>
+                      <TagChip id={item.tag_id} key={`${pageListIdx}_${index}`}>
                         <TagText>{NoteUtil.decodeStr(item.text)}</TagText>
                       </TagChip>
                     );
@@ -199,7 +192,8 @@ const LNBSearchResult = () => {
                 </TagList>
                 <SearchResultBotttom
                   isLast={
-                    index === ChapterStore.searchResult?.['tag'].length - 1
+                    pageListIdx ===
+                    ChapterStore.searchResult?.['tag'].length - 1
                       ? true
                       : false
                   }

@@ -322,7 +322,7 @@ export const getChapterHtml = async exportId => {
     noteList.forEach((page, idx) => {
       html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${
         page.note_title
-      }</span><p><br></p>${page.note_content}<span class=${
+      }</span><p><br></p>${NoteUtil.decodeStr(page.note_content)}<span class=${
         idx === noteList.length - 1 ? '' : 'afterClass'
       }></span>`;
     });
@@ -342,7 +342,9 @@ export const getPageHtml = async exportId => {
   PageStore.exportPageTitle = dto.note_title;
   html = `<div style="color: #000;"><span style="font-size:24px;">${i18n.t(
     'NOTE_EXPORT_TITLE',
-  )} : ${dto.note_title}</span><p><br></p>${dto.note_content}<div/>`;
+  )} : ${dto.note_title}</span><p><br></p>${NoteUtil.decodeStr(
+    dto.note_content,
+  )}<div/>`;
 
   return html;
 };
