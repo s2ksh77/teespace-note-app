@@ -65,7 +65,7 @@ export const ChapterSearchResult = styled.div`
   align-items: center;
   cursor: pointer;
   &:hover {
-    background-color: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
   }
 `;
 export const ChapterSearchShareIcon = styled.img`
@@ -109,7 +109,7 @@ export const PageSearchResult = styled.div`
   justify-content: space-around;
   cursor: pointer;
   &:hover {
-    background-color: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
   }
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -153,7 +153,7 @@ export const TagSearchResult = styled.div`
   justify-content: space-around;
   cursor: pointer;
   &:hover {
-    background-color: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
   }
   text-overflow: ellipsis;
   white-space: nowrap;
