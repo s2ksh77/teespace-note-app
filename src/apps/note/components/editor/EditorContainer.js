@@ -349,13 +349,21 @@ const EditorContainer = () => {
     EditorStore.setUploaderType('image');
     EditorStore.setTotalUploadLength(1);
     EditorStore.setFileLength(1);
-    EditorStore.setUploadFileDTO(
-      { fileName, fileExtension, fileSize },
-      file,
-      'image',
-    );
+    const cancelToken = new API.CancelToken.source();
+    const model = new StorageModel({
+      workspace_id: NoteRepository.WS_ID,
+      channel_id: NoteRepository.chId,
+      storageFileInfo: {
+        user_id: NoteRepository.USER_ID,
+        file_last_update_user_id: NoteRepository.USER_ID,
+        file_name: fileName,
+        file_extension: fileExtension,
+        file_size: fileSize,
+      },
+    });
+    EditorStore.setUploadFileDTO(model, file, 'image', cancelToken);
 
-    handleUpload();
+    EditorStore.uploadDTO.forEach(item => handleUpload(item));
   };
 
   const isExternalImage = el => {
