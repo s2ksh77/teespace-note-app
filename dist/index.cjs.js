@@ -8,6 +8,9 @@ var ramda = require('ramda');
 var moment = require('moment-timezone');
 var i18next = require('i18next');
 var reactI18next = require('react-i18next');
+var emojiRegexRGI = require('emoji-regex/RGI_Emoji.js');
+var emojiRegex = require('emoji-regex/index.js');
+var emojiRegexText = require('emoji-regex/text.js');
 var Mark$1 = require('mark.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -34,6 +37,9 @@ function _interopNamespace(e) {
 
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
 var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
+var emojiRegexRGI__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegexRGI);
+var emojiRegex__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegex);
+var emojiRegexText__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegexText);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark$1);
 
 function _typeof(obj) {
@@ -4565,6 +4571,7 @@ var PageStore = mobx.observable({
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
+              dto.note_content = NoteUtil.decodeStr(dto.note_content);
               _this6.currentPageData = dto;
               _this6.noteTitle = dto.note_title;
               _this6.modifiedDate = get12HourFormat(_this6.currentPageData.modified_date);
@@ -4591,7 +4598,7 @@ var PageStore = mobx.observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 22:
+            case 23:
             case "end":
               return _context14.stop();
           }
@@ -4830,6 +4837,9 @@ var PageStore = mobx.observable({
   handleSave: function handleSave() {
     var isAutoSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) this.setTitle(this.getTitleFromPageContent());
+
+    this._checkEmojiContent();
+
     var updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);else this.handleSaveBtn(updateDTO);
   },
@@ -4881,6 +4891,14 @@ var PageStore = mobx.observable({
     if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
     (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
+  },
+  _checkEmojiContent: function _checkEmojiContent() {
+    var regRGI = emojiRegexRGI__default['default']();
+    var reg = emojiRegex__default['default']();
+    var regText = emojiRegexText__default['default']();
+    this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
+      return NoteUtil.encodeStr(m);
+    });
   },
 
   /**

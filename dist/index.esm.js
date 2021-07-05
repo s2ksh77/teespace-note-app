@@ -4,6 +4,9 @@ import { isNil, isEmpty } from 'ramda';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
+import emojiRegex from 'emoji-regex/index.js';
+import emojiRegexText from 'emoji-regex/text.js';
 import Mark$1 from 'mark.js';
 
 function _typeof(obj) {
@@ -4535,6 +4538,7 @@ var PageStore = observable({
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
+              dto.note_content = NoteUtil.decodeStr(dto.note_content);
               _this6.currentPageData = dto;
               _this6.noteTitle = dto.note_title;
               _this6.modifiedDate = get12HourFormat(_this6.currentPageData.modified_date);
@@ -4561,7 +4565,7 @@ var PageStore = observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 22:
+            case 23:
             case "end":
               return _context14.stop();
           }
@@ -4800,6 +4804,9 @@ var PageStore = observable({
   handleSave: function handleSave() {
     var isAutoSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     if (!this.noteTitle || this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')) this.setTitle(this.getTitleFromPageContent());
+
+    this._checkEmojiContent();
+
     var updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);else this.handleSaveBtn(updateDTO);
   },
@@ -4851,6 +4858,14 @@ var PageStore = observable({
     if (floatingMenu !== null) floatingMenu.click();
     (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.selection.setCursorLocation();
     (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
+  },
+  _checkEmojiContent: function _checkEmojiContent() {
+    var regRGI = emojiRegexRGI();
+    var reg = emojiRegex();
+    var regText = emojiRegexText();
+    this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
+      return NoteUtil.encodeStr(m);
+    });
   },
 
   /**
