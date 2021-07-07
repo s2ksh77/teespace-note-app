@@ -101,7 +101,7 @@ export const ChapterSearchResultTitle = styled.div`
 export const PageSearchResult = styled.div`
   position: relative;
   width: calc(100% - 1.5rem);
-  height: 3.81rem;
+  height: fit-content;
   margin: 0 0.75rem;
   padding: 0.75rem 1.69rem;
   display: flex;
@@ -116,10 +116,8 @@ export const PageSearchResult = styled.div`
   background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
 `;
 export const PageSearchResultPageTitle = styled.div`
-  font-size: 0.8125rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  font-size: 0.813rem;
+  font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -127,7 +125,7 @@ export const PageSearchResultPageTitle = styled.div`
 
 export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
-  color: #888d96;
+  color: ${props => props.isContent ? props.theme.TextSub2 : props.theme.TextSub};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

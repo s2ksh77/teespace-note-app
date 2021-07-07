@@ -11,6 +11,7 @@ import {
   PageSearchResult,
   PageSearchResultPageTitle,
   PageSearchResultChapterTitle,
+  PageSearchResultChapterTitle as SubText,
   SearchResultBotttom,
   TagSearchResult,
 } from '../../styles/lnbStyle';
@@ -147,6 +148,7 @@ const LNBSearchResult = () => {
                 <PageSearchResultPageTitle>
                   {page.note_title}
                 </PageSearchResultPageTitle>
+                <SubText isContent>{page.contentPreview}</SubText>
                 <SearchResultBotttom
                   isLast={
                     index === ChapterStore.searchResult?.['page'].length - 1
