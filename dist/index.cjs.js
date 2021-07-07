@@ -1921,7 +1921,7 @@ var ChapterStore = mobx.observable({
 
                 _this15.setSearchResult({
                   chapter: filtered && filtered.length > 0 ? filtered : null,
-                  page: dto.pageList,
+                  page: _this15.preProcessPageList(dto.pageList, _this15.searchStr.trim()),
                   tag: dto.tagList
                 });
 
@@ -1936,43 +1936,58 @@ var ChapterStore = mobx.observable({
       }, _callee18);
     }))();
   },
-  fetchSearchResult: function fetchSearchResult() {
+  preProcessPageList: function preProcessPageList(pageList, keyword) {
     var _this16 = this;
+
+    if (pageList) {
+      pageList.forEach(function (page) {
+        if (page.text_content.includes(keyword)) page.contentPreview = _this16.getContentPreview(page.text_content, keyword);
+      });
+    }
+
+    return pageList;
+  },
+  getContentPreview: function getContentPreview(content, keyword) {
+    var result = content.substring(content.indexOf(keyword) - 10);
+    return content.length === result.length ? result : "...".concat(result);
+  },
+  fetchSearchResult: function fetchSearchResult() {
+    var _this17 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
       return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
           switch (_context19.prev = _context19.next) {
             case 0:
-              _this16.setIsSearching(true); // 검색 결과 출력 종료까지임
+              _this17.setIsSearching(true); // 검색 결과 출력 종료까지임
 
 
-              _this16.setIsLoadingSearchResult(true); // 검색 실행 중 화면
+              _this17.setIsLoadingSearchResult(true); // 검색 실행 중 화면
               // await this.getSearchResult();
 
 
-              _this16.getSearchList(_this16.searchStr.trim()).then(function (dto) {
+              _this17.getSearchList(_this17.searchStr.trim()).then(function (dto) {
                 if (dto.pageList && dto.pageList.length > 0) {
                   dto.pageList.map(function (page) {
-                    _this16.getChapterInfoList(page.parent_notebook).then(function (dto) {
+                    _this17.getChapterInfoList(page.parent_notebook).then(function (dto) {
                       page.parentColor = dto.color;
                       page.parentText = dto.text;
                     }).then(function () {
-                      _this16.setSearchResult({
+                      _this17.setSearchResult({
                         chapter: dto.chapterList,
                         page: dto.pageList
                       });
 
-                      _this16.setIsLoadingSearchResult(false);
+                      _this17.setIsLoadingSearchResult(false);
                     });
                   });
                 } else {
-                  _this16.setSearchResult({
+                  _this17.setSearchResult({
                     chapter: dto.chapterList,
                     page: dto.pageList
                   });
 
-                  _this16.setIsLoadingSearchResult(false);
+                  _this17.setIsLoadingSearchResult(false);
                 }
               });
 
@@ -2009,7 +2024,7 @@ var ChapterStore = mobx.observable({
     }))();
   },
   createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
-    var _this17 = this;
+    var _this18 = this;
 
     if (!targetChapterList) return;
     var targetChId = NoteStore.getTargetChId(targetRoomId);
@@ -2031,7 +2046,7 @@ var ChapterStore = mobx.observable({
       };
     });
     this.createShareChapter(targetList).then(function () {
-      _this17.getNoteChapterList();
+      _this18.getNoteChapterList();
 
       NoteStore.setIsDragging(false);
     });
@@ -2058,7 +2073,7 @@ var ChapterStore = mobx.observable({
     }
   },
   setFirstNoteInfo: function setFirstNoteInfo() {
-    var _this18 = this;
+    var _this19 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
       var targetChapter, pageId;
@@ -2066,21 +2081,21 @@ var ChapterStore = mobx.observable({
         while (1) {
           switch (_context21.prev = _context21.next) {
             case 0:
-              targetChapter = _this18.chapterList.length > 0 ? _this18.chapterList[0] : null;
+              targetChapter = _this19.chapterList.length > 0 ? _this19.chapterList[0] : null;
 
               if (targetChapter) {
                 _context21.next = 5;
                 break;
               }
 
-              _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
+              _this19.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
 
 
               PageStore.fetchCurrentPageData('');
               return _context21.abrupt("return");
 
             case 5:
-              _this18.setFirstDragData(targetChapter);
+              _this19.setFirstDragData(targetChapter);
 
               pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
               // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
@@ -2098,7 +2113,7 @@ var ChapterStore = mobx.observable({
               break;
 
             case 12:
-              _this18.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+              _this19.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
 
             case 13:
             case "end":
@@ -2114,20 +2129,20 @@ var ChapterStore = mobx.observable({
   */
   // 처음 축소 상태에서 확대 상태로 바꿀 때
   fetchFirstNote: function fetchFirstNote() {
-    var _this19 = this;
+    var _this20 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
       return regeneratorRuntime.wrap(function _callee22$(_context22) {
         while (1) {
           switch (_context22.prev = _context22.next) {
             case 0:
-              _this19.setLoadingPageInfo(true);
+              _this20.setLoadingPageInfo(true);
 
               _context22.next = 3;
-              return _this19.setFirstNoteInfo();
+              return _this20.setFirstNoteInfo();
 
             case 3:
-              _this19.setLoadingPageInfo(false);
+              _this20.setLoadingPageInfo(false);
 
             case 4:
             case "end":
@@ -2140,7 +2155,7 @@ var ChapterStore = mobx.observable({
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
   fetchChapterList: function fetchChapterList() {
     var _arguments2 = arguments,
-        _this20 = this;
+        _this21 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
       var isInit;
@@ -2151,22 +2166,22 @@ var ChapterStore = mobx.observable({
               isInit = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : false;
 
               // 한 군데에서만 부르긴하지만 일단 param 추가
-              _this20.setLoadingPageInfo(true);
+              _this21.setLoadingPageInfo(true);
 
               _context23.next = 4;
-              return _this20.getNoteChapterList(isInit);
+              return _this21.getNoteChapterList(isInit);
 
             case 4:
-              if (!(_this20.chapterList.length > 0)) {
+              if (!(_this21.chapterList.length > 0)) {
                 _context23.next = 7;
                 break;
               }
 
               _context23.next = 7;
-              return _this20.setFirstNoteInfo();
+              return _this21.setFirstNoteInfo();
 
             case 7:
-              _this20.setLoadingPageInfo(false);
+              _this21.setLoadingPageInfo(false);
 
             case 8:
             case "end":
@@ -2212,7 +2227,7 @@ var ChapterStore = mobx.observable({
     if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
   },
   openNote: function openNote() {
-    var _this21 = this;
+    var _this22 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
       var pageId;
@@ -2229,16 +2244,16 @@ var ChapterStore = mobx.observable({
               // chapter, page 선택
               NoteStore.setTargetLayout('LNB');
 
-              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
+              _this22.setScrollIntoViewId(NoteStore.metaTagInfo.id);
 
               _context24.next = 8;
-              return _this21.getNoteChapterList();
+              return _this22.getNoteChapterList();
 
             case 8:
               // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
-              _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
+              _this22.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
 
-              pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+              pageId = _this22.getChapterFirstPageId(NoteStore.metaTagInfo.id);
               /**
                * 현재 챕터 클릭 로직과 동일하게 함
                * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
