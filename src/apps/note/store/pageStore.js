@@ -848,13 +848,43 @@ const PageStore = observable({
     );
   },
 
+  getTitleFromPageContent() {
+    return this._getFirstTxtOfPage() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
+  },
+
+  /**
+   * 페이지에서 가장 처음으로 표시되는 txt를 반환한다.
+   * 단, 테이블인 경우에는 여러 셀 중 처음으로 나타나는 txt를 반환한다.
+   * @returns 가장 처음으로 표시되는 txt
+   */
+  _getFirstTxtOfPage() {
+    const targetNode = [...EditorStore.tinymce.getBody().children].find(node =>
+      this._hasTxt(node),
+    );
+
+    return targetNode?.tagName === 'TABLE'
+      ? this._getTxtFromTable(targetNode)
+      : targetNode?.textContent;
+  },
+
+  _hasTxt(node) {
+    return !!node.textContent;
+  },
+
+  _getTxtFromTable(node) {
+    const targetTd = [...node.getElementsByTagName('td')].find(td =>
+      this._hasTxt(td),
+    );
+    return targetTd?.textContent;
+  },
+
   /**
    * 페이지 제목이 입력되지 않은 경우,
    * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
    * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
    * @returns 입력 개체에 따른 제목
    */
-  getTitleFromPageContent() {
+  _getTitleFromPageContent() {
     return (
       this._getTitleFromEditor() ||
       this._getTitleFromFiles() ||
@@ -892,7 +922,7 @@ const PageStore = observable({
       case 'UL':
         return node.children[0]?.textContent;
       case 'TABLE':
-        return this._getTitleFromTable(node);
+        return this._getTxtFromTable(node);
       case 'DIV':
       case 'PRE':
       case 'P':
@@ -900,22 +930,6 @@ const PageStore = observable({
       default:
         return node.textContent.slice(0, 200);
     }
-  },
-
-  /**
-   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
-   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-   * @param {element} node
-   * @returns 테이블로부터 추출된 title
-   */
-  _getTitleFromTable(node) {
-    for (const td of node.getElementsByTagName('td')) {
-      for (const node of td.childNodes) {
-        const title = this._getTitleByTagName(node);
-        if (title) return title;
-      }
-    }
-    return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
   },
 
   _searchInsideContainerTag(node) {
