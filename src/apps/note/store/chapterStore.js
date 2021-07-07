@@ -788,11 +788,30 @@ const ChapterStore = observable({
       );
       this.setSearchResult({
         chapter: filtered && filtered.length > 0 ? filtered : null,
-        page: dto.pageList,
+        page: this.preProcessPageList(dto.pageList, this.searchStr.trim()),
         tag: dto.tagList,
       });
       this.setIsLoadingSearchResult(false);
     });
+  },
+
+  preProcessPageList(pageList, keyword) {
+    if (pageList) {
+      pageList.forEach(page => {
+        if (page.text_content.includes(keyword))
+          page.contentPreview = this.getContentPreview(
+            page.text_content,
+            keyword,
+          );
+      });
+    }
+
+    return pageList;
+  },
+
+  getContentPreview(content, keyword) {
+    const result = content.substring(content.indexOf(keyword) - 10);
+    return content.length === result.length ? result : `...${result}`;
   },
 
   async fetchSearchResult() {
