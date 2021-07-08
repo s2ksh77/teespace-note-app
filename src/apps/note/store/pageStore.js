@@ -802,6 +802,11 @@ const PageStore = observable({
     this.setSaveStatus({ saving: true });
     this.editDone(updateDTO).then(dto => {
       this.removeLocalContent();
+      if (
+        document.getElementById(this.currentPageData.note_id)?.innerText !==
+        dto.note_title
+      )
+        ChapterStore.getNoteChapterList();
       this.setSaveStatus({ saved: true });
       const { user_name, modified_date, USER_ID } = dto;
       this.set_CurrentPageData({ user_name, modified_date, USER_ID });
