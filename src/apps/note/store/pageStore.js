@@ -848,122 +848,34 @@ const PageStore = observable({
     );
   },
 
-  /**
-   * 페이지 제목이 입력되지 않은 경우,
-   * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
-   * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
-   * @returns 입력 개체에 따른 제목
-   */
   getTitleFromPageContent() {
-    return (
-      this._getTitleFromEditor() ||
-      this._getTitleFromFiles() ||
-      i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
-    );
-  },
-
-  _getTitleFromEditor() {
-    return this._getTitleByTagName(
-      [...EditorStore.tinymce.getBody().children].find(node =>
-        this._hasTitle(node),
-      ),
-    );
-  },
-
-  _hasTitle(node) {
-    if (node.tagName === 'TABLE') return true;
-    if (
-      !node.textContent &&
-      node.nodeName !== 'IMG' &&
-      !node.getElementsByTagName('IMG').length
-    )
-      return false;
-    return this._getTitleByTagName(node);
-  },
-
-  _getTitleByTagName(node) {
-    if (!node) return '';
-    switch (node.nodeName) {
-      case 'BR':
-        return '';
-      case 'IMG':
-        return node.dataset.name ? node.dataset.name : node.src;
-      case 'OL':
-      case 'UL':
-        return node.children[0]?.textContent;
-      case 'TABLE':
-        return this._getTitleFromTable(node);
-      case 'DIV':
-      case 'PRE':
-      case 'P':
-        return this._searchInsideContainerTag(node);
-      default:
-        return node.textContent.slice(0, 200);
-    }
+    return this._getFirstTxtOfPage() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
   },
 
   /**
-   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
-   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-   * @param {element} node
-   * @returns 테이블로부터 추출된 title
+   * 페이지에서 가장 처음으로 표시되는 txt를 반환한다.
+   * 단, 테이블인 경우에는 여러 셀 중 처음으로 나타나는 txt를 반환한다.
+   * @returns 가장 처음으로 표시되는 txt
    */
-  _getTitleFromTable(node) {
-    for (const td of node.getElementsByTagName('td')) {
-      for (const node of td.childNodes) {
-        const title = this._getTitleByTagName(node);
-        if (title) return title;
-      }
-    }
-    return `(${i18n.t('NOTE_EDIT_PAGE_MENUBAR_21')})`;
-  },
-
-  _searchInsideContainerTag(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0)
-      return '';
-    // 명시적인 줄바꿈이 있는 경우
-    const lineBreakIdx = node.textContent.indexOf('\n');
-    if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx);
-
-    // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
-    // 즉 node 단위로 title을 뽑아낼 때
-    let hasLineBreak = false;
-    if (
-      Array.from(node.childNodes).some(child =>
-        ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName),
-      )
-    )
-      hasLineBreak = true;
-    // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
-    if (!hasLineBreak) return node.textContent.slice(0, 200);
-
-    for (let item of Array.from(node.childNodes)) {
-      if (
-        !item.textContent &&
-        item.nodeName !== 'IMG' &&
-        item.getElementsByTagName('IMG').length === 0
-      )
-        continue;
-      let title = this._getTitleByTagName(item);
-      if (title !== undefined) return title;
-    }
-    return '';
-  },
-
-  _getTitleFromFiles() {
-    if (
-      !EditorStore.tempFileLayoutList.length &&
-      !EditorStore.fileLayoutList.length
-    )
-      return '';
-    const firstFile =
-      EditorStore.tempFileLayoutList.length > 0
-        ? EditorStore.tempFileLayoutList[0]
-        : EditorStore.fileLayoutList[0];
-    return (
-      firstFile.file_name +
-      (firstFile.file_extension ? `.${firstFile.file_extension}` : '')
+  _getFirstTxtOfPage() {
+    const targetNode = [...EditorStore.tinymce.getBody().children].find(node =>
+      this._hasTxt(node),
     );
+
+    return targetNode?.tagName === 'TABLE'
+      ? this._getTxtFromTable(targetNode)
+      : targetNode?.textContent;
+  },
+
+  _hasTxt(node) {
+    return !!node.textContent;
+  },
+
+  _getTxtFromTable(node) {
+    const targetTd = [...node.getElementsByTagName('td')].find(td =>
+      this._hasTxt(td),
+    );
+    return targetTd?.textContent;
   },
 
   async createSharePage(targetList) {
