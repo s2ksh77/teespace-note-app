@@ -204,63 +204,6 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-function _createForOfIteratorHelper(o, allowArrayLike) {
-  var it;
-
-  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it) o = it;
-      var i = 0;
-
-      var F = function () {};
-
-      return {
-        s: F,
-        n: function () {
-          if (i >= o.length) return {
-            done: true
-          };
-          return {
-            done: false,
-            value: o[i++]
-          };
-        },
-        e: function (e) {
-          throw e;
-        },
-        f: F
-      };
-    }
-
-    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  var normalCompletion = true,
-      didErr = false,
-      err;
-  return {
-    s: function () {
-      it = o[Symbol.iterator]();
-    },
-    n: function () {
-      var step = it.next();
-      normalCompletion = step.done;
-      return step;
-    },
-    e: function (e) {
-      didErr = true;
-      err = e;
-    },
-    f: function () {
-      try {
-        if (!normalCompletion && it.return != null) it.return();
-      } finally {
-        if (didErr) throw err;
-      }
-    }
-  };
-}
-
 var languageSet = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
   NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
@@ -4882,125 +4825,35 @@ var PageStore = observable({
       return NoteUtil.encodeStr(m);
     });
   },
+  getTitleFromPageContent: function getTitleFromPageContent() {
+    return this._getFirstTxtOfPage() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
+  },
 
   /**
-   * 페이지 제목이 입력되지 않은 경우,
-   * page content(페이지 내용 및 파일)에 존재하는 가장 첫 노드의 속성에 따라 적합한 제목을 반환한다.
-   * 노드가 없는 경우에는 language에 따라 (제목 없음) 또는 (Untitled) 를 반환한다.
-   * @returns 입력 개체에 따른 제목
+   * 페이지에서 가장 처음으로 표시되는 txt를 반환한다.
+   * 단, 테이블인 경우에는 여러 셀 중 처음으로 나타나는 txt를 반환한다.
+   * @returns 가장 처음으로 표시되는 txt
    */
-  getTitleFromPageContent: function getTitleFromPageContent() {
-    return this._getTitleFromEditor() || this._getTitleFromFiles() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
-  },
-  _getTitleFromEditor: function _getTitleFromEditor() {
+  _getFirstTxtOfPage: function _getFirstTxtOfPage() {
     var _this14 = this;
 
-    return this._getTitleByTagName(_toConsumableArray(EditorStore.tinymce.getBody().children).find(function (node) {
-      return _this14._hasTitle(node);
-    }));
+    var targetNode = _toConsumableArray(EditorStore.tinymce.getBody().children).find(function (node) {
+      return _this14._hasTxt(node);
+    });
+
+    return (targetNode === null || targetNode === void 0 ? void 0 : targetNode.tagName) === 'TABLE' ? this._getTxtFromTable(targetNode) : targetNode === null || targetNode === void 0 ? void 0 : targetNode.textContent;
   },
-  _hasTitle: function _hasTitle(node) {
-    if (node.tagName === 'TABLE') return true;
-    if (!node.textContent && node.nodeName !== 'IMG' && !node.getElementsByTagName('IMG').length) return false;
-    return this._getTitleByTagName(node);
+  _hasTxt: function _hasTxt(node) {
+    return !!node.textContent;
   },
-  _getTitleByTagName: function _getTitleByTagName(node) {
-    var _node$children$;
+  _getTxtFromTable: function _getTxtFromTable(node) {
+    var _this15 = this;
 
-    if (!node) return '';
+    var targetTd = _toConsumableArray(node.getElementsByTagName('td')).find(function (td) {
+      return _this15._hasTxt(td);
+    });
 
-    switch (node.nodeName) {
-      case 'BR':
-        return '';
-
-      case 'IMG':
-        return node.dataset.name ? node.dataset.name : node.src;
-
-      case 'OL':
-      case 'UL':
-        return (_node$children$ = node.children[0]) === null || _node$children$ === void 0 ? void 0 : _node$children$.textContent;
-
-      case 'TABLE':
-        return this._getTitleFromTable(node);
-
-      case 'DIV':
-      case 'PRE':
-      case 'P':
-        return this._searchInsideContainerTag(node);
-
-      default:
-        return node.textContent.slice(0, 200);
-    }
-  },
-
-  /**
-   * 테이블 셀을 순서대로 탐색하면서 가장 처음 발견되는 노드의 title을 반환한다.
-   * 테이블에 입력한 개체가 없는 경우에는 (표) 를 반환한다.
-   * @param {element} node
-   * @returns 테이블로부터 추출된 title
-   */
-  _getTitleFromTable: function _getTitleFromTable(node) {
-    var _iterator = _createForOfIteratorHelper(node.getElementsByTagName('td')),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var td = _step.value;
-
-        var _iterator2 = _createForOfIteratorHelper(td.childNodes),
-            _step2;
-
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _node = _step2.value;
-
-            var title = this._getTitleByTagName(_node);
-
-            if (title) return title;
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-
-    return "(".concat(i18n.t('NOTE_EDIT_PAGE_MENUBAR_21'), ")");
-  },
-  _searchInsideContainerTag: function _searchInsideContainerTag(node) {
-    if (!node.textContent && node.getElementsByTagName('IMG').length === 0) return ''; // 명시적인 줄바꿈이 있는 경우
-
-    var lineBreakIdx = node.textContent.indexOf('\n');
-    if (lineBreakIdx !== -1) return node.textContent.slice(0, lineBreakIdx); // hasLineBreak가 true면 child별로 순회하며 getTitleByTagName 함수를 탄다
-    // 즉 node 단위로 title을 뽑아낼 때
-
-    var hasLineBreak = false;
-    if (Array.from(node.childNodes).some(function (child) {
-      return ['DIV', 'PRE', 'P', 'IMG', 'BR', 'OL', 'UL'].includes(child.nodeName);
-    })) hasLineBreak = true; // node 상관없이 title 뽑을 때 : 기사 내용은 줄바꿈없이 p태그 안에 span이나 strong 태그랑 #text만 있어
-
-    if (!hasLineBreak) return node.textContent.slice(0, 200);
-
-    for (var _i = 0, _Array$from = Array.from(node.childNodes); _i < _Array$from.length; _i++) {
-      var item = _Array$from[_i];
-      if (!item.textContent && item.nodeName !== 'IMG' && item.getElementsByTagName('IMG').length === 0) continue;
-
-      var title = this._getTitleByTagName(item);
-
-      if (title !== undefined) return title;
-    }
-
-    return '';
-  },
-  _getTitleFromFiles: function _getTitleFromFiles() {
-    if (!EditorStore.tempFileLayoutList.length && !EditorStore.fileLayoutList.length) return '';
-    var firstFile = EditorStore.tempFileLayoutList.length > 0 ? EditorStore.tempFileLayoutList[0] : EditorStore.fileLayoutList[0];
-    return firstFile.file_name + (firstFile.file_extension ? ".".concat(firstFile.file_extension) : '');
+    return targetTd === null || targetTd === void 0 ? void 0 : targetTd.textContent;
   },
   createSharePage: function createSharePage(targetList) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
@@ -5057,7 +4910,7 @@ var PageStore = observable({
    * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
    */
   restorePageLogic: function restorePageLogic(_ref2) {
-    var _this15 = this;
+    var _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
       var chapterId, pageId, toastTxt, res;
@@ -5067,7 +4920,7 @@ var PageStore = observable({
             case 0:
               chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
               _context19.next = 3;
-              return _this15.restorePage(pageId, chapterId);
+              return _this16.restorePage(pageId, chapterId);
 
             case 3:
               res = _context19.sent;
@@ -5082,10 +4935,10 @@ var PageStore = observable({
               return ChapterStore.getNoteChapterList();
 
             case 8:
-              if (_this15.currentPageId === pageId) {
+              if (_this16.currentPageId === pageId) {
                 ChapterStore.setCurrentChapterInfo(chapterId, false);
 
-                _this15.setCurrentPageId(pageId);
+                _this16.setCurrentPageId(pageId);
               }
 
               NoteStore.setToastText(toastTxt);
