@@ -776,7 +776,7 @@ const PageStore = observable({
     return {
       dto: {
         note_id: this.currentPageData.note_id,
-        note_title: this.noteTitle.trim(),
+        note_title: this.noteTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: 'text' }),
         parent_notebook: this.currentPageData.parent_notebook,
@@ -789,12 +789,8 @@ const PageStore = observable({
 
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave(isAutoSave = false) {
-    if (
-      !this.noteTitle ||
-      this.noteTitle === i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03')
-    )
+    if (!isAutoSave && !this.noteTitle)
       this.setTitle(this.getTitleFromPageContent());
-
     this._checkEmojiContent();
     const updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);
