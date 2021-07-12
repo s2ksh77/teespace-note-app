@@ -281,7 +281,8 @@ export const editorContentCSS = `
     font-family : "Noto Sans KR,sans-serif";
   }
   a, img {
-    cursor:pointer;
+    cursor: pointer;
+    color: #205855;
   }
   ::selection {
     background: #009f92; /* WebKit/Blink Browsers */
