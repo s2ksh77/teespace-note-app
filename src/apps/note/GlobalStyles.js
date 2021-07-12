@@ -46,7 +46,11 @@ export const GlobalStyle = createGlobalStyle`
     border:0 !important;
   }
   .ant-tooltip-inner {
+    background-color: ${props => props.theme.CoreLight};
     width: fit-content;
+  }
+  .ant-tooltip-arrow-content {
+    background-color: ${props => props.theme.CoreLight};
   }
   .mce-tinymce iframe{
     flex: 1;
