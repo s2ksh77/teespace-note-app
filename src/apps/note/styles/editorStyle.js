@@ -284,6 +284,9 @@ export const editorContentCSS = `
     cursor: pointer;
     color: #205855;
   }
+  pre {
+    cursor: default !important;
+  }
   ::selection {
     background: #009f92; /* WebKit/Blink Browsers */
     color:#ffffff;
