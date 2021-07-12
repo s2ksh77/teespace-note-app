@@ -6006,7 +6006,7 @@ var NoteRepository = /*#__PURE__*/function () {
             switch (_context23.prev = _context23.next) {
               case 0:
                 _context23.next = 2;
-                return API.post("/gateway-api/upload?user_id=" + this.USER_ID + '&ws_id=' + this.WS_ID + '&ch_id=' + this.chId + '&file_name=' + fileName + '&file_extension=' + fileExtension, file, {
+                return API.post("/gateway-api/upload?channel=" + this.chId + '&name=' + fileName + '&ext=' + fileExtension, file, {
                   headers: {
                     // pplication/x-www-form-urlencoded; charset=UTF-8
                     'content-type': 'multipart/form-data'
@@ -6047,19 +6047,14 @@ var NoteRepository = /*#__PURE__*/function () {
                 _context24.next = 3;
                 return API.put("note-api/noteFile?action=Delete", {
                   dto: {
-                    workspace_id: this.WS_ID,
-                    channel_id: this.chId,
-                    storageFileInfo: {
-                      user_id: '',
-                      file_last_update_user_id: '',
-                      file_id: deleteFileId,
-                      file_name: '',
-                      file_extension: '',
-                      file_created_at: '',
-                      file_updated_at: '',
-                      user_context_1: '',
-                      user_context_2: '',
-                      user_context_3: ''
+                    dto: {
+                      type: 'hard',
+                      file: [{
+                        channel: this.chId,
+                        file_parent_id: '',
+                        file_id: deleteFileId,
+                        is_folder: false
+                      }]
                     }
                   }
                 });
@@ -6089,18 +6084,23 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "deleteAllFile",
     value: function deleteAllFile(fileList) {
+      var _this3 = this;
+
       var deleteFileList = [];
 
       if (fileList) {
         fileList.map(function (file) {
-          return deleteFileList.push(file.file_id);
+          deleteFileList.push({
+            channel: _this3.chId,
+            file_parent_id: '',
+            file_id: file.file_id,
+            is_folder: false
+          });
         });
-        return API.put("Storage/StorageFile?action=MultiDelete", {
+        return API.post("drive-api/files?action=Delete", {
           dto: {
-            workspace_id: this.WS_ID,
-            channel_id: this.chId,
-            file_id: deleteFileList,
-            user_id: this.USER_ID
+            type: 'hard',
+            file: deleteFileList
           }
         });
       } else {
@@ -6200,7 +6200,7 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "throwPage",
     value: function () {
       var _throwPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27(pageList) {
-        var _this3 = this;
+        var _this4 = this;
 
         return regeneratorRuntime.wrap(function _callee27$(_context27) {
           while (1) {
@@ -6208,9 +6208,9 @@ var NoteRepository = /*#__PURE__*/function () {
               case 0:
                 // pageList -> pageId 리스트
                 pageList.forEach(function (page) {
-                  page.USER_ID = _this3.USER_ID;
-                  page.WS_ID = _this3.WS_ID;
-                  page.note_channel_id = _this3.chId;
+                  page.USER_ID = _this4.USER_ID;
+                  page.WS_ID = _this4.WS_ID;
+                  page.note_channel_id = _this4.chId;
                   page.parent_notebook = null;
                 });
                 _context27.prev = 1;
@@ -6247,7 +6247,7 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "restorePage",
     value: function () {
       var _restorePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28(pageList) {
-        var _this4 = this;
+        var _this5 = this;
 
         return regeneratorRuntime.wrap(function _callee28$(_context28) {
           while (1) {
@@ -6256,9 +6256,9 @@ var NoteRepository = /*#__PURE__*/function () {
                 // pageList -> pageId 리스트, chapterId 리스트
                 // [{note_id: asdf, parent_notebook : asdf} ... ]
                 pageList.forEach(function (page) {
-                  page.note_channel_id = _this4.chId;
-                  page.USER_ID = _this4.USER_ID;
-                  page.WS_ID = _this4.WS_ID;
+                  page.note_channel_id = _this5.chId;
+                  page.USER_ID = _this5.USER_ID;
+                  page.WS_ID = _this5.WS_ID;
                 });
                 _context28.prev = 1;
                 _context28.next = 4;
