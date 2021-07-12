@@ -456,15 +456,11 @@ class NoteRepository {
     cancelSource,
   ) {
     return await API.post(
-      `/gateway-api/upload?user_id=` +
-        this.USER_ID +
-        '&ws_id=' +
-        this.WS_ID +
-        '&ch_id=' +
+      `/gateway-api/upload?channel=` +
         this.chId +
-        '&file_name=' +
+        '&name=' +
         fileName +
-        '&file_extension=' +
+        '&ext=' +
         fileExtension,
       file,
       {
@@ -485,19 +481,16 @@ class NoteRepository {
     try {
       return await API.put(`note-api/noteFile?action=Delete`, {
         dto: {
-          workspace_id: this.WS_ID,
-          channel_id: this.chId,
-          storageFileInfo: {
-            user_id: '',
-            file_last_update_user_id: '',
-            file_id: deleteFileId,
-            file_name: '',
-            file_extension: '',
-            file_created_at: '',
-            file_updated_at: '',
-            user_context_1: '',
-            user_context_2: '',
-            user_context_3: '',
+          dto: {
+            type: 'hard',
+            file: [
+              {
+                channel: this.chId,
+                file_parent_id: '',
+                file_id: deleteFileId,
+                is_folder: false,
+              },
+            ],
           },
         },
       });
@@ -509,13 +502,18 @@ class NoteRepository {
   deleteAllFile(fileList) {
     let deleteFileList = [];
     if (fileList) {
-      fileList.map(file => deleteFileList.push(file.file_id));
-      return API.put(`Storage/StorageFile?action=MultiDelete`, {
+      fileList.map(file => {
+        deleteFileList.push({
+          channel: this.chId,
+          file_parent_id: '',
+          file_id: file.file_id,
+          is_folder: false,
+        });
+      });
+      return API.post(`drive-api/files?action=Delete`, {
         dto: {
-          workspace_id: this.WS_ID,
-          channel_id: this.chId,
-          file_id: deleteFileList,
-          user_id: this.USER_ID,
+          type: 'hard',
+          file: deleteFileList,
         },
       });
     } else {

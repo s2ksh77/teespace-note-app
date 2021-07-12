@@ -31,8 +31,8 @@ export const TagNewBtn = styled.div`
 `;
 
 export const PanelArrow = styled.img`
-  width:0.8rem;
-  bottom:1rem;
+  width: 0.8rem;
+  bottom: 1rem;
 `;
 
 export const TagList = styled.div`
@@ -54,7 +54,7 @@ export const TagText = styled.span`
 export const TagNewBtnIcon = styled.img`
   width: 1.25rem;
   height: 1.25rem;
-  user-drag: none; 
+  user-drag: none;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;
@@ -76,8 +76,8 @@ export const TagInput = styled.input`
   height: 1.88rem;
   margin-right: 0.38rem;
   border-radius: 1.563rem;
-  padding:0 0.75rem;
-  border: 0.06rem solid #7B7671;
+  padding: 0 0.75rem;
+  border: 0.06rem solid #7b7671;
   background-color: #ffffff;
   font-size: 0.81rem;
   color: #000000;
@@ -106,10 +106,11 @@ export const LnbTagContainer = styled.div`
 `;
 
 export const TagImg = styled.img`
-  position:absolute;
+  position: absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)
+    brightness(96%) contrast(87%);
 `;
 
 export const TagTxt = styled.div`
@@ -123,7 +124,7 @@ export const PanelHeader = styled(Panel)`
   font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 500;
-`
+`;
 
 export const StyledCollapse = styled(Collapse)`
   width: 100%;
@@ -136,19 +137,19 @@ export const TagKeyChildren = styled.div`
 
 export const TagKeyContainer = styled.div`
   width: 100%;
-  font-size:0.8125rem;
+  font-size: 0.8125rem;
 `;
 
 export const TagChipGroup = styled.div`
-  display:flex;
-  width:100%;
-  flex-wrap:wrap;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 // * gui에 나온대로 min-width를 50px이라고 하면 태그가 많아졌을 때 tag text가 안보인채로 50px 사이즈가 돼 버림
 // max-width가 display:flex일 때 먹지 않아서 내부 span tag에 max-width:15.69rem
 export const TagChip = styled(Tag)`
-  min-width: fit-content;
+  min-width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,7 +193,7 @@ export const SearchTagChip = styled(Tag)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding:0 0.63rem;
+  padding: 0 0.63rem;
   height: calc(100% - 0.26rem);
   width: fit-content;
   max-width: calc(100% - 1.88rem) !important;
@@ -204,7 +205,7 @@ export const SearchTagChip = styled(Tag)`
   border: 1px solid ${props => props.theme.SubStateVivid};
   background-color: ${props => props.theme.SubStateNormal};
   border-radius: 25px;
-  &:hover{
+  &:hover {
     color: ${props => props.theme.TextMain};
     background-color: ${props => props.theme.SubStateBright};
   }
@@ -214,6 +215,6 @@ export const TagChipNum = styled.div`
   font-size: 0.688rem;
   margin-left: auto;
   color: ${props => props.theme.BeigeVivid};
-  padding-left:0.4rem;
-  line-height:normal;
+  padding-left: 0.4rem;
+  line-height: normal;
 `;

@@ -284,11 +284,11 @@ export const editorContentCSS = `
     cursor:pointer;
   }
   ::selection {
-    background: #35A57A; /* WebKit/Blink Browsers */
+    background: #009f92; /* WebKit/Blink Browsers */
     color:#ffffff;
   }
   ::-moz-selection {
-    background: #35A57A; /* Gecko Browsers */
+    background: #009f92; /* Gecko Browsers */
     color:#ffffff;
   }
   ::-webkit-scrollbar {
