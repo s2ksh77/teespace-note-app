@@ -72,12 +72,13 @@ export const TagInputDIV = styled.div`
   box-sizing: border-box;
 `;
 export const TagInput = styled.input`
+  flex: auto;
   display: flex;
   width: 8.75rem;
   height: 1.88rem;
   margin-right: 0.38rem;
   border-radius: 1.563rem;
-  padding: 0 0.75rem;
+  padding: 0 1.5rem 0 0.75rem;
   border: 0.06rem solid #7b7671;
   background-color: #ffffff;
   font-size: 0.81rem;
