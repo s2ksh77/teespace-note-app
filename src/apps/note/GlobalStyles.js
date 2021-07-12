@@ -120,11 +120,6 @@ export const GlobalStyle = createGlobalStyle`
   .custom-dialog-btns{
     margin: auto !important;
   }
-  .custom-dialog-btns button {
-    width: 4.5rem !important;
-    height: 1.88rem !important;
-    font-size: 0.75rem !important;
-  }
 
   .link-toolbar {
     flex-direction: column !important;
@@ -462,8 +457,11 @@ export const GlobalStyle = createGlobalStyle`
 
   .tox .tox-button {
     font-weight: 500 !important;
+    font-size: 0.75rem !important;
     border-radius: 4px !important;
-    line-height: 0 !important;
+    line-height: normal !important;
+    width: 4.5rem;
+    height: 1.875rem;
   }
   .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {
     background-color: ${props => props.theme.CoreNormal} !important;
