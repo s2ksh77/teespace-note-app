@@ -459,6 +459,7 @@ export const GlobalStyle = createGlobalStyle`
   .tox .tox-button {
     font-weight: 500 !important;
     border-radius: 4px !important;
+    line-height: 0 !important;
   }
   .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {
     background-color: ${props => props.theme.CoreNormal} !important;
