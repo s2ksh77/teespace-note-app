@@ -42,7 +42,7 @@ export const handleUpload = flow(function* handleUpload(item) {
     }
   };
   try {
-    const result = yield EditorStore.uploadFileGW(
+    const res = yield EditorStore.uploadFileGW(
       item.file,
       item.model.storageFileInfo.file_name,
       item.model.storageFileInfo.file_extension,
@@ -71,14 +71,11 @@ export const handleUpload = flow(function* handleUpload(item) {
         }
       }
     });
-    if (result) {
-      let fileId = result.storageFileInfoList[0].file_id;
-      let fileName =
-        result.storageFileInfoList[0].file_name +
-        '.' +
-        result.storageFileInfoList[0].file_extension;
+    if (res) {
+      let fileId = res.file[0].file_id;
+      let fileName = res.file[0].file_name + '.' + res.file[0].file_extension;
 
-      if (result.resultMsg === 'Success') {
+      if (res.result === 'Y') {
         if (item.type === 'image')
           EditorStore.createDriveElement('image', fileId, fileName);
         yield EditorStore.createFileMeta(
@@ -89,7 +86,7 @@ export const handleUpload = flow(function* handleUpload(item) {
           targetFile.file_id = fileId;
           targetFile.status = 'uploaded';
         }
-      } else if (result.resultMsg === 'Fail') {
+      } else if (res.result === 'Fail') {
         EditorStore.failCount += 1;
         targetFile.progress = 0;
         targetFile.error = true;
@@ -248,7 +245,6 @@ export const handleFileDelete = async () => {
   fileArray.forEach(file =>
     EditorStore.tempFileList.push(file.getAttribute('id')),
   );
-
   if (EditorStore.fileList)
     EditorStore.deleteFileList = EditorStore.fileList.filter(
       file => !EditorStore.tempFileList.includes(file.file_id),

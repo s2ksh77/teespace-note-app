@@ -110,33 +110,35 @@ const FileLayout = () => {
     filebodyRef.current[changeIdx]?.scrollIntoView(false);
   };
 
-  const handleKeyDownFile = ({ fileId, index, type }) => e => {
-    const { keyCode, target } = e;
-    switch (keyCode) {
-      case 37: // <-
-        if (clickFileIdx === 0) return;
-        else {
-          const leftIdx = clickFileIdx - 1;
-          setClickFileIdx(leftIdx);
-          changeSelectFile(leftIdx);
-        }
-        break;
-      case 39: // ->
-        if (clickFileIdx === filebodyRef.current.length - 1) return;
-        else {
-          const rightIdx = clickFileIdx + 1;
-          setClickFileIdx(rightIdx);
-          changeSelectFile(rightIdx);
-        }
-        break;
-      case 8: // backspace
-      case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
-        if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
-        break;
-      default:
-        break;
-    }
-  };
+  const handleKeyDownFile =
+    ({ fileId, index, type }) =>
+    e => {
+      const { keyCode, target } = e;
+      switch (keyCode) {
+        case 37: // <-
+          if (clickFileIdx === 0) return;
+          else {
+            const leftIdx = clickFileIdx - 1;
+            setClickFileIdx(leftIdx);
+            changeSelectFile(leftIdx);
+          }
+          break;
+        case 39: // ->
+          if (clickFileIdx === filebodyRef.current.length - 1) return;
+          else {
+            const rightIdx = clickFileIdx + 1;
+            setClickFileIdx(rightIdx);
+            changeSelectFile(rightIdx);
+          }
+          break;
+        case 8: // backspace
+        case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
+          if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
+          break;
+        default:
+          break;
+      }
+    };
 
   const onClickFileName = item => {
     const {
@@ -194,6 +196,7 @@ const FileLayout = () => {
           setTimeout(() => {
             EditorStore.fileLayoutList.splice(index, 1);
             EditorStore.isFileLength();
+            EditorStore.removeFileList(fileId);
             removePostProcess();
           }, 1000);
         } else if (dto.resultMsg === 'Fail') {

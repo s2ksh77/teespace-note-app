@@ -461,6 +461,10 @@ class NoteRepository {
         '&name=' +
         fileName +
         '&ext=' +
+        fileExtension +
+        '&location=' +
+        fileName +
+        '.' +
         fileExtension,
       file,
       {
@@ -479,19 +483,17 @@ class NoteRepository {
 
   async deleteFile(deleteFileId) {
     try {
-      return await API.put(`note-api/noteFile?action=Delete`, {
+      return await API.post(`note-api/noteFile?action=Delete`, {
         dto: {
-          dto: {
-            type: 'hard',
-            file: [
-              {
-                channel: this.chId,
-                file_parent_id: '',
-                file_id: deleteFileId,
-                is_folder: false,
-              },
-            ],
-          },
+          type: 'hard',
+          file: [
+            {
+              channel: this.chId,
+              file_parent_id: this.chId,
+              file_id: deleteFileId,
+              is_folder: 'N',
+            },
+          ],
         },
       });
     } catch (e) {
@@ -505,9 +507,9 @@ class NoteRepository {
       fileList.map(file => {
         deleteFileList.push({
           channel: this.chId,
-          file_parent_id: '',
+          file_parent_id: this.chId,
           file_id: file.file_id,
-          is_folder: false,
+          is_folder: 'N',
         });
       });
       return API.post(`drive-api/files?action=Delete`, {

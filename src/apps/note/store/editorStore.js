@@ -224,7 +224,7 @@ const EditorStore = observable({
     return dto;
   },
   async deleteAllFile() {
-    await NoteRepository.deleteAllFile(this.deleteFileList).then(response => {
+    await NoteRepository.deleteAllFile(this.fileList).then(response => {
       const {
         data: { dto },
       } = response;
@@ -245,6 +245,9 @@ const EditorStore = observable({
   },
   setIsFile(flag) {
     this.isFile = flag;
+  },
+  removeFileList(fileId) {
+    this.fileList = this.fileList.filter(file => file.file_id !== fileId);
   },
   // not image 파일 첨부 영역을 위함
   checkFile() {
