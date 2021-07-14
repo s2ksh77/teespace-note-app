@@ -343,7 +343,7 @@ const EditorContainer = () => {
   const pasteSingleImage = async src => {
     const res = await fetch(src);
     const blob = await res.blob();
-    const file = new File([blob], 'WAPL_image.png', { type: 'image/png' });
+    const file = new File([blob], `WAPL_image_${new Date().getTime()}.png`, { type: 'image/png' });
     const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
 
     EditorStore.setUploaderType('image');
