@@ -449,7 +449,7 @@ const EditorContainer = () => {
         ) : null}
         <Editor
           id="noteEditor"
-          value={PageStore.currentPageData.note_content}
+          value={PageStore.pageInfo.content}
           init={{
             selector: '#noteEditor',
             menubar: false,

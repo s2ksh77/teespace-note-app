@@ -80,7 +80,7 @@ const EditorHeader = () => {
         const { displayName } = await userStore.getProfile(PageStore.getEditingUserID());
         PageStore.setEditingUserName(displayName);
         NoteStore.setModalInfo('editingPage');
-      } else PageStore.noteEditStart(PageStore.currentPageData.note_id);
+      } else PageStore.noteEditStart(PageStore.pageInfo.id);
     } else {
       await handleFileSync().then(() => PageStore.handleSave());
       logEvent('note', 'clickModifyBtn');
