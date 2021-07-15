@@ -15,7 +15,7 @@ import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from './LNBTag';
 import LNBSearchResult from './LNBSearchResult';
 import SearchingImg from '../common/SearchingImg';
-import Chapter from '../chapter/Chapter';
+import ChapterItem from '../chapter/ChapterItem';
 import RecycleBin from '../chapter/RecycleBin';
 import NoteUtil from '../../NoteUtil';
 
@@ -99,7 +99,7 @@ const LNBContainer = () => {
                   case 0:
                   case 1: // default, NOTEBOOK
                     return (
-                      <Chapter
+                      <ChapterItem
                         key={item.id}
                         chapter={item}
                         index={index}
@@ -109,7 +109,7 @@ const LNBContainer = () => {
                   case 2: // SHARED_PAGE
                     if (item.children.length > 0)
                       return (
-                        <Chapter
+                        <ChapterItem
                           key={item.id}
                           chapter={item}
                           index={index}
@@ -120,7 +120,7 @@ const LNBContainer = () => {
                     break;
                   case 3:
                     return (
-                      <Chapter
+                      <ChapterItem
                         key={item.id}
                         chapter={item}
                         index={index}
