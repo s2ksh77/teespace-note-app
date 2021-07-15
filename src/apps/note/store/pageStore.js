@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { observable, action } from 'mobx';
 import { UserStore } from 'teespace-core';
+import PageModel from './model/PageModel';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
 import ChapterStore from './chapterStore';
@@ -15,8 +16,9 @@ import emojiRegexText from 'emoji-regex/text.js';
 import i18n from '../i18n/i18n';
 
 const PageStore = observable({
+  pageInfo: new PageModel({}),
   noteInfoList: [],
-  currentPageData: {},
+  currentPageData: {}, // will be deprecated
   saveStatus: { saving: false, saved: false },
   displayName: '',
   otherEdit: false,
@@ -79,15 +81,15 @@ const PageStore = observable({
    * @returns 해당 페이지에 대한 자신의 읽기모드 여부
    */
   isReadMode() {
-    if (!this.currentPageData.is_edit) {
+    if (!this.pageInfo.editingUserId) {
       this.setOtherEdit(false);
       return true;
     }
-    if (NoteRepository.USER_ID === this.currentPageData.is_edit) {
+    if (NoteRepository.USER_ID === this.pageInfo.editingUserId) {
       this.setOtherEdit(false);
       return false;
     }
-    this.setEditingUserID(this.currentPageData.is_edit);
+    this.setEditingUserID(this.pageInfo.editingUserId);
     this.setOtherEdit(true);
     return true;
   },
@@ -359,6 +361,10 @@ const PageStore = observable({
       note_content: NoteUtil.decodeStr('<p><br></p>'),
       note_title: '',
     };
+    this.pageInfo = new PageModel({
+      ...dto,
+      note_content: NoteUtil.decodeStr('<p><br></p>'),
+    });
 
     this.setIsNewPage(true);
     EditorStore.setIsSearch(false);
@@ -626,8 +632,9 @@ const PageStore = observable({
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
     this.currentPageData = dto;
+    this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
-    this.modifiedDate = get12HourFormat(this.currentPageData.modified_date);
+    this.modifiedDate = this.pageInfo.modDate;
     EditorStore.setFileList(dto.fileList);
     TagStore.setNoteTagList(dto.tagList);
 
@@ -672,6 +679,7 @@ const PageStore = observable({
       await this.fetchNoteInfoList(pageId);
     } else {
       this.currentPageData = {};
+      this.pageInfo = new PageModel({});
       this.setCurrentPageId('');
     }
   },
@@ -722,13 +730,13 @@ const PageStore = observable({
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteEditStart(noteId) {
-    this.editStart(noteId, this.currentPageData.parent_notebook).then(dto => {
+    this.editStart(noteId, this.pageInfo.chapterId).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       // focus에서 getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) {
         EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
-        EditorStore.tinymce?.setContent(this.currentPageData.note_content);
+        EditorStore.tinymce?.setContent(this.pageInfo.content);
       }
       this.initializeBoxColor();
     });
@@ -748,14 +756,14 @@ const PageStore = observable({
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
   noteNoneEdit(noteId) {
-    this.noneEdit(noteId, this.currentPageData.parent_notebook).then(dto => {
+    this.noneEdit(noteId, this.pageInfo.chapterId).then(dto => {
       this.fetchCurrentPageData(dto.note_id);
 
       const floatingMenu = GlobalVariable.editorWrapper.querySelector(
         '.tox-tbtn[aria-owns]',
       );
       if (floatingMenu !== null) floatingMenu.click();
-      EditorStore.tinymce?.setContent(this.currentPageData.note_content);
+      EditorStore.tinymce?.setContent(this.pageInfo.content);
       NoteStore.setShowModal(false);
       EditorStore.setIsSearch(false);
     });
@@ -775,12 +783,12 @@ const PageStore = observable({
   getSaveDto(isAutoSave) {
     return {
       dto: {
-        note_id: this.currentPageData.note_id,
+        note_id: this.pageInfo.id,
         note_title: this.noteTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: 'text' }),
-        parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: isAutoSave ? this.currentPageData.is_edit : '',
+        parent_notebook: this.pageInfo.chapterId,
+        is_edit: isAutoSave ? this.pageInfo.editingUserId : '',
         TYPE: 'EDIT_DONE',
         is_favorite: !isAutoSave && this.isNewPage ? 'isNewPage' : '',
       },
@@ -803,8 +811,7 @@ const PageStore = observable({
     this.editDone(updateDTO).then(dto => {
       this.removeLocalContent();
       if (
-        document.getElementById(this.currentPageData.note_id)?.innerText !==
-        dto.note_title
+        document.getElementById(this.pageInfo.id)?.innerText !== dto.note_title
       )
         ChapterStore.getNoteChapterList();
       this.setSaveStatus({ saved: true });
