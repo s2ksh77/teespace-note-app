@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Observer } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { useDrop } from 'react-dnd';
-import Page from './Page';
+import PageItem from './PageItem';
 import { NewPage, NewPageBtn, PageMargin } from '../../styles/pageStyle';
 import { logEvent } from 'teespace-core';
 import { DRAG_TYPE } from '../../GlobalVariable';
@@ -48,7 +48,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
       <Observer>
         {() =>
           chapter.children.map((item, index) => (
-            <Page
+            <PageItem
               key={item.id}
               page={item}
               index={index}
