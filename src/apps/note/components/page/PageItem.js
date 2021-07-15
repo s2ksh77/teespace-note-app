@@ -20,7 +20,7 @@ import NoteUtil from '../../NoteUtil';
 import { DRAG_TYPE } from '../../GlobalVariable';
 import { checkMaxLength } from '../common/validators';
 
-const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
+const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
@@ -226,4 +226,4 @@ const Page = ({ page, index, chapter, chapterIdx, onClick }) => {
   ));
 };
 
-export default Page;
+export default PageItem;

@@ -25,7 +25,7 @@ import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import NoteUtil from '../../NoteUtil';
 import { checkMaxLength } from '../common/validators';
 
-const Chapter = ({ chapter, index, flexOrder, isShared }) => {
+const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const themeContext = useContext(ThemeContext);
@@ -64,7 +64,7 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
         ChapterStore.setDragEnterChapterIdx(index);
       } else if (
         hoverClientY > hoverMiddleY &&
-        Chapter.dragEnterChapterIdx !== index + 1
+        ChapterStore.dragEnterChapterIdx !== index + 1
       ) {
         ChapterStore.setDragEnterChapterIdx(index + 1);
       }
@@ -290,4 +290,4 @@ const Chapter = ({ chapter, index, flexOrder, isShared }) => {
   ));
 };
 
-export default Chapter;
+export default ChapterItem;
