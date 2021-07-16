@@ -4,10 +4,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var mobx = require('mobx');
 var teespaceCore = require('teespace-core');
-var ramda = require('ramda');
 var moment = require('moment-timezone');
 var i18next = require('i18next');
 var reactI18next = require('react-i18next');
+var ramda = require('ramda');
 var emojiRegexRGI = require('emoji-regex/RGI_Emoji.js');
 var emojiRegex = require('emoji-regex/index.js');
 var emojiRegexText = require('emoji-regex/text.js');
@@ -741,6 +741,43 @@ var get12HourFormat = function get12HourFormat(date) {
 
   return "".concat(mYear, ".").concat(convertTwoDigit(mMonth), ".").concat(convertTwoDigit(mDay), " ").concat(basicDate);
 };
+
+var PageModel = /*#__PURE__*/function () {
+  function PageModel(data) {
+    _classCallCheck(this, PageModel);
+
+    this._data = data;
+  }
+
+  _createClass(PageModel, [{
+    key: "id",
+    get: function get() {
+      return this._data.note_id;
+    }
+  }, {
+    key: "chapterId",
+    get: function get() {
+      return this._data.parent_notebook;
+    }
+  }, {
+    key: "content",
+    get: function get() {
+      return this._data.note_content;
+    }
+  }, {
+    key: "editingUserId",
+    get: function get() {
+      return this._data.is_edit;
+    }
+  }, {
+    key: "modDate",
+    get: function get() {
+      return get12HourFormat(this._data.modified_date);
+    }
+  }]);
+
+  return PageModel;
+}();
 
 // isNil : Checks if the input value is null or undefined.
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
@@ -3676,8 +3713,10 @@ var EditorStore = mobx.observable((_observable = {
 }), _observable));
 
 var PageStore = mobx.observable({
+  pageInfo: new PageModel({}),
   noteInfoList: [],
   currentPageData: {},
+  // will be deprecated
   saveStatus: {
     saving: false,
     saved: false
@@ -3748,17 +3787,17 @@ var PageStore = mobx.observable({
    * @returns 해당 페이지에 대한 자신의 읽기모드 여부
    */
   isReadMode: function isReadMode() {
-    if (!this.currentPageData.is_edit) {
+    if (!this.pageInfo.editingUserId) {
       this.setOtherEdit(false);
       return true;
     }
 
-    if (NoteRepository$1.USER_ID === this.currentPageData.is_edit) {
+    if (NoteRepository$1.USER_ID === this.pageInfo.editingUserId) {
       this.setOtherEdit(false);
       return false;
     }
 
-    this.setEditingUserID(this.currentPageData.is_edit);
+    this.setEditingUserID(this.pageInfo.editingUserId);
     this.setOtherEdit(true);
     return true;
   },
@@ -4189,6 +4228,9 @@ var PageStore = mobx.observable({
                 note_content: NoteUtil.decodeStr('<p><br></p>'),
                 note_title: ''
               });
+              _this.pageInfo = new PageModel(_objectSpread2(_objectSpread2({}, dto), {}, {
+                note_content: NoteUtil.decodeStr('<p><br></p>')
+              }));
 
               _this.setIsNewPage(true);
 
@@ -4210,7 +4252,7 @@ var PageStore = mobx.observable({
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
               if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
 
-            case 18:
+            case 19:
             case "end":
               return _context10.stop();
           }
@@ -4535,8 +4577,9 @@ var PageStore = mobx.observable({
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
               dto.note_content = NoteUtil.decodeStr(dto.note_content);
               _this6.currentPageData = dto;
+              _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
-              _this6.modifiedDate = get12HourFormat(_this6.currentPageData.modified_date);
+              _this6.modifiedDate = _this6.pageInfo.modDate;
               EditorStore.setFileList(dto.fileList);
               TagStore.setNoteTagList(dto.tagList);
 
@@ -4560,7 +4603,7 @@ var PageStore = mobx.observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 23:
+            case 24:
             case "end":
               return _context14.stop();
           }
@@ -4585,15 +4628,16 @@ var PageStore = mobx.observable({
               return _this7.fetchNoteInfoList(pageId);
 
             case 3:
-              _context15.next = 7;
+              _context15.next = 8;
               break;
 
             case 5:
               _this7.currentPageData = {};
+              _this7.pageInfo = new PageModel({});
 
               _this7.setCurrentPageId('');
 
-            case 7:
+            case 8:
             case "end":
               return _context15.stop();
           }
@@ -4686,7 +4730,7 @@ var PageStore = mobx.observable({
   noteEditStart: function noteEditStart(noteId) {
     var _this9 = this;
 
-    this.editStart(noteId, this.currentPageData.parent_notebook).then(function (dto) {
+    this.editStart(noteId, this.pageInfo.chapterId).then(function (dto) {
       var _EditorStore$tinymce3;
 
       _this9.fetchNoteInfoList(dto.note_id); // focus에서 getRng error가 나서 selection부터 체크
@@ -4697,7 +4741,7 @@ var PageStore = mobx.observable({
 
         EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
-        (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.currentPageData.note_content);
+        (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.pageInfo.content);
       }
 
       _this9.initializeBoxColor();
@@ -4723,14 +4767,14 @@ var PageStore = mobx.observable({
   noteNoneEdit: function noteNoneEdit(noteId) {
     var _this11 = this;
 
-    this.noneEdit(noteId, this.currentPageData.parent_notebook).then(function (dto) {
+    this.noneEdit(noteId, this.pageInfo.chapterId).then(function (dto) {
       var _EditorStore$tinymce5;
 
       _this11.fetchCurrentPageData(dto.note_id);
 
       var floatingMenu = GlobalVariable.editorWrapper.querySelector('.tox-tbtn[aria-owns]');
       if (floatingMenu !== null) floatingMenu.click();
-      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this11.currentPageData.note_content);
+      (_EditorStore$tinymce5 = EditorStore.tinymce) === null || _EditorStore$tinymce5 === void 0 ? void 0 : _EditorStore$tinymce5.setContent(_this11.pageInfo.content);
       NoteStore.setShowModal(false);
       EditorStore.setIsSearch(false);
     });
@@ -4782,14 +4826,14 @@ var PageStore = mobx.observable({
   getSaveDto: function getSaveDto(isAutoSave) {
     return {
       dto: {
-        note_id: this.currentPageData.note_id,
+        note_id: this.pageInfo.id,
         note_title: this.noteTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
         note_content: this.noteContent ? this.noteContent : '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({
           format: 'text'
         }),
-        parent_notebook: this.currentPageData.parent_notebook,
-        is_edit: isAutoSave ? this.currentPageData.is_edit : '',
+        parent_notebook: this.pageInfo.chapterId,
+        is_edit: isAutoSave ? this.pageInfo.editingUserId : '',
         TYPE: 'EDIT_DONE',
         is_favorite: !isAutoSave && this.isNewPage ? 'isNewPage' : ''
       }
@@ -4817,7 +4861,7 @@ var PageStore = mobx.observable({
 
       _this13.removeLocalContent();
 
-      if (((_document$getElementB5 = document.getElementById(_this13.currentPageData.note_id)) === null || _document$getElementB5 === void 0 ? void 0 : _document$getElementB5.innerText) !== dto.note_title) ChapterStore.getNoteChapterList();
+      if (((_document$getElementB5 = document.getElementById(_this13.pageInfo.id)) === null || _document$getElementB5 === void 0 ? void 0 : _document$getElementB5.innerText) !== dto.note_title) ChapterStore.getNoteChapterList();
 
       _this13.setSaveStatus({
         saved: true
