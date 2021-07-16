@@ -157,10 +157,3 @@ export const TagSearchResult = styled.div`
   white-space: nowrap;
   background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
 `;
-
-export const LNBShareBorder = styled.div`
-  display: flex;
-  order: ${({ order }) => order};
-  border-bottom: 0.06rem solid ${props => props.theme.LineMain};
-  margin: 0 0.81rem;
-`;
