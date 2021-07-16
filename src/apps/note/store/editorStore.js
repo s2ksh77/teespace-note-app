@@ -58,6 +58,9 @@ const EditorStore = observable({
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
+  totalUsage: 0,
+  spaceTotalVolume: 0,
+
   setContents(content) {
     this.contents = content;
   },
@@ -362,6 +365,22 @@ const EditorStore = observable({
   setTotalUploadLength(length) {
     this.totalUploadLength = length;
   },
+
+  async getStorageVolume() {
+    const {
+      data: { dto },
+    } = await NoteRepository.getStorageVolume();
+
+    if (dto.resultMsg === 'Success') {
+      this.totalUsage = dto.volumeInfoList[0].total_usage;
+      this.spaceTotalVolume = dto.volumeInfoList[0].space_max_volume;
+    }
+  },
+
+  checkUploadUsage(fileSize) {
+    return this.totalUsage + fileSize < this.spaceTotalVolume;
+  },
+
   // 하위 File Layout 에 Temp로 그리기 위한 용도
   getTempTimeFormat() {
     let date = new Date();

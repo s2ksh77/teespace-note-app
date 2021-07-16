@@ -10,7 +10,6 @@ import i18n from './i18n/i18n';
 */
 
 const NoteMeta = {
-
   // antd modal prop 설정
   openModal(type) {
     return this.setModalConfig(type);
@@ -18,53 +17,56 @@ const NoteMeta = {
   // antd modal prop 만들기
   setModalConfig(type) {
     const initialConfig = {
-      targetComponent: "Modal",
+      targetComponent: 'Modal',
       modalName: type,
-    }
+    };
     switch (type) {
-      case "viewInfo":
+      case 'viewInfo':
         return {
           ...initialConfig,
           title: i18n.t('NOTE_DELIVER_CONTEXT_MENU_04'),
-          className: "viewInfoModal"
-        }
-      case "forward":
+          className: 'viewInfoModal',
+        };
+      case 'forward':
         return {
           ...initialConfig,
           title: i18n.t('NOTE_CONTEXT_MENU_01'),
-          className: "forwardModal"
-        }
-      case "restore":
+          className: 'forwardModal',
+        };
+      case 'restore':
         return {
           ...initialConfig,
           title: i18n.t('NOTE_BIN_RESTORE_01'),
-          className: "restoreModal"
-        }
+          className: 'restoreModal',
+        };
       default:
         return;
     }
   },
   // core - Modal prop 설정
   openMessage(type) {
-    return this.setMessageConfig(this.setMessageInfoConfig(type), this.setEventConfig(type))
+    return this.setMessageConfig(
+      this.setMessageInfoConfig(type),
+      this.setEventConfig(type),
+    );
   },
   // Modal(core - Message) prop 만들기
   setMessageConfig(dialogType, eventList) {
     const buttonList = [];
-    // type, shape, onClick, text 
+    // type, shape, onClick, text
     eventList.map((event, index) => {
       dialogType.btns[index].onClick = event;
-      buttonList.push(dialogType.btns[index])
-    })
+      buttonList.push(dialogType.btns[index]);
+    });
 
     return {
-      targetComponent: "Message",
+      targetComponent: 'Message',
       modalName: dialogType.modalName, // openMessage의 인자인 type
       type: dialogType.type,
       title: dialogType.title,
       subTitle: dialogType.subtitle,
-      btns: buttonList
-    }
+      btns: buttonList,
+    };
   },
   setEventConfig(type) {
     const eventList = [];
@@ -94,8 +96,11 @@ const NoteMeta = {
             ChapterStore.deleteNoteChapter();
           } else PageStore.throwNotePage();
           if (EditorStore.fileList) EditorStore.deleteAllFile();
-        })
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
         break;
       case 'sharedPage':
       case 'deletePage': // 페이지 영구 삭제
@@ -103,8 +108,11 @@ const NoteMeta = {
           e.stopPropagation();
           PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
           if (EditorStore.fileList) EditorStore.deleteAllFile();
-        })
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
         break;
       case 'uploadingFiles':
         eventList.push(function (e) {
@@ -113,7 +121,7 @@ const NoteMeta = {
             const instance = new Mark(EditorStore.tinymce?.getBody());
             instance.unmark();
           }
-          if(EditorStore.isUploading) {
+          if (EditorStore.isUploading) {
             EditorStore.uploadingFileallCancel();
             return;
           }
@@ -122,14 +130,17 @@ const NoteMeta = {
             .then(module => {
               try {
                 const { logEvent } = module;
-                logEvent('note', 'clickModifyBtn')
+                logEvent('note', 'clickModifyBtn');
               } catch (e) {
                 console.error(e);
               }
             })
             .catch(e => console.error(e));
         });
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
         break;
       case 'confirm':
       case 'editingPage':
@@ -139,51 +150,60 @@ const NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'fileOpenMail':
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
         break;
       // NoteFile을 import해야해서 NoeModal component에서 이벤트 추가함
       case 'failUploadByFileNameLen':
-        eventList.push(function (e) { });
+        eventList.push(function (e) {});
         break;
       case 'recover':
-        eventList.push(async function (e) { // 복구 로직
+        eventList.push(async function (e) {
+          // 복구 로직
           e.stopPropagation();
           try {
             const { id, note_content } = PageStore.recoverInfo;
             if (!id) return;
             NoteStore.setShowPage(true);
-            if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
-            
+            if (NoteStore.layoutState === 'collapse')
+              NoteStore.setTargetLayout('Content');
+
             // [todo] 이게 왜 ChapterStore에 있을까
             ChapterStore.setLoadingPageInfo(true);
             await PageStore.fetchCurrentPageData(id);
             ChapterStore.setLoadingPageInfo(false);
             /*
-            * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
-            * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
-            * 이 경우 recoverinfo 초기화하면 안 됨
-            */
+             * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
+             * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
+             * 이 경우 recoverinfo 초기화하면 안 됨
+             */
             if (EditorStore.tinymce?.getBody()) {
               EditorStore.tinymce?.setContent(note_content);
               PageStore.setRecoverInfo({});
-            }            
-          } catch(err) {
-            console.log('err', err);            
+            }
+          } catch (err) {
+            console.log('err', err);
           } finally {
             NoteStore.setModalInfo(null);
-          };
+          }
         });
 
-        eventList.push(async function (e) { 
+        eventList.push(async function (e) {
           e.stopPropagation();
           const { parentId, id } = PageStore.recoverInfo;
           if (!id) return;
           NoteStore.setShowPage(true);
-          if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
+          if (NoteStore.layoutState === 'collapse')
+            NoteStore.setTargetLayout('Content');
           // 복구 원하지 않으면 로컬 스토리지에서 지우자
-          localStorage.removeItem(`Note_autosave_${NoteStore.notechannel_id}_${id}`);          
-          
+          localStorage.removeItem(
+            `Note_autosave_${NoteStore.notechannel_id}_${id}`,
+          );
+
           NoteStore.setModalInfo(null);
 
           // 여기 안에서 fetchCurrentPageData한다
@@ -201,7 +221,10 @@ const NoteMeta = {
           e.stopPropagation();
           PageStore.deleteNotePage();
         });
-        eventList.push(function (e) { e.stopPropagation(); NoteStore.setModalInfo(null) });
+        eventList.push(function (e) {
+          e.stopPropagation();
+          NoteStore.setModalInfo(null);
+        });
         break;
       default:
         break;
@@ -209,16 +232,30 @@ const NoteMeta = {
     return eventList;
   },
   setBtns(type) {
-    const shape = "default";
-    const defaultBtn1 = { type: "solid", shape, text: i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_03') }; // 버튼 한 개일 때랑 text 바꿔서 사용
-    const defaultBtn2 = { type: "default", shape, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05') };
+    const shape = 'default';
+    const defaultBtn1 = {
+      type: 'solid',
+      shape,
+      text: i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_03'),
+    }; // 버튼 한 개일 때랑 text 바꿔서 사용
+    const defaultBtn2 = {
+      type: 'default',
+      shape,
+      text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05'),
+    };
 
     switch (type) {
       case 'delete': // chapter랑 page
       case 'deletePage':
-        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04') }, defaultBtn2];
+        return [
+          { ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_04') },
+          defaultBtn2,
+        ];
       case 'recover':
-        return [{ ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') }, defaultBtn2];
+        return [
+          { ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') },
+          defaultBtn2,
+        ];
       case 'confirm':
       case 'editingPage':
       case 'chapterconfirm':
@@ -227,10 +264,14 @@ const NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'failUploadByFileNameLen':
         return [defaultBtn1];
       case 'uploadingFiles':
-        return [{ ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') }, defaultBtn2];
+        return [
+          { ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') },
+          defaultBtn2,
+        ];
       default:
         return;
     }
@@ -244,8 +285,8 @@ const NoteMeta = {
       modalName: type,
       title: '',
       subtitle: '',
-      btns: []
-    }
+      btns: [],
+    };
     // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
@@ -275,19 +316,23 @@ const NoteMeta = {
       case 'deletePage': // 페이지 영구 삭제
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_06');
-        dialogType.subtitle = i18n.t('NOTE_BIN_07'),
-        dialogType.btns = this.setBtns('delete');
+        (dialogType.subtitle = i18n.t('NOTE_BIN_07')),
+          (dialogType.btns = this.setBtns('delete'));
         break;
       case 'confirm':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
+          userName: PageStore.editingUserName,
+        });
         dialogType.btns = this.setBtns(type);
         break;
       case 'chapterconfirm':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', { count: PageStore.editingUserCount });
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
+          count: PageStore.editingUserCount,
+        });
         dialogType.btns = this.setBtns(type);
         break;
       case 'titleDuplicate':
@@ -301,7 +346,9 @@ const NoteMeta = {
         break;
       case 'editingPage':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_CANT_EDIT_01');
-        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', { userName: PageStore.editingUserName });
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
+          userName: PageStore.editingUserName,
+        });
         dialogType.btns = this.setBtns('editingPage');
         break;
       case 'deletedPage':
@@ -310,7 +357,10 @@ const NoteMeta = {
         break;
       case 'multiFileSomeFail':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_06');
-        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', { uploadCnt: EditorStore.totalUploadLength, failCnt: EditorStore.failCount });
+        dialogType.subtitle = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_07', {
+          uploadCnt: EditorStore.totalUploadLength,
+          failCnt: EditorStore.failCount,
+        });
         dialogType.btns = this.setBtns('multiFileSomeFail');
         break;
       case 'sizefailUpload':
@@ -337,15 +387,21 @@ const NoteMeta = {
         break;
       case 'emptyRecycleBin':
         dialogType.type = 'error';
-        dialogType.title = i18n.t('NOTE_BIN_08', { num: PageStore.deletePageList.length });
+        dialogType.title = i18n.t('NOTE_BIN_08', {
+          num: PageStore.deletePageList.length,
+        });
         dialogType.subtitle = i18n.t('NOTE_BIN_07');
         dialogType.btns = this.setBtns('delete');
+        break;
+      case 'failUploadSpaceFullSize':
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_03');
+        dialogType.btns = this.setBtns(type);
         break;
       default:
         break;
     }
     return dialogType;
-  }
+  },
 };
 
 export default NoteMeta;
