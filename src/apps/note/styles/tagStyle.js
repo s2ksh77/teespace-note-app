@@ -97,7 +97,6 @@ export const LnbTagContainer = styled.div`
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  border-bottom: 0.06rem solid ${props => props.theme.LineSub};
   margin: 0 0.81rem;
   order: ${props => props.order};
   color: ${props => props.color || ''};
