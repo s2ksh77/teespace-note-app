@@ -201,6 +201,7 @@ const NoteStore = observable({
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'failUploadByFileNameLen':
       case 'uploadingFiles': // todo
       case 'deletePage':
