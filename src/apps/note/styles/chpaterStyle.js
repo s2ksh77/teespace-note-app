@@ -25,7 +25,6 @@ export const ChapterCover = styled.div`
   margin: 4px 0 4px 0;
   align-items: center;
   font-weight: 500;
-  border-bottom: 0.06rem solid ${props => props.theme.LineSub};
   &:hover .ellipsisBtn {
     visibility: visible;
   }

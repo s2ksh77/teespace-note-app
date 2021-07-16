@@ -334,7 +334,7 @@ export const editorContentCSS = `
     max-width: 100%;
   }
   mark {
-    background-color: #FEF3BE;
+    background-color: #FFE362;
     color : #000000; 
   }
   mark.searchselected{
