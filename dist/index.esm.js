@@ -230,7 +230,7 @@ var languageSet = {
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}}\uAC1C\uC758 \uCC55\uD130\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uC774\uB3D9\uD558\uC600\uC2B5\uB2C8\uB2E4.",
   NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: '시작하려면 \'새 페이지 추가\' 버튼을 클릭하세요.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: "시작하려면 '새 페이지 추가' 버튼을 클릭하세요.",
   NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
   NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
   NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
@@ -245,7 +245,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
   NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
   NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
-  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여 파일을 첨부할 수 없습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여\\n 파일을 첨부할 수 없습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
   NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
@@ -306,7 +306,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_09: '링크로 이동',
   NOTE_EDIT_PAGE_ADD_TAG_01: '이미 존재하는 태그 이름입니다.',
   NOTE_PAGE_LIST_NO_CHPT_01: '챕터가 없습니다.',
-  NOTE_PAGE_LIST_NO_CHPT_02: '시작하려면 \'새 챕터\' 버튼을 클릭하세요.',
+  NOTE_PAGE_LIST_NO_CHPT_02: "시작하려면 '새 챕터' 버튼을 클릭하세요.",
   NOTE_EDIT_PAGE_MENUBAR_32: 'Drive에 저장',
   NOTE_EDIT_PAGE_MENUBAR_33: '내 PC에 저장',
   NOTE_EDIT_PAGE_MENUBAR_34: '다운로드',
@@ -316,11 +316,11 @@ var languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
   NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: "업로드 완료된 파일은 페이지에 저장됩니다.",
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: '업로드 완료된 파일은 페이지에 저장됩니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: '이메일의 경우, 앞에 \'mailto:\'를 붙여주세요.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: "이메일의 경우, 앞에 'mailto:'를 붙여주세요.",
   NOTE_EDIT_PAGE_AUTO_SAVE_01: '저장 중',
   NOTE_EDIT_PAGE_AUTO_SAVE_02: '저장되었습니다.',
   NOTE_EDIT_PAGE_CANT_EDIT_01: '수정할 수 없습니다.',
@@ -3095,6 +3095,8 @@ var EditorStore = observable((_observable = {
   uploaderType: '',
   visiblityState: '',
   uploadFileCancelStatus: false,
+  totalUsage: 0,
+  spaceTotalVolume: 0,
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -3474,6 +3476,37 @@ var EditorStore = observable((_observable = {
   this.uploadLength = length;
 }), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
   this.totalUploadLength = length;
+}), _defineProperty(_observable, "getStorageVolume", function getStorageVolume() {
+  var _this3 = this;
+
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    var _yield$NoteRepository5, dto;
+
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return NoteRepository$1.getStorageVolume();
+
+          case 2:
+            _yield$NoteRepository5 = _context7.sent;
+            dto = _yield$NoteRepository5.data.dto;
+
+            if (dto.resultMsg === 'Success') {
+              _this3.totalUsage = dto.volumeInfoList[0].total_usage;
+              _this3.spaceTotalVolume = dto.volumeInfoList[0].space_max_volume;
+            }
+
+          case 5:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }))();
+}), _defineProperty(_observable, "checkUploadUsage", function checkUploadUsage(fileSize) {
+  return this.totalUsage + fileSize < this.spaceTotalVolume;
 }), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
   var date = new Date();
   var year = date.getFullYear();
@@ -3500,12 +3533,12 @@ var EditorStore = observable((_observable = {
   (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.add();
   NoteStore.setModalInfo(null);
 }), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    var createCopyArray, _yield$NoteRepository5, dto;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    var createCopyArray, _yield$NoteRepository6, dto;
 
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
             createCopyArray = [];
             fileArray.forEach(function (file) {
@@ -3515,40 +3548,40 @@ var EditorStore = observable((_observable = {
                 WS_ID: NoteRepository$1.WS_ID
               });
             });
-            _context7.next = 4;
+            _context8.next = 4;
             return NoteRepository$1.createFileMeta(createCopyArray);
 
           case 4:
-            _yield$NoteRepository5 = _context7.sent;
-            dto = _yield$NoteRepository5.data.dto;
-            return _context7.abrupt("return", dto);
+            _yield$NoteRepository6 = _context8.sent;
+            dto = _yield$NoteRepository6.data.dto;
+            return _context8.abrupt("return", dto);
 
           case 7:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
       }
-    }, _callee7);
+    }, _callee8);
   }))();
 }), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
-  var _this3 = this;
+  var _this4 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-    var _yield$NoteRepository6, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+    var _yield$NoteRepository7, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
 
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context8.next = 2;
+            _context9.next = 2;
             return NoteRepository$1.storageFileDeepCopy(fileId);
 
           case 2:
-            _yield$NoteRepository6 = _context8.sent;
-            dto = _yield$NoteRepository6.data.dto;
+            _yield$NoteRepository7 = _context9.sent;
+            dto = _yield$NoteRepository7.data.dto;
 
             if (!(dto.resultMsg === 'Success')) {
-              _context8.next = 13;
+              _context9.next = 13;
               break;
             }
 
@@ -3571,10 +3604,10 @@ var EditorStore = observable((_observable = {
               error: false
             };
 
-            _this3.addFileList(tempMeta);
+            _this4.addFileList(tempMeta);
 
             if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
-            return _context8.abrupt("return", {
+            return _context9.abrupt("return", {
               id: file_id,
               type: type
             });
@@ -3584,10 +3617,10 @@ var EditorStore = observable((_observable = {
 
           case 14:
           case "end":
-            return _context8.stop();
+            return _context9.stop();
         }
       }
-    }, _callee8);
+    }, _callee9);
   }))();
 }), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
   var targetSRC = "".concat(API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
@@ -3602,57 +3635,57 @@ var EditorStore = observable((_observable = {
       break;
   }
 }), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
     var deleteArr;
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
             deleteArr = [];
 
             if (!(EditorStore.notSaveFileList.length > 0)) {
-              _context9.next = 12;
+              _context10.next = 12;
               break;
             }
 
             deleteArr = toJS(EditorStore.notSaveFileList).map(function (item) {
               return EditorStore.deleteFile(item.file_id);
             });
-            _context9.prev = 3;
-            _context9.next = 6;
+            _context10.prev = 3;
+            _context10.next = 6;
             return Promise.all(deleteArr).then(function () {
               EditorStore.notSaveFileList = [];
               if (EditorStore.tempFileLayoutList.length > 0) EditorStore.setTempFileLayoutList([]);
             });
 
           case 6:
-            _context9.next = 10;
+            _context10.next = 10;
             break;
 
           case 8:
-            _context9.prev = 8;
-            _context9.t0 = _context9["catch"](3);
+            _context10.prev = 8;
+            _context10.t0 = _context10["catch"](3);
 
           case 10:
-            _context9.prev = 10;
-            return _context9.finish(10);
+            _context10.prev = 10;
+            return _context10.finish(10);
 
           case 12:
           case "end":
-            return _context9.stop();
+            return _context10.stop();
         }
       }
-    }, _callee9, null, [[3, 8, 10, 12]]);
+    }, _callee10, null, [[3, 8, 10, 12]]);
   }))();
 }), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
-  var _this4 = this;
+  var _this5 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            _context10.next = 2;
+            _context11.next = 2;
             return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
               if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
                 var _file$cancelSource;
@@ -3661,15 +3694,15 @@ var EditorStore = observable((_observable = {
                 return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
               }
             })).then(function () {
-              _this4.uploadFileCancelStatus = true;
+              _this5.uploadFileCancelStatus = true;
             });
 
           case 2:
           case "end":
-            return _context10.stop();
+            return _context11.stop();
         }
       }
-    }, _callee10);
+    }, _callee11);
   }))();
 }), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
@@ -3682,8 +3715,6 @@ var EditorStore = observable((_observable = {
 var PageStore = observable({
   pageInfo: new PageModel({}),
   noteInfoList: [],
-  currentPageData: {},
-  // will be deprecated
   saveStatus: {
     saving: false,
     saved: false
@@ -3726,17 +3757,6 @@ var PageStore = observable({
   },
   setNoteInfoList: function setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
-  },
-  getCurrentPageData: function getCurrentPageData() {
-    return this.currentPageData;
-  },
-  setCurrentPageData: function setCurrentPageData(pageData) {
-    this.currentPageData = pageData;
-  },
-  // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
-  // {user_name, modified_date,USER_ID}
-  set_CurrentPageData: function set_CurrentPageData(noteInfo) {
-    this.currentPageData = _objectSpread2(_objectSpread2({}, this.currentPageData), noteInfo);
   },
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
   setSaveStatus: function setSaveStatus(_ref) {
@@ -4191,10 +4211,6 @@ var PageStore = observable({
 
             case 2:
               dto = _context10.sent;
-              _this.currentPageData = _objectSpread2(_objectSpread2({}, dto), {}, {
-                note_content: NoteUtil.decodeStr('<p><br></p>'),
-                note_title: ''
-              });
               _this.pageInfo = new PageModel(_objectSpread2(_objectSpread2({}, dto), {}, {
                 note_content: NoteUtil.decodeStr('<p><br></p>')
               }));
@@ -4219,7 +4235,7 @@ var PageStore = observable({
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
               if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
 
-            case 19:
+            case 18:
             case "end":
               return _context10.stop();
           }
@@ -4543,7 +4559,6 @@ var PageStore = observable({
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
               dto.note_content = NoteUtil.decodeStr(dto.note_content);
-              _this6.currentPageData = dto;
               _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
               _this6.modifiedDate = _this6.pageInfo.modDate;
@@ -4570,7 +4585,7 @@ var PageStore = observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 24:
+            case 23:
             case "end":
               return _context14.stop();
           }
@@ -4595,16 +4610,15 @@ var PageStore = observable({
               return _this7.fetchNoteInfoList(pageId);
 
             case 3:
-              _context15.next = 8;
+              _context15.next = 7;
               break;
 
             case 5:
-              _this7.currentPageData = {};
               _this7.pageInfo = new PageModel({});
 
               _this7.setCurrentPageId('');
 
-            case 8:
+            case 7:
             case "end":
               return _context15.stop();
           }
@@ -4819,7 +4833,6 @@ var PageStore = observable({
   handleAutoSave: function handleAutoSave(updateDTO) {
     var _this13 = this;
 
-    // currentPageData 갱신
     this.setSaveStatus({
       saving: true
     });
@@ -4834,17 +4847,7 @@ var PageStore = observable({
         saved: true
       });
 
-      var user_name = dto.user_name,
-          modified_date = dto.modified_date,
-          USER_ID = dto.USER_ID;
-
-      _this13.set_CurrentPageData({
-        user_name: user_name,
-        modified_date: modified_date,
-        USER_ID: USER_ID
-      });
-
-      _this13.modifiedDate = get12HourFormat(modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
+      _this13.modifiedDate = get12HourFormat(dto.modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
 
       setTimeout(function () {
         _this13.setSaveStatus({});
@@ -6336,6 +6339,40 @@ var NoteRepository = /*#__PURE__*/function () {
 
       return restorePage;
     }()
+  }, {
+    key: "getStorageVolume",
+    value: function () {
+      var _getStorageVolume = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee29() {
+        return regeneratorRuntime.wrap(function _callee29$(_context29) {
+          while (1) {
+            switch (_context29.prev = _context29.next) {
+              case 0:
+                _context29.prev = 0;
+                _context29.next = 3;
+                return API.get("/Storage/StorageVolumeDomain");
+
+              case 3:
+                return _context29.abrupt("return", _context29.sent);
+
+              case 6:
+                _context29.prev = 6;
+                _context29.t0 = _context29["catch"](0);
+                throw Error(JSON.stringify(_context29.t0));
+
+              case 9:
+              case "end":
+                return _context29.stop();
+            }
+          }
+        }, _callee29, null, [[0, 6]]);
+      }));
+
+      function getStorageVolume() {
+        return _getStorageVolume.apply(this, arguments);
+      }
+
+      return getStorageVolume;
+    }()
   }]);
 
   return NoteRepository;
@@ -6356,27 +6393,27 @@ var NoteMeta = {
   // antd modal prop 만들기
   setModalConfig: function setModalConfig(type) {
     var initialConfig = {
-      targetComponent: "Modal",
+      targetComponent: 'Modal',
       modalName: type
     };
 
     switch (type) {
-      case "viewInfo":
+      case 'viewInfo':
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: i18n.t('NOTE_DELIVER_CONTEXT_MENU_04'),
-          className: "viewInfoModal"
+          className: 'viewInfoModal'
         });
 
-      case "forward":
+      case 'forward':
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: i18n.t('NOTE_CONTEXT_MENU_01'),
-          className: "forwardModal"
+          className: 'forwardModal'
         });
 
-      case "restore":
+      case 'restore':
         return _objectSpread2(_objectSpread2({}, initialConfig), {}, {
           title: i18n.t('NOTE_BIN_RESTORE_01'),
-          className: "restoreModal"
+          className: 'restoreModal'
         });
 
       default:
@@ -6389,14 +6426,14 @@ var NoteMeta = {
   },
   // Modal(core - Message) prop 만들기
   setMessageConfig: function setMessageConfig(dialogType, eventList) {
-    var buttonList = []; // type, shape, onClick, text 
+    var buttonList = []; // type, shape, onClick, text
 
     eventList.map(function (event, index) {
       dialogType.btns[index].onClick = event;
       buttonList.push(dialogType.btns[index]);
     });
     return {
-      targetComponent: "Message",
+      targetComponent: 'Message',
       modalName: dialogType.modalName,
       // openMessage의 인자인 type
       type: dialogType.type,
@@ -6501,6 +6538,7 @@ var NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'fileOpenMail':
         eventList.push(function (e) {
           e.stopPropagation();
@@ -6545,10 +6583,10 @@ var NoteMeta = {
                   case 10:
                     ChapterStore.setLoadingPageInfo(false);
                     /*
-                    * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
-                    * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
-                    * 이 경우 recoverinfo 초기화하면 안 됨
-                    */
+                     * 내용 로컬 스토리지에 저장된 내용으로 바꾸기
+                     * 여길 탄 다음에 tinymce가 init되는 경우가 대부분=> editor.on('init')에서 setContent해야함
+                     * 이 경우 recoverinfo 초기화하면 안 됨
+                     */
 
                     if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.getBody()) {
                       (_EditorStore$tinymce3 = EditorStore.tinymce) === null || _EditorStore$tinymce3 === void 0 ? void 0 : _EditorStore$tinymce3.setContent(note_content);
@@ -6569,8 +6607,6 @@ var NoteMeta = {
                     return _context.finish(17);
 
                   case 20:
-
-                  case 21:
                   case "end":
                     return _context.stop();
                 }
@@ -6650,15 +6686,15 @@ var NoteMeta = {
     return eventList;
   },
   setBtns: function setBtns(type) {
-    var shape = "default";
+    var shape = 'default';
     var defaultBtn1 = {
-      type: "solid",
+      type: 'solid',
       shape: shape,
       text: i18n.t('NOTE_PAGE_LIST_CREATE_N_CHPT_03')
     }; // 버튼 한 개일 때랑 text 바꿔서 사용
 
     var defaultBtn2 = {
-      type: "default",
+      type: 'default',
       shape: shape,
       text: i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')
     };
@@ -6684,6 +6720,7 @@ var NoteMeta = {
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'failUploadByFileNameLen':
         return [defaultBtn1];
 
@@ -6829,6 +6866,11 @@ var NoteMeta = {
         });
         dialogType.subtitle = i18n.t('NOTE_BIN_07');
         dialogType.btns = this.setBtns('delete');
+        break;
+
+      case 'failUploadSpaceFullSize':
+        dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_03');
+        dialogType.btns = this.setBtns(type);
         break;
     }
 
@@ -7143,6 +7185,7 @@ var NoteStore = observable({
       case 'multiFileSomeFail':
       case 'failUpload':
       case 'sizefailUpload':
+      case 'failUploadSpaceFullSize':
       case 'failUploadByFileNameLen':
       case 'uploadingFiles': // todo
 
