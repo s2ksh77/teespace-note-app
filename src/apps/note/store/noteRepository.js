@@ -86,9 +86,9 @@ class NoteRepository {
   // }
   async getAllSortedTagList() {
     return await API.Get(
-      `note-api/tagSort?action=List&note_channel_id=${this.chId}&t=${new Date()
-        .getTime()
-        .toString()}`,
+      `note-api/tagSort?action=List&note_channel_id=${
+        this.chId
+      }&t=${new Date().getTime().toString()}`,
     );
   }
 
@@ -590,6 +590,14 @@ class NoteRepository {
           noteList: pageList,
         },
       });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async getStorageVolume() {
+    try {
+      return await API.get(`/Storage/StorageVolumeDomain`);
     } catch (e) {
       throw Error(JSON.stringify(e));
     }

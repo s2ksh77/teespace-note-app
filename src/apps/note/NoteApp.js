@@ -82,8 +82,8 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
         // loadingNoteApp을 넣어줌
         NoteStore.setIsContentExpanded(false);
         NoteStore.setLoadingNoteApp(true);
+        WWMS.removeHandler('CHN0003', 'NoteWWMSHandler');
       }
-      WWMS.removeHandler('CHN0003', 'NoteWWMSHandler');
     }
   }, [roomId, channelId, layoutState]);
 

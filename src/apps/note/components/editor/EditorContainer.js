@@ -103,12 +103,19 @@ const HandleUploader = props => {
             NoteStore.setModalInfo('sizefailUpload');
             return;
           }
+          if (!EditorStore.checkUploadUsage(uploadsize)) {
+            NoteStore.setModalInfo('failUploadSpaceFullSize');
+            return;
+          }
         }
 
         for (let i = 0; i < filtered.length; i++) {
           (function (file) {
-            const { fileName, fileExtension, fileSize } =
-              EditorStore.getFileInfo(file);
+            const {
+              fileName,
+              fileExtension,
+              fileSize,
+            } = EditorStore.getFileInfo(file);
             const type =
               fileExtension && EditorStore.uploadFileIsImage(fileExtension)
                 ? 'image'
@@ -142,6 +149,7 @@ const HandleUploader = props => {
   };
   useEffect(() => {
     EditorStore.setUploaderRef(uploaderRef.current);
+    EditorStore.getStorageVolume();
     return () => EditorStore.setUploaderRef('');
   }, []);
 
@@ -588,6 +596,7 @@ const EditorContainer = () => {
                           type: 'menuitem',
                           text: t('NOTE_EDIT_PAGE_ATTACH_FILE_01'),
                           onAction: function () {
+                            EditorStore.getStorageVolume();
                             EditorStore.setIsDrive(true);
                           },
                         }

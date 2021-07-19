@@ -18,7 +18,6 @@ import i18n from '../i18n/i18n';
 const PageStore = observable({
   pageInfo: new PageModel({}),
   noteInfoList: [],
-  currentPageData: {}, // will be deprecated
   saveStatus: { saving: false, saved: false },
   displayName: '',
   otherEdit: false,
@@ -56,17 +55,6 @@ const PageStore = observable({
   },
   setNoteInfoList(infoList) {
     this.noteInfoList = infoList;
-  },
-  getCurrentPageData() {
-    return this.currentPageData;
-  },
-  setCurrentPageData(pageData) {
-    this.currentPageData = pageData;
-  },
-  // autoSave에서 넣으려고 나중에 만든 함수(2021.03.09)
-  // {user_name, modified_date,USER_ID}
-  set_CurrentPageData(noteInfo) {
-    this.currentPageData = { ...this.currentPageData, ...noteInfo };
   },
 
   // 함수 호출시 3가지 상태 중 true인거 하나만 넣어주기 : ex. {saving:true}
@@ -356,11 +344,6 @@ const PageStore = observable({
       null,
       this.createParent,
     );
-    this.currentPageData = {
-      ...dto,
-      note_content: NoteUtil.decodeStr('<p><br></p>'),
-      note_title: '',
-    };
     this.pageInfo = new PageModel({
       ...dto,
       note_content: NoteUtil.decodeStr('<p><br></p>'),
@@ -631,7 +614,6 @@ const PageStore = observable({
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
-    this.currentPageData = dto;
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
     this.modifiedDate = this.pageInfo.modDate;
@@ -678,7 +660,6 @@ const PageStore = observable({
     if (pageId) {
       await this.fetchNoteInfoList(pageId);
     } else {
-      this.currentPageData = {};
       this.pageInfo = new PageModel({});
       this.setCurrentPageId('');
     }
@@ -806,7 +787,6 @@ const PageStore = observable({
   },
 
   handleAutoSave(updateDTO) {
-    // currentPageData 갱신
     this.setSaveStatus({ saving: true });
     this.editDone(updateDTO).then(dto => {
       this.removeLocalContent();
@@ -815,9 +795,7 @@ const PageStore = observable({
       )
         ChapterStore.getNoteChapterList();
       this.setSaveStatus({ saved: true });
-      const { user_name, modified_date, USER_ID } = dto;
-      this.set_CurrentPageData({ user_name, modified_date, USER_ID });
-      this.modifiedDate = get12HourFormat(modified_date);
+      this.modifiedDate = get12HourFormat(dto.modified_date);
       // 2초 후 수정 중 인터렉션으로 바꾸기
       setTimeout(() => {
         this.setSaveStatus({});

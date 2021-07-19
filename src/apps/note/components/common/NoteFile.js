@@ -151,13 +151,19 @@ const isValidFileLength = fileList => {
 
 const isValidFileSize = fileList => {
   const totalSize = 20000000000; // 20GB
-  let uploadSize = 0;
-  fileList.forEach(file => {
-    uploadSize += file.file_size;
-  });
+  const uploadSize = fileList.reduce(
+    (accumulator, current) => accumulator + current.file_size,
+    0,
+  );
 
   if (uploadSize > totalSize) {
     NoteStore.setModalInfo('sizefailUpload');
+    return false;
+  }
+  if (!EditorStore.checkUploadUsage(uploadSize)) {
+    NoteStore.setModalInfo('failUploadSpaceFullSize');
+    EditorStore.setIsAttatch(true);
+    EditorStore.setIsDrive(false);
     return false;
   }
   return true;
@@ -165,6 +171,7 @@ const isValidFileSize = fileList => {
 
 export const isValidFileNameLength = fileName => {
   if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
+  if (fileName.length > 70) return false;
   // 혹시 확장자가 없는 경우 대비
   const targetIdx =
     fileName.lastIndexOf('.') !== -1
