@@ -544,6 +544,14 @@ const EditorStore = observable({
       return false;
     return true;
   },
+  async getDuflicateFile(fileName, fileExt) {
+    const {
+      data: { dto },
+    } = await NoteRepository.getDuflicateFile(fileName, fileExt);
+    if (dto.result === 'Y') {
+      return dto.file[0]?.user_context_1;
+    }
+  },
 });
 
 export default EditorStore;

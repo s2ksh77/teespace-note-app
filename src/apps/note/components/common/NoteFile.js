@@ -42,9 +42,13 @@ export const handleUpload = flow(function* handleUpload(item) {
     }
   };
   try {
+    const duplicateName = yield EditorStore.getDuflicateFile(
+      item.model.storageFileInfo.file_name,
+      item.model.storageFileInfo.file_extension,
+    );
     const res = yield EditorStore.uploadFileGW(
       item.file,
-      item.model.storageFileInfo.file_name,
+      duplicateName,
       item.model.storageFileInfo.file_extension,
       handleUploadProgress,
       item.cancelSource,
@@ -741,4 +745,39 @@ export const fileExtension = extension => {
     default:
       return etc;
   }
+};
+
+export const getOS = () => {
+  const { userAgent, platform } = window.navigator;
+  const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+  const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+  const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+  let os = null;
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (iosPlatforms.indexOf(platform) !== -1) {
+    os = 'iOS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    os = 'Android';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+
+  return os;
+};
+
+export const fixedEncodeURIComponent = str => {
+  const OS = getOS();
+  const forEncodeStr =
+    OS === 'Mac OS' || OS === 'iOS' ? str.normalize('NFC') : str;
+  const encodeURIString = encodeURIComponent(forEncodeStr).replace(
+    /[!'()*]/g,
+    c => {
+      return `%${c.charCodeAt(0).toString(16)}`;
+    },
+  );
+  return encodeURIString;
 };
