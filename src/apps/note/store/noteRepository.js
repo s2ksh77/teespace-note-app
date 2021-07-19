@@ -1,4 +1,5 @@
 import { API } from 'teespace-core';
+import { fixedEncodeURIComponent } from '../components/common/NoteFile';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 
@@ -459,13 +460,13 @@ class NoteRepository {
       `/gateway-api/upload?channel=` +
         this.chId +
         '&name=' +
-        fileName +
+        fixedEncodeURIComponent(fileName) +
         '&ext=' +
         fileExtension +
         '&location=' +
-        fileName +
-        '.' +
-        fileExtension,
+        fixedEncodeURIComponent(fileName + '.' + fileExtension) +
+        '&dir=' +
+        `${PageStore.pageInfo.id}`,
       file,
       {
         headers: {
@@ -598,6 +599,18 @@ class NoteRepository {
   async getStorageVolume() {
     try {
       return await API.get(`/Storage/StorageVolumeDomain`);
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async getDuflicateFile(fileName, fileExt) {
+    try {
+      return await API.get(
+        `/drive-api/files/${
+          PageStore.pageInfo.id
+        }?type=0&name=${fixedEncodeURIComponent(fileName)}&ext=${fileExt}`,
+      );
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
