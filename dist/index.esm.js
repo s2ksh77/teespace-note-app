@@ -6865,17 +6865,40 @@ var NoteMeta = {
 
                     return _context2.abrupt("return");
 
-                  case 4:
-                    NoteStore.setShowPage(true);
-                    if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content'); // 복구 원하지 않으면 로컬 스토리지에서 지우자
+      return getStorageVolume;
+    }()
+  }, {
+    key: "getDuflicateFile",
+    value: function () {
+      var _getDuflicateFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(fileName, fileExt) {
+        var query;
+        return regeneratorRuntime.wrap(function _callee30$(_context30) {
+          while (1) {
+            switch (_context30.prev = _context30.next) {
+              case 0:
+                query = "/drive-api/files/".concat(PageStore.pageInfo.id, "?");
+                query += "type=0";
+                query += "&name=".concat(fixedEncodeURIComponent(fileName));
+                if (fileExt) query += "&ext=".concat(fileExt);
+                _context30.prev = 4;
+                _context30.next = 7;
+                return API.get(query);
 
-                    localStorage.removeItem("Note_autosave_".concat(NoteStore.notechannel_id, "_").concat(id));
-                    NoteStore.setModalInfo(null); // 여기 안에서 fetchCurrentPageData한다
-                    // current chapterId 없으면 에디터를 안 띄워서 await 필요
+              case 7:
+                return _context30.abrupt("return", _context30.sent);
 
-                    ChapterStore.setLoadingPageInfo(true);
-                    _context2.next = 11;
-                    return PageStore.noneEdit(id, parentId);
+              case 10:
+                _context30.prev = 10;
+                _context30.t0 = _context30["catch"](4);
+                throw Error(JSON.stringify(_context30.t0));
+
+              case 13:
+              case "end":
+                return _context30.stop();
+            }
+          }
+        }, _callee30, null, [[4, 10]]);
+      }));
 
                   case 11:
                     dto = _context2.sent;
