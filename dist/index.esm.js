@@ -7863,28 +7863,33 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "getDuflicateFile",
     value: function () {
       var _getDuflicateFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(fileName, fileExt) {
+        var query;
         return regeneratorRuntime.wrap(function _callee30$(_context30) {
           while (1) {
             switch (_context30.prev = _context30.next) {
               case 0:
-                _context30.prev = 0;
-                _context30.next = 3;
-                return API.get("/drive-api/files/".concat(PageStore.pageInfo.id, "?type=0&name=").concat(fixedEncodeURIComponent(fileName), "&ext=").concat(fileExt));
+                query = "/drive-api/files/".concat(PageStore.pageInfo.id, "?");
+                query += "type=0";
+                query += "&name=".concat(fixedEncodeURIComponent(fileName));
+                if (fileExt) query += "&ext=".concat(fileExt);
+                _context30.prev = 4;
+                _context30.next = 7;
+                return API.get(query);
 
-              case 3:
+              case 7:
                 return _context30.abrupt("return", _context30.sent);
 
-              case 6:
-                _context30.prev = 6;
-                _context30.t0 = _context30["catch"](0);
+              case 10:
+                _context30.prev = 10;
+                _context30.t0 = _context30["catch"](4);
                 throw Error(JSON.stringify(_context30.t0));
 
-              case 9:
+              case 13:
               case "end":
                 return _context30.stop();
             }
           }
-        }, _callee30, null, [[0, 6]]);
+        }, _callee30, null, [[4, 10]]);
       }));
 
       function getDuflicateFile(_x46, _x47) {

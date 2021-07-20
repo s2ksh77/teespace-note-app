@@ -605,12 +605,12 @@ class NoteRepository {
   }
 
   async getDuflicateFile(fileName, fileExt) {
+    let query = `/drive-api/files/${PageStore.pageInfo.id}?`;
+    query += `type=0`;
+    query += `&name=${fixedEncodeURIComponent(fileName)}`;
+    if (fileExt) query += `&ext=${fileExt}`;
     try {
-      return await API.get(
-        `/drive-api/files/${
-          PageStore.pageInfo.id
-        }?type=0&name=${fixedEncodeURIComponent(fileName)}&ext=${fileExt}`,
-      );
+      return await API.get(query);
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
