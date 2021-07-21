@@ -55,6 +55,12 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     PageStore.setSelectablePageId(selectablePageId);
   };
 
+  const getSelectablePageId = () => {
+    return pageIdx > 0
+      ? parent.children[pageIdx - 1].id
+      : parent.children[1]?.id;
+  };
+
   /**
    * 챕터/페이지를 휴지통으로 이동시킨다.
    * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
@@ -81,34 +87,40 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           }
         });
         break;
-      case 'page':
-        PageStore.getNoteInfoList(note.id).then(async dto => {
-          if (dto.is_edit === null || dto.is_edit === '') {
-            PageStore.setDeletePageList([{ note_id: note.id }]);
-            if (PageStore.currentPageId === note.id) {
-              if (
-                parent.type === 'shared_page' &&
-                parent.children.length === 1
-              ) {
-                setSelectableIdOfChapter();
-                PageStore.setLastSharedPageParentId(parent.id);
-              } else {
-                setSelectableIdOfPage();
-              }
-            }
-            if (PageStore.lastSharedPageParentId) {
-              ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-              PageStore.setLastSharedPageParentId('');
-              ChapterStore.deleteNoteChapter();
-            } else if(note.type === 'shared') NoteStore.setModalInfo('sharedPage');
-            else PageStore.throwNotePage();
-          } else {
-            const { displayName } = await userStore.getProfile(dto.is_edit);
-            PageStore.setEditingUserName(displayName);
-            NoteStore.setModalInfo('confirm');
+      case 'page': {
+        const { is_edit: editingUserId } = await PageStore.getNoteInfoList(
+          note.id,
+        );
+        if (editingUserId) {
+          const { displayName } = await userStore.getProfile(editingUserId);
+          PageStore.setEditingUserName(displayName);
+          NoteStore.setModalInfo('confirm');
+          return;
+        }
+
+        PageStore.setDeletePageList([{ note_id: note.id }]);
+        if (PageStore.pageInfo.id === note.id) {
+          if (parent.type === 'shared_page' && parent.children.length === 1) {
+            setSelectableIdOfChapter();
+            ChapterStore.setDeleteChapterList([{ id: parent.id }]);
+            ChapterStore.deleteNoteChapter();
+            return;
           }
-        });
+          setSelectableIdOfPage();
+        }
+
+        if (note.type === 'shared') {
+          NoteStore.setModalInfo('sharedPage', {
+            pageList: [{ note_id: note.id }],
+            selectablePageId:
+              PageStore.pageInfo.id === note.id ? getSelectablePageId() : '',
+          });
+          return;
+        }
+
+        PageStore.throwNotePage();
         break;
+      }
       default:
         break;
     }
@@ -166,23 +178,19 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     NoteStore.handleSharedInfo(noteType, note.id);
   };
 
-  /**
-   * 휴지통에 있는 모든 페이지를 영구적으로 삭제한다.
-   */
-  const emptyComponent = () => {
-    PageStore.setDeletePageList(
-      note.children.map(page => ({ note_id: page.id })),
-    );
-    if(PageStore.deletePageList.length !== 0) NoteStore.setModalInfo('emptyRecycleBin');
+  const emptyRecycleBin = () => {
+    NoteStore.setModalInfo('emptyRecycleBin', {
+      pageList: note.children.map(page => ({ note_id: page.id })),
+    });
   };
 
-  /**
-   * 휴지통에 있는 페이지를 영구적으로 삭제한다.
-   */
-  const deleteComponent = () => {
-    PageStore.setDeletePageList([{ note_id: note.id }]);
+  const deletePagePermanently = () => {
     if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
-    NoteStore.setModalInfo('deletePage');
+    NoteStore.setModalInfo('deletePage', {
+      pageList: [{ note_id: note.id }],
+      selectablePageId:
+        PageStore.currentPageId === note.id ? getSelectablePageId() : '',
+    });
   };
 
   const onClickContextMenu = ({ key, domEvent }) => {
@@ -195,9 +203,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'exportPDF') exportComponent(false);
     else if (key === 'exportTXT') exportTxtComponent();
     else if (key === 'viewInfo') infoComponent();
-    else if (key === 'emptyRecycleBin') emptyComponent();
+    else if (key === 'emptyRecycleBin') emptyRecycleBin();
     else if (key === 'restore') restoreComponent();
-    else if (key === 'delete') deleteComponent();
+    else if (key === 'delete') deletePagePermanently();
 
     if (key)
       NoteStore.LNBChapterCoverRef.removeEventListener(

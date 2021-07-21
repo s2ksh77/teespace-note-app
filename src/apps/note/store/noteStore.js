@@ -179,7 +179,7 @@ const NoteStore = observable({
     this.showModal = showModal;
   },
   // { type, title, subTitle, buttons }
-  setModalInfo(modalType) {
+  setModalInfo(modalType, data) {
     switch (modalType) {
       // AntdModal로 연다
       case 'viewInfo':
@@ -207,7 +207,7 @@ const NoteStore = observable({
       case 'deletePage':
       case 'recover': // 페이지 복구 묻는 팝업창
       case 'emptyRecycleBin':
-        this.modalInfo = NoteMeta.openMessage(modalType);
+        this.modalInfo = NoteMeta.openMessage(modalType, data);
         this.setShowModal(true);
         break;
       case null:

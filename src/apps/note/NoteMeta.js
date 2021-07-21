@@ -4,10 +4,6 @@ import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
 import Mark from 'mark.js';
 import i18n from './i18n/i18n';
-/*
-  target 컴포넌트가 계속 바뀌어서 헷갈림
-  open + target 컴포넌트 이름
-*/
 
 const NoteMeta = {
   // antd modal prop 설정
@@ -44,10 +40,10 @@ const NoteMeta = {
     }
   },
   // core - Modal prop 설정
-  openMessage(type) {
+  openMessage(type, data) {
     return this.setMessageConfig(
-      this.setMessageInfoConfig(type),
-      this.setEventConfig(type),
+      this.setMessageInfoConfig(type, data),
+      this.setEventConfig(type, data),
     );
   },
   // Modal(core - Message) prop 만들기
@@ -68,7 +64,7 @@ const NoteMeta = {
       btns: buttonList,
     };
   },
-  setEventConfig(type) {
+  setEventConfig(type, data) {
     const eventList = [];
     switch (type) {
       case 'sharedChapter':
@@ -106,7 +102,7 @@ const NoteMeta = {
       case 'deletePage': // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
+          PageStore.deleteNotePage(data); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
@@ -219,7 +215,7 @@ const NoteMeta = {
       case 'emptyRecycleBin':
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage();
+          PageStore.deleteNotePage(data);
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -276,7 +272,7 @@ const NoteMeta = {
         return;
     }
   },
-  setMessageInfoConfig(type) {
+  setMessageInfoConfig(type, data) {
     // const userName = '';
     const fileName = EditorStore.deleteFileName;
     // type이 error면 빨간색, error말고 다른 색이면 보라색
@@ -388,7 +384,7 @@ const NoteMeta = {
       case 'emptyRecycleBin':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_08', {
-          num: PageStore.deletePageList.length,
+          num: data.pageList.length,
         });
         dialogType.subtitle = i18n.t('NOTE_BIN_07');
         dialogType.btns = this.setBtns('delete');
