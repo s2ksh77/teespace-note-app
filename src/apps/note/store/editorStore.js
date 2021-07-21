@@ -175,6 +175,7 @@ const EditorStore = observable({
     file,
     file_name,
     file_extension,
+    location,
     handleProcess,
     cancelSource,
   ) {
@@ -184,6 +185,7 @@ const EditorStore = observable({
       file,
       file_name,
       file_extension,
+      location,
       handleProcess,
       cancelSource,
     );
