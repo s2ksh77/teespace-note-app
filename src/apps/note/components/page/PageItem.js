@@ -65,6 +65,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
             text: item.text,
             date: item.modified_date,
             type: item.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+            chapterId: item.parent_notebook,
           };
         }),
       };

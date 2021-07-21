@@ -72,7 +72,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             data.map(async note => {
               const dto = await PageStore.getNoteInfoList(note.id);
               if (dto.is_edit) editingNoteList.push(dto);
-              return { note_id: note.id };
+              return {
+                note_id: note.id,
+                restoreChapterId: note.chapterId,
+              };
             }),
           );
 

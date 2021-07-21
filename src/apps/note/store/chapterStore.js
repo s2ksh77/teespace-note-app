@@ -326,7 +326,7 @@ const ChapterStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.getChapterInfoList(chapterId);
-    return dto;
+    return dto !== undefined ? dto : { id: '' };
   },
   async getSearchList(searchStr) {
     const {
