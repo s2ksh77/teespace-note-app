@@ -61,11 +61,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       : parent.children[1]?.id;
   };
 
-  /**
-   * 챕터/페이지를 휴지통으로 이동시킨다.
-   * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
-   */
-  const throwComponent = async () => {
+  const throwNoteInRecycleBin = async () => {
     switch (noteType) {
       case 'chapter':
         ChapterStore.setDeleteChapterList([{ id: note.id }]);
@@ -98,29 +94,27 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           return;
         }
 
-        PageStore.setDeletePageList([
-          { note_id: note.id, restoreChapterId: note.parent_notebook },
-        ]);
-        if (PageStore.pageInfo.id === note.id) {
-          if (parent.type === 'shared_page' && parent.children.length === 1) {
-            setSelectableIdOfChapter();
-            ChapterStore.setDeleteChapterList([{ id: parent.id }]);
-            ChapterStore.deleteNoteChapter();
-            return;
-          }
-          setSelectableIdOfPage();
-        }
-
-        if (note.type === 'shared') {
-          NoteStore.setModalInfo('sharedPage', {
-            pageList: [{ note_id: note.id }],
-            selectablePageId:
-              PageStore.pageInfo.id === note.id ? getSelectablePageId() : '',
-          });
+        if (
+          PageStore.pageInfo.id === note.id &&
+          parent.type === 'shared_page' &&
+          parent.children.length === 1
+        ) {
+          setSelectableIdOfChapter();
+          ChapterStore.setDeleteChapterList([{ id: parent.id }]);
+          ChapterStore.deleteNoteChapter();
           return;
         }
 
-        PageStore.throwNotePage();
+        const data = {
+          pageList: [{ note_id: note.id, restoreChapterId: parent.id }],
+          selectablePageId:
+            PageStore.pageInfo.id === note.id ? getSelectablePageId() : '',
+        };
+        if (note.type === 'shared') {
+          NoteStore.setModalInfo('sharedPage', data);
+          return;
+        }
+        PageStore.throwNotePage(data);
         break;
       }
       default:
@@ -206,7 +200,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   };
 
   const deletePagePermanently = () => {
-    if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
     NoteStore.setModalInfo('deletePage', {
       pageList: [{ note_id: note.id }],
       selectablePageId:
@@ -218,7 +211,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     domEvent.stopPropagation();
 
     if (key === 'rename') renameComponent();
-    else if (key === 'throw') throwComponent();
+    else if (key === 'throw') throwNoteInRecycleBin();
     else if (key === 'forward') shareComponent();
     else if (key === 'sendEmail') exportComponent(true);
     else if (key === 'exportPDF') exportComponent(false);
