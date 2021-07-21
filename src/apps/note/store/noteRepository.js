@@ -1,5 +1,4 @@
 import { API } from 'teespace-core';
-import { fixedEncodeURIComponent } from '../components/common/NoteFile';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 
@@ -453,6 +452,7 @@ class NoteRepository {
     file,
     fileName,
     fileExtension,
+    location,
     onUploadProgress,
     cancelSource,
   ) {
@@ -460,11 +460,11 @@ class NoteRepository {
       `/gateway-api/upload?channel=` +
         this.chId +
         '&name=' +
-        fixedEncodeURIComponent(fileName) +
+        fileName +
         '&ext=' +
         fileExtension +
         '&location=' +
-        fixedEncodeURIComponent(fileName + '.' + fileExtension) +
+        location +
         '&dir=' +
         `${PageStore.pageInfo.id}`,
       file,
@@ -607,7 +607,7 @@ class NoteRepository {
   async getDuflicateFile(fileName, fileExt) {
     let query = `/drive-api/files/${PageStore.pageInfo.id}?`;
     query += `type=0`;
-    query += `&name=${fixedEncodeURIComponent(fileName)}`;
+    query += `&name=${fileName}`;
     if (fileExt) query += `&ext=${fileExt}`;
     try {
       return await API.get(query);
