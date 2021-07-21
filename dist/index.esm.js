@@ -4335,15 +4335,17 @@ var PageStore = observable({
       }, _callee11);
     }))();
   },
-  deleteNotePage: function deleteNotePage() {
+  deleteNotePage: function deleteNotePage(_ref2) {
     var _this3 = this;
 
-    this.deletePage(this.deletePageList).then(function () {
+    var pageList = _ref2.pageList,
+        selectablePageId = _ref2.selectablePageId;
+    this.deletePage(pageList).then(function () {
       if (!_this3.isNewPage) {
-        if (_this3.currentPageId === _this3.deletePageList[0].note_id) {
-          _this3.setCurrentPageId(_this3.selectablePageId);
+        if (_this3.currentPageId === pageList[0].note_id) {
+          _this3.setCurrentPageId(selectablePageId);
 
-          _this3.fetchCurrentPageData(_this3.selectablePageId);
+          _this3.fetchCurrentPageData(selectablePageId);
         }
       } else {
         if (NoteStore.layoutState === 'collapse') {
@@ -4801,31 +4803,31 @@ var PageStore = observable({
 
 
               if (!_this12.isNewPage) {
-                _context17.next = 6;
+                _context17.next = 5;
                 break;
               }
 
-              _this12.setDeletePageList([{
-                note_id: _this12.currentPageId
-              }]);
+              _this12.deleteNotePage({
+                pageList: [{
+                  note_id: _this12.currentPageId
+                }]
+              });
 
-              _this12.deleteNotePage();
-
-              _context17.next = 11;
+              _context17.next = 10;
               break;
 
-            case 6:
+            case 5:
               if (!_this12.otherEdit) {
-                _context17.next = 10;
+                _context17.next = 9;
                 break;
               }
 
               return _context17.abrupt("return");
 
-            case 10:
+            case 9:
               _this12.noteNoneEdit(_this12.currentPageId);
 
-            case 11:
+            case 10:
             case "end":
               return _context17.stop();
           }
@@ -4993,7 +4995,7 @@ var PageStore = observable({
    * NoteMeta에서도 쓰이고, context menu에서 복구할 챕터가 없을 때도 필요해서 store로 옮김
    * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
    */
-  restorePageLogic: function restorePageLogic(_ref2) {
+  restorePageLogic: function restorePageLogic(_ref3) {
     var _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
@@ -5002,7 +5004,7 @@ var PageStore = observable({
         while (1) {
           switch (_context19.prev = _context19.next) {
             case 0:
-              chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
+              chapterId = _ref3.chapterId, pageId = _ref3.pageId, toastTxt = _ref3.toastTxt;
               _context19.next = 3;
               return _this16.restorePage(pageId, chapterId);
 
@@ -6448,11 +6450,6 @@ var NoteRepository = /*#__PURE__*/function () {
 
 var NoteRepository$1 = new NoteRepository();
 
-/*
-  target 컴포넌트가 계속 바뀌어서 헷갈림
-  open + target 컴포넌트 이름
-*/
-
 var NoteMeta = {
   // antd modal prop 설정
   openModal: function openModal(type) {
@@ -6489,8 +6486,8 @@ var NoteMeta = {
     }
   },
   // core - Modal prop 설정
-  openMessage: function openMessage(type) {
-    return this.setMessageConfig(this.setMessageInfoConfig(type), this.setEventConfig(type));
+  openMessage: function openMessage(type, data) {
+    return this.setMessageConfig(this.setMessageInfoConfig(type, data), this.setEventConfig(type, data));
   },
   // Modal(core - Message) prop 만들기
   setMessageConfig: function setMessageConfig(dialogType, eventList) {
@@ -6510,7 +6507,7 @@ var NoteMeta = {
       btns: buttonList
     };
   },
-  setEventConfig: function setEventConfig(type) {
+  setEventConfig: function setEventConfig(type, data) {
     var eventList = [];
 
     switch (type) {
@@ -6554,7 +6551,7 @@ var NoteMeta = {
         // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
+          PageStore.deleteNotePage(data); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
 
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
@@ -6742,7 +6739,7 @@ var NoteMeta = {
       case 'emptyRecycleBin':
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage();
+          PageStore.deleteNotePage(data);
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -6801,7 +6798,7 @@ var NoteMeta = {
         return;
     }
   },
-  setMessageInfoConfig: function setMessageInfoConfig(type) {
+  setMessageInfoConfig: function setMessageInfoConfig(type, data) {
     // const userName = '';
     var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
@@ -6930,7 +6927,7 @@ var NoteMeta = {
       case 'emptyRecycleBin':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_08', {
-          num: PageStore.deletePageList.length
+          num: data.pageList.length
         });
         dialogType.subtitle = i18n.t('NOTE_BIN_07');
         dialogType.btns = this.setBtns('delete');
@@ -7230,7 +7227,7 @@ var NoteStore = observable({
     this.showModal = showModal;
   },
   // { type, title, subTitle, buttons }
-  setModalInfo: function setModalInfo(modalType) {
+  setModalInfo: function setModalInfo(modalType, data) {
     switch (modalType) {
       // AntdModal로 연다
       case 'viewInfo':
@@ -7261,7 +7258,7 @@ var NoteStore = observable({
       case 'recover': // 페이지 복구 묻는 팝업창
 
       case 'emptyRecycleBin':
-        this.modalInfo = NoteMeta.openMessage(modalType);
+        this.modalInfo = NoteMeta.openMessage(modalType, data);
         this.setShowModal(true);
         break;
 
