@@ -388,6 +388,7 @@ export const exportDownloadPDF = async (isMailShare, type) => {
   let requests = [];
   if (imgElementList && imgElementList.length > 0) {
     requests = [...imgElementList].map(el => {
+      el.setAttribute('style', 'width: 100%;');
       return preloadingImage(el);
     });
     // setTimeout(async () => {
