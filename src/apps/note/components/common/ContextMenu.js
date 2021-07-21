@@ -55,7 +55,13 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     PageStore.setSelectablePageId(selectablePageId);
   };
 
-  const getSelectablePageId = () => {
+  const getAdjacentChapter = () => {
+    return chapterIdx > 0
+      ? ChapterStore.chapterList[chapterIdx - 1]
+      : ChapterStore.chapterList[1];
+  };
+
+  const getAdjacentPageId = () => {
     return pageIdx > 0
       ? parent.children[pageIdx - 1].id
       : parent.children[1]?.id;
@@ -63,26 +69,34 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
   const throwNoteInRecycleBin = async () => {
     switch (noteType) {
-      case 'chapter':
-        ChapterStore.setDeleteChapterList([{ id: note.id }]);
-        ChapterStore.getChapterChildren(note.id).then(async dto => {
-          const editingList = dto.noteList.filter(
-            page => page.is_edit !== null && page.is_edit !== '',
+      case 'chapter': {
+        const { noteList: pageList } = await ChapterStore.getChapterChildren(
+          note.id,
+        );
+        const editingPageList = pageList.filter(page => page.is_edit);
+
+        if (editingPageList.length === 1) {
+          const { displayName } = await userStore.getProfile(
+            editingPageList[0].is_edit,
           );
-          if (editingList.length === 1) {
-            const { displayName } = await userStore.getProfile(editingList[0].is_edit);
-            PageStore.setEditingUserName(displayName);
-            NoteStore.setModalInfo('confirm');
-          } else if (editingList.length > 1) {
-            PageStore.setEditingUserCount(editingList.length);
-            NoteStore.setModalInfo('chapterconfirm');
-          } else {
-            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
-            if (note.type === 'shared' || note.type === 'shared_page') NoteStore.setModalInfo('sharedChapter');
-            else NoteStore.setModalInfo('chapter');
-          }
-        });
+          PageStore.setEditingUserName(displayName);
+          NoteStore.setModalInfo('confirm');
+        } else if (editingPageList.length > 1) {
+          PageStore.setEditingUserCount(editingPageList.length);
+          NoteStore.setModalInfo('chapterconfirm');
+        } else {
+          NoteStore.setModalInfo(
+            note.type === 'shared' || note.type === 'shared_page'
+              ? 'sharedChapter'
+              : 'chapter',
+            {
+              chapterList: [{ id: note.id }],
+              selectablePageId: getAdjacentChapter()?.children[0]?.id,
+            },
+          );
+        }
         break;
+      }
       case 'page': {
         const { is_edit: editingUserId } = await PageStore.getNoteInfoList(
           note.id,
@@ -99,16 +113,16 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           parent.type === 'shared_page' &&
           parent.children.length === 1
         ) {
-          setSelectableIdOfChapter();
-          ChapterStore.setDeleteChapterList([{ id: parent.id }]);
-          ChapterStore.deleteNoteChapter();
+          ChapterStore.deleteNoteChapter({
+            chapterList: [{ id: parent.id }],
+            selectablePageId: getAdjacentChapter()?.children[0]?.id,
+          });
           return;
         }
 
         const data = {
           pageList: [{ note_id: note.id, restoreChapterId: parent.id }],
-          selectablePageId:
-            PageStore.pageInfo.id === note.id ? getSelectablePageId() : '',
+          selectablePageId: getAdjacentPageId(),
         };
         if (note.type === 'shared') {
           NoteStore.setModalInfo('sharedPage', data);
@@ -202,8 +216,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const deletePagePermanently = () => {
     NoteStore.setModalInfo('deletePage', {
       pageList: [{ note_id: note.id }],
-      selectablePageId:
-        PageStore.currentPageId === note.id ? getSelectablePageId() : '',
+      selectablePageId: getAdjacentPageId(),
     });
   };
 

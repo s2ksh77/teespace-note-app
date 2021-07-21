@@ -73,7 +73,7 @@ const NoteMeta = {
         // 삭제 함수 추가
         eventList.push(function (e) {
           e.stopPropagation();
-          ChapterStore.deleteNoteChapter(type === 'draggedChapter');
+          ChapterStore.deleteNoteChapter(data);
         });
         eventList.push(function (e) {
           e.stopPropagation();

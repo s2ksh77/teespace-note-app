@@ -604,18 +604,14 @@ const ChapterStore = observable({
     );
   },
 
-  async deleteNoteChapter(isDnd) {
-    await this.deleteChapter(this.deleteChapterList);
+  async deleteNoteChapter({ chapterList, selectablePageId, isDnd }) {
+    await this.deleteChapter(chapterList);
     await this.getNoteChapterList();
-    if (
-      this.deleteChapterList.find(
-        chapter => chapter.id === this.currentChapterId,
-      )
-    ) {
+    if (chapterList.find(chapter => chapter.id === this.currentChapterId)) {
       const pageId =
         isDnd || this.chapterList[0]?.type === CHAPTER_TYPE.RECYCLE_BIN
           ? this.chapterList[0]?.children[0]?.id
-          : PageStore.selectablePageId;
+          : selectablePageId;
       await PageStore.fetchCurrentPageData(pageId);
       this.setDragData(
         new Map([
