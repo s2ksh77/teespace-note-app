@@ -58,7 +58,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             NoteStore.setModalInfo('chapterconfirm');
           } else {
             ChapterStore.setDeleteChapterList(deleteChapterList);
-            NoteStore.setModalInfo('draggedChapter');
+            NoteStore.setModalInfo('draggedChapter', {
+              chapterList: deleteChapterList,
+              isDnd: true,
+            });
           }
           break;
         }
@@ -72,7 +75,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             data.map(async note => {
               const dto = await PageStore.getNoteInfoList(note.id);
               if (dto.is_edit) editingNoteList.push(dto);
-              return { note_id: note.id };
+              return {
+                note_id: note.id,
+                restoreChapterId: note.chapterId,
+              };
             }),
           );
 
@@ -85,7 +91,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             NoteStore.setModalInfo('chapterconfirm');
           } else {
             PageStore.setDeletePageList(deletePageList);
-            PageStore.throwNotePage(true);
+            PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
           }
           break;
         }

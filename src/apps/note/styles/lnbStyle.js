@@ -117,19 +117,23 @@ export const PageSearchResult = styled.div`
 `;
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.813rem;
+  height: 1.125rem;
   font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  line-height: 0.9;
 `;
 
 export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
-  color: ${props => props.isContent ? props.theme.TextSub2 : props.theme.TextSub};
+  color: ${props =>
+    props.isContent ? props.theme.TextSub2 : props.theme.TextSub};
   text-overflow: ellipsis;
+  height: 1.125rem;
   overflow: hidden;
   white-space: nowrap;
-  line-height: 1.7;
+  line-height: 0.9;
 `;
 
 export const SearchResultBotttom = styled.div`
