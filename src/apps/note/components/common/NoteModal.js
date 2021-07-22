@@ -35,7 +35,7 @@ const NoteModal = observer(() => {
 
   const handleCancel = function (e) {
     e.stopPropagation();
-    NoteStore.setModalInfo(null); NoteStore.setIsShared(false);
+    NoteStore.setModalInfo(null);
   }
 
   const RenderModalContent = () => {
