@@ -6596,9 +6596,9 @@ var NoteMeta = {
         });
         break;
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'editingPage':
-      case 'chapterconfirm':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'multiFileSomeFail':
@@ -6778,9 +6778,9 @@ var NoteMeta = {
           text: i18n.t('NOTE_CONTEXT_MENU_02')
         }), defaultBtn2];
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'editingPage':
-      case 'chapterconfirm':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'multiFileSomeFail':
@@ -6847,20 +6847,20 @@ var NoteMeta = {
         dialogType.subtitle = i18n.t('NOTE_BIN_07'), dialogType.btns = this.setBtns('delete');
         break;
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
-          userName: PageStore.editingUserName
+          userName: data.name
         });
         dialogType.btns = this.setBtns(type);
         break;
 
-      case 'chapterconfirm':
+      case 'nonDeletableMultiPage':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
-          count: PageStore.editingUserCount
+          count: data.count
         });
         dialogType.btns = this.setBtns(type);
         break;
@@ -7238,8 +7238,8 @@ var NoteStore = observable({
         this.setShowModal(true);
         break;
 
-      case 'chapterconfirm':
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'chapter':
       case 'draggedChapter':
       case 'page':
