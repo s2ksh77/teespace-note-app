@@ -51,20 +51,16 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const throwNoteInRecycleBin = async () => {
     switch (noteType) {
       case 'chapter': {
-        const { noteList: pageList } = await ChapterStore.getChapterChildren(
-          note.id,
-        );
-        const editingPageList = pageList.filter(page => page.is_edit);
+        const { noteList } = await ChapterStore.getChapterChildren(note.id);
+        const editingPageList = noteList.filter(page => page.is_edit);
 
         if (editingPageList.length === 1) {
           const { displayName } = await userStore.getProfile(
             editingPageList[0].is_edit,
           );
-          PageStore.setEditingUserName(displayName);
-          NoteStore.setModalInfo('confirm');
+          NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
         } else if (editingPageList.length > 1) {
-          PageStore.setEditingUserCount(editingPageList.length);
-          NoteStore.setModalInfo('chapterconfirm');
+          NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingPageList.length });
         } else {
           NoteStore.setModalInfo(
             note.type === 'shared' || note.type === 'shared_page'
@@ -84,8 +80,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         );
         if (editingUserId) {
           const { displayName } = await userStore.getProfile(editingUserId);
-          PageStore.setEditingUserName(displayName);
-          NoteStore.setModalInfo('confirm');
+          NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
           return;
         }
 

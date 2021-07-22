@@ -188,8 +188,8 @@ const NoteStore = observable({
         this.modalInfo = NoteMeta.openModal(modalType);
         this.setShowModal(true);
         break;
-      case 'chapterconfirm':
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'chapter':
       case 'draggedChapter':
       case 'page':
