@@ -1261,7 +1261,9 @@ var ChapterStore = observable({
             case 2:
               _yield$NoteRepository10 = _context10.sent;
               dto = _yield$NoteRepository10.data.dto;
-              return _context10.abrupt("return", dto);
+              return _context10.abrupt("return", dto !== undefined ? dto : {
+                id: ''
+              });
 
             case 5:
             case "end":
@@ -1660,36 +1662,37 @@ var ChapterStore = observable({
       }, _callee15);
     }))();
   },
-  deleteNoteChapter: function deleteNoteChapter(isDnd) {
+  deleteNoteChapter: function deleteNoteChapter(_ref2) {
     var _this11 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      var _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
+      var chapterList, selectablePageId, isDnd, _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
 
       return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
           switch (_context16.prev = _context16.next) {
             case 0:
-              _context16.next = 2;
-              return _this11.deleteChapter(_this11.deleteChapterList);
+              chapterList = _ref2.chapterList, selectablePageId = _ref2.selectablePageId, isDnd = _ref2.isDnd;
+              _context16.next = 3;
+              return _this11.deleteChapter(chapterList);
 
-            case 2:
-              _context16.next = 4;
+            case 3:
+              _context16.next = 5;
               return _this11.getNoteChapterList();
 
-            case 4:
-              if (!_this11.deleteChapterList.find(function (chapter) {
+            case 5:
+              if (!chapterList.find(function (chapter) {
                 return chapter.id === _this11.currentChapterId;
               })) {
-                _context16.next = 12;
+                _context16.next = 13;
                 break;
               }
 
-              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : PageStore.selectablePageId;
-              _context16.next = 8;
+              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : selectablePageId;
+              _context16.next = 9;
               return PageStore.fetchCurrentPageData(pageId);
 
-            case 8:
+            case 9:
               _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
 
               PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
@@ -1697,7 +1700,7 @@ var ChapterStore = observable({
 
               _this11.setIsCtrlKeyDown(false);
 
-            case 12:
+            case 13:
               NoteStore.setIsDragging(false);
 
               _this11.setDeleteChapterList([]);
@@ -1706,7 +1709,7 @@ var ChapterStore = observable({
               NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
               NoteStore.setIsVisibleToast(true);
 
-            case 17:
+            case 18:
             case "end":
               return _context16.stop();
           }
@@ -4277,39 +4280,40 @@ var PageStore = observable({
    * It throw away pages in recycle bin.
    * NOTE: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
-  throwNotePage: function throwNotePage(isDnd) {
+  throwNotePage: function throwNotePage(_ref2) {
     var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      var _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
+      var pageList, selectablePageId, isDnd, _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
 
       return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
           switch (_context11.prev = _context11.next) {
             case 0:
-              _context11.next = 2;
-              return _this2.throwPage(_this2.deletePageList);
+              pageList = _ref2.pageList, selectablePageId = _ref2.selectablePageId, isDnd = _ref2.isDnd;
+              _context11.next = 3;
+              return _this2.throwPage(pageList);
 
-            case 2:
-              _context11.next = 4;
+            case 3:
+              _context11.next = 5;
               return ChapterStore.getNoteChapterList();
 
-            case 4:
-              if (!_this2.deletePageList.find(function (page) {
+            case 5:
+              if (!pageList.find(function (page) {
                 return page.note_id === _this2.currentPageId;
               })) {
-                _context11.next = 13;
+                _context11.next = 14;
                 break;
               }
 
-              pageId = isDnd ? (_ChapterStore$chapter = ChapterStore.chapterList[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : (_ChapterStore$chapter2 = _ChapterStore$chapter.children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.id : _this2.selectablePageId;
+              pageId = isDnd ? (_ChapterStore$chapter = ChapterStore.chapterList[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : (_ChapterStore$chapter2 = _ChapterStore$chapter.children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.id : selectablePageId;
 
               _this2.setCurrentPageId(pageId);
 
-              _context11.next = 9;
+              _context11.next = 10;
               return _this2.fetchCurrentPageData(pageId);
 
-            case 9:
+            case 10:
               ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
 
               _this2.setDragData(new Map([[_this2.currentPageId, _this2.createDragData(_this2.currentPageId, ChapterStore.currentChapterId)]]));
@@ -4318,16 +4322,16 @@ var PageStore = observable({
 
               _this2.setIsCtrlKeyDown(false);
 
-            case 13:
+            case 14:
               NoteStore.setIsDragging(false);
-              num = _this2.deletePageList.length;
+              num = pageList.length;
               NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
                 num: num
               }) : i18n.t('NOTE_BIN_02'));
               NoteStore.setIsVisibleToast(true);
               NoteStore.setShowModal(false);
 
-            case 18:
+            case 19:
             case "end":
               return _context11.stop();
           }
@@ -4335,11 +4339,11 @@ var PageStore = observable({
       }, _callee11);
     }))();
   },
-  deleteNotePage: function deleteNotePage(_ref2) {
+  deleteNotePage: function deleteNotePage(_ref3) {
     var _this3 = this;
 
-    var pageList = _ref2.pageList,
-        selectablePageId = _ref2.selectablePageId;
+    var pageList = _ref3.pageList,
+        selectablePageId = _ref3.selectablePageId;
     this.deletePage(pageList).then(function () {
       if (!_this3.isNewPage) {
         if (_this3.currentPageId === pageList[0].note_id) {
@@ -4995,7 +4999,7 @@ var PageStore = observable({
    * NoteMeta에서도 쓰이고, context menu에서 복구할 챕터가 없을 때도 필요해서 store로 옮김
    * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
    */
-  restorePageLogic: function restorePageLogic(_ref3) {
+  restorePageLogic: function restorePageLogic(_ref4) {
     var _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
@@ -5004,7 +5008,7 @@ var PageStore = observable({
         while (1) {
           switch (_context19.prev = _context19.next) {
             case 0:
-              chapterId = _ref3.chapterId, pageId = _ref3.pageId, toastTxt = _ref3.toastTxt;
+              chapterId = _ref4.chapterId, pageId = _ref4.pageId, toastTxt = _ref4.toastTxt;
               _context19.next = 3;
               return _this16.restorePage(pageId, chapterId);
 
@@ -6517,7 +6521,7 @@ var NoteMeta = {
         // 삭제 함수 추가
         eventList.push(function (e) {
           e.stopPropagation();
-          ChapterStore.deleteNoteChapter(type === 'draggedChapter');
+          ChapterStore.deleteNoteChapter(data);
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -6526,25 +6530,22 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
-
-      case 'page':
-        // 삭제 함수 추가
-        eventList.push(function (e) {
-          e.stopPropagation();
-
-          if (PageStore.lastSharedPageParentId) {
-            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-            PageStore.setLastSharedPageParentId('');
-            ChapterStore.deleteNoteChapter();
-          } else PageStore.throwNotePage();
-
-          if (EditorStore.fileList) EditorStore.deleteAllFile();
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore.setModalInfo(null);
-        });
-        break;
+      // case 'page':
+      //   // 삭제 함수 추가
+      //   eventList.push(function (e) {
+      //     e.stopPropagation();
+      //     if (PageStore.lastSharedPageParentId) {
+      //       ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
+      //       PageStore.setLastSharedPageParentId('');
+      //       ChapterStore.deleteNoteChapter();
+      //     } else PageStore.throwNotePage({});
+      //     if (EditorStore.fileList) EditorStore.deleteAllFile();
+      //   });
+      //   eventList.push(function (e) {
+      //     e.stopPropagation();
+      //     NoteStore.setModalInfo(null);
+      //   });
+      //   break;
 
       case 'sharedPage':
       case 'deletePage':
