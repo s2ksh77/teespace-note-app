@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import {
@@ -79,6 +79,12 @@ const LNBSearchResult = () => {
     });
   };
 
+  useEffect(() => {
+    new Mark(document.querySelectorAll('.lnb-result-context')).mark(
+      ChapterStore.searchStr,
+    );
+  }, []);
+
   return useObserver(() => (
     <>
       {ChapterStore.searchResult?.['chapter'] === null &&
@@ -148,7 +154,9 @@ const LNBSearchResult = () => {
                 <PageSearchResultPageTitle>
                   {page.note_title}
                 </PageSearchResultPageTitle>
-                <SubText isContent>{page.contentPreview}</SubText>
+                <SubText className="lnb-result-context" isContent>
+                  {page.contentPreview}
+                </SubText>
                 <SearchResultBotttom
                   isLast={
                     index === ChapterStore.searchResult?.['page'].length - 1
