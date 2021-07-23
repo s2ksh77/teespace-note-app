@@ -565,7 +565,7 @@ const ChapterStore = observable({
     );
     await this.getNoteChapterList();
     // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-    PageStore.fetchCurrentPageData(notbookList.children[0].id);
+    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
     this.setDragData(
       new Map([
