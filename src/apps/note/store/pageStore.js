@@ -30,8 +30,6 @@ const PageStore = observable({
   selectablePageId: '',
   lastSharedPageParentId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
   isMovingPage: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
@@ -162,19 +160,6 @@ const PageStore = observable({
   setRenameId(pageId) {
     this.renameId = pageId;
   },
-  getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText(pageText) {
-    this.renamePrevText = pageText;
-  },
-  getRenameText() {
-    return this.renameText;
-  },
-  setRenameText(pageText) {
-    if (pageText.length > 256) pageText = pageText.substring(0, 256);
-    this.renameText = pageText;
-  },
 
   getIsMovingPage() {
     return this.isMovingPage;
@@ -271,10 +256,10 @@ const PageStore = observable({
     return dto;
   },
 
-  async renamePage(pageId, pageTitle, chapterId, callback) {
+  async renamePage(id, title, chapterId, callback) {
     const {
       data: { dto: returnData },
-    } = await NoteRepository.renamePage(pageId, pageTitle, chapterId);
+    } = await NoteRepository.renamePage(id, title, chapterId);
     return returnData;
   },
 
@@ -447,16 +432,11 @@ const PageStore = observable({
     });
   },
 
-  renameNotePage(chapterId) {
-    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(
-      dto => {
-        if (this.dragData.get(dto.note_id)) {
-          this.dragData.get(dto.note_id).item.text = dto.note_title;
-        }
-        this.fetchNoteInfoList(dto.note_id);
-        ChapterStore.getNoteChapterList();
-      },
-    );
+  async renameNotePage({ id, title, chapterId }) {
+    const dto = await this.renamePage(id, title.trim(), chapterId);
+    if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.note_title;
+    this.fetchNoteInfoList(id);
+    ChapterStore.getNoteChapterList();
   },
 
   createDragData(pageId, chapterId) {

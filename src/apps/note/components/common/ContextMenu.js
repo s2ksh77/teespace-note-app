@@ -24,16 +24,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     page: PageStore,
   };
 
-  /**
-   * 챕터/페이지의 이름을 변경한다.
-   */
-  const renameComponent = () => {
+  const renameNote = () => {
     const targetStore = store[noteType];
-    if (!targetStore) return;
-
-    targetStore.setRenameId(note.id);
-    targetStore.setRenamePrevText(note.text);
-    targetStore.setRenameText(note.text);
+    targetStore?.setRenameId(note.id);
   };
 
   const getAdjacentChapter = () => {
@@ -198,7 +191,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const onClickContextMenu = ({ key, domEvent }) => {
     domEvent.stopPropagation();
 
-    if (key === 'rename') renameComponent();
+    if (key === 'rename') renameNote();
     else if (key === 'throw') throwNoteInRecycleBin();
     else if (key === 'forward') shareComponent();
     else if (key === 'sendEmail') exportComponent(true);

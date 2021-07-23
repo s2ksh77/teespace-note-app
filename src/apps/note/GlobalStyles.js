@@ -592,6 +592,11 @@ export const GlobalStyle = createGlobalStyle`
   .tox .tox-pop.tox-pop--right::before {
     border-color: transparent transparent transparent ${props => props.theme.LineOut} !important;
   }
+
+  mark {
+    padding: 0;
+    background-color: #FFE362;
+  }
 `;
 
 export const LNB = styled.div`

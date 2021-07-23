@@ -615,6 +615,15 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+  async getRecycleBinAllFile() {
+    try {
+      return await API.get(
+        `note-api/noteRecycleBinFile?action=List&note_channel_id=${this.chId}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
