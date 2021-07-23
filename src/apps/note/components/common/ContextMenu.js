@@ -149,7 +149,6 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const shareComponent = () => {
     NoteStore.setShareNoteType(noteType);
     NoteStore.setShareContent(note);
-    NoteStore.setIsShared(true);
     NoteStore.setModalInfo('forward');
   };
 

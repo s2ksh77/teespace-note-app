@@ -31,7 +31,6 @@ const ForwardModal = ({ handleCancel }) => {
     e.stopPropagation();
     if (shareArraysCnt === 0) return;
     NoteStore.shareNote();
-    NoteStore.setIsShared(false);
     NoteStore.setModalInfo(null);
   }
 

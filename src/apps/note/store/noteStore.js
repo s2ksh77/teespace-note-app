@@ -32,7 +32,6 @@ const NoteStore = observable({
   draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
-  isShared: false,
   shareNoteType: '',
   shareContent: '',
   shareArrays: {}, // { userArray, roomArray }
@@ -147,9 +146,6 @@ const NoteStore = observable({
   },
   toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
-  },
-  setIsShared(flag) {
-    this.isShared = flag;
   },
   setShareNoteType(noteType) {
     this.shareNoteType = noteType;
