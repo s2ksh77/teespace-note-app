@@ -11,12 +11,6 @@ const ChapterStore = observable({
   chapterColor: '',
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: {
-    // web에서 안 씀
-    roomChapterList: [],
-    sharedPageList: [],
-    sharedChapterList: [],
-  },
   currentChapterId: '',
   chapterNewTitle: '',
   isNewChapterColor: '',
@@ -258,12 +252,6 @@ const ChapterStore = observable({
   },
   setChapterList(chapterList) {
     this.chapterList = chapterList;
-  },
-  getSortedChapterList() {
-    return this.sortedChapterList;
-  },
-  setSortedChapterList(obj) {
-    this.sortedChapterList = obj;
   },
 
   async createChapter(chapterTitle, chapterColor) {
@@ -564,7 +552,6 @@ const ChapterStore = observable({
       this.isNewChapterColor,
     );
     await this.getNoteChapterList();
-    // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
     await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
     this.setDragData(

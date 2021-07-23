@@ -82,27 +82,11 @@ const NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
-      // case 'page':
-      //   // 삭제 함수 추가
-      //   eventList.push(function (e) {
-      //     e.stopPropagation();
-      //     if (PageStore.lastSharedPageParentId) {
-      //       ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-      //       PageStore.setLastSharedPageParentId('');
-      //       ChapterStore.deleteNoteChapter();
-      //     } else PageStore.throwNotePage({});
-      //     if (EditorStore.fileList) EditorStore.deleteAllFile();
-      //   });
-      //   eventList.push(function (e) {
-      //     e.stopPropagation();
-      //     NoteStore.setModalInfo(null);
-      //   });
-      //   break;
       case 'sharedPage':
       case 'deletePage': // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage(data); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
+          PageStore.deleteNotePage(data);
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
