@@ -7098,7 +7098,6 @@ var NoteStore = mobx.observable({
   draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
-  isShared: false,
   shareNoteType: '',
   shareContent: '',
   shareArrays: {},
@@ -7229,9 +7228,6 @@ var NoteStore = mobx.observable({
   },
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
-  },
-  setIsShared: function setIsShared(flag) {
-    this.isShared = flag;
   },
   setShareNoteType: function setShareNoteType(noteType) {
     this.shareNoteType = noteType;
