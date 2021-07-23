@@ -32,7 +32,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const chapterContainerRef = useRef(null);
   const [isFolded, setIsFolded] = useState(!!chapter.isFolded);
 
-  const { id, text: title, color } = chapter;
+  const { id, color, children, type, text: title } = chapter;
   const [renameTitle, setRenameTitle] = useState(title);
 
   const chapterDragData = useMemo(
@@ -73,12 +73,12 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   // 챕터를 drag했을 때
   const [, drag, preview] = useDrag({
     item: {
-      id: chapter.id,
+      id,
       type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
     },
     begin: monitor => {
-      if (!ChapterStore.dragData.get(chapter.id)) {
-        ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+      if (!ChapterStore.dragData.get(id)) {
+        ChapterStore.setDragData(new Map([[id, chapterDragData]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
@@ -125,7 +125,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const [, dropChapter] = useDrop({
     accept: DRAG_TYPE.PAGE,
     drop: () => {
-      PageStore.moveNotePage(chapter.id, index, 0);
+      PageStore.moveNotePage(id, index, 0);
     },
     hover() {
       if (PageStore.dragEnterPageIdx !== 0) PageStore.setDragEnterPageIdx(0);
@@ -147,17 +147,16 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       if (PageStore.isRecycleBin && e.ctrlKey) return;
 
       if (e.ctrlKey) {
-        if (ChapterStore.dragData.get(chapter.id))
-          ChapterStore.deleteDragData(chapter.id);
-        else ChapterStore.appendDragData(chapter.id, chapterDragData);
+        if (ChapterStore.dragData.get(id)) ChapterStore.deleteDragData(id);
+        else ChapterStore.appendDragData(id, chapterDragData);
         ChapterStore.setIsCtrlKeyDown(true);
         return;
       }
 
-      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+      ChapterStore.setDragData(new Map([[id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
 
-      const pageId = chapter.children.length > 0 ? chapter.children[0].id : '';
+      const pageId = children.length > 0 ? children[0].id : '';
       PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
       NoteStore.setShowPage(true);
       if (pageId) {
@@ -166,16 +165,16 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
             [
               pageId,
               {
-                item: chapter.children[0],
+                item: children[0],
                 pageIdx: 0,
-                chapterId: chapter.id,
+                chapterId: id,
                 chapterIdx: index,
               },
             ],
           ]),
         );
       } else {
-        ChapterStore.setCurrentChapterInfo(chapter.id, false);
+        ChapterStore.setCurrentChapterInfo(id, false);
         PageStore.clearDragData();
       }
       PageStore.setIsCtrlKeyDown(false);
@@ -184,7 +183,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   );
 
   const ChapterIcon = () => {
-    switch (chapter.type) {
+    switch (type) {
       case CHAPTER_TYPE.SHARED_PAGE:
         return <SharedPageIcon color={themeContext.SubStateVivid} />;
       case CHAPTER_TYPE.SHARED:
@@ -242,13 +241,13 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
           ? 'borderBottomLine'
           : '')
       }
-      id={chapter.id}
-      key={chapter.id}
+      id={id}
+      key={id}
       order={flexOrder}
     >
       <ChapterCover
         className={`chapter-div${
-          ChapterStore.dragData.get(chapter.id) ? ' selectedMenu' : ''
+          ChapterStore.dragData.get(id) ? ' selectedMenu' : ''
         }`}
         ref={
           authStore.hasPermission('noteShareChapter', 'C') &&
@@ -285,7 +284,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
         )}
       </ChapterCover>
       <PageList
-        showNewPage={!isShared && chapter.type !== CHAPTER_TYPE.RECYCLE_BIN}
+        showNewPage={!isShared && type !== CHAPTER_TYPE.RECYCLE_BIN}
         chapter={chapter}
         chapterIdx={index}
       />
