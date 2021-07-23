@@ -45,8 +45,6 @@ const ChapterStore = observable({
   deleteChapterId: '',
   selectableChapterId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
   isMovingChapter: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
@@ -94,19 +92,6 @@ const ChapterStore = observable({
   },
   setRenameId(chapterId) {
     this.renameId = chapterId;
-  },
-  getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText(chapterText) {
-    this.renamePrevText = chapterText;
-  },
-  getRenameText() {
-    return this.renameText;
-  },
-  setRenameText(chapterText) {
-    if (chapterText.length > 256) chapterText = chapterText.substring(0, 256);
-    this.renameText = chapterText;
   },
   getIsMovingChapter() {
     return this.isMovingChapter;
@@ -300,12 +285,8 @@ const ChapterStore = observable({
     const { dto } = await NoteRepository.deleteChapter(chapterList);
     return dto;
   },
-  async renameChapter(renameId, renameText, color) {
-    const { dto } = await NoteRepository.renameChapter(
-      renameId,
-      renameText,
-      color,
-    );
+  async renameChapter(id, title, color) {
+    const { dto } = await NoteRepository.renameChapter(id, title, color);
     return dto;
   },
   async updateChapterColor(chapterId) {
@@ -640,14 +621,10 @@ const ChapterStore = observable({
     NoteStore.setIsVisibleToast(true);
   },
 
-  renameNoteChapter(color) {
-    this.renameChapter(this.renameId, this.renameText.trim(), color).then(
-      dto => {
-        if (this.dragData.get(dto.id))
-          this.dragData.get(dto.id).item.text = dto.text;
-        this.getNoteChapterList();
-      },
-    );
+  async renameNoteChapter({ id, title, color }) {
+    const dto = await this.renameChapter(id, title.trim(), color);
+    if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.text;
+    this.getNoteChapterList();
   },
 
   createDragData(chapterId) {

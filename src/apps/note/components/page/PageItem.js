@@ -27,6 +27,9 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
 
+  const { id, text: title } = page;
+  const [renameTitle, setRenameTitle] = useState(title);
+
   const chapterDragData = {
     item: chapter,
     chapterIdx,
@@ -126,11 +129,19 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
     [page],
   );
 
-  const handlePageName = e => PageStore.setRenameText(checkMaxLength(e));
+  const handleTitleChange = e => {
+    setRenameTitle(checkMaxLength(e));
+  };
 
-  const handlePageTextInput = isEscape => {
-    if (!isEscape) {
-      PageStore.renameNotePage(chapter.id);
+  const handleRename = isEscape => {
+    if (isEscape || !renameTitle) {
+      setRenameTitle(title);
+    } else if (renameTitle !== title) {
+      PageStore.renameNotePage({
+        id,
+        title: renameTitle,
+        chapterId: chapter.id,
+      });
     }
 
     PageStore.setRenameId('');
@@ -167,14 +178,14 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       {PageStore.getRenameId() === page.id ? (
         <PageTextInput
           maxLength="200"
-          placeholder={PageStore.renamePrevText}
-          value={PageStore.renameText}
+          placeholder={title}
+          value={renameTitle}
           onClick={e => e.stopPropagation()}
-          onChange={handlePageName}
-          onBlur={handlePageTextInput.bind(null, false)}
+          onChange={handleTitleChange}
+          onBlur={handleRename.bind(null, false)}
           onKeyDown={e => {
-            if (e.key === 'Enter') handlePageTextInput(false);
-            else if (e.key === 'Escape') handlePageTextInput(true);
+            if (e.key === 'Enter') handleRename(false);
+            else if (e.key === 'Escape') handleRename(true);
           }}
           onFocus={handleFocus}
           autoFocus

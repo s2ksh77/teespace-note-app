@@ -30,11 +30,11 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const { authStore } = useCoreStores();
   const themeContext = useContext(ThemeContext);
   const chapterContainerRef = useRef(null);
-  const [isFolded, setIsFolded] = useState(
-    chapter.isFolded ? chapter.isFolded : false,
-  );
+  const [isFolded, setIsFolded] = useState(!!chapter.isFolded);
 
   const { id, text: title, color } = chapter;
+  const [renameTitle, setRenameTitle] = useState(title);
+
   const chapterDragData = useMemo(
     () => ({
       item: chapter,
@@ -51,8 +51,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     },
     hover(item, monitor) {
       if (!chapterContainerRef.current) return;
-      const hoverBoundingRect =
-        chapterContainerRef.current.getBoundingClientRect();
+      const hoverBoundingRect = chapterContainerRef.current.getBoundingClientRect();
       const hoverMiddleY = hoverBoundingRect.height / 2;
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
@@ -197,11 +196,15 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     }
   };
 
-  const handleTitleChange = e => ChapterStore.setRenameText(checkMaxLength(e));
+  const handleTitleChange = e => {
+    setRenameTitle(checkMaxLength(e));
+  };
 
   const handleTitleUpdate = isEscape => () => {
-    if (!isEscape && ChapterStore.renameText !== title) {
-      ChapterStore.renameNoteChapter(color);
+    if (isEscape || !renameTitle) {
+      setRenameTitle(title);
+    } else if (renameTitle !== title) {
+      ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
     }
 
     ChapterStore.setRenameId('');
@@ -260,8 +263,8 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
           <ChapterTextInput
             paddingLeft={isShared ? '2.63rem' : '1.69rem'}
             maxLength="200"
-            placeholder={ChapterStore.renamePrevText}
-            value={ChapterStore.renameText}
+            placeholder={title}
+            value={renameTitle}
             onClick={e => e.stopPropagation()}
             onChange={handleTitleChange}
             onBlur={handleTitleUpdate(false)}
