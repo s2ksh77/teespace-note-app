@@ -326,7 +326,10 @@ const TagStore = observable({
         ? this.getSearchTagObjs(tagList, this.searchStr)
         : this.getTagObjs(tagList);
       if (Object.keys(tagObjs).length > 0) {
-        categorizedTagObjs[tagKeyCategory][upperCaseKey] = tagObjs;
+        categorizedTagObjs[tagKeyCategory][upperCaseKey] = {
+          ...categorizedTagObjs[tagKeyCategory][upperCaseKey],
+          ...tagObjs,
+        };
       }
     });
 
