@@ -772,12 +772,6 @@ var ChapterStore = observable({
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: {
-    // web에서 안 씀
-    roomChapterList: [],
-    sharedPageList: [],
-    sharedChapterList: []
-  },
   currentChapterId: '',
   chapterNewTitle: '',
   isNewChapterColor: '',
@@ -1077,12 +1071,6 @@ var ChapterStore = observable({
   },
   setChapterList: function setChapterList(chapterList) {
     this.chapterList = chapterList;
-  },
-  getSortedChapterList: function getSortedChapterList() {
-    return this.sortedChapterList;
-  },
-  setSortedChapterList: function setSortedChapterList(obj) {
-    this.sortedChapterList = obj;
   },
   createChapter: function createChapter(chapterTitle, chapterColor) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
@@ -1630,16 +1618,17 @@ var ChapterStore = observable({
               return _this10.getNoteChapterList();
 
             case 7:
-              // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-              PageStore.fetchCurrentPageData(notbookList.children[0].id);
+              _context15.next = 9;
+              return PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
+            case 9:
               _this10.setChapterTempUl(false);
 
               _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
 
               PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
 
-            case 11:
+            case 12:
             case "end":
               return _context15.stop();
           }
@@ -3783,20 +3772,12 @@ var PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
-  createParentIdx: '',
-  deletePageList: [],
-  selectablePageId: '',
-  lastSharedPageParentId: '',
   renameId: '',
-  isMovingPage: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
-  movePageId: '',
-  // 이동을 원하는 page의 id
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
-  deletedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -3891,41 +3872,11 @@ var PageStore = observable({
   setCreatePageParent: function setCreatePageParent(chapterId) {
     this.createParent = chapterId;
   },
-  getCreatePageParentIdx: function getCreatePageParentIdx() {
-    return this.createParentIdx;
-  },
-  setCreatePageParentIdx: function setCreatePageParentIdx(chapterIdx) {
-    this.createParentIdx = chapterIdx;
-  },
-  getDeletePageList: function getDeletePageList() {
-    return this.deletePageList;
-  },
-  setDeletePageList: function setDeletePageList(deletePageList) {
-    this.deletePageList = deletePageList;
-  },
-  getSelectablePageId: function getSelectablePageId() {
-    return this.selectablePageId;
-  },
-  setSelectablePageId: function setSelectablePageId(pageId) {
-    this.selectablePageId = pageId;
-  },
-  getLastSharedPageParentId: function getLastSharedPageParentId() {
-    return this.lastSharedPageParentId;
-  },
-  setLastSharedPageParentId: function setLastSharedPageParentId(chapterId) {
-    this.lastSharedPageParentId = chapterId;
-  },
   getRenameId: function getRenameId() {
     return this.renameId;
   },
   setRenameId: function setRenameId(pageId) {
     this.renameId = pageId;
-  },
-  getIsMovingPage: function getIsMovingPage() {
-    return this.isMovingPage;
-  },
-  setIsMovingPage: function setIsMovingPage(isMoving) {
-    this.isMovingPage = isMoving;
   },
   getDragData: function getDragData() {
     return this.dragData;
@@ -3944,12 +3895,6 @@ var PageStore = observable({
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
-  },
-  getMovePageId: function getMovePageId() {
-    return this.movePageId;
-  },
-  setMovePageId: function setMovePageId(pageId) {
-    this.movePageId = pageId;
   },
   getDragEnterPageIdx: function getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
@@ -6591,30 +6536,13 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
-      // case 'page':
-      //   // 삭제 함수 추가
-      //   eventList.push(function (e) {
-      //     e.stopPropagation();
-      //     if (PageStore.lastSharedPageParentId) {
-      //       ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-      //       PageStore.setLastSharedPageParentId('');
-      //       ChapterStore.deleteNoteChapter();
-      //     } else PageStore.throwNotePage({});
-      //     if (EditorStore.fileList) EditorStore.deleteAllFile();
-      //   });
-      //   eventList.push(function (e) {
-      //     e.stopPropagation();
-      //     NoteStore.setModalInfo(null);
-      //   });
-      //   break;
 
       case 'sharedPage':
       case 'deletePage':
         // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage(data); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
-
+          PageStore.deleteNotePage(data);
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
