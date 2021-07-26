@@ -90,7 +90,6 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             PageStore.setEditingUserCount(editingNoteList.length);
             NoteStore.setModalInfo('nonDeletableMultiPage');
           } else {
-            PageStore.setDeletePageList(deletePageList);
             PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
           }
           break;

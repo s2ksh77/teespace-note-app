@@ -28,7 +28,6 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
 
   const handleNewBtnClick = targetId => () => {
     PageStore.setCreatePageParent(targetId);
-    PageStore.setCreatePageParentIdx(chapterIdx);
     PageStore.createNotePage();
     logEvent('note', 'clickNewPageBtn');
   };

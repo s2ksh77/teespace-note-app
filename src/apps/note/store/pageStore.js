@@ -25,19 +25,12 @@ const PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
-  createParentIdx: '',
-  deletePageList: [],
-  selectablePageId: '',
-  lastSharedPageParentId: '',
   renameId: '',
-  isMovingPage: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
-  movePageId: '', // 이동을 원하는 page의 id
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
-  deletedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -128,31 +121,6 @@ const PageStore = observable({
   setCreatePageParent(chapterId) {
     this.createParent = chapterId;
   },
-  getCreatePageParentIdx() {
-    return this.createParentIdx;
-  },
-  setCreatePageParentIdx(chapterIdx) {
-    this.createParentIdx = chapterIdx;
-  },
-
-  getDeletePageList() {
-    return this.deletePageList;
-  },
-  setDeletePageList(deletePageList) {
-    this.deletePageList = deletePageList;
-  },
-  getSelectablePageId() {
-    return this.selectablePageId;
-  },
-  setSelectablePageId(pageId) {
-    this.selectablePageId = pageId;
-  },
-  getLastSharedPageParentId() {
-    return this.lastSharedPageParentId;
-  },
-  setLastSharedPageParentId(chapterId) {
-    this.lastSharedPageParentId = chapterId;
-  },
 
   getRenameId() {
     return this.renameId;
@@ -161,12 +129,6 @@ const PageStore = observable({
     this.renameId = pageId;
   },
 
-  getIsMovingPage() {
-    return this.isMovingPage;
-  },
-  setIsMovingPage(isMoving) {
-    this.isMovingPage = isMoving;
-  },
   getDragData() {
     return this.dragData;
   },
@@ -184,12 +146,6 @@ const PageStore = observable({
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
-  },
-  getMovePageId() {
-    return this.movePageId;
-  },
-  setMovePageId(pageId) {
-    this.movePageId = pageId;
   },
   getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
