@@ -197,9 +197,11 @@ const NoteMeta = {
         });
         break;
       case 'emptyRecycleBin':
-        eventList.push(function (e) {
+        eventList.push(async function (e) {
           e.stopPropagation();
+          const { fileList: target } = await EditorStore.getRecycleBinAllFile();
           PageStore.deleteNotePage(data);
+          if (target) EditorStore.deleteAllFile(target);
         });
         eventList.push(function (e) {
           e.stopPropagation();
