@@ -27,6 +27,9 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
 
+  const { id, type, text: title } = page;
+  const [renameTitle, setRenameTitle] = useState(title);
+
   const chapterDragData = {
     item: chapter,
     chapterIdx,
@@ -40,12 +43,12 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const [, drag, preview] = useDrag({
     item: {
-      id: page.id,
-      type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+      id,
+      type: type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
     },
     begin: monitor => {
-      if (!PageStore.dragData.get(page.id)) {
-        PageStore.setDragData(new Map([[page.id, pageDragData]]));
+      if (!PageStore.dragData.get(id)) {
+        PageStore.setDragData(new Map([[id, pageDragData]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
@@ -57,7 +60,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       NoteStore.setIsDragging(true);
 
       return {
-        type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+        type: type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
         data: [...PageStore.dragData].map(keyValue => {
           const { item } = keyValue[1];
           return {
@@ -65,6 +68,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
             text: item.text,
             date: item.modified_date,
             type: item.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+            chapterId: item.parent_notebook,
           };
         }),
       };
@@ -106,30 +110,37 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const handlePageSelect = useCallback(
     e => {
-      if ((page.type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey)
-        return;
+      if ((type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey) return;
 
       if (e.ctrlKey) {
-        if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);
-        else PageStore.appendDragData(page.id, pageDragData);
+        if (PageStore.dragData.get(id)) PageStore.deleteDragData(id);
+        else PageStore.appendDragData(id, pageDragData);
         PageStore.setIsCtrlKeyDown(true);
         return;
       }
 
       ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
-      PageStore.setDragData(new Map([[page.id, pageDragData]]));
+      PageStore.setDragData(new Map([[id, pageDragData]]));
       PageStore.setIsCtrlKeyDown(false);
-      onClick(page.id);
+      onClick(id);
     },
     [page],
   );
 
-  const handlePageName = e => PageStore.setRenameText(checkMaxLength(e));
+  const handleTitleChange = e => {
+    setRenameTitle(checkMaxLength(e));
+  };
 
-  const handlePageTextInput = isEscape => {
-    if (!isEscape) {
-      PageStore.renameNotePage(chapter.id);
+  const handleRename = isEscape => {
+    if (isEscape || !renameTitle) {
+      setRenameTitle(title);
+    } else if (renameTitle !== title) {
+      PageStore.renameNotePage({
+        id,
+        title: renameTitle,
+        chapterId: chapter.id,
+      });
     }
 
     PageStore.setRenameId('');
@@ -152,28 +163,28 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       ref={
         authStore.hasPermission('noteSharePage', 'C') &&
         !PageStore.renameId &&
-        page.type !== 'recycle'
-          ? page.type === 'note'
+        type !== 'recycle'
+          ? type === 'note'
             ? node => drag(drop(node))
             : drag
           : null
       }
-      id={page.id}
+      id={id}
       className="page-li"
       onClick={handlePageSelect}
     >
       <PageMargin />
-      {PageStore.getRenameId() === page.id ? (
+      {PageStore.getRenameId() === id ? (
         <PageTextInput
           maxLength="200"
-          placeholder={PageStore.renamePrevText}
-          value={PageStore.renameText}
+          placeholder={title}
+          value={renameTitle}
           onClick={e => e.stopPropagation()}
-          onChange={handlePageName}
-          onBlur={handlePageTextInput.bind(null, false)}
+          onChange={handleTitleChange}
+          onBlur={handleRename.bind(null, false)}
           onKeyDown={e => {
-            if (e.key === 'Enter') handlePageTextInput(false);
-            else if (e.key === 'Escape') handlePageTextInput(true);
+            if (e.key === 'Enter') handleRename(false);
+            else if (e.key === 'Escape') handleRename(true);
           }}
           onFocus={handleFocus}
           autoFocus
@@ -181,32 +192,32 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       ) : (
         <PageTextCover
           className={
-            PageStore.dragEnterChapterIdx === chapterIdx
-              ? PageStore.dragEnterPageIdx === index && page.type === 'note'
-                ? 'borderTopLine'
-                : ''
+            PageStore.dragEnterChapterIdx === chapterIdx &&
+            PageStore.dragEnterPageIdx === index &&
+            type === 'note'
+              ? 'borderTopLine'
               : ''
           }
         >
           <PageTextContainer
             className={
               PageStore.isCtrlKeyDown
-                ? PageStore.dragData.get(page.id)
+                ? PageStore.dragData.get(id)
                   ? 'selected'
                   : ''
                 : NoteStore.showPage &&
                   (NoteStore.isDragging && PageStore.dragData.size > 0
-                    ? page.id === [...PageStore.dragData][0][0]
-                    : page.id === PageStore.currentPageId)
+                    ? id === [...PageStore.dragData][0][0]
+                    : id === PageStore.currentPageId)
                 ? 'selected'
                 : ''
             }
           >
             <Tooltip
               placement="bottomLeft"
-              title={isEllipsisActive ? page.text : null}
+              title={isEllipsisActive ? title : null}
             >
-              <PageText onMouseOver={handleTooltip}>{page.text}</PageText>
+              <PageText onMouseOver={handleTooltip}>{title}</PageText>
             </Tooltip>
             {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
             {(authStore.hasPermission('notePage', 'U') ||

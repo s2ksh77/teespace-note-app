@@ -453,6 +453,7 @@ class NoteRepository {
     file,
     fileName,
     fileExtension,
+    location,
     onUploadProgress,
     cancelSource,
   ) {
@@ -464,7 +465,7 @@ class NoteRepository {
         '&ext=' +
         fileExtension +
         '&location=' +
-        fixedEncodeURIComponent(fileName + '.' + fileExtension) +
+        location +
         '&dir=' +
         `${PageStore.pageInfo.id}`,
       file,
@@ -607,10 +608,19 @@ class NoteRepository {
   async getDuflicateFile(fileName, fileExt) {
     let query = `/drive-api/files/${PageStore.pageInfo.id}?`;
     query += `type=0`;
-    query += `&name=${fixedEncodeURIComponent(fileName)}`;
+    query += `&name=${fileName}`;
     if (fileExt) query += `&ext=${fileExt}`;
     try {
       return await API.get(query);
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+  async getRecycleBinAllFile() {
+    try {
+      return await API.get(
+        `note-api/noteRecycleBinFile?action=List&note_channel_id=${this.chId}`,
+      );
     } catch (e) {
       throw Error(JSON.stringify(e));
     }

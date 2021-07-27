@@ -52,13 +52,16 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           if (editingNoteList.length === 1) {
             const res = await userStore.getProfile(editingNoteList[0].is_edit);
             PageStore.setEditingUserName(res.displayName);
-            NoteStore.setModalInfo('confirm');
+            NoteStore.setModalInfo('nonDeletableSinglePage');
           } else if (editingNoteList.length > 1) {
             PageStore.setEditingUserCount(editingNoteList.length);
-            NoteStore.setModalInfo('chapterconfirm');
+            NoteStore.setModalInfo('nonDeletableMultiPage');
           } else {
             ChapterStore.setDeleteChapterList(deleteChapterList);
-            NoteStore.setModalInfo('draggedChapter');
+            NoteStore.setModalInfo('draggedChapter', {
+              chapterList: deleteChapterList,
+              isDnd: true,
+            });
           }
           break;
         }
@@ -72,20 +75,22 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             data.map(async note => {
               const dto = await PageStore.getNoteInfoList(note.id);
               if (dto.is_edit) editingNoteList.push(dto);
-              return { note_id: note.id };
+              return {
+                note_id: note.id,
+                restoreChapterId: note.chapterId,
+              };
             }),
           );
 
           if (editingNoteList.length === 1) {
             const res = await userStore.getProfile(editingNoteList[0].is_edit);
             PageStore.setEditingUserName(res.displayName);
-            NoteStore.setModalInfo('confirm');
+            NoteStore.setModalInfo('nonDeletableSinglePage');
           } else if (editingNoteList.length > 1) {
             PageStore.setEditingUserCount(editingNoteList.length);
-            NoteStore.setModalInfo('chapterconfirm');
+            NoteStore.setModalInfo('nonDeletableMultiPage');
           } else {
-            PageStore.setDeletePageList(deletePageList);
-            PageStore.throwNotePage(true);
+            PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
           }
           break;
         }

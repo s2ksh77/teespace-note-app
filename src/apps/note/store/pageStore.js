@@ -25,21 +25,12 @@ const PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
-  createParentIdx: '',
-  deletePageList: [],
-  selectablePageId: '',
-  lastSharedPageParentId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
-  isMovingPage: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
-  movePageId: '', // 이동을 원하는 page의 id
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
-  deletedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -130,31 +121,6 @@ const PageStore = observable({
   setCreatePageParent(chapterId) {
     this.createParent = chapterId;
   },
-  getCreatePageParentIdx() {
-    return this.createParentIdx;
-  },
-  setCreatePageParentIdx(chapterIdx) {
-    this.createParentIdx = chapterIdx;
-  },
-
-  getDeletePageList() {
-    return this.deletePageList;
-  },
-  setDeletePageList(deletePageList) {
-    this.deletePageList = deletePageList;
-  },
-  getSelectablePageId() {
-    return this.selectablePageId;
-  },
-  setSelectablePageId(pageId) {
-    this.selectablePageId = pageId;
-  },
-  getLastSharedPageParentId() {
-    return this.lastSharedPageParentId;
-  },
-  setLastSharedPageParentId(chapterId) {
-    this.lastSharedPageParentId = chapterId;
-  },
 
   getRenameId() {
     return this.renameId;
@@ -162,26 +128,7 @@ const PageStore = observable({
   setRenameId(pageId) {
     this.renameId = pageId;
   },
-  getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText(pageText) {
-    this.renamePrevText = pageText;
-  },
-  getRenameText() {
-    return this.renameText;
-  },
-  setRenameText(pageText) {
-    if (pageText.length > 256) pageText = pageText.substring(0, 256);
-    this.renameText = pageText;
-  },
 
-  getIsMovingPage() {
-    return this.isMovingPage;
-  },
-  setIsMovingPage(isMoving) {
-    this.isMovingPage = isMoving;
-  },
   getDragData() {
     return this.dragData;
   },
@@ -199,12 +146,6 @@ const PageStore = observable({
   },
   setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
-  },
-  getMovePageId() {
-    return this.movePageId;
-  },
-  setMovePageId(pageId) {
-    this.movePageId = pageId;
   },
   getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
@@ -271,10 +212,10 @@ const PageStore = observable({
     return dto;
   },
 
-  async renamePage(pageId, pageTitle, chapterId, callback) {
+  async renamePage(id, title, chapterId, callback) {
     const {
       data: { dto: returnData },
-    } = await NoteRepository.renamePage(pageId, pageTitle, chapterId);
+    } = await NoteRepository.renamePage(id, title, chapterId);
     return returnData;
   },
 
@@ -373,13 +314,13 @@ const PageStore = observable({
    * It throw away pages in recycle bin.
    * NOTE: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
-  async throwNotePage(isDnd) {
-    await this.throwPage(this.deletePageList);
+  async throwNotePage({ pageList, selectablePageId, isDnd }) {
+    await this.throwPage(pageList);
     await ChapterStore.getNoteChapterList();
-    if (this.deletePageList.find(page => page.note_id === this.currentPageId)) {
+    if (pageList.find(page => page.note_id === this.currentPageId)) {
       const pageId = isDnd
         ? ChapterStore.chapterList[0]?.children[0]?.id
-        : this.selectablePageId;
+        : selectablePageId;
       this.setCurrentPageId(pageId);
       await this.fetchCurrentPageData(pageId);
 
@@ -407,20 +348,20 @@ const PageStore = observable({
     }
 
     NoteStore.setIsDragging(false);
-    const num = this.deletePageList.length;
+    const num = pageList.length;
     NoteStore.setToastText(
-      num > 1 ? i18n.t('NOTE_BIN_03', { num: num }) : i18n.t('NOTE_BIN_02'),
+      num > 1 ? i18n.t('NOTE_BIN_03', { num }) : i18n.t('NOTE_BIN_02'),
     );
     NoteStore.setIsVisibleToast(true);
     NoteStore.setShowModal(false);
   },
 
-  deleteNotePage() {
-    this.deletePage(this.deletePageList).then(() => {
+  deleteNotePage({ pageList, selectablePageId }) {
+    this.deletePage(pageList).then(() => {
       if (!this.isNewPage) {
-        if (this.currentPageId === this.deletePageList[0].note_id) {
-          this.setCurrentPageId(this.selectablePageId);
-          this.fetchCurrentPageData(this.selectablePageId);
+        if (this.currentPageId === pageList[0].note_id) {
+          this.setCurrentPageId(selectablePageId);
+          this.fetchCurrentPageData(selectablePageId);
         }
       } else {
         if (NoteStore.layoutState === 'collapse') {
@@ -447,16 +388,11 @@ const PageStore = observable({
     });
   },
 
-  renameNotePage(chapterId) {
-    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(
-      dto => {
-        if (this.dragData.get(dto.note_id)) {
-          this.dragData.get(dto.note_id).item.text = dto.note_title;
-        }
-        this.fetchNoteInfoList(dto.note_id);
-        ChapterStore.getNoteChapterList();
-      },
-    );
+  async renameNotePage({ id, title, chapterId }) {
+    const dto = await this.renamePage(id, title.trim(), chapterId);
+    if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.note_title;
+    this.fetchNoteInfoList(id);
+    ChapterStore.getNoteChapterList();
   },
 
   createDragData(pageId, chapterId) {
@@ -753,8 +689,7 @@ const PageStore = observable({
   async handleNoneEdit() {
     this.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
     if (this.isNewPage) {
-      this.setDeletePageList([{ note_id: this.currentPageId }]);
-      this.deleteNotePage();
+      this.deleteNotePage({ pageList: [{ note_id: this.currentPageId }] });
     } else {
       if (this.otherEdit) return;
       else this.noteNoneEdit(this.currentPageId);

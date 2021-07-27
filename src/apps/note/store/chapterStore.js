@@ -11,12 +11,6 @@ const ChapterStore = observable({
   chapterColor: '',
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: {
-    // web에서 안 씀
-    roomChapterList: [],
-    sharedPageList: [],
-    sharedChapterList: [],
-  },
   currentChapterId: '',
   chapterNewTitle: '',
   isNewChapterColor: '',
@@ -45,8 +39,6 @@ const ChapterStore = observable({
   deleteChapterId: '',
   selectableChapterId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
   isMovingChapter: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
@@ -94,19 +86,6 @@ const ChapterStore = observable({
   },
   setRenameId(chapterId) {
     this.renameId = chapterId;
-  },
-  getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText(chapterText) {
-    this.renamePrevText = chapterText;
-  },
-  getRenameText() {
-    return this.renameText;
-  },
-  setRenameText(chapterText) {
-    if (chapterText.length > 256) chapterText = chapterText.substring(0, 256);
-    this.renameText = chapterText;
   },
   getIsMovingChapter() {
     return this.isMovingChapter;
@@ -274,12 +253,6 @@ const ChapterStore = observable({
   setChapterList(chapterList) {
     this.chapterList = chapterList;
   },
-  getSortedChapterList() {
-    return this.sortedChapterList;
-  },
-  setSortedChapterList(obj) {
-    this.sortedChapterList = obj;
-  },
 
   async createChapter(chapterTitle, chapterColor) {
     const { dto } = await NoteRepository.createChapter(
@@ -300,12 +273,8 @@ const ChapterStore = observable({
     const { dto } = await NoteRepository.deleteChapter(chapterList);
     return dto;
   },
-  async renameChapter(renameId, renameText, color) {
-    const { dto } = await NoteRepository.renameChapter(
-      renameId,
-      renameText,
-      color,
-    );
+  async renameChapter(id, title, color) {
+    const { dto } = await NoteRepository.renameChapter(id, title, color);
     return dto;
   },
   async updateChapterColor(chapterId) {
@@ -326,7 +295,7 @@ const ChapterStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.getChapterInfoList(chapterId);
-    return dto;
+    return dto !== undefined ? dto : { id: '' };
   },
   async getSearchList(searchStr) {
     const {
@@ -583,8 +552,7 @@ const ChapterStore = observable({
       this.isNewChapterColor,
     );
     await this.getNoteChapterList();
-    // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-    PageStore.fetchCurrentPageData(notbookList.children[0].id);
+    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
     this.setDragData(
       new Map([
@@ -604,18 +572,14 @@ const ChapterStore = observable({
     );
   },
 
-  async deleteNoteChapter(isDnd) {
-    await this.deleteChapter(this.deleteChapterList);
+  async deleteNoteChapter({ chapterList, selectablePageId, isDnd }) {
+    await this.deleteChapter(chapterList);
     await this.getNoteChapterList();
-    if (
-      this.deleteChapterList.find(
-        chapter => chapter.id === this.currentChapterId,
-      )
-    ) {
+    if (chapterList.find(chapter => chapter.id === this.currentChapterId)) {
       const pageId =
         isDnd || this.chapterList[0]?.type === CHAPTER_TYPE.RECYCLE_BIN
           ? this.chapterList[0]?.children[0]?.id
-          : PageStore.selectablePageId;
+          : selectablePageId;
       await PageStore.fetchCurrentPageData(pageId);
       this.setDragData(
         new Map([
@@ -644,14 +608,10 @@ const ChapterStore = observable({
     NoteStore.setIsVisibleToast(true);
   },
 
-  renameNoteChapter(color) {
-    this.renameChapter(this.renameId, this.renameText.trim(), color).then(
-      dto => {
-        if (this.dragData.get(dto.id))
-          this.dragData.get(dto.id).item.text = dto.text;
-        this.getNoteChapterList();
-      },
-    );
+  async renameNoteChapter({ id, title, color }) {
+    const dto = await this.renameChapter(id, title.trim(), color);
+    if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.text;
+    this.getNoteChapterList();
   },
 
   createDragData(chapterId) {

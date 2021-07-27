@@ -175,6 +175,7 @@ const EditorStore = observable({
     file,
     file_name,
     file_extension,
+    location,
     handleProcess,
     cancelSource,
   ) {
@@ -184,6 +185,7 @@ const EditorStore = observable({
       file,
       file_name,
       file_extension,
+      location,
       handleProcess,
       cancelSource,
     );
@@ -226,8 +228,10 @@ const EditorStore = observable({
     } = await NoteRepository.deleteFile(deleteId);
     return dto;
   },
-  async deleteAllFile() {
-    await NoteRepository.deleteAllFile(this.fileList).then(response => {
+  async deleteAllFile(fileList) {
+    await NoteRepository.deleteAllFile(
+      fileList ? fileList : this.fileList,
+    ).then(response => {
       const {
         data: { dto },
       } = response;
@@ -551,6 +555,12 @@ const EditorStore = observable({
     if (dto.result === 'Y') {
       return dto.file[0]?.user_context_1;
     }
+  },
+  async getRecycleBinAllFile() {
+    const {
+      data: { dto },
+    } = await NoteRepository.getRecycleBinAllFile();
+    return dto;
   },
 });
 

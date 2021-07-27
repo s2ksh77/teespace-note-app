@@ -43,13 +43,16 @@ export const handleUpload = flow(function* handleUpload(item) {
   };
   try {
     const duplicateName = yield EditorStore.getDuflicateFile(
-      item.model.storageFileInfo.file_name,
+      fixedEncodeURIComponent(item.model.storageFileInfo.file_name),
       item.model.storageFileInfo.file_extension,
     );
     const res = yield EditorStore.uploadFileGW(
       item.file,
       duplicateName,
       item.model.storageFileInfo.file_extension,
+      fixedEncodeURIComponent(
+        duplicateName + '.' + item.model.storageFileInfo.file_extension,
+      ),
       handleUploadProgress,
       item.cancelSource,
     ).catch(e => {
@@ -385,6 +388,7 @@ export const exportDownloadPDF = async (isMailShare, type) => {
   let requests = [];
   if (imgElementList && imgElementList.length > 0) {
     requests = [...imgElementList].map(el => {
+      el.setAttribute('style', 'width: 100%;');
       return preloadingImage(el);
     });
     // setTimeout(async () => {

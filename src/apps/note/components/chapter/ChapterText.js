@@ -74,9 +74,11 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
         </Tooltip>
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
         {(authStore.hasPermission('noteChapter', 'U') ||
-          chapter.type === CHAPTER_TYPE.SHARED) && (
-          <ContextMenu noteType="chapter" note={chapter} chapterIdx={index} />
-        )}
+          chapter.type === CHAPTER_TYPE.SHARED) &&
+          (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN ||
+            chapter.children.length !== 0) && (
+            <ContextMenu noteType="chapter" note={chapter} chapterIdx={index} />
+          )}
       </ChapterTitle>
       {!isEmptyRecycleBin(chapter) && (
         <ButtonWrapper
