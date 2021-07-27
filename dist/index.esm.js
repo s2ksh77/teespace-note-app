@@ -982,12 +982,6 @@ var ChapterStore = observable({
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
-  sortedChapterList: {
-    // web에서 안 씀
-    roomChapterList: [],
-    sharedPageList: [],
-    sharedChapterList: []
-  },
   currentChapterId: '',
   chapterNewTitle: '',
   isNewChapterColor: '',
@@ -1019,8 +1013,6 @@ var ChapterStore = observable({
   deleteChapterId: '',
   selectableChapterId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
   isMovingChapter: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
@@ -1072,19 +1064,6 @@ var ChapterStore = observable({
   },
   setRenameId: function setRenameId(chapterId) {
     this.renameId = chapterId;
-  },
-  getRenamePrevText: function getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText: function setRenamePrevText(chapterText) {
-    this.renamePrevText = chapterText;
-  },
-  getRenameText: function getRenameText() {
-    return this.renameText;
-  },
-  setRenameText: function setRenameText(chapterText) {
-    if (chapterText.length > 256) chapterText = chapterText.substring(0, 256);
-    this.renameText = chapterText;
   },
   getIsMovingChapter: function getIsMovingChapter() {
     return this.isMovingChapter;
@@ -1303,12 +1282,6 @@ var ChapterStore = observable({
   setChapterList: function setChapterList(chapterList) {
     this.chapterList = chapterList;
   },
-  getSortedChapterList: function getSortedChapterList() {
-    return this.sortedChapterList;
-  },
-  setSortedChapterList: function setSortedChapterList(obj) {
-    this.sortedChapterList = obj;
-  },
   createChapter: function createChapter(chapterTitle, chapterColor) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
       var _yield$NoteRepository4, dto;
@@ -1382,7 +1355,7 @@ var ChapterStore = observable({
       }, _callee6);
     }))();
   },
-  renameChapter: function renameChapter(renameId, renameText, color) {
+  renameChapter: function renameChapter(id, title, color) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       var _yield$NoteRepository7, dto;
 
@@ -1391,7 +1364,7 @@ var ChapterStore = observable({
           switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return NoteRepository$1.renameChapter(renameId, renameText, color);
+              return NoteRepository$1.renameChapter(id, title, color);
 
             case 2:
               _yield$NoteRepository7 = _context7.sent;
@@ -1471,7 +1444,9 @@ var ChapterStore = observable({
             case 2:
               _yield$NoteRepository10 = _context10.sent;
               dto = _yield$NoteRepository10.data.dto;
-              return _context10.abrupt("return", dto);
+              return _context10.abrupt("return", dto !== undefined ? dto : {
+                id: ''
+              });
 
             case 5:
             case "end":
@@ -1853,16 +1828,17 @@ var ChapterStore = observable({
               return _this10.getNoteChapterList();
 
             case 7:
-              // 새 챕터 생성시 해당 챕터의 페이지로 이동하므로
-              PageStore.fetchCurrentPageData(notbookList.children[0].id);
+              _context15.next = 9;
+              return PageStore.fetchCurrentPageData(notbookList.children[0].id);
 
+            case 9:
               _this10.setChapterTempUl(false);
 
               _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
 
               PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
 
-            case 11:
+            case 12:
             case "end":
               return _context15.stop();
           }
@@ -1870,36 +1846,37 @@ var ChapterStore = observable({
       }, _callee15);
     }))();
   },
-  deleteNoteChapter: function deleteNoteChapter(isDnd) {
+  deleteNoteChapter: function deleteNoteChapter(_ref2) {
     var _this11 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      var _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
+      var chapterList, selectablePageId, isDnd, _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
 
       return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
           switch (_context16.prev = _context16.next) {
             case 0:
-              _context16.next = 2;
-              return _this11.deleteChapter(_this11.deleteChapterList);
+              chapterList = _ref2.chapterList, selectablePageId = _ref2.selectablePageId, isDnd = _ref2.isDnd;
+              _context16.next = 3;
+              return _this11.deleteChapter(chapterList);
 
-            case 2:
-              _context16.next = 4;
+            case 3:
+              _context16.next = 5;
               return _this11.getNoteChapterList();
 
-            case 4:
-              if (!_this11.deleteChapterList.find(function (chapter) {
+            case 5:
+              if (!chapterList.find(function (chapter) {
                 return chapter.id === _this11.currentChapterId;
               })) {
-                _context16.next = 12;
+                _context16.next = 13;
                 break;
               }
 
-              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : PageStore.selectablePageId;
-              _context16.next = 8;
+              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : selectablePageId;
+              _context16.next = 9;
               return PageStore.fetchCurrentPageData(pageId);
 
-            case 8:
+            case 9:
               _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
 
               PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
@@ -1907,7 +1884,7 @@ var ChapterStore = observable({
 
               _this11.setIsCtrlKeyDown(false);
 
-            case 12:
+            case 13:
               NoteStore.setIsDragging(false);
 
               _this11.setDeleteChapterList([]);
@@ -1916,7 +1893,7 @@ var ChapterStore = observable({
               NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
               NoteStore.setIsVisibleToast(true);
 
-            case 17:
+            case 18:
             case "end":
               return _context16.stop();
           }
@@ -1924,14 +1901,32 @@ var ChapterStore = observable({
       }, _callee16);
     }))();
   },
-  renameNoteChapter: function renameNoteChapter(color) {
+  renameNoteChapter: function renameNoteChapter(_ref3) {
     var _this12 = this;
 
-    this.renameChapter(this.renameId, this.renameText.trim(), color).then(function (dto) {
-      if (_this12.dragData.get(dto.id)) _this12.dragData.get(dto.id).item.text = dto.text;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+      var id, title, color, dto;
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+        while (1) {
+          switch (_context17.prev = _context17.next) {
+            case 0:
+              id = _ref3.id, title = _ref3.title, color = _ref3.color;
+              _context17.next = 3;
+              return _this12.renameChapter(id, title.trim(), color);
 
-      _this12.getNoteChapterList();
-    });
+            case 3:
+              dto = _context17.sent;
+              if (_this12.dragData.get(id)) _this12.dragData.get(id).item.text = dto.text;
+
+              _this12.getNoteChapterList();
+
+            case 6:
+            case "end":
+              return _context17.stop();
+          }
+        }
+      }, _callee17);
+    }))();
   },
   createDragData: function createDragData(chapterId) {
     var chapterIdx = this.chapterList.findIndex(function (chapter) {
@@ -2025,10 +2020,10 @@ var ChapterStore = observable({
   getChapterFirstPage: function getChapterFirstPage(targetId) {
     var _this14 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
         while (1) {
-          switch (_context17.prev = _context17.next) {
+          switch (_context18.prev = _context18.next) {
             case 0:
               _this14.getChapterList().then(function (chapterList) {
                 var targetChapter = chapterList.filter(function (chapter) {
@@ -2043,10 +2038,10 @@ var ChapterStore = observable({
 
             case 1:
             case "end":
-              return _context17.stop();
+              return _context18.stop();
           }
         }
-      }, _callee17);
+      }, _callee18);
     }))();
   },
 
@@ -2059,10 +2054,10 @@ var ChapterStore = observable({
   getSearchResult: function getSearchResult() {
     var _this15 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
-          switch (_context18.prev = _context18.next) {
+          switch (_context19.prev = _context19.next) {
             case 0:
               // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
               _this15.setIsSearching(true);
@@ -2087,10 +2082,10 @@ var ChapterStore = observable({
 
             case 3:
             case "end":
-              return _context18.stop();
+              return _context19.stop();
           }
         }
-      }, _callee18);
+      }, _callee19);
     }))();
   },
   preProcessPageList: function preProcessPageList(pageList, keyword) {
@@ -2111,10 +2106,10 @@ var ChapterStore = observable({
   fetchSearchResult: function fetchSearchResult() {
     var _this17 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
-          switch (_context19.prev = _context19.next) {
+          switch (_context20.prev = _context20.next) {
             case 0:
               _this17.setIsSearching(true); // 검색 결과 출력 종료까지임
 
@@ -2150,34 +2145,34 @@ var ChapterStore = observable({
 
             case 3:
             case "end":
-              return _context19.stop();
-          }
-        }
-      }, _callee19);
-    }))();
-  },
-  createShareChapter: function createShareChapter(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
-      var _yield$NoteRepository13, dto;
-
-      return regeneratorRuntime.wrap(function _callee20$(_context20) {
-        while (1) {
-          switch (_context20.prev = _context20.next) {
-            case 0:
-              _context20.next = 2;
-              return NoteRepository$1.createShareChapter(targetList);
-
-            case 2:
-              _yield$NoteRepository13 = _context20.sent;
-              dto = _yield$NoteRepository13.data.dto;
-              return _context20.abrupt("return", dto);
-
-            case 5:
-            case "end":
               return _context20.stop();
           }
         }
       }, _callee20);
+    }))();
+  },
+  createShareChapter: function createShareChapter(targetList) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
+      var _yield$NoteRepository13, dto;
+
+      return regeneratorRuntime.wrap(function _callee21$(_context21) {
+        while (1) {
+          switch (_context21.prev = _context21.next) {
+            case 0:
+              _context21.next = 2;
+              return NoteRepository$1.createShareChapter(targetList);
+
+            case 2:
+              _yield$NoteRepository13 = _context21.sent;
+              dto = _yield$NoteRepository13.data.dto;
+              return _context21.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context21.stop();
+          }
+        }
+      }, _callee21);
     }))();
   },
   createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
@@ -2232,16 +2227,16 @@ var ChapterStore = observable({
   setFirstNoteInfo: function setFirstNoteInfo() {
     var _this19 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
       var targetChapter, pageId;
-      return regeneratorRuntime.wrap(function _callee21$(_context21) {
+      return regeneratorRuntime.wrap(function _callee22$(_context22) {
         while (1) {
-          switch (_context21.prev = _context21.next) {
+          switch (_context22.prev = _context22.next) {
             case 0:
               targetChapter = _this19.chapterList.length > 0 ? _this19.chapterList[0] : null;
 
               if (targetChapter) {
-                _context21.next = 5;
+                _context22.next = 5;
                 break;
               }
 
@@ -2249,7 +2244,7 @@ var ChapterStore = observable({
 
 
               PageStore.fetchCurrentPageData('');
-              return _context21.abrupt("return");
+              return _context22.abrupt("return");
 
             case 5:
               _this19.setFirstDragData(targetChapter);
@@ -2258,15 +2253,15 @@ var ChapterStore = observable({
               // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
 
               if (!pageId) {
-                _context21.next = 12;
+                _context22.next = 12;
                 break;
               }
 
-              _context21.next = 10;
+              _context22.next = 10;
               return PageStore.fetchCurrentPageData(pageId);
 
             case 10:
-              _context21.next = 13;
+              _context22.next = 13;
               break;
 
             case 12:
@@ -2274,10 +2269,10 @@ var ChapterStore = observable({
 
             case 13:
             case "end":
-              return _context21.stop();
+              return _context22.stop();
           }
         }
-      }, _callee21);
+      }, _callee22);
     }))();
   },
 
@@ -2288,14 +2283,14 @@ var ChapterStore = observable({
   fetchFirstNote: function fetchFirstNote() {
     var _this20 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
-      return regeneratorRuntime.wrap(function _callee22$(_context22) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
+      return regeneratorRuntime.wrap(function _callee23$(_context23) {
         while (1) {
-          switch (_context22.prev = _context22.next) {
+          switch (_context23.prev = _context23.next) {
             case 0:
               _this20.setLoadingPageInfo(true);
 
-              _context22.next = 3;
+              _context23.next = 3;
               return _this20.setFirstNoteInfo();
 
             case 3:
@@ -2303,10 +2298,10 @@ var ChapterStore = observable({
 
             case 4:
             case "end":
-              return _context22.stop();
+              return _context23.stop();
           }
         }
-      }, _callee22);
+      }, _callee23);
     }))();
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
@@ -2314,27 +2309,27 @@ var ChapterStore = observable({
     var _arguments2 = arguments,
         _this21 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
       var isInit;
-      return regeneratorRuntime.wrap(function _callee23$(_context23) {
+      return regeneratorRuntime.wrap(function _callee24$(_context24) {
         while (1) {
-          switch (_context23.prev = _context23.next) {
+          switch (_context24.prev = _context24.next) {
             case 0:
               isInit = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : false;
 
               // 한 군데에서만 부르긴하지만 일단 param 추가
               _this21.setLoadingPageInfo(true);
 
-              _context23.next = 4;
+              _context24.next = 4;
               return _this21.getNoteChapterList(isInit);
 
             case 4:
               if (!(_this21.chapterList.length > 0)) {
-                _context23.next = 7;
+                _context24.next = 7;
                 break;
               }
 
-              _context23.next = 7;
+              _context24.next = 7;
               return _this21.setFirstNoteInfo();
 
             case 7:
@@ -2342,10 +2337,10 @@ var ChapterStore = observable({
 
             case 8:
             case "end":
-              return _context23.stop();
+              return _context24.stop();
           }
         }
-      }, _callee23);
+      }, _callee24);
     }))();
   },
   // localStorage에서 page 얻기
@@ -2386,15 +2381,15 @@ var ChapterStore = observable({
   openNote: function openNote() {
     var _this22 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25() {
       var pageId;
-      return regeneratorRuntime.wrap(function _callee24$(_context24) {
+      return regeneratorRuntime.wrap(function _callee25$(_context25) {
         while (1) {
-          switch (_context24.prev = _context24.next) {
+          switch (_context25.prev = _context25.next) {
             case 0:
-              _context24.prev = 0;
-              _context24.t0 = NoteStore.metaTagInfo.type;
-              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
+              _context25.prev = 0;
+              _context25.t0 = NoteStore.metaTagInfo.type;
+              _context25.next = _context25.t0 === 'chapter' ? 4 : _context25.t0 === 'page' ? 13 : 17;
               break;
 
             case 4:
@@ -2403,7 +2398,7 @@ var ChapterStore = observable({
 
               _this22.setScrollIntoViewId(NoteStore.metaTagInfo.id);
 
-              _context24.next = 8;
+              _context25.next = 8;
               return _this22.getNoteChapterList();
 
             case 8:
@@ -2417,29 +2412,29 @@ var ChapterStore = observable({
                * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
                */
 
-              _context24.next = 12;
+              _context25.next = 12;
               return PageStore.fetchCurrentPageData(pageId ? pageId : '');
 
             case 12:
-              return _context24.abrupt("break", 17);
+              return _context25.abrupt("break", 17);
 
             case 13:
-              _context24.next = 15;
+              _context25.next = 15;
               return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
 
             case 15:
               NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
 
-              return _context24.abrupt("break", 17);
+              return _context25.abrupt("break", 17);
 
             case 17:
-              _context24.next = 22;
+              _context25.next = 22;
               break;
 
             case 19:
-              _context24.prev = 19;
-              _context24.t1 = _context24["catch"](0);
-              console.log('e', _context24.t1);
+              _context25.prev = 19;
+              _context25.t1 = _context25["catch"](0);
+              console.log('e', _context25.t1);
 
             case 22:
               NoteStore.setMetaTagInfo({
@@ -2450,10 +2445,10 @@ var ChapterStore = observable({
 
             case 23:
             case "end":
-              return _context24.stop();
+              return _context25.stop();
           }
         }
-      }, _callee24, null, [[0, 19]]);
+      }, _callee25, null, [[0, 19]]);
     }))();
   },
   getRoomChapterList: function getRoomChapterList() {
@@ -3082,7 +3077,7 @@ var TagStore = observable({
       var tagObjs = isSearching ? _this10.getSearchTagObjs(tagList, _this10.searchStr) : _this10.getTagObjs(tagList);
 
       if (Object.keys(tagObjs).length > 0) {
-        categorizedTagObjs[tagKeyCategory][upperCaseKey] = tagObjs;
+        categorizedTagObjs[tagKeyCategory][upperCaseKey] = _objectSpread2(_objectSpread2({}, categorizedTagObjs[tagKeyCategory][upperCaseKey]), tagObjs);
       }
     });
     if (isSearching) this.deleteEmptyCategory(categorizedTagObjs);
@@ -3549,7 +3544,7 @@ var EditorStore = observable((_observable = {
       }
     }, _callee5);
   }))();
-}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile() {
+}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile(fileList) {
   var _this2 = this;
 
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
@@ -3558,7 +3553,7 @@ var EditorStore = observable((_observable = {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.next = 2;
-            return NoteRepository$1.deleteAllFile(_this2.fileList).then(function (response) {
+            return NoteRepository$1.deleteAllFile(fileList ? fileList : _this2.fileList).then(function (response) {
               var dto = response.data.dto;
 
               if (dto.resultMsg === 'Success') {
@@ -3949,6 +3944,29 @@ var EditorStore = observable((_observable = {
       }
     }, _callee12);
   }))();
+}), _defineProperty(_observable, "getRecycleBinAllFile", function getRecycleBinAllFile() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    var _yield$NoteRepository9, dto;
+
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.next = 2;
+            return NoteRepository$1.getRecycleBinAllFile();
+
+          case 2:
+            _yield$NoteRepository9 = _context13.sent;
+            dto = _yield$NoteRepository9.data.dto;
+            return _context13.abrupt("return", dto);
+
+          case 5:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13);
+  }))();
 }), _observable));
 
 var PageStore = observable({
@@ -3964,22 +3982,12 @@ var PageStore = observable({
   noteTitle: '',
   currentPageId: '',
   createParent: '',
-  createParentIdx: '',
-  deletePageList: [],
-  selectablePageId: '',
-  lastSharedPageParentId: '',
   renameId: '',
-  renamePrevText: '',
-  renameText: '',
-  isMovingPage: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
-  movePageId: '',
-  // 이동을 원하는 page의 id
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   modifiedDate: '',
-  deletedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -4074,54 +4082,11 @@ var PageStore = observable({
   setCreatePageParent: function setCreatePageParent(chapterId) {
     this.createParent = chapterId;
   },
-  getCreatePageParentIdx: function getCreatePageParentIdx() {
-    return this.createParentIdx;
-  },
-  setCreatePageParentIdx: function setCreatePageParentIdx(chapterIdx) {
-    this.createParentIdx = chapterIdx;
-  },
-  getDeletePageList: function getDeletePageList() {
-    return this.deletePageList;
-  },
-  setDeletePageList: function setDeletePageList(deletePageList) {
-    this.deletePageList = deletePageList;
-  },
-  getSelectablePageId: function getSelectablePageId() {
-    return this.selectablePageId;
-  },
-  setSelectablePageId: function setSelectablePageId(pageId) {
-    this.selectablePageId = pageId;
-  },
-  getLastSharedPageParentId: function getLastSharedPageParentId() {
-    return this.lastSharedPageParentId;
-  },
-  setLastSharedPageParentId: function setLastSharedPageParentId(chapterId) {
-    this.lastSharedPageParentId = chapterId;
-  },
   getRenameId: function getRenameId() {
     return this.renameId;
   },
   setRenameId: function setRenameId(pageId) {
     this.renameId = pageId;
-  },
-  getRenamePrevText: function getRenamePrevText() {
-    return this.renamePrevText;
-  },
-  setRenamePrevText: function setRenamePrevText(pageText) {
-    this.renamePrevText = pageText;
-  },
-  getRenameText: function getRenameText() {
-    return this.renameText;
-  },
-  setRenameText: function setRenameText(pageText) {
-    if (pageText.length > 256) pageText = pageText.substring(0, 256);
-    this.renameText = pageText;
-  },
-  getIsMovingPage: function getIsMovingPage() {
-    return this.isMovingPage;
-  },
-  setIsMovingPage: function setIsMovingPage(isMoving) {
-    this.isMovingPage = isMoving;
   },
   getDragData: function getDragData() {
     return this.dragData;
@@ -4140,12 +4105,6 @@ var PageStore = observable({
   },
   setIsCtrlKeyDown: function setIsCtrlKeyDown(flag) {
     this.isCtrlKeyDown = flag;
-  },
-  getMovePageId: function getMovePageId() {
-    return this.movePageId;
-  },
-  setMovePageId: function setMovePageId(pageId) {
-    this.movePageId = pageId;
   },
   getDragEnterPageIdx: function getDragEnterPageIdx() {
     return this.dragEnterPageIdx;
@@ -4261,7 +4220,7 @@ var PageStore = observable({
       }, _callee3);
     }))();
   },
-  renamePage: function renamePage(pageId, pageTitle, chapterId, callback) {
+  renamePage: function renamePage(id, title, chapterId, callback) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
       var _yield$NoteRepository4, returnData;
 
@@ -4270,7 +4229,7 @@ var PageStore = observable({
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return NoteRepository$1.renamePage(pageId, pageTitle, chapterId);
+              return NoteRepository$1.renamePage(id, title, chapterId);
 
             case 2:
               _yield$NoteRepository4 = _context4.sent;
@@ -4487,39 +4446,40 @@ var PageStore = observable({
    * It throw away pages in recycle bin.
    * NOTE: If you want to delete 'New Page', you should 'deleteNotePage'!
    */
-  throwNotePage: function throwNotePage(isDnd) {
+  throwNotePage: function throwNotePage(_ref2) {
     var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-      var _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
+      var pageList, selectablePageId, isDnd, _ChapterStore$chapter, _ChapterStore$chapter2, pageId, num;
 
       return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
           switch (_context11.prev = _context11.next) {
             case 0:
-              _context11.next = 2;
-              return _this2.throwPage(_this2.deletePageList);
+              pageList = _ref2.pageList, selectablePageId = _ref2.selectablePageId, isDnd = _ref2.isDnd;
+              _context11.next = 3;
+              return _this2.throwPage(pageList);
 
-            case 2:
-              _context11.next = 4;
+            case 3:
+              _context11.next = 5;
               return ChapterStore.getNoteChapterList();
 
-            case 4:
-              if (!_this2.deletePageList.find(function (page) {
+            case 5:
+              if (!pageList.find(function (page) {
                 return page.note_id === _this2.currentPageId;
               })) {
-                _context11.next = 13;
+                _context11.next = 14;
                 break;
               }
 
-              pageId = isDnd ? (_ChapterStore$chapter = ChapterStore.chapterList[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : (_ChapterStore$chapter2 = _ChapterStore$chapter.children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.id : _this2.selectablePageId;
+              pageId = isDnd ? (_ChapterStore$chapter = ChapterStore.chapterList[0]) === null || _ChapterStore$chapter === void 0 ? void 0 : (_ChapterStore$chapter2 = _ChapterStore$chapter.children[0]) === null || _ChapterStore$chapter2 === void 0 ? void 0 : _ChapterStore$chapter2.id : selectablePageId;
 
               _this2.setCurrentPageId(pageId);
 
-              _context11.next = 9;
+              _context11.next = 10;
               return _this2.fetchCurrentPageData(pageId);
 
-            case 9:
+            case 10:
               ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
 
               _this2.setDragData(new Map([[_this2.currentPageId, _this2.createDragData(_this2.currentPageId, ChapterStore.currentChapterId)]]));
@@ -4528,16 +4488,16 @@ var PageStore = observable({
 
               _this2.setIsCtrlKeyDown(false);
 
-            case 13:
+            case 14:
               NoteStore.setIsDragging(false);
-              num = _this2.deletePageList.length;
+              num = pageList.length;
               NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
                 num: num
               }) : i18n.t('NOTE_BIN_02'));
               NoteStore.setIsVisibleToast(true);
               NoteStore.setShowModal(false);
 
-            case 18:
+            case 19:
             case "end":
               return _context11.stop();
           }
@@ -4545,15 +4505,17 @@ var PageStore = observable({
       }, _callee11);
     }))();
   },
-  deleteNotePage: function deleteNotePage() {
+  deleteNotePage: function deleteNotePage(_ref3) {
     var _this3 = this;
 
-    this.deletePage(this.deletePageList).then(function () {
+    var pageList = _ref3.pageList,
+        selectablePageId = _ref3.selectablePageId;
+    this.deletePage(pageList).then(function () {
       if (!_this3.isNewPage) {
-        if (_this3.currentPageId === _this3.deletePageList[0].note_id) {
-          _this3.setCurrentPageId(_this3.selectablePageId);
+        if (_this3.currentPageId === pageList[0].note_id) {
+          _this3.setCurrentPageId(selectablePageId);
 
-          _this3.fetchCurrentPageData(_this3.selectablePageId);
+          _this3.fetchCurrentPageData(selectablePageId);
         }
       } else {
         if (NoteStore.layoutState === 'collapse') {
@@ -4585,18 +4547,34 @@ var PageStore = observable({
       NoteStore.setShowModal(false);
     });
   },
-  renameNotePage: function renameNotePage(chapterId) {
+  renameNotePage: function renameNotePage(_ref4) {
     var _this4 = this;
 
-    this.renamePage(this.renameId, this.renameText.trim(), chapterId).then(function (dto) {
-      if (_this4.dragData.get(dto.note_id)) {
-        _this4.dragData.get(dto.note_id).item.text = dto.note_title;
-      }
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      var id, title, chapterId, dto;
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+        while (1) {
+          switch (_context12.prev = _context12.next) {
+            case 0:
+              id = _ref4.id, title = _ref4.title, chapterId = _ref4.chapterId;
+              _context12.next = 3;
+              return _this4.renamePage(id, title.trim(), chapterId);
 
-      _this4.fetchNoteInfoList(dto.note_id);
+            case 3:
+              dto = _context12.sent;
+              if (_this4.dragData.get(id)) _this4.dragData.get(id).item.text = dto.note_title;
 
-      ChapterStore.getNoteChapterList();
-    });
+              _this4.fetchNoteInfoList(id);
+
+              ChapterStore.getNoteChapterList();
+
+            case 7:
+            case "end":
+              return _context12.stop();
+          }
+        }
+      }, _callee12);
+    }))();
   },
   createDragData: function createDragData(pageId, chapterId) {
     var chapterIdx = ChapterStore.chapterList.findIndex(function (chapter) {
@@ -4626,27 +4604,27 @@ var PageStore = observable({
     this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
       var _yield$NoteRepository10, dto;
 
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
-              _context12.next = 2;
+              _context13.next = 2;
               return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
             case 2:
-              _yield$NoteRepository10 = _context12.sent;
+              _yield$NoteRepository10 = _context13.sent;
               dto = _yield$NoteRepository10.data.dto;
-              return _context12.abrupt("return", dto);
+              return _context13.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context12.stop();
+              return _context13.stop();
           }
         }
-      }, _callee12);
+      }, _callee13);
     }))();
   },
   getSortedDragDataList: function getSortedDragDataList() {
@@ -4662,11 +4640,11 @@ var PageStore = observable({
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
       var item, sortedDragDataList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
               item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
               sortedDragDataList = _this5.getSortedDragDataList();
@@ -4680,7 +4658,7 @@ var PageStore = observable({
                 if (!_this5.dragData.get(pageId)) pageIds.push(pageId);
               });
               if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-              _context13.next = 8;
+              _context14.next = 8;
               return Promise.all(sortedDragDataList.slice().reverse().map(function (data) {
                 if (data.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(data.item.id)) {
                   item[data.chapterIdx].children.splice(data.pageIdx, 1);
@@ -4708,16 +4686,16 @@ var PageStore = observable({
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context13.next = 24;
+                _context14.next = 24;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-              _context13.next = 18;
+              _context14.next = 18;
               return ChapterStore.getNoteChapterList();
 
             case 18:
-              _context13.next = 20;
+              _context14.next = 20;
               return _this5.fetchCurrentPageData(sortedMovePages[0]);
 
             case 20:
@@ -4734,7 +4712,7 @@ var PageStore = observable({
               }
 
               NoteStore.setIsVisibleToast(true);
-              _context13.next = 25;
+              _context14.next = 25;
               break;
 
             case 24:
@@ -4746,48 +4724,48 @@ var PageStore = observable({
 
             case 26:
             case "end":
-              return _context13.stop();
+              return _context14.stop();
           }
         }
-      }, _callee13);
+      }, _callee14);
     }))();
   },
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var dto, userProfile;
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
-          switch (_context14.prev = _context14.next) {
+          switch (_context15.prev = _context15.next) {
             case 0:
-              _context14.next = 2;
+              _context15.next = 2;
               return _this6.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context14.sent;
+              dto = _context15.sent;
 
               if (isFilled(dto.note_id)) {
-                _context14.next = 6;
+                _context15.next = 6;
                 break;
               }
 
               if (_this6.currentPageId === noteId) _this6.currentPageId = '';
-              return _context14.abrupt("return");
+              return _context15.abrupt("return");
 
             case 6:
               if (!dto.USER_ID) {
-                _context14.next = 13;
+                _context15.next = 13;
                 break;
               }
 
-              _context14.next = 9;
+              _context15.next = 9;
               return UserStore.getProfile(dto.USER_ID);
 
             case 9:
-              userProfile = _context14.sent;
+              userProfile = _context15.sent;
               _this6.displayName = (userProfile === null || userProfile === void 0 ? void 0 : userProfile.displayName) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
-              _context14.next = 14;
+              _context15.next = 14;
               break;
 
             case 13:
@@ -4826,30 +4804,30 @@ var PageStore = observable({
 
             case 23:
             case "end":
-              return _context14.stop();
+              return _context15.stop();
           }
         }
-      }, _callee14);
+      }, _callee15);
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
     var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
-          switch (_context15.prev = _context15.next) {
+          switch (_context16.prev = _context16.next) {
             case 0:
               if (!pageId) {
-                _context15.next = 5;
+                _context16.next = 5;
                 break;
               }
 
-              _context15.next = 3;
+              _context16.next = 3;
               return _this7.fetchNoteInfoList(pageId);
 
             case 3:
-              _context15.next = 7;
+              _context16.next = 7;
               break;
 
             case 5:
@@ -4859,10 +4837,10 @@ var PageStore = observable({
 
             case 7:
             case "end":
-              return _context15.stop();
+              return _context16.stop();
           }
         }
-      }, _callee15);
+      }, _callee16);
     }))();
   },
   // 저장 후 지우기
@@ -4874,20 +4852,20 @@ var PageStore = observable({
   checkEditingPage: function checkEditingPage() {
     var _this8 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
       var target, noteId, dto;
-      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
-          switch (_context16.prev = _context16.next) {
+          switch (_context17.prev = _context17.next) {
             case 0:
-              _context16.prev = 0;
+              _context17.prev = 0;
 
               if (!(!NoteStore.notechannel_id || !NoteStore.user_id)) {
-                _context16.next = 3;
+                _context17.next = 3;
                 break;
               }
 
-              return _context16.abrupt("return");
+              return _context17.abrupt("return");
 
             case 3:
               // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
@@ -4896,11 +4874,11 @@ var PageStore = observable({
               });
 
               if (target) {
-                _context16.next = 6;
+                _context17.next = 6;
                 break;
               }
 
-              return _context16.abrupt("return");
+              return _context17.abrupt("return");
 
             case 6:
               noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, '$3');
@@ -4909,11 +4887,11 @@ var PageStore = observable({
                * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
                */
 
-              _context16.next = 9;
+              _context17.next = 9;
               return _this8.getNoteInfoList(noteId);
 
             case 9:
-              dto = _context16.sent;
+              dto = _context17.sent;
 
               if ((dto === null || dto === void 0 ? void 0 : dto.is_edit) === NoteStore.user_id) {
                 _this8.setRecoverInfo({
@@ -4930,20 +4908,20 @@ var PageStore = observable({
                 localStorage.removeItem(target);
               }
 
-              _context16.next = 16;
+              _context17.next = 16;
               break;
 
             case 13:
-              _context16.prev = 13;
-              _context16.t0 = _context16["catch"](0);
+              _context17.prev = 13;
+              _context17.t0 = _context17["catch"](0);
               console.log('checkEditingPage, 노트 진입시 수정 중인 노트 확인하기');
 
             case 16:
             case "end":
-              return _context16.stop();
+              return _context17.stop();
           }
         }
-      }, _callee16, null, [[0, 13]]);
+      }, _callee17, null, [[0, 13]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -5002,45 +4980,45 @@ var PageStore = observable({
   handleNoneEdit: function handleNoneEdit() {
     var _this12 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
         while (1) {
-          switch (_context17.prev = _context17.next) {
+          switch (_context18.prev = _context18.next) {
             case 0:
               _this12.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
 
 
               if (!_this12.isNewPage) {
-                _context17.next = 6;
+                _context18.next = 5;
                 break;
               }
 
-              _this12.setDeletePageList([{
-                note_id: _this12.currentPageId
-              }]);
+              _this12.deleteNotePage({
+                pageList: [{
+                  note_id: _this12.currentPageId
+                }]
+              });
 
-              _this12.deleteNotePage();
-
-              _context17.next = 11;
+              _context18.next = 10;
               break;
 
-            case 6:
+            case 5:
               if (!_this12.otherEdit) {
-                _context17.next = 10;
+                _context18.next = 9;
                 break;
               }
 
-              return _context17.abrupt("return");
+              return _context18.abrupt("return");
 
-            case 10:
+            case 9:
               _this12.noteNoneEdit(_this12.currentPageId);
 
-            case 11:
+            case 10:
             case "end":
-              return _context17.stop();
+              return _context18.stop();
           }
         }
-      }, _callee17);
+      }, _callee18);
     }))();
   },
   getSaveDto: function getSaveDto(isAutoSave) {
@@ -5150,27 +5128,27 @@ var PageStore = observable({
     return targetTd === null || targetTd === void 0 ? void 0 : targetTd.textContent;
   },
   createSharePage: function createSharePage(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
       var _yield$NoteRepository11, noteList;
 
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
-          switch (_context18.prev = _context18.next) {
+          switch (_context19.prev = _context19.next) {
             case 0:
-              _context18.next = 2;
+              _context19.next = 2;
               return NoteRepository$1.createSharePage(targetList);
 
             case 2:
-              _yield$NoteRepository11 = _context18.sent;
+              _yield$NoteRepository11 = _context19.sent;
               noteList = _yield$NoteRepository11.data.dto.noteList;
-              return _context18.abrupt("return", noteList);
+              return _context19.abrupt("return", noteList);
 
             case 5:
             case "end":
-              return _context18.stop();
+              return _context19.stop();
           }
         }
-      }, _callee18);
+      }, _callee19);
     }))();
   },
   createNoteSharePage: function createNoteSharePage(targetRoomId, targetPageList) {
@@ -5203,29 +5181,29 @@ var PageStore = observable({
    * NoteMeta에서도 쓰이고, context menu에서 복구할 챕터가 없을 때도 필요해서 store로 옮김
    * 나중에 필요한 인자가 더 생길까 대비해 object로 인자 받음
    */
-  restorePageLogic: function restorePageLogic(_ref2) {
+  restorePageLogic: function restorePageLogic(_ref5) {
     var _this16 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
       var chapterId, pageId, toastTxt, res;
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
-          switch (_context19.prev = _context19.next) {
+          switch (_context20.prev = _context20.next) {
             case 0:
-              chapterId = _ref2.chapterId, pageId = _ref2.pageId, toastTxt = _ref2.toastTxt;
-              _context19.next = 3;
+              chapterId = _ref5.chapterId, pageId = _ref5.pageId, toastTxt = _ref5.toastTxt;
+              _context20.next = 3;
               return _this16.restorePage(pageId, chapterId);
 
             case 3:
-              res = _context19.sent;
+              res = _context20.sent;
 
               if (!(res.resultMsg === 'Success')) {
-                _context19.next = 11;
+                _context20.next = 11;
                 break;
               }
 
               NoteStore.setModalInfo(null);
-              _context19.next = 8;
+              _context20.next = 8;
               return ChapterStore.getNoteChapterList();
 
             case 8:
@@ -5240,10 +5218,10 @@ var PageStore = observable({
 
             case 11:
             case "end":
-              return _context19.stop();
+              return _context20.stop();
           }
         }
-      }, _callee19);
+      }, _callee20);
     }))();
   },
   editCancel: function editCancel() {
@@ -6651,17 +6629,46 @@ var NoteRepository = /*#__PURE__*/function () {
 
       return getDuflicateFile;
     }()
+  }, {
+    key: "getRecycleBinAllFile",
+    value: function () {
+      var _getRecycleBinAllFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee31() {
+        return regeneratorRuntime.wrap(function _callee31$(_context31) {
+          while (1) {
+            switch (_context31.prev = _context31.next) {
+              case 0:
+                _context31.prev = 0;
+                _context31.next = 3;
+                return API.get("note-api/noteRecycleBinFile?action=List&note_channel_id=".concat(this.chId));
+
+              case 3:
+                return _context31.abrupt("return", _context31.sent);
+
+              case 6:
+                _context31.prev = 6;
+                _context31.t0 = _context31["catch"](0);
+                throw Error(JSON.stringify(_context31.t0));
+
+              case 9:
+              case "end":
+                return _context31.stop();
+            }
+          }
+        }, _callee31, this, [[0, 6]]);
+      }));
+
+      function getRecycleBinAllFile() {
+        return _getRecycleBinAllFile.apply(this, arguments);
+      }
+
+      return getRecycleBinAllFile;
+    }()
   }]);
 
   return NoteRepository;
 }();
 
 var NoteRepository$1 = new NoteRepository();
-
-/*
-  target 컴포넌트가 계속 바뀌어서 헷갈림
-  open + target 컴포넌트 이름
-*/
 
 var NoteMeta = {
   // antd modal prop 설정
@@ -6699,8 +6706,8 @@ var NoteMeta = {
     }
   },
   // core - Modal prop 설정
-  openMessage: function openMessage(type) {
-    return this.setMessageConfig(this.setMessageInfoConfig(type), this.setEventConfig(type));
+  openMessage: function openMessage(type, data) {
+    return this.setMessageConfig(this.setMessageInfoConfig(type, data), this.setEventConfig(type, data));
   },
   // Modal(core - Message) prop 만들기
   setMessageConfig: function setMessageConfig(dialogType, eventList) {
@@ -6720,7 +6727,7 @@ var NoteMeta = {
       btns: buttonList
     };
   },
-  setEventConfig: function setEventConfig(type) {
+  setEventConfig: function setEventConfig(type, data) {
     var eventList = [];
 
     switch (type) {
@@ -6730,7 +6737,7 @@ var NoteMeta = {
         // 삭제 함수 추가
         eventList.push(function (e) {
           e.stopPropagation();
-          ChapterStore.deleteNoteChapter(type === 'draggedChapter');
+          ChapterStore.deleteNoteChapter(data);
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -6740,32 +6747,12 @@ var NoteMeta = {
         });
         break;
 
-      case 'page':
-        // 삭제 함수 추가
-        eventList.push(function (e) {
-          e.stopPropagation();
-
-          if (PageStore.lastSharedPageParentId) {
-            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-            PageStore.setLastSharedPageParentId('');
-            ChapterStore.deleteNoteChapter();
-          } else PageStore.throwNotePage();
-
-          if (EditorStore.fileList) EditorStore.deleteAllFile();
-        });
-        eventList.push(function (e) {
-          e.stopPropagation();
-          NoteStore.setModalInfo(null);
-        });
-        break;
-
       case 'sharedPage':
       case 'deletePage':
         // 페이지 영구 삭제
         eventList.push(function (e) {
           e.stopPropagation();
-          PageStore.deleteNotePage(); // 전에 PageStore.setDeletePageList 이거 돼 있어야 함
-
+          PageStore.deleteNotePage(data);
           if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
@@ -6808,9 +6795,9 @@ var NoteMeta = {
         });
         break;
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'editingPage':
-      case 'chapterconfirm':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'multiFileSomeFail':
@@ -6950,10 +6937,36 @@ var NoteMeta = {
         break;
 
       case 'emptyRecycleBin':
-        eventList.push(function (e) {
-          e.stopPropagation();
-          PageStore.deleteNotePage();
-        });
+        eventList.push( /*#__PURE__*/function () {
+          var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+            var _yield$EditorStore$ge, target;
+
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    e.stopPropagation();
+                    _context3.next = 3;
+                    return EditorStore.getRecycleBinAllFile();
+
+                  case 3:
+                    _yield$EditorStore$ge = _context3.sent;
+                    target = _yield$EditorStore$ge.fileList;
+                    PageStore.deleteNotePage(data);
+                    if (target) EditorStore.deleteAllFile(target);
+
+                  case 7:
+                  case "end":
+                    return _context3.stop();
+                }
+              }
+            }, _callee3);
+          }));
+
+          return function (_x3) {
+            return _ref3.apply(this, arguments);
+          };
+        }());
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setModalInfo(null);
@@ -6990,9 +7003,9 @@ var NoteMeta = {
           text: i18n.t('NOTE_CONTEXT_MENU_02')
         }), defaultBtn2];
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'editingPage':
-      case 'chapterconfirm':
       case 'titleDuplicate':
       case 'duplicateTagName':
       case 'multiFileSomeFail':
@@ -7011,7 +7024,7 @@ var NoteMeta = {
         return;
     }
   },
-  setMessageInfoConfig: function setMessageInfoConfig(type) {
+  setMessageInfoConfig: function setMessageInfoConfig(type, data) {
     // const userName = '';
     var fileName = EditorStore.deleteFileName; // type이 error면 빨간색, error말고 다른 색이면 보라색
 
@@ -7059,20 +7072,20 @@ var NoteMeta = {
         dialogType.subtitle = i18n.t('NOTE_BIN_07'), dialogType.btns = this.setBtns('delete');
         break;
 
-      case 'confirm':
+      case 'nonDeletableSinglePage':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
-          userName: PageStore.editingUserName
+          userName: data.name
         });
         dialogType.btns = this.setBtns(type);
         break;
 
-      case 'chapterconfirm':
+      case 'nonDeletableMultiPage':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
-          count: PageStore.editingUserCount
+          count: data.count
         });
         dialogType.btns = this.setBtns(type);
         break;
@@ -7140,7 +7153,7 @@ var NoteMeta = {
       case 'emptyRecycleBin':
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_08', {
-          num: PageStore.deletePageList.length
+          num: data.pageList.length
         });
         dialogType.subtitle = i18n.t('NOTE_BIN_07');
         dialogType.btns = this.setBtns('delete');
@@ -7277,7 +7290,6 @@ var NoteStore = observable({
   draggedItems: [],
   draggedOffset: {},
   sharedInfo: {},
-  isShared: false,
   shareNoteType: '',
   shareContent: '',
   shareArrays: {},
@@ -7409,9 +7421,6 @@ var NoteStore = observable({
   toggleIsContentExpanded: function toggleIsContentExpanded() {
     this.isContentExpanded = !this.isContentExpanded;
   },
-  setIsShared: function setIsShared(flag) {
-    this.isShared = flag;
-  },
   setShareNoteType: function setShareNoteType(noteType) {
     this.shareNoteType = noteType;
   },
@@ -7440,7 +7449,7 @@ var NoteStore = observable({
     this.showModal = showModal;
   },
   // { type, title, subTitle, buttons }
-  setModalInfo: function setModalInfo(modalType) {
+  setModalInfo: function setModalInfo(modalType, data) {
     switch (modalType) {
       // AntdModal로 연다
       case 'viewInfo':
@@ -7450,8 +7459,8 @@ var NoteStore = observable({
         this.setShowModal(true);
         break;
 
-      case 'chapterconfirm':
-      case 'confirm':
+      case 'nonDeletableSinglePage':
+      case 'nonDeletableMultiPage':
       case 'chapter':
       case 'draggedChapter':
       case 'page':
@@ -7471,7 +7480,7 @@ var NoteStore = observable({
       case 'recover': // 페이지 복구 묻는 팝업창
 
       case 'emptyRecycleBin':
-        this.modalInfo = NoteMeta.openMessage(modalType);
+        this.modalInfo = NoteMeta.openMessage(modalType, data);
         this.setShowModal(true);
         break;
 
@@ -7681,7 +7690,7 @@ function _templateObject14() {
 }
 
 function _templateObject13() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: ", ";\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  line-height: 1.7;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.75rem;\n  color: ", ";\n  text-overflow: ellipsis;\n  height: 1.125rem;\n  overflow: hidden;\n  white-space: nowrap;\n  line-height: 0.9;\n"]);
 
   _templateObject13 = function _templateObject13() {
     return data;
@@ -7691,7 +7700,7 @@ function _templateObject13() {
 }
 
 function _templateObject12() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 0.813rem;\n  font-weight: 500;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n  font-size: 0.813rem;\n  height: 1.125rem;\n  font-weight: 500;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  line-height: 0.9;\n"]);
 
   _templateObject12 = function _templateObject12() {
     return data;
@@ -9878,6 +9887,9 @@ var LNBSearchResult = function LNBSearchResult() {
     }));
   };
 
+  useEffect(function () {
+    new Mark$1(document.querySelectorAll('.lnb-result-context')).mark(ChapterStore.searchStr);
+  }, []);
   return useObserver(function () {
     var _ChapterStore$searchR, _ChapterStore$searchR2, _ChapterStore$searchR3, _ChapterStore$searchR4, _ChapterStore$searchR5, _ChapterStore$searchR6, _ChapterStore$searchR8, _ChapterStore$searchR9, _ChapterStore$searchR10, _ChapterStore$searchR12, _ChapterStore$searchR13, _ChapterStore$searchR14;
 
@@ -9908,6 +9920,7 @@ var LNBSearchResult = function LNBSearchResult() {
         isSelected: selected === page.note_id ? true : false,
         onClick: onClickPageBtn(page.note_id)
       }, /*#__PURE__*/React.createElement(PageSearchResultChapterTitle, null, page.TYPE === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : page.TYPE === 'recycle_bin' ? t('NOTE_BIN_01') : page.text), /*#__PURE__*/React.createElement(PageSearchResultPageTitle, null, page.note_title), /*#__PURE__*/React.createElement(PageSearchResultChapterTitle, {
+        className: "lnb-result-context",
         isContent: true
       }, page.contentPreview), /*#__PURE__*/React.createElement(SearchResultBotttom, {
         isLast: index === ((_ChapterStore$searchR11 = ChapterStore.searchResult) === null || _ChapterStore$searchR11 === void 0 ? void 0 : _ChapterStore$searchR11['page'].length) - 1 ? true : false
@@ -10779,6 +10792,7 @@ var exportDownloadPDF = /*#__PURE__*/function () {
             }
 
             requests = _toConsumableArray(imgElementList).map(function (el) {
+              el.setAttribute('style', 'width: 100%;');
               return preloadingImage(el);
             }); // setTimeout(async () => {
 
@@ -11217,227 +11231,227 @@ var ContextMenu = function ContextMenu(_ref) {
     chapter: ChapterStore,
     page: PageStore
   };
-  /**
-   * 챕터/페이지의 이름을 변경한다.
-   */
 
-  var renameComponent = function renameComponent() {
+  var renameNote = function renameNote() {
     var targetStore = store[noteType];
-    if (!targetStore) return;
-    targetStore.setRenameId(note.id);
-    targetStore.setRenamePrevText(note.text);
-    targetStore.setRenameText(note.text);
+    targetStore === null || targetStore === void 0 ? void 0 : targetStore.setRenameId(note.id);
   };
 
-  var setSelectableIdOfChapter = function setSelectableIdOfChapter() {
-    var _selectableChapter$ch;
-
-    var selectableChapter = chapterIdx > 0 ? ChapterStore.chapterList[chapterIdx - 1] : ChapterStore.chapterList[1];
-    var selectableChapterId = selectableChapter === null || selectableChapter === void 0 ? void 0 : selectableChapter.id;
-    var selectablePageId = selectableChapter === null || selectableChapter === void 0 ? void 0 : (_selectableChapter$ch = selectableChapter.children[0]) === null || _selectableChapter$ch === void 0 ? void 0 : _selectableChapter$ch.id;
-    ChapterStore.setSelectableChapterId(selectableChapterId);
-    PageStore.setSelectablePageId(selectablePageId);
+  var getAdjacentChapter = function getAdjacentChapter() {
+    return chapterIdx > 0 ? ChapterStore.chapterList[chapterIdx - 1] : ChapterStore.chapterList[1];
   };
 
-  var setSelectableIdOfPage = function setSelectableIdOfPage() {
-    var _parent$children, _parent$children$;
+  var getAdjacentPageId = function getAdjacentPageId() {
+    var _parent$children$;
 
-    var selectablePageId = pageIdx > 0 ? (_parent$children = parent.children[pageIdx - 1]) === null || _parent$children === void 0 ? void 0 : _parent$children.id : (_parent$children$ = parent.children[1]) === null || _parent$children$ === void 0 ? void 0 : _parent$children$.id;
-    PageStore.setSelectablePageId(selectablePageId);
+    return pageIdx > 0 ? parent.children[pageIdx - 1].id : (_parent$children$ = parent.children[1]) === null || _parent$children$ === void 0 ? void 0 : _parent$children$.id;
   };
-  /**
-   * 챕터/페이지를 휴지통으로 이동시킨다.
-   * [ todo ] 휴지통에 있는 페이지 삭제시 PageStore.setDeletePageList하고, NoteStore.setModalInfo('deletePage') 불러야함
-   */
 
+  var throwNoteInRecycleBin = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _yield$ChapterStore$g, noteList, editingPageList, _yield$userStore$getP, displayName, _getAdjacentChapter, _getAdjacentChapter$c, _yield$PageStore$getN, editingUserId, _yield$userStore$getP2, _displayName, _getAdjacentChapter2, _getAdjacentChapter2$, data;
 
-  var throwComponent = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context.prev = _context.next) {
             case 0:
-              _context3.t0 = noteType;
-              _context3.next = _context3.t0 === 'chapter' ? 3 : _context3.t0 === 'page' ? 6 : 8;
+              _context.t0 = noteType;
+              _context.next = _context.t0 === 'chapter' ? 3 : _context.t0 === 'page' ? 18 : 38;
               break;
 
             case 3:
-              ChapterStore.setDeleteChapterList([{
-                id: note.id
-              }]);
-              ChapterStore.getChapterChildren(note.id).then( /*#__PURE__*/function () {
-                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dto) {
-                  var editingList, _yield$userStore$getP, displayName;
+              _context.next = 5;
+              return ChapterStore.getChapterChildren(note.id);
 
-                  return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                      switch (_context.prev = _context.next) {
-                        case 0:
-                          editingList = dto.noteList.filter(function (page) {
-                            return page.is_edit !== null && page.is_edit !== '';
-                          });
+            case 5:
+              _yield$ChapterStore$g = _context.sent;
+              noteList = _yield$ChapterStore$g.noteList;
+              editingPageList = noteList.filter(function (page) {
+                return page.is_edit;
+              });
 
-                          if (!(editingList.length === 1)) {
-                            _context.next = 10;
-                            break;
-                          }
+              if (!(editingPageList.length === 1)) {
+                _context.next = 16;
+                break;
+              }
 
-                          _context.next = 4;
-                          return userStore.getProfile(editingList[0].is_edit);
+              _context.next = 11;
+              return userStore.getProfile(editingPageList[0].is_edit);
 
-                        case 4:
-                          _yield$userStore$getP = _context.sent;
-                          displayName = _yield$userStore$getP.displayName;
-                          PageStore.setEditingUserName(displayName);
-                          NoteStore.setModalInfo('confirm');
-                          _context.next = 11;
-                          break;
+            case 11:
+              _yield$userStore$getP = _context.sent;
+              displayName = _yield$userStore$getP.displayName;
+              NoteStore.setModalInfo('nonDeletableSinglePage', {
+                name: displayName
+              });
+              _context.next = 17;
+              break;
 
-                        case 10:
-                          if (editingList.length > 1) {
-                            PageStore.setEditingUserCount(editingList.length);
-                            NoteStore.setModalInfo('chapterconfirm');
-                          } else {
-                            if (ChapterStore.currentChapterId === note.id) setSelectableIdOfChapter();
-                            if (note.type === 'shared' || note.type === 'shared_page') NoteStore.setModalInfo('sharedChapter');else NoteStore.setModalInfo('chapter');
-                          }
+            case 16:
+              if (editingPageList.length > 1) {
+                NoteStore.setModalInfo('nonDeletableMultiPage', {
+                  count: editingPageList.length
+                });
+              } else {
+                NoteStore.setModalInfo(note.type === 'shared' || note.type === 'shared_page' ? 'sharedChapter' : 'chapter', {
+                  chapterList: [{
+                    id: note.id
+                  }],
+                  selectablePageId: (_getAdjacentChapter = getAdjacentChapter()) === null || _getAdjacentChapter === void 0 ? void 0 : (_getAdjacentChapter$c = _getAdjacentChapter.children[0]) === null || _getAdjacentChapter$c === void 0 ? void 0 : _getAdjacentChapter$c.id
+                });
+              }
 
-                        case 11:
-                        case "end":
-                          return _context.stop();
-                      }
-                    }
-                  }, _callee);
-                }));
+            case 17:
+              return _context.abrupt("break", 39);
 
-                return function (_x) {
-                  return _ref3.apply(this, arguments);
-                };
-              }());
-              return _context3.abrupt("break", 9);
+            case 18:
+              _context.next = 20;
+              return PageStore.getNoteInfoList(note.id);
 
-            case 6:
-              PageStore.getNoteInfoList(note.id).then( /*#__PURE__*/function () {
-                var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dto) {
-                  var _yield$userStore$getP2, displayName;
+            case 20:
+              _yield$PageStore$getN = _context.sent;
+              editingUserId = _yield$PageStore$getN.is_edit;
 
-                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          if (!(dto.is_edit === null || dto.is_edit === '')) {
-                            _context2.next = 6;
-                            break;
-                          }
+              if (!editingUserId) {
+                _context.next = 29;
+                break;
+              }
 
-                          PageStore.setDeletePageList([{
-                            note_id: note.id
-                          }]);
+              _context.next = 25;
+              return userStore.getProfile(editingUserId);
 
-                          if (PageStore.currentPageId === note.id) {
-                            if (parent.type === 'shared_page' && parent.children.length === 1) {
-                              setSelectableIdOfChapter();
-                              PageStore.setLastSharedPageParentId(parent.id);
-                            } else {
-                              setSelectableIdOfPage();
-                            }
-                          }
+            case 25:
+              _yield$userStore$getP2 = _context.sent;
+              _displayName = _yield$userStore$getP2.displayName;
+              NoteStore.setModalInfo('nonDeletableSinglePage', {
+                name: _displayName
+              });
+              return _context.abrupt("return");
 
-                          if (PageStore.lastSharedPageParentId) {
-                            ChapterStore.setDeleteChapterId(PageStore.lastSharedPageParentId);
-                            PageStore.setLastSharedPageParentId('');
-                            ChapterStore.deleteNoteChapter();
-                          } else if (note.type === 'shared') NoteStore.setModalInfo('sharedPage');else PageStore.throwNotePage();
+            case 29:
+              if (!(PageStore.pageInfo.id === note.id && parent.type === 'shared_page' && parent.children.length === 1)) {
+                _context.next = 32;
+                break;
+              }
 
-                          _context2.next = 12;
-                          break;
+              ChapterStore.deleteNoteChapter({
+                chapterList: [{
+                  id: parent.id
+                }],
+                selectablePageId: (_getAdjacentChapter2 = getAdjacentChapter()) === null || _getAdjacentChapter2 === void 0 ? void 0 : (_getAdjacentChapter2$ = _getAdjacentChapter2.children[0]) === null || _getAdjacentChapter2$ === void 0 ? void 0 : _getAdjacentChapter2$.id
+              });
+              return _context.abrupt("return");
 
-                        case 6:
-                          _context2.next = 8;
-                          return userStore.getProfile(dto.is_edit);
+            case 32:
+              data = {
+                pageList: [{
+                  note_id: note.id,
+                  restoreChapterId: parent.id
+                }],
+                selectablePageId: getAdjacentPageId()
+              };
 
-                        case 8:
-                          _yield$userStore$getP2 = _context2.sent;
-                          displayName = _yield$userStore$getP2.displayName;
-                          PageStore.setEditingUserName(displayName);
-                          NoteStore.setModalInfo('confirm');
+              if (!(note.type === 'shared')) {
+                _context.next = 36;
+                break;
+              }
 
-                        case 12:
-                        case "end":
-                          return _context2.stop();
-                      }
-                    }
-                  }, _callee2);
-                }));
+              NoteStore.setModalInfo('sharedPage', data);
+              return _context.abrupt("return");
 
-                return function (_x2) {
-                  return _ref4.apply(this, arguments);
-                };
-              }());
-              return _context3.abrupt("break", 9);
+            case 36:
+              PageStore.throwNotePage(data);
+              return _context.abrupt("break", 39);
 
-            case 8:
-              return _context3.abrupt("break", 9);
+            case 38:
+              return _context.abrupt("break", 39);
 
-            case 9:
+            case 39:
             case "end":
-              return _context3.stop();
+              return _context.stop();
           }
         }
-      }, _callee3);
+      }, _callee);
     }));
 
-    return function throwComponent() {
+    return function throwNoteInRecycleBin() {
       return _ref2.apply(this, arguments);
     };
   }();
 
   var restoreComponent = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var newChapter;
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var newChapter, _yield$ChapterStore$g2, restoreChapterId;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
               if (!(ChapterStore.getRoomChapterList().length === 0)) {
-                _context4.next = 7;
+                _context2.next = 7;
                 break;
               }
 
-              _context4.next = 3;
+              _context2.next = 3;
               return ChapterStore.createRestoreChapter(t('NOTE_PAGE_LIST_CMPNT_DEF_01'), ChapterStore.getChapterRandomColor());
 
             case 3:
-              newChapter = _context4.sent;
+              newChapter = _context2.sent;
               PageStore.restorePageLogic({
                 chapterId: newChapter.id,
                 pageId: note.id,
                 toastTxt: t('NOTE_BIN_RESTORE_02')
               });
-              _context4.next = 9;
+              _context2.next = 17;
               break;
 
             case 7:
+              if (!note.restoreChapterId) {
+                _context2.next = 15;
+                break;
+              }
+
+              _context2.next = 10;
+              return ChapterStore.getChapterInfoList(note.restoreChapterId);
+
+            case 10:
+              _yield$ChapterStore$g2 = _context2.sent;
+              restoreChapterId = _yield$ChapterStore$g2.id;
+
+              if (restoreChapterId) {
+                PageStore.restorePageLogic({
+                  chapterId: restoreChapterId,
+                  pageId: note.id,
+                  toastTxt: t('NOTE_BIN_RESTORE_02')
+                });
+              } else {
+                PageStore.setRestorePageId(note.id);
+                NoteStore.setModalInfo('restore');
+              }
+
+              _context2.next = 17;
+              break;
+
+            case 15:
               PageStore.setRestorePageId(note.id);
               NoteStore.setModalInfo('restore');
 
-            case 9:
+            case 17:
             case "end":
-              return _context4.stop();
+              return _context2.stop();
           }
         }
-      }, _callee4);
+      }, _callee2);
     }));
 
     return function restoreComponent() {
-      return _ref5.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
   var shareComponent = function shareComponent() {
     NoteStore.setShareNoteType(noteType);
     NoteStore.setShareContent(note);
-    NoteStore.setIsShared(true);
     NoteStore.setModalInfo('forward');
   };
 
@@ -11468,42 +11482,36 @@ var ContextMenu = function ContextMenu(_ref) {
   var infoComponent = function infoComponent() {
     NoteStore.handleSharedInfo(noteType, note.id);
   };
-  /**
-   * 휴지통에 있는 모든 페이지를 영구적으로 삭제한다.
-   */
 
-
-  var emptyComponent = function emptyComponent() {
-    PageStore.setDeletePageList(note.children.map(function (page) {
-      return {
-        note_id: page.id
-      };
-    }));
-    if (PageStore.deletePageList.length !== 0) NoteStore.setModalInfo('emptyRecycleBin');
-  };
-  /**
-   * 휴지통에 있는 페이지를 영구적으로 삭제한다.
-   */
-
-
-  var deleteComponent = function deleteComponent() {
-    PageStore.setDeletePageList([{
-      note_id: note.id
-    }]);
-    if (PageStore.currentPageId === note.id) setSelectableIdOfPage();
-    NoteStore.setModalInfo('deletePage');
+  var emptyRecycleBin = function emptyRecycleBin() {
+    NoteStore.setModalInfo('emptyRecycleBin', {
+      pageList: note.children.map(function (page) {
+        return {
+          note_id: page.id
+        };
+      })
+    });
   };
 
-  var onClickContextMenu = function onClickContextMenu(_ref6) {
-    var key = _ref6.key,
-        domEvent = _ref6.domEvent;
+  var deletePagePermanently = function deletePagePermanently() {
+    NoteStore.setModalInfo('deletePage', {
+      pageList: [{
+        note_id: note.id
+      }],
+      selectablePageId: getAdjacentPageId()
+    });
+  };
+
+  var onClickContextMenu = function onClickContextMenu(_ref4) {
+    var key = _ref4.key,
+        domEvent = _ref4.domEvent;
     domEvent.stopPropagation();
-    if (key === 'rename') renameComponent();else if (key === 'throw') throwComponent();else if (key === 'forward') shareComponent();else if (key === 'sendEmail') exportComponent(true);else if (key === 'exportPDF') exportComponent(false);else if (key === 'exportTXT') exportTxtComponent();else if (key === 'viewInfo') infoComponent();else if (key === 'emptyRecycleBin') emptyComponent();else if (key === 'restore') restoreComponent();else if (key === 'delete') deleteComponent();
+    if (key === 'rename') renameNote();else if (key === 'throw') throwNoteInRecycleBin();else if (key === 'forward') shareComponent();else if (key === 'sendEmail') exportComponent(true);else if (key === 'exportPDF') exportComponent(false);else if (key === 'exportTXT') exportTxtComponent();else if (key === 'viewInfo') infoComponent();else if (key === 'emptyRecycleBin') emptyRecycleBin();else if (key === 'restore') restoreComponent();else if (key === 'delete') deletePagePermanently();
     if (key) NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
-  var handleSubMenuClick = function handleSubMenuClick(_ref7) {
-    var domEvent = _ref7.domEvent;
+  var handleSubMenuClick = function handleSubMenuClick(_ref5) {
+    var domEvent = _ref5.domEvent;
     domEvent.stopPropagation();
   };
 
@@ -11625,7 +11633,7 @@ var ChapterText = function ChapterText(_ref) {
     }, /*#__PURE__*/React.createElement(ChapterTextSpan, {
       onMouseOver: handleTooltip,
       marginLeft: chapter.type === CHAPTER_TYPE.NOTEBOOK || chapter.type === CHAPTER_TYPE.DEFAULT ? '1.69rem' : '2.63rem'
-    }, title)), (authStore.hasPermission('noteChapter', 'U') || chapter.type === CHAPTER_TYPE.SHARED) && /*#__PURE__*/React.createElement(ContextMenu, {
+    }, title)), (authStore.hasPermission('noteChapter', 'U') || chapter.type === CHAPTER_TYPE.SHARED) && (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length !== 0) && /*#__PURE__*/React.createElement(ContextMenu, {
       noteType: "chapter",
       note: chapter,
       chapterIdx: index
@@ -11792,6 +11800,15 @@ var PageItem = function PageItem(_ref) {
 
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
+  var id = page.id,
+      type = page.type,
+      title = page.text;
+
+  var _useState3 = useState(title),
+      _useState4 = _slicedToArray(_useState3, 2),
+      renameTitle = _useState4[0],
+      setRenameTitle = _useState4[1];
+
   var chapterDragData = {
     item: chapter,
     chapterIdx: chapterIdx
@@ -11805,12 +11822,12 @@ var PageItem = function PageItem(_ref) {
 
   var _useDrag = useDrag({
     item: {
-      id: page.id,
-      type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE
+      id: id,
+      type: type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE
     },
     begin: function begin(monitor) {
-      if (!PageStore.dragData.get(page.id)) {
-        PageStore.setDragData(new Map([[page.id, pageDragData]]));
+      if (!PageStore.dragData.get(id)) {
+        PageStore.setDragData(new Map([[id, pageDragData]]));
         PageStore.setIsCtrlKeyDown(false);
       }
 
@@ -11821,14 +11838,15 @@ var PageItem = function PageItem(_ref) {
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
       return {
-        type: page.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+        type: type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
         data: _toConsumableArray(PageStore.dragData).map(function (keyValue) {
           var item = keyValue[1].item;
           return {
             id: item.id,
             text: item.text,
             date: item.modified_date,
-            type: item.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE
+            type: item.type === 'note' ? DRAG_TYPE.PAGE : DRAG_TYPE.SHARED_PAGE,
+            chapterId: item.parent_notebook
           };
         })
       };
@@ -11906,28 +11924,34 @@ var PageItem = function PageItem(_ref) {
     });
   }, []);
   var handlePageSelect = useCallback(function (e) {
-    if ((page.type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey) return;
+    if ((type === 'recycle' || PageStore.isRecycleBin) && e.ctrlKey) return;
 
     if (e.ctrlKey) {
-      if (PageStore.dragData.get(page.id)) PageStore.deleteDragData(page.id);else PageStore.appendDragData(page.id, pageDragData);
+      if (PageStore.dragData.get(id)) PageStore.deleteDragData(id);else PageStore.appendDragData(id, pageDragData);
       PageStore.setIsCtrlKeyDown(true);
       return;
     }
 
     ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
     ChapterStore.setIsCtrlKeyDown(false);
-    PageStore.setDragData(new Map([[page.id, pageDragData]]));
+    PageStore.setDragData(new Map([[id, pageDragData]]));
     PageStore.setIsCtrlKeyDown(false);
-    onClick(page.id);
+    onClick(id);
   }, [page]);
 
-  var handlePageName = function handlePageName(e) {
-    return PageStore.setRenameText(checkMaxLength(e));
+  var handleTitleChange = function handleTitleChange(e) {
+    setRenameTitle(checkMaxLength(e));
   };
 
-  var handlePageTextInput = function handlePageTextInput(isEscape) {
-    if (!isEscape) {
-      PageStore.renameNotePage(chapter.id);
+  var handleRename = function handleRename(isEscape) {
+    if (isEscape || !renameTitle) {
+      setRenameTitle(title);
+    } else if (renameTitle !== title) {
+      PageStore.renameNotePage({
+        id: id,
+        title: renameTitle,
+        chapterId: chapter.id
+      });
     }
 
     PageStore.setRenameId('');
@@ -11944,36 +11968,36 @@ var PageItem = function PageItem(_ref) {
 
   return useObserver(function () {
     return /*#__PURE__*/React.createElement(PageCover, {
-      ref: authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId && page.type !== 'recycle' ? page.type === 'note' ? function (node) {
+      ref: authStore.hasPermission('noteSharePage', 'C') && !PageStore.renameId && type !== 'recycle' ? type === 'note' ? function (node) {
         return drag(drop(node));
       } : drag : null,
-      id: page.id,
+      id: id,
       className: "page-li",
       onClick: handlePageSelect
-    }, /*#__PURE__*/React.createElement(PageMargin, null), PageStore.getRenameId() === page.id ? /*#__PURE__*/React.createElement(PageTextInput, {
+    }, /*#__PURE__*/React.createElement(PageMargin, null), PageStore.getRenameId() === id ? /*#__PURE__*/React.createElement(PageTextInput, {
       maxLength: "200",
-      placeholder: PageStore.renamePrevText,
-      value: PageStore.renameText,
+      placeholder: title,
+      value: renameTitle,
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
-      onChange: handlePageName,
-      onBlur: handlePageTextInput.bind(null, false),
+      onChange: handleTitleChange,
+      onBlur: handleRename.bind(null, false),
       onKeyDown: function onKeyDown(e) {
-        if (e.key === 'Enter') handlePageTextInput(false);else if (e.key === 'Escape') handlePageTextInput(true);
+        if (e.key === 'Enter') handleRename(false);else if (e.key === 'Escape') handleRename(true);
       },
       onFocus: handleFocus,
       autoFocus: true
     }) : /*#__PURE__*/React.createElement(PageTextCover, {
-      className: PageStore.dragEnterChapterIdx === chapterIdx ? PageStore.dragEnterPageIdx === index && page.type === 'note' ? 'borderTopLine' : '' : ''
+      className: PageStore.dragEnterChapterIdx === chapterIdx && PageStore.dragEnterPageIdx === index && type === 'note' ? 'borderTopLine' : ''
     }, /*#__PURE__*/React.createElement(PageTextContainer, {
-      className: PageStore.isCtrlKeyDown ? PageStore.dragData.get(page.id) ? 'selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.dragData.size > 0 ? page.id === _toConsumableArray(PageStore.dragData)[0][0] : page.id === PageStore.currentPageId) ? 'selected' : ''
+      className: PageStore.isCtrlKeyDown ? PageStore.dragData.get(id) ? 'selected' : '' : NoteStore.showPage && (NoteStore.isDragging && PageStore.dragData.size > 0 ? id === _toConsumableArray(PageStore.dragData)[0][0] : id === PageStore.currentPageId) ? 'selected' : ''
     }, /*#__PURE__*/React.createElement(Tooltip, {
       placement: "bottomLeft",
-      title: isEllipsisActive ? page.text : null
+      title: isEllipsisActive ? title : null
     }, /*#__PURE__*/React.createElement(PageText, {
       onMouseOver: handleTooltip
-    }, page.text)), (authStore.hasPermission('notePage', 'U') || page.type === 'shared') && /*#__PURE__*/React.createElement(ContextMenu, {
+    }, title)), (authStore.hasPermission('notePage', 'U') || page.type === 'shared') && /*#__PURE__*/React.createElement(ContextMenu, {
       noteType: "page",
       note: page,
       chapterIdx: chapterIdx,
@@ -12015,7 +12039,6 @@ var PageList = function PageList(_ref) {
   var handleNewBtnClick = function handleNewBtnClick(targetId) {
     return function () {
       PageStore.setCreatePageParent(targetId);
-      PageStore.setCreatePageParentIdx(chapterIdx);
       PageStore.createNotePage();
       logEvent('note', 'clickNewPageBtn');
     };
@@ -12096,14 +12119,22 @@ var ChapterItem = function ChapterItem(_ref) {
   var themeContext = useContext(ThemeContext);
   var chapterContainerRef = useRef(null);
 
-  var _useState = useState(chapter.isFolded ? chapter.isFolded : false),
+  var _useState = useState(!!chapter.isFolded),
       _useState2 = _slicedToArray(_useState, 2),
       isFolded = _useState2[0],
       setIsFolded = _useState2[1];
 
   var id = chapter.id,
-      title = chapter.text,
-      color = chapter.color;
+      color = chapter.color,
+      children = chapter.children,
+      type = chapter.type,
+      title = chapter.text;
+
+  var _useState3 = useState(title),
+      _useState4 = _slicedToArray(_useState3, 2),
+      renameTitle = _useState4[0],
+      setRenameTitle = _useState4[1];
+
   var chapterDragData = useMemo(function () {
     return {
       item: chapter,
@@ -12136,12 +12167,12 @@ var ChapterItem = function ChapterItem(_ref) {
 
   var _useDrag = useDrag({
     item: {
-      id: chapter.id,
+      id: id,
       type: isShared ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER
     },
     begin: function begin(monitor) {
-      if (!ChapterStore.dragData.get(chapter.id)) {
-        ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+      if (!ChapterStore.dragData.get(id)) {
+        ChapterStore.setDragData(new Map([[id, chapterDragData]]));
         ChapterStore.setIsCtrlKeyDown(false);
       }
 
@@ -12220,7 +12251,7 @@ var ChapterItem = function ChapterItem(_ref) {
   var _useDrop3 = useDrop({
     accept: DRAG_TYPE.PAGE,
     drop: function drop() {
-      PageStore.moveNotePage(chapter.id, index, 0);
+      PageStore.moveNotePage(id, index, 0);
     },
     hover: function hover() {
       if (PageStore.dragEnterPageIdx !== 0) PageStore.setDragEnterPageIdx(0);
@@ -12245,27 +12276,27 @@ var ChapterItem = function ChapterItem(_ref) {
     if (PageStore.isRecycleBin && e.ctrlKey) return;
 
     if (e.ctrlKey) {
-      if (ChapterStore.dragData.get(chapter.id)) ChapterStore.deleteDragData(chapter.id);else ChapterStore.appendDragData(chapter.id, chapterDragData);
+      if (ChapterStore.dragData.get(id)) ChapterStore.deleteDragData(id);else ChapterStore.appendDragData(id, chapterDragData);
       ChapterStore.setIsCtrlKeyDown(true);
       return;
     }
 
-    ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
+    ChapterStore.setDragData(new Map([[id, chapterDragData]]));
     ChapterStore.setIsCtrlKeyDown(false);
-    var pageId = chapter.children.length > 0 ? chapter.children[0].id : '';
+    var pageId = children.length > 0 ? children[0].id : '';
     PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
 
     NoteStore.setShowPage(true);
 
     if (pageId) {
       PageStore.setDragData(new Map([[pageId, {
-        item: chapter.children[0],
+        item: children[0],
         pageIdx: 0,
-        chapterId: chapter.id,
+        chapterId: id,
         chapterIdx: index
       }]]));
     } else {
-      ChapterStore.setCurrentChapterInfo(chapter.id, false);
+      ChapterStore.setCurrentChapterInfo(id, false);
       PageStore.clearDragData();
     }
 
@@ -12273,7 +12304,7 @@ var ChapterItem = function ChapterItem(_ref) {
   }, [chapter]);
 
   var ChapterIcon = function ChapterIcon() {
-    switch (chapter.type) {
+    switch (type) {
       case CHAPTER_TYPE.SHARED_PAGE:
         return /*#__PURE__*/React.createElement(SharedPageIcon, {
           color: themeContext.SubStateVivid
@@ -12297,13 +12328,19 @@ var ChapterItem = function ChapterItem(_ref) {
   };
 
   var handleTitleChange = function handleTitleChange(e) {
-    return ChapterStore.setRenameText(checkMaxLength(e));
+    setRenameTitle(checkMaxLength(e));
   };
 
   var handleTitleUpdate = function handleTitleUpdate(isEscape) {
     return function () {
-      if (!isEscape && ChapterStore.renameText !== title) {
-        ChapterStore.renameNoteChapter(color);
+      if (isEscape || !renameTitle) {
+        setRenameTitle(title);
+      } else if (renameTitle !== title) {
+        ChapterStore.renameNoteChapter({
+          id: id,
+          title: renameTitle,
+          color: color
+        });
       }
 
       ChapterStore.setRenameId('');
@@ -12330,11 +12367,11 @@ var ChapterItem = function ChapterItem(_ref) {
     return /*#__PURE__*/React.createElement(ChapterContainer, {
       ref: !isShared ? drop(chapterContainerRef) : null,
       className: (isFolded ? 'folded ' : '') + (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : '') + (ChapterStore.dragEnterChapterIdx === index + 1 && ChapterStore.dragEnterChapterIdx === ChapterStore.chapterList.length - ChapterStore.sharedCnt && !isShared ? 'borderBottomLine' : ''),
-      id: chapter.id,
-      key: chapter.id,
+      id: id,
+      key: id,
       order: flexOrder
     }, /*#__PURE__*/React.createElement(ChapterCover, {
-      className: "chapter-div".concat(ChapterStore.dragData.get(chapter.id) ? ' selectedMenu' : ''),
+      className: "chapter-div".concat(ChapterStore.dragData.get(id) ? ' selectedMenu' : ''),
       ref: authStore.hasPermission('noteShareChapter', 'C') && !ChapterStore.renameId ? function (node) {
         return chapterWrapperRef(node);
       } : null,
@@ -12342,8 +12379,8 @@ var ChapterItem = function ChapterItem(_ref) {
     }, /*#__PURE__*/React.createElement(ChapterIcon, null), ChapterStore.getRenameId() === id ? /*#__PURE__*/React.createElement(ChapterTextInput, {
       paddingLeft: isShared ? '2.63rem' : '1.69rem',
       maxLength: "200",
-      placeholder: ChapterStore.renamePrevText,
-      value: ChapterStore.renameText,
+      placeholder: title,
+      value: renameTitle,
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
@@ -12469,17 +12506,20 @@ var RecycleBin = function RecycleBin(_ref) {
               case 14:
                 res = _context3.sent;
                 PageStore.setEditingUserName(res.displayName);
-                NoteStore.setModalInfo('confirm');
+                NoteStore.setModalInfo('nonDeletableSinglePage');
                 _context3.next = 20;
                 break;
 
               case 19:
                 if (editingNoteList.length > 1) {
                   PageStore.setEditingUserCount(editingNoteList.length);
-                  NoteStore.setModalInfo('chapterconfirm');
+                  NoteStore.setModalInfo('nonDeletableMultiPage');
                 } else {
                   ChapterStore.setDeleteChapterList(deleteChapterList);
-                  NoteStore.setModalInfo('draggedChapter');
+                  NoteStore.setModalInfo('draggedChapter', {
+                    chapterList: deleteChapterList,
+                    isDnd: true
+                  });
                 }
 
               case 20:
@@ -12512,7 +12552,8 @@ var RecycleBin = function RecycleBin(_ref) {
                             dto = _context2.sent;
                             if (dto.is_edit) editingNoteList.push(dto);
                             return _context2.abrupt("return", {
-                              note_id: note.id
+                              note_id: note.id,
+                              restoreChapterId: note.chapterId
                             });
 
                           case 5:
@@ -12542,17 +12583,19 @@ var RecycleBin = function RecycleBin(_ref) {
               case 30:
                 _res = _context3.sent;
                 PageStore.setEditingUserName(_res.displayName);
-                NoteStore.setModalInfo('confirm');
+                NoteStore.setModalInfo('nonDeletableSinglePage');
                 _context3.next = 36;
                 break;
 
               case 35:
                 if (editingNoteList.length > 1) {
                   PageStore.setEditingUserCount(editingNoteList.length);
-                  NoteStore.setModalInfo('chapterconfirm');
+                  NoteStore.setModalInfo('nonDeletableMultiPage');
                 } else {
-                  PageStore.setDeletePageList(deletePageList);
-                  PageStore.throwNotePage(true);
+                  PageStore.throwNotePage({
+                    pageList: deletePageList,
+                    isDnd: true
+                  });
                 }
 
               case 36:
@@ -12821,7 +12864,7 @@ function _templateObject2$6() {
 }
 
 function _templateObject$7() {
-  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    color: ", ";\n    background-color: ", ";\n    border: 1px solid ", ";\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: ", ";\n  }\n  .selectedMenu {\n    color: ", ";\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid ", " !important;\n    padding: 0 0.75rem !important;\n    background-color: ", ";\n    color: ", " !important;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n    background-color: ", ";\n    color: ", ";\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    background-color: ", ";\n    width: fit-content;\n  }\n  .ant-tooltip-arrow-content {\n    background-color: ", ";\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox {\n    font-family : \"Noto Sans KR\", sans-serif !important;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      bottom: 0;\n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 0.45rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid ", " !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    color: ", " !important;\n    margin-bottom: 0.75rem !important;\n    font-weight: 500 !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n\n  .link-toolbar {\n    flex-direction: column !important;\n    padding: 0 !important;\n    margin: 0.15rem 0 !important;\n    button {\n      width: 100% !important;\n      justify-content: flex-start !important;\n      padding: 0 0.5rem 0 0.3rem !important;\n      margin: 0 !important;\n    }\n  }\n  .link-toolbar button .link-toolbar-btn {\n    margin-left: 0.3rem;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n\n  .tox .tox-dialog.custom-link-dialog {\n    max-width: 24.38rem;\n    border: 0;\n    border-radius: 0.25rem;\n    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);\n    background-color: ", ";\n  }\n  \n  .tox .tox-dialog__header.custom-dialog-header {\n    position: relative;\n    padding: 0;\n    height: 2.69rem;\n    justify-content: center;\n    background-color: ", ";\n  }\n\n  .tox .tox-dialog__title.custom-dialog-title {\n    color: ", ";\n    font-family: 'Noto Sans KR';\n    font-weight: 500;\n    font-size: 0.88rem;\n    margin: auto;\n  }\n\n  .tox .tox-dialog__header.custom-dialog-header .tox-button {\n    position: absolute;\n    right: 0;\n    top: 0;\n    padding: 0;\n    width: 2.69rem;\n    height: 2.69rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n  }\n  \n  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {\n    background-color: transparent;\n    border-color: transparent;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {\n    padding: 1rem;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {\n    font-size: 0.81rem;\n    font-weight: 500;\n  }\n\n .tox .tox-dialog__footer.custom-dialog-footer {\n   padding: 0;\n   border-top: 1px solid ", ";\n   background-color: ", ";\n }\n\n .tox .custom-dialog-btns.tox-button {\n   border-color: transparent;\n   width: 4.5rem;\n   height: 1.88rem;\n }\n\n  .tox .tox-tbtn:hover,\n  .tox-collection__item--active:not(.tox-swatch) {\n    background: ", " !important;\n  }\n \n  .tox .tox-tbtn--enabled,\n  .tox .tox-tbtn:focus,\n  .tox .tox-collection--toolbar .tox-collection__item--enabled,\n  .tox .tox-collection--list .tox-collection__item--enabled {\n    background: ", " !important;\n  }\n\n  // .tox .tox-tbtn--select[aria-label=\"Font sizes\"] {\n  //   width: 4rem;\n  // }\n\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: ", ";\n    :hover {\n      background-color: inherit;\n    }\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown-menu-submenu-expand-icon {\n    svg {\n      fill : ", ";\n    }\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal {\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal {\n    width: 24.375rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .restoreModal .ant-modal {\n    width: 22.5rem !important;\n  }\n  .restoreModal .ant-modal-header {\n    height: 6.69rem !important;\n    border-bottom: 0px;\n  }\n  .restoreModal .ant-modal-title {\n    display: flex !important;\n    flex-direction: column !important;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    font-size: 0.938rem;\n  }\n  .restoreModal .ant-modal-body {\n    padding: 0rem !important;\n    height: 10.44rem !important;\n    box-sizing: border-box;\n  }\n  .restoreModal .ant-space-vertical,\n  .restoreModal .ant-radio-group {\n    width: 100%;\n  }\n  .restoreModal .ant-radio-wrapper {\n    display: flex;\n    width: 100%;\n    align-items: center;\n  }\n  .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){\n    display: inline-block;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    font-size: 0.813rem;\n    color: ", ";\n  }\n  .restoreModal .ant-modal-footer{\n    border-top: 0px;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n\n  .tox-tinymce-inline .tox-editor-header,\n  .tox .accessibility-issue__description,\n  .tox .tox-comment,\n  .tox .tox-menu,\n  .tox .tox-slider__rail,\n  .tox .tox-well,\n  .tox .tox-custom-editor {\n    border: 1px solid ", " !important;\n  }\n\n  .tox .tox-button {\n    font-weight: 500 !important;\n    font-size: 0.75rem !important;\n    border-radius: 4px !important;\n    line-height: normal !important;\n    width: 4.5rem;\n    height: 1.875rem;\n  }\n  .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {\n    background-color: ", " !important;\n    border-color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n      border-color: ", " !important;\n    }\n    :active {\n      background-color: ", " !important;\n      border-color: ", " !important;\n    }\n  }\n  .tox .tox-button--secondary {\n    background-color: ", " !important;\n    border-color: ", " !important;\n    color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n    }\n    :active {\n      background-color: ", " !important;\n      border-color: ", " !important;\n      color: ", " !important;\n    }\n  }\n  .tox .tox-button:not(.tox-button--icon)[disabled] {\n    background-color: ", " !important;\n    border-color: ", " !important;\n  }\n  .tox .tox-split-button {\n    background: none !important;\n    box-shadow: none !important;\n  }\n\n  .tox .tox-menubar,\n  .tox .tox-toolbar,\n  .tox .tox-toolbar__primary,\n  .tox .tox-toolbar__overflow {\n    background: ", " !important;\n    border-bottom: 1px solid ", " !important;\n  }\n  .tox.tox-tinymce-aux .tox-toolbar__overflow {\n    border: 1px solid ", " !important;\n  }\n  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {\n    border-right: 1px solid transparent !important;\n  }\n  .tox .tox-collection,\n  .tox .tox-swatches-menu {\n    background: ", " !important;\n  }\n  .tox .tox-collection--list .tox-collection__group {\n    border-color: ", " !important;\n  }\n  .tox .tox-swatches__picker-btn {\n    background: transparent !important;\n    svg {\n      fill: ", " !important;\n    }\n  }\n  \n  .tox .tox-dialog {\n    background-color: ", " !important;\n  }\n  .tox .tox-dialog .tox-dialog__header {\n    background-color: inherit !important;\n  }\n  .tox .tox-selectfield select {\n    background-color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n    }\n    option:checked {\n      background-color: ", " !important;\n    }\n  }\n  .tox .tox-dialog .tox-textfield,\n  .tox .tox-dialog .tox-textarea {\n    border-color: ", " !important;\n    background-color: ", " !important;\n    :focus {\n      border-color: ", " !important;\n    }\n  }\n  .tox .tox-dialog__footer {\n    background-color: inherit !important;\n    border-top: 1px solid ", " !important;\n  }\n  .tox .tox-dialog,\n  .tox .tox-textfield,\n  .tox .tox-toolbar-textfield,\n  .tox .tox-listboxfield .tox-listbox--select,\n  .tox .tox-textarea,\n  .tox .tox-selectfield select,\n  .tox .tox-insert-table-picker > div {\n    border-color: ", " !important;\n  }\n  .tox .tox-insert-table-picker__selected {\n    background-color: ", " !important;\n  }\n  .tox .tox-pop__dialog {\n    background-color: ", " !important;\n    border: 1px solid ", " !important;\n    border-radius: 4px !important;\n  }\n  .tox .tox-pop.tox-pop--bottom::after {\n    border-color: ", " transparent transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--bottom::before {\n    border-color: ", " transparent transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--top::after {\n    border-color: transparent transparent ", " transparent !important;\n  }\n  .tox .tox-pop.tox-pop--top::before {\n    border-color: transparent transparent ", " transparent !important;\n  }\n  .tox .tox-pop.tox-pop--left::after {\n    border-color: transparent ", " transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--left::before {\n    border-color: transparent ", " transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--right::after {\n    border-color: transparent transparent transparent ", " !important;\n  }\n  .tox .tox-pop.tox-pop--right::before {\n    border-color: transparent transparent transparent ", " !important;\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  textarea#noteEditor {\n    flex-grow:1;\n  }\n  .noteFocusedTag {\n    color: ", ";\n    background-color: ", ";\n    border: 1px solid ", ";\n  }\n  .readModeIcon{\n     margin-left: 1.19rem;\n  }\n  .fileSelected{\n    border: 1px solid #EC6222 !important;\n  }\n  .selected{\n    background-color: ", ";\n  }\n  .selectedMenu {\n    color: ", ";\n  } \n  .ant-collapse {\n    border:0;\n  }\n  .ant-collapse-header {\n    height: 2.81rem !important;\n    display: flex;\n    align-items:center;\n    border-bottom: 1px solid ", " !important;\n    padding: 0 0.75rem !important;\n    background-color: ", ";\n    color: ", " !important;\n    font-size: 0.8125rem;\n  }\n  .ant-collapse-content {\n    border:0 !important;\n    background-color: ", ";\n    color: ", ";\n  }\n  .ant-collapse-content-box {\n    padding: 10px 2.51rem !important;\n  }\n  .ant-collapse-item {\n    border:0 !important;\n  }\n  .ant-tooltip-inner {\n    background-color: ", ";\n    width: fit-content;\n  }\n  .ant-tooltip-arrow-content {\n    background-color: ", ";\n  }\n  .mce-tinymce iframe{\n    flex: 1;\n  }\n  .tox {\n    font-family : \"Noto Sans KR\", sans-serif !important;\n  }\n  .tox-edit-area__iframe html{\n    height:100% !important;\n  }\n  .tox-tinymce-aux{\n    z-index: 100 !important;\n  }\n  .borderTopLine{\n    border-top: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, -0.45rem);\n    }\n  }\n  .borderBottomLine{\n    border-bottom: 0.13rem solid #FB3A3A;\n    &::before {\n      content: '';\n      position: absolute;\n      width: 0; \n      height: 0; \n      bottom: 0;\n      border-top: 0.375rem solid transparent;\n      border-bottom: 0.375rem solid transparent;\n      border-left: 0.5rem solid #FB3A3A;\n      transform: translate(-0.43rem, 0.45rem);\n    }\n  }\n  .custom-dialog-header {\n    height: 2.75rem !important;\n    border-bottom: 1px solid ", " !important;\n    font-size: 0.875rem !important;\n    color: #000000 !important;\n  }\n  .custom-link-dialog {\n    height:auto !important;\n  }\n  .custom-dialog-form > .tox-form__group{\n    position:relative;\n  }\n  .custom-dialog-form label{\n    color: ", " !important;\n    margin-bottom: 0.75rem !important;\n    font-weight: 500 !important;\n  }\n  .custom-dialog-form input{\n    height:1.88rem !important;\n  }\n  .custom-dialog-form .tox-form__group:nth-child(1) input{\n    margin-bottom:1.25rem !important;\n  }\n  .custom-dialog-footer {\n    height: 4.39rem !important;\n  }\n  .custom-dialog-btns{\n    margin: auto !important;\n  }\n\n  .link-toolbar {\n    flex-direction: column !important;\n    padding: 0 !important;\n    margin: 0.15rem 0 !important;\n    button {\n      width: 100% !important;\n      justify-content: flex-start !important;\n      padding: 0 0.5rem 0 0.3rem !important;\n      margin: 0 !important;\n    }\n  }\n  .link-toolbar button .link-toolbar-btn {\n    margin-left: 0.3rem;\n  }\n  .note-show-element{\n    display:flex !important;\n  }\n  .note-link-form-error {\n    position: absolute !important;\n    display:none;\n    align-items: center;\n    width: 1.63rem !important;\n    height: 1.63rem !important;\n    right:0.25rem;\n  }\n  .tox-form__group > .note-link-form-error {\n    top: 37px;\n  }\n  .tox-control-wrap > .note-link-form-error {\n    top : 2px;\n  }\n  .note-link-error-tooltip{\n    display:none;\n    align-items: center;\n    justify-content: center;\n    width: fit-content !important;\n    height: 1.5rem !important;\n    padding:0 0.75rem !important;\n    font-size:0.688rem !important; \n    background: #FF5151 !important;\n    border-radius:10px;\n    position:absolute !important;\n    top:-90%;\n    right: 0rem;\n    color: #ffffff !important;;\n  }\n  .tox-form__group > .note-link-error-tooltip {\n    top: -2px;\n  }\n  .tox-control-wrap > .note-link-error-tooltip {\n    top : -36px;\n  }\n  input{\n    border:none;\n  }\n  input:focus{\n    outline:none;\n  }\n\n  .tox .tox-dialog.custom-link-dialog {\n    max-width: 24.38rem;\n    border: 0;\n    border-radius: 0.25rem;\n    box-shadow: 0 0 0.375rem 0 rgba(0,0,0,0.35);\n    background-color: ", ";\n  }\n  \n  .tox .tox-dialog__header.custom-dialog-header {\n    position: relative;\n    padding: 0;\n    height: 2.69rem;\n    justify-content: center;\n    background-color: ", ";\n  }\n\n  .tox .tox-dialog__title.custom-dialog-title {\n    color: ", ";\n    font-family: 'Noto Sans KR';\n    font-weight: 500;\n    font-size: 0.88rem;\n    margin: auto;\n  }\n\n  .tox .tox-dialog__header.custom-dialog-header .tox-button {\n    position: absolute;\n    right: 0;\n    top: 0;\n    padding: 0;\n    width: 2.69rem;\n    height: 2.69rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n  }\n  \n  .tox .custom-dialog-header .tox-button.tox-button--naked:hover {\n    background-color: transparent;\n    border-color: transparent;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-dialog__body-content {\n    padding: 1rem;\n  }\n\n  .tox .tox-dialog.custom-link-dialog .tox-label, .tox .tox-dialog.custom-link-dialog .tox-toolbar-label {\n    font-size: 0.81rem;\n    font-weight: 500;\n  }\n\n .tox .tox-dialog__footer.custom-dialog-footer {\n   padding: 0;\n   border-top: 1px solid ", ";\n   background-color: ", ";\n }\n\n .tox .custom-dialog-btns.tox-button {\n   border-color: transparent;\n   width: 4.5rem;\n   height: 1.88rem;\n }\n\n  .tox .tox-tbtn:hover,\n  .tox-collection__item--active:not(.tox-swatch) {\n    background: ", " !important;\n  }\n \n  .tox .tox-tbtn--enabled,\n  .tox .tox-tbtn:focus,\n  .tox .tox-collection--toolbar .tox-collection__item--enabled,\n  .tox .tox-collection--list .tox-collection__item--enabled {\n    background: ", " !important;\n  }\n\n  // .tox .tox-tbtn--select[aria-label=\"Font sizes\"] {\n  //   width: 4rem;\n  // }\n\n  .export {\n    table { \n      max-width: 770px;\n      width: 100%;\n    }\n    table tr{\n      page-break-inside:avoid; \n      page-break-after: auto;\n    }\n    table {\n      border-collapse: collapse;\n    }\n    table:not([cellpadding]) th,\n    table:not([cellpadding]) td {\n      padding: 0.4rem;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-width\"]) td {\n      border-width: 1px;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-style\"]) td {\n      border-style: solid;\n    }\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) th,\n    table[border]:not([border=\"0\"]):not([style*=\"border-color\"]) td {\n      border-color: #ccc;\n    }\n    figure {\n      display: table;\n      margin: 1rem auto;\n    }\n    figure figcaption {\n      color: #999;\n      display: block;\n      margin-top: 0.25rem;\n      text-align: center;\n    }\n    hr {\n      border-color: #ccc;\n      border-style: solid;\n      border-width: 1px 0 0 0;\n    }\n    code {\n      background-color: #e8e8e8;\n      border-radius: 3px;\n      padding: 0.1rem 0.2rem;\n    }\n    .mce-content-body:not([dir=rtl]) blockquote {\n      border-left: 2px solid #ccc;\n      margin-left: 1.5rem;\n      padding-left: 1rem;\n    }\n    .mce-content-body[dir=rtl] blockquote {\n      border-right: 2px solid #ccc;\n      margin-right: 1.5rem;\n      padding-right: 1rem;\n    }\n    ol {\n      display: block;\n      list-style-type: decimal;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ul {\n      display: block;\n      list-style-type: disc;\n      margin-block-start: 1em;\n      margin-block-end: 1em;\n      margin-inline-start: 0px;\n      margin-inline-end: 0px;\n      padding-inline-start: 40px;\n    }\n    ::marker {\n      unicode-bidi: isolate;\n      font-variant-numeric: tabular-nums;\n      text-transform: none;\n      text-indent: 0px !important;\n      text-align: start !important;\n      text-align-last: start !important;\n    }\n  }\n  .afterClass{\n    page-break-after:always;\n  }\n  .ant-dropdown-menu {\n    min-width: 7rem;\n  }\n  .ant-dropdown-menu-submenu-title {\n    padding: 0.1875rem 0.75rem;\n    font-size: 0.75rem;\n    line-height: 1.25rem;\n    color: ", ";\n    :hover {\n      background-color: inherit;\n    }\n  }\n  .ant-dropdown-menu-submenu-popup ul{\n    margin: 0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu {\n    padding: 0;\n    border: 0px solid #e0e0e0;\n  }\n  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled {\n    background-color: unset;\n  }\n  .ant-dropdown-menu-submenu-expand-icon {\n    svg {\n      fill : ", ";\n    }\n  }\n  .ant-dropdown::before{\n    bottom:0 !important;\n  }\n  .forwardModal .ant-modal {\n    width:32.5rem !important;\n  }\n  .forwardModal .ant-modal-body {\n    padding: 0rem !important;\n  }\n  .viewInfoModal .ant-modal {\n    width: 24.375rem !important;\n  }\n  .viewInfoModal .ant-modal-body {\n    padding: 1.69rem 3.44rem 0 3.44rem !important;\n  }\n  .viewInfoModal .ant-modal-footer{\n    border-top: 0px solid black !important;\n    padding:1.75rem 0 !important;\n  }\n  .restoreModal .ant-modal {\n    width: 22.5rem !important;\n  }\n  .restoreModal .ant-modal-header {\n    height: 6.69rem !important;\n    border-bottom: 0px;\n  }\n  .restoreModal .ant-modal-title {\n    display: flex !important;\n    flex-direction: column !important;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    font-size: 0.938rem;\n  }\n  .restoreModal .ant-modal-body {\n    padding: 0rem !important;\n    height: 10.44rem !important;\n    box-sizing: border-box;\n  }\n  .restoreModal .ant-space-vertical,\n  .restoreModal .ant-radio-group {\n    width: 100%;\n  }\n  .restoreModal .ant-radio-wrapper {\n    display: flex;\n    width: 100%;\n    align-items: center;\n  }\n  .restoreModal .ant-modal-body .ant-radio-wrapper span:nth-of-type(2){\n    display: inline-block;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    font-size: 0.813rem;\n    color: ", ";\n  }\n  .restoreModal .ant-modal-footer{\n    border-top: 0px;\n  }\n  #note-content .ant-upload.ant-upload-select{\n    display: none;\n  }\n  .x-todo li {\n    list-style:none;\n  }\n  .x-todo-box {\n    position: relative; \n    left: -24px;\n  }\n  .x-todo-box input{\n    position: absolute;\n  }\n\n  .tox-tinymce-inline .tox-editor-header,\n  .tox .accessibility-issue__description,\n  .tox .tox-comment,\n  .tox .tox-menu,\n  .tox .tox-slider__rail,\n  .tox .tox-well,\n  .tox .tox-custom-editor {\n    border: 1px solid ", " !important;\n  }\n\n  .tox .tox-button {\n    font-weight: 500 !important;\n    font-size: 0.75rem !important;\n    border-radius: 4px !important;\n    line-height: normal !important;\n    width: 4.5rem;\n    height: 1.875rem;\n  }\n  .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {\n    background-color: ", " !important;\n    border-color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n      border-color: ", " !important;\n    }\n    :active {\n      background-color: ", " !important;\n      border-color: ", " !important;\n    }\n  }\n  .tox .tox-button--secondary {\n    background-color: ", " !important;\n    border-color: ", " !important;\n    color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n    }\n    :active {\n      background-color: ", " !important;\n      border-color: ", " !important;\n      color: ", " !important;\n    }\n  }\n  .tox .tox-button:not(.tox-button--icon)[disabled] {\n    background-color: ", " !important;\n    border-color: ", " !important;\n  }\n  .tox .tox-split-button {\n    background: none !important;\n    box-shadow: none !important;\n  }\n\n  .tox .tox-menubar,\n  .tox .tox-toolbar,\n  .tox .tox-toolbar__primary,\n  .tox .tox-toolbar__overflow {\n    background: ", " !important;\n    border-bottom: 1px solid ", " !important;\n  }\n  .tox.tox-tinymce-aux .tox-toolbar__overflow {\n    border: 1px solid ", " !important;\n  }\n  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {\n    border-right: 1px solid transparent !important;\n  }\n  .tox .tox-collection,\n  .tox .tox-swatches-menu {\n    background: ", " !important;\n  }\n  .tox .tox-collection--list .tox-collection__group {\n    border-color: ", " !important;\n  }\n  .tox .tox-swatches__picker-btn {\n    background: transparent !important;\n    svg {\n      fill: ", " !important;\n    }\n  }\n  \n  .tox .tox-dialog {\n    background-color: ", " !important;\n  }\n  .tox .tox-dialog .tox-dialog__header {\n    background-color: inherit !important;\n  }\n  .tox .tox-selectfield select {\n    background-color: ", " !important;\n    :hover {\n      background-color: ", " !important;\n    }\n    option:checked {\n      background-color: ", " !important;\n    }\n  }\n  .tox .tox-dialog .tox-textfield,\n  .tox .tox-dialog .tox-textarea {\n    border-color: ", " !important;\n    background-color: ", " !important;\n    :focus {\n      border-color: ", " !important;\n    }\n  }\n  .tox .tox-dialog__footer {\n    background-color: inherit !important;\n    border-top: 1px solid ", " !important;\n  }\n  .tox .tox-dialog,\n  .tox .tox-textfield,\n  .tox .tox-toolbar-textfield,\n  .tox .tox-listboxfield .tox-listbox--select,\n  .tox .tox-textarea,\n  .tox .tox-selectfield select,\n  .tox .tox-insert-table-picker > div {\n    border-color: ", " !important;\n  }\n  .tox .tox-insert-table-picker__selected {\n    background-color: ", " !important;\n  }\n  .tox .tox-pop__dialog {\n    background-color: ", " !important;\n    border: 1px solid ", " !important;\n    border-radius: 4px !important;\n  }\n  .tox .tox-pop.tox-pop--bottom::after {\n    border-color: ", " transparent transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--bottom::before {\n    border-color: ", " transparent transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--top::after {\n    border-color: transparent transparent ", " transparent !important;\n  }\n  .tox .tox-pop.tox-pop--top::before {\n    border-color: transparent transparent ", " transparent !important;\n  }\n  .tox .tox-pop.tox-pop--left::after {\n    border-color: transparent ", " transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--left::before {\n    border-color: transparent ", " transparent transparent !important;\n  }\n  .tox .tox-pop.tox-pop--right::after {\n    border-color: transparent transparent transparent ", " !important;\n  }\n  .tox .tox-pop.tox-pop--right::before {\n    border-color: transparent transparent transparent ", " !important;\n  }\n\n  mark {\n    padding: 0;\n    background-color: #FFE362;\n  }\n"]);
 
   _templateObject$7 = function _templateObject() {
     return data;
@@ -15903,7 +15946,6 @@ var ForwardModal = function ForwardModal(_ref) {
     e.stopPropagation();
     if (shareArraysCnt === 0) return;
     NoteStore.shareNote();
-    NoteStore.setIsShared(false);
     NoteStore.setModalInfo(null);
   };
 
@@ -16074,7 +16116,6 @@ var NoteModal = observer(function () {
   var handleCancel = function handleCancel(e) {
     e.stopPropagation();
     NoteStore.setModalInfo(null);
-    NoteStore.setIsShared(false);
   };
 
   var RenderModalContent = function RenderModalContent() {
@@ -16213,7 +16254,6 @@ var SlashCmdNote = function SlashCmdNote() {
 
   var _newPage = function _newPage() {
     PageStore.setCreatePageParent(chapterId);
-    PageStore.setCreatePageParentIdx(0);
     PageStore.createNotePage();
     logEvent('note', 'clickNewPageBtn');
   };
