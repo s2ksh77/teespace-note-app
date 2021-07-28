@@ -154,9 +154,11 @@ const LNBSearchResult = () => {
                 <PageSearchResultPageTitle>
                   {page.note_title}
                 </PageSearchResultPageTitle>
-                <SubText className="lnb-result-context" isContent>
-                  {page.contentPreview}
-                </SubText>
+                {page.contentPreview ? (
+                  <SubText className="lnb-result-context" isContent>
+                    {page.contentPreview}
+                  </SubText>
+                ) : null}
                 <SearchResultBotttom
                   isLast={
                     index === ChapterStore.searchResult?.['page'].length - 1

@@ -507,28 +507,12 @@ const EditorStore = observable({
         break;
     }
   },
-  async notSaveFileDelete() {
-    let deleteArr = [];
-    if (EditorStore.notSaveFileList.length > 0) {
-      deleteArr = toJS(EditorStore.notSaveFileList).map(item => {
-        return EditorStore.deleteFile(item.file_id);
-      });
-      try {
-        await Promise.all(deleteArr).then(() => {
-          EditorStore.notSaveFileList = [];
-          if (EditorStore.tempFileLayoutList.length > 0)
-            EditorStore.setTempFileLayoutList([]);
-        });
-      } catch (e) {
-      } finally {
-      }
-    }
-  },
+
   async uploadingFileallCancel() {
     await Promise.all(
       EditorStore.uploadDTO.map((file, idx) => {
-        if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
-          EditorStore.tempFileLayoutList[idx].deleted = true;
+        if (EditorStore.fileLayoutList[idx].status === 'pending') {
+          EditorStore.fileLayoutList[idx].deleted = true;
           return file?.cancelSource?.cancel();
         }
       }),
@@ -536,6 +520,7 @@ const EditorStore = observable({
       this.uploadFileCancelStatus = true;
     });
   },
+
   isEditCancelOpen() {
     const { isEmpty } = NoteUtil;
     if (
@@ -548,6 +533,7 @@ const EditorStore = observable({
       return false;
     return true;
   },
+
   async getDuflicateFile(fileName, fileExt) {
     const {
       data: { dto },
@@ -556,6 +542,7 @@ const EditorStore = observable({
       return dto.file[0]?.user_context_1;
     }
   },
+
   async getRecycleBinAllFile() {
     const {
       data: { dto },
