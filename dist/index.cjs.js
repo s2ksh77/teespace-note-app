@@ -3662,63 +3662,20 @@ var EditorStore = mobx.observable((_observable = {
       EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
       break;
   }
-}), _defineProperty(_observable, "notSaveFileDelete", function notSaveFileDelete() {
+}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
+  var _this5 = this;
+
   return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-    var deleteArr;
     return regeneratorRuntime.wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
-            deleteArr = [];
-
-            if (!(EditorStore.notSaveFileList.length > 0)) {
-              _context10.next = 12;
-              break;
-            }
-
-            deleteArr = mobx.toJS(EditorStore.notSaveFileList).map(function (item) {
-              return EditorStore.deleteFile(item.file_id);
-            });
-            _context10.prev = 3;
-            _context10.next = 6;
-            return Promise.all(deleteArr).then(function () {
-              EditorStore.notSaveFileList = [];
-              if (EditorStore.tempFileLayoutList.length > 0) EditorStore.setTempFileLayoutList([]);
-            });
-
-          case 6:
-            _context10.next = 10;
-            break;
-
-          case 8:
-            _context10.prev = 8;
-            _context10.t0 = _context10["catch"](3);
-
-          case 10:
-            _context10.prev = 10;
-            return _context10.finish(10);
-
-          case 12:
-          case "end":
-            return _context10.stop();
-        }
-      }
-    }, _callee10, null, [[3, 8, 10, 12]]);
-  }))();
-}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
-  var _this5 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            _context11.next = 2;
+            _context10.next = 2;
             return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
-              if (EditorStore.tempFileLayoutList[idx].status === 'pending') {
+              if (EditorStore.fileLayoutList[idx].status === 'pending') {
                 var _file$cancelSource;
 
-                EditorStore.tempFileLayoutList[idx].deleted = true;
+                EditorStore.fileLayoutList[idx].deleted = true;
                 return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
               }
             })).then(function () {
@@ -3727,10 +3684,10 @@ var EditorStore = mobx.observable((_observable = {
 
           case 2:
           case "end":
-            return _context11.stop();
+            return _context10.stop();
         }
       }
-    }, _callee11);
+    }, _callee10);
   }))();
 }), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
   var _this$tinymce, _this$tinymce$undoMan;
@@ -3739,56 +3696,56 @@ var EditorStore = mobx.observable((_observable = {
   if (PageStore.isNewPage && (!((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) || !PageStore.noteContent) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
   return true;
 }), _defineProperty(_observable, "getDuflicateFile", function getDuflicateFile(fileName, fileExt) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
     var _yield$NoteRepository8, dto, _dto$file$;
+
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.next = 2;
+            return NoteRepository$1.getDuflicateFile(fileName, fileExt);
+
+          case 2:
+            _yield$NoteRepository8 = _context11.sent;
+            dto = _yield$NoteRepository8.data.dto;
+
+            if (!(dto.result === 'Y')) {
+              _context11.next = 6;
+              break;
+            }
+
+            return _context11.abrupt("return", (_dto$file$ = dto.file[0]) === null || _dto$file$ === void 0 ? void 0 : _dto$file$.user_context_1);
+
+          case 6:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11);
+  }))();
+}), _defineProperty(_observable, "getRecycleBinAllFile", function getRecycleBinAllFile() {
+  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+    var _yield$NoteRepository9, dto;
 
     return regeneratorRuntime.wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.next = 2;
-            return NoteRepository$1.getDuflicateFile(fileName, fileExt);
+            return NoteRepository$1.getRecycleBinAllFile();
 
           case 2:
-            _yield$NoteRepository8 = _context12.sent;
-            dto = _yield$NoteRepository8.data.dto;
+            _yield$NoteRepository9 = _context12.sent;
+            dto = _yield$NoteRepository9.data.dto;
+            return _context12.abrupt("return", dto);
 
-            if (!(dto.result === 'Y')) {
-              _context12.next = 6;
-              break;
-            }
-
-            return _context12.abrupt("return", (_dto$file$ = dto.file[0]) === null || _dto$file$ === void 0 ? void 0 : _dto$file$.user_context_1);
-
-          case 6:
+          case 5:
           case "end":
             return _context12.stop();
         }
       }
     }, _callee12);
-  }))();
-}), _defineProperty(_observable, "getRecycleBinAllFile", function getRecycleBinAllFile() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-    var _yield$NoteRepository9, dto;
-
-    return regeneratorRuntime.wrap(function _callee13$(_context13) {
-      while (1) {
-        switch (_context13.prev = _context13.next) {
-          case 0:
-            _context13.next = 2;
-            return NoteRepository$1.getRecycleBinAllFile();
-
-          case 2:
-            _yield$NoteRepository9 = _context13.sent;
-            dto = _yield$NoteRepository9.data.dto;
-            return _context13.abrupt("return", dto);
-
-          case 5:
-          case "end":
-            return _context13.stop();
-        }
-      }
-    }, _callee13);
   }))();
 }), _observable));
 
