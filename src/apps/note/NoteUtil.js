@@ -107,7 +107,8 @@ const NoteUtil = {
  * @returns 12시간 형식의 날짜
  */
 export const get12HourFormat = (date, showsAllDates = false) => {
-  const [ mDate, mTime ] = date.split(' ');
+  if (!date) return '';
+  const [mDate, mTime] = date.split(' ');
   const mYear = parseInt(mDate.split('.')[0], 10);
   const mMonth = parseInt(mDate.split('.')[1], 10);
   const mDay = parseInt(mDate.split('.')[2], 10);
