@@ -9,7 +9,7 @@ import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
 import GlobalVariable, { DRAG_TYPE } from '../GlobalVariable';
-import NoteUtil, { get12HourFormat } from '../NoteUtil';
+import NoteUtil, { get12HourFormat, getUserDisplayName } from '../NoteUtil';
 import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
 import emojiRegex from 'emoji-regex/index.js';
 import emojiRegexText from 'emoji-regex/text.js';
@@ -19,7 +19,6 @@ const PageStore = observable({
   pageInfo: new PageModel({}),
   noteInfoList: [],
   saveStatus: { saving: false, saved: false },
-  displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -30,7 +29,6 @@ const PageStore = observable({
   isCtrlKeyDown: false,
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
-  modifiedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
@@ -160,12 +158,6 @@ const PageStore = observable({
     this.dragEnterChapterIdx = chapterIdx;
   },
 
-  getModifiedDate() {
-    return this.modifiedDate;
-  },
-  setModifiedDate(date) {
-    this.modifiedDate = date;
-  },
   getIsNewPage() {
     return this.isNewPage;
   },
@@ -299,7 +291,6 @@ const PageStore = observable({
     TagStore.setNoteTagList(dto.tagList); // []
     EditorStore.setFileList(dto.fileList); // null
     this.noteTitle = '';
-    this.modifiedDate = get12HourFormat(dto.modified_date);
 
     NoteStore.setTargetLayout('Content');
     NoteStore.setShowPage(true);
@@ -540,19 +531,12 @@ const PageStore = observable({
       return;
     }
 
-    if (dto.USER_ID) {
-      const userProfile = await UserStore.getProfile(dto.USER_ID);
-      this.displayName =
-        userProfile?.displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
-    } else {
-      this.displayName = '';
-    }
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
+    dto.modUserName = await getUserDisplayName(dto.USER_ID);;
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
-    this.modifiedDate = this.pageInfo.modDate;
     EditorStore.setFileList(dto.fileList);
     TagStore.setNoteTagList(dto.tagList);
 
@@ -730,7 +714,6 @@ const PageStore = observable({
       )
         ChapterStore.getNoteChapterList();
       this.setSaveStatus({ saved: true });
-      this.modifiedDate = get12HourFormat(dto.modified_date);
       // 2초 후 수정 중 인터렉션으로 바꾸기
       setTimeout(() => {
         this.setSaveStatus({});
