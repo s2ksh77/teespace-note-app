@@ -34,7 +34,6 @@ const PageStore = observable({
   exportPageTitle: '',
   editingUserID: '',
   editingUserName: '',
-  editingUserCount: '',
   restorePageId: '',
   isRecycleBin: false,
   recoverInfo: {}, // 복원 팝업에서 '복구'클릭시 필요
@@ -84,12 +83,6 @@ const PageStore = observable({
   },
   getEditingUserName() {
     return this.editingUserName;
-  },
-  setEditingUserCount(count) {
-    this.editingUserCount = count;
-  },
-  getEditingUserCount() {
-    return this.editingUserCount;
   },
   getContent() {
     return this.noteContent;
