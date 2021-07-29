@@ -46,7 +46,8 @@
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210713-rn"
+    "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#hotfix-210713-rn",
+    "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#hotfix-210713-rn"
   },
   "scripts": {
     "start": "craco start",
