@@ -227,24 +227,6 @@ export const handleDriveCopy = async () => {
   }
 };
 
-export const replaceTempFileId = (node, fileId) => {
-  if (!node) return;
-  node.setAttribute('id', fileId);
-  node.removeAttribute('temp-id');
-  if (node.getAttribute('src')) {
-    const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-    node.setAttribute('src', targetSRC);
-  }
-  if (
-    node.children[0] &&
-    node.children[0].children[0] &&
-    node.children[0].children[0].getAttribute('src')
-  ) {
-    const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
-    node.children[0].children[0].setAttribute('src', targetSRC);
-  }
-};
-
 export const handleFileDelete = async () => {
   const imgTarget = await EditorStore.tinymce.dom.doc.images;
   const fileTarget = document.querySelectorAll('div #fileLayout [id]');
