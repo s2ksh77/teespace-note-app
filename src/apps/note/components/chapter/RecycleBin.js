@@ -50,12 +50,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           );
 
           if (editingNoteList.length === 1) {
-            const res = await userStore.getProfile(editingNoteList[0].is_edit);
-            PageStore.setEditingUserName(res.displayName);
-            NoteStore.setModalInfo('nonDeletableSinglePage');
+            const { displayName } = await userStore.getProfile(editingNoteList[0].is_edit);
+            NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
           } else if (editingNoteList.length > 1) {
-            PageStore.setEditingUserCount(editingNoteList.length);
-            NoteStore.setModalInfo('nonDeletableMultiPage');
+            NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingNoteList.length });
           } else {
             ChapterStore.setDeleteChapterList(deleteChapterList);
             NoteStore.setModalInfo('draggedChapter', {
@@ -83,12 +81,10 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           );
 
           if (editingNoteList.length === 1) {
-            const res = await userStore.getProfile(editingNoteList[0].is_edit);
-            PageStore.setEditingUserName(res.displayName);
-            NoteStore.setModalInfo('nonDeletableSinglePage');
+            const { displayName } = await userStore.getProfile(editingNoteList[0].is_edit);
+            NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
           } else if (editingNoteList.length > 1) {
-            PageStore.setEditingUserCount(editingNoteList.length);
-            NoteStore.setModalInfo('nonDeletableMultiPage');
+            NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingNoteList.length });
           } else {
             PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
           }
