@@ -1,5 +1,4 @@
 import { API } from 'teespace-core';
-import { fixedEncodeURIComponent } from '../components/common/NoteFile';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 
@@ -461,7 +460,7 @@ class NoteRepository {
       `/gateway-api/upload?channel=` +
         this.chId +
         '&name=' +
-        fixedEncodeURIComponent(fileName) +
+        fileName +
         '&ext=' +
         fileExtension +
         '&location=' +
@@ -612,15 +611,6 @@ class NoteRepository {
     if (fileExt) query += `&ext=${fileExt}`;
     try {
       return await API.get(query);
-    } catch (e) {
-      throw Error(JSON.stringify(e));
-    }
-  }
-  async getRecycleBinAllFile() {
-    try {
-      return await API.get(
-        `note-api/noteRecycleBinFile?action=List&note_channel_id=${this.chId}`,
-      );
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
