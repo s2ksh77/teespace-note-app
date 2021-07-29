@@ -1,4 +1,5 @@
 import { API } from 'teespace-core';
+import { fixedEncodeURIComponent } from '../components/common/NoteFile';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 
@@ -460,7 +461,7 @@ class NoteRepository {
       `/gateway-api/upload?channel=` +
         this.chId +
         '&name=' +
-        fileName +
+        fixedEncodeURIComponent(fileName) +
         '&ext=' +
         fileExtension +
         '&location=' +
