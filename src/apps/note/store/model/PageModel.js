@@ -26,6 +26,10 @@ class PageModel {
   get modDate() {
     return get12HourFormat(this._data.modified_date);
   }
+
+  get modUserName() {
+    return this._data.modUserName;
+  }
 }
 
 export default PageModel;

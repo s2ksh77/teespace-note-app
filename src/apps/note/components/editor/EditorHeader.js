@@ -147,8 +147,8 @@ const EditorHeader = () => {
             )}
           {PageStore.isReadMode() && (
             <>
-              <ModifiedUser>{PageStore.displayName}</ModifiedUser>
-              <ModifiedTime>{PageStore.modifiedDate}</ModifiedTime>
+              <ModifiedUser>{PageStore.pageInfo.modUserName}</ModifiedUser>
+              <ModifiedTime>{PageStore.pageInfo.modDate}</ModifiedTime>
             </>
           )}
           <EditorSearchIconDiv onClick={handleSearchEditor}>

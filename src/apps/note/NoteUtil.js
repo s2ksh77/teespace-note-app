@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import i18n from './i18n/i18n';
 import { CHAPTER_TYPE } from './GlobalVariable';
+import { UserStore } from 'teespace-core';
 
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -107,7 +108,8 @@ const NoteUtil = {
  * @returns 12시간 형식의 날짜
  */
 export const get12HourFormat = (date, showsAllDates = false) => {
-  const [ mDate, mTime ] = date.split(' ');
+  if (!date) return '';
+  const [mDate, mTime] = date.split(' ');
   const mYear = parseInt(mDate.split('.')[0], 10);
   const mMonth = parseInt(mDate.split('.')[1], 10);
   const mDay = parseInt(mDate.split('.')[2], 10);
@@ -130,6 +132,14 @@ export const get12HourFormat = (date, showsAllDates = false) => {
     return `${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
   }
   return `${mYear}.${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
+};
+
+export const getUserDisplayName = async userId => {
+  if (!userId) return '';
+  const userProfile = await UserStore.getProfile(userId);
+  return userProfile?.isWithdrawn
+    ? i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01')
+    : userProfile?.displayName;
 };
 
 export default NoteUtil;

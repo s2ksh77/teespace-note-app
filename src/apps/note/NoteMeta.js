@@ -269,7 +269,6 @@ const NoteMeta = {
       subtitle: '',
       btns: [],
     };
-    // const editingUserName = PageStore.editingUserName;
     switch (type) {
       case 'chapter':
       case 'draggedChapter':

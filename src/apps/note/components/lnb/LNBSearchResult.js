@@ -34,7 +34,7 @@ const LNBSearchResult = () => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
   const instance = new Mark(EditorStore.tinymce?.getBody());
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState({ id: null, type: null });
 
   // 챕터 검색때만 초기화
   // children 순서도 알아야하므로 type 넘겨주지 않고 chapterList에서 chapter 찾아서 type도 알아내고, children도 알아낸다
@@ -65,7 +65,7 @@ const LNBSearchResult = () => {
     });
   };
 
-  const onClickPageBtn = pageId => async () => {
+  const onClickPageBtn = (pageId, type) => async () => {
     if (!PageStore.isReadMode()) return;
     PageStore.fetchCurrentPageData(pageId).then(() => {
       instance.unmark();
@@ -75,7 +75,7 @@ const LNBSearchResult = () => {
         if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
         NoteStore.setTargetLayout('Content');
       }
-      setSelected(pageId);
+      setSelected({ id: pageId, type: type });
     });
   };
 
@@ -141,8 +141,12 @@ const LNBSearchResult = () => {
             return (
               <PageSearchResult
                 key={page.note_id}
-                isSelected={selected === page.note_id ? true : false}
-                onClick={onClickPageBtn(page.note_id)}
+                isSelected={
+                  selected.id === page.note_id && selected.type === 'page'
+                    ? true
+                    : false
+                }
+                onClick={onClickPageBtn(page.note_id, 'page')}
               >
                 <PageSearchResultChapterTitle>
                   {page.TYPE === 'shared_page'
@@ -180,8 +184,12 @@ const LNBSearchResult = () => {
             return (
               <TagSearchResult
                 key={pageListIdx}
-                isSelected={selected === tag.note_id ? true : false}
-                onClick={onClickPageBtn(tag.note_id)}
+                isSelected={
+                  selected.id === tag.note_id && selected.type === 'tag'
+                    ? true
+                    : false
+                }
+                onClick={onClickPageBtn(tag.note_id, 'tag')}
               >
                 <PageSearchResultChapterTitle>
                   {tag.TYPE === 'shared_page'
