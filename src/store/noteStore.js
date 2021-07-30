@@ -117,7 +117,8 @@ const NoteStore = observable({
     this.i18nLanguage = lang;
   },
   addWWMSHandler(isWeb = true) {
-    if (WWMS.handlers.get('CHN0003') === undefined) WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket(isWeb));
+    if (WWMS.handlers.get('CHN0003') === undefined)
+      WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
   },
   getNoteFileList() {
     return this.noteFileList;
