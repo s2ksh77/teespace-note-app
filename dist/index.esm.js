@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { API, UserStore, WWMS, RoomStore, i18nInit } from 'teespace-core';
+import { UserStore, API, WWMS, RoomStore, i18nInit } from 'teespace-core';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -677,6 +677,7 @@ var NoteUtil = {
 
 var get12HourFormat = function get12HourFormat(date) {
   var showsAllDates = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  if (!date) return '';
 
   var _date$split = date.split(' '),
       _date$split2 = _slicedToArray(_date$split, 2),
@@ -708,6 +709,40 @@ var get12HourFormat = function get12HourFormat(date) {
 
   return "".concat(mYear, ".").concat(convertTwoDigit(mMonth), ".").concat(convertTwoDigit(mDay), " ").concat(basicDate);
 };
+var getUserDisplayName = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(userId) {
+    var userProfile;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            if (userId) {
+              _context.next = 2;
+              break;
+            }
+
+            return _context.abrupt("return", '');
+
+          case 2:
+            _context.next = 4;
+            return UserStore.getProfile(userId);
+
+          case 4:
+            userProfile = _context.sent;
+            return _context.abrupt("return", userProfile !== null && userProfile !== void 0 && userProfile.isWithdrawn ? i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01') : userProfile === null || userProfile === void 0 ? void 0 : userProfile.displayName);
+
+          case 6:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function getUserDisplayName(_x) {
+    return _ref3.apply(this, arguments);
+  };
+}();
 
 var PageModel = /*#__PURE__*/function () {
   function PageModel(data) {
@@ -740,6 +775,11 @@ var PageModel = /*#__PURE__*/function () {
     key: "modDate",
     get: function get() {
       return get12HourFormat(this._data.modified_date);
+    }
+  }, {
+    key: "modUserName",
+    get: function get() {
+      return this._data.modUserName;
     }
   }]);
 
@@ -3723,7 +3763,6 @@ var PageStore = observable({
     saving: false,
     saved: false
   },
-  displayName: '',
   otherEdit: false,
   noteContent: '',
   noteTitle: '',
@@ -3734,13 +3773,11 @@ var PageStore = observable({
   isCtrlKeyDown: false,
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
-  modifiedDate: '',
   isNewPage: false,
   exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
   editingUserName: '',
-  editingUserCount: '',
   restorePageId: '',
   isRecycleBin: false,
   recoverInfo: {},
@@ -3796,12 +3833,6 @@ var PageStore = observable({
   },
   getEditingUserName: function getEditingUserName() {
     return this.editingUserName;
-  },
-  setEditingUserCount: function setEditingUserCount(count) {
-    this.editingUserCount = count;
-  },
-  getEditingUserCount: function getEditingUserCount() {
-    return this.editingUserCount;
   },
   getContent: function getContent() {
     return this.noteContent;
@@ -3864,12 +3895,6 @@ var PageStore = observable({
   },
   setDragEnterChapterIdx: function setDragEnterChapterIdx(chapterIdx) {
     this.dragEnterChapterIdx = chapterIdx;
-  },
-  getModifiedDate: function getModifiedDate() {
-    return this.modifiedDate;
-  },
-  setModifiedDate: function setModifiedDate(date) {
-    this.modifiedDate = date;
   },
   getIsNewPage: function getIsNewPage() {
     return this.isNewPage;
@@ -4171,7 +4196,6 @@ var PageStore = observable({
               EditorStore.setFileList(dto.fileList); // null
 
               _this.noteTitle = '';
-              _this.modifiedDate = get12HourFormat(dto.modified_date);
               NoteStore.setTargetLayout('Content');
               NoteStore.setShowPage(true); // initialize editor properties
 
@@ -4180,7 +4204,7 @@ var PageStore = observable({
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
               if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
 
-            case 18:
+            case 17:
             case "end":
               return _context10.stop();
           }
@@ -4481,7 +4505,7 @@ var PageStore = observable({
     var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var dto, userProfile;
+      var dto;
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
           switch (_context15.prev = _context15.next) {
@@ -4501,31 +4525,17 @@ var PageStore = observable({
               return _context15.abrupt("return");
 
             case 6:
-              if (!dto.USER_ID) {
-                _context15.next = 13;
-                break;
-              }
-
-              _context15.next = 9;
-              return UserStore.getProfile(dto.USER_ID);
-
-            case 9:
-              userProfile = _context15.sent;
-              _this6.displayName = (userProfile === null || userProfile === void 0 ? void 0 : userProfile.displayName) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01');
-              _context15.next = 14;
-              break;
-
-            case 13:
-              _this6.displayName = '';
-
-            case 14:
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
               dto.note_content = NoteUtil.decodeStr(dto.note_content);
+              _context15.next = 11;
+              return getUserDisplayName(dto.USER_ID);
+
+            case 11:
+              dto.modUserName = _context15.sent;
               _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
-              _this6.modifiedDate = _this6.pageInfo.modDate;
               EditorStore.setFileList(dto.fileList);
               TagStore.setNoteTagList(dto.tagList);
 
@@ -4549,7 +4559,7 @@ var PageStore = observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 23:
+            case 18:
             case "end":
               return _context15.stop();
           }
@@ -4809,9 +4819,8 @@ var PageStore = observable({
 
       _this13.setSaveStatus({
         saved: true
-      });
+      }); // 2초 후 수정 중 인터렉션으로 바꾸기
 
-      _this13.modifiedDate = get12HourFormat(dto.modified_date); // 2초 후 수정 중 인터렉션으로 바꾸기
 
       setTimeout(function () {
         _this13.setSaveStatus({});
@@ -6781,7 +6790,7 @@ var NoteMeta = {
       title: '',
       subtitle: '',
       btns: []
-    }; // const editingUserName = PageStore.editingUserName;
+    };
 
     switch (type) {
       case 'chapter':
