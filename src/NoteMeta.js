@@ -297,8 +297,8 @@ const NoteMeta = {
       case 'deletePage': // 페이지 영구 삭제
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_06');
-        (dialogType.subtitle = i18n.t('NOTE_BIN_07')),
-          (dialogType.btns = this.setBtns('delete'));
+        dialogType.subtitle = i18n.t('NOTE_BIN_07');
+        dialogType.btns = this.setBtns('delete');
         break;
       case 'nonDeletableSinglePage':
         dialogType.type = 'info';
@@ -328,7 +328,7 @@ const NoteMeta = {
       case 'editingPage':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_CANT_EDIT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
-          userName: PageStore.editingUserName,
+          userName: data.name,
         });
         dialogType.btns = this.setBtns('editingPage');
         break;

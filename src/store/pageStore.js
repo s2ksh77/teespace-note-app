@@ -33,7 +33,6 @@ const PageStore = observable({
   exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
-  editingUserName: '',
   restorePageId: '',
   isRecycleBin: false,
   recoverInfo: {}, // 복원 팝업에서 '복구'클릭시 필요
@@ -65,24 +64,11 @@ const PageStore = observable({
       this.setOtherEdit(false);
       return false;
     }
-    this.setEditingUserID(this.pageInfo.editingUserId);
     this.setOtherEdit(true);
     return true;
   },
   setOtherEdit(flag) {
     this.otherEdit = flag;
-  },
-  setEditingUserID(targetID) {
-    this.editingUserID = targetID;
-  },
-  getEditingUserID() {
-    return this.editingUserID;
-  },
-  setEditingUserName(targetName) {
-    this.editingUserName = targetName;
-  },
-  getEditingUserName() {
-    return this.editingUserName;
   },
   getContent() {
     return this.noteContent;
