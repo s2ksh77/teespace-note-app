@@ -226,6 +226,10 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     setIsFolded(!isFolded);
   };
 
+  useEffect(() => {
+    setRenameTitle(title);
+  }, [title]);
+
   return useObserver(() => (
     <ChapterContainer
       ref={!isShared ? drop(chapterContainerRef) : null}
