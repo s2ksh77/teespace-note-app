@@ -6905,10 +6905,11 @@ var NoteMeta = {
         dialogType.btns = this.setBtns('editingPage');
         break;
 
-      case 'deletedPage':
-        dialogType.title = i18n.t('NOTE_META_TAG_03');
-        dialogType.btns = this.setBtns('deletedPage');
-        break;
+      var _userStore$myProfile = userStore.myProfile,
+          userId = _userStore$myProfile.id,
+          userName = _userStore$myProfile.name,
+          userEmail = _userStore$myProfile.email;
+      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === 'BASIC'; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
 
       case 'multiFileSomeFail':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_06');
@@ -7019,9 +7020,36 @@ var handleWebsocket = function handleWebsocket() {
         case EVENT_TYPE.EDIT_START:
           if (device === 'PC' && targetUserId === loginUserId) return;
 
-          if (PageStore$1.getCurrentPageId() === targetId) {
-            PageStore$1.fetchCurrentPageData(PageStore$1.getCurrentPageId());
-          }
+  React.useEffect(function () {
+    if (!language) return;
+    var editorLanguage = language === 'en' ? language : 'ko_KR';
+    NoteStore.setI18nLanguage(editorLanguage);
+    if (EditorStore.tinymce) EditorStore.tinymce.editorManager.i18n.setCode(editorLanguage);
+  }, [language]);
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(GlobalStyle, null), NoteStore.loadingNoteApp ? /*#__PURE__*/React__default['default'].createElement(LoadingImgContainer, null) : /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(LNB, {
+      show: !NoteStore.isContentExpanded && renderCondition('LNB')
+    }, /*#__PURE__*/React__default['default'].createElement(LNBContainer, null)), /*#__PURE__*/React__default['default'].createElement(Content, {
+      id: "note-content",
+      show: renderCondition('Content'),
+      isBorderLeft: NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
+    }, /*#__PURE__*/React__default['default'].createElement(PageContainer, null), /*#__PURE__*/React__default['default'].createElement(TagContainer, null)), /*#__PURE__*/React__default['default'].createElement(teespaceCore.Toast, {
+      visible: NoteStore.isVisibleToast,
+      children: NoteStore.toastText,
+      onClose: function onClose() {
+        return NoteStore.setIsVisibleToast(false);
+      }
+    }), NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? /*#__PURE__*/React__default['default'].createElement(DragPreview$1, {
+      items: NoteStore.draggedItems
+    }) : null, NoteStore.isExporting && /*#__PURE__*/React__default['default'].createElement(Overlay, null), NoteStore.showModal && /*#__PURE__*/React__default['default'].createElement(NoteModal, null), NoteStore.isMailShare && /*#__PURE__*/React__default['default'].createElement(MailWriteModal, {
+      uploadFiles: NoteStore.mailShareFileObjs,
+      toReceiver: NoteStore.mailReceiver,
+      onClose: handleCloseMailModal,
+      visible: true,
+      totalSize: NoteStore.mailShareFileObjs[0] ? NoteStore.mailShareFileObjs[0].fileSize : 0
+    })));
+  });
+};
 
           ChapterStore.getNoteChapterList();
           break;
