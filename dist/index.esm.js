@@ -16368,7 +16368,7 @@ var NoteApp = function NoteApp(_ref) {
           userId = _userStore$myProfile.id,
           userName = _userStore$myProfile.name,
           userEmail = _userStore$myProfile.email;
-      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === "BASIC"; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
+      var isBasicPlan = ((_spaceStore$currentSp = spaceStore.currentSpace) === null || _spaceStore$currentSp === void 0 ? void 0 : _spaceStore$currentSp.plan) === 'BASIC'; // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
 
       NoteStore.init(roomId, channelId, userId, userName, userEmail, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -16483,7 +16483,7 @@ var NoteApp = function NoteApp(_ref) {
     }, /*#__PURE__*/React.createElement(LNBContainer, null)), /*#__PURE__*/React.createElement(Content, {
       id: "note-content",
       show: renderCondition('Content'),
-      isBorderLeft: NoteStore.layoutState !== "collapse" && !NoteStore.isContentExpanded
+      isBorderLeft: NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
     }, /*#__PURE__*/React.createElement(PageContainer, null), /*#__PURE__*/React.createElement(TagContainer, null)), /*#__PURE__*/React.createElement(Toast, {
       visible: NoteStore.isVisibleToast,
       children: NoteStore.toastText,
@@ -16494,10 +16494,6 @@ var NoteApp = function NoteApp(_ref) {
       items: NoteStore.draggedItems
     }) : null, NoteStore.isExporting && /*#__PURE__*/React.createElement(Overlay, null), NoteStore.showModal && /*#__PURE__*/React.createElement(NoteModal, null), NoteStore.isMailShare && /*#__PURE__*/React.createElement(MailWriteModal, {
       uploadFiles: NoteStore.mailShareFileObjs,
-      sender: {
-        mailAddr: NoteStore.userEmail,
-        accountId: NoteStore.user_id
-      },
       toReceiver: NoteStore.mailReceiver,
       onClose: handleCloseMailModal,
       visible: true,
