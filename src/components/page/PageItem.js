@@ -158,6 +158,10 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const handleFocus = e => e.target.select();
 
+  useEffect(() => {
+    setRenameTitle(title);
+  }, [title]);
+
   return useObserver(() => (
     <PageCover
       ref={

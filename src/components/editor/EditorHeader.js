@@ -65,7 +65,7 @@ const EditorHeader = () => {
     }
   };
 
-  const handleClickBtn = async e => {
+  const handleModifySaveBtnClick = async () => {
     if (EditorStore.isUploading) {
       NoteStore.setModalInfo('uploadingFiles');
       return;
@@ -77,9 +77,10 @@ const EditorHeader = () => {
       // 수정모드 진입시 lnb 검색 결과 초기화
       if (NoteStore.layoutState !== 'collapse') ChapterStore.initSearchVar();
       if (PageStore.otherEdit) {
-        const { displayName } = await userStore.getProfile(PageStore.getEditingUserID());
-        PageStore.setEditingUserName(displayName);
-        NoteStore.setModalInfo('editingPage');
+        const { displayName } = await userStore.getProfile(
+          PageStore.pageInfo.editingUserId,
+        );
+        NoteStore.setModalInfo('editingPage', { name: displayName });
       } else PageStore.noteEditStart(PageStore.pageInfo.id);
     } else {
       await handleFileSync().then(() => PageStore.handleSave());
@@ -118,7 +119,7 @@ const EditorHeader = () => {
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorHeaderContainer1>
           {authStore.hasPermission('notePage', 'U') && !PageStore.isRecycleBin && (
-            <EditBtn data-btn="editorEditBtn" onClick={handleClickBtn}>
+            <EditBtn data-btn="editorEditBtn" onClick={handleModifySaveBtnClick}>
               {PageStore.isReadMode()
                 ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
                 : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
