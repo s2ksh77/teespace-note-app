@@ -3810,7 +3810,6 @@ var PageStore = mobx.observable({
   exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
-  editingUserName: '',
   restorePageId: '',
   isRecycleBin: false,
   recoverInfo: {},
@@ -3848,24 +3847,11 @@ var PageStore = mobx.observable({
       return false;
     }
 
-    this.setEditingUserID(this.pageInfo.editingUserId);
     this.setOtherEdit(true);
     return true;
   },
   setOtherEdit: function setOtherEdit(flag) {
     this.otherEdit = flag;
-  },
-  setEditingUserID: function setEditingUserID(targetID) {
-    this.editingUserID = targetID;
-  },
-  getEditingUserID: function getEditingUserID() {
-    return this.editingUserID;
-  },
-  setEditingUserName: function setEditingUserName(targetName) {
-    this.editingUserName = targetName;
-  },
-  getEditingUserName: function getEditingUserName() {
-    return this.editingUserName;
   },
   getContent: function getContent() {
     return this.noteContent;
@@ -6858,7 +6844,8 @@ var NoteMeta = {
         // 페이지 영구 삭제
         dialogType.type = 'error';
         dialogType.title = i18n.t('NOTE_BIN_06');
-        dialogType.subtitle = i18n.t('NOTE_BIN_07'), dialogType.btns = this.setBtns('delete');
+        dialogType.subtitle = i18n.t('NOTE_BIN_07');
+        dialogType.btns = this.setBtns('delete');
         break;
 
       case 'nonDeletableSinglePage':
@@ -6893,7 +6880,7 @@ var NoteMeta = {
       case 'editingPage':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_CANT_EDIT_01');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
-          userName: PageStore.editingUserName
+          userName: data.name
         });
         dialogType.btns = this.setBtns('editingPage');
         break;
@@ -6958,98 +6945,86 @@ var NoteMeta = {
   }
 };
 
-var handleWebsocket = function handleWebsocket() {
-  return function (message) {
-    var EVENT_TYPE = {
-      CREATE: "CREATE",
-      DELETE: "DELETE",
-      UPDATE: "UPDATE",
-      EDIT_START: "EDIT",
-      EDIT_DONE: "EDITDONE",
-      RENAME: "RENAME",
-      CHAPTER_RENAME: "CHAPTERRENAME",
-      CHAPTER_CREATE: "CHAPTERCREATE",
-      CHAPTER_DELETE: "CHAPTERDELETE",
-      NONEDIT: "NONEDIT",
-      MOVE: "MOVE"
-    };
-
-    if (message.NOTI_ETC === null) {
-      console.warn(" NOTE_ETC is empty");
-      return;
-    }
-
-    if (message.NOTI_ETC) {
-      var loginUserId = NoteRepository$1.USER_ID;
-
-      var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
-          _message$NOTI_ETC$spl2 = _slicedToArray(_message$NOTI_ETC$spl, 5),
-          eventType = _message$NOTI_ETC$spl2[0],
-          targetId = _message$NOTI_ETC$spl2[1],
-          parentId = _message$NOTI_ETC$spl2[2],
-          targetUserId = _message$NOTI_ETC$spl2[3],
-          device = _message$NOTI_ETC$spl2[4];
-
-      switch (eventType) {
-        case EVENT_TYPE.CREATE:
-          if (device === 'PC' && targetUserId === loginUserId) return;
-          ChapterStore.getNoteChapterList();
-          break;
-
-        case EVENT_TYPE.DELETE:
-          if (device === 'PC' && targetUserId === loginUserId) return;
-
-          if (PageStore.getCurrentPageId() === targetId) {
-            ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
-          }
-
-          ChapterStore.getNoteChapterList();
-          break;
-
-        case EVENT_TYPE.UPDATE:
-        case EVENT_TYPE.EDIT_DONE:
-        case EVENT_TYPE.NONEDIT:
-        case EVENT_TYPE.EDIT_START:
-          if (device === 'PC' && targetUserId === loginUserId) return;
-
-          if (PageStore.getCurrentPageId() === targetId) {
-            PageStore.fetchCurrentPageData(PageStore.getCurrentPageId());
-          }
-
-          ChapterStore.getNoteChapterList();
-          break;
-
-        case EVENT_TYPE.MOVE:
-          // 서버에서 곧 넣을 예정
-          break;
-
-        case EVENT_TYPE.CHAPTER_CREATE:
-        case EVENT_TYPE.CHAPTER_RENAME:
-          if (device === 'PC' && targetUserId === loginUserId) return;
-          ChapterStore.getNoteChapterList();
-          break;
-
-        case EVENT_TYPE.CHAPTER_DELETE:
-          if (device === 'PC' && targetUserId === loginUserId) return;
-          ChapterStore.getNoteChapterList();
-
-          if (ChapterStore.getCurrentChapterId() === targetId) {
-            setTimeout(function () {
-              if (ChapterStore.chapterList && ChapterStore.chapterList.length > 0) {
-                var firstChapter = ChapterStore.chapterList[0];
-                ChapterStore.setCurrentChapterInfo(firstChapter.id); // 이 안에서 isRecycleBin true/false값 넣어줌
-
-                if (firstChapter.children && firstChapter.children.length > 0) {
-                  PageStore.fetchCurrentPageData(firstChapter.children[0].id);
-                } else PageStore.fetchCurrentPageData('');
-              } else NoteStore.setShowPage(false);
-            }, 200);
-          }
-
-          break;
-      }
-    }
+var handleWebsocket = function handleWebsocket(message) {
+  var EVENT_TYPE = {
+    CHAPTER_CREATE: 'CHAPTERCREATE',
+    CHAPTER_DELETE: 'CHAPTERDELETE',
+    CHAPTER_RENAME: 'CHAPTERRENAME',
+    CREATE: 'CREATE',
+    DELETE: 'DELETE',
+    UPDATE: 'UPDATE',
+    EDIT_START: 'EDIT',
+    EDIT_DONE: 'EDITDONE',
+    NONEDIT: 'NONEDIT',
+    MOVE: 'MOVE'
   };
+
+  if (!message.NOTI_ETC) {
+    console.warn('NOTE_ETC is empty');
+    return;
+  }
+
+  var loginUserId = NoteRepository$1.USER_ID;
+
+  var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
+      _message$NOTI_ETC$spl2 = _slicedToArray(_message$NOTI_ETC$spl, 5),
+      eventType = _message$NOTI_ETC$spl2[0],
+      targetId = _message$NOTI_ETC$spl2[1],
+      parentId = _message$NOTI_ETC$spl2[2],
+      targetUserId = _message$NOTI_ETC$spl2[3],
+      device = _message$NOTI_ETC$spl2[4];
+
+  switch (eventType) {
+    case EVENT_TYPE.CHAPTER_CREATE:
+    case EVENT_TYPE.CHAPTER_RENAME:
+    case EVENT_TYPE.CREATE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+      ChapterStore.getNoteChapterList();
+      break;
+
+    case EVENT_TYPE.CHAPTER_DELETE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+      ChapterStore.getNoteChapterList();
+
+      if (ChapterStore.getCurrentChapterId() === targetId) {
+        setTimeout(function () {
+          var _ChapterStore$chapter;
+
+          if (((_ChapterStore$chapter = ChapterStore.chapterList) === null || _ChapterStore$chapter === void 0 ? void 0 : _ChapterStore$chapter.length) > 0) {
+            var _firstChapter$childre;
+
+            var firstChapter = ChapterStore.chapterList[0];
+            ChapterStore.setCurrentChapterInfo(firstChapter.id);
+            PageStore.fetchCurrentPageData(((_firstChapter$childre = firstChapter.children) === null || _firstChapter$childre === void 0 ? void 0 : _firstChapter$childre.length) > 0 ? firstChapter.children[0].id : '');
+          } else NoteStore.setShowPage(false);
+        }, 200);
+      }
+
+      break;
+
+    case EVENT_TYPE.DELETE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (PageStore.pageInfo.id === targetId) {
+        ChapterStore.getChapterFirstPage(ChapterStore.getCurrentChapterId());
+      }
+
+      ChapterStore.getNoteChapterList();
+      break;
+
+    case EVENT_TYPE.UPDATE:
+    case EVENT_TYPE.EDIT_DONE:
+    case EVENT_TYPE.NONEDIT:
+    case EVENT_TYPE.EDIT_START:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+      }
+
+      ChapterStore.getNoteChapterList();
+      break;
+  }
 };
 
 var NoteStore = mobx.observable({
@@ -7178,7 +7153,7 @@ var NoteStore = mobx.observable({
     this.i18nLanguage = lang;
   },
   addWWMSHandler: function addWWMSHandler() {
-    if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket());
+    if (teespaceCore.WWMS.handlers.get('CHN0003') === undefined) teespaceCore.WWMS.addHandler('CHN0003', 'NoteWWMSHandler', handleWebsocket);
   },
   getNoteFileList: function getNoteFileList() {
     return this.noteFileList;
