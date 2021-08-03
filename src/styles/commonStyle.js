@@ -157,6 +157,10 @@ export const SearchKeyword = styled.span`
   font-size: 0.94rem;
   color: #000000;
   margin-bottom: 0.69rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 10px);
+  white-space: nowrap;
 `;
 
 export const NoSearchResultTitle = styled.span`
