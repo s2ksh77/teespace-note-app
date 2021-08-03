@@ -611,7 +611,8 @@ const ChapterStore = observable({
   async renameNoteChapter({ id, title, color }) {
     const dto = await this.renameChapter(id, title.trim(), color);
     if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.text;
-    this.getNoteChapterList();
+    await this.getNoteChapterList();
+    this.renameId = '';
   },
 
   createDragData(chapterId) {
