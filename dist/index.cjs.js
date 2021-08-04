@@ -5615,7 +5615,7 @@ var handleUpload = mobx.flow( /*#__PURE__*/regeneratorRuntime.mark(function hand
               return file.file_id === item.file.uid;
             })[0];
 
-            if (item.type !== 'image') {
+            if (item.type !== 'image' && targetFile) {
               targetFile.progress = e.loaded / totalLength;
               targetFile.status = 'pending';
             }
@@ -5675,7 +5675,7 @@ var handleUpload = mobx.flow( /*#__PURE__*/regeneratorRuntime.mark(function hand
           return EditorStore.createFileMeta([fileId], PageStore.getCurrentPageId());
 
         case 15:
-          if (item.type !== 'image') {
+          if (item.type !== 'image' && targetFile) {
             targetFile.file_id = fileId;
             targetFile.status = 'uploaded';
           }
@@ -14630,8 +14630,7 @@ var HandleUploader = function HandleUploader(props) {
   var uploadProps = {
     beforeUpload: function () {
       var _beforeUpload = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file, fileList) {
-        var uploadsize, totalsize, filtered, i, _i;
-
+        var uploadsize, totalsize, filtered, i;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -14640,7 +14639,7 @@ var HandleUploader = function HandleUploader(props) {
                 totalsize = 21474836480; // 20GB
 
                 if (!(file === fileList[0])) {
-                  _context.next = 23;
+                  _context.next = 22;
                   break;
                 }
 
@@ -14702,41 +14701,47 @@ var HandleUploader = function HandleUploader(props) {
                 return _context.abrupt("return");
 
               case 21:
-                for (_i = 0; _i < filtered.length; _i++) {
-                  (function (file) {
-                    var _EditorStore$getFileI = EditorStore.getFileInfo(file),
-                        fileName = _EditorStore$getFileI.fileName,
-                        fileExtension = _EditorStore$getFileI.fileExtension,
-                        fileSize = _EditorStore$getFileI.fileSize;
+                setTimeout(function () {
+                  var _loop = function _loop(_i) {
+                    (function (file) {
+                      var _EditorStore$getFileI = EditorStore.getFileInfo(file),
+                          fileName = _EditorStore$getFileI.fileName,
+                          fileExtension = _EditorStore$getFileI.fileExtension,
+                          fileSize = _EditorStore$getFileI.fileSize;
 
-                    var type = fileExtension && EditorStore.uploadFileIsImage(fileExtension) ? 'image' : 'file';
-                    var cancelToken = new teespaceCore.API.CancelToken.source();
-                    var model = new StorageModel({
-                      workspace_id: NoteRepository$1.WS_ID,
-                      channel_id: NoteRepository$1.chId,
-                      storageFileInfo: {
-                        user_id: NoteRepository$1.USER_ID,
-                        file_last_update_user_id: NoteRepository$1.USER_ID,
-                        file_name: fileName,
-                        file_extension: fileExtension,
-                        file_size: fileSize
-                      }
-                    });
-                    EditorStore.setUploadFileDTO(model, file, type, cancelToken);
-                  })(filtered[_i]);
-                }
+                      var type = fileExtension && EditorStore.uploadFileIsImage(fileExtension) ? 'image' : 'file';
+                      var cancelToken = new teespaceCore.API.CancelToken.source();
+                      var model = new StorageModel({
+                        workspace_id: NoteRepository$1.WS_ID,
+                        channel_id: NoteRepository$1.chId,
+                        storageFileInfo: {
+                          user_id: NoteRepository$1.USER_ID,
+                          file_last_update_user_id: NoteRepository$1.USER_ID,
+                          file_name: fileName,
+                          file_extension: fileExtension,
+                          file_size: fileSize
+                        }
+                      });
+                      EditorStore.setUploadFileDTO(model, filtered[_i], type, cancelToken);
+                    })(filtered[_i]);
+                  };
 
-                if (fileList.length !== filtered.length) {
-                  EditorStore.failCount = fileList.length - filtered.length;
-                  NoteStore.setModalInfo('failUploadByFileNameLen');
-                } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) EditorStore.uploadDTO.forEach(function (item) {
-                  return handleUpload(item);
-                });
+                  for (var _i = 0; _i < filtered.length; _i++) {
+                    _loop(_i);
+                  }
 
-              case 23:
+                  if (fileList.length !== filtered.length) {
+                    EditorStore.failCount = fileList.length - filtered.length;
+                    NoteStore.setModalInfo('failUploadByFileNameLen');
+                  } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength) EditorStore.uploadDTO.forEach(function (item) {
+                    return handleUpload(item);
+                  });
+                }, 1);
+
+              case 22:
                 return _context.abrupt("return", false);
 
-              case 24:
+              case 23:
               case "end":
                 return _context.stop();
             }
