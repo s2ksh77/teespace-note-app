@@ -143,7 +143,6 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       });
     }
 
-    PageStore.setRenameId('');
     NoteStore.LNBChapterCoverRef.removeEventListener(
       'wheel',
       NoteStore.disableScroll,

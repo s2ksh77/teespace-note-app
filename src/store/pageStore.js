@@ -362,7 +362,8 @@ const PageStore = observable({
     const dto = await this.renamePage(id, title.trim(), chapterId);
     if (this.dragData.get(id)) this.dragData.get(id).item.text = dto.note_title;
     this.fetchNoteInfoList(id);
-    ChapterStore.getNoteChapterList();
+    await ChapterStore.getNoteChapterList();
+    this.renameId = '';
   },
 
   createDragData(pageId, chapterId) {

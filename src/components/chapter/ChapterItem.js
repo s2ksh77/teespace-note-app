@@ -206,7 +206,6 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
     }
 
-    ChapterStore.setRenameId('');
     NoteStore.LNBChapterCoverRef.removeEventListener(
       'wheel',
       NoteStore.disableScroll,
