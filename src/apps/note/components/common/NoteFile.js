@@ -32,11 +32,9 @@ export const handleUpload = flow(function* handleUpload(item) {
       : e.target.getResponseHeader('content-length') ||
         e.target.getResponseHeader('x-decompressed-content-length');
 
-    targetFile = EditorStore.fileLayoutList.filter(
-      file => file.file_id === item.file.uid,
-    )[0];
+    targetFile = EditorStore.fileLayoutList.filter(file => file.file_id === item.file.uid)[0];
 
-    if (item.type !== 'image') {
+    if (item.type !== 'image' && targetFile) {
       targetFile.progress = e.loaded / totalLength;
       targetFile.status = 'pending';
     }
@@ -50,9 +48,7 @@ export const handleUpload = flow(function* handleUpload(item) {
       item.file,
       duplicateName,
       item.model.storageFileInfo.file_extension,
-      fixedEncodeURIComponent(
-        duplicateName + '.' + item.model.storageFileInfo.file_extension,
-      ),
+      fixedEncodeURIComponent(duplicateName + '.' + item.model.storageFileInfo.file_extension),
       handleUploadProgress,
       item.cancelSource,
     ).catch(e => {
@@ -63,9 +59,7 @@ export const handleUpload = flow(function* handleUpload(item) {
         EditorStore.failCount += 1;
         EditorStore.processLength += 1;
 
-        const hasPending = EditorStore.fileLayoutList.some(
-          file => file['status'] === 'pending',
-        );
+        const hasPending = EditorStore.fileLayoutList.some(file => file['status'] === 'pending');
         if (!hasPending) {
           // 업로드 중인것이 하나도 없을 때
           EditorStore.uploadDTO = [];
@@ -83,13 +77,9 @@ export const handleUpload = flow(function* handleUpload(item) {
       let fileName = res.file[0].file_name + '.' + res.file[0].file_extension;
 
       if (res.result === 'Y') {
-        if (item.type === 'image')
-          EditorStore.createDriveElement('image', fileId, fileName);
-        yield EditorStore.createFileMeta(
-          [fileId],
-          PageStore.getCurrentPageId(),
-        );
-        if (item.type !== 'image') {
+        if (item.type === 'image') EditorStore.createDriveElement('image', fileId, fileName);
+        yield EditorStore.createFileMeta([fileId], PageStore.getCurrentPageId());
+        if (item.type !== 'image' && targetFile) {
           targetFile.file_id = fileId;
           targetFile.status = 'uploaded';
         }
@@ -158,10 +148,7 @@ const isValidFileLength = fileList => {
 
 const isValidFileSize = fileList => {
   const totalSize = 20000000000; // 20GB
-  const uploadSize = fileList.reduce(
-    (accumulator, current) => accumulator + current.file_size,
-    0,
-  );
+  const uploadSize = fileList.reduce((accumulator, current) => accumulator + current.file_size, 0);
 
   if (uploadSize > totalSize) {
     NoteStore.setModalInfo('sizefailUpload');
@@ -180,10 +167,7 @@ export const isValidFileNameLength = fileName => {
   if (!isFilled(fileName)) return false; // 파일명 없으면 invalid 처리
   if (fileName.length > 70) return false;
   // 혹시 확장자가 없는 경우 대비
-  const targetIdx =
-    fileName.lastIndexOf('.') !== -1
-      ? fileName.lastIndexOf('.')
-      : fileName.length;
+  const targetIdx = fileName.lastIndexOf('.') !== -1 ? fileName.lastIndexOf('.') : fileName.length;
   if (fileName.slice(0, targetIdx).length > 70) return false; // 파일명 70자 초과는 invalid
   return true;
 };
@@ -202,22 +186,16 @@ export const handleDriveCopy = async () => {
             if (result.id !== undefined) resultArray.push(result.id);
           })(results[i]);
         }
-        EditorStore.createFileMeta(
-          resultArray,
-          PageStore.getCurrentPageId(),
-        ).then(dto => {
+        EditorStore.createFileMeta(resultArray, PageStore.getCurrentPageId()).then(dto => {
           if (dto.resultMsg === 'Success') {
             EditorStore.driveFileList = [];
-            if (EditorStore.failCount > 0)
-              NoteStore.setModalInfo('multiFileSomeFail');
+            if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
             else if (EditorStore.failCount === 0) {
-              PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(
-                dto => {
-                  EditorStore.setFileList(dto.fileList);
-                  EditorStore.processCount = 0;
-                  EditorStore.setTempFileLayoutList([]);
-                },
-              );
+              PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
+                EditorStore.setFileList(dto.fileList);
+                EditorStore.processCount = 0;
+                EditorStore.setTempFileLayoutList([]);
+              });
               EditorStore.setIsAttatch(false);
             }
           }
@@ -253,12 +231,8 @@ export const handleFileDelete = async () => {
 
   let deleteArr = [];
 
-  imgArray.forEach(img =>
-    EditorStore.tempFileList.push(img.getAttribute('id')),
-  );
-  fileArray.forEach(file =>
-    EditorStore.tempFileList.push(file.getAttribute('id')),
-  );
+  imgArray.forEach(img => EditorStore.tempFileList.push(img.getAttribute('id')));
+  fileArray.forEach(file => EditorStore.tempFileList.push(file.getAttribute('id')));
   if (EditorStore.fileList)
     EditorStore.deleteFileList = EditorStore.fileList.filter(
       file => !EditorStore.tempFileList.includes(file.file_id),
@@ -310,10 +284,7 @@ export const downloadFile = async fileId => {
 };
 
 export const exportData = async (isMailShare, type, exportId) => {
-  const html =
-    type === 'chapter'
-      ? await getChapterHtml(exportId)
-      : await getPageHtml(exportId);
+  const html = type === 'chapter' ? await getChapterHtml(exportId) : await getPageHtml(exportId);
   if (!html) return;
 
   makeExportElement(html);
@@ -352,9 +323,7 @@ export const getPageHtml = async exportId => {
   PageStore.exportPageTitle = dto.note_title;
   html = `<div style="color: #000;"><span style="font-size:24px;">${i18n.t(
     'NOTE_EXPORT_TITLE',
-  )} : ${dto.note_title}</span><p><br></p>${NoteUtil.decodeStr(
-    dto.note_content,
-  )}<div/>`;
+  )} : ${dto.note_title}</span><p><br></p>${NoteUtil.decodeStr(dto.note_content)}<div/>`;
 
   return html;
 };
@@ -381,9 +350,7 @@ const preloadingImage = el => {
 };
 
 export const exportDownloadPDF = async (isMailShare, type) => {
-  const imgElementList = document
-    .getElementById('exportTargetDiv')
-    .querySelectorAll('img');
+  const imgElementList = document.getElementById('exportTargetDiv').querySelectorAll('img');
   const opt = getExportOpt(type);
   let requests = [];
   if (imgElementList && imgElementList.length > 0) {
@@ -467,10 +434,7 @@ const downloadTxt = (title, data) => {
   const link = document.createElement('a');
   const mimeType = 'text/plain;charset=utf-8';
   link.setAttribute('download', `${title}.txt`);
-  link.setAttribute(
-    'href',
-    'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data),
-  );
+  link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(data));
   link.click();
 };
 
@@ -505,12 +469,9 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
     noteList.forEach((page, idx) => {
       returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
         page.note_title
-      }</p>\n${NoteUtil.decodeStr(page.note_content)}${
-        idx === noteList.length - 1 ? '' : '\n\n'
-      }`;
+      }</p>\n${NoteUtil.decodeStr(page.note_content)}${idx === noteList.length - 1 ? '' : '\n\n'}`;
     });
-  } else
-    returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;
+  } else returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;
 
   getTxtFormat(chapterTitle, returnData);
 };
@@ -540,9 +501,7 @@ const handleClickImg = el => {
 
 export const handleEditorContentsListener = () => {
   if (EditorStore.tinymce) {
-    const targetList = EditorStore.tinymce
-      .getBody()
-      ?.querySelectorAll(['a', 'img', 'pre']);
+    const targetList = EditorStore.tinymce.getBody()?.querySelectorAll(['a', 'img', 'pre']);
     const targetBody = EditorStore.tinymce.getBody();
     EditorStore.setEditorDOM(targetBody);
     if (targetList && targetList.length > 0) {
@@ -552,9 +511,7 @@ export const handleEditorContentsListener = () => {
           el.addEventListener('click', handleClickImg.bind(null, el));
         } else if (el.tagName === 'PRE') {
           el.style.backgroundColor =
-            EditorStore.tinymce.settings.skin === 'oxide'
-              ? '#f7f4ef'
-              : '#171819';
+            EditorStore.tinymce.settings.skin === 'oxide' ? '#f7f4ef' : '#171819';
         }
         el.setAttribute('hasListener', true);
       });
@@ -579,10 +536,7 @@ export const handleUnselect = () => {
   [...contextMenuList].forEach(el => {
     if (!el.classList.contains('ant-dropdown-hidden')) {
       el.classList.add('ant-dropdown-hidden');
-      NoteStore.LNBChapterCoverRef.removeEventListener(
-        'wheel',
-        NoteStore.disableScroll,
-      );
+      NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
     }
   });
 };
@@ -607,18 +561,7 @@ export const driveSaveCancel = () => {
 
 // DriveUtils.getDriveFileInfo 참고
 export const isImg = {
-  ext: [
-    'apng',
-    'bmp',
-    'gif',
-    'jpg',
-    'jpeg',
-    'jfif',
-    'png',
-    'rle',
-    'die',
-    'raw',
-  ],
+  ext: ['apng', 'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'png', 'rle', 'die', 'raw'],
   isPreview: true,
 };
 // 동영상 html 미지원
@@ -714,18 +657,14 @@ export const fileCategory = {
 };
 
 export const isPreview = extension => {
-  const cat = Object.keys(fileCategory).find(cat =>
-    fileCategory[cat]['ext'].includes(extension),
-  );
+  const cat = Object.keys(fileCategory).find(cat => fileCategory[cat]['ext'].includes(extension));
   if (!cat) return false;
   return fileCategory[cat]['isPreview'];
 };
 
 export const fileExtension = extension => {
   // driveGetFileIcon(fileName)
-  const cat = Object.keys(fileCategory).find(cat =>
-    fileCategory[cat]['ext'].includes(extension),
-  );
+  const cat = Object.keys(fileCategory).find(cat => fileCategory[cat]['ext'].includes(extension));
   switch (cat) {
     case 'isTxt':
       return txt;
@@ -775,13 +714,9 @@ export const getOS = () => {
 
 export const fixedEncodeURIComponent = str => {
   const OS = getOS();
-  const forEncodeStr =
-    OS === 'Mac OS' || OS === 'iOS' ? str.normalize('NFC') : str;
-  const encodeURIString = encodeURIComponent(forEncodeStr).replace(
-    /[!'()*]/g,
-    c => {
-      return `%${c.charCodeAt(0).toString(16)}`;
-    },
-  );
+  const forEncodeStr = OS === 'Mac OS' || OS === 'iOS' ? str.normalize('NFC') : str;
+  const encodeURIString = encodeURIComponent(forEncodeStr).replace(/[!'()*]/g, c => {
+    return `%${c.charCodeAt(0).toString(16)}`;
+  });
   return encodeURIString;
 };
