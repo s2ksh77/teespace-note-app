@@ -108,40 +108,45 @@ const HandleUploader = props => {
             return;
           }
         }
-
-        for (let i = 0; i < filtered.length; i++) {
-          (function (file) {
-            const {
-              fileName,
-              fileExtension,
-              fileSize,
-            } = EditorStore.getFileInfo(file);
-            const type =
-              fileExtension && EditorStore.uploadFileIsImage(fileExtension)
-                ? 'image'
-                : 'file';
-            const cancelToken = new API.CancelToken.source();
-            const model = new StorageModel({
-              workspace_id: NoteRepository.WS_ID,
-              channel_id: NoteRepository.chId,
-              storageFileInfo: {
-                user_id: NoteRepository.USER_ID,
-                file_last_update_user_id: NoteRepository.USER_ID,
-                file_name: fileName,
-                file_extension: fileExtension,
-                file_size: fileSize,
-              },
-            });
-            EditorStore.setUploadFileDTO(model, file, type, cancelToken);
-          })(filtered[i]);
-        }
-        if (fileList.length !== filtered.length) {
-          EditorStore.failCount = fileList.length - filtered.length;
-          NoteStore.setModalInfo('failUploadByFileNameLen');
-        } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength)
-          EditorStore.uploadDTO.forEach(item => handleUpload(item));
+        setTimeout(() => {
+          for (let i = 0; i < filtered.length; i++) {
+            (function (file) {
+              const {
+                fileName,
+                fileExtension,
+                fileSize,
+              } = EditorStore.getFileInfo(file);
+              const type =
+                fileExtension && EditorStore.uploadFileIsImage(fileExtension)
+                  ? 'image'
+                  : 'file';
+              const cancelToken = new API.CancelToken.source();
+              const model = new StorageModel({
+                workspace_id: NoteRepository.WS_ID,
+                channel_id: NoteRepository.chId,
+                storageFileInfo: {
+                  user_id: NoteRepository.USER_ID,
+                  file_last_update_user_id: NoteRepository.USER_ID,
+                  file_name: fileName,
+                  file_extension: fileExtension,
+                  file_size: fileSize,
+                },
+              });
+              EditorStore.setUploadFileDTO(
+                model,
+                filtered[i],
+                type,
+                cancelToken,
+              );
+            })(filtered[i]);
+          }
+          if (fileList.length !== filtered.length) {
+            EditorStore.failCount = fileList.length - filtered.length;
+            NoteStore.setModalInfo('failUploadByFileNameLen');
+          } else if (EditorStore.uploadDTO.length === EditorStore.uploadLength)
+            EditorStore.uploadDTO.forEach(item => handleUpload(item));
+        }, 1);
       }
-
       return false;
     },
     showUploadList: false,
@@ -351,7 +356,9 @@ const EditorContainer = () => {
   const pasteSingleImage = async src => {
     const res = await fetch(src);
     const blob = await res.blob();
-    const file = new File([blob], `WAPL_image_${new Date().getTime()}.png`, { type: 'image/png' });
+    const file = new File([blob], `WAPL_image_${new Date().getTime()}.png`, {
+      type: 'image/png',
+    });
     const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
 
     EditorStore.setUploaderType('image');
@@ -534,8 +541,8 @@ const EditorContainer = () => {
                   case 'Space':
                     const target = getAnchorElement();
                     if (target) {
-                      const curCaretPosition =
-                        editor.selection.getRng().endOffset;
+                      const curCaretPosition = editor.selection.getRng()
+                        .endOffset;
                       const _length = target.textContent.length;
                       // anchor tag앞에 caret 놓으면 getAnchorElement() === null
                       if (curCaretPosition === _length - 1) {
