@@ -1747,10 +1747,13 @@ var ChapterStore = observable({
             case 3:
               dto = _context17.sent;
               if (_this12.dragData.get(id)) _this12.dragData.get(id).item.text = dto.text;
+              _context17.next = 7;
+              return _this12.getNoteChapterList();
 
-              _this12.getNoteChapterList();
+            case 7:
+              _this12.renameId = '';
 
-            case 6:
+            case 8:
             case "end":
               return _context17.stop();
           }
@@ -4323,9 +4326,13 @@ var PageStore = observable({
 
               _this4.fetchNoteInfoList(id);
 
-              ChapterStore.getNoteChapterList();
+              _context12.next = 8;
+              return ChapterStore.getNoteChapterList();
 
-            case 7:
+            case 8:
+              _this4.renameId = '';
+
+            case 9:
             case "end":
               return _context12.stop();
           }
