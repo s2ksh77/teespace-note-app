@@ -36,7 +36,7 @@ export const handleUpload = flow(function* handleUpload(item) {
       file => file.file_id === item.file.uid,
     )[0];
 
-    if (item.type !== 'image') {
+    if (item.type !== 'image' && targetFile) {
       targetFile.progress = e.loaded / totalLength;
       targetFile.status = 'pending';
     }
@@ -89,7 +89,7 @@ export const handleUpload = flow(function* handleUpload(item) {
           [fileId],
           PageStore.getCurrentPageId(),
         );
-        if (item.type !== 'image') {
+        if (item.type !== 'image' && targetFile) {
           targetFile.file_id = fileId;
           targetFile.status = 'uploaded';
         }

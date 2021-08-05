@@ -122,7 +122,7 @@ export const PageSearchResultPageTitle = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  line-height: 0.9;
+  margin: 0 0 0.25rem;
 `;
 
 export const PageSearchResultChapterTitle = styled.div`
@@ -133,7 +133,7 @@ export const PageSearchResultChapterTitle = styled.div`
   height: 1.125rem;
   overflow: hidden;
   white-space: nowrap;
-  line-height: 0.9;
+  margin: 0 0 0.25rem;
 `;
 
 export const SearchResultBotttom = styled.div`
@@ -147,7 +147,6 @@ export const SearchResultBotttom = styled.div`
 export const TagSearchResult = styled.div`
   position: relative;
   width: calc(100% - 1.5rem);
-  height: 6rem;
   margin: 0 0.75rem;
   padding: 0.75rem 1.69rem;
   display: flex;
