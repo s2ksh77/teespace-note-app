@@ -733,37 +733,30 @@ const ChapterStore = observable({
       } else PageStore.fetchCurrentPageData('');
     });
   },
-  /*
-    태그와 챕터리스트 isSearching이 다름
-    chapterStore에서 isSearching은 검색 시작 ~ 검색 결과나온 후 더는 안 보려고 결과 초기화하는 동작까지임
-    태그는 sortedTagList란 변수 하나로 검색 결과까지 출력해서 
-    isSearching이 검색 시작 ~ 검색 결과 출력전까지임
-  */
-  async getSearchResult() {
-    // 모바일 안정화 이후로 (fetchSearchResult) 대신 바꿀 예정
+
+  async getSearchResult(keyword = this.searchStr.trim()) {
     this.setIsSearching(true);
+
     this.setIsLoadingSearchResult(true);
-    this.getSearchList(this.searchStr.trim()).then(dto => {
-      const filtered = dto.chapterList?.filter(
-        chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN,
-      );
-      this.setSearchResult({
-        chapter: filtered && filtered.length > 0 ? filtered : null,
-        page: this.preProcessPageList(dto.pageList, this.searchStr.trim()),
-        tag: dto.tagList,
-      });
-      this.setIsLoadingSearchResult(false);
-    });
+    const dto = await this.getSearchList(keyword);
+    const filtered = dto.chapterList?.filter(
+      chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN,
+    );
+    this.searchResult = {
+      chapter: filtered?.length > 0 ? filtered : null,
+      page: this.preProcessPageList(dto.pageList, keyword),
+      tag: dto.tagList,
+    };
+    this.setIsLoadingSearchResult(false);
+  
+    return this.searchResult;
   },
 
   preProcessPageList(pageList, keyword) {
     if (pageList) {
       pageList.forEach(page => {
         if (page.text_content.includes(keyword))
-          page.contentPreview = this.getContentPreview(
-            page.text_content,
-            keyword,
-          );
+          page.contentPreview = this.getContentPreview(page.text_content, keyword);
       });
     }
 
@@ -773,36 +766,6 @@ const ChapterStore = observable({
   getContentPreview(content, keyword) {
     const result = content.substring(content.indexOf(keyword) - 10);
     return content.length === result.length ? result : `...${result}`;
-  },
-
-  async fetchSearchResult() {
-    this.setIsSearching(true); // 검색 결과 출력 종료까지임
-    this.setIsLoadingSearchResult(true); // 검색 실행 중 화면
-    // await this.getSearchResult();
-    this.getSearchList(this.searchStr.trim()).then(dto => {
-      if (dto.pageList && dto.pageList.length > 0) {
-        dto.pageList.map(page => {
-          this.getChapterInfoList(page.parent_notebook)
-            .then(dto => {
-              page.parentColor = dto.color;
-              page.parentText = dto.text;
-            })
-            .then(() => {
-              this.setSearchResult({
-                chapter: dto.chapterList,
-                page: dto.pageList,
-              });
-              this.setIsLoadingSearchResult(false);
-            });
-        });
-      } else {
-        this.setSearchResult({
-          chapter: dto.chapterList,
-          page: dto.pageList,
-        });
-        this.setIsLoadingSearchResult(false);
-      }
-    });
   },
 
   async createShareChapter(targetList) {
