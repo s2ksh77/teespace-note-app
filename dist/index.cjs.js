@@ -3066,8 +3066,7 @@ var TagStore = mobx.observable({
   }
 });
 
-var _observable;
-var EditorStore = mobx.observable((_observable = {
+var EditorStore = mobx.observable({
   contents: '',
   tinymce: null,
   editor: null,
@@ -3190,9 +3189,6 @@ var EditorStore = mobx.observable((_observable = {
   setPreviewFileMeta: function setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
   },
-  setIsFileFilteredByNameLen: function setIsFileFilteredByNameLen(flag) {
-    this.isFileFilteredByNameLen = flag;
-  },
   setProcessLength: function setProcessLength(len) {
     this.processLength = len;
   },
@@ -3295,454 +3291,438 @@ var EditorStore = mobx.observable((_observable = {
         }
       }, _callee3);
     }))();
-  }
-}, _defineProperty(_observable, "uploadFile", function () {
-  var _uploadFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(dto, file, index) {
+  },
+  deleteFile: function deleteFile(deleteId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _yield$NoteRepository4, dto;
+
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return NoteRepository$1.deleteFile(deleteId);
+
+            case 2:
+              _yield$NoteRepository4 = _context4.sent;
+              dto = _yield$NoteRepository4.data.dto;
+              return _context4.abrupt("return", dto);
+
+            case 5:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  deleteAllFile: function deleteAllFile(fileList) {
     var _this = this;
 
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            this.createUploadMeta(dto).then(function (dto) {
-              if (dto.log_file_id) {
-                _this.createUploadStorage(dto.log_file_id, file).then(function (dto) {
-                  if (dto.resultMsg === 'Success') {
-                    var returnID = dto.storageFileInfoList[0].file_id;
-                    return returnID;
-                  }
-                });
-              }
-            });
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return NoteRepository$1.deleteAllFile(fileList ? fileList : _this.fileList).then(function (response) {
+                var dto = response.data.dto;
 
-          case 1:
-          case "end":
-            return _context4.stop();
+                if (dto.resultMsg === 'Success') {
+                  ChapterStore.getNoteChapterList();
+                }
+              });
+
+            case 2:
+            case "end":
+              return _context5.stop();
+          }
         }
-      }
-    }, _callee4, this);
-  }));
+      }, _callee5);
+    }))();
+  },
+  getStorageVolume: function getStorageVolume() {
+    var _this2 = this;
 
-  function uploadFile(_x, _x2, _x3) {
-    return _uploadFile.apply(this, arguments);
-  }
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _yield$NoteRepository5, dto;
 
-  return uploadFile;
-}()), _defineProperty(_observable, "setDownLoadFileId", function setDownLoadFileId(fileId) {
-  this.downloadFileId = fileId;
-}), _defineProperty(_observable, "setSaveFileMeta", function setSaveFileMeta(fileId, fileExt, fileName) {
-  this.saveFileId = fileId;
-  this.saveFileExt = fileExt;
-  this.saveFileName = fileName;
-}), _defineProperty(_observable, "tempDeleteFile", function tempDeleteFile() {
-  this.fileLayoutList.splice(this.deleteFileIndex, 1);
-  if (this.fileLayoutList.length === 0) this.setIsFile(false);
-}), _defineProperty(_observable, "addDriveFileList", function addDriveFileList(fileInfo) {
-  this.driveFileList.push(fileInfo);
-}), _defineProperty(_observable, "deleteFile", function deleteFile(deleteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var _yield$NoteRepository4, dto;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return NoteRepository$1.getStorageVolume();
 
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.next = 2;
-            return NoteRepository$1.deleteFile(deleteId);
-
-          case 2:
-            _yield$NoteRepository4 = _context5.sent;
-            dto = _yield$NoteRepository4.data.dto;
-            return _context5.abrupt("return", dto);
-
-          case 5:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  }))();
-}), _defineProperty(_observable, "deleteAllFile", function deleteAllFile(fileList) {
-  var _this2 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.next = 2;
-            return NoteRepository$1.deleteAllFile(fileList ? fileList : _this2.fileList).then(function (response) {
-              var dto = response.data.dto;
+            case 2:
+              _yield$NoteRepository5 = _context6.sent;
+              dto = _yield$NoteRepository5.data.dto;
 
               if (dto.resultMsg === 'Success') {
-                ChapterStore.getNoteChapterList();
+                _this2.totalUsage = dto.volumeInfoList[0].total_usage;
+                _this2.spaceTotalVolume = dto.volumeInfoList[0].space_max_volume;
               }
-            });
 
-          case 2:
-          case "end":
-            return _context6.stop();
+            case 5:
+            case "end":
+              return _context6.stop();
+          }
         }
-      }
-    }, _callee6);
-  }))();
-}), _defineProperty(_observable, "setFileList", function setFileList(fileList) {
-  this.fileList = fileList;
-  this.checkFile();
-}), _defineProperty(_observable, "getFileList", function getFileList() {
-  return this.fileList;
-}), _defineProperty(_observable, "setFileArray", function setFileArray(filelayoutlist) {
-  this.fileLayoutList = filelayoutlist;
-}), _defineProperty(_observable, "setIsFile", function setIsFile(flag) {
-  this.isFile = flag;
-}), _defineProperty(_observable, "removeFileList", function removeFileList(fileId) {
-  this.fileList = this.fileList.filter(function (file) {
-    return file.file_id !== fileId;
-  });
-}), _defineProperty(_observable, "checkFile", function checkFile() {
-  var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
-  var checkFile;
+      }, _callee6);
+    }))();
+  },
 
-  if (this.fileList) {
-    checkFile = this.fileList.filter(function (file) {
-      return !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase());
-    });
-  }
+  /**
+   * drive에서 받은 file_id 들의 array
+   * @param {*} fileArray
+   */
+  createFileMeta: function createFileMeta(fileArray, noteId) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var createCopyArray, _yield$NoteRepository6, dto;
 
-  if (checkFile === undefined) {
-    this.setIsFile(false);
-    this.setFileArray([]);
-  } else if (checkFile !== undefined && checkFile.length === 0) {
-    this.setIsFile(false);
-    this.setFileArray([]);
-  } else {
-    this.setIsFile(true);
-    var getUnixTime = NoteUtil.getUnixTime; // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
-
-    checkFile.sort(function (a, b) {
-      return getUnixTime(b['created_at']) - getUnixTime(a['created_at']);
-    });
-    this.setFileArray(checkFile);
-  }
-}), _defineProperty(_observable, "isFileLength", function isFileLength() {
-  var temp = this.tempFileLayoutList.filter(function (file) {
-    return file.type === 'file';
-  }).length;
-  var uploaded = this.fileLayoutList.length;
-  var totalLength = temp + uploaded;
-  if (totalLength === 0) this.setIsFile(false);
-}), _defineProperty(_observable, "uploadFileIsImage", function uploadFileIsImage(ext) {
-  var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
-  return ImageExt.includes(ext.toLowerCase());
-}), _defineProperty(_observable, "readerIsImage", function readerIsImage(type) {
-  return type.includes('image/');
-}), _defineProperty(_observable, "getFileInfo", function getFileInfo(file) {
-  var fileName = file.name;
-  var dotIndex = fileName.lastIndexOf('.');
-  var fileExtension = '';
-  var fileSize = file.size; // 확장자 없으면 file.type === ""
-
-  if (file.type && dotIndex !== -1) {
-    fileExtension = fileName.slice(dotIndex + 1);
-    fileName = fileName.slice(0, dotIndex);
-  }
-
-  return {
-    fileName: fileName,
-    fileExtension: fileExtension,
-    fileSize: fileSize
-  };
-}), _defineProperty(_observable, "setFileIndex", function setFileIndex(idx) {
-  this.selectFileIdx = idx;
-}), _defineProperty(_observable, "setFileElement", function setFileElement(element) {
-  this.selectFileElement = element;
-}), _defineProperty(_observable, "setDeleteFileConfig", function setDeleteFileConfig(id, name, index) {
-  this.deleteFileId = id;
-  this.deleteFileName = name;
-  this.deleteFileIndex = index;
-}), _defineProperty(_observable, "setUploadFileDTO", function setUploadFileDTO(model, file, type, cancelSource) {
-  this.uploadDTO.push({
-    model: model,
-    file: file,
-    type: type,
-    cancelSource: cancelSource
-  });
-  this.setPageFileList(model, file.uid, type, cancelSource);
-}), _defineProperty(_observable, "setPageFileList", function setPageFileList(model, uid, type, cancelSource) {
-  var obj = {
-    file_id: uid,
-    file_name: model.storageFileInfo.file_name,
-    file_extension: model.storageFileInfo.file_extension,
-    file_size: model.storageFileInfo.file_size,
-    user_id: model.storageFileInfo.user_id,
-    progress: 0,
-    type: type,
-    error: false,
-    cancelSource: cancelSource
-  };
-
-  if (type !== 'image') {
-    this.addFileList(obj);
-  }
-}), _defineProperty(_observable, "setUploadDTO", function setUploadDTO(meta) {
-  this.uploadDTO.push(meta);
-}), _defineProperty(_observable, "addFileList", function addFileList(target) {
-  if (this.processCount !== this.uploadLength) {
-    this.fileLayoutList.unshift(target);
-    this.processCount++;
-  } else this.processCount = 0;
-
-  if (!this.isFile) this.setIsFile(true);
-}), _defineProperty(_observable, "setTempFileLayoutList", function setTempFileLayoutList(arr) {
-  this.tempFileLayoutList = arr;
-}), _defineProperty(_observable, "setFileLength", function setFileLength(length) {
-  this.uploadLength = length;
-}), _defineProperty(_observable, "setTotalUploadLength", function setTotalUploadLength(length) {
-  this.totalUploadLength = length;
-}), _defineProperty(_observable, "getStorageVolume", function getStorageVolume() {
-  var _this3 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    var _yield$NoteRepository5, dto;
-
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.next = 2;
-            return NoteRepository$1.getStorageVolume();
-
-          case 2:
-            _yield$NoteRepository5 = _context7.sent;
-            dto = _yield$NoteRepository5.data.dto;
-
-            if (dto.resultMsg === 'Success') {
-              _this3.totalUsage = dto.volumeInfoList[0].total_usage;
-              _this3.spaceTotalVolume = dto.volumeInfoList[0].space_max_volume;
-            }
-
-          case 5:
-          case "end":
-            return _context7.stop();
-        }
-      }
-    }, _callee7);
-  }))();
-}), _defineProperty(_observable, "checkUploadUsage", function checkUploadUsage(fileSize) {
-  return this.totalUsage + fileSize < this.spaceTotalVolume;
-}), _defineProperty(_observable, "getTempTimeFormat", function getTempTimeFormat() {
-  var date = new Date();
-  var year = date.getFullYear();
-  var month = 1 + date.getMonth();
-  month = month >= 10 ? month : '0' + month;
-  var day = date.getDate();
-  day = day >= 10 ? day : '0' + day;
-  var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-  return year + '-' + month + '-' + day + ' ' + time;
-}), _defineProperty(_observable, "convertFileSize", function convertFileSize(bytes) {
-  if (bytes == 0) return '0 Bytes';
-  var k = 1000,
-      dm = 2,
-      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-      i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}), _defineProperty(_observable, "deleteImage", function deleteImage() {
-  var _EditorStore$tinymce, _EditorStore$tinymce$;
-
-  var parent = this.tinymce.selection.getNode().parentNode;
-  this.tinymce.selection.setContent('');
-  if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
-  this.tinymce.focus();
-  (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.add();
-  NoteStore.setModalInfo(null);
-}), _defineProperty(_observable, "createFileMeta", function createFileMeta(fileArray, noteId) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-    var createCopyArray, _yield$NoteRepository6, dto;
-
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            createCopyArray = [];
-            fileArray.forEach(function (file) {
-              createCopyArray.push({
-                note_id: noteId,
-                file_id: file,
-                WS_ID: NoteRepository$1.WS_ID
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              createCopyArray = [];
+              fileArray.forEach(function (file) {
+                createCopyArray.push({
+                  note_id: noteId,
+                  file_id: file,
+                  WS_ID: NoteRepository$1.WS_ID
+                });
               });
-            });
-            _context8.next = 4;
-            return NoteRepository$1.createFileMeta(createCopyArray);
+              _context7.next = 4;
+              return NoteRepository$1.createFileMeta(createCopyArray);
 
-          case 4:
-            _yield$NoteRepository6 = _context8.sent;
-            dto = _yield$NoteRepository6.data.dto;
-            return _context8.abrupt("return", dto);
+            case 4:
+              _yield$NoteRepository6 = _context7.sent;
+              dto = _yield$NoteRepository6.data.dto;
+              return _context7.abrupt("return", dto);
 
-          case 7:
-          case "end":
-            return _context8.stop();
+            case 7:
+            case "end":
+              return _context7.stop();
+          }
         }
-      }
-    }, _callee8);
-  }))();
-}), _defineProperty(_observable, "storageFileDeepCopy", function storageFileDeepCopy(fileId, type) {
-  var _this4 = this;
+      }, _callee7);
+    }))();
+  },
+  storageFileDeepCopy: function storageFileDeepCopy(fileId, type) {
+    var _this3 = this;
 
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-    var _yield$NoteRepository7, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      var _yield$NoteRepository7, dto, _dto$storageFileInfoL, file_id, file_name, file_extension, file_updated_at, file_size, isImage, tempMeta;
 
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _context9.next = 2;
-            return NoteRepository$1.storageFileDeepCopy(fileId);
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.next = 2;
+              return NoteRepository$1.storageFileDeepCopy(fileId);
 
-          case 2:
-            _yield$NoteRepository7 = _context9.sent;
-            dto = _yield$NoteRepository7.data.dto;
+            case 2:
+              _yield$NoteRepository7 = _context8.sent;
+              dto = _yield$NoteRepository7.data.dto;
 
-            if (!(dto.resultMsg === 'Success')) {
-              _context9.next = 13;
-              break;
-            }
-
-            _dto$storageFileInfoL = dto.storageFileInfoList[0], file_id = _dto$storageFileInfoL.file_id, file_name = _dto$storageFileInfoL.file_name, file_extension = _dto$storageFileInfoL.file_extension, file_updated_at = _dto$storageFileInfoL.file_updated_at, file_size = _dto$storageFileInfoL.file_size;
-            isImage = type === 'image' ? true : false;
-            tempMeta = {
-              user_id: NoteRepository$1.USER_ID,
-              file_last_update_user_id: NoteRepository$1.USER_ID,
-              file_id: file_id,
-              file_name: file_name,
-              file_extension: file_extension,
-              file_created_at: '',
-              file_updated_at: file_updated_at,
-              file_size: file_size,
-              user_context_1: '',
-              user_context_2: '',
-              user_context_3: '',
-              progress: 0,
-              type: isImage ? 'image' : 'file',
-              error: false
-            };
-
-            _this4.addFileList(tempMeta);
-
-            if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
-            return _context9.abrupt("return", {
-              id: file_id,
-              type: type
-            });
-
-          case 13:
-            EditorStore.failCount++;
-
-          case 14:
-          case "end":
-            return _context9.stop();
-        }
-      }
-    }, _callee9);
-  }))();
-}), _defineProperty(_observable, "createDriveElement", function createDriveElement(type, fileId, fileName) {
-  var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
-
-  switch (type) {
-    case 'image':
-      EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
-      break;
-
-    case 'video':
-      EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
-      break;
-  }
-}), _defineProperty(_observable, "uploadingFileallCancel", function uploadingFileallCancel() {
-  var _this5 = this;
-
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            _context10.next = 2;
-            return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
-              if (EditorStore.fileLayoutList[idx].status === 'pending') {
-                var _file$cancelSource;
-
-                EditorStore.fileLayoutList[idx].deleted = true;
-                return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
+              if (!(dto.resultMsg === 'Success')) {
+                _context8.next = 13;
+                break;
               }
-            })).then(function () {
-              _this5.uploadFileCancelStatus = true;
-            });
 
-          case 2:
-          case "end":
-            return _context10.stop();
+              _dto$storageFileInfoL = dto.storageFileInfoList[0], file_id = _dto$storageFileInfoL.file_id, file_name = _dto$storageFileInfoL.file_name, file_extension = _dto$storageFileInfoL.file_extension, file_updated_at = _dto$storageFileInfoL.file_updated_at, file_size = _dto$storageFileInfoL.file_size;
+              isImage = type === 'image' ? true : false;
+              tempMeta = {
+                user_id: NoteRepository$1.USER_ID,
+                file_last_update_user_id: NoteRepository$1.USER_ID,
+                file_id: file_id,
+                file_name: file_name,
+                file_extension: file_extension,
+                file_created_at: '',
+                file_updated_at: file_updated_at,
+                file_size: file_size,
+                user_context_1: '',
+                user_context_2: '',
+                user_context_3: '',
+                progress: 0,
+                type: isImage ? 'image' : 'file',
+                error: false
+              };
+
+              _this3.addFileList(tempMeta);
+
+              if (isImage) EditorStore.createDriveElement('image', file_id, file_name + '.' + file_extension);
+              return _context8.abrupt("return", {
+                id: file_id,
+                type: type
+              });
+
+            case 13:
+              EditorStore.failCount++;
+
+            case 14:
+            case "end":
+              return _context8.stop();
+          }
         }
-      }
-    }, _callee10);
-  }))();
-}), _defineProperty(_observable, "isEditCancelOpen", function isEditCancelOpen() {
-  var _this$tinymce, _this$tinymce$undoMan;
+      }, _callee8);
+    }))();
+  },
+  getDuflicateFile: function getDuflicateFile(fileName, fileExt) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _yield$NoteRepository8, dto, _dto$file$;
 
-  var isEmpty = NoteUtil.isEmpty;
-  if (PageStore.isNewPage && (!((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) || !PageStore.noteContent) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
-  return true;
-}), _defineProperty(_observable, "getDuflicateFile", function getDuflicateFile(fileName, fileExt) {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-    var _yield$NoteRepository8, dto, _dto$file$;
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              _context9.next = 2;
+              return NoteRepository$1.getDuflicateFile(fileName, fileExt);
 
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            _context11.next = 2;
-            return NoteRepository$1.getDuflicateFile(fileName, fileExt);
+            case 2:
+              _yield$NoteRepository8 = _context9.sent;
+              dto = _yield$NoteRepository8.data.dto;
 
-          case 2:
-            _yield$NoteRepository8 = _context11.sent;
-            dto = _yield$NoteRepository8.data.dto;
+              if (!(dto.result === 'Y')) {
+                _context9.next = 6;
+                break;
+              }
 
-            if (!(dto.result === 'Y')) {
-              _context11.next = 6;
-              break;
-            }
+              return _context9.abrupt("return", (_dto$file$ = dto.file[0]) === null || _dto$file$ === void 0 ? void 0 : _dto$file$.user_context_1);
 
-            return _context11.abrupt("return", (_dto$file$ = dto.file[0]) === null || _dto$file$ === void 0 ? void 0 : _dto$file$.user_context_1);
-
-          case 6:
-          case "end":
-            return _context11.stop();
+            case 6:
+            case "end":
+              return _context9.stop();
+          }
         }
-      }
-    }, _callee11);
-  }))();
-}), _defineProperty(_observable, "getRecycleBinAllFile", function getRecycleBinAllFile() {
-  return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-    var _yield$NoteRepository9, dto;
+      }, _callee9);
+    }))();
+  },
+  getRecycleBinAllFile: function getRecycleBinAllFile() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      var _yield$NoteRepository9, dto;
 
-    return regeneratorRuntime.wrap(function _callee12$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            _context12.next = 2;
-            return NoteRepository$1.getRecycleBinAllFile();
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _context10.next = 2;
+              return NoteRepository$1.getRecycleBinAllFile();
 
-          case 2:
-            _yield$NoteRepository9 = _context12.sent;
-            dto = _yield$NoteRepository9.data.dto;
-            return _context12.abrupt("return", dto);
+            case 2:
+              _yield$NoteRepository9 = _context10.sent;
+              dto = _yield$NoteRepository9.data.dto;
+              return _context10.abrupt("return", dto);
 
-          case 5:
-          case "end":
-            return _context12.stop();
+            case 5:
+            case "end":
+              return _context10.stop();
+          }
         }
-      }
-    }, _callee12);
-  }))();
-}), _observable));
+      }, _callee10);
+    }))();
+  },
+  setSaveFileMeta: function setSaveFileMeta(fileId, fileExt, fileName) {
+    this.saveFileId = fileId;
+    this.saveFileExt = fileExt;
+    this.saveFileName = fileName;
+  },
+  addDriveFileList: function addDriveFileList(fileInfo) {
+    this.driveFileList.push(fileInfo);
+  },
+  setFileList: function setFileList(fileList) {
+    this.fileList = fileList;
+    this.checkFile();
+  },
+  getFileList: function getFileList() {
+    return this.fileList;
+  },
+  setFileArray: function setFileArray(filelayoutlist) {
+    this.fileLayoutList = filelayoutlist;
+  },
+  setIsFile: function setIsFile(flag) {
+    this.isFile = flag;
+  },
+  removeFileList: function removeFileList(fileId) {
+    this.fileList = this.fileList.filter(function (file) {
+      return file.file_id !== fileId;
+    });
+  },
+  // not image 파일 첨부 영역을 위함
+  checkFile: function checkFile() {
+    var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
+    var checkFile;
+
+    if (this.fileList) {
+      checkFile = this.fileList.filter(function (file) {
+        return !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase());
+      });
+    }
+
+    if (checkFile === undefined) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else if (checkFile !== undefined && checkFile.length === 0) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else {
+      this.setIsFile(true);
+      var getUnixTime = NoteUtil.getUnixTime; // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
+
+      checkFile.sort(function (a, b) {
+        return getUnixTime(b['created_at']) - getUnixTime(a['created_at']);
+      });
+      this.setFileArray(checkFile);
+    }
+  },
+  isFileLength: function isFileLength() {
+    var temp = this.tempFileLayoutList.filter(function (file) {
+      return file.type === 'file';
+    }).length;
+    var uploaded = this.fileLayoutList.length;
+    var totalLength = temp + uploaded;
+    if (totalLength === 0) this.setIsFile(false);
+  },
+  uploadFileIsImage: function uploadFileIsImage(ext) {
+    var ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
+    return ImageExt.includes(ext.toLowerCase());
+  },
+  getFileInfo: function getFileInfo(file) {
+    var fileName = file.name;
+    var dotIndex = fileName.lastIndexOf('.');
+    var fileExtension = '';
+    var fileSize = file.size; // 확장자 없으면 file.type === ""
+
+    if (file.type && dotIndex !== -1) {
+      fileExtension = fileName.slice(dotIndex + 1);
+      fileName = fileName.slice(0, dotIndex);
+    }
+
+    return {
+      fileName: fileName,
+      fileExtension: fileExtension,
+      fileSize: fileSize
+    };
+  },
+  setFileIndex: function setFileIndex(idx) {
+    this.selectFileIdx = idx;
+  },
+  setFileElement: function setFileElement(element) {
+    this.selectFileElement = element;
+  },
+  setUploadFileDTO: function setUploadFileDTO(model, file, type, cancelSource) {
+    this.uploadDTO.push({
+      model: model,
+      file: file,
+      type: type,
+      cancelSource: cancelSource
+    });
+    this.setPageFileList(model, file.uid, type, cancelSource);
+  },
+  setPageFileList: function setPageFileList(model, uid, type, cancelSource) {
+    var obj = {
+      file_id: uid,
+      file_name: model.storageFileInfo.file_name,
+      file_extension: model.storageFileInfo.file_extension,
+      file_size: model.storageFileInfo.file_size,
+      user_id: model.storageFileInfo.user_id,
+      progress: 0,
+      type: type,
+      error: false,
+      cancelSource: cancelSource
+    };
+
+    if (type !== 'image') {
+      this.addFileList(obj);
+    }
+  },
+  setUploadDTO: function setUploadDTO(meta) {
+    this.uploadDTO.push(meta);
+  },
+  addFileList: function addFileList(target) {
+    if (this.processCount !== this.uploadLength) {
+      this.fileLayoutList.unshift(target);
+      this.processCount++;
+    } else this.processCount = 0;
+
+    if (!this.isFile) this.setIsFile(true);
+  },
+  setFileLength: function setFileLength(length) {
+    this.uploadLength = length;
+  },
+  setTotalUploadLength: function setTotalUploadLength(length) {
+    this.totalUploadLength = length;
+  },
+  checkUploadUsage: function checkUploadUsage(fileSize) {
+    return this.totalUsage + fileSize < this.spaceTotalVolume;
+  },
+  convertFileSize: function convertFileSize(bytes) {
+    if (bytes == 0) return '0 Bytes';
+    var k = 1000,
+        dm = 2,
+        sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+        i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  },
+  deleteImage: function deleteImage() {
+    var _EditorStore$tinymce, _EditorStore$tinymce$;
+
+    var parent = this.tinymce.selection.getNode().parentNode;
+    this.tinymce.selection.setContent('');
+    if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
+    this.tinymce.focus();
+    (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.add();
+    NoteStore.setModalInfo(null);
+  },
+  createDriveElement: function createDriveElement(type, fileId, fileName) {
+    var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
+
+    switch (type) {
+      case 'image':
+        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
+        break;
+
+      case 'video':
+        EditorStore.tinymce.insertContent("<p>\n            <span class=\"mce-preview-object mce-object-video\" contenteditable=\"false\" data-mce-object=\"video\" data-mce-p-allowfullscreen=\"allowfullscreen\" data-mce-p-frameborder=\"no\" data-mce-p-scrolling=\"no\" data-mce-p-src='' data-mce-html=\"%20\">\n              <video width=\"400\" controls>\n                <source src=".concat(targetSRC, " />\n              </video>\n            </span>\n          </p>"));
+        break;
+    }
+  },
+  uploadingFileallCancel: function uploadingFileallCancel() {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        while (1) {
+          switch (_context11.prev = _context11.next) {
+            case 0:
+              _context11.next = 2;
+              return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
+                if (EditorStore.fileLayoutList[idx].status === 'pending') {
+                  var _file$cancelSource;
+
+                  EditorStore.fileLayoutList[idx].deleted = true;
+                  return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
+                }
+              })).then(function () {
+                _this4.uploadFileCancelStatus = true;
+              });
+
+            case 2:
+            case "end":
+              return _context11.stop();
+          }
+        }
+      }, _callee11);
+    }))();
+  },
+  isEditCancelOpen: function isEditCancelOpen() {
+    var _this$tinymce, _this$tinymce$undoMan;
+
+    var isEmpty = NoteUtil.isEmpty;
+    if (PageStore.isNewPage && (!((_this$tinymce = this.tinymce) !== null && _this$tinymce !== void 0 && (_this$tinymce$undoMan = _this$tinymce.undoManager) !== null && _this$tinymce$undoMan !== void 0 && _this$tinymce$undoMan.hasUndo()) || !PageStore.noteContent) && isEmpty(TagStore.notetagList || []) && isEmpty(this.tempFileLayoutList || []) && isEmpty(this.fileLayoutList || [])) return false;
+    return true;
+  }
+});
 
 var PageStore = mobx.observable({
   pageInfo: new PageModel({}),
@@ -4537,7 +4517,7 @@ var PageStore = mobx.observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 18:
+            case 17:
             case "end":
               return _context15.stop();
           }
@@ -4809,12 +4789,6 @@ var PageStore = mobx.observable({
     var _EditorStore$tinymce6, _EditorStore$tinymce7;
 
     this.noteEditDone(updateDTO);
-
-    if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);
-      EditorStore.setTempFileLayoutList([]);
-    }
-
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
     EditorStore.setInitialSearchState();
@@ -6508,6 +6482,7 @@ var NoteMeta = {
 
           if (EditorStore.isUploading) {
             EditorStore.uploadingFileallCancel();
+            EditorStore.setProcessCount(0);
             return;
           }
 
@@ -7173,46 +7148,8 @@ var NoteStore = mobx.observable({
   },
   // { type, title, subTitle, buttons }
   setModalInfo: function setModalInfo(modalType, data) {
-    switch (modalType) {
-      // AntdModal로 연다
-      case 'viewInfo':
-      case 'forward':
-      case 'restore':
-        this.modalInfo = NoteMeta.openModal(modalType);
-        this.setShowModal(true);
-        break;
-
-      case 'nonDeletableSinglePage':
-      case 'nonDeletableMultiPage':
-      case 'chapter':
-      case 'draggedChapter':
-      case 'page':
-      case 'sharedChapter':
-      case 'sharedPage':
-      case 'titleDuplicate':
-      case 'duplicateTagName':
-      case 'editingPage':
-      case 'multiFileSomeFail':
-      case 'failUpload':
-      case 'sizefailUpload':
-      case 'failUploadSpaceFullSize':
-      case 'failUploadByFileNameLen':
-      case 'uploadingFiles': // todo
-
-      case 'deletePage':
-      case 'recover': // 페이지 복구 묻는 팝업창
-
-      case 'emptyRecycleBin':
-        this.modalInfo = NoteMeta.openMessage(modalType, data);
-        this.setShowModal(true);
-        break;
-
-      case null:
-      default:
-        this.modalInfo = {};
-        this.setShowModal(false);
-        break;
-    }
+    if (modalType === ('viewInfo'  )) this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else this.modalInfo = NoteMeta.openMessage(modalType, data);
+    modalType === null ? this.setShowModal(false) : this.setShowModal(true);
   },
   handleSharedInfo: function handleSharedInfo(type, id) {
     var _this = this;
