@@ -682,9 +682,6 @@ const PageStore = observable({
   handleSaveBtn(updateDTO) {
     this.noteEditDone(updateDTO);
 
-    if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);
-    }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
     EditorStore.setInitialSearchState();

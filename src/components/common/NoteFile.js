@@ -46,6 +46,7 @@ export const handleUpload = flow(function* handleUpload(item) {
       fixedEncodeURIComponent(item.model.storageFileInfo.file_name),
       item.model.storageFileInfo.file_extension,
     );
+    EditorStore.setIsUploading(true);
     const res = yield EditorStore.uploadFileGW(
       item.file,
       duplicateName,
