@@ -1,10 +1,4 @@
-import React, {
-  useLayoutEffect,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-} from 'react';
+import React, { useLayoutEffect, useEffect, useRef, useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import NoteRepository from '../../store/noteRepository';
@@ -78,9 +72,7 @@ const HandleUploader = props => {
       let totalsize = 21474836480; // 20GB
 
       if (file === fileList[0]) {
-        const filtered = fileList.filter(file =>
-          isValidFileNameLength(file.name),
-        );
+        const filtered = fileList.filter(file => isValidFileNameLength(file.name));
         if (fileList.length !== filtered.length) {
           if (filtered.length === 0) {
             NoteStore.setModalInfo('failUploadByFileNameLen');
@@ -111,11 +103,7 @@ const HandleUploader = props => {
         setTimeout(() => {
           for (let i = 0; i < filtered.length; i++) {
             (function (file) {
-              const {
-                fileName,
-                fileExtension,
-                fileSize,
-              } = EditorStore.getFileInfo(file);
+              const { fileName, fileExtension, fileSize } = EditorStore.getFileInfo(file);
               const type =
                 fileExtension && EditorStore.uploadFileIsImage(fileExtension)
                   ? 'image'
@@ -132,12 +120,7 @@ const HandleUploader = props => {
                   file_size: fileSize,
                 },
               });
-              EditorStore.setUploadFileDTO(
-                model,
-                filtered[i],
-                type,
-                cancelToken,
-              );
+              EditorStore.setUploadFileDTO(model, filtered[i], type, cancelToken);
             })(filtered[i]);
           }
           if (fileList.length !== filtered.length) {
@@ -161,9 +144,7 @@ const HandleUploader = props => {
   return useObserver(() => (
     <Upload
       {...uploadProps}
-      accept={
-        EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'
-      }
+      accept={EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'}
     >
       <Button ref={uploaderRef} />
     </Upload>
@@ -223,13 +204,10 @@ const EditorContainer = () => {
       setSearchValue(EditorStore.searchValue);
       instance.mark(EditorStore.searchValue, instanceOption);
       eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
-      if (EditorStore.searchTotalCount === 0)
-        EditorStore.setSearchCurrentCount(0);
+      if (EditorStore.searchTotalCount === 0) EditorStore.setSearchCurrentCount(0);
       else {
         EditorStore.setSearchCurrentCount(1);
-        eleArr[EditorStore.searchCurrentCount - 1].classList.add(
-          'searchselected',
-        );
+        eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
       }
       EditorStore.setSearchResultState(true);
     }
@@ -246,20 +224,14 @@ const EditorContainer = () => {
     if (EditorStore.searchTotalCount === 0) return;
     else {
       if (EditorStore.searchCurrentCount > 1) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
-          'searchselected',
-        );
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
         EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount - 1);
       } else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
-          'searchselected',
-        );
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
         EditorStore.setSearchCurrentCount(EditorStore.searchTotalCount);
       }
       eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add(
-        'searchselected',
-      );
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
     }
   };
 
@@ -267,20 +239,14 @@ const EditorContainer = () => {
     if (EditorStore.searchTotalCount === 0) return;
     else {
       if (EditorStore.searchCurrentCount < EditorStore.searchTotalCount) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
-          'searchselected',
-        );
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
         EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount + 1);
       } else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove(
-          'searchselected',
-        );
+        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
         EditorStore.setSearchCurrentCount(1);
       }
       eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add(
-        'searchselected',
-      );
+      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
     }
   };
 
@@ -333,20 +299,16 @@ const EditorContainer = () => {
 
     // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
     tinymce.settings.language = NoteStore.i18nLanguage;
-    tinymce.settings.skin =
-      themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
+    tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
     tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
     tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
 
     // theme에 맞춰 배경 및 글자색을 변경한다.
     const opacity = themeContext.name === 'dark' ? 0.9 : 0.04;
-    EditorStore.tinymce.editorManager.DOM.setStyle(
-      EditorStore.tinymce.getBody(),
-      {
-        background: `radial-gradient(rgba(0, 0, 0, ${opacity}) 0.063rem, ${themeContext.StateNormal} 0rem)`,
-        color: `${themeContext.TextMain}`,
-      },
-    );
+    EditorStore.tinymce.editorManager.DOM.setStyle(EditorStore.tinymce.getBody(), {
+      background: `radial-gradient(rgba(0, 0, 0, ${opacity}) 0.063rem, ${themeContext.StateNormal} 0rem)`,
+      color: `${themeContext.TextMain}`,
+    });
   };
 
   useEffect(() => {
@@ -399,10 +361,7 @@ const EditorContainer = () => {
         />
         <FoldBtn
           isExpanded={NoteStore.isContentExpanded}
-          show={
-            NoteStore.layoutState !== 'collapse' &&
-            NoteStore.isHoveredFoldBtnLine
-          }
+          show={NoteStore.layoutState !== 'collapse' && NoteStore.isHoveredFoldBtnLine}
           onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
           onClick={() => NoteStore.toggleIsContentExpanded()}
         >
@@ -420,12 +379,8 @@ const EditorContainer = () => {
               ) : (
                 <>
                   <ReadModeIcon src={lockImg} />
-                  <ReadModeText>
-                    {t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}
-                  </ReadModeText>
-                  <ReadModeSubText>
-                    {t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}
-                  </ReadModeSubText>
+                  <ReadModeText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_02')}</ReadModeText>
+                  <ReadModeSubText>{t('NOTE_PAGE_LIST_ADD_NEW_PGE_03')}</ReadModeSubText>
                 </>
               )
             ) : (
@@ -481,9 +436,7 @@ const EditorContainer = () => {
                  * init된 후 localStorage내용을 에디터에 set해주어야 한다
                  */
                 if (PageStore.recoverInfo.note_content) {
-                  EditorStore.tinymce?.setContent(
-                    PageStore.recoverInfo.note_content,
-                  );
+                  EditorStore.tinymce?.setContent(PageStore.recoverInfo.note_content);
                   PageStore.setRecoverInfo({});
                 }
                 editor.focus();
@@ -541,18 +494,14 @@ const EditorContainer = () => {
                   case 'Space':
                     const target = getAnchorElement();
                     if (target) {
-                      const curCaretPosition = editor.selection.getRng()
-                        .endOffset;
+                      const curCaretPosition = editor.selection.getRng().endOffset;
                       const _length = target.textContent.length;
                       // anchor tag앞에 caret 놓으면 getAnchorElement() === null
                       if (curCaretPosition === _length - 1) {
                         e.preventDefault();
                         e.stopPropagation();
                         target.insertAdjacentHTML('afterend', '&nbsp;');
-                        editor.selection.setCursorLocation(
-                          target.nextSibling,
-                          1,
-                        );
+                        editor.selection.setCursorLocation(target.nextSibling, 1);
                       }
                     }
                     break;
@@ -695,15 +644,13 @@ const EditorContainer = () => {
                     !isCodeSampleElement(node)
                   );
                 },
-                items:
-                  'forecolor backcolor | bold italic underline strikethrough | link',
+                items: 'forecolor backcolor | bold italic underline strikethrough | link',
                 position: 'selection',
               });
               // l-click하면 나오는 메뉴
               editor.ui.registry.addContextToolbar('link-toolbar', {
                 predicate: isAnchorElement,
-                items:
-                  'customToggleLink customToggleUnLink customToggleOpenLink',
+                items: 'customToggleLink customToggleUnLink customToggleOpenLink',
                 position: 'selection',
                 scope: 'node',
               });
@@ -740,11 +687,7 @@ const EditorContainer = () => {
                               );
                               fileName = fileName.substring(0, dotIndex);
                             }
-                            EditorStore.setSaveFileMeta(
-                              node.id,
-                              fileExtension,
-                              fileName,
-                            );
+                            EditorStore.setSaveFileMeta(node.id, fileExtension, fileName);
                             openSaveDrive();
                           },
                         }
