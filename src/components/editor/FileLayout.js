@@ -298,6 +298,8 @@ const FileLayout = () => {
                       ? EditorStore.convertFileSize(item.file_size)
                       : item.status === 'canceled'
                       ? '취소 중'
+                      : item.file_size === 0
+                      ? '0 KB'
                       : '삭제 중'}
                   </FileTime>
                   <FileProgress>
