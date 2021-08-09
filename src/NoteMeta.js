@@ -103,6 +103,7 @@ const NoteMeta = {
           }
           if (EditorStore.isUploading) {
             EditorStore.uploadingFileallCancel();
+            EditorStore.setProcessCount(0);
             return;
           }
           PageStore.handleSave();
@@ -177,12 +178,9 @@ const NoteMeta = {
           const { parentId, id } = PageStore.recoverInfo;
           if (!id) return;
           NoteStore.setShowPage(true);
-          if (NoteStore.layoutState === 'collapse')
-            NoteStore.setTargetLayout('Content');
+          if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
           // 복구 원하지 않으면 로컬 스토리지에서 지우자
-          localStorage.removeItem(
-            `Note_autosave_${NoteStore.notechannel_id}_${id}`,
-          );
+          localStorage.removeItem(`Note_autosave_${NoteStore.notechannel_id}_${id}`);
 
           NoteStore.setModalInfo(null);
 
@@ -234,10 +232,7 @@ const NoteMeta = {
           defaultBtn2,
         ];
       case 'recover':
-        return [
-          { ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') },
-          defaultBtn2,
-        ];
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') }, defaultBtn2];
       case 'nonDeletableSinglePage':
       case 'nonDeletableMultiPage':
       case 'editingPage':

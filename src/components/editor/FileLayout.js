@@ -55,14 +55,12 @@ const FileLayout = () => {
   // const driveGetFileIcon = ComponentStore.get('Drive:getFileIcon');
 
   const handleTooltip = e => {
-    setIsEllipsisActive(
-      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
-    );
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
 
   const handleFileDown = key => {
     if (key === '0') openSaveDrive();
-    if (key === '1') downloadFile(EditorStore.downloadFileId);
+    if (key === '1') downloadFile(downloadFileId);
   };
 
   const onClickContextMenu = ({ key }) => {
@@ -110,43 +108,36 @@ const FileLayout = () => {
     filebodyRef.current[changeIdx]?.scrollIntoView(false);
   };
 
-  const handleKeyDownFile =
-    ({ fileId, index, type }) =>
-    e => {
-      const { keyCode, target } = e;
-      switch (keyCode) {
-        case 37: // <-
-          if (clickFileIdx === 0) return;
-          else {
-            const leftIdx = clickFileIdx - 1;
-            setClickFileIdx(leftIdx);
-            changeSelectFile(leftIdx);
-          }
-          break;
-        case 39: // ->
-          if (clickFileIdx === filebodyRef.current.length - 1) return;
-          else {
-            const rightIdx = clickFileIdx + 1;
-            setClickFileIdx(rightIdx);
-            changeSelectFile(rightIdx);
-          }
-          break;
-        case 8: // backspace
-        case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
-          if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
-          break;
-        default:
-          break;
-      }
-    };
+  const handleKeyDownFile = ({ fileId, index, type }) => e => {
+    const { keyCode, target } = e;
+    switch (keyCode) {
+      case 37: // <-
+        if (clickFileIdx === 0) return;
+        else {
+          const leftIdx = clickFileIdx - 1;
+          setClickFileIdx(leftIdx);
+          changeSelectFile(leftIdx);
+        }
+        break;
+      case 39: // ->
+        if (clickFileIdx === filebodyRef.current.length - 1) return;
+        else {
+          const rightIdx = clickFileIdx + 1;
+          setClickFileIdx(rightIdx);
+          changeSelectFile(rightIdx);
+        }
+        break;
+      case 8: // backspace
+      case 46: // delete : 해당 첨부 파일 삭제되며 focus는 삭제된 파일의 위 파일 chip으로 이동
+        if (!PageStore.isReadMode()) handleFileRemove(fileId, index, type);
+        break;
+      default:
+        break;
+    }
+  };
 
   const onClickFileName = item => {
-    const {
-      file_id,
-      file_name,
-      file_extension: extension,
-      user_context_2,
-    } = item;
+    const { file_id, file_name, file_extension: extension, user_context_2 } = item;
     // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
     if (!PageStore.isReadMode() && !isPreview(extension)) return;
 
@@ -169,16 +160,12 @@ const FileLayout = () => {
     const removePostProcess = () => {
       if (EditorStore.isFile) {
         EditorStore.setFileIndex(''); // click 대상 index와 fileIndex값이 같으면 click 이벤트에서 초기화시켜버림
-        if (type === 'uploaded')
-          filebodyRef.current[index > 0 ? index - 1 : 0]?.click();
+        if (type === 'uploaded') filebodyRef.current[index > 0 ? index - 1 : 0]?.click();
       } else {
         try {
           // 불안해서 넣는 try catch문
           EditorStore.tinymce.focus();
-          EditorStore.tinymce.selection.select(
-            EditorStore.tinymce.getBody(),
-            true,
-          );
+          EditorStore.tinymce.selection.select(EditorStore.tinymce.getBody(), true);
           EditorStore.tinymce.selection.collapse(false);
         } catch (err) {}
       }
@@ -228,7 +215,7 @@ const FileLayout = () => {
 
   const handleClickDropDown = (fileId, fileExt, fileName) => e => {
     e.stopPropagation();
-    EditorStore.setDownLoadFileId(fileId);
+    setDownLoadFileId(fileId);
     EditorStore.setSaveFileMeta(fileId, fileExt, fileName);
   };
 
@@ -249,9 +236,7 @@ const FileLayout = () => {
               type: 'uploaded',
             })}
             tabIndex={index}
-            className={
-              index === clickFileIdx ? 'noteFile fileSelected' : 'noteFile'
-            }
+            className={index === clickFileIdx ? 'noteFile fileSelected' : 'noteFile'}
             closable={!PageStore.isReadMode()}
           >
             <FileContent>
@@ -277,9 +262,7 @@ const FileLayout = () => {
                     {hover && index === hoverFileIdx ? (
                       <FileDownloadBtn src={downloadBtn} />
                     ) : (
-                      <FileExtensionBtn
-                        src={fileExtension(item.file_extension)}
-                      />
+                      <FileExtensionBtn src={fileExtension(item.file_extension)} />
                     )}
                   </FileDownloadIcon>
                 </Dropdown>
@@ -306,12 +289,8 @@ const FileLayout = () => {
                 </FileDataName>
                 <FileDataTime>
                   <FileTime>
-                    {item.status === 'pending' &&
-                    item.progress &&
-                    item.file_size
-                      ? EditorStore.convertFileSize(
-                          item.progress * item.file_size,
-                        ) + '/'
+                    {item.status === 'pending' && item.progress && item.file_size
+                      ? EditorStore.convertFileSize(item.progress * item.file_size) + '/'
                       : null}
                   </FileTime>
                   <FileTime>
@@ -319,6 +298,8 @@ const FileLayout = () => {
                       ? EditorStore.convertFileSize(item.file_size)
                       : item.status === 'canceled'
                       ? '취소 중'
+                      : item.file_size === 0
+                      ? '0 KB'
                       : '삭제 중'}
                   </FileTime>
                   <FileProgress>
@@ -349,12 +330,7 @@ const FileLayout = () => {
               >
                 <FileCloseBtn
                   src={cancelBtn}
-                  onClick={handleFileRemove.bind(
-                    null,
-                    item.file_id,
-                    index,
-                    item.status,
-                  )}
+                  onClick={handleFileRemove.bind(null, item.file_id, index, item.status)}
                 />
               </FileClose>
             </FileContent>

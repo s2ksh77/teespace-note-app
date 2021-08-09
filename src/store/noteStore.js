@@ -11,7 +11,7 @@ import i18n from '../i18n/i18n';
 import { get12HourFormat } from '../NoteUtil';
 
 const NoteStore = observable({
-  metaTagInfo: {isOpen:false, type:'', id:''},
+  metaTagInfo: { isOpen: false, type: '', id: '' },
   loadingNoteApp: true,
   workspaceId: '',
   notechannel_id: '',
@@ -45,11 +45,11 @@ const NoteStore = observable({
   isExporting: false,
   isSlashCmd: false,
 
-  setIsSlashCmd(flag){
+  setIsSlashCmd(flag) {
     this.isSlashCmd = flag;
   },
-  setMetaTagInfo({isOpen=false, type='', id=''}) {
-    this.metaTagInfo = {isOpen, type, id};
+  setMetaTagInfo({ isOpen = false, type = '', id = '' }) {
+    this.metaTagInfo = { isOpen, type, id };
   },
   getLoadingNoteApp() {
     return this.loadingNoteApp;
@@ -103,7 +103,7 @@ const NoteStore = observable({
     ChapterStore.setCurrentChapterInfo('', false); //chapterId = '', isRecycleBin=false
     PageStore.fetchCurrentPageData('');
     ChapterStore.setChapterList([]);
-    ChapterStore.setLnbBoundary({ beforeShared:false, beforeRecycleBin:false });
+    ChapterStore.setLnbBoundary({ beforeShared: false, beforeRecycleBin: false });
     TagStore.setNoteTagList([]);
     TagStore.setTagPanelLoading(true); // 처음에 '태그 없습니다' 페이지가 보이지 않아야 함!
     // 룸 변경시 전에 방문했던 룸의 태그를 잠깐 보여줘서 init
@@ -177,42 +177,12 @@ const NoteStore = observable({
   },
   // { type, title, subTitle, buttons }
   setModalInfo(modalType, data) {
-    switch (modalType) {
-      // AntdModal로 연다
-      case 'viewInfo':
-      case 'forward':
-      case 'restore':
-        this.modalInfo = NoteMeta.openModal(modalType);
-        this.setShowModal(true);
-        break;
-      case 'nonDeletableSinglePage':
-      case 'nonDeletableMultiPage':
-      case 'chapter':
-      case 'draggedChapter':
-      case 'page':
-      case 'sharedChapter':
-      case 'sharedPage':
-      case 'titleDuplicate':
-      case 'duplicateTagName':
-      case 'editingPage':
-      case 'multiFileSomeFail':
-      case 'failUpload':
-      case 'sizefailUpload':
-      case 'failUploadSpaceFullSize':
-      case 'failUploadByFileNameLen':
-      case 'uploadingFiles': // todo
-      case 'deletePage':
-      case 'recover': // 페이지 복구 묻는 팝업창
-      case 'emptyRecycleBin':
-        this.modalInfo = NoteMeta.openMessage(modalType, data);
-        this.setShowModal(true);
-        break;
-      case null:
-      default:
-        this.modalInfo = {};
-        this.setShowModal(false);
-        break;
-    }
+    if (modalType === ('viewInfo' || 'forward' || 'restore'))
+      this.modalInfo = NoteMeta.openModal(modalType);
+    else if (!modalType) this.modalInfo = {};
+    else this.modalInfo = NoteMeta.openMessage(modalType, data);
+
+    modalType === null ? this.setShowModal(false) : this.setShowModal(true);
   },
 
   async handleSharedInfo(type, id) {
@@ -241,15 +211,15 @@ const NoteStore = observable({
   },
 
   getTargetChId(targetRoomId, chType) {
-    return RoomStore.getChannelIds({ roomId: targetRoomId })[chType ? chType : NoteRepository.CH_TYPE];
+    return RoomStore.getChannelIds({ roomId: targetRoomId })[
+      chType ? chType : NoteRepository.CH_TYPE
+    ];
   },
 
   getSharedRoomName() {
-    return (
-      RoomStore.getRoom(NoteRepository.WS_ID).isMyRoom
-        ? this.userName
-        : RoomStore.getRoom(NoteRepository.WS_ID).name
-    );
+    return RoomStore.getRoom(NoteRepository.WS_ID).isMyRoom
+      ? this.userName
+      : RoomStore.getRoom(NoteRepository.WS_ID).name;
   },
 
   shareNote() {
@@ -257,28 +227,28 @@ const NoteStore = observable({
       const friendId = user.friendId ? user.friendId : user.id;
       const res = await RoomStore.createRoom({
         creatorId: this.user_id,
-        userList: [{ userId: friendId }]
+        userList: [{ userId: friendId }],
       });
 
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(res.roomId, [this.shareContent,]);
+        ChapterStore.createNoteShareChapter(res.roomId, [this.shareContent]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(res.roomId, [this.shareContent,]);
-    })
+        PageStore.createNoteSharePage(res.roomId, [this.shareContent]);
+    });
 
     this.shareArrays.roomArray.forEach(room => {
       if (!room.isVisible) {
         RoomStore.activateRoom({
           roomId: room.id,
-          myUserId: NoteRepository.USER_ID
+          myUserId: NoteRepository.USER_ID,
         });
       }
 
       if (this.shareNoteType === 'chapter')
-        ChapterStore.createNoteShareChapter(room.id, [this.shareContent,]);
+        ChapterStore.createNoteShareChapter(room.id, [this.shareContent]);
       else if (this.shareNoteType === 'page')
-        PageStore.createNoteSharePage(room.id, [this.shareContent,]);
-    })
+        PageStore.createNoteSharePage(room.id, [this.shareContent]);
+    });
   },
 
   setLNBChapterCoverRef(ref) {
@@ -304,7 +274,7 @@ const NoteStore = observable({
   },
   async getSearchList(searchKey) {
     const {
-      data: { dto }
+      data: { dto },
     } = await NoteRepository.getSearchList(searchKey);
 
     return dto;

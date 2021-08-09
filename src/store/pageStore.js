@@ -236,12 +236,8 @@ const PageStore = observable({
    * 에디터의 텍스트/배경 색상을 초기화한다.
    */
   initializeBoxColor() {
-    document
-      .getElementById('tox-icon-text-color__color')
-      ?.removeAttribute('fill');
-    document
-      .getElementById('tox-icon-text-color__color')
-      ?.removeAttribute('stroke');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
+    document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');
     document
       .getElementById('tox-icon-highlight-bg-color__color')
       ?.removeAttribute('fill');
@@ -306,10 +302,7 @@ const PageStore = observable({
         new Map([
           [
             this.currentPageId,
-            this.createDragData(
-              this.currentPageId,
-              ChapterStore.currentChapterId,
-            ),
+            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
           ],
         ]),
       );
@@ -344,8 +337,7 @@ const PageStore = observable({
             chapter => chapter.id === this.createParent,
           );
           if (currentChapter.children.length > 1) {
-            const pageId =
-              currentChapter.children[currentChapter.children.length - 2].id;
+            const pageId = currentChapter.children[currentChapter.children.length - 2].id;
             this.setCurrentPageId(pageId);
             this.fetchCurrentPageData(pageId);
           } else {
@@ -410,11 +402,7 @@ const PageStore = observable({
     });
   },
 
-  async moveNotePage(
-    moveTargetChapterId,
-    moveTargetChapterIdx,
-    moveTargetPageIdx,
-  ) {
+  async moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     const item = JSON.parse(
       localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()),
     );
@@ -482,10 +470,7 @@ const PageStore = observable({
       } else {
         ChapterStore.setDragData(
           new Map([
-            [
-              moveTargetChapterId,
-              ChapterStore.createDragData(moveTargetChapterId),
-            ],
+            [moveTargetChapterId, ChapterStore.createDragData(moveTargetChapterId)],
           ]),
         );
         NoteStore.setToastText(
@@ -514,7 +499,7 @@ const PageStore = observable({
     this.setCurrentPageId(dto.note_id);
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
     dto.note_content = NoteUtil.decodeStr(dto.note_content);
-    dto.modUserName = await getUserDisplayName(dto.USER_ID);;
+    dto.modUserName = await getUserDisplayName(dto.USER_ID);
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
     EditorStore.setFileList(dto.fileList);
@@ -533,10 +518,7 @@ const PageStore = observable({
         new Map([
           [
             this.currentPageId,
-            this.createDragData(
-              this.currentPageId,
-              ChapterStore.currentChapterId,
-            ),
+            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
           ],
         ]),
       );
@@ -580,8 +562,7 @@ const PageStore = observable({
       // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
       const target = Object.keys(localStorage).find(
         key =>
-          key.replace(/^(Note_autosave_)(.+)_(.+)$/, '$2') ===
-          NoteStore.notechannel_id,
+          key.replace(/^(Note_autosave_)(.+)_(.+)$/, '$2') === NoteStore.notechannel_id,
       );
       if (!target) return;
       const noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, '$3');
@@ -677,8 +658,7 @@ const PageStore = observable({
 
   // 자동저장, 저장 버튼 포함, isAutoSave default는 false(원래 함수 고치지 않기 위해)
   handleSave(isAutoSave = false) {
-    if (!isAutoSave && !this.noteTitle)
-      this.setTitle(this.getTitleFromPageContent());
+    if (!isAutoSave && !this.noteTitle) this.setTitle(this.getTitleFromPageContent());
     this._checkEmojiContent();
     const updateDTO = this.getSaveDto(isAutoSave);
     if (isAutoSave) this.handleAutoSave(updateDTO);
@@ -689,9 +669,7 @@ const PageStore = observable({
     this.setSaveStatus({ saving: true });
     this.editDone(updateDTO).then(dto => {
       this.removeLocalContent();
-      if (
-        document.getElementById(this.pageInfo.id)?.innerText !== dto.note_title
-      )
+      if (document.getElementById(this.pageInfo.id)?.innerText !== dto.note_title)
         ChapterStore.getNoteChapterList();
       this.setSaveStatus({ saved: true });
       // 2초 후 수정 중 인터렉션으로 바꾸기
@@ -704,10 +682,6 @@ const PageStore = observable({
   handleSaveBtn(updateDTO) {
     this.noteEditDone(updateDTO);
 
-    if (EditorStore.tempFileLayoutList.length > 0) {
-      EditorStore.setProcessCount(0);
-      EditorStore.setTempFileLayoutList([]);
-    }
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
     EditorStore.setInitialSearchState();
@@ -724,12 +698,9 @@ const PageStore = observable({
     const reg = emojiRegex();
     const regText = emojiRegexText();
 
-    this.noteContent = this.noteContent.replace(
-      regRGI && reg && regText,
-      (m, idx) => {
-        return NoteUtil.encodeStr(m);
-      },
-    );
+    this.noteContent = this.noteContent.replace(regRGI && reg && regText, (m, idx) => {
+      return NoteUtil.encodeStr(m);
+    });
   },
 
   getTitleFromPageContent() {
@@ -756,9 +727,7 @@ const PageStore = observable({
   },
 
   _getTxtFromTable(node) {
-    const targetTd = [...node.getElementsByTagName('td')].find(td =>
-      this._hasTxt(td),
-    );
+    const targetTd = [...node.getElementsByTagName('td')].find(td => this._hasTxt(td));
     return targetTd?.textContent;
   },
 
