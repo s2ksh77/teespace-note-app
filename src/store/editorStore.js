@@ -130,9 +130,6 @@ const EditorStore = observable({
   setPreviewFileMeta(fileMeta) {
     this.previewFileMeta = fileMeta;
   },
-  setIsFileFilteredByNameLen(flag) {
-    this.isFileFilteredByNameLen = flag;
-  },
   setProcessLength(len) {
     this.processLength = len;
   },
@@ -164,6 +161,7 @@ const EditorStore = observable({
       return { id: dto.log_file_id, type: type };
     }
   },
+
   async createUploadStorage(fileId, file, handleProcess) {
     const {
       data: { dto },
@@ -192,182 +190,24 @@ const EditorStore = observable({
     return dto;
   },
 
-  uploadFile: async function (dto, file, index) {
-    this.createUploadMeta(dto).then(dto => {
-      if (dto.log_file_id) {
-        this.createUploadStorage(dto.log_file_id, file).then(dto => {
-          if (dto.resultMsg === 'Success') {
-            const returnID = dto.storageFileInfoList[0].file_id;
-            const returnIndex = index;
-            return returnID;
-          } else {
-          }
-        });
-      }
-    });
-  },
-  //storagemanager 없어서 임시
-  setDownLoadFileId(fileId) {
-    this.downloadFileId = fileId;
-  },
-  setSaveFileMeta(fileId, fileExt, fileName) {
-    this.saveFileId = fileId;
-    this.saveFileExt = fileExt;
-    this.saveFileName = fileName;
-  },
-  tempDeleteFile() {
-    this.fileLayoutList.splice(this.deleteFileIndex, 1);
-    if (this.fileLayoutList.length === 0) this.setIsFile(false);
-  },
-  addDriveFileList(fileInfo) {
-    this.driveFileList.push(fileInfo);
-  },
   async deleteFile(deleteId) {
     const {
       data: { dto },
     } = await NoteRepository.deleteFile(deleteId);
     return dto;
   },
+
   async deleteAllFile(fileList) {
-    await NoteRepository.deleteAllFile(
-      fileList ? fileList : this.fileList,
-    ).then(response => {
-      const {
-        data: { dto },
-      } = response;
-      if (dto.resultMsg === 'Success') {
-        ChapterStore.getNoteChapterList();
-      }
-    });
-  },
-  setFileList(fileList) {
-    this.fileList = fileList;
-    this.checkFile();
-  },
-  getFileList() {
-    return this.fileList;
-  },
-  setFileArray(filelayoutlist) {
-    this.fileLayoutList = filelayoutlist;
-  },
-  setIsFile(flag) {
-    this.isFile = flag;
-  },
-  removeFileList(fileId) {
-    this.fileList = this.fileList.filter(file => file.file_id !== fileId);
-  },
-  // not image 파일 첨부 영역을 위함
-  checkFile() {
-    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
-    let checkFile;
-    if (this.fileList) {
-      checkFile = this.fileList.filter(
-        file =>
-          !file.file_extension ||
-          !ImageExt.includes(file.file_extension.toLowerCase()),
-      );
-    }
-    if (checkFile === undefined) {
-      this.setIsFile(false);
-      this.setFileArray([]);
-    } else if (checkFile !== undefined && checkFile.length === 0) {
-      this.setIsFile(false);
-      this.setFileArray([]);
-    } else {
-      this.setIsFile(true);
-      const { getUnixTime } = NoteUtil;
-      // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
-      checkFile.sort(
-        (a, b) => getUnixTime(b['created_at']) - getUnixTime(a['created_at']),
-      );
-      this.setFileArray(checkFile);
-    }
-  },
-  isFileLength() {
-    const temp = this.tempFileLayoutList.filter(file => file.type === 'file')
-      .length;
-    const uploaded = this.fileLayoutList.length;
-    const totalLength = temp + uploaded;
-    if (totalLength === 0) this.setIsFile(false);
-  },
-  uploadFileIsImage(ext) {
-    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
-    return ImageExt.includes(ext.toLowerCase());
-  },
-  readerIsImage(type) {
-    return type.includes('image/');
-  },
-  getFileInfo(file) {
-    let fileName = file.name;
-    let dotIndex = fileName.lastIndexOf('.');
-    let fileExtension = '';
-    let fileSize = file.size;
-    // 확장자 없으면 file.type === ""
-    if (file.type && dotIndex !== -1) {
-      fileExtension = fileName.slice(dotIndex + 1);
-      fileName = fileName.slice(0, dotIndex);
-    }
-    return { fileName, fileExtension, fileSize };
-  },
-  setFileIndex(idx) {
-    this.selectFileIdx = idx;
-  },
-  setFileElement(element) {
-    this.selectFileElement = element;
-  },
-  setDeleteFileConfig(id, name, index) {
-    this.deleteFileId = id;
-    this.deleteFileName = name;
-    this.deleteFileIndex = index;
-  },
-
-  setUploadFileDTO(model, file, type, cancelSource) {
-    this.uploadDTO.push({
-      model,
-      file,
-      type,
-      cancelSource,
-    });
-    this.setPageFileList(model, file.uid, type, cancelSource);
-  },
-
-  setPageFileList(model, uid, type, cancelSource) {
-    const obj = {
-      file_id: uid,
-      file_name: model.storageFileInfo.file_name,
-      file_extension: model.storageFileInfo.file_extension,
-      file_size: model.storageFileInfo.file_size,
-      user_id: model.storageFileInfo.user_id,
-      progress: 0,
-      type: type,
-      error: false,
-      cancelSource,
-    };
-    if (type !== 'image') {
-      this.addFileList(obj);
-    }
-  },
-
-  setUploadDTO(meta) {
-    this.uploadDTO.push(meta);
-  },
-
-  addFileList(target) {
-    if (this.processCount !== this.uploadLength) {
-      this.fileLayoutList.unshift(target);
-      this.processCount++;
-    } else this.processCount = 0;
-    if (!this.isFile) this.setIsFile(true);
-  },
-  // []로 초기화하는 부분 debugging할 때 찾기 쉽도록 추가
-  setTempFileLayoutList(arr) {
-    this.tempFileLayoutList = arr;
-  },
-  setFileLength(length) {
-    this.uploadLength = length;
-  },
-  setTotalUploadLength(length) {
-    this.totalUploadLength = length;
+    await NoteRepository.deleteAllFile(fileList ? fileList : this.fileList).then(
+      response => {
+        const {
+          data: { dto },
+        } = response;
+        if (dto.resultMsg === 'Success') {
+          ChapterStore.getNoteChapterList();
+        }
+      },
+    );
   },
 
   async getStorageVolume() {
@@ -381,38 +221,6 @@ const EditorStore = observable({
     }
   },
 
-  checkUploadUsage(fileSize) {
-    return this.totalUsage + fileSize < this.spaceTotalVolume;
-  },
-
-  // 하위 File Layout 에 Temp로 그리기 위한 용도
-  getTempTimeFormat() {
-    let date = new Date();
-    let year = date.getFullYear();
-    let month = 1 + date.getMonth();
-    month = month >= 10 ? month : '0' + month;
-    let day = date.getDate();
-    day = day >= 10 ? day : '0' + day;
-    let time =
-      date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-    return year + '-' + month + '-' + day + ' ' + time;
-  },
-  convertFileSize(bytes) {
-    if (bytes == 0) return '0 Bytes';
-    let k = 1000,
-      dm = 2,
-      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-      i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  },
-  deleteImage() {
-    const parent = this.tinymce.selection.getNode().parentNode;
-    this.tinymce.selection.setContent('');
-    if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
-    this.tinymce.focus();
-    EditorStore.tinymce?.undoManager?.add();
-    NoteStore.setModalInfo(null);
-  },
   /**
    * drive에서 받은 file_id 들의 array
    * @param {*} fileArray
@@ -431,6 +239,7 @@ const EditorStore = observable({
     } = await NoteRepository.createFileMeta(createCopyArray);
     return dto;
   },
+
   async storageFileDeepCopy(fileId, type) {
     const {
       data: { dto },
@@ -472,6 +281,176 @@ const EditorStore = observable({
       EditorStore.failCount++;
     }
   },
+
+  async getDuflicateFile(fileName, fileExt) {
+    const {
+      data: { dto },
+    } = await NoteRepository.getDuflicateFile(fileName, fileExt);
+    if (dto.result === 'Y') {
+      return dto.file[0]?.user_context_1;
+    }
+  },
+
+  async getRecycleBinAllFile() {
+    const {
+      data: { dto },
+    } = await NoteRepository.getRecycleBinAllFile();
+    return dto;
+  },
+
+  setSaveFileMeta(fileId, fileExt, fileName) {
+    this.saveFileId = fileId;
+    this.saveFileExt = fileExt;
+    this.saveFileName = fileName;
+  },
+
+  addDriveFileList(fileInfo) {
+    this.driveFileList.push(fileInfo);
+  },
+
+  setFileList(fileList) {
+    this.fileList = fileList;
+    this.checkFile();
+  },
+  getFileList() {
+    return this.fileList;
+  },
+  setFileArray(filelayoutlist) {
+    this.fileLayoutList = filelayoutlist;
+  },
+  setIsFile(flag) {
+    this.isFile = flag;
+  },
+  removeFileList(fileId) {
+    this.fileList = this.fileList.filter(file => file.file_id !== fileId);
+  },
+  // not image 파일 첨부 영역을 위함
+  checkFile() {
+    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
+    let checkFile;
+    if (this.fileList) {
+      checkFile = this.fileList.filter(
+        file =>
+          !file.file_extension || !ImageExt.includes(file.file_extension.toLowerCase()),
+      );
+    }
+    if (checkFile === undefined) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else if (checkFile !== undefined && checkFile.length === 0) {
+      this.setIsFile(false);
+      this.setFileArray([]);
+    } else {
+      this.setIsFile(true);
+      const { getUnixTime } = NoteUtil;
+      // 혹시나 'file_updated_at'이 빈 str인 경우 대소비교는 정확하지 않음
+      checkFile.sort(
+        (a, b) => getUnixTime(b['created_at']) - getUnixTime(a['created_at']),
+      );
+      this.setFileArray(checkFile);
+    }
+  },
+  isFileLength() {
+    const temp = this.tempFileLayoutList.filter(file => file.type === 'file').length;
+    const uploaded = this.fileLayoutList.length;
+    const totalLength = temp + uploaded;
+    if (totalLength === 0) this.setIsFile(false);
+  },
+  uploadFileIsImage(ext) {
+    let ImageExt = ['jpg', 'gif', 'jpeg', 'jfif', 'tiff', 'bmp', 'bpg', 'png'];
+    return ImageExt.includes(ext.toLowerCase());
+  },
+
+  getFileInfo(file) {
+    let fileName = file.name;
+    let dotIndex = fileName.lastIndexOf('.');
+    let fileExtension = '';
+    let fileSize = file.size;
+    // 확장자 없으면 file.type === ""
+    if (file.type && dotIndex !== -1) {
+      fileExtension = fileName.slice(dotIndex + 1);
+      fileName = fileName.slice(0, dotIndex);
+    }
+    return { fileName, fileExtension, fileSize };
+  },
+
+  setFileIndex(idx) {
+    this.selectFileIdx = idx;
+  },
+
+  setFileElement(element) {
+    this.selectFileElement = element;
+  },
+
+  setUploadFileDTO(model, file, type, cancelSource) {
+    this.uploadDTO.push({
+      model,
+      file,
+      type,
+      cancelSource,
+    });
+    this.setPageFileList(model, file.uid, type, cancelSource);
+  },
+
+  setPageFileList(model, uid, type, cancelSource) {
+    const obj = {
+      file_id: uid,
+      file_name: model.storageFileInfo.file_name,
+      file_extension: model.storageFileInfo.file_extension,
+      file_size: model.storageFileInfo.file_size,
+      user_id: model.storageFileInfo.user_id,
+      progress: 0,
+      type: type,
+      error: false,
+      cancelSource,
+    };
+    if (type !== 'image') {
+      this.addFileList(obj);
+    }
+  },
+
+  setUploadDTO(meta) {
+    this.uploadDTO.push(meta);
+  },
+
+  addFileList(target) {
+    if (this.processCount !== this.uploadLength) {
+      this.fileLayoutList.unshift(target);
+      this.processCount++;
+    } else this.processCount = 0;
+    if (!this.isFile) this.setIsFile(true);
+  },
+
+  setFileLength(length) {
+    this.uploadLength = length;
+  },
+
+  setTotalUploadLength(length) {
+    this.totalUploadLength = length;
+  },
+
+  checkUploadUsage(fileSize) {
+    return this.totalUsage + fileSize < this.spaceTotalVolume;
+  },
+
+  convertFileSize(bytes) {
+    if (bytes == 0) return '0 Bytes';
+    let k = 1000,
+      dm = 2,
+      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  },
+
+  deleteImage() {
+    const parent = this.tinymce.selection.getNode().parentNode;
+    this.tinymce.selection.setContent('');
+    if (!parent.hasChildNodes()) parent.innerHTML = '<br>';
+    this.tinymce.focus();
+    EditorStore.tinymce?.undoManager?.add();
+    NoteStore.setModalInfo(null);
+  },
+
   createDriveElement(type, fileId, fileName) {
     const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
     switch (type) {
@@ -532,22 +511,6 @@ const EditorStore = observable({
     )
       return false;
     return true;
-  },
-
-  async getDuflicateFile(fileName, fileExt) {
-    const {
-      data: { dto },
-    } = await NoteRepository.getDuflicateFile(fileName, fileExt);
-    if (dto.result === 'Y') {
-      return dto.file[0]?.user_context_1;
-    }
-  },
-
-  async getRecycleBinAllFile() {
-    const {
-      data: { dto },
-    } = await NoteRepository.getRecycleBinAllFile();
-    return dto;
   },
 });
 
