@@ -21,13 +21,9 @@ import SearchResultNotFound from '../common/SearchResultNotFound';
 import Mark from 'mark.js';
 import { CHAPTER_TYPE } from '../../GlobalVariable';
 import { useTranslation } from 'react-i18next';
-import {
-  EditorTagCover,
-  TagChip,
-  TagList,
-  TagText,
-} from '../../styles/tagStyle';
+import { EditorTagCover, TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil from '../../NoteUtil';
+import styled from 'styled-components';
 // chapter : id, title, color, firstPageId
 // page : chapterId, chapterTitle, id, title
 const LNBSearchResult = () => {
@@ -142,9 +138,7 @@ const LNBSearchResult = () => {
               <PageSearchResult
                 key={page.note_id}
                 isSelected={
-                  selected.id === page.note_id && selected.type === 'page'
-                    ? true
-                    : false
+                  selected.id === page.note_id && selected.type === 'page' ? true : false
                 }
                 onClick={onClickPageBtn(page.note_id, 'page')}
               >
@@ -155,9 +149,7 @@ const LNBSearchResult = () => {
                     ? t('NOTE_BIN_01')
                     : page.text}
                 </PageSearchResultChapterTitle>
-                <PageSearchResultPageTitle>
-                  {page.note_title}
-                </PageSearchResultPageTitle>
+                <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 {page.contentPreview ? (
                   <SubText className="lnb-result-context" isContent>
                     {page.contentPreview}
@@ -175,9 +167,7 @@ const LNBSearchResult = () => {
           })}
           {ChapterStore.searchResult?.['tag'] ? (
             <SearchDivision>
-              <SearchDivisionSpan>
-                {t('NOTE_PAGE_LIST_CMPNT_DEF_06')}
-              </SearchDivisionSpan>
+              <SearchDivisionSpan>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</SearchDivisionSpan>
             </SearchDivision>
           ) : null}
           {ChapterStore.searchResult?.['tag']?.map((tag, pageListIdx) => {
@@ -185,9 +175,7 @@ const LNBSearchResult = () => {
               <TagSearchResult
                 key={pageListIdx}
                 isSelected={
-                  selected.id === tag.note_id && selected.type === 'tag'
-                    ? true
-                    : false
+                  selected.id === tag.note_id && selected.type === 'tag' ? true : false
                 }
                 onClick={onClickPageBtn(tag.note_id, 'tag')}
               >
@@ -198,22 +186,19 @@ const LNBSearchResult = () => {
                     ? t('NOTE_BIN_01')
                     : tag.text}
                 </PageSearchResultChapterTitle>
-                <PageSearchResultPageTitle>
-                  {tag.note_title}
-                </PageSearchResultPageTitle>
+                <PageSearchResultPageTitle>{tag.note_title}</PageSearchResultPageTitle>
                 <TagList>
                   {tag.tagList.map((item, index) => {
                     return (
-                      <TagChip id={item.tag_id} key={`${pageListIdx}_${index}`}>
+                      <SearchTagChip id={item.tag_id} key={`${pageListIdx}_${index}`}>
                         <TagText>{NoteUtil.decodeStr(item.text)}</TagText>
-                      </TagChip>
+                      </SearchTagChip>
                     );
                   })}
                 </TagList>
                 <SearchResultBotttom
                   isLast={
-                    pageListIdx ===
-                    ChapterStore.searchResult?.['tag'].length - 1
+                    pageListIdx === ChapterStore.searchResult?.['tag'].length - 1
                       ? true
                       : false
                   }
@@ -228,3 +213,7 @@ const LNBSearchResult = () => {
 };
 
 export default LNBSearchResult;
+
+const SearchTagChip = styled(TagChip)`
+  margin: 0 0.38rem 0 0;
+`;

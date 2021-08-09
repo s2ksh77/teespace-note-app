@@ -48,7 +48,7 @@ export const SearchDivision = styled.div`
   height: 26px;
   font-size: 12px;
   color: #666666;
-  margin: 0 0.75rem;
+  margin: 0 0.938rem;
 `;
 export const SearchDivisionSpan = styled.span`
   margin: 0.25rem 0;
@@ -59,7 +59,7 @@ export const ChapterSearchResult = styled.div`
   width: calc(100% - 1.5rem);
   height: 3.81rem;
   margin: 0 0.75rem;
-  padding: 0.75rem 1.69rem;
+  padding: 0.688rem 1.188rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -76,8 +76,8 @@ export const ChapterSearchShareIcon = styled.img`
   align-items: center;
   justify-content: center;
   left: -10px;
-  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg)
-    brightness(95%) contrast(85%);
+  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%)
+    contrast(85%);
 `;
 export const ChapterSearchResultColor = styled.div`
   background-color: ${props => props.backgroundColor};
@@ -103,7 +103,7 @@ export const PageSearchResult = styled.div`
   width: calc(100% - 1.5rem);
   height: fit-content;
   margin: 0 0.75rem;
-  padding: 0.75rem 1.69rem;
+  padding: 0.688rem 1.188rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -127,8 +127,7 @@ export const PageSearchResultPageTitle = styled.div`
 
 export const PageSearchResultChapterTitle = styled.div`
   font-size: 0.75rem;
-  color: ${props =>
-    props.isContent ? props.theme.TextSub2 : props.theme.TextSub};
+  color: ${props => (props.isContent ? props.theme.TextSub2 : props.theme.TextSub)};
   text-overflow: ellipsis;
   height: 1.125rem;
   overflow: hidden;
@@ -148,7 +147,7 @@ export const TagSearchResult = styled.div`
   position: relative;
   width: calc(100% - 1.5rem);
   margin: 0 0.75rem;
-  padding: 0.75rem 1.69rem;
+  padding: 0.688rem 1.188rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
