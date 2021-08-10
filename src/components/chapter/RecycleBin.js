@@ -42,18 +42,20 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           const deleteChapterList = await Promise.all(
             data.map(async note => {
               const dto = await ChapterStore.getChapterChildren(note.id);
-              editingNoteList.push(
-                ...dto.noteList.filter(page => page.is_edit),
-              );
+              editingNoteList.push(...dto.noteList.filter(page => page.is_edit));
               return { id: note.id };
             }),
           );
 
           if (editingNoteList.length === 1) {
-            const { displayName } = await userStore.getProfile(editingNoteList[0].is_edit);
+            const { displayName } = await userStore.getProfile(
+              editingNoteList[0].is_edit,
+            );
             NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
           } else if (editingNoteList.length > 1) {
-            NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingNoteList.length });
+            NoteStore.setModalInfo('nonDeletableMultiPage', {
+              count: editingNoteList.length,
+            });
           } else {
             ChapterStore.setDeleteChapterList(deleteChapterList);
             NoteStore.setModalInfo('draggedChapter', {
@@ -81,10 +83,14 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           );
 
           if (editingNoteList.length === 1) {
-            const { displayName } = await userStore.getProfile(editingNoteList[0].is_edit);
+            const { displayName } = await userStore.getProfile(
+              editingNoteList[0].is_edit,
+            );
             NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
           } else if (editingNoteList.length > 1) {
-            NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingNoteList.length });
+            NoteStore.setModalInfo('nonDeletableMultiPage', {
+              count: editingNoteList.length,
+            });
           } else {
             PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
           }
@@ -140,11 +146,8 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           id === ChapterStore.currentChapterId ? ' selectedMenu' : ''
         }`}
         onClick={onClickRecycleBinBtn}
-        style={
-          ChapterStore.dragEnterChapterIdx === index
-            ? { color: '#205855' }
-            : null
-        }
+        style={ChapterStore.dragEnterChapterIdx === index ? { color: '#205855' } : null}
+        isRecycleBin={true}
       >
         <TrashIcon color={themeContext.SubStateVivid} />
         <ChapterText

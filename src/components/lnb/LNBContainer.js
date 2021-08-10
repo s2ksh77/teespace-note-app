@@ -4,11 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../store/useStore';
-import {
-  LNBCover,
-  LNBChapterCover,
-  LNBEditModeCover,
-} from '../../styles/lnbStyle';
+import { LNBCover, LNBChapterCover, LNBEditModeCover } from '../../styles/lnbStyle';
 import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from './LNBTag';
@@ -79,7 +75,9 @@ const LNBContainer = () => {
           mode={PageStore.isReadMode().toString()}
           onClick={!PageStore.isReadMode() ? handleEditMode : null}
         />
-        <LNBHeader createNewChapter={createNewChapter} />
+        {NoteStore.appType === 'wapl' ? (
+          <LNBHeader createNewChapter={createNewChapter} />
+        ) : null}
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm
             show={ChapterStore.isNewChapter}

@@ -44,7 +44,11 @@ const NoteStore = observable({
   i18nKeyMap: '',
   isExporting: false,
   isSlashCmd: false,
+  appType: 'wapl',
 
+  setAppType(appType) {
+    this.appType = appType;
+  },
   setIsSlashCmd(flag) {
     this.isSlashCmd = flag;
   },

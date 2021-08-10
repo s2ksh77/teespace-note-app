@@ -354,6 +354,7 @@ const EditorContainer = () => {
         isReadMode={PageStore.isReadMode()}
         isFile={EditorStore.isFile}
         isSearch={EditorStore.isSearch}
+        isWorks={NoteStore.appType === 'wapl' ? false : true}
       >
         <PageContentLayoutChangeBtnArea
           onMouseOver={() => NoteStore.setIsHoveredFoldBtnLine(true)}

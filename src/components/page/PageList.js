@@ -34,11 +34,10 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
 
   const handleSelectPage = useCallback(async (id, type) => {
     await PageStore.fetchCurrentPageData(id);
-    PageStore.setIsRecycleBin(type === 'recycle' ? true : false)
+    PageStore.setIsRecycleBin(type === 'recycle' ? true : false);
     NoteStore.setShowPage(true);
     EditorStore.setIsSearch(false);
-    if (NoteStore.layoutState === 'collapse')
-      NoteStore.setTargetLayout('Content');
+    if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content');
     EditorStore.tinymce?.undoManager?.clear();
   }, []);
 
@@ -53,37 +52,38 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
               index={index}
               chapter={chapter}
               chapterIdx={chapterIdx}
-              onClick={handleSelectPage.bind(null,item.id, item.type)}
+              onClick={handleSelectPage.bind(null, item.id, item.type)}
             />
           ))
         }
       </Observer>
       <Observer>
-        {() =>
-          <div style={{ height: '0px', marginLeft: '1.875rem' }}
+        {() => (
+          <div
+            style={{ height: '0px', marginLeft: '1.875rem' }}
             className={
-              PageStore.dragEnterChapterIdx === chapterIdx
-                && PageStore.dragEnterPageIdx === chapter.children.length
-                && chapter.type !== 'shared_page'
-                && chapter.type !== 'shared'
+              PageStore.dragEnterChapterIdx === chapterIdx &&
+              PageStore.dragEnterPageIdx === chapter.children.length &&
+              chapter.type !== 'shared_page' &&
+              chapter.type !== 'shared'
                 ? 'borderTopLine'
                 : ''
             }
           />
-        }
+        )}
       </Observer>
       <NewPage
         ref={drop}
         className={'page-li'}
         show={showNewPage && authStore.hasPermission('notePage', 'C')}
       >
-        <PageMargin />
+        <PageMargin appType={NoteStore.appType} />
         <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
           + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
         </NewPageBtn>
       </NewPage>
     </>
-  )
+  );
 };
 
 export default PageList;

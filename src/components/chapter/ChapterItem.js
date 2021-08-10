@@ -56,10 +56,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-      if (
-        hoverClientY < hoverMiddleY &&
-        ChapterStore.dragEnterChapterIdx !== index
-      ) {
+      if (hoverClientY < hoverMiddleY && ChapterStore.dragEnterChapterIdx !== index) {
         ChapterStore.setDragEnterChapterIdx(index);
       } else if (
         hoverClientY > hoverMiddleY &&
@@ -114,8 +111,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
         ChapterStore.createNoteShareChapter(res.targetData.id, item.data);
       }
 
-      if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER)
-        NoteStore.setIsDragging(false);
+      if (!res && item.type === DRAG_TYPE.SHARED_CHAPTER) NoteStore.setIsDragging(false);
       ChapterStore.setDragEnterChapterIdx('');
       NoteStore.setDraggedOffset({});
     },
@@ -138,8 +134,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
-  const chapterWrapperRef = node =>
-    isShared ? drag(node) : drag(dropChapter(node));
+  const chapterWrapperRef = node => (isShared ? drag(node) : drag(dropChapter(node)));
 
   const handleChapterClick = useCallback(
     e => {
@@ -206,10 +201,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
     }
 
-    NoteStore.LNBChapterCoverRef.removeEventListener(
-      'wheel',
-      NoteStore.disableScroll,
-    );
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleFocus = e => e.target.select();
@@ -234,9 +226,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       ref={!isShared ? drop(chapterContainerRef) : null}
       className={
         (isFolded ? 'folded ' : '') +
-        (ChapterStore.dragEnterChapterIdx === index && !isShared
-          ? 'borderTopLine'
-          : '') +
+        (ChapterStore.dragEnterChapterIdx === index && !isShared ? 'borderTopLine' : '') +
         (ChapterStore.dragEnterChapterIdx === index + 1 &&
         ChapterStore.dragEnterChapterIdx ===
           ChapterStore.chapterList.length - ChapterStore.sharedCnt &&
@@ -249,16 +239,14 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       order={flexOrder}
     >
       <ChapterCover
-        className={`chapter-div${
-          ChapterStore.dragData.get(id) ? ' selectedMenu' : ''
-        }`}
+        className={`chapter-div${ChapterStore.dragData.get(id) ? ' selectedMenu' : ''}`}
         ref={
-          authStore.hasPermission('noteShareChapter', 'C') &&
-          !ChapterStore.renameId
+          authStore.hasPermission('noteShareChapter', 'C') && !ChapterStore.renameId
             ? node => chapterWrapperRef(node)
             : null
         }
         onClick={handleChapterClick}
+        appType={NoteStore.appType}
       >
         <ChapterIcon />
         {ChapterStore.getRenameId() === id ? (

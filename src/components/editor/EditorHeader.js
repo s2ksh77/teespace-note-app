@@ -102,17 +102,25 @@ const EditorHeader = () => {
 
   useEffect(() => {
     // 수정모드 시 룸 생성 버튼 및 메일 탭 임시 editCancel 적용
-    if (!PageStore.isReadMode()) {
-      document.querySelector('.rooms__create-button').addEventListener('click', handleOnEditCancel);
-      document.querySelectorAll('.ant-tabs-tab')[2]?.addEventListener('click', handleOnEditCancel);
+    if (!PageStore.isReadMode() && NoteStore.appType === 'wapl') {
+      document
+        .querySelector('.rooms__create-button')
+        .addEventListener('click', handleOnEditCancel);
+      document
+        .querySelectorAll('.ant-tabs-tab')[2]
+        ?.addEventListener('click', handleOnEditCancel);
     }
     return () => {
-      if (PageStore.isReadMode()) {
-        document.querySelector('.rooms__create-button').removeEventListener('click', handleOnEditCancel);
-        document.querySelectorAll('.ant-tabs-tab')[2]?.removeEventListener('click', handleOnEditCancel);
+      if (PageStore.isReadMode() && NoteStore.appType === 'wapl') {
+        document
+          .querySelector('.rooms__create-button')
+          .removeEventListener('click', handleOnEditCancel);
+        document
+          .querySelectorAll('.ant-tabs-tab')[2]
+          ?.removeEventListener('click', handleOnEditCancel);
       }
-    }
-  },[PageStore.isReadMode()])
+    };
+  }, [PageStore.isReadMode()]);
 
   return useObserver(() => (
     <>
@@ -153,14 +161,10 @@ const EditorHeader = () => {
             </>
           )}
           <EditorSearchIconDiv onClick={handleSearchEditor}>
-            <SearchIcon
-              width={1}
-              height={1}
-              color={themeContext.IconNormal}
-            />
+            <SearchIcon width={1} height={1} color={themeContext.IconNormal} />
           </EditorSearchIconDiv>
         </EditorHeaderContainer2>
-        <HeaderDivider />
+        {NoteStore.appType === 'wapl' ? <HeaderDivider /> : null}
       </ContentHeader>
     </>
   ));

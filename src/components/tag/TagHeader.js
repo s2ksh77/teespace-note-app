@@ -71,8 +71,7 @@ const TagHeader = () => {
             <SearchButton onClick={onSubmitForm}>
               <SearchIcon
                 color={
-                  ChapterStore.searchStr !== '' ||
-                  ChapterStore.isSearching
+                  ChapterStore.searchStr !== '' || ChapterStore.isSearching
                     ? themeContext.Iconmain
                     : themeContext.IconHinted
                 }
@@ -87,15 +86,12 @@ const TagHeader = () => {
               onKeyDown={handleKeyDown}
               isSearch={!!activateSearchIcon}
             />
-            <CloseButton
-              onClick={onClickCancelBtn}
-              visible={activateSearchIcon}
-            >
+            <CloseButton onClick={onClickCancelBtn} visible={activateSearchIcon}>
               <CloseIcon width={0.75} height={0.75} />
             </CloseButton>
           </TagTitleSearchContainer>
         </TagSearchForm>
-        <HeaderDivider />
+        {NoteStore.appType === 'wapl' ? <HeaderDivider /> : null}
       </ContentHeader>
     </>
   ));
