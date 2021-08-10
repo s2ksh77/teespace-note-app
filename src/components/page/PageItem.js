@@ -53,9 +53,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       }
 
       NoteStore.setDraggedType('page');
-      NoteStore.setDraggedItems(
-        PageStore.getSortedDragDataList().map(data => data.item),
-      );
+      NoteStore.setDraggedItems(PageStore.getSortedDragDataList().map(data => data.item));
       NoteStore.setDraggedOffset(monitor.getInitialClientOffset());
       NoteStore.setIsDragging(true);
 
@@ -82,8 +80,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.createNoteSharePage(res.targetData.id, item.data);
       }
 
-      if (!res && item.type === DRAG_TYPE.SHARED_PAGE)
-        NoteStore.setIsDragging(false);
+      if (!res && item.type === DRAG_TYPE.SHARED_PAGE) NoteStore.setIsDragging(false);
       ChapterStore.setDragEnterChapterIdx('');
       PageStore.setDragEnterPageIdx('');
       PageStore.setDragEnterChapterIdx('');
@@ -99,8 +96,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
     hover() {
       if (PageStore.dragEnterChapterIdx !== chapterIdx)
         PageStore.setDragEnterChapterIdx(chapterIdx);
-      if (PageStore.dragEnterPageIdx !== index)
-        PageStore.setDragEnterPageIdx(index);
+      if (PageStore.dragEnterPageIdx !== index) PageStore.setDragEnterPageIdx(index);
     },
   });
 
@@ -143,16 +139,11 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       });
     }
 
-    NoteStore.LNBChapterCoverRef.removeEventListener(
-      'wheel',
-      NoteStore.disableScroll,
-    );
+    NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleTooltip = e => {
-    setIsEllipsisActive(
-      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
-    );
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
 
   const handleFocus = e => e.target.select();
@@ -176,7 +167,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       className="page-li"
       onClick={handlePageSelect}
     >
-      <PageMargin />
+      <PageMargin appType={NoteStore.appType} />
       {PageStore.getRenameId() === id ? (
         <PageTextInput
           maxLength="200"
@@ -201,6 +192,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
               ? 'borderTopLine'
               : ''
           }
+          appType={NoteStore.appType}
         >
           <PageTextContainer
             className={
@@ -216,15 +208,11 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
                 : ''
             }
           >
-            <Tooltip
-              placement="bottomLeft"
-              title={isEllipsisActive ? title : null}
-            >
+            <Tooltip placement="bottomLeft" title={isEllipsisActive ? title : null}>
               <PageText onMouseOver={handleTooltip}>{title}</PageText>
             </Tooltip>
             {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
-            {(authStore.hasPermission('notePage', 'U') ||
-              page.type === 'shared') && (
+            {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && (
               <ContextMenu
                 noteType="page"
                 note={page}

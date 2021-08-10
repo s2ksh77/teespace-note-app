@@ -17,14 +17,12 @@ import PageStore from './store/pageStore';
 import SlashCmdNote from './components/common/SlashCmdNote';
 
 // layoutState는 collapse, expand, close가 있다
-const NoteApp = ({ layoutState, roomId, channelId, language }) => {
+const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
   const { i18n } = useTranslation();
   const { userStore, spaceStore, authStore, configStore } = useCoreStores();
   const renderCondition = target =>
-    !(
-      NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target
-    );
+    !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
   const history = useHistory();
   const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
 
@@ -44,51 +42,40 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
     const isOtherRoom = NoteStore.workspaceId !== roomId;
 
     if (isOtherRoom) {
-      const {
-        id: userId,
-        name: userName,
-        email: userEmail,
-      } = userStore.myProfile;
+      const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
       const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
       // todo : 나중에 mobile이랑 task에 알리고 객체로 바꾸기
-      NoteStore.init(
-        roomId,
-        channelId,
-        userId,
-        userName,
-        userEmail,
-        async () => {
-          GlobalVariable.setIsBasicPlan(isBasicPlan);
-          GlobalVariable.setIsMailApp(
-            !isBasicPlan &&
-              configStore.isActivateComponent('Note', 'customLink:openLink'),
-          );
-          NoteStore.addWWMSHandler(
-            authStore.sessionInfo.deviceType === 'PC' ? true : false,
-          ); // PC인지 아닌지
-          NoteStore.initVariables();
-          // 톡 메타태그 클릭하여 노트앱 진입시
-          if (channelId && NoteStore.metaTagInfo.isOpen) {
-            NoteStore.setLoadingNoteApp(true); // 첫 진입시에만 loading이미지 보여주기
-            await ChapterStore.openNote();
-            NoteStore.setLoadingNoteApp(false);
-            return;
-          }
-          // 깜빡임 방지위해 만든 변수
+      NoteStore.init(roomId, channelId, userId, userName, userEmail, async () => {
+        GlobalVariable.setIsBasicPlan(isBasicPlan);
+        GlobalVariable.setIsMailApp(
+          !isBasicPlan && configStore.isActivateComponent('Note', 'customLink:openLink'),
+        );
+        NoteStore.addWWMSHandler(
+          authStore.sessionInfo.deviceType === 'PC' ? true : false,
+        ); // PC인지 아닌지
+        NoteStore.initVariables();
+        // 톡 메타태그 클릭하여 노트앱 진입시
+        if (channelId && NoteStore.metaTagInfo.isOpen) {
+          NoteStore.setLoadingNoteApp(true); // 첫 진입시에만 loading이미지 보여주기
+          await ChapterStore.openNote();
           NoteStore.setLoadingNoteApp(false);
+          return;
+        }
+        // 깜빡임 방지위해 만든 변수
+        NoteStore.setLoadingNoteApp(false);
+        NoteStore.setAppType(appType);
 
-          if (!channelId) return;
-          if (layoutState === 'collapse') {
-            // lnb는 따로 로딩 화면 X
-            await ChapterStore.getNoteChapterList(true);
-            NoteStore.setTargetLayout('LNB');
-          } else {
-            await ChapterStore.fetchChapterList(true);
-            NoteStore.setTargetLayout(null);
-          }
-          PageStore.checkEditingPage(); // 복구할 페이지가 있는 경우 팝업창을 띄운다
-        },
-      );
+        if (!channelId) return;
+        if (layoutState === 'collapse') {
+          // lnb는 따로 로딩 화면 X
+          await ChapterStore.getNoteChapterList(true);
+          NoteStore.setTargetLayout('LNB');
+        } else {
+          await ChapterStore.fetchChapterList(true);
+          NoteStore.setTargetLayout(null);
+        }
+        PageStore.checkEditingPage(); // 복구할 페이지가 있는 경우 팝업창을 띄운다
+      });
     }
     NoteStore.setLayoutState(layoutState);
 
@@ -145,8 +132,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
             id="note-content"
             show={renderCondition('Content')}
             isBorderLeft={
-              NoteStore.layoutState !== 'collapse' &&
-              !NoteStore.isContentExpanded
+              NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
             }
           >
             <PageContainer />
@@ -157,8 +143,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language }) => {
             children={NoteStore.toastText}
             onClose={() => NoteStore.setIsVisibleToast(false)}
           />
-          {NoteStore.isDragging &&
-          Object.keys(NoteStore.draggedOffset).length ? (
+          {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? (
             <DragPreview items={NoteStore.draggedItems} />
           ) : null}
           {/* <TempEditor /> */}

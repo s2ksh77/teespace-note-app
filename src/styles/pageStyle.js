@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const PageContainerCover = styled.div`
   display: flex;
@@ -12,13 +12,13 @@ export const PageCover = styled.li`
   width: 100%;
   height: 2.81rem;
   cursor: pointer;
-  &:hover .ellipsisBtn{
+  &:hover .ellipsisBtn {
     visibility: visible;
   }
 `;
 
 export const PageMargin = styled.span`
-  flex: 0 0 1.875rem;
+  flex: ${props => (props.appType === 'wapl' ? '0 0 1.875rem' : '0')};
   height: 100%;
   display: flex;
 `;
@@ -26,7 +26,8 @@ export const PageMargin = styled.span`
 export const PageTextCover = styled.span`
   width: 100%;
   display: flex;
-  max-width: calc(100% - 1.875rem);
+  max-width: ${props =>
+    props.appType === 'wapl' ? 'calc(100% - 1.875rem)' : 'calc(100%)'}; ;
 `;
 
 export const PageTextContainer = styled.span`
@@ -36,7 +37,7 @@ export const PageTextContainer = styled.span`
   box-sizing: border-box;
   border-radius: 0.31rem;
   align-items: center;
-  &:hover:not(.ellipsisBtn){
+  &:hover:not(.ellipsisBtn) {
     background-color: ${props => props.theme.StateBright};
     border-radius: 0.31rem;
   }
@@ -77,7 +78,7 @@ export const PageTextInput = styled.input`
 `;
 
 export const NewPage = styled.span`
-  display: ${props => props.show ? "flex" : "none"};
+  display: ${props => (props.show ? 'flex' : 'none')};
   height: 2.81rem;
 `;
 export const NewPageBtn = styled.div`
@@ -97,7 +98,7 @@ export const NewPageBtn = styled.div`
 `;
 
 export const EllipsisIcon = styled.i`
-  background-image: url("../Assets/view_more.png");
+  background-image: url('../Assets/view_more.png');
   color: #75757f;
   width: 100%;
   height: 100%;

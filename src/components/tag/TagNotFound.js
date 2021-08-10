@@ -5,7 +5,8 @@ import {
   NoneContainer,
   NoneTitle,
   NoneText,
-  NoneImg
+  NoneImg,
+  ContentBodyCover,
 } from '../../styles/commonStyle';
 import { useTranslation } from 'react-i18next';
 
@@ -15,11 +16,13 @@ const TagNotFound = () => {
 
   return (
     <>
-      <NoneContainer>
-        <NoneTitle>{t('NOTE_TAG_NO_CONTENTS_01')}</NoneTitle>
-        <NoneText>{t('NOTE_TAG_NO_CONTENTS_02')}</NoneText>
-        <NoneImg src={noPageImage} alt="tag_not_found" />
-      </NoneContainer>
+      <ContentBodyCover>
+        <NoneContainer>
+          <NoneTitle>{t('NOTE_TAG_NO_CONTENTS_01')}</NoneTitle>
+          <NoneText>{t('NOTE_TAG_NO_CONTENTS_02')}</NoneText>
+          <NoneImg src={noPageImage} alt="tag_not_found" />
+        </NoneContainer>
+      </ContentBodyCover>
     </>
   );
 };

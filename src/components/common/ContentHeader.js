@@ -28,7 +28,7 @@ const ContentHeader = ({ handleBackBtn, alignment, children }) => {
         {alignment === 'center' ? children : null}
         <RightAligned>
           {alignment === 'right' ? children : null}
-          <HeaderButtons />
+          {NoteStore.appType === 'wapl' ? <HeaderButtons /> : null}
         </RightAligned>
       </ContentHeaderCover>
     </>

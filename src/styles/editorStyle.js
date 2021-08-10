@@ -10,27 +10,38 @@ export const EditorContainerWrapper = styled.div`
     border-left: 0px solid black;
     border-color: ${props => props.theme.LineMain};
     flex: 1;
+    min-height: ${props => (props.isWorks ? '500px' : '')};
   }
-  ${props => (!props.isReadMode && !props.isSearch) && css`
-    .tox-editor-header{
-     display:block;
-    }
-  `}
-  ${props => (!props.isReadMode && props.isSearch) && css`
-    .tox-editor-header{
-     display:none;
-    }
-  `}
-  ${props => props.isReadMode && css`
-    .tox-editor-header{
-      display:none;
-    }
-  `}
-  ${props => !props.isReadMode && css`
-    .tox-tinymce{
-      border-left: 0.1px solid transparent;
-    }
-  `}
+  ${props =>
+    !props.isReadMode &&
+    !props.isSearch &&
+    css`
+      .tox-editor-header {
+        display: block;
+      }
+    `}
+  ${props =>
+    !props.isReadMode &&
+    props.isSearch &&
+    css`
+      .tox-editor-header {
+        display: none;
+      }
+    `}
+  ${props =>
+    props.isReadMode &&
+    css`
+      .tox-editor-header {
+        display: none;
+      }
+    `}
+  ${props =>
+    !props.isReadMode &&
+    css`
+      .tox-tinymce {
+        border-left: 0.1px solid transparent;
+      }
+    `}
 `;
 
 export const PageContentLayoutChangeBtnArea = styled.span`
@@ -51,7 +62,7 @@ export const ReadModeContainer = styled.div`
 `;
 export const ReadModeIcon = styled.img`
   margin-left: 16px;
-`
+`;
 export const ReadModeText = styled.span`
   margin-left: 0.5rem;
   color: #999999;
@@ -62,7 +73,7 @@ export const ReadModeText = styled.span`
 
 export const ReadModeSubText = styled.span`
   margin-left: 0.63rem;
-  color: #A3A3A3;
+  color: #a3a3a3;
   font-size: 0.75rem;
   display: flex;
   font-size: 0.75rem;
@@ -71,7 +82,7 @@ export const ReadModeSubText = styled.span`
 export const FoldBtn = styled.div`
   width: 0.94rem;
   height: 2.06rem;
-  display: ${(props) => props.show ? "flex" : "none"};
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
   background-color: #205855;
   border: 0px solid #9ca7ad;
@@ -81,8 +92,8 @@ export const FoldBtn = styled.div`
   position: fixed;
   z-index: 18;
   top: 50%;
-  transform: ${props => props.isExpanded ? "rotate(180deg)"
-    : "translate(-0.9rem, 0rem)"};
+  transform: ${props =>
+    props.isExpanded ? 'rotate(180deg)' : 'translate(-0.9rem, 0rem)'};
   &:hover {
     background-color: #205855;
   }
@@ -90,53 +101,53 @@ export const FoldBtn = styled.div`
 
 export const FoldBtnImg = styled.img`
   width: 100%;
-  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%) contrast(100%);
+  filter: invert(99%) sepia(41%) saturate(0%) hue-rotate(145deg) brightness(113%)
+    contrast(100%);
 `;
 
 export const FileBodyLayout = styled.div`
-  width:auto;
-  display : flex;
+  width: auto;
+  display: flex;
   align-items: center;
   height: 4.19rem;
   border-bottom: 1px solid ${props => props.theme.LineMain};
   overflow: hidden;
-  box-sizing :border-box;
+  box-sizing: border-box;
   padding: 0rem 0.5rem;
-`
+`;
 export const FileBody = styled.div`
   display: flex;
   position: relative;
   padding: 0.375rem;
   border-radius: 0.5rem;
   ${props =>
-    props.closable ?
-      css`
-      width: 13.75rem;
-      min-width: 13.75rem;
-    `
+    props.closable
+      ? css`
+          width: 13.75rem;
+          min-width: 13.75rem;
+        `
       : css`
-      width: 12.5rem;
-      min-width: 12.5rem;
-    `
-  }
-  box-sizing: border-box; 
-  border : 1px solid ${props => props.theme.LineMain};
+          width: 12.5rem;
+          min-width: 12.5rem;
+        `}
+  box-sizing: border-box;
+  border: 1px solid ${props => props.theme.LineMain};
   height: 2.63rem;
   margin-left: 0.5rem;
-  flex-direction : row;
-  flex-wrap : wrap;
-  &:first-child{
+  flex-direction: row;
+  flex-wrap: wrap;
+  &:first-child {
     margin-left: 0rem;
   }
   &:focus {
     outline: 0;
   }
-`
+`;
 export const FileContent = styled.div`
   min-width: calc(100% - 1.325rem);
   display: flex;
   margin-left: 0px;
-`
+`;
 export const FileDownloadIcon = styled.div`
   display: flex;
   align-items: center;
@@ -147,22 +158,22 @@ export const FileDownloadIcon = styled.div`
   margin-right: 0.375rem;
   width: 1.88rem;
   height: 1.88rem;
-`
+`;
 export const FileErrorIcon = styled.div`
   .anticon-exclamation-circle {
     position: absolute;
-    left : 1.5rem;
-    top:1.5rem;
+    left: 1.5rem;
+    top: 1.5rem;
     font-size: 0.875rem;
-    color: #FB3A3A;
+    color: #fb3a3a;
   }
-`
+`;
 
-export const ProgressWrapper = styled.div` 
+export const ProgressWrapper = styled.div`
   width: 100%;
   position: relative !important;
   display: flex;
-`
+`;
 
 export const FileExtensionIcon = styled.div`
   display: flex;
@@ -175,31 +186,31 @@ export const FileExtensionIcon = styled.div`
   width: 30px;
   height: 40px;
   ${FileDownloadIcon}:hover & {
-    display:none;
+    display: none;
   }
-`
+`;
 
 // filter: invert(40%) sepia(53%) saturate(5337%) hue-rotate(235deg) brightness(93%) contrast(91%);
 export const FileDownloadBtn = styled.img`
-  width:1.5rem;
-  height:1.5rem;
-`
+  width: 1.5rem;
+  height: 1.5rem;
+`;
 export const FileExtensionBtn = styled.img`
-  width:1.5rem;
-  height:1.5rem;
-`
+  width: 1.5rem;
+  height: 1.5rem;
+`;
 
 export const FileData = styled.div`
   height: auto;
   line-height: 0.9375rem;
   max-width: 9.55rem;
-  min-width: ${(props) => props.mode === "true" ? "" : "9.5rem"};
+  min-width: ${props => (props.mode === 'true' ? '' : '9.5rem')};
   overflow: inherit;
   display: inline-block;
   height: 40px;
-  cursor : pointer;
+  cursor: pointer;
   flex: 1;
-`
+`;
 
 export const FileDataName = styled.div`
   display: flex;
@@ -208,21 +219,21 @@ export const FileDataName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
+`;
 export const FileName = styled.div`
   font-size: 0.69rem;
   background-color: inherit;
   margin-right: 0rem;
   margin-top: 0;
-  color: #45474A;
+  color: #45474a;
   line-height: 0.9375rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  &:hover{
+  &:hover {
     text-decoration: underline;
   }
-`
+`;
 export const FileDataTime = styled.div`
   display: flex;
   overflow: hidden;
@@ -232,7 +243,7 @@ export const FileDataTime = styled.div`
   height: auto;
   overflow: inherit;
   max-width: 9.55rem;
-`
+`;
 
 export const FileTime = styled.div`
   background-color: inherit;
@@ -242,8 +253,8 @@ export const FileTime = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color:#888D96;
-`
+  color: #888d96;
+`;
 export const FileProgress = styled.div`
   background-color: inherit;
   line-height: 0.9375rem;
@@ -252,10 +263,9 @@ export const FileProgress = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color:#888D96;
+  color: #888d96;
   margin-left: auto;
-`
-
+`;
 
 export const FileClose = styled.div`
   display: flex;
@@ -265,13 +275,14 @@ export const FileClose = styled.div`
   cursor: pointer;
   border-radius: 0.5rem;
   align-items: top;
-`
+`;
 
 export const FileCloseBtn = styled.img`
   width: 0.56rem;
   height: 0.56rem;
-  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%) contrast(109%);
-`
+  filter: invert(52%) sepia(1%) saturate(2165%) hue-rotate(202deg) brightness(90%)
+    contrast(109%);
+`;
 
 export const editorContentCSS = ` 
   html,body{
@@ -343,4 +354,4 @@ export const editorContentCSS = `
   .tox-notification { display: none !important }
 
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
-`
+`;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import { Dropdown } from 'antd';
 
 export const ChapterContainer = styled.ul`
@@ -21,7 +21,8 @@ export const ChapterContainer = styled.ul`
 `;
 export const ChapterCover = styled.div`
   height: 2.81rem;
-  display: flex;
+  display: ${props =>
+    props.appType === 'wapl' || props.isRecycleBin === true ? 'flex' : 'none'};
   margin: 4px 0 4px 0;
   align-items: center;
   font-weight: 500;
@@ -55,7 +56,8 @@ export const ChapterShareIcon = styled.img`
   position: absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%) contrast(87%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%)
+    contrast(87%);
 `;
 
 export const ChapterTextInput = styled.input`
@@ -104,13 +106,13 @@ export const ChapterTextSpan = styled.span`
 export const NewNoteMark = styled.div`
   display: flex;
   flex-shrink: 0;
-  background-color: #DC4547;
+  background-color: #dc4547;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   margin-left: 0.25rem;
   margin-top: -0.5rem;
-  margin-right:${props => props.isChapter ? "2rem" : ""};
+  margin-right: ${props => (props.isChapter ? '2rem' : '')};
 `;
 
 export const ChapterInput = styled.input`
