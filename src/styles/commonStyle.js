@@ -44,14 +44,14 @@ export const PreBtnWrapper = styled.div`
   }
 `;
 
-export const ContentBodyCover = styled.div`
+export const ContentBodyWrapper = styled.div`
   width: 100%;
   height: calc(100% - 3rem);
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.25rem 0.75rem;
+  padding: 0.25rem 1rem;
   border-top: 1px solid ${props => props.theme.LineMain};
 `;
 
@@ -67,23 +67,21 @@ export const CenterContainer = styled.div`
 export const NoneTitle = styled.div`
   font-size: 0.938rem;
   font-weight: 400;
-  color: #000000;
-  width: auto;
-  height: 1.38rem;
-  line-height: normal;
+  color: ${props => props.theme.TextMain};
 `;
 
-export const NoneText = styled.span`
+export const NoneSubtitle = styled.span`
   font-size: 0.75rem;
-  font-weight: 300;
-  margin-top: 0.75rem;
-  color: #777777;
+  font-weight: 400;
+  color: ${props => props.theme.TextSub};
+  margin-top: 0.875rem;
 `;
 
-export const NoneImg = styled.img`
-  width: 8.13rem;
+export const NoneImage = styled.img`
+  width: 8.125rem;
   margin-top: 1.25rem;
-`
+`;
+
 export const ButtonDiv = styled.div`
   display: flex;
   align-items: center;

@@ -1,11 +1,11 @@
 import React from 'react';
-import useNoteStore from '../../store/useStore';
 import { observer } from 'mobx-react';
-import EditorContainer from '../editor/EditorContainer';
-import PageNotFound from './PageNotFound';
+import useNoteStore from '../../store/useStore';
 
 import { PageContainerCover } from '../../styles/pageStyle';
+import EditorContainer from '../editor/EditorContainer';
 import LoadingContent from '../common/LoadingContent';
+import NoContent from './NoContent';
 
 // 페이지 보여줄 때
 const PageContainer = observer(() => {
@@ -15,9 +15,9 @@ const PageContainer = observer(() => {
     if (ChapterStore.loadingPageInfo) return <LoadingContent />;
     if (ChapterStore.currentChapterId) {
       if (PageStore.currentPageId) return <EditorContainer />;
-      else return <PageNotFound type={"page"} />; // chapter 하위 page가 없을 때
+      return <NoContent />;
     }
-    return <PageNotFound type={"chapter"} />
+    return <NoContent isNoChapter />;
   })();
 
   return (
@@ -27,6 +27,6 @@ const PageContainer = observer(() => {
       {renderContent}
     </PageContainerCover>
   );
-})
+});
 
 export default PageContainer;
