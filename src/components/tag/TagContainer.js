@@ -5,7 +5,6 @@ import TagContentContainer from './TagContentContainer';
 import { ContentBodyCover } from '../../styles/commonStyle';
 import TagHeader from './TagHeader';
 import TagNotFound from './TagNotFound'
-import LoadingImgContainer from '../common/LoadingImgContainer';
 import SearchingImg from '../common/SearchingImg';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 import { TagContainerCover } from '../../styles/tagStyle';
