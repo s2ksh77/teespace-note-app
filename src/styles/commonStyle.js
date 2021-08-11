@@ -55,7 +55,7 @@ export const ContentBodyCover = styled.div`
   border-top: 1px solid ${props => props.theme.LineMain};
 `;
 
-export const NoneContainer = styled.div`
+export const CenterContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -297,9 +297,8 @@ export const SearchLoadingImg = styled.img`
   height: 8.44rem;
 `;
 
-export const WaplLoadingImg = styled.img`
-  width:4.06rem;
-  margin:auto;
+export const LoadingImage = styled.img`
+  width: 4.06rem;
 `;
 
 export const RightAligned = styled.div`
