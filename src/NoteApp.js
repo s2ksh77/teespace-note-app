@@ -10,7 +10,7 @@ import { WWMS, useCoreStores, Toast, ComponentStore } from 'teespace-core';
 import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
 import Overlay from './components/common/Overlay';
-import LoadingImgContainer from './components/common/LoadingImgContainer';
+import LoadingContent from './components/common/LoadingContent';
 import GlobalVariable from './GlobalVariable';
 import { useTranslation } from 'react-i18next';
 import PageStore from './store/pageStore';
@@ -122,7 +122,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
     <>
       <GlobalStyle />
       {NoteStore.loadingNoteApp ? (
-        <LoadingImgContainer />
+        <LoadingContent />
       ) : (
         <>
           <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
