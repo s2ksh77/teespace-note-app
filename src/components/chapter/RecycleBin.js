@@ -114,19 +114,20 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     },
   });
 
-  const onClickRecycleBinBtn = e => {
+  const handleRecycleBinClick = async e => {
     if (!PageStore.isReadMode() || e.ctrlKey) return;
 
     ChapterStore.clearDragData();
     ChapterStore.setIsCtrlKeyDown(false);
 
     const pageId = children.length > 0 ? children[0].id : '';
-    NoteStore.setShowPage(true);
-    PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
-    PageStore.fetchCurrentPageData(pageId);
+    await PageStore.fetchCurrentPageData(pageId);
     if (!pageId) ChapterStore.setCurrentChapterId(chapter.id);
+
     PageStore.clearDragData();
     PageStore.setIsCtrlKeyDown(false);
+    NoteStore.setShowPage(true);
+    PageStore.setIsRecycleBin(true); // 깜빡임 방지하기 위해 중복 메서드 넣음
   };
 
   const handleFoldBtnClick = e => {
@@ -145,7 +146,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
         className={`chapter-div${
           id === ChapterStore.currentChapterId ? ' selectedMenu' : ''
         }`}
-        onClick={onClickRecycleBinBtn}
+        onClick={handleRecycleBinClick}
         style={ChapterStore.dragEnterChapterIdx === index ? { color: '#205855' } : null}
         isRecycleBin={true}
       >
