@@ -552,8 +552,8 @@ const ChapterStore = observable({
       this.isNewChapterColor,
     );
     await this.getNoteChapterList();
-    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
+    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setDragData(
       new Map([
         [this.currentChapterId, this.createDragData(this.currentChapterId)],
