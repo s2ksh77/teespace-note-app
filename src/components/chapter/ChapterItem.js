@@ -137,7 +137,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const chapterWrapperRef = node => (isShared ? drag(node) : drag(dropChapter(node)));
 
   const handleChapterClick = useCallback(
-    e => {
+    async e => {
       if (!PageStore.isReadMode()) return;
       if (PageStore.isRecycleBin && e.ctrlKey) return;
 
@@ -152,7 +152,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       ChapterStore.setIsCtrlKeyDown(false);
 
       const pageId = children.length > 0 ? children[0].id : '';
-      PageStore.fetchCurrentPageData(pageId); // [ todo ] await가 아니라서 깜빡임 발생함(get response 받기 전에 showPage 먼저)
+      await PageStore.fetchCurrentPageData(pageId);
       NoteStore.setShowPage(true);
       if (pageId) {
         PageStore.setDragData(
