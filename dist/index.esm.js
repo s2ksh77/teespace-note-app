@@ -1642,33 +1642,35 @@ var ChapterStore = observable({
     var _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var trimmedChapterTitle, notbookList;
+      var _yield$_this10$create, children, id, pageId;
+
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
           switch (_context15.prev = _context15.next) {
             case 0:
-              trimmedChapterTitle = _this10.chapterNewTitle.trim();
-              _this10.chapterNewTitle = trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
-              _context15.next = 4;
-              return _this10.createChapter(_this10.chapterNewTitle, _this10.isNewChapterColor);
+              _context15.next = 2;
+              return _this10.createChapter(_this10.chapterNewTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'), _this10.isNewChapterColor);
 
-            case 4:
-              notbookList = _context15.sent;
+            case 2:
+              _yield$_this10$create = _context15.sent;
+              children = _yield$_this10$create.children;
+              id = _yield$_this10$create.id;
               _context15.next = 7;
               return _this10.getNoteChapterList();
 
             case 7:
-              _context15.next = 9;
-              return PageStore.fetchCurrentPageData(notbookList.children[0].id);
-
-            case 9:
               _this10.setChapterTempUl(false);
 
-              _this10.setDragData(new Map([[_this10.currentChapterId, _this10.createDragData(_this10.currentChapterId)]]));
+              _context15.next = 10;
+              return PageStore.fetchCurrentPageData(children[0].id);
 
-              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this10.currentChapterId)]]));
+            case 10:
+              _this10.setDragData(new Map([[id, _this10.createDragData(id)]]));
 
-            case 12:
+              pageId = PageStore.pageInfo.id;
+              PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, id)]]));
+
+            case 13:
             case "end":
               return _context15.stop();
           }
