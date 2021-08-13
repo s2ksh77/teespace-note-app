@@ -86,4 +86,4 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
   );
 };
 
-export default PageList;
+export default React.memo(PageList);

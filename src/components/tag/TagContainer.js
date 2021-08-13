@@ -42,4 +42,4 @@ const TagContainer = () => {
   ));
 };
 
-export default TagContainer;
+export default React.memo(TagContainer);

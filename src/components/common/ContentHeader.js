@@ -35,4 +35,4 @@ const ContentHeader = ({ handleBackBtn, alignment, children }) => {
   ));
 };
 
-export default ContentHeader;
+export default React.memo(ContentHeader);

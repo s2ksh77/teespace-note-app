@@ -29,4 +29,4 @@ const PageContainer = observer(() => {
   );
 });
 
-export default PageContainer;
+export default React.memo(PageContainer);

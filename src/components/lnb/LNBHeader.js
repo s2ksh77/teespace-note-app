@@ -60,8 +60,7 @@ const LNBHeader = ({ createNewChapter }) => {
 
   const onSubmitSearchBtn = async e => {
     e.preventDefault();
-    if (ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr.trim()))
-      return;
+    if (ChapterStore.isTagSearching || !isFilled(ChapterStore.searchStr.trim())) return;
     await ChapterStore.getSearchResult();
     inputRef.current.focus();
   };
@@ -87,9 +86,7 @@ const LNBHeader = ({ createNewChapter }) => {
     <>
       <LnbTitleCover>
         <PreBtnWrapper
-          show={
-            NoteStore.layoutState === 'collapse' && ChapterStore.isTagSearching
-          }
+          show={NoteStore.layoutState === 'collapse' && ChapterStore.isTagSearching}
         >
           <Button src={preImg} onClick={handleLayoutBtn} />
         </PreBtnWrapper>
@@ -106,10 +103,9 @@ const LNBHeader = ({ createNewChapter }) => {
           isTagSearching={ChapterStore.isTagSearching}
         >
           <SearchButton onClick={onSubmitSearchBtn}>
-            <SearchIcon 
+            <SearchIcon
               color={
-                ChapterStore.searchStr !== '' ||
-                ChapterStore.isSearching
+                ChapterStore.searchStr !== '' || ChapterStore.isSearching
                   ? themeContext.Iconmain
                   : themeContext.IconHinted
               }
@@ -130,15 +126,14 @@ const LNBHeader = ({ createNewChapter }) => {
               value={ChapterStore.searchStr}
               onChange={onChangeInput}
               placeholder={
-                ChapterStore.isTagSearching
-                  ? ''
-                  : t('NOTE_PAGE_LIST_CMPNT_DEF_05')
+                ChapterStore.isTagSearching ? '' : t('NOTE_PAGE_LIST_CMPNT_DEF_05')
               }
               disabled={ChapterStore.isTagSearching ? true : false}
               onKeyDown={e => (e.key === 'Escape' ? onClickCancelBtn() : null)}
             />
           )}
-          <CloseButton onClick={onClickCancelBtn}
+          <CloseButton
+            onClick={onClickCancelBtn}
             visible={
               (ChapterStore.isSearching || ChapterStore.searchStr !== '') &&
               !ChapterStore.isTagSearching
@@ -152,4 +147,4 @@ const LNBHeader = ({ createNewChapter }) => {
     </>
   ));
 };
-export default LNBHeader;
+export default React.memo(LNBHeader);

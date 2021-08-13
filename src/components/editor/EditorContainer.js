@@ -838,7 +838,7 @@ const EditorContainer = () => {
   ));
 };
 
-export default EditorContainer;
+export default React.memo(EditorContainer);
 
 const StyledWaplSearch = styled(WaplSearch)`
   width: 100%;

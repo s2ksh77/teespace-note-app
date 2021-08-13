@@ -147,4 +147,4 @@ const LNBContainer = () => {
   ));
 };
 
-export default LNBContainer;
+export default React.memo(LNBContainer);

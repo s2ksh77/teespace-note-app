@@ -32,10 +32,10 @@ const TagContentContainer = observer(() => {
         expandIcon={panelProps => customExpandIcon(panelProps)}
         expandIconPosition={'right'}
       >
-        {Object.keys(TagStore.sortedTagList).map((category) => {
+        {Object.keys(TagStore.sortedTagList).map(category => {
           return (
             // "ㄱ~ㅎ"
-            <PanelHeader header={categoryInfo[category]} key={category} >
+            <PanelHeader header={categoryInfo[category]} key={category}>
               {Object.keys(TagStore.sortedTagList[category])?.map(tagKey => {
                 // "ㄱ", "ㄴ" ...
                 return (
@@ -53,4 +53,4 @@ const TagContentContainer = observer(() => {
   );
 });
 
-export default TagContentContainer;
+export default React.memo(TagContentContainer);

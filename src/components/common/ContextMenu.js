@@ -36,9 +36,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   };
 
   const getAdjacentPageId = () => {
-    return pageIdx > 0
-      ? parent.children[pageIdx - 1].id
-      : parent.children[1]?.id;
+    return pageIdx > 0 ? parent.children[pageIdx - 1].id : parent.children[1]?.id;
   };
 
   const throwNoteInRecycleBin = async () => {
@@ -48,12 +46,12 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         const editingPageList = noteList.filter(page => page.is_edit);
 
         if (editingPageList.length === 1) {
-          const { displayName } = await userStore.getProfile(
-            editingPageList[0].is_edit,
-          );
+          const { displayName } = await userStore.getProfile(editingPageList[0].is_edit);
           NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
         } else if (editingPageList.length > 1) {
-          NoteStore.setModalInfo('nonDeletableMultiPage', { count: editingPageList.length });
+          NoteStore.setModalInfo('nonDeletableMultiPage', {
+            count: editingPageList.length,
+          });
         } else {
           NoteStore.setModalInfo(
             note.type === 'shared' || note.type === 'shared_page'
@@ -68,9 +66,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
         break;
       }
       case 'page': {
-        const { is_edit: editingUserId } = await PageStore.getNoteInfoList(
-          note.id,
-        );
+        const { is_edit: editingUserId } = await PageStore.getNoteInfoList(note.id);
         if (editingUserId) {
           const { displayName } = await userStore.getProfile(editingUserId);
           NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
@@ -203,10 +199,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     else if (key === 'delete') deletePagePermanently();
 
     if (key)
-      NoteStore.LNBChapterCoverRef.removeEventListener(
-        'wheel',
-        NoteStore.disableScroll,
-      );
+      NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
   };
 
   const handleSubMenuClick = ({ domEvent }) => {
@@ -231,10 +224,9 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       default:
         return (
           <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-            {note.type !== 'shared_page' &&
-              authStore.hasPermission('notePage', 'U') && (
-                <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
-              )}
+            {note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && (
+              <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
+            )}
             {authStore.hasPermission('noteSharePage', 'C') && (
               <Item key="forward">{t('NOTE_CONTEXT_MENU_01')}</Item>
             )}
@@ -247,12 +239,8 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
                 title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
                 onTitleClick={handleSubMenuClick}
               >
-                <Item key="exportPDF">
-                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}
-                </Item>
-                <Item key="exportTXT">
-                  {t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}
-                </Item>
+                <Item key="exportPDF">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_01')}</Item>
+                <Item key="exportTXT">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
               </SubMenu>
             )}
             {note.type === 'shared' && (
@@ -275,10 +263,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       placement="bottomRight"
       onClick={e => {
         e.stopPropagation();
-        NoteStore.LNBChapterCoverRef.addEventListener(
-          'wheel',
-          NoteStore.disableScroll,
-        );
+        NoteStore.LNBChapterCoverRef.addEventListener('wheel', NoteStore.disableScroll);
       }}
       onVisibleChange={visible => {
         if (!visible)
@@ -295,4 +280,4 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   ));
 };
 
-export default ContextMenu;
+export default React.memo(ContextMenu);
