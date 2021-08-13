@@ -212,7 +212,7 @@ const LNBSearchResult = () => {
   ));
 };
 
-export default LNBSearchResult;
+export default React.memo(LNBSearchResult);
 
 const SearchTagChip = styled(TagChip)`
   margin: 0 0.38rem 0 0;

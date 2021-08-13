@@ -3,16 +3,8 @@ import { EventBus } from 'teespace-core';
 import { useObserver } from 'mobx-react';
 import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
-import {
-  HeaderButtonContainer,
-  Button,
-  ButtonDiv,
-} from '../../styles/commonStyle';
-import {
-  MaximizeIcon,
-  MinimizeIcon,
-  CloseIcon,
-} from '../icons';
+import { HeaderButtonContainer, Button, ButtonDiv } from '../../styles/commonStyle';
+import { MaximizeIcon, MinimizeIcon, CloseIcon } from '../icons';
 
 // 확대,축소 & 닫기 버튼
 const HeaderButtons = () => {
@@ -41,8 +33,7 @@ const HeaderButtons = () => {
         break;
       default:
         EventBus.dispatch('onLayoutExpand');
-        if (NoteStore.targetLayout === 'Content')
-          ChapterStore.getNoteChapterList();
+        if (NoteStore.targetLayout === 'Content') ChapterStore.getNoteChapterList();
         else if (!ChapterStore.currentChapterId && !PageStore.currentPageId)
           ChapterStore.fetchFirstNote();
         NoteStore.setTargetLayout(null);
@@ -81,4 +72,4 @@ const HeaderButtons = () => {
   ));
 };
 
-export default HeaderButtons;
+export default React.memo(HeaderButtons);

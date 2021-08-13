@@ -177,7 +177,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     [chapter],
   );
 
-  const ChapterIcon = () => {
+  const ChapterIcon = React.memo(() => {
     switch (type) {
       case CHAPTER_TYPE.SHARED_PAGE:
         return <SharedPageIcon color={themeContext.SubStateVivid} />;
@@ -188,7 +188,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       default:
         return <ChapterColor background={color} />;
     }
-  };
+  });
 
   const handleTitleChange = e => {
     setRenameTitle(checkMaxLength(e));

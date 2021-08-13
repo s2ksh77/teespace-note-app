@@ -341,4 +341,4 @@ const FileLayout = () => {
   ));
 };
 
-export default FileLayout;
+export default React.memo(FileLayout);

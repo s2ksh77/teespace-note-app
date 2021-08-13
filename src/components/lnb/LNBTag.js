@@ -34,4 +34,4 @@ const LNBTag = memo(({ flexOrder }) => {
   ));
 });
 
-export default LNBTag;
+export default React.memo(LNBTag);

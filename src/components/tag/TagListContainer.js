@@ -81,10 +81,7 @@ const TagListContainer = () => {
     }
     if (!checkWhitespace(value)) {
     } else if (TagStore.isValidTag(value)) {
-      const result = await TagStore.createNoteTag(
-        [value],
-        PageStore.currentPageId,
-      );
+      const result = await TagStore.createNoteTag([value], PageStore.currentPageId);
       findNSelect(result.text); // 생성된 태그에 focus
       setValue('');
       return;
@@ -181,8 +178,7 @@ const TagListContainer = () => {
 
   const handleBlurTagChip = id => e => {
     // 다른 태그가 선택돼서 blur되는 경우
-    if (e.relatedTarget && tagListCover.current.contains(e.relatedTarget))
-      return;
+    if (e.relatedTarget && tagListCover.current.contains(e.relatedTarget)) return;
     if (selectedId === id) setSelectedId(null);
   };
 
@@ -261,9 +257,7 @@ const TagListContainer = () => {
    *   Tooltip 관련 메서드
    */
   const handleTooltip = e => {
-    setIsEllipsisActive(
-      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
-    );
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
 
   return useObserver(() => (
@@ -272,17 +266,11 @@ const TagListContainer = () => {
         {authStore.hasPermission('notePage', 'U') && (
           <Tooltip
             title={
-              !PageStore.isReadMode()
-                ? t('NOTE_ADD_TAGS_01')
-                : t('NOTE_ADD_TAGS_02')
+              !PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')
             }
           >
             <TagNewBtn onClick={onClickNewTagBtn}>
-              <AddTagIcon
-                width={1.25}
-                height={1.25}
-                color={themeContext.IconNormal}
-              />
+              <AddTagIcon width={1.25} height={1.25} color={themeContext.IconNormal} />
             </TagNewBtn>
           </Tooltip>
         )}
@@ -325,8 +313,7 @@ const TagListContainer = () => {
                 className={item.tag_id === selectedId ? 'noteFocusedTag' : ''}
                 id={item.tag_id}
                 closable={
-                  PageStore.isReadMode() ||
-                  !authStore.hasPermission('notePage', 'U')
+                  PageStore.isReadMode() || !authStore.hasPermission('notePage', 'U')
                     ? false
                     : true
                 }
@@ -336,15 +323,10 @@ const TagListContainer = () => {
                 onKeyDown={handleTagChipKeyDown}
                 onBlur={handleBlurTagChip(item.tag_id)}
               >
-                <Tooltip
-                  title={
-                    isEllipsisActive ? NoteUtil.decodeStr(item.text) : null
-                  }
-                >
+                <Tooltip title={isEllipsisActive ? NoteUtil.decodeStr(item.text) : null}>
                   <TagText
                     onDoubleClick={
-                      !PageStore.isReadMode() &&
-                      authStore.hasPermission('notePage', 'U')
+                      !PageStore.isReadMode() && authStore.hasPermission('notePage', 'U')
                         ? handleDbClick(item.tag_id, item.text)
                         : null
                     }
@@ -362,4 +344,4 @@ const TagListContainer = () => {
   ));
 };
 
-export default TagListContainer;
+export default React.memo(TagListContainer);
