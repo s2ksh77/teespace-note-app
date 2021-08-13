@@ -544,32 +544,17 @@ const ChapterStore = observable({
   },
 
   async createNoteChapter() {
-    const trimmedChapterTitle = this.chapterNewTitle.trim();
-    this.chapterNewTitle =
-      trimmedChapterTitle || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01');
-    const notbookList = await this.createChapter(
-      this.chapterNewTitle,
+    const { children, id } = await this.createChapter(
+      this.chapterNewTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'),
       this.isNewChapterColor,
     );
     await this.getNoteChapterList();
-    await PageStore.fetchCurrentPageData(notbookList.children[0].id);
     this.setChapterTempUl(false);
-    this.setDragData(
-      new Map([
-        [this.currentChapterId, this.createDragData(this.currentChapterId)],
-      ]),
-    );
-    PageStore.setDragData(
-      new Map([
-        [
-          PageStore.currentPageId,
-          PageStore.createDragData(
-            PageStore.currentPageId,
-            this.currentChapterId,
-          ),
-        ],
-      ]),
-    );
+    await PageStore.fetchCurrentPageData(children[0].id);
+
+    this.setDragData(new Map([[id, this.createDragData(id)]]));
+    const pageId = PageStore.pageInfo.id;
+    PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, id)]]));
   },
 
   async deleteNoteChapter({ chapterList, selectablePageId, isDnd }) {
