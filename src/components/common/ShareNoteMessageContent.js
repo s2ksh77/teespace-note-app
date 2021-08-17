@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Message, RoomStore, API } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import {
-  MessageCover,
-  NoteTitle,
-  TextCover,
-  NoteType,
-} from '../../styles/commonStyle';
+import { MessageCover, NoteTitle, TextCover, NoteType } from '../../styles/commonStyle';
 import useNoteStore from '../../store/useStore';
 import { isFilled } from './validators';
 import NoteRepository from '../../store/noteRepository';
@@ -80,13 +75,11 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
 
   const isDeletedChapter = async () => {
     const response = await ChapterStore.getChapterInfoList(noteId);
-    if (!response) return true; // valid chapterId이면 dto있고 아니면 header만 있음
+    if (!response.id) return true; // valid chapterId이면 dto있고 아니면 header만 있음
     return false;
   };
   const isDeletedPage = async () => {
-    const targetChId = RoomStore.getChannelIds({ roomId })[
-      NoteRepository.CH_TYPE
-    ];
+    const targetChId = RoomStore.getChannelIds({ roomId })[NoteRepository.CH_TYPE];
     const {
       data: { dto: noteInfo },
     } = await API.Get(
@@ -99,10 +92,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
 
   // LNB 상에서 해당 chapter가 선택돼 있는 경우
   const isCurrentChapter = () => {
-    if (
-      NoteStore.targetLayout === 'LNB' &&
-      ChapterStore.currentChapterId === noteId
-    )
+    if (NoteStore.targetLayout === 'LNB' && ChapterStore.currentChapterId === noteId)
       return true;
     return false;
   };
@@ -178,9 +168,7 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
     <>
       <Message
         visible={informDeleted}
-        title={
-          isChapter(noteType) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03')
-        }
+        title={isChapter(noteType) ? t('NOTE_META_TAG_04') : t('NOTE_META_TAG_03')}
         type="error"
         btns={[
           {
@@ -193,16 +181,12 @@ const ShareNoteMessageContent = ({ roomId, noteId, noteType, noteTitle }) => {
       />
       <MessageCover
         id="shareNoteMessage"
-        onClick={
-          isChapter(noteType) ? handleClickChapterTag : handleClickPageTag
-        }
+        onClick={isChapter(noteType) ? handleClickChapterTag : handleClickPageTag}
       >
         <NoteActiveIcon />
         <TextCover>
           <NoteType>
-            {isChapter(noteType)
-              ? t('NOTE_META_TAG_01')
-              : t('NOTE_META_TAG_02')}
+            {isChapter(noteType) ? t('NOTE_META_TAG_01') : t('NOTE_META_TAG_02')}
           </NoteType>
           <NoteTitle>{noteTitle}</NoteTitle>
         </TextCover>
