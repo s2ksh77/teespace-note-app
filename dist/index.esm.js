@@ -7048,6 +7048,7 @@ var NoteStore = observable({
     TagStore.setAllSortedTagList([]);
     TagStore.setSortedTagList([]);
     EditorStore.setIsSearch(false);
+    this.setIsContentExpanded(false);
     this.setShowPage(true);
     this.setIsMailShare(false);
   },
