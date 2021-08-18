@@ -775,13 +775,17 @@ const PageStore = observable({
     const res = await this.restorePage(pageId, chapterId);
     if (res.resultMsg === 'Success') {
       NoteStore.setModalInfo(null);
-      await ChapterStore.getNoteChapterList();
-      if (this.currentPageId === pageId) {
-        ChapterStore.setCurrentChapterInfo(chapterId, false);
-        this.setCurrentPageId(pageId);
-      }
-      NoteStore.setToastText(toastTxt);
-      NoteStore.setIsVisibleToast(true);
+      Promise.all([
+        ChapterStore.getNoteChapterList(),
+        PageStore.fetchCurrentPageData(pageId),
+      ]).then(() => {
+        if (this.currentPageId === pageId) {
+          ChapterStore.setCurrentChapterInfo(chapterId, false);
+          this.setCurrentPageId(pageId);
+        }
+        NoteStore.setToastText(toastTxt);
+        NoteStore.setIsVisibleToast(true);
+      });
     }
   },
 
