@@ -4907,26 +4907,21 @@ var PageStore = mobx.observable({
             case 3:
               res = _context20.sent;
 
-              if (!(res.resultMsg === 'Success')) {
-                _context20.next = 11;
-                break;
+              if (res.resultMsg === 'Success') {
+                NoteStore.setModalInfo(null);
+                Promise.all([ChapterStore.getNoteChapterList(), PageStore.fetchCurrentPageData(pageId)]).then(function () {
+                  if (_this16.currentPageId === pageId) {
+                    ChapterStore.setCurrentChapterInfo(chapterId, false);
+
+                    _this16.setCurrentPageId(pageId);
+                  }
+
+                  NoteStore.setToastText(toastTxt);
+                  NoteStore.setIsVisibleToast(true);
+                });
               }
 
-              NoteStore.setModalInfo(null);
-              _context20.next = 8;
-              return ChapterStore.getNoteChapterList();
-
-            case 8:
-              if (_this16.currentPageId === pageId) {
-                ChapterStore.setCurrentChapterInfo(chapterId, false);
-
-                _this16.setCurrentPageId(pageId);
-              }
-
-              NoteStore.setToastText(toastTxt);
-              NoteStore.setIsVisibleToast(true);
-
-            case 11:
+            case 5:
             case "end":
               return _context20.stop();
           }
@@ -7154,7 +7149,7 @@ var NoteStore = mobx.observable({
   },
   // { type, title, subTitle, buttons }
   setModalInfo: function setModalInfo(modalType, data) {
-    if (modalType === ('viewInfo'  )) this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else this.modalInfo = NoteMeta.openMessage(modalType, data);
+    if (modalType === ( 'restore')) this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else this.modalInfo = NoteMeta.openMessage(modalType, data);
     modalType === null ? this.setShowModal(false) : this.setShowModal(true);
   },
   handleSharedInfo: function handleSharedInfo(type, id) {
