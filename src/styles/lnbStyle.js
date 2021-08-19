@@ -41,80 +41,57 @@ export const LNBNewChapter = styled.div`
 `;
 
 // search 관련
+export const SearchResultContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.938rem 0.375rem 0.938rem;
+`;
+
 export const SearchDivision = styled.div`
   display: flex;
-  flex-direction: row;
-  width: calc(100% - 1.5rem);
-  height: 26px;
-  font-size: 12px;
-  color: #666666;
-  margin: 0 0.938rem;
-`;
-export const SearchDivisionSpan = styled.span`
-  margin: 0.25rem 0;
+  font-size: 0.75rem;
+  color: ${props => props.theme.TextSub};
+  margin: 0.375rem 0;
 `;
 
 export const ChapterSearchResult = styled.div`
   position: relative;
-  width: calc(100% - 1.5rem);
-  height: 3.81rem;
-  margin: 0 0.75rem;
-  padding: 0.688rem 1.188rem;
+  width: 100%;
+  height: 2.875rem;
   display: flex;
-  flex-direction: row;
   align-items: center;
   cursor: pointer;
+  margin: 0.25rem 0;
+  border-radius: 0.31rem;
   &:hover {
     background-color: ${props => props.theme.StateBright};
   }
 `;
-export const ChapterSearchShareIcon = styled.img`
-  position: relative;
-  width: 0.8rem;
-  height: 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: -10px;
-  filter: invert(47%) sepia(6%) saturate(469%) hue-rotate(202deg) brightness(95%)
-    contrast(85%);
-`;
-export const ChapterSearchResultColor = styled.div`
-  background-color: ${props => props.backgroundColor};
-  width: 0.25rem;
-  height: 2.19rem;
-  align-self: center;
-  border-radius: 0.13rem;
-  min-width: 0.25rem;
-`;
-export const ChapterSearchResultTitle = styled.div`
-  display: flex;
-  height: 100%;
-  align-items: center;
-  padding-left: 1.19rem;
-  font-size: 0.8125rem;
+
+export const ChapterSearchResultTitle = styled.span`
+  margin-left: 1.69rem;
+  font-size: 0.813rem;
   font-weight: bold;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 `;
+
 export const PageSearchResult = styled.div`
   position: relative;
-  width: calc(100% - 1.5rem);
+  width: 100%;
   height: fit-content;
-  margin: 0 0.75rem;
   padding: 0.688rem 1.188rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   cursor: pointer;
+  border-radius: 0.31rem;
   &:hover {
     background-color: ${props => props.theme.StateBright};
   }
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
+  background-color: ${props => (props.isSelected ? props.theme.StateDark : '')};
 `;
+
 export const PageSearchResultPageTitle = styled.div`
   font-size: 0.813rem;
   height: 1.125rem;
@@ -133,29 +110,4 @@ export const PageSearchResultChapterTitle = styled.div`
   overflow: hidden;
   white-space: nowrap;
   margin: 0 0 0.25rem;
-`;
-
-export const SearchResultBotttom = styled.div`
-  border-bottom: 1px solid #e3e7eb;
-  position: absolute;
-  left: ${props => (props.isLast ? '0.1rem' : '1.69rem')};
-  right: 0.1rem;
-  bottom: 0;
-`;
-
-export const TagSearchResult = styled.div`
-  position: relative;
-  width: calc(100% - 1.5rem);
-  margin: 0 0.75rem;
-  padding: 0.688rem 1.188rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  cursor: pointer;
-  &:hover {
-    background-color: ${props => props.theme.StateBright};
-  }
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background-color: ${props => (props.isSelected ? '#F2EFEC' : '')};
 `;

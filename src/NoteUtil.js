@@ -142,4 +142,8 @@ export const getUserDisplayName = async userId => {
     : userProfile?.displayName;
 };
 
+export const isNormalChapter = type => {
+  return ['default', 'notebook'].includes(type);
+};
+
 export default NoteUtil;
