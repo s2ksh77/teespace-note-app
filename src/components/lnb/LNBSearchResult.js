@@ -63,16 +63,16 @@ const LNBSearchResult = () => {
 
   const handlePageClick = (pageId, type) => async () => {
     if (!PageStore.isReadMode()) return;
-    PageStore.fetchCurrentPageData(pageId).then(() => {
-      instance.unmark();
-      instance.mark(ChapterStore.searchStr);
-      NoteStore.setShowPage(true);
-      if (NoteStore.layoutState === 'collapse') {
-        if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
-        NoteStore.setTargetLayout('Content');
-      }
-      setSelected({ id: pageId, type });
-    });
+    await PageStore.fetchCurrentPageData(pageId);
+
+    instance.unmark();
+    instance.mark(ChapterStore.searchStr);
+    NoteStore.setShowPage(true);
+    if (NoteStore.layoutState === 'collapse') {
+      if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
+      NoteStore.setTargetLayout('Content');
+    }
+    setSelected({ id: pageId, type });
   };
 
   useEffect(() => {
