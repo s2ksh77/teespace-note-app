@@ -23,8 +23,7 @@ import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 import { TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil, { isNormalChapter } from '../../NoteUtil';
-// chapter : id, title, color, firstPageId
-// page : chapterId, chapterTitle, id, title
+
 const LNBSearchResult = () => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
@@ -32,33 +31,23 @@ const LNBSearchResult = () => {
   const instance = new Mark(EditorStore.tinymce?.getBody());
   const [selected, setSelected] = useState({ id: null, type: null });
 
-  // 챕터 검색때만 초기화
-  // children 순서도 알아야하므로 type 넘겨주지 않고 chapterList에서 chapter 찾아서 type도 알아내고, children도 알아낸다
-  const onClickChapterBtn = chapterId => async () => {
+  const handleChapterClick = chapterId => async () => {
+    const clickedChapter = ChapterStore.chapterList.find(
+      chapter => chapter.id === chapterId,
+    );
+    const firstPageId = clickedChapter?.children[0]?.id;
+    await PageStore.fetchCurrentPageData(firstPageId);
+
+    ChapterStore.setDragData(
+      new Map([[chapterId, ChapterStore.createDragData(chapterId)]]),
+    );
+    PageStore.setDragData(
+      new Map([[firstPageId, PageStore.createDragData(firstPageId, chapterId)]]),
+    );
+
     ChapterStore.setScrollIntoViewId(chapterId);
     ChapterStore.initSearchVar();
     NoteStore.setShowPage(true);
-    ChapterStore.getChapterChildren(chapterId).then(data => {
-      const chapterInfo = ChapterStore.chapterList.find(
-        chapter => chapter.id === chapterId,
-      );
-      if (!chapterInfo) return; // 만약의 경우
-
-      if (chapterInfo.children.length > 0) {
-        const pageId = chapterInfo.children[0].id;
-        // 어차피 이미 그려진 리스트에 없다면 첫 번째 자식 선택 못하므로 일단 그려진 애들 중 첫번째가 삭제되지 않은 경우 선택
-        if (
-          pageId &&
-          data.noteList?.length > 0 &&
-          data.noteList.find(page => page.note_id === pageId)
-        ) {
-          PageStore.fetchCurrentPageData(pageId);
-          return;
-        }
-      }
-      ChapterStore.setCurrentChapterInfo(chapterId);
-      PageStore.fetchCurrentPageData('');
-    });
   };
 
   const ChapterIcon = React.memo(({ type, color }) => {
@@ -72,7 +61,7 @@ const LNBSearchResult = () => {
     }
   });
 
-  const onClickPageBtn = (pageId, type) => async () => {
+  const handlePageClick = (pageId, type) => async () => {
     if (!PageStore.isReadMode()) return;
     PageStore.fetchCurrentPageData(pageId).then(() => {
       instance.unmark();
@@ -82,7 +71,7 @@ const LNBSearchResult = () => {
         if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
         NoteStore.setTargetLayout('Content');
       }
-      setSelected({ id: pageId, type: type });
+      setSelected({ id: pageId, type });
     });
   };
 
@@ -107,7 +96,7 @@ const LNBSearchResult = () => {
             return (
               <ChapterSearchResult
                 key={chapter.id}
-                onClick={onClickChapterBtn(chapter.id)}
+                onClick={handleChapterClick(chapter.id)}
               >
                 <ChapterIcon type={chapter.type} color={chapter.color} />
                 <ChapterSearchResultTitle
@@ -130,7 +119,7 @@ const LNBSearchResult = () => {
               <PageSearchResult
                 key={page.note_id}
                 isSelected={selected.id === page.note_id && selected.type === 'page'}
-                onClick={onClickPageBtn(page.note_id, 'page')}
+                onClick={handlePageClick(page.note_id, 'page')}
               >
                 <PageSearchResultChapterTitle>
                   {page.TYPE === 'shared_page'
@@ -156,7 +145,7 @@ const LNBSearchResult = () => {
               <TagSearchResult
                 key={pageListIdx}
                 isSelected={selected.id === tag.note_id && selected.type === 'tag'}
-                onClick={onClickPageBtn(tag.note_id, 'tag')}
+                onClick={handlePageClick(tag.note_id, 'tag')}
               >
                 <PageSearchResultChapterTitle>
                   {tag.TYPE === 'shared_page'
