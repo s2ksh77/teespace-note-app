@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import useNoteStore from '../../store/useStore';
+/* eslint-disable react/no-array-index-key */
+import React, { useState, useEffect, useContext } from 'react';
 import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
+import Mark from 'mark.js';
+import styled, { ThemeContext } from 'styled-components';
+import useNoteStore from '../../store/useStore';
+
 import {
+  SearchResultContainer,
   SearchDivision,
-  SearchDivisionSpan,
-  ChapterSearchShareIcon,
   ChapterSearchResult,
-  ChapterSearchResultColor,
   ChapterSearchResultTitle,
   PageSearchResult,
   PageSearchResultPageTitle,
   PageSearchResultChapterTitle,
   PageSearchResultChapterTitle as SubText,
-  SearchResultBotttom,
-  TagSearchResult,
+  PageSearchResult as TagSearchResult,
 } from '../../styles/lnbStyle';
-import shareImg from '../../assets/ts_share@3x.png';
+import { ChapterColor } from '../../styles/chpaterStyle';
+import { ShareIcon, SharedPageIcon } from '../icons';
 import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
-import Mark from 'mark.js';
-import { CHAPTER_TYPE } from '../../GlobalVariable';
-import { useTranslation } from 'react-i18next';
-import { EditorTagCover, TagChip, TagList, TagText } from '../../styles/tagStyle';
-import NoteUtil from '../../NoteUtil';
-import styled from 'styled-components';
+import { TagChip, TagList, TagText } from '../../styles/tagStyle';
+import NoteUtil, { isNormalChapter } from '../../NoteUtil';
 // chapter : id, title, color, firstPageId
 // page : chapterId, chapterTitle, id, title
 const LNBSearchResult = () => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
   const instance = new Mark(EditorStore.tinymce?.getBody());
   const [selected, setSelected] = useState({ id: null, type: null });
 
@@ -61,6 +61,17 @@ const LNBSearchResult = () => {
     });
   };
 
+  const ChapterIcon = React.memo(({ type, color }) => {
+    switch (type) {
+      case 'shared_page':
+        return <SharedPageIcon color={themeContext.SubStateVivid} />;
+      case 'shared':
+        return <ShareIcon color={themeContext.SubStateVivid} />;
+      default:
+        return <ChapterColor background={color} />;
+    }
+  });
+
   const onClickPageBtn = (pageId, type) => async () => {
     if (!PageStore.isReadMode()) return;
     PageStore.fetchCurrentPageData(pageId).then(() => {
@@ -83,63 +94,42 @@ const LNBSearchResult = () => {
 
   return useObserver(() => (
     <>
-      {ChapterStore.searchResult?.['chapter'] === null &&
-      ChapterStore.searchResult?.['page'] === null &&
-      ChapterStore.searchResult?.['tag'] === null ? (
+      {ChapterStore.searchResult?.chapter === null &&
+      ChapterStore.searchResult?.page === null &&
+      ChapterStore.searchResult?.tag === null ? (
         <SearchResultNotFound searchStr={ChapterStore.searchStr.trim()} />
       ) : (
-        <>
-          {ChapterStore.searchResult?.['chapter'] ? (
-            <SearchDivision>
-              <SearchDivisionSpan>{t('NOTE_META_TAG_01')}</SearchDivisionSpan>
-            </SearchDivision>
-          ) : null}
-          {ChapterStore.searchResult?.['chapter']?.map((chapter, index) => {
+        <SearchResultContainer>
+          {ChapterStore.searchResult?.chapter && (
+            <SearchDivision>{t('NOTE_META_TAG_01')}</SearchDivision>
+          )}
+          {ChapterStore.searchResult?.chapter?.map(chapter => {
             return (
               <ChapterSearchResult
                 key={chapter.id}
                 onClick={onClickChapterBtn(chapter.id)}
               >
-                {chapter.type === 'shared' || chapter.type === 'shared_page' ? (
-                  <ChapterSearchShareIcon src={shareImg} />
-                ) : (
-                  <ChapterSearchResultColor backgroundColor={chapter.color} />
-                )}
+                <ChapterIcon type={chapter.type} color={chapter.color} />
                 <ChapterSearchResultTitle
-                  style={
-                    chapter.type === 'shared' || chapter.type === 'shared_page'
-                      ? { paddingLeft: '0.59rem' }
-                      : null
-                  }
+                  style={{
+                    marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem',
+                  }}
                 >
                   {chapter.type === 'shared_page'
                     ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : chapter.type === 'recycle_bin'
-                    ? t('NOTE_BIN_01')
                     : chapter.text}
                 </ChapterSearchResultTitle>
-                <SearchResultBotttom
-                  isLast={
-                    index === ChapterStore.searchResult?.['chapter'].length - 1
-                      ? true
-                      : false
-                  }
-                />
               </ChapterSearchResult>
             );
           })}
-          {ChapterStore.searchResult?.['page'] ? (
-            <SearchDivision>
-              <SearchDivisionSpan>{t('NOTE_META_TAG_02')}</SearchDivisionSpan>
-            </SearchDivision>
-          ) : null}
-          {ChapterStore.searchResult?.['page']?.map((page, index) => {
+          {ChapterStore.searchResult?.page && (
+            <SearchDivision>{t('NOTE_META_TAG_02')}</SearchDivision>
+          )}
+          {ChapterStore.searchResult?.page?.map(page => {
             return (
               <PageSearchResult
                 key={page.note_id}
-                isSelected={
-                  selected.id === page.note_id && selected.type === 'page' ? true : false
-                }
+                isSelected={selected.id === page.note_id && selected.type === 'page'}
                 onClick={onClickPageBtn(page.note_id, 'page')}
               >
                 <PageSearchResultChapterTitle>
@@ -150,33 +140,22 @@ const LNBSearchResult = () => {
                     : page.text}
                 </PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
-                {page.contentPreview ? (
+                {page.contentPreview && (
                   <SubText className="lnb-result-context" isContent>
                     {page.contentPreview}
                   </SubText>
-                ) : null}
-                <SearchResultBotttom
-                  isLast={
-                    index === ChapterStore.searchResult?.['page'].length - 1
-                      ? true
-                      : false
-                  }
-                />
+                )}
               </PageSearchResult>
             );
           })}
-          {ChapterStore.searchResult?.['tag'] ? (
-            <SearchDivision>
-              <SearchDivisionSpan>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</SearchDivisionSpan>
-            </SearchDivision>
-          ) : null}
-          {ChapterStore.searchResult?.['tag']?.map((tag, pageListIdx) => {
+          {ChapterStore.searchResult?.tag && (
+            <SearchDivision>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</SearchDivision>
+          )}
+          {ChapterStore.searchResult?.tag?.map((tag, pageListIdx) => {
             return (
               <TagSearchResult
                 key={pageListIdx}
-                isSelected={
-                  selected.id === tag.note_id && selected.type === 'tag' ? true : false
-                }
+                isSelected={selected.id === tag.note_id && selected.type === 'tag'}
                 onClick={onClickPageBtn(tag.note_id, 'tag')}
               >
                 <PageSearchResultChapterTitle>
@@ -196,17 +175,10 @@ const LNBSearchResult = () => {
                     );
                   })}
                 </TagList>
-                <SearchResultBotttom
-                  isLast={
-                    pageListIdx === ChapterStore.searchResult?.['tag'].length - 1
-                      ? true
-                      : false
-                  }
-                />
               </TagSearchResult>
             );
           })}
-        </>
+        </SearchResultContainer>
       )}
     </>
   ));
