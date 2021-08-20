@@ -131,6 +131,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   const handleRename = isEscape => {
     if (isEscape || !renameTitle) {
       setRenameTitle(title);
+      PageStore.setRenameId('');
     } else if (renameTitle !== title) {
       PageStore.renameNotePage({
         id,
