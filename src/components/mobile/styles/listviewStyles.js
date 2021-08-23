@@ -10,9 +10,10 @@ export const ListViewCover = styled.div`
 
 export const PageCover = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
   height: 5.375rem;
-  margin: 0px 1rem 0.625rem 1rem;
+  margin: 0px 1rem 0rem 1rem;
   border-radius: 15px;
   background-color: #f7f4ef;
   cursor: pointer;
@@ -64,4 +65,15 @@ export const PageContentSpan = styled.span`
   text-overflow: ellipsis;
   width: calc(100% - 1rem);
   white-space: nowrap;
+`;
+
+export const PageItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.625rem;
+`;
+
+export const CheckBoxContainer = styled.div`
+  align-items: center;
+  margin-left: 1rem;
 `;

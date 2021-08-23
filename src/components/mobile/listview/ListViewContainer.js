@@ -1,20 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../../store/useStore';
 import ListViewHeader from './ListViewHeader';
-import { ListViewCover } from '../styles/listviewStyles';
+import {
+  CheckBoxContainer,
+  ListViewCover,
+  PageItemContainer,
+} from '../styles/listviewStyles';
 import PageItem from './PageItem';
 import NoContent from '../../page/NoContent';
+import { Checkbox } from 'teespace-core';
 
 const ListViewContainer = () => {
   const { ChapterStore, PageStore } = useNoteStore();
+  const [isLongPress, setLongPress] = useState(false);
 
   return useObserver(() => (
     <>
       <ListViewCover>
         <ListViewHeader />
         {PageStore.pageList?.map((item, index) => {
-          return <PageItem key={item._data.id} page={item} index={index} />;
+          return (
+            <PageItemContainer>
+              {isLongPress && (
+                <CheckBoxContainer>
+                  <Checkbox />
+                </CheckBoxContainer>
+              )}
+              <PageItem key={item._data.id} page={item} index={index} />
+            </PageItemContainer>
+          );
         })}
         {PageStore.pageList.length === 0 && <NoContent isWeb={false} />}
       </ListViewCover>
