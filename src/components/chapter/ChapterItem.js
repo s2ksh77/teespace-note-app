@@ -197,6 +197,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const handleTitleUpdate = isEscape => () => {
     if (isEscape || !renameTitle) {
       setRenameTitle(title);
+      ChapterStore.setRenameId('');
     } else if (renameTitle !== title) {
       ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
     }
