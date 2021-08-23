@@ -12,7 +12,7 @@ import {
 import ContentHeader from '../common/ContentHeader';
 import noContentImage from '../../assets/no_contents.svg';
 
-const NoContent = ({ isNoChapter }) => {
+const NoContent = ({ isNoChapter, isWeb = true }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
 
@@ -23,7 +23,7 @@ const NoContent = ({ isNoChapter }) => {
 
   return (
     <>
-      <ContentHeader handleBackBtn={handleBackBtnClick} />
+      {isWeb ? <ContentHeader handleBackBtn={handleBackBtnClick} /> : null}
       <ContentBodyWrapper>
         <NoContentContainer>
           <NoneTitle>

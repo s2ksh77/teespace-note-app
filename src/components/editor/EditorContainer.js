@@ -49,6 +49,7 @@ import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
 import useSave from './useSave';
 import StorageModel from '../../store/model/StorageModel';
+import MobileEditorHeader from '../mobile/content/EditorHeader';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -62,7 +63,7 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-const HandleUploader = props => {
+const HandleUploader = ({ isWeb }) => {
   const { EditorStore, NoteStore } = useNoteStore();
   const uploaderRef = useRef('');
 
@@ -142,16 +143,18 @@ const HandleUploader = props => {
   }, []);
 
   return useObserver(() => (
-    <Upload
-      {...uploadProps}
-      accept={EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'}
-    >
-      <Button ref={uploaderRef} />
-    </Upload>
+    <div style={{ display: isWeb ? 'flex' : 'none' }}>
+      <Upload
+        {...uploadProps}
+        accept={EditorStore.uploaderType === 'image' ? 'image/*, video/*' : 'file'}
+      >
+        <Button ref={uploaderRef} />
+      </Upload>
+    </div>
   ));
 };
 
-const EditorContainer = () => {
+const EditorContainer = ({ isWeb = true }) => {
   const { NoteStore, PageStore, EditorStore, TagStore } = useNoteStore();
   const { configStore, authStore } = useCoreStores();
   const { t } = useTranslation();
@@ -362,14 +365,18 @@ const EditorContainer = () => {
         />
         <FoldBtn
           isExpanded={NoteStore.isContentExpanded}
-          show={NoteStore.layoutState !== 'collapse' && NoteStore.isHoveredFoldBtnLine}
+          show={
+            NoteStore.layoutState !== 'collapse' &&
+            NoteStore.isHoveredFoldBtnLine &&
+            isWeb
+          }
           onMouseMove={() => NoteStore.setIsHoveredFoldBtnLine(true)}
           onClick={() => NoteStore.toggleIsContentExpanded()}
         >
           <FoldBtnImg src={foldImg} />
         </FoldBtn>
-        <EditorHeader />
-        {PageStore.isReadMode() && !EditorStore.isSearch ? (
+        {isWeb ? <EditorHeader /> : <MobileEditorHeader />}
+        {PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             {authStore.hasPermission('notePage', 'U') ? (
               PageStore.isRecycleBin ? (
@@ -832,7 +839,7 @@ const EditorContainer = () => {
           file={EditorStore.saveDriveMeta}
           roomId={NoteRepository.WS_ID}
         />
-        <HandleUploader />
+        <HandleUploader isWeb={isWeb} />
       </EditorContainerWrapper>
     </>
   ));
