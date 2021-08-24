@@ -36,6 +36,18 @@ const PageStore = observable({
   restorePageId: '',
   isRecycleBin: false,
   recoverInfo: {}, // 복원 팝업에서 '복구'클릭시 필요
+  pageList: [],
+
+  setPageList(arr, color) {
+    this.pageList = [];
+    arr.forEach(async page => {
+      page.color = color;
+      const pageModel = new PageModel(page);
+      this.pageList.push(pageModel);
+    });
+    console.log(this.pageList);
+  },
+
   setRecoverInfo(info) {
     // parentId, id, note_content
     this.recoverInfo = info;

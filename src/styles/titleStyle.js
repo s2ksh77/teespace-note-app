@@ -92,7 +92,7 @@ export const ModifiedTime = styled.span`
   width: auto;
   height: auto;
   font-size: 0.6875rem;
-  border-left: 1px solid ${props => props.theme.LineMain} !important;
+  border-left: 1px solid ${props => props.theme.LineMain};
   padding: 0 0.38rem !important;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -115,8 +115,8 @@ export const EditorSearchIconDiv = styled.div`
 export const EditorSearchIcon = styled.img`
   width: 1rem;
   height: 1rem;
-  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg)
-    brightness(93%) contrast(92%);
+  filter: invert(49%) sepia(5%) saturate(429%) hue-rotate(349deg) brightness(93%)
+    contrast(92%);
 `;
 
 export const LnbTitleCover = styled.div`
@@ -172,14 +172,15 @@ export const LnbTitleSearchContainer = styled.form`
   height: 1.88rem;
   border-radius: 6px;
   ${props =>
-    !props.isTagSearching && css`
+    !props.isTagSearching &&
+    css`
       &:hover {
         background-color: ${props => props.theme.SubStateBright};
         path {
           fill: ${props => props.theme.IconNormal};
         }
       }
-  `}
+    `}
   &:focus-within {
     background-color: ${props => props.theme.StateNormal};
     border: 1px solid ${props => props.theme.SubStateVivid};
@@ -191,8 +192,10 @@ export const LnbTitleSearchContainer = styled.form`
   margin: auto 0;
   flex: 1;
   min-width: 10.6rem;
-  background-color: ${props => props.isTagSearching ? props.theme.StateNormal : props.theme.SubStateNormal};
-  border: 1px solid ${props => props.isTagSearching ? props.theme.SubStateVivid : 'transparent'};
+  background-color: ${props =>
+    props.isTagSearching ? props.theme.StateNormal : props.theme.SubStateNormal};
+  border: 1px solid
+    ${props => (props.isTagSearching ? props.theme.SubStateVivid : 'transparent')};
 `;
 
 export const LnbTitleSearchIcon = styled.button`
@@ -222,7 +225,7 @@ export const LnbTitleSearchInput = styled.input`
     outline: none;
   }
   &::placeholder {
-    color: ${props => props.theme.TextHinted}
+    color: ${props => props.theme.TextHinted};
   }
 `;
 
