@@ -16,3 +16,8 @@ export const HeaderTitle = styled.span`
   margin-left: 0.75rem;
   flex: 1 auto;
 `;
+
+export const ChapterItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;

@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
-import { useCoreStores } from 'teespace-core';
+import { Checkbox, useCoreStores } from 'teespace-core';
 import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../../store/useStore';
 import ChapterText from '../../chapter/ChapterText';
@@ -10,8 +10,10 @@ import PageList from '../../page/PageList';
 import { ChapterContainer, ChapterCover } from '../../../styles/chpaterStyle';
 import { TrashIcon } from '../../icons';
 import { DRAG_TYPE } from '../../../GlobalVariable';
+import { ChapterItemContainer } from '../styles/lnbStyles';
+import { CheckBoxContainer } from '../styles/listviewStyles';
 
-const RecycleBin = ({ chapter, index, flexOrder }) => {
+const RecycleBin = ({ chapter, index, flexOrder, isLongPress }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore } = useCoreStores();
   const themeContext = useContext(ThemeContext);
@@ -37,7 +39,12 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
   const handleFoldBtnClick = e => {};
 
   return useObserver(() => (
-    <ChapterContainer className={isFolded ? 'folded ' : ''} key={id} order={flexOrder}>
+    <ChapterContainer
+      className={isFolded ? 'folded ' : ''}
+      key={id}
+      order={flexOrder}
+      style={{ width: '100%', marginLeft: isLongPress ? '2.81rem' : '0.81rem' }}
+    >
       <ChapterCover
         className={`chapter-div${
           id === ChapterStore.currentChapterId ? ' selectedMenu' : ''

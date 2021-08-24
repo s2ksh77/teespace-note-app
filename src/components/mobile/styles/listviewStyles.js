@@ -69,6 +69,7 @@ export const PageContentSpan = styled.span`
 
 export const PageItemContainer = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
   margin-bottom: 0.625rem;
 `;
