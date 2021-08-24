@@ -4,7 +4,7 @@ import { ThemeContext } from 'styled-components';
 
 import { MainHeaderWrapper, HeaderTitle } from '../styles/lnbStyles';
 import { ButtonWrapper, TextButtonWrapper } from '../styles/commonStyles';
-import { ArrowBackIcon2, SearchIcon, CloseIcon } from '../../icons';
+import { ArrowBackIcon2, SearchIcon, CloseIcon, TrashIcon, ShareIcon } from '../../icons';
 
 const MainHeader = ({ leftButtons, title, rightButtons, backgroundColor }) => {
   const themeContext = useContext(ThemeContext);
@@ -19,6 +19,24 @@ const MainHeader = ({ leftButtons, title, rightButtons, backgroundColor }) => {
         return <CloseIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />;
       case 'search':
         return <SearchIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />;
+      case 'remove':
+        return (
+          <TrashIcon
+            width="1.25"
+            height="1.25"
+            color={themeContext.IconNormal2}
+            isButton={true}
+          />
+        );
+      case 'share':
+        return (
+          <ShareIcon
+            width="1.25"
+            height="1.25"
+            color={themeContext.IconNormal2}
+            isButton={true}
+          />
+        );
       default:
         return null;
     }

@@ -11,6 +11,7 @@ import {
 } from '../styles/listviewStyles';
 import { LNBBody as ListViewBody } from '../styles/lnbStyles';
 import ListViewHeader from '../lnb/MainHeader';
+import LongPressHeader from '../lnb/MainHeader';
 import PageItem from './PageItem';
 import NoContent from '../../page/NoContent';
 
@@ -30,20 +31,38 @@ const ListViewContainer = () => {
 
   return useObserver(() => (
     <ListViewWrapper>
-      <ListViewHeader
-        leftButtons={[
-          {
-            type: 'icon',
-            action: 'back',
-            onClick: () => NoteStore.setTargetLayout('LNB'),
-          },
-        ]}
-        title={ChapterStore.chapterName}
-        rightButtons={[
-          { type: 'icon', action: 'search' },
-          { type: 'text', text: '🎅🏻' },
-        ]}
-      />
+      {isLongPress ? (
+        <LongPressHeader
+          leftButtons={[
+            {
+              type: 'icon',
+              action: 'close',
+              onClick: () => setLongPress(false),
+            },
+          ]}
+          title={`${PageStore.selectedPages.size} 개 선택됨`}
+          rightButtons={[
+            { type: 'icon', action: 'search' },
+            { type: 'icon', action: 'remove' },
+            { type: 'icon', action: 'share' },
+          ]}
+        />
+      ) : (
+        <ListViewHeader
+          leftButtons={[
+            {
+              type: 'icon',
+              action: 'back',
+              onClick: () => NoteStore.setTargetLayout('LNB'),
+            },
+          ]}
+          title={ChapterStore.chapterName}
+          rightButtons={[
+            { type: 'icon', action: 'search' },
+            { type: 'text', text: '🎅🏻' },
+          ]}
+        />
+      )}
       <ListViewBody>
         <LongPressable onShortPress={onShortPress} onLongPress={onLongPress}>
           {PageStore.pageList?.map((item, index) => {

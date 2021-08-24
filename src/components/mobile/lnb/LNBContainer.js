@@ -7,6 +7,7 @@ import useNoteStore from '../../../store/useStore';
 
 import { LNBWrapper } from '../../../styles/lnbStyle';
 import LNBHeader from './MainHeader';
+import LongPressHeader from './MainHeader';
 import { LNBBody } from '../styles/lnbStyles';
 import ChapterItem from './ChapterItem';
 import LNBTag from './LNBTag';
@@ -34,20 +35,38 @@ const LNBContainer = () => {
 
   return useObserver(() => (
     <LNBWrapper>
-      <LNBHeader
-        leftButtons={[
-          {
-            type: 'icon',
-            action: 'close',
-            onClick: () => EventBus.dispatch('onLayoutClose'),
-          },
-        ]}
-        title={t('NOTE_META_TAG_01')}
-        rightButtons={[
-          { type: 'icon', action: 'search' },
-          { type: 'text', text: '🎅🏻' },
-        ]}
-      />
+      {isLongPress ? (
+        <LongPressHeader
+          leftButtons={[
+            {
+              type: 'icon',
+              action: 'close',
+              onClick: () => setLongPress(false),
+            },
+          ]}
+          title={`${ChapterStore.selectedChapters.size} 개 선택됨`}
+          rightButtons={[
+            { type: 'icon', action: 'search' },
+            { type: 'icon', action: 'remove' },
+            { type: 'icon', action: 'share' },
+          ]}
+        />
+      ) : (
+        <LNBHeader
+          leftButtons={[
+            {
+              type: 'icon',
+              action: 'close',
+              onClick: () => EventBus.dispatch('onLayoutClose'),
+            },
+          ]}
+          title={t('NOTE_META_TAG_01')}
+          rightButtons={[
+            { type: 'icon', action: 'search' },
+            { type: 'text', text: '🎅🏻' },
+          ]}
+        />
+      )}
       <LNBBody>
         <LongPressable onShortPress={onShortPress} onLongPress={onLongPress}>
           {ChapterStore.chapterList.map((item, index) => {
