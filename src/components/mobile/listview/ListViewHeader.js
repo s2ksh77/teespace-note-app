@@ -1,39 +1,36 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import useNoteStore from '../../../store/useStore';
-import { useCoreStores } from 'teespace-core';
-import { SearchIcon, ArrowBackIcon } from '../../icons';
-import { HeaderTitle, MainHeader } from '../styles/lnbStyles';
 import { useObserver } from 'mobx-react';
-import { ButtonDiv, PreBtnWrapper } from '../../../styles/commonStyle';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
+import { useCoreStores } from 'teespace-core';
+import useNoteStore from '../../../store/useStore';
 
-const LNBHeader = () => {
+import { MainHeaderWrapper, HeaderTitle } from '../styles/lnbStyles';
+import { PreBtnWrapper, ButtonDiv } from '../../../styles/commonStyle';
+import { ArrowBackIcon2, SearchIcon } from '../../icons';
+
+const ListViewHeader = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const themeContext = useContext(ThemeContext);
   const { t } = useTranslation();
 
-  const handleCancelBtn = e => {};
+  const handleSearchButtonClick = () => {};
 
-  const handleSearchBtn = () => {};
-
-  const handleBackBtn = () => NoteStore.setTargetLayout('LNB');
+  const handleBackButtonClick = () => NoteStore.setTargetLayout('LNB');
 
   return useObserver(() => (
-    <>
-      <MainHeader>
-        <PreBtnWrapper show={true} onClick={handleBackBtn}>
-          <ArrowBackIcon color={themeContext.IconNormal} />
-        </PreBtnWrapper>
-        <HeaderTitle>{ChapterStore.chapterName}</HeaderTitle>
-        <ButtonDiv onClick={handleSearchBtn}>
-          <SearchIcon />
-        </ButtonDiv>
-        <ButtonDiv onClick={handleSearchBtn}>
-          <SearchIcon />
-        </ButtonDiv>
-      </MainHeader>
-    </>
+    <MainHeaderWrapper>
+      <PreBtnWrapper show onClick={handleBackButtonClick}>
+        <ArrowBackIcon2 width="1.25" height="1.25" color={themeContext.IconNormal2} />
+      </PreBtnWrapper>
+      <HeaderTitle>{ChapterStore.chapterName}</HeaderTitle>
+      <ButtonDiv onClick={handleSearchButtonClick}>
+        <SearchIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />
+      </ButtonDiv>
+      <ButtonDiv>
+        <SearchIcon width="1.5" height="1.5" />
+      </ButtonDiv>
+    </MainHeaderWrapper>
   ));
 };
-export default React.memo(LNBHeader);
+export default React.memo(ListViewHeader);

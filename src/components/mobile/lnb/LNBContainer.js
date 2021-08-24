@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import LNBHeader from './LNBHeader';
+import { useTranslation } from 'react-i18next';
+import { EventBus } from 'teespace-core';
+import LongPressable from 'react-longpressable';
 import useNoteStore from '../../../store/useStore';
+
+import { LNBWrapper } from '../../../styles/lnbStyle';
+import LNBHeader from './MainHeader';
+import { LNBBody } from '../styles/lnbStyles';
 import ChapterItem from './ChapterItem';
-import NoteUtil from '../../../NoteUtil';
-import { toJS } from 'mobx';
-import { LNBCover } from '../../../styles/lnbStyle';
 import LNBTag from './LNBTag';
 import RecycleBin from './RecycleBin';
-import LongPressable from 'react-longpressable';
-
-const { getChapterNumType } = NoteUtil;
+import NoteUtil from '../../../NoteUtil';
 
 const LNBContainer = () => {
   const { ChapterStore, NoteStore } = useNoteStore();
+  const { t } = useTranslation();
   const [isLongPress, setLongPress] = useState(false);
 
   useEffect(() => {
@@ -31,12 +33,25 @@ const LNBContainer = () => {
   }, [NoteStore.notechannel_id]); // 동일하게 앱 켜두고 다른 방 이동시 unmount 되지 않음 (현재 platform 환경)
 
   return useObserver(() => (
-    <>
-      <LNBCover>
-        <LNBHeader />
+    <LNBWrapper>
+      <LNBHeader
+        leftButtons={[
+          {
+            type: 'icon',
+            action: 'close',
+            onClick: () => EventBus.dispatch('onLayoutClose'),
+          },
+        ]}
+        title={t('NOTE_META_TAG_01')}
+        rightButtons={[
+          { type: 'icon', action: 'search' },
+          { type: 'text', text: '🎅🏻' },
+        ]}
+      />
+      <LNBBody>
         <LongPressable onShortPress={onShortPress} onLongPress={onLongPress}>
           {ChapterStore.chapterList.map((item, index) => {
-            switch (getChapterNumType(item.type)) {
+            switch (NoteUtil.getChapterNumType(item.type)) {
               case 0:
               case 1: // default, NOTEBOOK
                 return (
@@ -67,6 +82,7 @@ const LNBContainer = () => {
                     chapter={item}
                     index={index}
                     flexOrder={2}
+                    isShared
                     isLongPress={isLongPress}
                   />
                 );
@@ -86,8 +102,8 @@ const LNBContainer = () => {
           })}
         </LongPressable>
         <LNBTag flexOrder={4} />
-      </LNBCover>
-    </>
+      </LNBBody>
+    </LNBWrapper>
   ));
 };
 

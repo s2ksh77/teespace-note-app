@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const LNBCover = styled.div`
+export const LNBWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

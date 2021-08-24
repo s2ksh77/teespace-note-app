@@ -17,6 +17,15 @@ export const HeaderTitle = styled.span`
   flex: 1 auto;
 `;
 
+export const LNBBody = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: ${props => props.theme.TextMain};
+`;
+
 export const ChapterItemContainer = styled.div`
   display: flex;
   align-items: center;
