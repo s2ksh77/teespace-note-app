@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useContext } from 'react';
 import useNoteStore from '../../../store/useStore';
 import { useCoreStores } from 'teespace-core';
 import { SearchIcon, CloseIcon, TrashIcon } from '../../icons';
-import { HeaderTitle, MainHeader } from '../styles/lnbStyles';
+import { HeaderTitle, MainHeaderWrapper } from '../styles/lnbStyles';
 import { useObserver } from 'mobx-react';
 import { ButtonDiv } from '../../../styles/commonStyle';
 import { useTranslation } from 'react-i18next';
