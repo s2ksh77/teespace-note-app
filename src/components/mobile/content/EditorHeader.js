@@ -1,11 +1,9 @@
 import React, { useEffect, useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import useNoteStore from '../../../store/useStore';
-import { MainHeaderWrapper as EditorHeaderCover } from '../styles/lnbStyles';
-import { ButtonDiv, PreBtnWrapper } from '../../../styles/commonStyle';
-import { ArrowBackIcon, SearchIcon, TrashIcon } from '../../icons';
 import { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import useNoteStore from '../../../store/useStore';
+
 import {
   AutoSaveMsg,
   EditingImg,
@@ -15,31 +13,28 @@ import {
 } from '../../../styles/titleStyle';
 import { EditorModCover, EditorTitleCover } from '../styles/editorStyles';
 import waplWorking from '../../../assets/wapl_working.svg';
+import MainHeader from '../lnb/MainHeader';
 
 const MobileEditorHeader = () => {
   const { ChapterStore, PageStore, NoteStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
 
-  const handleBackBtn = () => NoteStore.setTargetLayout('LIST');
-
-  const handleSearchBtn = () => {};
+  const handleBackButtonClick = () => NoteStore.setTargetLayout('LIST');
 
   const handleTitleInput = e => PageStore.setTitle(e.target.value);
 
   return useObserver(() => (
     <>
-      <EditorHeaderCover>
-        <PreBtnWrapper show={true} onClick={handleBackBtn}>
-          <ArrowBackIcon color={themeContext.IconNormal} />
-        </PreBtnWrapper>
-        <ButtonDiv onClick={handleSearchBtn} style={{ marginLeft: 'auto' }}>
-          <SearchIcon />
-        </ButtonDiv>
-        <ButtonDiv onClick={handleSearchBtn}>
-          <TrashIcon color={themeContext.SubStateVivid} />
-        </ButtonDiv>
-      </EditorHeaderCover>
+      <MainHeader
+        leftButtons={[{ type: 'icon', action: 'back', onClick: handleBackButtonClick }]}
+        rightButtons={
+          PageStore.isReadMode() && [
+            { type: 'icon', action: 'search' },
+            { type: 'text', text: '🎅🏻' },
+          ]
+        }
+      />
       <EditorTitleCover>
         <EditorTitle
           id="editorTitle"
