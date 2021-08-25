@@ -52,6 +52,7 @@ const ChapterStore = observable({
   scrollIntoViewId: '',
   lnbBoundary: { beforeShared: false, beforeRecycleBin: false }, // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   chapterName: '',
+  selectedChapters: new Map(),
 
   getLoadingPageInfo() {
     return this.loadingPageInfo;

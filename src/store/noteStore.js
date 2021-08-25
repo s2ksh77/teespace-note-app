@@ -182,7 +182,7 @@ const NoteStore = observable({
   },
   // { type, title, subTitle, buttons }
   setModalInfo(modalType, data) {
-    if (modalType === ('viewInfo' && 'forward' && 'restore'))
+    if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore')
       this.modalInfo = NoteMeta.openModal(modalType);
     else if (!modalType) this.modalInfo = {};
     else this.modalInfo = NoteMeta.openMessage(modalType, data);

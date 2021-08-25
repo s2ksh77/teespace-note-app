@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ListViewCover = styled.div`
+export const ListViewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -69,6 +69,7 @@ export const PageContentSpan = styled.span`
 
 export const PageItemContainer = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
   margin-bottom: 0.625rem;
 `;

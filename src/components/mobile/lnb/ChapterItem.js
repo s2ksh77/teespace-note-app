@@ -11,8 +11,11 @@ import {
 import { Tooltip } from 'antd';
 import { SharedPageIcon, ShareIcon, TrashIcon, NormalIcon } from '../../icons';
 import { CHAPTER_TYPE } from '../../../GlobalVariable';
+import { ChapterItemContainer } from '../styles/lnbStyles';
+import { CheckBoxContainer } from '../styles/listviewStyles';
+import { Checkbox } from 'antd';
 
-const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
+const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false }) => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
   const { id, color, children, type, text: title } = chapter;
 
@@ -30,6 +33,10 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   });
 
   const handleChapterClick = async () => {
+    if (isLongPress) {
+      handleCheckBoxChange(ChapterStore.selectedChapters.has(id));
+      return;
+    }
     try {
       // 이미 그릴 때 받아온 pageList 보다 최신으로
       const res = await ChapterStore.getChapterInfoList(id);
@@ -43,14 +50,39 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     }
   };
 
+  const handleCheckBoxChange = e => {
+    if (typeof e === 'boolean' && !e) {
+      ChapterStore.selectedChapters.set(id, chapter);
+    } else if (typeof e === 'boolean' && e) {
+      ChapterStore.selectedChapters.delete(id);
+    } else {
+      if (e.target.checked) {
+        ChapterStore.selectedChapters.set(id, chapter);
+      } else {
+        ChapterStore.selectedChapters.delete(id);
+      }
+    }
+  };
+
   return useObserver(() => (
-    <>
+    <ChapterItemContainer>
+      {isLongPress && (
+        <CheckBoxContainer>
+          <Checkbox
+            checked={ChapterStore.selectedChapters.has(chapter.id)}
+            className="check-round"
+            onChange={handleCheckBoxChange}
+            key={id}
+          />
+        </CheckBoxContainer>
+      )}
       <ChapterContainer
         style={{
           display: 'flex',
           height: '3.75rem',
           alignItems: 'center',
           flexDirection: 'row',
+          width: '100%',
         }}
         order={flexOrder}
         onClick={handleChapterClick}
@@ -76,7 +108,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
           </ChapterTitle>
         </ChapterCover>
       </ChapterContainer>
-    </>
+    </ChapterItemContainer>
   ));
 };
 

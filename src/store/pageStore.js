@@ -37,6 +37,7 @@ const PageStore = observable({
   isRecycleBin: false,
   recoverInfo: {}, // 복원 팝업에서 '복구'클릭시 필요
   pageList: [],
+  selectedPages: new Map(),
 
   setPageList(arr, color) {
     this.pageList = [];

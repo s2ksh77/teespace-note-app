@@ -1,18 +1,32 @@
 import styled from 'styled-components';
 
-export const MainHeader = styled.div`
+export const MainHeaderWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 2.875rem;
-  margin: 0;
-  padding: 0.625rem 1rem;
+  padding: 0 1rem;
+  align-items: center;
 `;
 
 export const HeaderTitle = styled.span`
   display: flex;
-  font-size: 0.938rem;
-  font-weight: 400;
+  font-size: 1.125rem;
+  font-weight: 500;
   color: ${props => props.theme.TextMain};
   margin-left: 0.75rem;
   flex: 1 auto;
+`;
+
+export const LNBBody = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: ${props => props.theme.TextMain};
+`;
+
+export const ChapterItemContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;

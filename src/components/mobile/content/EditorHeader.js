@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../../store/useStore';
-import { MainHeader as EditorHeaderCover } from '../styles/lnbStyles';
+import { MainHeaderWrapper as EditorHeaderCover } from '../styles/lnbStyles';
 import { ButtonDiv, PreBtnWrapper } from '../../../styles/commonStyle';
 import { ArrowBackIcon, SearchIcon, TrashIcon } from '../../icons';
 import { ThemeContext } from 'styled-components';
