@@ -13,6 +13,7 @@ import ChapterItem from './ChapterItem';
 import LNBTag from './LNBTag';
 import RecycleBin from './RecycleBin';
 import NoteUtil from '../../../NoteUtil';
+import { NewAddIcon } from '../../icons';
 
 const LNBContainer = () => {
   const { ChapterStore, NoteStore } = useNoteStore();
@@ -41,7 +42,10 @@ const LNBContainer = () => {
             {
               type: 'icon',
               action: 'close',
-              onClick: () => setLongPress(false),
+              onClick: () => {
+                setLongPress(false);
+                ChapterStore.selectedChapters.clear();
+              },
             },
           ]}
           title={`${ChapterStore.selectedChapters.size} 개 선택됨`}
@@ -122,6 +126,7 @@ const LNBContainer = () => {
         </LongPressable>
         <LNBTag flexOrder={4} />
       </LNBBody>
+      <NewAddIcon id="newChapter" />
     </LNBWrapper>
   ));
 };
