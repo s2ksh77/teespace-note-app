@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const MainHeaderWrapper = styled.div`
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   height: 2.875rem;
   padding: 0 1rem;

@@ -1,24 +1,51 @@
-import React, { useEffect, useRef, useContext } from 'react';
-import useNoteStore from '../../../store/useStore';
-import { useCoreStores } from 'teespace-core';
-import { SearchIcon, CloseIcon, TrashIcon } from '../../icons';
-import { HeaderTitle, MainHeaderWrapper } from '../styles/lnbStyles';
+import React, { useState, useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { ButtonDiv } from '../../../styles/commonStyle';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
+import useNoteStore from '../../../store/useStore';
+
+import { MainHeaderWrapper as SearchHeaderWrapper } from '../styles/lnbStyles';
+import {
+  SearchBarWrapper,
+  SearchBarInput,
+  ButtonWrapper,
+  TextButtonWrapper,
+} from '../styles/commonStyles';
+import { SearchIcon, CloseIcon } from '../../icons';
 
 const SearchHeader = () => {
-  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
+  const [searchValue, setSearchValue] = useState('');
 
-  const handleCancelBtn = e => {};
+  const handleSearchValueChange = e => setSearchValue(e.target.value);
 
-  const handleSearchBtn = () => {};
+  const handleCloseButtonClick = () => setSearchValue('');
+
+  const handleCancelButtonClick = () => {};
 
   return useObserver(() => (
-    <>
-      <div style={{ width: '100%', height: '2.875rem' }}>Search Header 다~~~</div>
-    </>
+    <SearchHeaderWrapper>
+      <SearchBarWrapper>
+        <SearchIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />
+        <SearchBarInput
+          placeholder="노트 검색"
+          value={searchValue}
+          onChange={handleSearchValueChange}
+        />
+        {searchValue && (
+          <ButtonWrapper onClick={handleCloseButtonClick}>
+            <CloseIcon color={themeContext.IconNormal2} />
+          </ButtonWrapper>
+        )}
+      </SearchBarWrapper>
+      <TextButtonWrapper
+        style={{ color: `${themeContext.TextSub3}` }}
+        onClick={handleCancelButtonClick}
+      >
+        {t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')}
+      </TextButtonWrapper>
+    </SearchHeaderWrapper>
   ));
 };
 export default React.memo(SearchHeader);

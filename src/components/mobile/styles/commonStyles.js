@@ -14,3 +14,24 @@ export const TextButtonWrapper = styled.div`
   font-weight: 500;
   color: ${props => props.theme.TextPoinGreen};
 `;
+
+export const SearchBarWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  height: 1.875rem;
+  align-items: center;
+  margin-right: 0.5rem;
+  border-bottom: 1px solid ${props => props.theme.IconNormal};
+`;
+
+export const SearchBarInput = styled.input`
+  display: flex;
+  flex: 1;
+  font-size: 0.813rem;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  border: none;
+  &::placeholder {
+    color: ${props => props.theme.TextHinted};
+  }
+`;
