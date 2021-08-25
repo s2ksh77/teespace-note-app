@@ -6,25 +6,47 @@ import { MainHeaderWrapper, HeaderTitle } from '../styles/lnbStyles';
 import { ButtonWrapper, TextButtonWrapper } from '../styles/commonStyles';
 import { ArrowBackIcon2, SearchIcon, CloseIcon, TrashIcon, ShareIcon } from '../../icons';
 
-const MainHeader = ({ leftButtons, title, rightButtons, backgroundColor }) => {
+const MainHeader = ({
+  leftButtons,
+  title,
+  rightButtons,
+  backgroundColor,
+  isLongPress = false,
+}) => {
   const themeContext = useContext(ThemeContext);
 
   const Icon = ({ action }) => {
     switch (action) {
       case 'back':
         return (
-          <ArrowBackIcon2 width="1.25" height="1.25" color={themeContext.IconNormal2} />
+          <ArrowBackIcon2
+            width="1.25"
+            height="1.25"
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
+          />
         );
       case 'close':
-        return <CloseIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />;
+        return (
+          <CloseIcon
+            width="1.25"
+            height="1.25"
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
+          />
+        );
       case 'search':
-        return <SearchIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />;
+        return (
+          <SearchIcon
+            width="1.25"
+            height="1.25"
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
+          />
+        );
       case 'remove':
         return (
           <TrashIcon
             width="1.25"
             height="1.25"
-            color={themeContext.IconNormal2}
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
             isButton={true}
           />
         );
@@ -33,7 +55,7 @@ const MainHeader = ({ leftButtons, title, rightButtons, backgroundColor }) => {
           <ShareIcon
             width="1.25"
             height="1.25"
-            color={themeContext.IconNormal2}
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
             isButton={true}
           />
         );
@@ -64,9 +86,13 @@ const MainHeader = ({ leftButtons, title, rightButtons, backgroundColor }) => {
   };
 
   return useObserver(() => (
-    <MainHeaderWrapper style={{ backgroundColor }}>
+    <MainHeaderWrapper
+      style={{ backgroundColor: isLongPress ? '#232d3b' : backgroundColor }}
+    >
       {leftButtons?.length > 0 && <Buttons buttons={leftButtons} />}
-      <HeaderTitle>{title}</HeaderTitle>
+      <HeaderTitle style={{ color: isLongPress ? '#FFFFFF' : themeContext.TextMain }}>
+        {title}
+      </HeaderTitle>
       {rightButtons?.length > 0 && <Buttons buttons={rightButtons} />}
     </MainHeaderWrapper>
   ));

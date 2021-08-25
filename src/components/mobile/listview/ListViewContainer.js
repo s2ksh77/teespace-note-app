@@ -50,6 +50,7 @@ const ListViewContainer = () => {
             { type: 'icon', action: 'remove' },
             { type: 'icon', action: 'share' },
           ]}
+          isLongPress={isLongPress}
         />
       ) : (
         <ListViewHeader
