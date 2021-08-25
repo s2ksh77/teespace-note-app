@@ -41,7 +41,10 @@ const LNBContainer = () => {
             {
               type: 'icon',
               action: 'close',
-              onClick: () => setLongPress(false),
+              onClick: () => {
+                setLongPress(false);
+                ChapterStore.selectedChapters.clear();
+              },
             },
           ]}
           title={`${ChapterStore.selectedChapters.size} 개 선택됨`}

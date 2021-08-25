@@ -37,7 +37,10 @@ const ListViewContainer = () => {
             {
               type: 'icon',
               action: 'close',
-              onClick: () => setLongPress(false),
+              onClick: () => {
+                setLongPress(false);
+                PageStore.selectedPages.clear();
+              },
             },
           ]}
           title={`${PageStore.selectedPages.size} 개 선택됨`}
