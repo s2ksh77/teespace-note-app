@@ -14,6 +14,7 @@ import ListViewHeader from '../lnb/MainHeader';
 import LongPressHeader from '../lnb/MainHeader';
 import PageItem from './PageItem';
 import NoContent from '../../page/NoContent';
+import { NewAddIcon } from '../../icons';
 
 const ListViewContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -81,6 +82,7 @@ const ListViewContainer = () => {
         </LongPressable>
         {PageStore.pageList.length === 0 && <NoContent isWeb={false} />}
       </ListViewBody>
+      <NewAddIcon id="newPage" />
     </ListViewWrapper>
   ));
 };

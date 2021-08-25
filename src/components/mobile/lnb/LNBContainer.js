@@ -13,6 +13,7 @@ import ChapterItem from './ChapterItem';
 import LNBTag from './LNBTag';
 import RecycleBin from './RecycleBin';
 import NoteUtil from '../../../NoteUtil';
+import { NewAddIcon } from '../../icons';
 
 const LNBContainer = () => {
   const { ChapterStore, NoteStore } = useNoteStore();
@@ -125,6 +126,7 @@ const LNBContainer = () => {
         </LongPressable>
         <LNBTag flexOrder={4} />
       </LNBBody>
+      <NewAddIcon id="newChapter" />
     </LNBWrapper>
   ));
 };
