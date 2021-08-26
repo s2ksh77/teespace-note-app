@@ -54,6 +54,7 @@ const LNBContainer = () => {
             { type: 'icon', action: 'remove' },
             { type: 'icon', action: 'share' },
           ]}
+          isLongPress={isLongPress}
         />
       ) : (
         <LNBHeader
