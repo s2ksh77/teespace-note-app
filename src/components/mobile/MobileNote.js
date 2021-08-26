@@ -8,6 +8,7 @@ import useNoteStore from '../../store/useStore';
 import { useObserver } from 'mobx-react';
 import ListViewContainer from './listview/ListViewContainer';
 import ContentContainer from './content/ContentContainer';
+import { LNBWrapper as Wrapper } from '../../styles/lnbStyle';
 
 const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' }) => {
   const { NoteStore, ChapterStore, EditorStore, PageStore } = useNoteStore();
@@ -53,13 +54,15 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
 
   return useObserver(() => (
     <I18nextProvider i18n={i18n}>
-      {NoteStore.targetLayout === null || NoteStore.targetLayout === 'LNB' ? (
-        <LNBContainer />
-      ) : NoteStore.targetLayout === 'LIST' ? (
-        <ListViewContainer />
-      ) : (
-        <ContentContainer />
-      )}
+      <Wrapper>
+        {NoteStore.targetLayout === null || NoteStore.targetLayout === 'LNB' ? (
+          <LNBContainer />
+        ) : NoteStore.targetLayout === 'LIST' ? (
+          <ListViewContainer />
+        ) : (
+          <ContentContainer />
+        )}
+      </Wrapper>
     </I18nextProvider>
   ));
 };
