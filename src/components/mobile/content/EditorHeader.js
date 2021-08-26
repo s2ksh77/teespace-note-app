@@ -20,7 +20,7 @@ const MobileEditorHeader = () => {
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
 
-  const handleBackButtonClick = () => NoteStore.setTargetLayout('LIST');
+  const handleBackButtonClick = () => NoteStore.setTargetLayout('List');
 
   const handleTitleInput = e => PageStore.setTitle(e.target.value);
 
