@@ -21,8 +21,8 @@ import NoteUtil from '../../NoteUtil';
 /**
  * TagStore 변수 제거
  */
-const TagListContainer = () => {
-  const { NoteStore, TagStore, PageStore } = useNoteStore();
+const TagListContainer = ({ isWeb = true }) => {
+  const { NoteStore, TagStore, PageStore, EditorStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -60,6 +60,11 @@ const TagListContainer = () => {
       setIsNewTag(true);
       preventBlur.current = false;
     } else setIsNewTag(false);
+  };
+
+  const handleNewTag = () => {
+    // if (PageStore.isReadMode()) return;
+    EditorStore.setIsTagEditPage(true);
   };
 
   const onClickNewTagBtn = () => {
@@ -269,7 +274,7 @@ const TagListContainer = () => {
               !PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')
             }
           >
-            <TagNewBtn onClick={onClickNewTagBtn}>
+            <TagNewBtn onClick={isWeb ? onClickNewTagBtn : handleNewTag}>
               <AddTagIcon width={1.25} height={1.25} color={themeContext.IconNormal} />
             </TagNewBtn>
           </Tooltip>

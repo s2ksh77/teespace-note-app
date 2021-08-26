@@ -60,6 +60,7 @@ const EditorStore = observable({
   uploadFileCancelStatus: false,
   totalUsage: 0,
   spaceTotalVolume: 0,
+  isTagEditPage: false,
 
   setContents(content) {
     this.contents = content;
@@ -151,6 +152,11 @@ const EditorStore = observable({
   setVisiblityState(flag) {
     this.visiblityState = flag;
   },
+
+  setIsTagEditPage(flag) {
+    this.isTagEditPage = flag;
+  },
+
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   async createUploadMeta(meta, type) {
     const {

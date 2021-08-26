@@ -2,7 +2,7 @@ import { Progress } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const EditorContainerWrapper = styled.div`
-  display: flex;
+  display: ${({ isTagEdit }) => (isTagEdit ? 'none' : 'flex')};
   flex-direction: column;
   width: 100%;
   height: 100%;

@@ -36,8 +36,8 @@ export const PanelArrow = styled.img`
 `;
 
 export const TagList = styled.div`
-  display: flex !important;
-  align-items: center !important;
+  display: flex;
+  align-items: center;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
@@ -110,8 +110,8 @@ export const TagImg = styled.img`
   position: absolute;
   width: 1rem;
   left: 1rem;
-  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)
-    brightness(96%) contrast(87%);
+  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%)
+    contrast(87%);
 `;
 
 export const TagTxt = styled.div`
