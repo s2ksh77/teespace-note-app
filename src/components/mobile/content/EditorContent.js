@@ -4,7 +4,7 @@ import useNoteStore from '../../../store/useStore';
 import EditorContainer from '../../editor/EditorContainer';
 
 const EditorContent = () => {
-  const { ChapterStore, PageStore } = useNoteStore();
+  const { ChapterStore, PageStore, EditorStore } = useNoteStore();
 
   return useObserver(() => (
     <>

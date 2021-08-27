@@ -50,6 +50,7 @@ import EditorStore from '../../store/editorStore';
 import useSave from './useSave';
 import StorageModel from '../../store/model/StorageModel';
 import MobileEditorHeader from '../mobile/content/EditorHeader';
+import NewTagContent from '../mobile/content/NewTagContent';
 
 // useEffect return 문에서 쓰면 변수값이 없어 저장이 안 됨
 // tinymce.on('BeforeUnload', ()=>{})가 동작을 안해서 유지
@@ -358,6 +359,7 @@ const EditorContainer = ({ isWeb = true }) => {
         isFile={EditorStore.isFile}
         isSearch={EditorStore.isSearch}
         isWorks={NoteStore.appType === 'wapl' ? false : true}
+        isTagEdit={EditorStore.isTagEditPage}
       >
         <PageContentLayoutChangeBtnArea
           onMouseOver={() => NoteStore.setIsHoveredFoldBtnLine(true)}
@@ -818,7 +820,7 @@ const EditorContainer = ({ isWeb = true }) => {
         />
         {EditorStore.isFile ? <FileLayout /> : null}
         {(authStore.hasPermission('notePage', 'U') ||
-          TagStore.notetagList.length > 0) && <TagListContainer />}
+          TagStore.notetagList.length > 0) && <TagListContainer isWeb={isWeb} />}
         <DriveAttachModal
           visible={EditorStore.isDrive}
           successCallback={driveSuccessCb}
@@ -841,6 +843,7 @@ const EditorContainer = ({ isWeb = true }) => {
         />
         <HandleUploader isWeb={isWeb} />
       </EditorContainerWrapper>
+      {EditorStore.isTagEditPage && <NewTagContent />}
     </>
   ));
 };

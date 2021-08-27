@@ -30,7 +30,7 @@ const RecycleBin = ({ chapter, index, flexOrder, isLongPress }) => {
         ChapterStore.setChapterName(t('NOTE_BIN_01'));
       }
       PageStore.setIsRecycleBin(true);
-      NoteStore.setTargetLayout('LIST');
+      NoteStore.setTargetLayout('List');
     } catch (e) {
       console.warn('Fetch PageList error', e);
     }

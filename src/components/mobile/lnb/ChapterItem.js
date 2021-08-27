@@ -44,7 +44,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false 
         PageStore.setPageList(res.children, color);
         ChapterStore.setChapterName(title);
       }
-      NoteStore.setTargetLayout('LIST');
+      NoteStore.setTargetLayout('List');
     } catch (e) {
       console.warn('Fetch PageList error', e);
     }
