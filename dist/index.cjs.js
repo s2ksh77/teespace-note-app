@@ -3126,6 +3126,7 @@ var EditorStore = mobx.observable({
   uploadFileCancelStatus: false,
   totalUsage: 0,
   spaceTotalVolume: 0,
+  isTagEditPage: false,
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -3216,6 +3217,9 @@ var EditorStore = mobx.observable({
   },
   setVisiblityState: function setVisiblityState(flag) {
     this.visiblityState = flag;
+  },
+  setIsTagEditPage: function setIsTagEditPage(flag) {
+    this.isTagEditPage = flag;
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
