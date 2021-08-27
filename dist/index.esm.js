@@ -7378,7 +7378,7 @@ var NoteStore = observable({
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var noteInfo, sharedRoom, _yield$UserStore$getP, displayName;
+      var noteInfo, roomName, sharedRoom, _sharedRoom, _yield$UserStore$getP, displayName;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -7406,30 +7406,50 @@ var NoteStore = observable({
 
             case 9:
               noteInfo = _context.t0;
-              _context.next = 12;
+              roomName = '';
+              _context.next = 13;
+              return RoomStore.getRoom(noteInfo.shared_room_name);
+
+            case 13:
+              sharedRoom = _context.sent;
+
+              if (!(sharedRoom !== undefined)) {
+                _context.next = 18;
+                break;
+              }
+
+              roomName = (sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.customName) !== '' ? sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.customName : sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.name;
+              _context.next = 22;
+              break;
+
+            case 18:
+              _context.next = 20;
               return RoomStore.fetchRoomForShare({
                 roomId: noteInfo.shared_room_name
               });
 
-            case 12:
-              sharedRoom = _context.sent;
-              _context.next = 15;
+            case 20:
+              _sharedRoom = _context.sent;
+              roomName = _sharedRoom === null || _sharedRoom === void 0 ? void 0 : _sharedRoom.name;
+
+            case 22:
+              _context.next = 24;
               return UserStore.getProfile({
                 userId: noteInfo.shared_user_id
               });
 
-            case 15:
+            case 24:
               _yield$UserStore$getP = _context.sent;
               displayName = _yield$UserStore$getP.displayName;
               _this.sharedInfo = {
-                sharedRoomName: sharedRoom !== null && sharedRoom !== void 0 && sharedRoom.isMyRoom ? displayName : (sharedRoom === null || sharedRoom === void 0 ? void 0 : sharedRoom.name) || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
+                sharedRoomName: sharedRoom !== null && sharedRoom !== void 0 && sharedRoom.isMyRoom ? displayName : roomName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
                 sharedUserName: displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
                 sharedDate: !noteInfo.created_date ? get12HourFormat(noteInfo.shared_date, true) : get12HourFormat(noteInfo.created_date, true)
               };
 
               _this.setModalInfo('viewInfo');
 
-            case 19:
+            case 28:
             case "end":
               return _context.stop();
           }
