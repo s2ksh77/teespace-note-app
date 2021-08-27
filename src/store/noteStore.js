@@ -195,9 +195,20 @@ const NoteStore = observable({
       type === 'chapter'
         ? await ChapterStore.getChapterInfoList(id)
         : await PageStore.getNoteInfoList(id);
-    const sharedRoom = await RoomStore.fetchRoomForShare({
-      roomId: noteInfo.shared_room_name,
-    });
+
+    let roomName = '';
+
+    const sharedRoom = await RoomStore.getRoom(noteInfo.shared_room_name);
+
+    if (sharedRoom !== undefined)
+      roomName =
+        sharedRoom?.customName !== '' ? sharedRoom?.customName : sharedRoom?.name;
+    else {
+      const sharedRoom = await RoomStore.fetchRoomForShare({
+        roomId: noteInfo.shared_room_name,
+      });
+      roomName = sharedRoom?.name;
+    }
     const { displayName } = await UserStore.getProfile({
       userId: noteInfo.shared_user_id,
     });
@@ -205,7 +216,7 @@ const NoteStore = observable({
     this.sharedInfo = {
       sharedRoomName: sharedRoom?.isMyRoom
         ? displayName
-        : sharedRoom?.name || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
+        : roomName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
       sharedUserName: displayName || i18n.t('NOTE_EDIT_PAGE_WORK_AREA_DEF_01'),
       sharedDate: !noteInfo.created_date
         ? get12HourFormat(noteInfo.shared_date, true)
