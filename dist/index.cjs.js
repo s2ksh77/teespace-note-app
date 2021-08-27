@@ -3343,6 +3343,7 @@ var EditorStore = mobx.observable({
   uploadFileCancelStatus: false,
   totalUsage: 0,
   spaceTotalVolume: 0,
+  isTagEditPage: false,
   setContents: function setContents(content) {
     this.contents = content;
   },
@@ -3433,6 +3434,9 @@ var EditorStore = mobx.observable({
   },
   setVisiblityState: function setVisiblityState(flag) {
     this.visiblityState = flag;
+  },
+  setIsTagEditPage: function setIsTagEditPage(flag) {
+    this.isTagEditPage = flag;
   },
   // meta:{dto:{channel_id, storageFileInfo:{user_context_1:note_id 있음}, workspace_id}}, type="file"
   createUploadMeta: function createUploadMeta(meta, type) {
@@ -8642,7 +8646,7 @@ function _templateObject12$2() {
 }
 
 function _templateObject11$3() {
-  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg)\n    brightness(96%) contrast(87%);\n"]);
+  var data = _taggedTemplateLiteral(["\n  position: absolute;\n  width: 1rem;\n  left: 1rem;\n  filter: invert(47%) sepia(14%) saturate(163%) hue-rotate(349deg) brightness(96%)\n    contrast(87%);\n"]);
 
   _templateObject11$3 = function _templateObject11() {
     return data;
@@ -8702,7 +8706,7 @@ function _templateObject6$3() {
 }
 
 function _templateObject5$3() {
-  var data = _taggedTemplateLiteral(["\n  display: flex !important;\n  align-items: center !important;\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n"]);
 
   _templateObject5$3 = function _templateObject5() {
     return data;
@@ -8939,6 +8943,33 @@ var ArrowBackIcon = /*#__PURE__*/React__default['default'].memo(function (_ref5)
     transform: "scale(".concat(width * REM_UNIT / defaultWidth, ",\n          ").concat(height * REM_UNIT / defaultHeight, ")")
   }, /*#__PURE__*/React__default['default'].createElement("path", {
     d: "M14.7142,5.3081 C14.3322,4.9111 13.6982,4.8951 13.3002,5.2771 L7.3912,10.9371 C6.8602,11.5331 6.8602,12.4661 7.4462,13.1201 L13.3002,18.7221 C13.4932,18.9081 13.7422,18.9991 13.9912,18.9991 C14.2542,18.9991 14.5182,18.8961 14.7142,18.6911 C15.0962,18.2911 15.0822,17.6591 14.6832,17.2771 L9.1652,12.0011 L14.6832,6.7221 C15.0822,6.3401 15.0962,5.7071 14.7142,5.3081",
+    id: "Fill-1",
+    fill: color
+  })));
+});
+var ArrowBackIcon2 = /*#__PURE__*/React__default['default'].memo(function (_ref6) {
+  var _ref6$width = _ref6.width,
+      width = _ref6$width === void 0 ? 1 : _ref6$width,
+      _ref6$height = _ref6.height,
+      height = _ref6$height === void 0 ? 1 : _ref6$height,
+      _ref6$color = _ref6.color,
+      color = _ref6$color === void 0 ? '#666' : _ref6$color;
+  var defaultWidth = 24;
+  var defaultHeight = 24;
+  return /*#__PURE__*/React__default['default'].createElement("svg", {
+    width: "".concat(width, "rem"),
+    height: "".concat(height, "rem"),
+    viewBox: "0 0 ".concat(width * REM_UNIT, " ").concat(height * REM_UNIT),
+    version: "1.1"
+  }, /*#__PURE__*/React__default['default'].createElement("g", {
+    id: "Icon/common/arrow_back_2",
+    stroke: "none",
+    strokeWidth: "1",
+    fill: "none",
+    fillRule: "evenodd",
+    transform: "scale(".concat(width * REM_UNIT / defaultWidth, ",\n          ").concat(height * REM_UNIT / defaultHeight, ")")
+  }, /*#__PURE__*/React__default['default'].createElement("path", {
+    d: "M22.002,11.9913 C22.002,11.4393 21.554,10.9913 21.002,10.9913 L5.206,10.9913 L11.683,4.7183 C12.079,4.3343 12.089,3.7013 11.705,3.3043 C11.321,2.9073 10.688,2.8973 10.291,3.2823 L2.49,10.8373 C2.175,11.1413 2.002,11.5503 1.99998265,11.9863 C1.998,12.4213 2.169,12.8303 2.486,13.1413 L10.29,20.7183 C10.484,20.9063 10.736,21.0003 10.987,21.0003 C11.248,21.0003 11.508,20.8983 11.704,20.6963 C12.089,20.3003 12.08,19.6673 11.684,19.2823 L5.203,12.9913 L21.002,12.9913 C21.554,12.9913 22.002,12.5433 22.002,11.9913",
     id: "Fill-1",
     fill: color
   })));
@@ -13576,7 +13607,7 @@ function _templateObject2$7() {
 }
 
 function _templateObject$9() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  .tox-tinymce {\n    border-left: 0px solid black;\n    border-color: ", ";\n    flex: 1;\n    min-height: ", ";\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: ", ";\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n  .tox-tinymce {\n    border-left: 0px solid black;\n    border-color: ", ";\n    flex: 1;\n    min-height: ", ";\n  }\n  ", "\n  ", "\n  ", "\n  ", "\n"]);
 
   _templateObject$9 = function _templateObject() {
     return data;
@@ -13584,7 +13615,10 @@ function _templateObject$9() {
 
   return data;
 }
-var EditorContainerWrapper = styled__default['default'].div(_templateObject$9(), function (props) {
+var EditorContainerWrapper = styled__default['default'].div(_templateObject$9(), function (_ref) {
+  var isTagEdit = _ref.isTagEdit;
+  return isTagEdit ? 'none' : 'flex';
+}, function (props) {
   return props.theme.LineMain;
 }, function (props) {
   return props.isWorks ? '500px' : '';
@@ -13644,11 +13678,15 @@ const img$i = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e
  * TagStore 변수 제거
  */
 
-var TagListContainer = function TagListContainer() {
+var TagListContainer = function TagListContainer(_ref) {
+  var _ref$isWeb = _ref.isWeb,
+      isWeb = _ref$isWeb === void 0 ? true : _ref$isWeb;
+
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       TagStore = _useNoteStore.TagStore,
-      PageStore = _useNoteStore.PageStore;
+      PageStore = _useNoteStore.PageStore,
+      EditorStore = _useNoteStore.EditorStore;
 
   var _useCoreStores = teespaceCore.useCoreStores(),
       authStore = _useCoreStores.authStore;
@@ -13715,6 +13753,11 @@ var TagListContainer = function TagListContainer() {
     } else setIsNewTag(false);
   };
 
+  var handleNewTag = function handleNewTag() {
+    // if (PageStore.isReadMode()) return;
+    EditorStore.setIsTagEditPage(true);
+  };
+
   var onClickNewTagBtn = function onClickNewTagBtn() {
     toggleTagInput();
     tagListCover.current.scrollTo({
@@ -13739,7 +13782,7 @@ var TagListContainer = function TagListContainer() {
 
 
   var handleBlurAddInput = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
       var result;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -13795,7 +13838,7 @@ var TagListContainer = function TagListContainer() {
     }));
 
     return function handleBlurAddInput(_x) {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -13828,7 +13871,7 @@ var TagListContainer = function TagListContainer() {
   };
 
   var updateNoteTagList = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var result;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -13853,7 +13896,7 @@ var TagListContainer = function TagListContainer() {
     }));
 
     return function updateNoteTagList() {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -14005,7 +14048,7 @@ var TagListContainer = function TagListContainer() {
     return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(EditorTagCover, null, authStore.hasPermission('notePage', 'U') && /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
       title: !PageStore.isReadMode() ? t('NOTE_ADD_TAGS_01') : t('NOTE_ADD_TAGS_02')
     }, /*#__PURE__*/React__default['default'].createElement(TagNewBtn, {
-      onClick: onClickNewTagBtn
+      onClick: isWeb ? onClickNewTagBtn : handleNewTag
     }, /*#__PURE__*/React__default['default'].createElement(AddTagIcon, {
       width: 1.25,
       height: 1.25,
@@ -14573,6 +14616,28 @@ var StorageModel = autobind__default['default'](_class = (_class2 = (_temp = /*#
   initializer: null
 }), _applyDecoratedDescriptor(_class2.prototype, "setValues", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setValues"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setRoomId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setRoomId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setChId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setChId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setLastUpdateUserId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setLastUpdateUserId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileId", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileId"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileName", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileName"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileExtension", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileExtension"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileCreatedAt", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileCreatedAt"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileUpdatedAt", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileUpdatedAt"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setFileSize", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setFileSize"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext1", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext1"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext2", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext2"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "setUserContext3", [mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, "setUserContext3"), _class2.prototype)), _class2)) || _class;
 
+function _templateObject2$8() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 1.538rem;\n  align-items: center;\n  margin: 0.375rem 1rem;\n"]);
+
+  _templateObject2$8 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject$b() {
+  var data = _taggedTemplateLiteral(["\n  margin: 0.8125rem 1rem 0 1rem;\n  height: 1.938rem;\n  border-bottom: 1px solid #ddd9d4;\n"]);
+
+  _templateObject$b = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+var EditorTitleCover = styled__default['default'].div(_templateObject$b());
+var EditorModCover = styled__default['default'].div(_templateObject2$8());
+
 function _templateObject4$8() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n"]);
 
@@ -14593,36 +14658,8 @@ function _templateObject3$8() {
   return data;
 }
 
-function _templateObject2$8() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  font-size: 1.125rem;\n  font-weight: 500;\n  color: ", ";\n  margin-left: 0.75rem;\n  flex: 1 auto;\n"]);
-
-  _templateObject2$8 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject$b() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 2.875rem;\n  padding: 0 1rem;\n  align-items: center;\n"]);
-
-  _templateObject$b = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-var MainHeaderWrapper = styled__default['default'].div(_templateObject$b());
-var HeaderTitle = styled__default['default'].span(_templateObject2$8(), function (props) {
-  return props.theme.TextMain;
-});
-var LNBBody = styled__default['default'].div(_templateObject3$8(), function (props) {
-  return props.theme.TextMain;
-});
-var ChapterItemContainer = styled__default['default'].div(_templateObject4$8());
-
 function _templateObject2$9() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 1.538rem;\n  align-items: center;\n  margin: 0.375rem 1rem;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  font-size: 1.125rem;\n  font-weight: 500;\n  color: ", ";\n  margin-left: 0.75rem;\n  flex: 1 auto;\n"]);
 
   _templateObject2$9 = function _templateObject2() {
     return data;
@@ -14632,7 +14669,7 @@ function _templateObject2$9() {
 }
 
 function _templateObject$c() {
-  var data = _taggedTemplateLiteral(["\n  margin: 0.8125rem 1rem 0 1rem;\n  height: 1.938rem;\n  border-bottom: 1px solid #ddd9d4;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;\n  height: 2.875rem;\n  padding: 0 1rem;\n  align-items: center;\n"]);
 
   _templateObject$c = function _templateObject() {
     return data;
@@ -14640,8 +14677,162 @@ function _templateObject$c() {
 
   return data;
 }
-var EditorTitleCover = styled__default['default'].div(_templateObject$c());
-var EditorModCover = styled__default['default'].div(_templateObject2$9());
+var MainHeaderWrapper = styled__default['default'].div(_templateObject$c());
+var HeaderTitle = styled__default['default'].span(_templateObject2$9(), function (props) {
+  return props.theme.TextMain;
+});
+var LNBBody = styled__default['default'].div(_templateObject3$8(), function (props) {
+  return props.theme.TextMain;
+});
+var ChapterItemContainer = styled__default['default'].div(_templateObject4$8());
+
+function _templateObject4$9() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 1;\n  font-size: 0.813rem;\n  font-weight: 500;\n  margin: 0 0.5rem;\n  border: none;\n  &::placeholder {\n    color: ", ";\n  }\n"]);
+
+  _templateObject4$9 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3$9() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex: 1;\n  height: 1.875rem;\n  align-items: center;\n  margin-right: 0.5rem;\n  border-bottom: 1px solid ", ";\n"]);
+
+  _templateObject3$9 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2$a() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  font-size: 0.875rem;\n  font-weight: 500;\n  color: ", ";\n"]);
+
+  _templateObject2$a = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject$d() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  & + div {\n    margin-left: 1rem;\n  }\n"]);
+
+  _templateObject$d = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+var ButtonWrapper$1 = styled__default['default'].div(_templateObject$d());
+var TextButtonWrapper = styled__default['default'].div(_templateObject2$a(), function (props) {
+  return props.theme.TextPoinGreen;
+});
+var SearchBarWrapper = styled__default['default'].div(_templateObject3$9(), function (props) {
+  return props.theme.IconNormal;
+});
+var SearchBarInput = styled__default['default'].input(_templateObject4$9(), function (props) {
+  return props.theme.TextHinted;
+});
+
+var MainHeader = function MainHeader(_ref) {
+  var leftButtons = _ref.leftButtons,
+      title = _ref.title,
+      rightButtons = _ref.rightButtons,
+      backgroundColor = _ref.backgroundColor,
+      _ref$isLongPress = _ref.isLongPress,
+      isLongPress = _ref$isLongPress === void 0 ? false : _ref$isLongPress;
+  var themeContext = React.useContext(styled.ThemeContext);
+
+  var Icon = function Icon(_ref2) {
+    var action = _ref2.action;
+
+    switch (action) {
+      case 'back':
+        return /*#__PURE__*/React__default['default'].createElement(ArrowBackIcon2, {
+          width: "1.25",
+          height: "1.25",
+          color: isLongPress ? '#FFFFFF' : themeContext.IconNormal2
+        });
+
+      case 'close':
+        return /*#__PURE__*/React__default['default'].createElement(CloseIcon, {
+          width: "1.25",
+          height: "1.25",
+          color: isLongPress ? '#FFFFFF' : themeContext.IconNormal2
+        });
+
+      case 'search':
+        return /*#__PURE__*/React__default['default'].createElement(SearchIcon, {
+          width: "1.25",
+          height: "1.25",
+          color: isLongPress ? '#FFFFFF' : themeContext.IconNormal2
+        });
+
+      case 'remove':
+        return /*#__PURE__*/React__default['default'].createElement(TrashIcon, {
+          width: "1.25",
+          height: "1.25",
+          color: isLongPress ? '#FFFFFF' : themeContext.IconNormal2,
+          isButton: true
+        });
+
+      case 'share':
+        return /*#__PURE__*/React__default['default'].createElement(ShareIcon, {
+          width: "1.25",
+          height: "1.25",
+          color: isLongPress ? '#FFFFFF' : themeContext.IconNormal2,
+          isButton: true
+        });
+
+      default:
+        return null;
+    }
+  };
+
+  var Buttons = function Buttons(_ref3) {
+    var buttons = _ref3.buttons;
+    return buttons.map(function (button) {
+      switch (button.type) {
+        case 'icon':
+          return /*#__PURE__*/React__default['default'].createElement(ButtonWrapper$1, {
+            key: button.action,
+            onClick: button.onClick
+          }, /*#__PURE__*/React__default['default'].createElement(Icon, {
+            action: button.action
+          }));
+
+        case 'text':
+          return /*#__PURE__*/React__default['default'].createElement(TextButtonWrapper, {
+            key: button.text,
+            onClick: button.onClick
+          }, button.text);
+
+        default:
+          return null;
+      }
+    });
+  };
+
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(MainHeaderWrapper, {
+      style: {
+        backgroundColor: isLongPress ? '#232d3b' : backgroundColor
+      }
+    }, (leftButtons === null || leftButtons === void 0 ? void 0 : leftButtons.length) > 0 && /*#__PURE__*/React__default['default'].createElement(Buttons, {
+      buttons: leftButtons
+    }), /*#__PURE__*/React__default['default'].createElement(HeaderTitle, {
+      style: {
+        color: isLongPress ? '#FFFFFF' : themeContext.TextMain
+      }
+    }, title), (rightButtons === null || rightButtons === void 0 ? void 0 : rightButtons.length) > 0 && /*#__PURE__*/React__default['default'].createElement(Buttons, {
+      buttons: rightButtons
+    }));
+  });
+};
+
+var MainHeader$1 = /*#__PURE__*/React__default['default'].memo(MainHeader);
 
 var MobileEditorHeader = function MobileEditorHeader() {
   var _useNoteStore = useNoteStore(),
@@ -14653,32 +14844,29 @@ var MobileEditorHeader = function MobileEditorHeader() {
 
   var themeContext = React.useContext(styled.ThemeContext);
 
-  var handleBackBtn = function handleBackBtn() {
-    return NoteStore.setTargetLayout('LIST');
+  var handleBackButtonClick = function handleBackButtonClick() {
+    return NoteStore.setTargetLayout('List');
   };
-
-  var handleSearchBtn = function handleSearchBtn() {};
 
   var handleTitleInput = function handleTitleInput(e) {
     return PageStore.setTitle(e.target.value);
   };
 
   return mobxReact.useObserver(function () {
-    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(MainHeaderWrapper, null, /*#__PURE__*/React__default['default'].createElement(PreBtnWrapper, {
-      show: true,
-      onClick: handleBackBtn
-    }, /*#__PURE__*/React__default['default'].createElement(ArrowBackIcon, {
-      color: themeContext.IconNormal
-    })), /*#__PURE__*/React__default['default'].createElement(ButtonDiv, {
-      onClick: handleSearchBtn,
-      style: {
-        marginLeft: 'auto'
-      }
-    }, /*#__PURE__*/React__default['default'].createElement(SearchIcon, null)), /*#__PURE__*/React__default['default'].createElement(ButtonDiv, {
-      onClick: handleSearchBtn
-    }, /*#__PURE__*/React__default['default'].createElement(TrashIcon, {
-      color: themeContext.SubStateVivid
-    }))), /*#__PURE__*/React__default['default'].createElement(EditorTitleCover, null, /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(MainHeader$1, {
+      leftButtons: [{
+        type: 'icon',
+        action: 'back',
+        onClick: handleBackButtonClick
+      }],
+      rightButtons: PageStore.isReadMode() && [{
+        type: 'icon',
+        action: 'search'
+      }, {
+        type: 'text',
+        text: '🎅🏻'
+      }]
+    }), /*#__PURE__*/React__default['default'].createElement(EditorTitleCover, null, /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
       id: "editorTitle",
       maxLength: "200",
       placeholder: t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
@@ -14702,10 +14890,170 @@ var MobileEditorHeader = function MobileEditorHeader() {
   });
 };
 
-function _templateObject$d() {
+function _templateObject$e() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: row;\n  padding: 1rem;\n"]);
+
+  _templateObject$e = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+var NewTagContent = function NewTagContent() {
+  var _useNoteStore = useNoteStore(),
+      PageStore = _useNoteStore.PageStore,
+      EditorStore = _useNoteStore.EditorStore,
+      TagStore = _useNoteStore.TagStore,
+      NoteStore = _useNoteStore.NoteStore;
+
+  var _useCoreStores = teespaceCore.useCoreStores(),
+      authStore = _useCoreStores.authStore;
+
+  var _useState = React.useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isEllipsisActive = _useState2[0],
+      setIsEllipsisActive = _useState2[1];
+
+  var _useState3 = React.useState(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      value = _useState4[0],
+      setValue = _useState4[1];
+
+  var _useTranslation = reactI18next.useTranslation(),
+      t = _useTranslation.t;
+
+  var handleBackButtonClick = function handleBackButtonClick() {
+    return EditorStore.setIsTagEditPage(false);
+  };
+
+  var handleChangeAddInput = function handleChangeAddInput(e) {
+    return setValue(checkMaxLength(e));
+  };
+
+  var handleCloseBtn = function handleCloseBtn(targetId) {
+    return function () {
+      TagStore.deleteNoteTag([targetId], PageStore.currentPageId);
+    };
+  };
+
+  var handleTooltip = function handleTooltip(e) {
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
+  };
+
+  var handleAddTagKeyDown = function handleAddTagKeyDown(e) {
+    switch (e.key) {
+      case 'Enter':
+        handleAddTag();
+        break;
+
+      case 'Escape':
+        setValue('');
+        break;
+    }
+  };
+
+  var handleAddTag = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+      var result;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (checkWhitespace(value)) {
+                _context.next = 3;
+                break;
+              }
+
+              _context.next = 12;
+              break;
+
+            case 3:
+              if (!TagStore.isValidTag(value)) {
+                _context.next = 11;
+                break;
+              }
+
+              _context.next = 6;
+              return TagStore.createNoteTag([value], PageStore.currentPageId);
+
+            case 6:
+              result = _context.sent;
+              setValue('');
+              return _context.abrupt("return");
+
+            case 11:
+              NoteStore.setModalInfo('duplicateTagName');
+
+            case 12:
+              setValue('');
+
+            case 13:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleAddTag(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  return mobxReact.useObserver(function () {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(MainHeader$1, {
+      leftButtons: [{
+        type: 'icon',
+        action: 'back',
+        onClick: handleBackButtonClick
+      }],
+      rightButtons: [{
+        type: 'text',
+        text: '저장'
+      }]
+    }), /*#__PURE__*/React__default['default'].createElement(InputWrapper, null, /*#__PURE__*/React__default['default'].createElement(TagInput, {
+      maxLength: "50",
+      placeholder: "\uD0DC\uADF8 \uC785\uB825",
+      value: value,
+      style: {
+        flex: '1 auto',
+        marginRight: '0.5rem',
+        borderRadius: '0px'
+      },
+      onChange: handleChangeAddInput,
+      onKeyDown: handleAddTagKeyDown,
+      autoFocus: true
+    }), /*#__PURE__*/React__default['default'].createElement(teespaceCore.Button, {
+      type: "solid",
+      onClick: handleAddTag
+    }, "\uCD94\uAC00")), /*#__PURE__*/React__default['default'].createElement(TagList, {
+      style: {
+        display: 'block',
+        width: 'fit-content',
+        margin: '0 1rem'
+      }
+    }, TagStore.notetagList.map(function (item, index) {
+      return /*#__PURE__*/React__default['default'].createElement(TagChip, {
+        key: item.tag_id,
+        id: item.tag_id,
+        closable: true,
+        tabIndex: "0",
+        onClose: handleCloseBtn(item.tag_id)
+      }, /*#__PURE__*/React__default['default'].createElement(antd.Tooltip, {
+        title: isEllipsisActive ? NoteUtil.decodeStr(item.text) : null
+      }, /*#__PURE__*/React__default['default'].createElement(TagText, {
+        onMouseOver: handleTooltip
+      }, NoteUtil.decodeStr(item.text))));
+    })));
+  });
+};
+var InputWrapper = styled__default['default'].div(_templateObject$e());
+
+function _templateObject$f() {
   var data = _taggedTemplateLiteral(["\n  width: 100%;\n  margin: 0 0.438rem;\n  border-radius: 0.375rem;\n  padding: 0.38rem 0.625rem;\n  &:hover:not(:focus-within) {\n    background-color: ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  &:focus-within {\n    background-color: ", ";\n    border: 1px solid ", ";\n    path {\n      fill: ", ";\n    }\n  }\n  color: ", ";\n  border: 1px solid transparent;\n  background-color: ", ";\n"]);
 
-  _templateObject$d = function _templateObject() {
+  _templateObject$f = function _templateObject() {
     return data;
   };
 
@@ -15136,7 +15484,8 @@ var EditorContainer = function EditorContainer(_ref2) {
       isReadMode: PageStore.isReadMode(),
       isFile: EditorStore.isFile,
       isSearch: EditorStore.isSearch,
-      isWorks: NoteStore.appType === 'wapl' ? false : true
+      isWorks: NoteStore.appType === 'wapl' ? false : true,
+      isTagEdit: EditorStore.isTagEditPage
     }, /*#__PURE__*/React__default['default'].createElement(PageContentLayoutChangeBtnArea, {
       onMouseOver: function onMouseOver() {
         return NoteStore.setIsHoveredFoldBtnLine(true);
@@ -15557,7 +15906,9 @@ var EditorContainer = function EditorContainer(_ref2) {
       apiKey: GlobalVariable.apiKey,
       plugins: "print preview paste importcss autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars",
       toolbar: "undo redo | formatselect | fontselect fontsizeselect | forecolor backcolor | bold italic underline strikethrough | alignment | numlist bullist | outdent indent | link | insertImage insertfile | hr table codesample insertdatetime print"
-    }), EditorStore.isFile ? /*#__PURE__*/React__default['default'].createElement(FileLayout$1, null) : null, (authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && /*#__PURE__*/React__default['default'].createElement(TagListContainer$1, null), /*#__PURE__*/React__default['default'].createElement(DriveAttachModal, {
+    }), EditorStore.isFile ? /*#__PURE__*/React__default['default'].createElement(FileLayout$1, null) : null, (authStore.hasPermission('notePage', 'U') || TagStore.notetagList.length > 0) && /*#__PURE__*/React__default['default'].createElement(TagListContainer$1, {
+      isWeb: isWeb
+    }), /*#__PURE__*/React__default['default'].createElement(DriveAttachModal, {
       visible: EditorStore.isDrive,
       successCallback: driveSuccessCb,
       cancelCallback: driveCancelCb,
@@ -15576,12 +15927,12 @@ var EditorContainer = function EditorContainer(_ref2) {
       roomId: NoteRepository$1.WS_ID
     }), /*#__PURE__*/React__default['default'].createElement(HandleUploader, {
       isWeb: isWeb
-    })));
+    })), EditorStore.isTagEditPage && /*#__PURE__*/React__default['default'].createElement(NewTagContent, null));
   });
 };
 
 var EditorContainer$1 = /*#__PURE__*/React__default['default'].memo(EditorContainer);
-var StyledWaplSearch = styled__default['default'](teespaceCore.WaplSearch)(_templateObject$d(), function (props) {
+var StyledWaplSearch = styled__default['default'](teespaceCore.WaplSearch)(_templateObject$f(), function (props) {
   return props.theme.SubStateBright;
 }, function (props) {
   return props.theme.IconNormal;
@@ -16044,27 +16395,27 @@ var ViewInfoModal = function ViewInfoModal() {
   })));
 };
 
-function _templateObject2$a() {
+function _templateObject2$b() {
   var data = _taggedTemplateLiteral(["\n  margin-right:0.38rem;\n"]);
 
-  _templateObject2$a = function _templateObject2() {
+  _templateObject2$b = function _templateObject2() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject$e() {
+function _templateObject$g() {
   var data = _taggedTemplateLiteral(["\n  margin: 1.25rem 0;\n"]);
 
-  _templateObject$e = function _templateObject() {
+  _templateObject$g = function _templateObject() {
     return data;
   };
 
   return data;
 }
-var StyledButtonGroup = styled__default['default'](ButtonGroup)(_templateObject$e());
-var AddMarginBtn = styled__default['default'](teespaceCore.Button)(_templateObject2$a());
+var StyledButtonGroup = styled__default['default'](ButtonGroup)(_templateObject$g());
+var AddMarginBtn = styled__default['default'](teespaceCore.Button)(_templateObject2$b());
 
 var ForwardModal = function ForwardModal(_ref) {
   var handleCancel = _ref.handleCancel;
@@ -16117,27 +16468,27 @@ var ForwardModal = function ForwardModal(_ref) {
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05'))));
 };
 
-function _templateObject2$b() {
+function _templateObject2$c() {
   var data = _taggedTemplateLiteral(["\n  margin-left: 0.19rem;\n"]);
 
-  _templateObject2$b = function _templateObject2() {
+  _templateObject2$c = function _templateObject2() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject$f() {
+function _templateObject$h() {
   var data = _taggedTemplateLiteral(["\n  margin-right: 0.19rem;\n"]);
 
-  _templateObject$f = function _templateObject() {
+  _templateObject$h = function _templateObject() {
     return data;
   };
 
   return data;
 }
-var LeftButton = styled__default['default'](teespaceCore.Button)(_templateObject$f());
-var RightButton = styled__default['default'](teespaceCore.Button)(_templateObject2$b());
+var LeftButton = styled__default['default'](teespaceCore.Button)(_templateObject$h());
+var RightButton = styled__default['default'](teespaceCore.Button)(_templateObject2$c());
 /**
  * state 관리 때문에 footer도 여기에
  */
@@ -16224,17 +16575,17 @@ var RestoreModal = function RestoreModal() {
   }, t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05'))));
 };
 
-function _templateObject$g() {
+function _templateObject$i() {
   var data = _taggedTemplateLiteral(["\n  display: block;\n  font-size: 1.25rem;\n  color: ", ";\n  margin-bottom: 0.94rem;\n"]);
 
-  _templateObject$g = function _templateObject() {
+  _templateObject$i = function _templateObject() {
     return data;
   };
 
   return data;
 }
 
-var StyledInfoIcon = styled__default['default'](icons.InfoCircleOutlined)(_templateObject$g(), function (props) {
+var StyledInfoIcon = styled__default['default'](icons.InfoCircleOutlined)(_templateObject$i(), function (props) {
   return props.theme.IconNormal2;
 });
 var NoteModal = mobxReact.observer(function () {
@@ -16637,10 +16988,10 @@ var NoteApp$1 = function NoteApp$1(_ref) {
 
 const img$q = "data:image/svg+xml,%3c%3fxml version='1.0' encoding='UTF-8'%3f%3e%3csvg width='40px' height='40px' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e %3c!-- Generator: Sketch 63.1 (92452) - https://sketch.com --%3e %3ctitle%3eIcon/app_planet/TeeNote%3c/title%3e %3cdesc%3eCreated with Sketch.%3c/desc%3e %3cdefs%3e %3ccircle id='path-1' cx='20' cy='20' r='20'%3e%3c/circle%3e %3cfilter x='-20.0%25' y='-20.0%25' width='140.0%25' height='140.0%25' filterUnits='objectBoundingBox' id='filter-3'%3e %3cfeOffset dx='0' dy='0' in='SourceAlpha' result='shadowOffsetOuter1'%3e%3c/feOffset%3e %3cfeGaussianBlur stdDeviation='1' in='shadowOffsetOuter1' result='shadowBlurOuter1'%3e%3c/feGaussianBlur%3e %3cfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.449221193 0 0 0 0 0.738507699 0 0 0 1 0' type='matrix' in='shadowBlurOuter1' result='shadowMatrixOuter1'%3e%3c/feColorMatrix%3e %3cfeMerge%3e %3cfeMergeNode in='shadowMatrixOuter1'%3e%3c/feMergeNode%3e %3cfeMergeNode in='SourceGraphic'%3e%3c/feMergeNode%3e %3c/feMerge%3e %3c/filter%3e %3c/defs%3e %3cg id='Icon/app_planet/TeeNote' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3e %3cg id='Group-2'%3e %3cg id='Group'%3e %3cmask id='mask-2' fill='white'%3e %3cuse xlink:href='%23path-1'%3e%3c/use%3e %3c/mask%3e %3cuse id='Oval' fill='%231EA8DF' xlink:href='%23path-1'%3e%3c/use%3e %3cpath d='M30.2674864%2c28.5651163 C32.1620013%2c28.8180521 35.8459876%2c28.1984249 38.2583669%2c27.9221149 C38.4371898%2c27.9016328 37.0788036%2c31.4377876 33.5358043%2c34.71428 C32.2764541%2c35.8789009 30.4660944%2c37.0683765 28.104725%2c38.2827069 C23.3480717%2c34.5292361 19.411693%2c32.4983871 16.295589%2c32.19016 C13.1794849%2c31.8819329 9.96579532%2c32.7915871 6.65452026%2c34.9191225 C6.07508216%2c34.3513228 5.66080219%2c33.9456821 5.41168034%2c33.7022004 C5.16255849%2c33.4587187 4.83170318%2c33.0689329 4.4191144%2c32.5328432 C6.61342804%2c29.1075672 10.4653048%2c27.0323459 15.9747446%2c26.3071794 C18.9157904%2c25.9200715 26.5120008%2c28.0637232 30.2674864%2c28.5651163 Z M36.2762913%2c8.40504532 C37.6298473%2c10.2563194 38.6529185%2c12.5003954 39.3455047%2c15.1372733 C40.038091%2c17.7741512 40.1657587%2c20.2053072 39.7285078%2c22.4307411 C38.015963%2c23.075421 36.0450505%2c23.3738791 33.8157703%2c23.3261155 C30.47185%2c23.2544701 27.302747%2c19.6880702 29.2957788%2c17.6745606 C30.6244667%2c16.3322209 32.9513042%2c13.2423825 36.2762913%2c8.40504532 Z M11.3133953%2c2.0686971 C18.4620509%2c-1.24913664 25.3877558%2c-0.576045104 32.0905098%2c4.08797172 C31.1587485%2c6.85505728 28.5638835%2c9.37616389 24.3059148%2c11.6512916 C20.3303252%2c13.7755377 16.2434004%2c12.9639842 11.6381726%2c14.0629582 C7.08121503%2c15.1504132 3.20351857%2c17.5672385 0.00508325094%2c21.3134341 C-0.0380355602%2c18.5142376 0.193162974%2c16.3144293 0.698678854%2c14.7140091 C2.68300461%2c8.43180305 6.15333106%2c4.46358591 11.3133953%2c2.0686971 Z' id='Combined-Shape' fill='%23008CC8' mask='url(%23mask-2)'%3e%3c/path%3e %3ccircle id='Oval-Copy-3' fill='%231EA8DF' style='mix-blend-mode: screen%3b' opacity='0.597470238' mask='url(%23mask-2)' cx='20' cy='10' r='20'%3e%3c/circle%3e %3cellipse id='Oval' fill='white' opacity='0.6' mask='url(%23mask-2)' transform='translate(10.652552%2c 7.029764) scale(-1%2c 1) rotate(35.000000) translate(-10.652552%2c -7.029764) ' cx='10.6525516' cy='7.02976381' rx='7' ry='2.5'%3e%3c/ellipse%3e %3c/g%3e %3c/g%3e %3cg id='note-2' filter='url(%23filter-3)' transform='translate(10.000000%2c 10.000000)'%3e %3cg id='note'%3e %3crect id='Rectangle' fill='white' x='2' y='0' width='18' height='20' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='8' y='5' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='8' y='9' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='8' y='13' width='8' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle' fill='%23009ADB' x='0' y='5' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-4' fill='%23009ADB' x='0' y='9' width='6' height='2' rx='1'%3e%3c/rect%3e %3crect id='Rectangle-Copy-13' fill='%23009ADB' x='0' y='13' width='6' height='2' rx='1'%3e%3c/rect%3e %3c/g%3e %3c/g%3e %3c/g%3e%3c/svg%3e";
 
-function _templateObject$h() {
+function _templateObject$j() {
   var data = _taggedTemplateLiteral(["\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: center;\n  width: ", "px;\n  height: ", "px;\n  svg {\n    z-index: 100;\n  }\n  &.icon--default:hover {\n    &:after {\n      position: absolute;\n      top: 50%;\n      margin-top: -16px;\n      left: 50%;\n      margin-left: -16px;\n      display: inline-block;\n      content: '';\n      width: 32px;\n      height: 32px;\n      background-color: #dcddff;\n      border-radius: 50%;\n      cursor: pointer;\n      z-index: 1;\n    }\n  }\n"]);
 
-  _templateObject$h = function _templateObject() {
+  _templateObject$j = function _templateObject() {
     return data;
   };
 
@@ -16730,7 +17081,7 @@ function NoteIcon(_ref2) {
   }, renderIcon());
 }
 
-var IconWrapper = styled__default['default'].div(_templateObject$h(), function (props) {
+var IconWrapper = styled__default['default'].div(_templateObject$j(), function (props) {
   return props.width;
 }, function (props) {
   return props.height;
