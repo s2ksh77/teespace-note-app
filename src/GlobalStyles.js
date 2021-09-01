@@ -530,6 +530,11 @@ export const GlobalStyle = createGlobalStyle`
   .tox .tox-dialog .tox-dialog__header {
     background-color: inherit !important;
   }
+  
+  .tox .tox-dialog.tox-dialog--width-lg .tox-dialog__header .tox-button{
+    width: fit-content;
+  }
+
   .tox .tox-selectfield select {
     background-color: ${props => props.theme.StateNormal} !important;
     :hover {
