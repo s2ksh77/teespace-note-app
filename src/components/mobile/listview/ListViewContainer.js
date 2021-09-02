@@ -68,7 +68,7 @@ const ListViewContainer = () => {
           ]}
         />
       )}
-      <ListViewBody>
+      <ListViewBody style={{ padding: '0 1rem' }}>
         <LongPressable onShortPress={onShortPress} onLongPress={onLongPress}>
           {PageStore.pageList?.map((item, index) => {
             return (

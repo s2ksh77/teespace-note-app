@@ -13,7 +13,6 @@ export const PageCover = styled.div`
   width: 100%;
   flex-direction: row;
   height: 5.375rem;
-  margin: 0px 1rem 0rem 1rem;
   border-radius: 15px;
   background-color: #f7f4ef;
   cursor: pointer;
@@ -33,7 +32,7 @@ export const PageColor = styled.div`
 export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100% - 0.5rem);
 `;
 
 export const PageTitle = styled.div`
