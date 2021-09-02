@@ -15,8 +15,8 @@ import {
 } from '../styles/listviewStyles';
 import NoteUtil from '../../../NoteUtil';
 
-const PageItem = ({ page, index, isLongPress = false }) => {
   const { NoteStore, PageStore } = useNoteStore();
+const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
 
   const handlePageClick = async () => {
     if (isLongPress) {

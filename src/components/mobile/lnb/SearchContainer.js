@@ -1,23 +1,24 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
-import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../../store/useStore';
 
 import { LNBBody as SearchBody } from '../styles/lnbStyles';
 import SearchHeader from './SearchHeader';
+import SearchResult from '../../lnb/LNBSearchResult';
 
 const SearchContainer = () => {
-  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
-  const { t } = useTranslation();
+  const { ChapterStore } = useNoteStore();
 
-  const handleCancelBtn = e => {};
-
-  const handleSearchBtn = () => {};
+  useEffect(() => {
+    return () => ChapterStore.setSearchResult({});
+  }, []);
 
   return useObserver(() => (
     <>
       <SearchHeader />
-      <SearchBody>랄랄</SearchBody>
+      <SearchBody style={{ padding: '0.625rem 0' }}>
+        <SearchResult isMobile />
+      </SearchBody>
     </>
   ));
 };

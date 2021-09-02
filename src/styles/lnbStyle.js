@@ -45,6 +45,10 @@ export const SearchResultContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 0.938rem 0.375rem 0.938rem;
+  mark {
+    padding: 0;
+    background-color: #ffe362;
+  }
 `;
 
 export const SearchDivision = styled.div`

@@ -23,8 +23,10 @@ import NoteStore from '../../store/noteStore';
 import SearchResultNotFound from '../common/SearchResultNotFound';
 import { TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil, { isNormalChapter } from '../../NoteUtil';
+import ChapterItem from '../mobile/lnb/ChapterItem';
+import PageItem from '../mobile/listview/PageItem';
 
-const LNBSearchResult = () => {
+const LNBSearchResult = ({ isMobile }) => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -66,7 +68,7 @@ const LNBSearchResult = () => {
     await PageStore.fetchCurrentPageData(pageId);
 
     instance.unmark();
-    instance.mark(ChapterStore.searchStr);
+    instance.mark(ChapterStore.searchResult?.keyword);
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === 'collapse') {
       if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
@@ -76,24 +78,27 @@ const LNBSearchResult = () => {
   };
 
   useEffect(() => {
-    new Mark(document.querySelectorAll('.lnb-result-context')).mark(
-      ChapterStore.searchStr,
-    );
-  }, []);
+    if (!ChapterStore.searchResult?.keyword) return;
+    const mark = new Mark(document.querySelectorAll('.lnb-result-context'));
+    mark.unmark();
+    mark.mark(ChapterStore.searchResult?.keyword);
+  }, [ChapterStore.searchResult?.keyword]);
 
   return useObserver(() => (
     <>
       {ChapterStore.searchResult?.chapter === null &&
       ChapterStore.searchResult?.page === null &&
       ChapterStore.searchResult?.tag === null ? (
-        <SearchResultNotFound searchStr={ChapterStore.searchStr.trim()} />
+        <SearchResultNotFound searchStr={ChapterStore.searchResult?.keyword} />
       ) : (
         <SearchResultContainer>
           {ChapterStore.searchResult?.chapter && (
             <SearchDivision>{t('NOTE_META_TAG_01')}</SearchDivision>
           )}
           {ChapterStore.searchResult?.chapter?.map(chapter => {
-            return (
+            return isMobile ? (
+              <ChapterItem key={chapter.id} chapter={chapter} flexOrder={1} />
+            ) : (
               <ChapterSearchResult
                 key={chapter.id}
                 onClick={handleChapterClick(chapter.id)}
@@ -115,7 +120,9 @@ const LNBSearchResult = () => {
             <SearchDivision>{t('NOTE_META_TAG_02')}</SearchDivision>
           )}
           {ChapterStore.searchResult?.page?.map(page => {
-            return (
+            return isMobile ? (
+              <PageItem key={page.id} page={page} isSearching />
+            ) : (
               <PageSearchResult
                 key={page.note_id}
                 isSelected={selected.id === page.note_id && selected.type === 'page'}

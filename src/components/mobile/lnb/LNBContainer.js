@@ -67,7 +67,11 @@ const LNBContainer = () => {
           ]}
           title={t('NOTE_META_TAG_01')}
           rightButtons={[
-            { type: 'icon', action: 'search' },
+            {
+              type: 'icon',
+              action: 'search',
+              onClick: () => NoteStore.setTargetLayout('Search'),
+            },
             { type: 'text', text: '🎅🏻' },
           ]}
         />
