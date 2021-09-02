@@ -15,23 +15,8 @@ import {
 } from '../styles/listviewStyles';
 import NoteUtil from '../../../NoteUtil';
 
-  const { NoteStore, PageStore } = useNoteStore();
 const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
-
-  const handlePageClick = async () => {
-    if (isLongPress) {
-      handleCheckBoxChange(PageStore.selectedPages.has(page.id));
-      return;
-    }
-
-    try {
-      await PageStore.fetchNoteInfoList(page.id || page.note_id);
-      PageStore.setIsRecycleBin((page.type || page.TYPE) === 'recycle');
-      NoteStore.setTargetLayout('Editor');
-    } catch (e) {
-      console.warn('Fetch PageInfo error', e);
-    }
-  };
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
 
   const handleCheckBoxChange = e => {
     if (typeof e === 'boolean' && !e) {
@@ -43,6 +28,36 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
     } else {
       PageStore.selectedPages.delete(page.id);
     }
+  };
+
+  const fetchChapterInfo = async () => {
+    try {
+      const res = await ChapterStore.getChapterInfoList(page.parent_notebook);
+      PageStore.setPageList(res.children, res.color);
+      ChapterStore.setChapterName(res.text);
+    } catch (e) {
+      console.warn('Fetch ChapterInfo error', e);
+    }
+  };
+
+  const fetchPageInfo = async () => {
+    try {
+      await PageStore.fetchNoteInfoList(page.id || page.note_id);
+      PageStore.setIsRecycleBin((page.type || page.TYPE) === 'recycle');
+      NoteStore.setTargetLayout('Editor');
+    } catch (e) {
+      console.warn('Fetch PageInfo error', e);
+    }
+  };
+
+  const handlePageClick = async () => {
+    if (isLongPress) {
+      handleCheckBoxChange(PageStore.selectedPages.has(page.id));
+      return;
+    }
+
+    if (isSearching) fetchChapterInfo();
+    fetchPageInfo();
   };
 
   return useObserver(() => (
