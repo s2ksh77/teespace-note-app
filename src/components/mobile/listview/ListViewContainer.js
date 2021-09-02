@@ -73,7 +73,7 @@ const ListViewContainer = () => {
           {PageStore.pageList?.map((item, index) => {
             return (
               <PageItem
-                key={item._data.id}
+                key={item.id}
                 page={item}
                 index={index}
                 isLongPress={isLongPress}
