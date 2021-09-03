@@ -4,14 +4,14 @@ import { Checkbox } from 'teespace-core';
 import useNoteStore from '../../../store/useStore';
 import {
   CheckBoxContainer,
-  PageColor,
-  PageContainer,
-  PageContent,
-  PageContentSpan,
-  PageCover,
+  Color,
+  PageContentContainer,
+  PagePreviewWrapper,
+  PagePreview,
+  PageItemWrapper,
   PageItemContainer,
+  PageTitleWrapper,
   PageTitle,
-  PageTitleSpan,
 } from '../styles/listviewStyles';
 import NoteUtil from '../../../NoteUtil';
 
@@ -72,24 +72,24 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
           />
         </CheckBoxContainer>
       )}
-      <PageCover onClick={handlePageClick}>
-        <PageColor color={page.color} />
-        <PageContainer>
-          <PageTitle>
-            <PageTitleSpan>{page.text}</PageTitleSpan>
-          </PageTitle>
-          <PageContent>
-            <PageContentSpan className="lnb-result-context">
+      <PageItemWrapper onClick={handlePageClick}>
+        <Color color={page.color} />
+        <PageContentContainer>
+          <PageTitleWrapper>
+            <PageTitle>{page.text}</PageTitle>
+          </PageTitleWrapper>
+          <PagePreviewWrapper>
+            <PagePreview className="lnb-result-context">
               {NoteUtil.decodeStr(
                 (page.contentPreview || page.note_content)
                   .replace(/[<][^>]*[>]|&nbsp;|&zwj;/gi, '')
                   .replace(/&lt;/gi, '<')
                   .replace(/&gt;/gi, '>'),
               )}
-            </PageContentSpan>
-          </PageContent>
-        </PageContainer>
-      </PageCover>
+            </PagePreview>
+          </PagePreviewWrapper>
+        </PageContentContainer>
+      </PageItemWrapper>
     </PageItemContainer>
   ));
 };

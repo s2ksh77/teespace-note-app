@@ -8,7 +8,7 @@ export const ListViewWrapper = styled.div`
   position: relative;
 `;
 
-export const PageCover = styled.div`
+export const PageItemWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -21,7 +21,7 @@ export const PageCover = styled.div`
   }
 `;
 
-export const PageColor = styled.div`
+export const Color = styled.div`
   display: flex;
   width: 0.5rem;
   height: inherit;
@@ -29,25 +29,25 @@ export const PageColor = styled.div`
   background-color: ${props => props.color};
 `;
 
-export const PageContainer = styled.div`
+export const PageContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: calc(100% - 0.5rem);
 `;
 
-export const PageTitle = styled.div`
+export const PageTitleWrapper = styled.div`
   display: flex;
   height: 2.375rem;
   align-items: center;
 `;
 
-export const PageContent = styled.div`
+export const PagePreviewWrapper = styled.div`
   display: flex;
   height: 3rem;
   align-items: center;
 `;
 
-export const PageTitleSpan = styled.span`
+export const PageTitle = styled.span`
   margin-left: 0.625rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -56,7 +56,7 @@ export const PageTitleSpan = styled.span`
   width: calc(100% - 1rem);
   white-space: nowrap;
 `;
-export const PageContentSpan = styled.span`
+export const PagePreview = styled.span`
   margin-left: 0.625rem;
   font-size: 0.625rem;
   font-weight: 300;
