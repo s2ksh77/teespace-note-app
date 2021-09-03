@@ -682,6 +682,7 @@ const ChapterStore = observable({
       chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN,
     );
     this.searchResult = {
+      keyword,
       chapter: filtered?.length > 0 ? filtered : null,
       page: this.preProcessPageList(dto.pageList, keyword),
       tag: dto.tagList,

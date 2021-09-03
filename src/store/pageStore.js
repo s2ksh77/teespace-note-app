@@ -40,13 +40,7 @@ const PageStore = observable({
   selectedPages: new Map(),
 
   setPageList(arr, color) {
-    this.pageList = [];
-    arr.forEach(async page => {
-      page.color = color;
-      const pageModel = new PageModel(page);
-      this.pageList.push(pageModel);
-    });
-    console.log(this.pageList);
+    this.pageList = arr.map(page => ({ ...page, color }));
   },
 
   setRecoverInfo(info) {
