@@ -75,5 +75,5 @@ export const PageItemContainer = styled.div`
 
 export const CheckBoxContainer = styled.div`
   align-items: center;
-  margin-left: 1rem;
+  margin-right: 1rem;
 `;
