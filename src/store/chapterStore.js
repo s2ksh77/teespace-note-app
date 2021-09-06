@@ -324,7 +324,10 @@ const ChapterStore = observable({
       chapter.isFolded = false;
       return {
         id: chapter.id,
-        children: chapter.children.map(page => page.id),
+        children: chapter.children
+          .slice()
+          .reverse()
+          .map(page => page.id),
         isFolded: false,
       };
     });
@@ -469,6 +472,7 @@ const ChapterStore = observable({
     if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
       // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
       this.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+      return this.getNoteChapterList(true);
     } else {
       this.applyDifference(NoteStore.getChannelId(), normalChapters);
       // isFolded state 추가
