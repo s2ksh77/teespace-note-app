@@ -210,6 +210,14 @@ export const SearchTagChip = styled(Tag)`
     color: ${props => props.theme.TextMain};
     background-color: ${props => props.theme.SubStateBright};
   }
+  svg {
+    fill: ${props => props.theme.IconNormal};
+  }
+  :focus {
+    svg {
+      fill: ${props => props.theme.IconActive};
+    }
+  }
 `;
 
 export const TagChipNum = styled.div`
