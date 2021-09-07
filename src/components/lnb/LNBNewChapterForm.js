@@ -33,13 +33,11 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
   const handleTitleInput = e => ChapterStore.setChapterTitle(checkMaxLength(e));
 
   const handleKeyDown = e => {
-    console.log(e.key, 'down')
     if (e.key !== 'Escape') return;
     ChapterStore.setChapterTempUl(false);
   };
 
   const handleKeyPress = e => {
-    console.log(e.key, 'press')
     if (e.key !== 'Enter') return;
     createNewChapter();
     logEvent('note', 'clickNewChapterBtn');
