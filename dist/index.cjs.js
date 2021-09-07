@@ -9645,13 +9645,11 @@ var LNBNewChapterForm = mobxReact.observer(function (_ref) {
   };
 
   var handleKeyDown = function handleKeyDown(e) {
-    console.log(e.key, 'down');
     if (e.key !== 'Escape') return;
     ChapterStore$1.setChapterTempUl(false);
   };
 
   var handleKeyPress = function handleKeyPress(e) {
-    console.log(e.key, 'press');
     if (e.key !== 'Enter') return;
     createNewChapter();
     teespaceCore.logEvent('note', 'clickNewChapterBtn');
