@@ -63,7 +63,7 @@ const TagListContainer = ({ isWeb = true }) => {
   };
 
   const handleNewTag = () => {
-    // if (PageStore.isReadMode()) return;
+    if (PageStore.isReadMode()) return;
     EditorStore.setIsTagEditPage(true);
   };
 

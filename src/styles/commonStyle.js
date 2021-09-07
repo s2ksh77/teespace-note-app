@@ -153,7 +153,7 @@ export const SearchResultNotFoundCover = styled.div`
 
 export const SearchKeyword = styled.span`
   font-size: 0.94rem;
-  color: #000000;
+  color: ${props => props.theme.TextMain};
   margin-bottom: 0.69rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -163,7 +163,7 @@ export const SearchKeyword = styled.span`
 
 export const NoSearchResultTitle = styled.span`
   font-size: 0.75rem;
-  color: #777777;
+  color: ${props => props.theme.TextMain};
   margin-bottom: 1.25rem;
 `;
 
@@ -285,7 +285,7 @@ export const SearchLoadingContainer = styled.div`
 `;
 export const SearchLoadingTxt = styled.div`
   font-size: 0.75rem;
-  color: #777777;
+  color: ${props => props.theme.TextMain};
   text-align: center;
   margin-bottom: 1.25rem;
 `;
