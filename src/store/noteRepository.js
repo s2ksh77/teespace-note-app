@@ -52,9 +52,7 @@ class NoteRepository {
 
   async getChapterList(chId) {
     try {
-      return await API.get(
-        `note-api/noteChapter?action=List&note_channel_id=${chId}`,
-      );
+      return await API.get(`note-api/noteChapter?action=List&note_channel_id=${chId}`);
     } catch (e) {
       throw Error(JSON.stringify(e));
     }
@@ -72,9 +70,7 @@ class NoteRepository {
 
   getNoteTagList(noteId) {
     return API.Get(
-      `note-api/tag?action=List&note_id=${noteId}&t=${new Date()
-        .getTime()
-        .toString()}`,
+      `note-api/tag?action=List&note_id=${noteId}&t=${new Date().getTime().toString()}`,
     );
   }
 
@@ -455,6 +451,7 @@ class NoteRepository {
     location,
     onUploadProgress,
     cancelSource,
+    isWeb = true,
   ) {
     return await API.post(
       `/gateway-api/upload?channel=` +
@@ -470,8 +467,9 @@ class NoteRepository {
       file,
       {
         headers: {
-          // pplication/x-www-form-urlencoded; charset=UTF-8
-          'content-type': 'multipart/form-data',
+          'content-type': isWeb
+            ? 'multipart/form-data'
+            : 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         xhrFields: {
           withCredentials: true,
