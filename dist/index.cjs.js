@@ -1379,7 +1379,7 @@ var ChapterStore = mobx.observable({
       chapter.isFolded = false;
       return {
         id: chapter.id,
-        children: chapter.children.map(function (page) {
+        children: chapter.children.slice().reverse().map(function (page) {
           return page.id;
         }),
         isFolded: false
@@ -1622,17 +1622,24 @@ var ChapterStore = mobx.observable({
 
               _this9.sharedCnt = sharedChapters.length;
 
-              if (!localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
-                // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
-                _this9.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
-              } else {
-                _this9.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
+              if (localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
+                _context14.next = 17;
+                break;
+              }
+
+              // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
+              _this9.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+
+              return _context14.abrupt("return", _this9.getNoteChapterList(true));
+
+            case 17:
+              _this9.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
 
 
-                normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
-              } // sharedChapters = shared, recylce_bin
+              normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
 
-
+            case 19:
+              // sharedChapters = shared, recylce_bin
               sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters); // 화면에 경계선 그리기용
 
               _this9.setLnbBoundary(_this9.getLnbBoundary({
@@ -1644,7 +1651,7 @@ var ChapterStore = mobx.observable({
 
               return _context14.abrupt("return", _this9.chapterList);
 
-            case 17:
+            case 23:
             case "end":
               return _context14.stop();
           }
@@ -3280,7 +3287,7 @@ var EditorStore = mobx.observable({
       }, _callee2);
     }))();
   },
-  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource) {
+  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var _yield$NoteRepository3, dto;
 
@@ -3289,7 +3296,7 @@ var EditorStore = mobx.observable({
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource);
+              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb);
 
             case 2:
               _yield$NoteRepository3 = _context3.sent;
@@ -5993,15 +6000,17 @@ var NoteRepository = /*#__PURE__*/function () {
     key: "uploadFileGW",
     value: function () {
       var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, location, onUploadProgress, cancelSource) {
+        var isWeb,
+            _args23 = arguments;
         return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
             switch (_context23.prev = _context23.next) {
               case 0:
-                _context23.next = 2;
+                isWeb = _args23.length > 6 && _args23[6] !== undefined ? _args23[6] : true;
+                _context23.next = 3;
                 return teespaceCore.API.post("/gateway-api/upload?channel=" + this.chId + '&name=' + fileName + '&ext=' + fileExtension + '&location=' + location + '&dir=' + "".concat(PageStore.pageInfo.id), file, {
                   headers: {
-                    // pplication/x-www-form-urlencoded; charset=UTF-8
-                    'content-type': 'multipart/form-data'
+                    'content-type': isWeb ? 'multipart/form-data' : 'application/x-www-form-urlencoded; charset=UTF-8'
                   },
                   xhrFields: {
                     withCredentials: true
@@ -6010,10 +6019,10 @@ var NoteRepository = /*#__PURE__*/function () {
                   cancelToken: cancelSource.token
                 });
 
-              case 2:
+              case 3:
                 return _context23.abrupt("return", _context23.sent);
 
-              case 3:
+              case 4:
               case "end":
                 return _context23.stop();
             }
