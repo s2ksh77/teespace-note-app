@@ -3504,7 +3504,7 @@ var EditorStore = mobx.observable({
       }, _callee2);
     }))();
   },
-  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource) {
+  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var _yield$NoteRepository3, dto;
 
@@ -3513,7 +3513,7 @@ var EditorStore = mobx.observable({
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource);
+              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb);
 
             case 2:
               _yield$NoteRepository3 = _context3.sent;
