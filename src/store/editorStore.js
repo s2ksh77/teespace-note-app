@@ -182,6 +182,7 @@ const EditorStore = observable({
     location,
     handleProcess,
     cancelSource,
+    isWeb,
   ) {
     const {
       data: { dto },
@@ -192,6 +193,7 @@ const EditorStore = observable({
       location,
       handleProcess,
       cancelSource,
+      isWeb,
     );
     return dto;
   },
