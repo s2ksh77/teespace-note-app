@@ -32,20 +32,15 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
 
   const handleTitleInput = e => ChapterStore.setChapterTitle(checkMaxLength(e));
 
-  const handleKeyDown = event => {
-    switch (event.key) {
-      case 'Enter':
-        createNewChapter();
-        logEvent('note', 'clickNewChapterBtn');
-        break;
-      // esc키 누르면 blur이벤트 먼저 타서 create된다
-      case 'Escape':
-        // event.stopPropagation(); // blur무조건 탄다
-        ChapterStore.setChapterTempUl(false);
-        break;
-      default:
-        break;
-    }
+  const handleKeyDown = e => {
+    if (e.key !== 'Escape') return;
+    ChapterStore.setChapterTempUl(false);
+  };
+
+  const handleKeyPress = e => {
+    if (e.key !== 'Enter') return;
+    createNewChapter();
+    logEvent('note', 'clickNewChapterBtn');
   };
 
   // observer가 NoteStore.showModal을 관찰하도록 두 번째 배열 인자에 넘어줌!
@@ -66,8 +61,9 @@ const LNBNewChapterForm = observer(({ show, createNewChapter }) => {
             maxLength="200"
             value={ChapterStore.chapterNewTitle}
             onChange={handleTitleInput}
-            onKeyDown={handleKeyDown}
             onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onKeyPress={handleKeyPress}
           />
         </ChapterTitle>
       </LNBNewChapter>

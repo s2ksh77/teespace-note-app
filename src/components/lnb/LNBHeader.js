@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useRef, useContext } from 'react';
 import useNoteStore from '../../store/useStore';
 import {
   LnbTitleCover,
@@ -6,30 +6,22 @@ import {
   LnbTitleSearchContainer,
   LnbTitleSearchInput,
 } from '../../styles/titleStyle';
-import searchImg from '../../assets/search.svg';
 import { useObserver } from 'mobx-react';
-import cancelImg from '../../assets/ts_cancel@3x.png';
 import {
   PreBtnWrapper,
   Button,
   MediumButtonWrapper as SearchButton,
   SmallButtonWrapper as CloseButton,
-  CancelBtn,
-  SearchImgInput,
 } from '../../styles/commonStyle';
 import { SearchTagChip, TagText } from '../../styles/tagStyle';
 import HeaderButtons from '../common/buttons';
 import preImg from '../../assets/back.svg';
 import { isFilled } from '../common/validators';
 import Mark from 'mark.js';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
 import { SearchIcon, CloseIcon } from '../icons';
-
-const StyledCancelBtn = styled(CancelBtn)`
-  margin-left: 0.69rem;
-`;
 
 const LNBHeader = ({ createNewChapter }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -112,14 +104,12 @@ const LNBHeader = ({ createNewChapter }) => {
             />
           </SearchButton>
           {ChapterStore.isTagSearching ? (
-            <SearchTagChip>
-              <TagText>{ChapterStore.searchingTagName}</TagText>
-              <StyledCancelBtn
-                onClick={cancelSearchingTagNote}
-                src={cancelImg}
-                visible={true}
-              />
-            </SearchTagChip>
+            <SearchTagChip
+              closable={true}
+              onClose={cancelSearchingTagNote}
+            >
+            <TagText>{ChapterStore.searchingTagName}</TagText>
+          </SearchTagChip>
           ) : (
             <LnbTitleSearchInput
               ref={inputRef}

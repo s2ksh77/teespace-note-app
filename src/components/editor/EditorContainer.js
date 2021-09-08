@@ -166,6 +166,7 @@ const EditorContainer = ({ isWeb = true }) => {
   const themeContext = useContext(ThemeContext);
 
   const editorWrapperRef = useRef(null);
+  const editorRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
   let eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
 
@@ -254,18 +255,30 @@ const EditorContainer = ({ isWeb = true }) => {
     }
   };
 
+  const handleEditorMode = () => {
+    if(PageStore.isReadMode()) {
+      try{
+        PageStore.noteEditStart(PageStore.pageInfo.id);
+      }catch(e){
+        console.log(`EditStart Error ${e}`);
+      }
+    }
+  }
+
   useLayoutEffect(() => {
     // 모드 변경의 목적
     if (PageStore.isReadMode()) {
       setTimeout(() => {
         EditorStore.tinymce?.setMode('readonly');
         EditorStore.editor?.addEventListener('click', handleUnselect);
+        if(!isWeb) EditorStore.tinymce?.getBody()?.addEventListener('click', handleEditorMode);
       }, 100);
     } else {
       setTimeout(() => {
         EditorStore.tinymce?.setMode('design');
         EditorStore.tinymce?.undoManager?.add();
         EditorStore.editor?.removeEventListener('click', handleUnselect);
+        if(!isWeb) EditorStore.tinymce?.getBody()?.removeEventListener('click', handleEditorMode);
       }, 100);
     }
   }, [PageStore.isReadMode()]);

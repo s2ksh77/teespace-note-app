@@ -20,7 +20,10 @@ const MobileEditorHeader = () => {
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
 
-  const handleBackButtonClick = () => NoteStore.setTargetLayout('List');
+  const handleBackButtonClick = () => {
+    if(!PageStore.isReadMode()) PageStore.handleSave();
+    NoteStore.setTargetLayout('List')
+  };
 
   const handleTitleInput = e => PageStore.setTitle(e.target.value);
 
@@ -47,6 +50,16 @@ const MobileEditorHeader = () => {
         />
       </EditorTitleCover>
       <EditorModCover>
+          <>
+            <ModifiedTime
+              style={{ fontSize: '0.75rem', borderLeft: '0px solid #ffffff', marginRight:'auto' }}
+            >
+              {PageStore.pageInfo.modDate}
+            </ModifiedTime>
+            {PageStore.isReadMode() && <ModifiedUser style={{ marginLeft: 'auto', fontSize: '0.75rem' }}>
+              {PageStore.pageInfo.modUserName}
+            </ModifiedUser>}
+          </>
         {PageStore.saveStatus.saving && (
           <AutoSaveMsg>{t('NOTE_EDIT_PAGE_AUTO_SAVE_01')}</AutoSaveMsg>
         )}
@@ -56,18 +69,6 @@ const MobileEditorHeader = () => {
         {!PageStore.saveStatus.saved &&
           (!PageStore.isReadMode() || PageStore.otherEdit) && (
             <EditingImg src={waplWorking} />
-          )}
-        {PageStore.isReadMode() && (
-          <>
-            <ModifiedTime
-              style={{ fontSize: '0.75rem', borderLeft: '0px solid #ffffff' }}
-            >
-              {PageStore.pageInfo.modDate}
-            </ModifiedTime>
-            <ModifiedUser style={{ marginLeft: 'auto', fontSize: '0.75rem' }}>
-              {PageStore.pageInfo.modUserName}
-            </ModifiedUser>
-          </>
         )}
       </EditorModCover>
     </>
