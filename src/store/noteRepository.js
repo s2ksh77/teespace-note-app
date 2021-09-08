@@ -453,6 +453,9 @@ class NoteRepository {
     cancelSource,
     isWeb = true,
   ) {
+    const contentType = isWeb
+      ? 'multipart/form-data'
+      : 'application/x-www-form-urlencoded; charset=UTF-8';
     return await API.post(
       `/gateway-api/upload?channel=` +
         this.chId +
@@ -467,9 +470,7 @@ class NoteRepository {
       file,
       {
         headers: {
-          'content-type': isWeb
-            ? 'multipart/form-data'
-            : 'application/x-www-form-urlencoded; charset=UTF-8',
+          'content-type': contentType,
         },
         xhrFields: {
           withCredentials: true,

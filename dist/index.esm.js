@@ -5968,16 +5968,18 @@ var NoteRepository = /*#__PURE__*/function () {
     value: function () {
       var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, location, onUploadProgress, cancelSource) {
         var isWeb,
+            contentType,
             _args23 = arguments;
         return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
             switch (_context23.prev = _context23.next) {
               case 0:
                 isWeb = _args23.length > 6 && _args23[6] !== undefined ? _args23[6] : true;
-                _context23.next = 3;
+                contentType = isWeb ? 'multipart/form-data' : 'application/x-www-form-urlencoded; charset=UTF-8';
+                _context23.next = 4;
                 return API.post("/gateway-api/upload?channel=" + this.chId + '&name=' + fileName + '&ext=' + fileExtension + '&location=' + location + '&dir=' + "".concat(PageStore.pageInfo.id), file, {
                   headers: {
-                    'content-type': isWeb ? 'multipart/form-data' : 'application/x-www-form-urlencoded; charset=UTF-8'
+                    'content-type': contentType
                   },
                   xhrFields: {
                     withCredentials: true
@@ -5986,10 +5988,10 @@ var NoteRepository = /*#__PURE__*/function () {
                   cancelToken: cancelSource.token
                 });
 
-              case 3:
+              case 4:
                 return _context23.abrupt("return", _context23.sent);
 
-              case 4:
+              case 5:
               case "end":
                 return _context23.stop();
             }
