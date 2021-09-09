@@ -453,6 +453,8 @@ class NoteRepository {
     cancelSource,
     contentType,
   ) {
+    const uploadFile = new File([file], `${fileName}.${fileExtension}`);
+
     return await API.post(
       `/gateway-api/upload?channel=` +
         this.chId +
@@ -464,7 +466,7 @@ class NoteRepository {
         location +
         '&dir=' +
         `${PageStore.pageInfo.id}`,
-      file,
+      uploadFile,
       {
         headers: {
           'content-type': contentType,
