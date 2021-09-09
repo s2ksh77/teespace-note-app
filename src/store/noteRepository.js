@@ -451,7 +451,7 @@ class NoteRepository {
     location,
     onUploadProgress,
     cancelSource,
-    isWeb = true,
+    contentType,
   ) {
     return await API.post(
       `/gateway-api/upload?channel=` +
@@ -467,9 +467,7 @@ class NoteRepository {
       file,
       {
         headers: {
-          'content-type': isWeb
-            ? 'multipart/form-data'
-            : 'application/x-www-form-urlencoded; charset=UTF-8',
+          'content-type': contentType,
         },
         xhrFields: {
           withCredentials: true,
