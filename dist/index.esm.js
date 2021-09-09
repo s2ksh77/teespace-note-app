@@ -3467,23 +3467,26 @@ var EditorStore = observable({
       }, _callee2);
     }))();
   },
-  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb) {
+  uploadFileGW: function uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource) {
+    var _arguments = arguments;
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _yield$NoteRepository3, dto;
+      var isWeb, contentType, _yield$NoteRepository3, dto;
 
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
-              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, isWeb);
+              isWeb = _arguments.length > 6 && _arguments[6] !== undefined ? _arguments[6] : true;
+              contentType = isWeb ? 'multipart/form-data' : 'application/x-www-form-urlencoded; charset=UTF-8';
+              _context3.next = 4;
+              return NoteRepository$1.uploadFileGW(file, file_name, file_extension, location, handleProcess, cancelSource, contentType);
 
-            case 2:
+            case 4:
               _yield$NoteRepository3 = _context3.sent;
               dto = _yield$NoteRepository3.data.dto;
               return _context3.abrupt("return", dto);
 
-            case 5:
+            case 7:
             case "end":
               return _context3.stop();
           }
@@ -6179,17 +6182,12 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "uploadFileGW",
     value: function () {
-      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, location, onUploadProgress, cancelSource) {
-        var isWeb,
-            contentType,
-            _args23 = arguments;
+      var _uploadFileGW = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(file, fileName, fileExtension, location, onUploadProgress, cancelSource, contentType) {
         return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
             switch (_context23.prev = _context23.next) {
               case 0:
-                isWeb = _args23.length > 6 && _args23[6] !== undefined ? _args23[6] : true;
-                contentType = isWeb ? 'multipart/form-data' : 'application/x-www-form-urlencoded; charset=UTF-8';
-                _context23.next = 4;
+                _context23.next = 2;
                 return API.post("/gateway-api/upload?channel=" + this.chId + '&name=' + fileName + '&ext=' + fileExtension + '&location=' + location + '&dir=' + "".concat(PageStore.pageInfo.id), file, {
                   headers: {
                     'content-type': contentType
@@ -6201,10 +6199,10 @@ var NoteRepository = /*#__PURE__*/function () {
                   cancelToken: cancelSource.token
                 });
 
-              case 4:
+              case 2:
                 return _context23.abrupt("return", _context23.sent);
 
-              case 5:
+              case 3:
               case "end":
                 return _context23.stop();
             }
@@ -6212,7 +6210,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee23, this);
       }));
 
-      function uploadFileGW(_x36, _x37, _x38, _x39, _x40, _x41) {
+      function uploadFileGW(_x36, _x37, _x38, _x39, _x40, _x41, _x42) {
         return _uploadFileGW.apply(this, arguments);
       }
 
@@ -6256,7 +6254,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee24, this, [[0, 6]]);
       }));
 
-      function deleteFile(_x42) {
+      function deleteFile(_x43) {
         return _deleteFile.apply(this, arguments);
       }
 
@@ -6339,7 +6337,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee25, this, [[0, 6]]);
       }));
 
-      function getSearchList(_x43) {
+      function getSearchList(_x44) {
         return _getSearchList.apply(this, arguments);
       }
 
@@ -6371,7 +6369,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee26);
       }));
 
-      function createFileMeta(_x44) {
+      function createFileMeta(_x45) {
         return _createFileMeta.apply(this, arguments);
       }
 
@@ -6418,7 +6416,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee27, null, [[1, 7]]);
       }));
 
-      function throwPage(_x45) {
+      function throwPage(_x46) {
         return _throwPage.apply(this, arguments);
       }
 
@@ -6465,7 +6463,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee28, null, [[1, 7]]);
       }));
 
-      function restorePage(_x46) {
+      function restorePage(_x47) {
         return _restorePage.apply(this, arguments);
       }
 
@@ -6538,7 +6536,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee30, null, [[4, 10]]);
       }));
 
-      function getDuflicateFile(_x47, _x48) {
+      function getDuflicateFile(_x48, _x49) {
         return _getDuflicateFile.apply(this, arguments);
       }
 
