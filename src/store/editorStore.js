@@ -182,8 +182,12 @@ const EditorStore = observable({
     location,
     handleProcess,
     cancelSource,
-    isWeb,
+    isWeb = true,
   ) {
+    const contentType = isWeb
+      ? 'multipart/form-data'
+      : 'application/x-www-form-urlencoded; charset=UTF-8';
+
     const {
       data: { dto },
     } = await NoteRepository.uploadFileGW(
@@ -193,7 +197,7 @@ const EditorStore = observable({
       location,
       handleProcess,
       cancelSource,
-      isWeb,
+      contentType,
     );
     return dto;
   },
