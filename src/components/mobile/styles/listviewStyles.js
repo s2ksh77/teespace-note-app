@@ -23,7 +23,7 @@ export const PageItemWrapper = styled.div`
 `;
 
 export const Color = styled.div`
-  display: flex;
+  position: absolute;
   width: 0.5rem;
   height: inherit;
   border-radius: 15px 0px 0px 15px;
@@ -33,7 +33,8 @@ export const Color = styled.div`
 export const PageContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 0.5rem);
+  width: 100%;
+  padding: 0 0.625rem 0 1.125rem;
 `;
 
 export const PageTitleWrapper = styled.div`
@@ -49,26 +50,24 @@ export const PagePreviewWrapper = styled.div`
 `;
 
 export const PageTitle = styled.span`
-  margin-left: 0.625rem;
   font-size: 0.75rem;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: calc(100% - 1rem);
   white-space: nowrap;
 `;
+
 export const PagePreview = styled.span`
-  margin-left: 0.625rem;
   font-size: 0.625rem;
   font-weight: 300;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: calc(100% - 1rem);
   white-space: nowrap;
 `;
 
 export const PageItemContainer = styled.div`
   display: flex;
+  position: relative;
   width: 100%;
   align-items: center;
   margin-bottom: 0.625rem;
