@@ -25,6 +25,7 @@ import { TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil, { isNormalChapter } from '../../NoteUtil';
 import ChapterItem from '../mobile/lnb/ChapterItem';
 import PageItem from '../mobile/listview/PageItem';
+import TagItem from '../mobile/listview/TagItem';
 
 const LNBSearchResult = ({ isMobile }) => {
   const { ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -148,7 +149,9 @@ const LNBSearchResult = ({ isMobile }) => {
             <SearchDivision>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</SearchDivision>
           )}
           {ChapterStore.searchResult?.tag?.map((tag, pageListIdx) => {
-            return (
+            return isMobile ? (
+              <TagItem tag={tag} listIdx={pageListIdx} />
+            ) : (
               <TagSearchResult
                 key={pageListIdx}
                 isSelected={selected.id === tag.note_id && selected.type === 'tag'}
