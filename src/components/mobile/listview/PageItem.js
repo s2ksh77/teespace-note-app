@@ -75,9 +75,7 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
       <PageItemWrapper onClick={handlePageClick}>
         <Color color={page.color} />
         <PageContentContainer>
-          <PageTitleWrapper>
-            <PageTitle>{page.text}</PageTitle>
-          </PageTitleWrapper>
+          <PageTitle>{page.text}</PageTitle>
           <PagePreviewWrapper>
             <PagePreview className="lnb-result-context">
               {NoteUtil.decodeStr(
