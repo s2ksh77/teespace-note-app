@@ -11,6 +11,7 @@ export const ListViewWrapper = styled.div`
 export const PageItemWrapper = styled.div`
   display: flex;
   width: 100%;
+  min-width: 0;
   flex-direction: row;
   height: 5.375rem;
   border-radius: 15px;
