@@ -34,18 +34,17 @@ export const PageContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 0.625rem 0 1.125rem;
+  padding: 1rem 0.625rem 1rem 1.125rem;
 `;
 
 export const PageTitleWrapper = styled.div`
   display: flex;
-  height: 2.375rem;
   align-items: center;
+  margin-bottom: 0.625rem;
 `;
 
 export const PagePreviewWrapper = styled.div`
   display: flex;
-  height: 3rem;
   align-items: center;
 `;
 
