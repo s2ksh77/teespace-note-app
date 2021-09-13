@@ -13,7 +13,8 @@ export const PageItemWrapper = styled.div`
   width: 100%;
   min-width: 0;
   flex-direction: row;
-  height: 5.375rem;
+  min-height: 5.375rem;
+  height: fit-content;
   border-radius: 15px;
   background-color: #f7f4ef;
   cursor: pointer;
@@ -25,7 +26,7 @@ export const PageItemWrapper = styled.div`
 export const Color = styled.div`
   position: absolute;
   width: 0.5rem;
-  height: inherit;
+  height: 100%;
   border-radius: 15px 0px 0px 15px;
   background-color: ${props => props.color};
 `;
