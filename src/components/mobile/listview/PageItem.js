@@ -72,8 +72,8 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
           />
         </CheckBoxContainer>
       )}
-      <Color color={page.color} />
       <PageItemWrapper onClick={handlePageClick}>
+        <Color color={page.color} />
         <PageContentContainer>
           {isSearching && (
             <ChapterTitle>{getI18nChapterTitle(page.type, page.text)}</ChapterTitle>
