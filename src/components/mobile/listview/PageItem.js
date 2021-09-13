@@ -85,7 +85,8 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
                 (page.contentPreview || page.note_content)
                   .replace(/[<][^>]*[>]|&nbsp;|&zwj;/gi, '')
                   .replace(/&lt;/gi, '<')
-                  .replace(/&gt;/gi, '>'),
+                  .replace(/&gt;/gi, '>')
+                  .replace(/\n/gi, ' '),
               )}
             </PagePreview>
           </PagePreviewWrapper>
