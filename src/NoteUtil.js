@@ -146,4 +146,15 @@ export const isNormalChapter = type => {
   return ['default', 'notebook'].includes(type);
 };
 
+export const getI18nChapterTitle = (type, title) => {
+  switch (type) {
+    case 'shared_page':
+      return i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_07');
+    case 'recycle_bin':
+      return i18n.t('NOTE_BIN_01');
+    default:
+      return title;
+  }
+};
+
 export default NoteUtil;
