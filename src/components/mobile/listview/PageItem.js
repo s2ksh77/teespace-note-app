@@ -10,10 +10,10 @@ import {
   PagePreview,
   PageItemWrapper,
   PageItemContainer,
-  PageTitleWrapper,
+  ChapterTitle,
   PageTitle,
 } from '../styles/listviewStyles';
-import NoteUtil from '../../../NoteUtil';
+import NoteUtil, { getI18nChapterTitle } from '../../../NoteUtil';
 
 const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -75,14 +75,18 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
       <PageItemWrapper onClick={handlePageClick}>
         <Color color={page.color} />
         <PageContentContainer>
-          <PageTitle>{page.text}</PageTitle>
+          {isSearching && (
+            <ChapterTitle>{getI18nChapterTitle(page.type, page.text)}</ChapterTitle>
+          )}
+          <PageTitle>{isSearching ? page.note_title : page.text}</PageTitle>
           <PagePreviewWrapper>
             <PagePreview className="lnb-result-context">
               {NoteUtil.decodeStr(
                 (page.contentPreview || page.note_content)
                   .replace(/[<][^>]*[>]|&nbsp;|&zwj;/gi, '')
                   .replace(/&lt;/gi, '<')
-                  .replace(/&gt;/gi, '>'),
+                  .replace(/&gt;/gi, '>')
+                  .replace(/\n/gi, ' '),
               )}
             </PagePreview>
           </PagePreviewWrapper>
