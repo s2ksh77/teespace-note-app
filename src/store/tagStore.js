@@ -7,16 +7,8 @@ import NoteUtil from '../NoteUtil';
 const TagStore = observable({
   // note에 딸린 tagList
   notetagList: [],
-  isNewTag: false, // web에서 안씀
   tagText: '',
   addTagList: [], // web에서 안씀
-  removeTagList: [], // web에서 안씀
-  updateTagList: [], // web에서 안씀
-  currentTagId: '', // web에서 안씀
-  currentTagValue: '', // web에서 안씀
-  selectTagIdx: '', // web에서 안씀
-  editTagIndex: '', // web에서 안씀
-  editTagValue: '', // web에서 안씀
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
   // a,b,c 같은 키들만 담는다(render용)
@@ -49,19 +41,9 @@ const TagStore = observable({
   prependNoteTagList(tagText) {
     this.notetagList.unshift({ text: tagText });
   },
-  //isNewTag
-  getIsNewTag() {
-    return this.isNewTag;
-  },
-  setIsNewTag(flag) {
-    this.isNewTag = flag;
-  },
   // tagTest
   getTagText(text) {
     this.tagText = text;
-  },
-  setSelectTagIndex(index) {
-    this.selectTagIdx = index;
   },
   setTagText(text) {
     this.tagText = text;
@@ -78,51 +60,6 @@ const TagStore = observable({
   },
   removeAddTagList(tagText) {
     this.addTagList = this.addTagList.filter(tag => tag !== tagText);
-  },
-  // removeTagList
-  getRemoveTagList() {
-    return this.removeTagList;
-  },
-  setRemoveTagList(arr) {
-    this.removeTagList = arr;
-  },
-  appendRemoveTagList(tagId) {
-    this.removeTagList.push(tagId);
-  },
-  // updateTagList
-  getUpdateTagList() {
-    return this.updateTagList;
-  },
-  setUpdateTagList(arr) {
-    this.updateTagList = arr;
-  },
-  appendUpdateTagList(tagId, tagText) {
-    this.updateTagList.push({ tag_id: tagId, text: tagText });
-  },
-  getCurrentTagId() {
-    return this.currentTagId;
-  },
-  setCurrentTagId(tagId) {
-    this.currentTagId = tagId;
-  },
-  getCurrentTagValue() {
-    return this.currentTagValue;
-  },
-  setCurrentTagValue(value) {
-    this.currentTagValue = value;
-  },
-  getEditTagIndex() {
-    return this.editTagIndex;
-  },
-  setEditTagIndex(index) {
-    this.editTagIndex = index;
-  },
-  // editTagValue
-  getEditTagValue() {
-    return this.editTagValue;
-  },
-  setEditTagValue(text) {
-    this.editTagValue = text;
   },
   async getAllSortedTagList() {
     const res = await NoteRepository.getAllSortedTagList();
@@ -184,7 +121,6 @@ const TagStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.deleteTag(deleteTagArray);
-    this.setRemoveTagList([]);
     return dto;
   },
 
@@ -260,23 +196,6 @@ const TagStore = observable({
       }
     });
     return this.notetagList;
-  },
-  async setUpdateNoteTagList(tagId, tagText) {
-    if (this.updateTagList.length === 0) {
-      this.appendUpdateTagList(tagId, tagText);
-    } else {
-      if (this.updateTagList.map(item => item.tag_id).indexOf(tagId) === -1) {
-        this.appendUpdateTagList(tagId, tagText);
-      } else {
-        this.updateTagList.forEach(item => {
-          if (item.tag_id === tagId) item.text = tagText;
-        });
-      }
-    }
-  },
-  setCurrentTagData(id, text) {
-    this.setCurrentTagId(id);
-    this.setCurrentTagValue(text);
   },
 
   // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
@@ -446,18 +365,7 @@ const TagStore = observable({
     } = await NoteRepository.getSearchList(tagName);
     ChapterStore.setSearchResult({ chapter: null, page: tagList });
   },
-  setEditCreateTag() {
-    // add Tag List 갱신
-    this.addTagList.forEach((tag, index) => {
-      if (tag === TagStore.currentTagValue)
-        this.addTagList[index] = TagStore.editTagValue;
-    });
-    // 현재 보여지는 List 갱신
-    this.notetagList.forEach(tag => {
-      if (tag.text === TagStore.currentTagValue)
-        tag.text = TagStore.editTagValue;
-    });
-  },
+
   isValidTag(text) {
     return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
   },
