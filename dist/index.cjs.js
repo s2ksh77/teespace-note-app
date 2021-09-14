@@ -2295,24 +2295,8 @@ var ChapterStore = mobx.observable({
 var TagStore = mobx.observable({
   // note에 딸린 tagList
   notetagList: [],
-  isNewTag: false,
-  // web에서 안씀
   tagText: '',
   addTagList: [],
-  // web에서 안씀
-  removeTagList: [],
-  // web에서 안씀
-  updateTagList: [],
-  // web에서 안씀
-  currentTagId: '',
-  // web에서 안씀
-  currentTagValue: '',
-  // web에서 안씀
-  selectTagIdx: '',
-  // web에서 안씀
-  editTagIndex: '',
-  // web에서 안씀
-  editTagValue: '',
   // web에서 안씀
   // 처음 받아오는 데이터를 여기에 저장
   allSortedTagList: [],
@@ -2384,19 +2368,9 @@ var TagStore = mobx.observable({
       text: tagText
     });
   },
-  //isNewTag
-  getIsNewTag: function getIsNewTag() {
-    return this.isNewTag;
-  },
-  setIsNewTag: function setIsNewTag(flag) {
-    this.isNewTag = flag;
-  },
   // tagTest
   getTagText: function getTagText(text) {
     this.tagText = text;
-  },
-  setSelectTagIndex: function setSelectTagIndex(index) {
-    this.selectTagIdx = index;
   },
   setTagText: function setTagText(text) {
     this.tagText = text;
@@ -2415,54 +2389,6 @@ var TagStore = mobx.observable({
     this.addTagList = this.addTagList.filter(function (tag) {
       return tag !== tagText;
     });
-  },
-  // removeTagList
-  getRemoveTagList: function getRemoveTagList() {
-    return this.removeTagList;
-  },
-  setRemoveTagList: function setRemoveTagList(arr) {
-    this.removeTagList = arr;
-  },
-  appendRemoveTagList: function appendRemoveTagList(tagId) {
-    this.removeTagList.push(tagId);
-  },
-  // updateTagList
-  getUpdateTagList: function getUpdateTagList() {
-    return this.updateTagList;
-  },
-  setUpdateTagList: function setUpdateTagList(arr) {
-    this.updateTagList = arr;
-  },
-  appendUpdateTagList: function appendUpdateTagList(tagId, tagText) {
-    this.updateTagList.push({
-      tag_id: tagId,
-      text: tagText
-    });
-  },
-  getCurrentTagId: function getCurrentTagId() {
-    return this.currentTagId;
-  },
-  setCurrentTagId: function setCurrentTagId(tagId) {
-    this.currentTagId = tagId;
-  },
-  getCurrentTagValue: function getCurrentTagValue() {
-    return this.currentTagValue;
-  },
-  setCurrentTagValue: function setCurrentTagValue(value) {
-    this.currentTagValue = value;
-  },
-  getEditTagIndex: function getEditTagIndex() {
-    return this.editTagIndex;
-  },
-  setEditTagIndex: function setEditTagIndex(index) {
-    this.editTagIndex = index;
-  },
-  // editTagValue
-  getEditTagValue: function getEditTagValue() {
-    return this.editTagValue;
-  },
-  setEditTagValue: function setEditTagValue(text) {
-    this.editTagValue = text;
   },
   getAllSortedTagList: function getAllSortedTagList() {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
@@ -2556,8 +2482,6 @@ var TagStore = mobx.observable({
     }))();
   },
   deleteTag: function deleteTag(deleteTagList, noteId) {
-    var _this2 = this;
-
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       var deleteTagArray, _yield$NoteRepository2, dto;
 
@@ -2578,12 +2502,9 @@ var TagStore = mobx.observable({
             case 3:
               _yield$NoteRepository2 = _context5.sent;
               dto = _yield$NoteRepository2.data.dto;
-
-              _this2.setRemoveTagList([]);
-
               return _context5.abrupt("return", dto);
 
-            case 7:
+            case 6:
             case "end":
               return _context5.stop();
           }
@@ -2592,7 +2513,7 @@ var TagStore = mobx.observable({
     }))();
   },
   updateTag: function updateTag(updateTagList) {
-    var _this3 = this;
+    var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
       var updateTagArray, _yield$NoteRepository3, dto;
@@ -2615,7 +2536,7 @@ var TagStore = mobx.observable({
               _yield$NoteRepository3 = _context6.sent;
               dto = _yield$NoteRepository3.data.dto;
 
-              _this3.setUpdateTagList([]);
+              _this2.setUpdateTagList([]);
 
               return _context6.abrupt("return", dto);
 
@@ -2634,7 +2555,7 @@ var TagStore = mobx.observable({
   // encode logic 추가된 createTag, updateTag
   // tag는 tag 추가 및 수정시 동일값 체크 로직 & 저장할 때 encoding한다
   createNoteTag: function createNoteTag(createTagList, noteId) {
-    var _this4 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       var createTagArr, _yield$NoteRepository4, dto;
@@ -2657,7 +2578,7 @@ var TagStore = mobx.observable({
               _yield$NoteRepository4 = _context7.sent;
               dto = _yield$NoteRepository4.data.dto;
               _context7.next = 7;
-              return _this4.fetchNoteTagList(noteId);
+              return _this3.fetchNoteTagList(noteId);
 
             case 7:
               return _context7.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
@@ -2677,7 +2598,7 @@ var TagStore = mobx.observable({
    * updateTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
    */
   updateNoteTag: function updateNoteTag(updateTagList, noteId) {
-    var _this5 = this;
+    var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
       var updateTagArr, _yield$NoteRepository5, dto;
@@ -2701,7 +2622,7 @@ var TagStore = mobx.observable({
               _yield$NoteRepository5 = _context8.sent;
               dto = _yield$NoteRepository5.data.dto;
               _context8.next = 7;
-              return _this5.fetchNoteTagList(noteId);
+              return _this4.fetchNoteTagList(noteId);
 
             case 7:
               return _context8.abrupt("return", _objectSpread2(_objectSpread2({}, dto), {}, {
@@ -2721,7 +2642,7 @@ var TagStore = mobx.observable({
    * deleteTag 로직 바꾸면서 mobile, p-task용으로 원래 로직은 남겨둠
    */
   deleteNoteTag: function deleteNoteTag(deleteTagList, noteId) {
-    var _this6 = this;
+    var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
       var deleteTagArray, _yield$NoteRepository6, dto;
@@ -2744,7 +2665,7 @@ var TagStore = mobx.observable({
               _yield$NoteRepository6 = _context9.sent;
               dto = _yield$NoteRepository6.data.dto;
 
-              _this6.fetchNoteTagList(noteId);
+              _this5.fetchNoteTagList(noteId);
 
               return _context9.abrupt("return", dto);
 
@@ -2757,7 +2678,7 @@ var TagStore = mobx.observable({
     }))();
   },
   fetchNoteTagList: function fetchNoteTagList(noteId) {
-    var _this7 = this;
+    var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       return regeneratorRuntime.wrap(function _callee10$(_context10) {
@@ -2769,12 +2690,12 @@ var TagStore = mobx.observable({
                 if (response.status === 200) {
                   var tagList = response.data.dto;
 
-                  _this7.setNoteTagList(tagList.tagList);
+                  _this6.setNoteTagList(tagList.tagList);
                 }
               });
 
             case 2:
-              return _context10.abrupt("return", _this7.notetagList);
+              return _context10.abrupt("return", _this6.notetagList);
 
             case 3:
             case "end":
@@ -2784,70 +2705,36 @@ var TagStore = mobx.observable({
       }, _callee10);
     }))();
   },
-  setUpdateNoteTagList: function setUpdateNoteTagList(tagId, tagText) {
-    var _this8 = this;
+  // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
+  fetchTagData: function fetchTagData() {
+    var _this7 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
       return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
           switch (_context11.prev = _context11.next) {
             case 0:
-              if (_this8.updateTagList.length === 0) {
-                _this8.appendUpdateTagList(tagId, tagText);
-              } else {
-                if (_this8.updateTagList.map(function (item) {
-                  return item.tag_id;
-                }).indexOf(tagId) === -1) {
-                  _this8.appendUpdateTagList(tagId, tagText);
-                } else {
-                  _this8.updateTagList.forEach(function (item) {
-                    if (item.tag_id === tagId) item.text = tagText;
-                  });
-                }
-              }
+              _this7.setTagPanelLoading(true);
 
-            case 1:
+              _context11.t0 = _this7;
+              _context11.next = 4;
+              return _this7.getAllsortedTagList();
+
+            case 4:
+              _context11.t1 = _context11.sent;
+
+              _context11.t0.setAllSortedTagList.call(_context11.t0, _context11.t1);
+
+              _this7.setSortedTagList(_this7.categorizeTagList(_this7.allSortedTagList, false));
+
+              _this7.setTagPanelLoading(false);
+
+            case 8:
             case "end":
               return _context11.stop();
           }
         }
       }, _callee11);
-    }))();
-  },
-  setCurrentTagData: function setCurrentTagData(id, text) {
-    this.setCurrentTagId(id);
-    this.setCurrentTagValue(text);
-  },
-  // 처음 TagContainer render할 때 필요한 모든 데이터 fetching 및 processing
-  fetchTagData: function fetchTagData() {
-    var _this9 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
-        while (1) {
-          switch (_context12.prev = _context12.next) {
-            case 0:
-              _this9.setTagPanelLoading(true);
-
-              _context12.t0 = _this9;
-              _context12.next = 4;
-              return _this9.getAllsortedTagList();
-
-            case 4:
-              _context12.t1 = _context12.sent;
-
-              _context12.t0.setAllSortedTagList.call(_context12.t0, _context12.t1);
-
-              _this9.setSortedTagList(_this9.categorizeTagList(_this9.allSortedTagList, false));
-
-              _this9.setTagPanelLoading(false);
-
-            case 8:
-            case "end":
-              return _context12.stop();
-          }
-        }
-      }, _callee12);
     }))();
   },
 
@@ -2856,27 +2743,27 @@ var TagStore = mobx.observable({
    * @return sorted tag list
    */
   getAllsortedTagList: function getAllsortedTagList() {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
       var _yield$NoteRepository7, tag_index_list_dto;
 
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
-              _context13.next = 2;
+              _context12.next = 2;
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository7 = _context13.sent;
+              _yield$NoteRepository7 = _context12.sent;
               tag_index_list_dto = _yield$NoteRepository7.data.dto.tag_index_list_dto;
-              return _context13.abrupt("return", tag_index_list_dto);
+              return _context12.abrupt("return", tag_index_list_dto);
 
             case 5:
             case "end":
-              return _context13.stop();
+              return _context12.stop();
           }
         }
-      }, _callee13);
+      }, _callee12);
     }))();
   },
 
@@ -2887,7 +2774,7 @@ var TagStore = mobx.observable({
    * @return categorized tag objects
    */
   categorizeTagList: function categorizeTagList(allTagsList, isSearching) {
-    var _this10 = this;
+    var _this8 = this;
 
     /**
      * categorizedTagObjs: {
@@ -2904,10 +2791,10 @@ var TagStore = mobx.observable({
     allTagsList.forEach(function (item) {
       var upperCaseKey = item.KEY.toUpperCase();
 
-      var tagKeyCategory = _this10.getTagKeyCategory(upperCaseKey);
+      var tagKeyCategory = _this8.getTagKeyCategory(upperCaseKey);
 
-      var tagList = tagKeyCategory === 'ENG' ? _this10.sortEngTagList(item.tag_indexdto.tagList) : item.tag_indexdto.tagList;
-      var tagObjs = isSearching ? _this10.getSearchTagObjs(tagList, _this10.searchStr) : _this10.getTagObjs(tagList);
+      var tagList = tagKeyCategory === 'ENG' ? _this8.sortEngTagList(item.tag_indexdto.tagList) : item.tag_indexdto.tagList;
+      var tagObjs = isSearching ? _this8.getSearchTagObjs(tagList, _this8.searchStr) : _this8.getTagObjs(tagList);
 
       if (Object.keys(tagObjs).length > 0) {
         categorizedTagObjs[tagKeyCategory][upperCaseKey] = _objectSpread2(_objectSpread2({}, categorizedTagObjs[tagKeyCategory][upperCaseKey]), tagObjs);
@@ -3003,53 +2890,53 @@ var TagStore = mobx.observable({
     });
   },
   searchTag: function searchTag(str) {
-    var _this11 = this;
+    var _this9 = this;
 
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+        while (1) {
+          switch (_context13.prev = _context13.next) {
+            case 0:
+              _this9.setIsSearching(true);
+
+              _this9.setIsSearchLoading(true);
+
+              _this9.setSearchStr(str);
+
+              _context13.t0 = _this9;
+              _context13.next = 6;
+              return _this9.getAllsortedTagList();
+
+            case 6:
+              _context13.t1 = _context13.sent;
+
+              _context13.t0.setAllSortedTagList.call(_context13.t0, _context13.t1);
+
+              _this9.setSortedTagList(_this9.categorizeTagList(_this9.allSortedTagList, true));
+
+              _this9.setIsSearchLoading(false);
+
+            case 10:
+            case "end":
+              return _context13.stop();
+          }
+        }
+      }, _callee13);
+    }))();
+  },
+  setTagNoteSearchResult: function setTagNoteSearchResult(tagName) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      var _yield$NoteRepository8, tagList;
+
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
           switch (_context14.prev = _context14.next) {
             case 0:
-              _this11.setIsSearching(true);
-
-              _this11.setIsSearchLoading(true);
-
-              _this11.setSearchStr(str);
-
-              _context14.t0 = _this11;
-              _context14.next = 6;
-              return _this11.getAllsortedTagList();
-
-            case 6:
-              _context14.t1 = _context14.sent;
-
-              _context14.t0.setAllSortedTagList.call(_context14.t0, _context14.t1);
-
-              _this11.setSortedTagList(_this11.categorizeTagList(_this11.allSortedTagList, true));
-
-              _this11.setIsSearchLoading(false);
-
-            case 10:
-            case "end":
-              return _context14.stop();
-          }
-        }
-      }, _callee14);
-    }))();
-  },
-  setTagNoteSearchResult: function setTagNoteSearchResult(tagName) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var _yield$NoteRepository8, tagList;
-
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
-        while (1) {
-          switch (_context15.prev = _context15.next) {
-            case 0:
-              _context15.next = 2;
+              _context14.next = 2;
               return NoteRepository$1.getSearchList(tagName);
 
             case 2:
-              _yield$NoteRepository8 = _context15.sent;
+              _yield$NoteRepository8 = _context14.sent;
               tagList = _yield$NoteRepository8.data.dto.tagList;
               ChapterStore.setSearchResult({
                 chapter: null,
@@ -3058,23 +2945,11 @@ var TagStore = mobx.observable({
 
             case 5:
             case "end":
-              return _context15.stop();
+              return _context14.stop();
           }
         }
-      }, _callee15);
+      }, _callee14);
     }))();
-  },
-  setEditCreateTag: function setEditCreateTag() {
-    var _this12 = this;
-
-    // add Tag List 갱신
-    this.addTagList.forEach(function (tag, index) {
-      if (tag === TagStore.currentTagValue) _this12.addTagList[index] = TagStore.editTagValue;
-    }); // 현재 보여지는 List 갱신
-
-    this.notetagList.forEach(function (tag) {
-      if (tag.text === TagStore.currentTagValue) tag.text = TagStore.editTagValue;
-    });
   },
   isValidTag: function isValidTag(text) {
     return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
