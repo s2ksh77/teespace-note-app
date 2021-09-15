@@ -841,7 +841,6 @@ var checkDuplicateIgnoreCase = function checkDuplicateIgnoreCase(targetArr, key,
 };
 
 var ChapterStore = mobx.observable({
-  chapterColor: '',
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
@@ -872,26 +871,16 @@ var ChapterStore = mobx.observable({
   // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {},
   // {chapter:[], page:[]} 형태
-  deleteChapterList: [],
-  deleteChapterId: '',
-  selectableChapterId: '',
   renameId: '',
-  isMovingChapter: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
   pageMap: new Map(),
   chapterChildren: [],
-  exportChapterId: '',
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
-  lnbBoundary: {
-    beforeShared: false,
-    beforeRecycleBin: false
-  },
-  // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   chapterName: '',
   selectedChapters: new Map(),
   getLoadingPageInfo: function getLoadingPageInfo() {
@@ -905,24 +894,6 @@ var ChapterStore = mobx.observable({
   },
   setCurrentChapterId: function setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
-  },
-  getDeleteChapterList: function getDeleteChapterList() {
-    return this.deleteChapterList;
-  },
-  setDeleteChapterList: function setDeleteChapterList(deleteChapterList) {
-    this.deleteChapterList = deleteChapterList;
-  },
-  getDeleteChapterId: function getDeleteChapterId() {
-    return this.deleteChapterId;
-  },
-  setDeleteChapterId: function setDeleteChapterId(chapter) {
-    this.deleteChapterId = chapter;
-  },
-  getSelectableChapterId: function getSelectableChapterId() {
-    return this.selectableChapterId;
-  },
-  setSelectableChapterId: function setSelectableChapterId(chapterId) {
-    this.selectableChapterId = chapterId;
   },
   getRenameId: function getRenameId() {
     return this.renameId;
@@ -974,37 +945,6 @@ var ChapterStore = mobx.observable({
   },
   setChapterName: function setChapterName(title) {
     this.chapterName = title;
-  },
-  setLnbBoundary: function setLnbBoundary(flags) {
-    // 형태: { beforeShared:false, beforeRecycleBin:false }
-    this.lnbBoundary = flags;
-  },
-  // 사용자 input이 없을 때
-  // 웹에서 더이상 안씀! 모바일에서도 안씀!
-  getNewChapterTitle: function getNewChapterTitle() {
-    var re = /^새 챕터 (\d+)$/gm;
-    var chapterTitle, temp;
-    var isNotAvailable = [];
-    var fullLength = this.chapterList.length;
-    isNotAvailable.length = fullLength + 1;
-    this.chapterList.forEach(function (chapter) {
-      chapterTitle = chapter.text;
-
-      if (chapterTitle === '새 챕터') {
-        isNotAvailable[0] = 1;
-      } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, '$1'));
-
-        if (temp <= fullLength) {
-          isNotAvailable[temp] = 1;
-        }
-      }
-    });
-    if (!isNotAvailable[0]) return '새 챕터';
-
-    for (var i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return '새 챕터 ' + i;
-    }
   },
   getChapterId: function getChapterId(e) {
     var id = e.target.id;
@@ -1101,9 +1041,6 @@ var ChapterStore = mobx.observable({
   },
   isValidChapterText: function isValidChapterText(targetText) {
     return checkNotDuplicate(this.chapterList, 'text', targetText);
-  },
-  setExportId: function setExportId(chapterId) {
-    this.exportChapterId = chapterId;
   },
   setExportTitle: function setExportTitle(chapterTitle) {
     this.exportChapterTitle = chapterTitle;
@@ -1566,32 +1503,6 @@ var ChapterStore = mobx.observable({
       }, _callee13);
     }))();
   },
-  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
-  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
-  getLnbBoundary: function getLnbBoundary(_ref) {
-    var normalChapters = _ref.normalChapters,
-        sharedChapters = _ref.sharedChapters;
-
-    if (normalChapters.length) {
-      if (sharedChapters.length > 1) return {
-        beforeShared: true,
-        beforeRecycleBin: true
-      };
-      return {
-        beforeShared: false,
-        beforeRecycleBin: true
-      }; // 일반 챕터, 휴지통만 있는 경우
-    }
-
-    if (sharedChapters.length > 1) return {
-      beforeShared: false,
-      beforeRecycleBin: true
-    };
-    return {
-      beforeShared: false,
-      beforeRecycleBin: false
-    }; // 휴지통만 있는 경우
-  },
   getNoteChapterList: function getNoteChapterList() {
     var _arguments = arguments,
         _this9 = this;
@@ -1640,18 +1551,13 @@ var ChapterStore = mobx.observable({
 
             case 19:
               // sharedChapters = shared, recylce_bin
-              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters); // 화면에 경계선 그리기용
-
-              _this9.setLnbBoundary(_this9.getLnbBoundary({
-                normalChapters: normalChapters,
-                sharedChapters: sharedChapters
-              }));
+              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters);
 
               _this9.setChapterList(normalChapters.concat(sharedChapters));
 
               return _context14.abrupt("return", _this9.chapterList);
 
-            case 23:
+            case 22:
             case "end":
               return _context14.stop();
           }
@@ -1723,7 +1629,7 @@ var ChapterStore = mobx.observable({
       }, _callee15);
     }))();
   },
-  deleteNoteChapter: function deleteNoteChapter(_ref2) {
+  deleteNoteChapter: function deleteNoteChapter(_ref) {
     var _this11 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
@@ -1733,7 +1639,7 @@ var ChapterStore = mobx.observable({
         while (1) {
           switch (_context16.prev = _context16.next) {
             case 0:
-              chapterList = _ref2.chapterList, selectablePageId = _ref2.selectablePageId, isDnd = _ref2.isDnd;
+              chapterList = _ref.chapterList, selectablePageId = _ref.selectablePageId, isDnd = _ref.isDnd;
               _context16.next = 3;
               return _this11.deleteChapter(chapterList);
 
@@ -1763,14 +1669,11 @@ var ChapterStore = mobx.observable({
 
             case 13:
               NoteStore.setIsDragging(false);
-
-              _this11.setDeleteChapterList([]);
-
               NoteStore.setShowModal(false);
               NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
               NoteStore.setIsVisibleToast(true);
 
-            case 18:
+            case 17:
             case "end":
               return _context16.stop();
           }
@@ -1778,7 +1681,7 @@ var ChapterStore = mobx.observable({
       }, _callee16);
     }))();
   },
-  renameNoteChapter: function renameNoteChapter(_ref3) {
+  renameNoteChapter: function renameNoteChapter(_ref2) {
     var _this12 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
@@ -1787,7 +1690,7 @@ var ChapterStore = mobx.observable({
         while (1) {
           switch (_context17.prev = _context17.next) {
             case 0:
-              id = _ref3.id, title = _ref3.title, color = _ref3.color;
+              id = _ref2.id, title = _ref2.title, color = _ref2.color;
               _context17.next = 3;
               return _this12.renameChapter(id, title.trim(), color);
 
@@ -2035,11 +1938,6 @@ var ChapterStore = mobx.observable({
 
       NoteStore.setIsDragging(false);
     });
-  },
-  getFirstRenderedChapter: function getFirstRenderedChapter() {
-    // web에서 안 씀
-    if (this.chapterList.length > 0) return this.chapterList[0];
-    return null;
   },
   setFirstDragData: function setFirstDragData(targetChapter) {
     this.setDragData(new Map([[targetChapter.id, {
