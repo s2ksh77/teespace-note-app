@@ -57,7 +57,6 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
               count: editingNoteList.length,
             });
           } else {
-            ChapterStore.setDeleteChapterList(deleteChapterList);
             NoteStore.setModalInfo('draggedChapter', {
               chapterList: deleteChapterList,
               isDnd: true,
