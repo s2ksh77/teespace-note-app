@@ -8,7 +8,6 @@ import NoteUtil from '../NoteUtil';
 import i18n from '../i18n/i18n';
 
 const ChapterStore = observable({
-  chapterColor: '',
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
   currentChapterId: '',
@@ -35,22 +34,16 @@ const ChapterStore = observable({
   searchingTagName: '',
   searchStr: '', // <LNBSearchResultNotFound /> component에 넘겨줘야해서 필요
   searchResult: {}, // {chapter:[], page:[]} 형태
-  deleteChapterList: [],
-  deleteChapterId: '',
-  selectableChapterId: '',
   renameId: '',
-  isMovingChapter: false,
   dragData: new Map(),
   isCtrlKeyDown: false,
   dragEnterChapterIdx: '',
   chapterMap: new Map(),
   pageMap: new Map(),
   chapterChildren: [],
-  exportChapterId: '',
   exportChapterTitle: '',
   sharedCnt: 0,
   scrollIntoViewId: '',
-  lnbBoundary: { beforeShared: false, beforeRecycleBin: false }, // 일반 챕터랑 공유 사이, 챕터랑 휴지통 사이
   chapterName: '',
   selectedChapters: new Map(),
 
@@ -65,24 +58,6 @@ const ChapterStore = observable({
   },
   setCurrentChapterId(chapterId) {
     this.currentChapterId = chapterId;
-  },
-  getDeleteChapterList() {
-    return this.deleteChapterList;
-  },
-  setDeleteChapterList(deleteChapterList) {
-    this.deleteChapterList = deleteChapterList;
-  },
-  getDeleteChapterId() {
-    return this.deleteChapterId;
-  },
-  setDeleteChapterId(chapter) {
-    this.deleteChapterId = chapter;
-  },
-  getSelectableChapterId() {
-    return this.selectableChapterId;
-  },
-  setSelectableChapterId(chapterId) {
-    this.selectableChapterId = chapterId;
   },
   getRenameId() {
     return this.renameId;
@@ -134,36 +109,6 @@ const ChapterStore = observable({
   },
   setChapterName(title) {
     this.chapterName = title;
-  },
-  setLnbBoundary(flags) {
-    // 형태: { beforeShared:false, beforeRecycleBin:false }
-    this.lnbBoundary = flags;
-  },
-  // 사용자 input이 없을 때
-  // 웹에서 더이상 안씀! 모바일에서도 안씀!
-  getNewChapterTitle() {
-    const re = /^새 챕터 (\d+)$/gm;
-    let chapterTitle, temp;
-    let isNotAvailable = [];
-    let fullLength = this.chapterList.length;
-    isNotAvailable.length = fullLength + 1;
-
-    this.chapterList.forEach(chapter => {
-      chapterTitle = chapter.text;
-      if (chapterTitle === '새 챕터') {
-        isNotAvailable[0] = 1;
-      } else if (re.test(chapterTitle)) {
-        temp = parseInt(chapterTitle.replace(re, '$1'));
-        if (temp <= fullLength) {
-          isNotAvailable[temp] = 1;
-        }
-      }
-    });
-
-    if (!isNotAvailable[0]) return '새 챕터';
-    for (let i = 1; i <= fullLength; i++) {
-      if (!isNotAvailable[i]) return '새 챕터 ' + i;
-    }
   },
   getChapterId(e) {
     const {
@@ -227,9 +172,6 @@ const ChapterStore = observable({
 
   isValidChapterText(targetText) {
     return checkNotDuplicate(this.chapterList, 'text', targetText);
-  },
-  setExportId(chapterId) {
-    this.exportChapterId = chapterId;
   },
   setExportTitle(chapterTitle) {
     this.exportChapterTitle = chapterTitle;
@@ -444,17 +386,6 @@ const ChapterStore = observable({
     }
     return { normalChapters, sharedChapters };
   },
-  // 4가지 case가 있음(일반 챕터 유무 2 * shared 유무 2)
-  // sharedChapters는 recycle_bin 포함하므로 무조건 1개 이상, 1개이면 shared 없는 것
-  getLnbBoundary({ normalChapters, sharedChapters }) {
-    if (normalChapters.length) {
-      if (sharedChapters.length > 1)
-        return { beforeShared: true, beforeRecycleBin: true };
-      return { beforeShared: false, beforeRecycleBin: true }; // 일반 챕터, 휴지통만 있는 경우
-    }
-    if (sharedChapters.length > 1) return { beforeShared: false, beforeRecycleBin: true };
-    return { beforeShared: false, beforeRecycleBin: false }; // 휴지통만 있는 경우
-  },
 
   async getNoteChapterList(isInit = false) {
     const {
@@ -483,9 +414,6 @@ const ChapterStore = observable({
     }
     // sharedChapters = shared, recylce_bin
     sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
-
-    // 화면에 경계선 그리기용
-    this.setLnbBoundary(this.getLnbBoundary({ normalChapters, sharedChapters }));
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
@@ -558,7 +486,6 @@ const ChapterStore = observable({
     }
 
     NoteStore.setIsDragging(false);
-    this.setDeleteChapterList([]);
     NoteStore.setShowModal(false);
     NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
     NoteStore.setIsVisibleToast(true);
@@ -748,11 +675,6 @@ const ChapterStore = observable({
       this.getNoteChapterList();
       NoteStore.setIsDragging(false);
     });
-  },
-  getFirstRenderedChapter() {
-    // web에서 안 씀
-    if (this.chapterList.length > 0) return this.chapterList[0];
-    return null;
   },
 
   setFirstDragData(targetChapter) {
