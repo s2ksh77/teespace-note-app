@@ -19,8 +19,7 @@ import {
 } from '../../styles/lnbStyle';
 import { ChapterColor } from '../../styles/chpaterStyle';
 import { ShareIcon, SharedPageIcon } from '../icons';
-import NoteStore from '../../store/noteStore';
-import SearchResultNotFound from '../common/SearchResultNotFound';
+import NoContent from '../common/NoContent';
 import { TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil, { isNormalChapter } from '../../NoteUtil';
 import ChapterItem from '../mobile/lnb/ChapterItem';
@@ -28,7 +27,7 @@ import PageItem from '../mobile/listview/PageItem';
 import TagItem from '../mobile/listview/TagItem';
 
 const LNBSearchResult = ({ isMobile }) => {
-  const { ChapterStore, PageStore, EditorStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
   const instance = new Mark(EditorStore.tinymce?.getBody());
@@ -90,7 +89,7 @@ const LNBSearchResult = ({ isMobile }) => {
       {ChapterStore.searchResult?.chapter === null &&
       ChapterStore.searchResult?.page === null &&
       ChapterStore.searchResult?.tag === null ? (
-        <SearchResultNotFound searchStr={ChapterStore.searchResult?.keyword} />
+        <NoContent content="search" value={ChapterStore.searchResult?.keyword} />
       ) : (
         <SearchResultContainer>
           {ChapterStore.searchResult?.chapter && (

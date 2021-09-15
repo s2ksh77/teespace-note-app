@@ -9,7 +9,7 @@ import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from './LNBTag';
 import LNBSearchResult from './LNBSearchResult';
-import SearchingImg from '../common/SearchingImg';
+import Searching from '../common/NoContent';
 import ChapterItem from '../chapter/ChapterItem';
 import RecycleBin from '../chapter/RecycleBin';
 import NoteUtil from '../../NoteUtil';
@@ -85,7 +85,7 @@ const LNBContainer = () => {
           />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
           ChapterStore.isLoadingSearchResult ? (
-            <SearchingImg />
+            <Searching content="searching" />
           ) : (
             <LNBSearchResult />
           )}
