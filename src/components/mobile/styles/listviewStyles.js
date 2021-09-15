@@ -80,7 +80,9 @@ export const PageItemContainer = styled.div`
   position: relative;
   width: 100%;
   align-items: center;
-  margin-bottom: 0.625rem;
+  :not(:last-child) {
+    margin-bottom: 0.625rem;
+  }
 `;
 
 export const CheckBoxContainer = styled.div`
