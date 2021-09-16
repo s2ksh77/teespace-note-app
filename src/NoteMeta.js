@@ -78,7 +78,6 @@ const NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setIsDragging(false);
-          ChapterStore.setDeleteChapterList([]);
           NoteStore.setModalInfo(null);
         });
         break;

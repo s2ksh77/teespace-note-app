@@ -14,8 +14,6 @@ const AddTagForm = ({show, toggleTagInput}) => {
     if (!checkWhitespace(value)) {};
     if (TagStore.isValidTag(value)) TagStore.createNoteTag([value], PageStore.currentPageId);
     else NoteStore.setModalInfo('duplicateTagName');
-    // input창 초기화
-    TagStore.setIsNewTag(false);
     setValue("");
   };  
 

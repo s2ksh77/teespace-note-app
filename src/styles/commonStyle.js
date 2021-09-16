@@ -25,6 +25,7 @@ export const ContentHeaderCover = styled.div`
   height: 3rem;
   width: 100%;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   flex-direction: row;
   padding: 0 0.75rem 0 1rem;
@@ -46,13 +47,14 @@ export const PreBtnWrapper = styled.div`
 
 export const ContentBodyWrapper = styled.div`
   width: 100%;
-  height: calc(100% - 3rem);
+  height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.25rem 1rem;
-  border-top: 1px solid ${props => props.theme.LineMain};
+  :not(:first-child) {
+    border-top: 1px solid ${props => props.theme.LineMain};
+  }
 `;
 
 export const CenterContainer = styled.div`
@@ -66,13 +68,11 @@ export const CenterContainer = styled.div`
 
 export const NoneTitle = styled.div`
   font-size: 0.938rem;
-  font-weight: 400;
   color: ${props => props.theme.TextMain};
 `;
 
 export const NoneSubtitle = styled.span`
   font-size: 0.75rem;
-  font-weight: 400;
   color: ${props => props.theme.TextSub};
   margin-top: 0.875rem;
 `;
@@ -148,7 +148,6 @@ export const SearchResultNotFoundCover = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
 `;
 
 export const SearchKeyword = styled.span`

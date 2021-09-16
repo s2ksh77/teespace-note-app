@@ -5,7 +5,7 @@ import useNoteStore from '../../store/useStore';
 import { PageContainerCover } from '../../styles/pageStyle';
 import EditorContainer from '../editor/EditorContainer';
 import LoadingContent from '../common/LoadingContent';
-import NoContent from './NoContent';
+import NoContent from '../common/NoContent';
 
 // 페이지 보여줄 때
 const PageContainer = observer(() => {
@@ -15,9 +15,9 @@ const PageContainer = observer(() => {
     if (ChapterStore.loadingPageInfo) return <LoadingContent />;
     if (ChapterStore.currentChapterId) {
       if (PageStore.currentPageId) return <EditorContainer />;
-      return <NoContent />;
+      if (!PageStore.isRecycleBin) return <NoContent header content="page" />;
     }
-    return <NoContent isNoChapter />;
+    return <NoContent header content="chapter" />;
   })();
 
   return (
