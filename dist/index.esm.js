@@ -3504,7 +3504,6 @@ var PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   isNewPage: false,
-  exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
   restorePageId: '',
@@ -3632,12 +3631,6 @@ var PageStore = observable({
   },
   setExportTitle: function setExportTitle(pageTitle) {
     this.exportPageTitle = pageTitle;
-  },
-  getExportId: function getExportId() {
-    return this.exportPageId;
-  },
-  setExportId: function setExportId(pageId) {
-    this.exportPageId = pageId;
   },
   setRestorePageId: function setRestorePageId(pageId) {
     this.restorePageId = pageId;
