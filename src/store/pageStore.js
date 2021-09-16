@@ -30,7 +30,6 @@ const PageStore = observable({
   dragEnterPageIdx: '',
   dragEnterChapterIdx: '',
   isNewPage: false,
-  exportPageId: '',
   exportPageTitle: '',
   editingUserID: '',
   restorePageId: '',
@@ -155,12 +154,6 @@ const PageStore = observable({
   },
   setExportTitle(pageTitle) {
     this.exportPageTitle = pageTitle;
-  },
-  getExportId() {
-    return this.exportPageId;
-  },
-  setExportId(pageId) {
-    this.exportPageId = pageId;
   },
   setRestorePageId(pageId) {
     this.restorePageId = pageId;
