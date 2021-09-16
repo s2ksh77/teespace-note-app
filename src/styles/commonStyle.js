@@ -141,35 +141,6 @@ export const SearchImgInput = styled.input`
   }
 `;
 
-export const SearchResultNotFoundCover = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const SearchKeyword = styled.span`
-  font-size: 0.94rem;
-  color: ${props => props.theme.TextMain};
-  margin-bottom: 0.69rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 10px);
-  white-space: nowrap;
-`;
-
-export const NoSearchResultTitle = styled.span`
-  font-size: 0.75rem;
-  color: ${props => props.theme.TextMain};
-  margin-bottom: 1.25rem;
-`;
-
-export const NoSearchResultImg = styled.img`
-  width:8.13rem;
-`;
-
 export const ContextMenuCover = styled(Dropdown)`
   position: absolute;
   right: ${props => props.right};
@@ -272,26 +243,6 @@ export const ModalSharedInfoContent = styled.span`
 
 export const ButtonGroup = styled.div`
   display: flex;
-`;
-
-export const SearchLoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-`;
-export const SearchLoadingTxt = styled.div`
-  font-size: 0.75rem;
-  color: ${props => props.theme.TextMain};
-  text-align: center;
-  margin-bottom: 1.25rem;
-`;
-
-export const SearchLoadingImg = styled.img`
-  width: 8.44rem;
-  height: 8.44rem;
 `;
 
 export const LoadingImage = styled.img`
