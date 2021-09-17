@@ -121,7 +121,7 @@ const LNBSearchResult = ({ isMobile }) => {
           )}
           {ChapterStore.searchResult?.page?.map(page => {
             return isMobile ? (
-              <PageItem key={page.id} page={page} isSearching />
+              <PageItem key={page.note_id} page={page} isSearching />
             ) : (
               <PageSearchResult
                 key={page.note_id}
@@ -149,7 +149,7 @@ const LNBSearchResult = ({ isMobile }) => {
           )}
           {ChapterStore.searchResult?.tag?.map((tag, pageListIdx) => {
             return isMobile ? (
-              <TagItem tag={tag} listIdx={pageListIdx} />
+              <TagItem key={pageListIdx} tag={tag} listIdx={pageListIdx} />
             ) : (
               <TagSearchResult
                 key={pageListIdx}
