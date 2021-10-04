@@ -6783,7 +6783,7 @@ var NoteStore = mobx.observable({
   shareNoteType: '',
   shareContent: '',
   shareArrays: {},
-  // { userArray, roomArray }
+  // deprecated
   isMailShare: false,
   mailShareFileObjs: [],
   mailReceiver: [],
@@ -6919,6 +6919,7 @@ var NoteStore = mobx.observable({
     this.shareContent = content;
   },
   setShareArrays: function setShareArrays(arrs) {
+    // deprecated
     this.shareArrays = arrs;
   },
   setIsMailShare: function setIsMailShare(isMailShare) {
@@ -7035,30 +7036,29 @@ var NoteStore = mobx.observable({
   getSharedRoomName: function getSharedRoomName() {
     return teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).isMyRoom ? this.userName : teespaceCore.RoomStore.getRoom(NoteRepository$1.WS_ID).name;
   },
-  shareNote: function shareNote() {
+  shareNote: function shareNote(selectedItems) {
     var _this2 = this;
 
-    this.shareArrays.userArray.forEach( /*#__PURE__*/function () {
+    selectedItems.userArray.forEach( /*#__PURE__*/function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(user) {
-        var friendId, res;
+        var res;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                friendId = user.friendId ? user.friendId : user.id;
-                _context2.next = 3;
+                _context2.next = 2;
                 return teespaceCore.RoomStore.createRoom({
                   creatorId: _this2.user_id,
                   userList: [{
-                    userId: friendId
+                    userId: user.friendId || user.id
                   }]
                 });
 
-              case 3:
+              case 2:
                 res = _context2.sent;
                 if (_this2.shareNoteType === 'chapter') ChapterStore.createNoteShareChapter(res.roomId, [_this2.shareContent]);else if (_this2.shareNoteType === 'page') PageStore.createNoteSharePage(res.roomId, [_this2.shareContent]);
 
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -7070,7 +7070,7 @@ var NoteStore = mobx.observable({
         return _ref2.apply(this, arguments);
       };
     }());
-    this.shareArrays.roomArray.forEach(function (room) {
+    selectedItems.roomArray.forEach(function (room) {
       if (!room.isVisible) {
         teespaceCore.RoomStore.activateRoom({
           roomId: room.id,
