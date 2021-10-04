@@ -34,7 +34,7 @@ const NoteStore = observable({
   sharedInfo: {},
   shareNoteType: '',
   shareContent: '',
-  shareArrays: {}, // { userArray, roomArray }
+  shareArrays: {}, // deprecated
   isMailShare: false,
   mailShareFileObjs: [],
   mailReceiver: [],
@@ -158,7 +158,7 @@ const NoteStore = observable({
   setShareContent(content) {
     this.shareContent = content;
   },
-  setShareArrays(arrs) {
+  setShareArrays(arrs) { // deprecated
     this.shareArrays = arrs;
   },
   setIsMailShare(isMailShare) {
@@ -237,12 +237,11 @@ const NoteStore = observable({
       : RoomStore.getRoom(NoteRepository.WS_ID).name;
   },
 
-  shareNote() {
-    this.shareArrays.userArray.forEach(async user => {
-      const friendId = user.friendId ? user.friendId : user.id;
+  shareNote(selectedItems) {
+    selectedItems.userArray.forEach(async user => {
       const res = await RoomStore.createRoom({
         creatorId: this.user_id,
-        userList: [{ userId: friendId }],
+        userList: [{ userId: user.friendId || user.id }],
       });
 
       if (this.shareNoteType === 'chapter')
@@ -251,7 +250,7 @@ const NoteStore = observable({
         PageStore.createNoteSharePage(res.roomId, [this.shareContent]);
     });
 
-    this.shareArrays.roomArray.forEach(room => {
+    selectedItems.roomArray.forEach(room => {
       if (!room.isVisible) {
         RoomStore.activateRoom({
           roomId: room.id,
