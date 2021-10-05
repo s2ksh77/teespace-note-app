@@ -451,7 +451,6 @@ class NoteRepository {
     location,
     onUploadProgress,
     cancelSource,
-    contentType,
   ) {
     const uploadFile = new File([file], `${fileName}.${fileExtension}`);
 
@@ -469,7 +468,7 @@ class NoteRepository {
       uploadFile,
       {
         headers: {
-          'content-type': contentType,
+          'content-type': 'multipart/form-data',
         },
         xhrFields: {
           withCredentials: true,
