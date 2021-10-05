@@ -30,7 +30,6 @@ const ExportPDF = () => {
   };
 
   const createPdf = async () => {
-    const apiKey = '0cb45649-4ff7-4b41-8621-509574c6fdb8'; // api2pdf : apiKey
     const option = {
       // TODO : 필요없는 옵션 제외 해야할 듯
       delay: 0,
@@ -52,7 +51,7 @@ const ExportPDF = () => {
       scale: 1,
     };
 
-    const api2Client = new Api2Pdf(apiKey);
+    const api2Client = new Api2Pdf(window.env.EDITOR_API_KEY);
 
     api2Client
       .chromeHtmlToPdf(NoteStore.exportHTML, {
