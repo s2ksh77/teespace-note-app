@@ -67,7 +67,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false 
   return useObserver(() => (
     <ChapterItemContainer>
       {isLongPress && (
-        <CheckBoxContainer>
+        <CheckBoxContainer style={{ margin: '0 0 0 1rem' }}>
           <Checkbox
             checked={ChapterStore.selectedChapters.has(chapter.id)}
             className="check-round"

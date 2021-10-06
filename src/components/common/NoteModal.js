@@ -88,7 +88,7 @@ const NoteModal = observer(({ isWeb = true }) => {
   })();
 
   const modalContent = (() => {
-    console.log('modalName', modalName);
+    if (modalName === undefined) NoteStore.setShowDialog(false);
     switch (modalName) {
       case 'createChapter':
       case 'renameChapter':
