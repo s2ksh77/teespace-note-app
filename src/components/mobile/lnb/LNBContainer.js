@@ -36,6 +36,10 @@ const LNBContainer = () => {
     console.log(NoteStore.modalInfo);
   };
 
+  const handleEditChapter = () => {
+    // if()
+  };
+
   useEffect(() => {
     return () => setLongPress(false);
   }, [NoteStore.notechannel_id]); // 동일하게 앱 켜두고 다른 방 이동시 unmount 되지 않음 (현재 platform 환경)
@@ -56,7 +60,12 @@ const LNBContainer = () => {
           ]}
           title={`${ChapterStore.selectedChapters.size} 개 선택됨`}
           rightButtons={[
-            { type: 'icon', action: 'search' },
+            {
+              type: 'icon',
+              action: 'edit',
+              onClick: { handleEditChapter },
+              disabled: ChapterStore.selectedChapters.size > 1 ? true : false,
+            },
             { type: 'icon', action: 'remove' },
             { type: 'icon', action: 'share' },
           ]}

@@ -4,7 +4,14 @@ import { ThemeContext } from 'styled-components';
 
 import { MainHeaderWrapper, HeaderTitle } from '../styles/lnbStyles';
 import { ButtonWrapper, TextButtonWrapper } from '../styles/commonStyles';
-import { ArrowBackIcon2, SearchIcon, CloseIcon, TrashIcon, ShareIcon } from '../../icons';
+import {
+  ArrowBackIcon2,
+  SearchIcon,
+  CloseIcon,
+  TrashIcon,
+  ShareIcon,
+  EditIcon,
+} from '../../icons';
 
 const MainHeader = ({
   leftButtons,
@@ -14,8 +21,8 @@ const MainHeader = ({
   isLongPress = false,
 }) => {
   const themeContext = useContext(ThemeContext);
-
-  const Icon = ({ action }) => {
+  console.log('right', rightButtons);
+  const Icon = ({ action, disabled }) => {
     switch (action) {
       case 'back':
         return (
@@ -59,6 +66,16 @@ const MainHeader = ({
             isButton={true}
           />
         );
+      case 'edit':
+        return (
+          <EditIcon
+            width="1.25"
+            height="1.25"
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
+            isButton={true}
+            disabled
+          />
+        );
       default:
         return null;
     }
@@ -70,7 +87,7 @@ const MainHeader = ({
         case 'icon':
           return (
             <ButtonWrapper key={button.action} onClick={button.onClick}>
-              <Icon action={button.action} />
+              <Icon action={button.action} disabled={button.disabled} />
             </ButtonWrapper>
           );
         case 'text':

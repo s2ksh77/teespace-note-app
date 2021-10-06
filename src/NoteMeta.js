@@ -216,6 +216,8 @@ const NoteMeta = {
           ChapterStore.getChapterRandomColor();
           await ChapterStore.createNoteChapter();
           // logEvent('note', 'clickNewChapterBtn');
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
         });
         break;
       case 'renameChapter':
