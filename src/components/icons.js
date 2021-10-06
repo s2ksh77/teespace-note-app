@@ -406,7 +406,7 @@ export const NormalIcon = React.memo(({ width = 1, height = 1, color = '#666' })
 });
 
 export const NewAddIcon = React.memo(
-  ({ width = 1.75, height = 1.75, color = '#FFFFFF' }) => {
+  ({ width = 1.75, height = 1.75, color = '#FFFFFF', onClick }) => {
     const defaultWidth = 32;
     const defaultHeight = 32;
 
@@ -425,6 +425,7 @@ export const NewAddIcon = React.memo(
           justifyContent: 'center',
           alignItems: 'center',
         }}
+        onClick={onClick}
       >
         <g
           id="Icon/common/add"

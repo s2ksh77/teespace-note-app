@@ -10,6 +10,7 @@ import LNBContainer from './lnb/LNBContainer';
 import ListViewContainer from './listview/ListViewContainer';
 import SearchContainer from './lnb/SearchContainer';
 import ContentContainer from './content/ContentContainer';
+import NoteModal from '../common/NoteModal';
 
 const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' }) => {
   const { NoteStore, ChapterStore, EditorStore, PageStore } = useNoteStore();
@@ -71,6 +72,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
     <I18nextProvider i18n={i18n}>
       <Wrapper>
         <Container targetLayout={NoteStore.targetLayout} />
+        {NoteStore.showDialog && <NoteModal isWeb={false} />}
       </Wrapper>
     </I18nextProvider>
   ));

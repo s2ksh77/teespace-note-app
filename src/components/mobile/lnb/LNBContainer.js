@@ -30,6 +30,12 @@ const LNBContainer = () => {
     setLongPress(true);
   };
 
+  const handleCreateChapter = () => {
+    NoteStore.setShowDialog(true);
+    NoteStore.setModalInfo('createChapter', _, false);
+    console.log(NoteStore.modalInfo);
+  };
+
   useEffect(() => {
     return () => setLongPress(false);
   }, [NoteStore.notechannel_id]); // 동일하게 앱 켜두고 다른 방 이동시 unmount 되지 않음 (현재 platform 환경)
@@ -131,7 +137,7 @@ const LNBContainer = () => {
         </LongPressable>
         <LNBTag flexOrder={4} />
       </LNBBody>
-      <NewAddIcon id="newChapter" />
+      <NewAddIcon id="newChapter" onClick={handleCreateChapter} />
     </LNBWrapper>
   ));
 };
