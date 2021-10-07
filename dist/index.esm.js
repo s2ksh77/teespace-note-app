@@ -6436,6 +6436,76 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+
+      case 'createChapter':
+        eventList.push(function (e) {
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.setChapterTitle('');
+        });
+        eventList.push( /*#__PURE__*/function () {
+          var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    ChapterStore.getChapterRandomColor();
+                    _context4.next = 3;
+                    return ChapterStore.createNoteChapter();
+
+                  case 3:
+                    // logEvent('note', 'clickNewChapterBtn');
+                    NoteStore.setShowDialog(false);
+                    NoteStore.setModalInfo(null);
+
+                  case 5:
+                  case "end":
+                    return _context4.stop();
+                }
+              }
+            }, _callee4);
+          }));
+
+          return function (_x4) {
+            return _ref4.apply(this, arguments);
+          };
+        }());
+        break;
+
+      case 'renameChapter':
+        eventList.push(function (e) {
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.setChapterTitle('');
+        });
+        eventList.push( /*#__PURE__*/function () {
+          var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+            var id, color;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    id = data.id, color = data.color;
+                    _context5.next = 3;
+                    return ChapterStore.renameNoteChapter({
+                      id: id,
+                      title: ChapterStore.chapterNewTitle,
+                      color: color
+                    });
+
+                  case 3:
+                  case "end":
+                    return _context5.stop();
+                }
+              }
+            }, _callee5);
+          }));
+
+          return function (_x5) {
+            return _ref5.apply(this, arguments);
+          };
+        }());
+        break;
     }
 
     return eventList;
@@ -6483,6 +6553,17 @@ var NoteMeta = {
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
         }), defaultBtn2];
+
+      case 'createChapter':
+        // mobile
+        return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
+          text: '생성'
+        })];
+
+      case 'renameChapter':
+        return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
+          text: '변경'
+        })];
 
       default:
         return;
@@ -6628,6 +6709,17 @@ var NoteMeta = {
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_03');
         dialogType.btns = this.setBtns(type);
         break;
+      // mobile
+
+      case 'createChapter':
+        dialogType.title = '새 챕터 생성';
+        dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'renameChapter':
+        dialogType.title = '챕터 이름 변경';
+        dialogType.btns = this.setBtns(type);
+        break;
     }
 
     return dialogType;
@@ -6736,6 +6828,7 @@ var NoteStore = observable({
   isHoveredFoldBtnLine: false,
   isContentExpanded: false,
   showModal: false,
+  showDialog: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
@@ -6903,10 +6996,14 @@ var NoteStore = observable({
   setShowModal: function setShowModal(showModal) {
     this.showModal = showModal;
   },
+  setShowDialog: function setShowDialog(showDialog) {
+    this.showDialog = showDialog;
+  },
   // { type, title, subTitle, buttons }
   setModalInfo: function setModalInfo(modalType, data) {
-    if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore') this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else this.modalInfo = NoteMeta.openMessage(modalType, data);
-    modalType === null ? this.setShowModal(false) : this.setShowModal(true);
+    var isWeb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore') this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else if (!isWeb) this.modalInfo = NoteMeta.openMessage(modalType, data);else this.modalInfo = NoteMeta.openMessage(modalType, data);
+    if (isWeb) modalType === null ? this.setShowModal(false) : this.setShowModal(true);
   },
   handleSharedInfo: function handleSharedInfo(type, id) {
     var _this = this;
