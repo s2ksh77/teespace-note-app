@@ -63,8 +63,8 @@ const LNBContainer = () => {
             {
               type: 'icon',
               action: 'edit',
-              onClick: { handleEditChapter },
-              disabled: ChapterStore.selectedChapters.size > 1 ? true : false,
+              onClick: handleEditChapter,
+              disabled: ChapterStore.selectedChapters.size > 1,
             },
             { type: 'icon', action: 'remove' },
             { type: 'icon', action: 'share' },
