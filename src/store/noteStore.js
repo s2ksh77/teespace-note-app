@@ -25,6 +25,7 @@ const NoteStore = observable({
   isHoveredFoldBtnLine: false,
   isContentExpanded: false,
   showModal: false,
+  showDialog: false,
   modalInfo: {},
   LNBChapterCoverRef: '',
   isDragging: false,
@@ -158,7 +159,8 @@ const NoteStore = observable({
   setShareContent(content) {
     this.shareContent = content;
   },
-  setShareArrays(arrs) { // deprecated
+  setShareArrays(arrs) {
+    // deprecated
     this.shareArrays = arrs;
   },
   setIsMailShare(isMailShare) {
@@ -179,14 +181,18 @@ const NoteStore = observable({
   setShowModal(showModal) {
     this.showModal = showModal;
   },
+  setShowDialog(showDialog) {
+    this.showDialog = showDialog;
+  },
   // { type, title, subTitle, buttons }
-  setModalInfo(modalType, data) {
+  setModalInfo(modalType, data, isWeb = true) {
     if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore')
       this.modalInfo = NoteMeta.openModal(modalType);
     else if (!modalType) this.modalInfo = {};
+    else if (!isWeb) this.modalInfo = NoteMeta.openMessage(modalType, data);
     else this.modalInfo = NoteMeta.openMessage(modalType, data);
 
-    modalType === null ? this.setShowModal(false) : this.setShowModal(true);
+    if (isWeb) modalType === null ? this.setShowModal(false) : this.setShowModal(true);
   },
 
   async handleSharedInfo(type, id) {

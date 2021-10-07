@@ -64,6 +64,7 @@ const NoteMeta = {
       btns: buttonList,
     };
   },
+
   setEventConfig(type, data) {
     const eventList = [];
     switch (type) {
@@ -205,6 +206,35 @@ const NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         break;
+      case 'createChapter':
+        eventList.push(function (e) {
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.setChapterTitle('');
+        });
+        eventList.push(async function (e) {
+          ChapterStore.getChapterRandomColor();
+          await ChapterStore.createNoteChapter();
+          // logEvent('note', 'clickNewChapterBtn');
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
+        });
+        break;
+      case 'renameChapter':
+        eventList.push(function (e) {
+          NoteStore.setShowDialog(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.setChapterTitle('');
+        });
+        eventList.push(async function (e) {
+          const { id, color } = data;
+          await ChapterStore.renameNoteChapter({
+            id,
+            title: ChapterStore.chapterNewTitle,
+            color,
+          });
+        });
+        break;
       default:
         break;
     }
@@ -248,6 +278,10 @@ const NoteMeta = {
           { ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') },
           defaultBtn2,
         ];
+      case 'createChapter': // mobile
+        return [defaultBtn2, { ...defaultBtn1, text: '생성' }];
+      case 'renameChapter':
+        return [defaultBtn2, { ...defaultBtn1, text: '변경' }];
       default:
         return;
     }
@@ -370,6 +404,15 @@ const NoteMeta = {
         break;
       case 'failUploadSpaceFullSize':
         dialogType.title = i18n.t('NOTE_EDIT_PAGE_ATTACH_FILE_03');
+        dialogType.btns = this.setBtns(type);
+        break;
+      // mobile
+      case 'createChapter':
+        dialogType.title = '새 챕터 생성';
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'renameChapter':
+        dialogType.title = '챕터 이름 변경';
         dialogType.btns = this.setBtns(type);
         break;
       default:
