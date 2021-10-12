@@ -66,7 +66,22 @@ const LNBContainer = () => {
               onClick: ChapterStore.selectedChapters.size > 1 ? null : handleEditChapter,
               disabled: ChapterStore.selectedChapters.size > 1,
             },
-            { type: 'icon', action: 'remove' },
+            {
+              type: 'icon',
+              action: 'remove',
+              onClick: () => {
+                // TODO: 수정 중인 페이지 확인
+                NoteStore.setModalInfo(
+                  'deleteChapter',
+                  {
+                    chapterList: Array.from(ChapterStore.selectedChapters, ([, v]) => v),
+                  },
+                  false,
+                );
+                NoteStore.setShowDialog(true);
+              },
+              disabled: !ChapterStore.selectedChapters.size,
+            },
             { type: 'icon', action: 'share' },
           ]}
           isLongPress={NoteStore.isLongPress}
