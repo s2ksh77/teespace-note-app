@@ -46,6 +46,7 @@ const NoteStore = observable({
   isExporting: false,
   isSlashCmd: false,
   appType: 'wapl',
+  isLongPress: false,
 
   setAppType(appType) {
     this.appType = appType;
@@ -183,6 +184,9 @@ const NoteStore = observable({
   },
   setShowDialog(showDialog) {
     this.showDialog = showDialog;
+  },
+  setLongPress(flag) {
+    this.isLongPress = flag;
   },
   // { type, title, subTitle, buttons }
   setModalInfo(modalType, data, isWeb = true) {

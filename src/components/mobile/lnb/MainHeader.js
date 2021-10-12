@@ -21,7 +21,6 @@ const MainHeader = ({
   isLongPress = false,
 }) => {
   const themeContext = useContext(ThemeContext);
-  console.log('right', rightButtons);
   const Icon = ({ action, disabled }) => {
     switch (action) {
       case 'back':
@@ -73,7 +72,7 @@ const MainHeader = ({
             height="1.25"
             color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
             isButton={true}
-            disabled
+            disabled={disabled}
           />
         );
       default:

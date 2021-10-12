@@ -233,6 +233,11 @@ const NoteMeta = {
             title: ChapterStore.chapterNewTitle,
             color,
           });
+          NoteStore.setShowDialog(false);
+          NoteStore.setLongPress(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.selectedChapters.clear();
+          ChapterStore.setChapterTitle('');
         });
         break;
       default:
