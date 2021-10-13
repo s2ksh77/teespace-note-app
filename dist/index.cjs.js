@@ -6527,6 +6527,13 @@ var NoteMeta = {
                     });
 
                   case 3:
+                    NoteStore.setShowDialog(false);
+                    NoteStore.setLongPress(false);
+                    NoteStore.setModalInfo(null);
+                    ChapterStore.selectedChapters.clear();
+                    ChapterStore.setChapterTitle('');
+
+                  case 8:
                   case "end":
                     return _context5.stop();
                 }
@@ -6538,6 +6545,32 @@ var NoteMeta = {
             return _ref5.apply(this, arguments);
           };
         }());
+        break;
+
+      case 'deleteChapter':
+        eventList.push(function () {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+          return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+              switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.next = 2;
+                  return ChapterStore.deleteNoteChapter(data);
+
+                case 2:
+                  NoteStore.setModalInfo(null);
+                  NoteStore.setLongPress(false);
+                  ChapterStore.selectedChapters.clear();
+
+                case 5:
+                case "end":
+                  return _context6.stop();
+              }
+            }
+          }, _callee6);
+        })));
         break;
     }
 
@@ -6596,6 +6629,11 @@ var NoteMeta = {
       case 'renameChapter':
         return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '변경'
+        })];
+
+      case 'deleteChapter':
+        return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
+          text: '삭제'
         })];
 
       default:
@@ -6753,6 +6791,13 @@ var NoteMeta = {
         dialogType.title = '챕터 이름 변경';
         dialogType.btns = this.setBtns(type);
         break;
+
+      case 'deleteChapter':
+        dialogType.type = 'error';
+        dialogType.title = "".concat(data.chapterList.length, "\uAC1C\uC758 \uCC55\uD130\uB97C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+        dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
+        dialogType.btns = this.setBtns(type);
+        break;
     }
 
     return dialogType;
@@ -6883,6 +6928,7 @@ var NoteStore = mobx.observable({
   isExporting: false,
   isSlashCmd: false,
   appType: 'wapl',
+  isLongPress: false,
   setAppType: function setAppType(appType) {
     this.appType = appType;
   },
@@ -7032,11 +7078,21 @@ var NoteStore = mobx.observable({
   setShowDialog: function setShowDialog(showDialog) {
     this.showDialog = showDialog;
   },
+  setLongPress: function setLongPress(flag) {
+    this.isLongPress = flag;
+  },
   // { type, title, subTitle, buttons }
   setModalInfo: function setModalInfo(modalType, data) {
     var isWeb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-    if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore') this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else if (!isWeb) this.modalInfo = NoteMeta.openMessage(modalType, data);else this.modalInfo = NoteMeta.openMessage(modalType, data);
-    if (isWeb) modalType === null ? this.setShowModal(false) : this.setShowModal(true);
+    if (['viewInfo', 'forward', 'restore'].includes(modalType)) this.modalInfo = NoteMeta.openModal(modalType);else if (!modalType) this.modalInfo = {};else this.modalInfo = NoteMeta.openMessage(modalType, data);
+
+    if (modalType) {
+      if (isWeb) this.setShowModal(true);
+    } else if (this.showModal) {
+      this.setShowModal(false);
+    } else {
+      this.setShowDialog(false);
+    }
   },
   handleSharedInfo: function handleSharedInfo(type, id) {
     var _this = this;
