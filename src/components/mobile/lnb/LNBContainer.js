@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import { EventBus } from 'teespace-core';
@@ -18,7 +18,6 @@ import { NewAddIcon } from '../../icons';
 const LNBContainer = () => {
   const { ChapterStore, NoteStore } = useNoteStore();
   const { t } = useTranslation();
-  const [isLongPress, setLongPress] = useState(false);
 
   useEffect(() => {
     NoteStore.setTargetLayout('LNB');
@@ -27,33 +26,34 @@ const LNBContainer = () => {
   const onShortPress = () => {}; // event prevent
 
   const onLongPress = () => {
-    setLongPress(true);
+    NoteStore.setLongPress(true);
   };
 
   const handleCreateChapter = () => {
     NoteStore.setShowDialog(true);
     NoteStore.setModalInfo('createChapter', _, false);
-    console.log(NoteStore.modalInfo);
   };
 
   const handleEditChapter = () => {
-    // if()
-  };
+    if (ChapterStore.selectedChapters.size === 0) return;
+    const id = [...ChapterStore.selectedChapters][0][0];
+    const { text, color } = [...ChapterStore.selectedChapters][0][1];
 
-  useEffect(() => {
-    return () => setLongPress(false);
-  }, [NoteStore.notechannel_id]); // 동일하게 앱 켜두고 다른 방 이동시 unmount 되지 않음 (현재 platform 환경)
+    ChapterStore.setChapterTitle(text);
+    NoteStore.setModalInfo('renameChapter', { id, color }, false);
+    NoteStore.setShowDialog(true);
+  };
 
   return useObserver(() => (
     <LNBWrapper>
-      {isLongPress ? (
+      {NoteStore.isLongPress ? (
         <LongPressHeader
           leftButtons={[
             {
               type: 'icon',
               action: 'close',
               onClick: () => {
-                setLongPress(false);
+                NoteStore.setLongPress(false);
                 ChapterStore.selectedChapters.clear();
               },
             },
@@ -63,13 +63,28 @@ const LNBContainer = () => {
             {
               type: 'icon',
               action: 'edit',
-              onClick: handleEditChapter,
+              onClick: ChapterStore.selectedChapters.size > 1 ? null : handleEditChapter,
               disabled: ChapterStore.selectedChapters.size > 1,
             },
-            { type: 'icon', action: 'remove' },
+            {
+              type: 'icon',
+              action: 'remove',
+              onClick: () => {
+                // TODO: 수정 중인 페이지 확인
+                NoteStore.setModalInfo(
+                  'deleteChapter',
+                  {
+                    chapterList: Array.from(ChapterStore.selectedChapters, ([, v]) => v),
+                  },
+                  false,
+                );
+                NoteStore.setShowDialog(true);
+              },
+              disabled: !ChapterStore.selectedChapters.size,
+            },
             { type: 'icon', action: 'share' },
           ]}
-          isLongPress={isLongPress}
+          isLongPress={NoteStore.isLongPress}
         />
       ) : (
         <LNBHeader
@@ -98,13 +113,7 @@ const LNBContainer = () => {
               case 0:
               case 1: // default, NOTEBOOK
                 return (
-                  <ChapterItem
-                    key={item.id}
-                    chapter={item}
-                    index={index}
-                    flexOrder={1}
-                    isLongPress={isLongPress}
-                  />
+                  <ChapterItem key={item.id} chapter={item} index={index} flexOrder={1} />
                 );
               case 2: // SHARED_PAGE
                 if (item.children.length > 0)
@@ -114,7 +123,6 @@ const LNBContainer = () => {
                       chapter={item}
                       index={index}
                       flexOrder={2}
-                      isLongPress={isLongPress}
                     />
                   );
                 break;
@@ -126,18 +134,11 @@ const LNBContainer = () => {
                     index={index}
                     flexOrder={2}
                     isShared
-                    isLongPress={isLongPress}
                   />
                 );
               case 4:
                 return (
-                  <RecycleBin
-                    key={item.id}
-                    chapter={item}
-                    index={index}
-                    flexOrder={3}
-                    isLongPress={isLongPress}
-                  />
+                  <RecycleBin key={item.id} chapter={item} index={index} flexOrder={3} />
                 );
               default:
                 break;

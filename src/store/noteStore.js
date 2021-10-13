@@ -46,6 +46,7 @@ const NoteStore = observable({
   isExporting: false,
   isSlashCmd: false,
   appType: 'wapl',
+  isLongPress: false,
 
   setAppType(appType) {
     this.appType = appType;
@@ -184,15 +185,23 @@ const NoteStore = observable({
   setShowDialog(showDialog) {
     this.showDialog = showDialog;
   },
+  setLongPress(flag) {
+    this.isLongPress = flag;
+  },
   // { type, title, subTitle, buttons }
   setModalInfo(modalType, data, isWeb = true) {
-    if (modalType === 'viewInfo' || modalType === 'forward' || modalType === 'restore')
+    if (['viewInfo', 'forward', 'restore'].includes(modalType))
       this.modalInfo = NoteMeta.openModal(modalType);
     else if (!modalType) this.modalInfo = {};
-    else if (!isWeb) this.modalInfo = NoteMeta.openMessage(modalType, data);
     else this.modalInfo = NoteMeta.openMessage(modalType, data);
 
-    if (isWeb) modalType === null ? this.setShowModal(false) : this.setShowModal(true);
+    if (modalType) {
+      if (isWeb) this.setShowModal(true);
+    } else if (this.showModal) {
+      this.setShowModal(false);
+    } else {
+      this.setShowDialog(false);
+    }
   },
 
   async handleSharedInfo(type, id) {

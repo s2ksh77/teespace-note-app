@@ -15,7 +15,7 @@ import { ChapterItemContainer } from '../styles/lnbStyles';
 import { CheckBoxContainer } from '../styles/listviewStyles';
 import { Checkbox } from 'antd';
 
-const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false }) => {
+const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
   const { id, color, children, type, text: title } = chapter;
 
@@ -33,7 +33,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false 
   });
 
   const handleChapterClick = async () => {
-    if (isLongPress) {
+    if (NoteStore.isLongPress) {
       handleCheckBoxChange(ChapterStore.selectedChapters.has(id));
       return;
     }
@@ -66,7 +66,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, isLongPress = false 
 
   return useObserver(() => (
     <ChapterItemContainer>
-      {isLongPress && (
+      {NoteStore.isLongPress && (
         <CheckBoxContainer style={{ margin: '0 0 0 1rem' }}>
           <Checkbox
             checked={ChapterStore.selectedChapters.has(chapter.id)}

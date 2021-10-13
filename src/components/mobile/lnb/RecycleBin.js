@@ -13,7 +13,7 @@ import { DRAG_TYPE } from '../../../GlobalVariable';
 import { ChapterItemContainer } from '../styles/lnbStyles';
 import { CheckBoxContainer } from '../styles/listviewStyles';
 
-const RecycleBin = ({ chapter, index, flexOrder, isLongPress }) => {
+const RecycleBin = ({ chapter, index, flexOrder }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore } = useCoreStores();
   const themeContext = useContext(ThemeContext);
@@ -43,7 +43,7 @@ const RecycleBin = ({ chapter, index, flexOrder, isLongPress }) => {
       className={isFolded ? 'folded ' : ''}
       key={id}
       order={flexOrder}
-      style={{ width: '100%', marginLeft: isLongPress ? '2.81rem' : '0.81rem' }}
+      style={{ width: '100%', marginLeft: NoteStore.isLongPress ? '2.81rem' : '0.81rem' }}
     >
       <ChapterCover
         className={`chapter-div${

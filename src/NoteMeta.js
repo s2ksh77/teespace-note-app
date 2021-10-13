@@ -233,6 +233,22 @@ const NoteMeta = {
             title: ChapterStore.chapterNewTitle,
             color,
           });
+          NoteStore.setShowDialog(false);
+          NoteStore.setLongPress(false);
+          NoteStore.setModalInfo(null);
+          ChapterStore.selectedChapters.clear();
+          ChapterStore.setChapterTitle('');
+        });
+        break;
+      case 'deleteChapter':
+        eventList.push(() => {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push(async () => {
+          await ChapterStore.deleteNoteChapter(data);
+          NoteStore.setModalInfo(null);
+          NoteStore.setLongPress(false);
+          ChapterStore.selectedChapters.clear();
         });
         break;
       default:
@@ -282,6 +298,8 @@ const NoteMeta = {
         return [defaultBtn2, { ...defaultBtn1, text: '생성' }];
       case 'renameChapter':
         return [defaultBtn2, { ...defaultBtn1, text: '변경' }];
+      case 'deleteChapter':
+        return [defaultBtn2, { ...defaultBtn1, text: '삭제' }];
       default:
         return;
     }
@@ -413,6 +431,12 @@ const NoteMeta = {
         break;
       case 'renameChapter':
         dialogType.title = '챕터 이름 변경';
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'deleteChapter':
+        dialogType.type = 'error';
+        dialogType.title = `${data.chapterList.length}개의 챕터를 삭제하시겠습니까?`;
+        dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
         dialogType.btns = this.setBtns(type);
         break;
       default:

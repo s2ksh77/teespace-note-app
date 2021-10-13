@@ -68,6 +68,13 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
     NoteStore.setLayoutState(layoutState);
   }, [layoutState]);
 
+  useEffect(() => {
+    return () => {
+      NoteStore.setLongPress(false);
+      ChapterStore.selectedChapters.clear();
+    };
+  }, [roomId]); // 동일하게 앱 켜두고 다른 방 이동시 unmount 되지 않음 (현재 platform 환경)
+
   return useObserver(() => (
     <I18nextProvider i18n={i18n}>
       <Wrapper>
