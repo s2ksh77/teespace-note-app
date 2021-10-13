@@ -29,7 +29,7 @@ const LNBContainer = () => {
     NoteStore.setLongPress(true);
   };
 
-  const handleCreateChapter = () => {
+  const handleChapterCreate = () => {
     NoteStore.setShowDialog(true);
     NoteStore.setModalInfo('createChapter', _, false);
   };
@@ -147,7 +147,7 @@ const LNBContainer = () => {
         </LongPressable>
         <LNBTag flexOrder={4} />
       </LNBBody>
-      <NewAddIcon id="newChapter" onClick={handleCreateChapter} />
+      <NewAddIcon id="newChapter" onClick={handleChapterCreate} />
     </LNBWrapper>
   ));
 };
