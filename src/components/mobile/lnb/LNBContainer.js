@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import { EventBus } from 'teespace-core';
+import { useCoreStores, EventBus } from 'teespace-core';
 import LongPressable from 'react-longpressable';
 import useNoteStore from '../../../store/useStore';
 
@@ -17,6 +17,7 @@ import { NewAddIcon } from '../../icons';
 
 const LNBContainer = () => {
   const { ChapterStore, NoteStore } = useNoteStore();
+  const { userStore } = useCoreStores();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -41,6 +42,36 @@ const LNBContainer = () => {
 
     ChapterStore.setChapterTitle(text);
     NoteStore.setModalInfo('renameChapter', { id, color }, false);
+    NoteStore.setShowDialog(true);
+  };
+
+  const getEditingPageList = async chapterId => {
+    const { noteList } = await ChapterStore.getChapterChildren(chapterId);
+    return noteList.filter(page => page.is_edit);
+  };
+
+  const handleChapterDelete = async () => {
+    const editingPageList = [];
+    const chapterList = await Promise.all(
+      [...ChapterStore.selectedChapters].map(async ([, chapter]) => {
+        editingPageList.push(...(await getEditingPageList(chapter.id)));
+        return { id: chapter.id };
+      }),
+    );
+
+    if (editingPageList.length === 1) {
+      const { displayName } = await userStore.getProfile(editingPageList[0].is_edit);
+      NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName }, false);
+    } else if (editingPageList.length > 1) {
+      NoteStore.setModalInfo(
+        'nonDeletableMultiPage',
+        { count: editingPageList.length },
+        false,
+      );
+    } else {
+      NoteStore.setModalInfo('deleteChapter', { chapterList }, false);
+    }
+
     NoteStore.setShowDialog(true);
   };
 
@@ -69,17 +100,7 @@ const LNBContainer = () => {
             {
               type: 'icon',
               action: 'remove',
-              onClick: () => {
-                // TODO: 수정 중인 페이지 확인
-                NoteStore.setModalInfo(
-                  'deleteChapter',
-                  {
-                    chapterList: Array.from(ChapterStore.selectedChapters, ([, v]) => v),
-                  },
-                  false,
-                );
-                NoteStore.setShowDialog(true);
-              },
+              onClick: handleChapterDelete,
               disabled: !ChapterStore.selectedChapters.size,
             },
             { type: 'icon', action: 'share' },
