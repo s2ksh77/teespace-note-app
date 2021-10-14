@@ -882,6 +882,7 @@ var ChapterStore = mobx.observable({
   scrollIntoViewId: '',
   chapterName: '',
   selectedChapters: new Map(),
+  chapterType: '',
   getLoadingPageInfo: function getLoadingPageInfo() {
     return this.loadingPageInfo;
   },
@@ -948,6 +949,9 @@ var ChapterStore = mobx.observable({
   getChapterId: function getChapterId(e) {
     var id = e.target.id;
     return id;
+  },
+  setChapterType: function setChapterType(type) {
+    this.chapterType = type;
   },
   getChapterRandomColor: function getChapterRandomColor() {
     var COLOR_ARRAY = Object.values(this.colorArray);
