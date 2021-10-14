@@ -44,6 +44,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
         PageStore.setPageList(res.children, color);
         ChapterStore.setChapterName(title);
         ChapterStore.setCurrentChapterId(id);
+        ChapterStore.setChapterType(res.type);
       }
       NoteStore.setTargetLayout('List');
     } catch (e) {

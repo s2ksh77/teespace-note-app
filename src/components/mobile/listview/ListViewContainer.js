@@ -15,10 +15,12 @@ import LongPressHeader from '../lnb/MainHeader';
 import PageItem from './PageItem';
 import NoContent from '../../page/NoContent';
 import { NewAddIcon } from '../../icons';
+import NoteUtil from '../../../NoteUtil';
 
 const ListViewContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const [isLongPress, setLongPress] = useState(false);
+  const { getChapterNumType } = NoteUtil;
 
   const onShortPress = () => {}; // event prevent
 
@@ -93,7 +95,11 @@ const ListViewContainer = () => {
         </LongPressable>
         {PageStore.pageList.length === 0 && <NoContent isWeb={false} />}
       </ListViewBody>
-      <NewAddIcon id="newPage" onClick={handlePageCreate} />
+      <NewAddIcon
+        id="newPage"
+        onClick={handlePageCreate}
+        display={getChapterNumType(ChapterStore.chapterType) <= 1 ? 'flex' : 'none'}
+      />
     </ListViewWrapper>
   ));
 };
