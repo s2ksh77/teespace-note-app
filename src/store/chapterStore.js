@@ -46,6 +46,7 @@ const ChapterStore = observable({
   scrollIntoViewId: '',
   chapterName: '',
   selectedChapters: new Map(),
+  chapterType: '',
 
   getLoadingPageInfo() {
     return this.loadingPageInfo;
@@ -115,6 +116,9 @@ const ChapterStore = observable({
       target: { id },
     } = e;
     return id;
+  },
+  setChapterType(type) {
+    this.chapterType = type;
   },
   getChapterRandomColor() {
     const COLOR_ARRAY = Object.values(this.colorArray);
