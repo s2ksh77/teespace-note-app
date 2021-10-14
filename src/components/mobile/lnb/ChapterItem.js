@@ -15,7 +15,7 @@ import { ChapterItemContainer } from '../styles/lnbStyles';
 import { CheckBoxContainer } from '../styles/listviewStyles';
 import { Checkbox } from 'antd';
 
-const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
+const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
   const { id, color, children, type, text: title } = chapter;
 
@@ -33,8 +33,11 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
   });
 
   const handleChapterClick = async () => {
-    if (NoteStore.isLongPress) {
+    if (NoteStore.isLongPress && !moveFlag) {
       handleCheckBoxChange(ChapterStore.selectedChapters.has(id));
+      return;
+    } else if (moveFlag) {
+      toggleCheckBoxChange();
       return;
     }
     try {
@@ -64,6 +67,10 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
         ChapterStore.selectedChapters.delete(id);
       }
     }
+  };
+  const toggleCheckBoxChange = () => {
+    ChapterStore.selectedChapters.clear();
+    ChapterStore.selectedChapters.set(id, chapter);
   };
 
   return useObserver(() => (
