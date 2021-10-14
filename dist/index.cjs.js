@@ -3913,20 +3913,22 @@ var PageStore = mobx.observable({
     (_document$getElementB4 = document.getElementById('tox-icon-highlight-bg-color__color')) === null || _document$getElementB4 === void 0 ? void 0 : _document$getElementB4.removeAttribute('stroke');
   },
   createNotePage: function createNotePage() {
-    var _this = this;
+    var _arguments = arguments,
+        _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
       var _EditorStore$tinymce, _EditorStore$tinymce$, _EditorStore$tinymce2;
 
-      var dto;
+      var isWeb, dto;
       return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              _context10.next = 2;
+              isWeb = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : true;
+              _context10.next = 3;
               return _this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, _this.createParent);
 
-            case 2:
+            case 3:
               dto = _context10.sent;
               _this.pageInfo = new PageModel(_objectSpread2(_objectSpread2({}, dto), {}, {
                 note_content: NoteUtil.decodeStr('<p><br></p>')
@@ -3935,7 +3937,7 @@ var PageStore = mobx.observable({
               _this.setIsNewPage(true);
 
               EditorStore.setIsSearch(false);
-              ChapterStore.getNoteChapterList();
+              if (isWeb) ChapterStore.getNoteChapterList();
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
               _this.currentPageId = dto.note_id;
               TagStore.setNoteTagList(dto.tagList); // []
@@ -3943,8 +3945,12 @@ var PageStore = mobx.observable({
               EditorStore.setFileList(dto.fileList); // null
 
               _this.noteTitle = '';
-              NoteStore.setTargetLayout('Content');
-              NoteStore.setShowPage(true); // initialize editor properties
+
+              if (isWeb) {
+                NoteStore.setTargetLayout('Content');
+                NoteStore.setShowPage(true);
+              } // initialize editor properties
+
 
               _this.initializeBoxColor();
 
