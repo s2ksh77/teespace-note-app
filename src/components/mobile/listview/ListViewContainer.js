@@ -30,6 +30,16 @@ const ListViewContainer = () => {
     return () => setLongPress(false);
   }, []);
 
+  const handlePageCreate = async () => {
+    try {
+      PageStore.setCreatePageParent(ChapterStore.currentChapterId);
+      await PageStore.createNotePage(false);
+      NoteStore.setTargetLayout('Editor');
+    } catch (e) {
+      console.log(`Create Page Error ${e}`);
+    }
+  };
+
   return useObserver(() => (
     <ListViewWrapper>
       {isLongPress ? (
@@ -83,7 +93,7 @@ const ListViewContainer = () => {
         </LongPressable>
         {PageStore.pageList.length === 0 && <NoContent isWeb={false} />}
       </ListViewBody>
-      <NewAddIcon id="newPage" />
+      <NewAddIcon id="newPage" onClick={handlePageCreate} />
     </ListViewWrapper>
   ));
 };

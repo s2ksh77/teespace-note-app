@@ -246,7 +246,7 @@ const PageStore = observable({
       ?.removeAttribute('stroke');
   },
 
-  async createNotePage() {
+  async createNotePage(isWeb = true) {
     const dto = await this.createPage(
       i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
       null,
@@ -260,15 +260,18 @@ const PageStore = observable({
     this.setIsNewPage(true);
     EditorStore.setIsSearch(false);
 
-    ChapterStore.getNoteChapterList();
+    if (isWeb) ChapterStore.getNoteChapterList();
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
     this.currentPageId = dto.note_id;
     TagStore.setNoteTagList(dto.tagList); // []
     EditorStore.setFileList(dto.fileList); // null
     this.noteTitle = '';
 
-    NoteStore.setTargetLayout('Content');
-    NoteStore.setShowPage(true);
+
+    if (isWeb) {
+      NoteStore.setTargetLayout('Content');
+      NoteStore.setShowPage(true);
+    }
 
     // initialize editor properties
     this.initializeBoxColor();
