@@ -32,7 +32,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
   };
 
   const fetchData = async () => {
-    await ChapterStore.getChapterList();
+    await ChapterStore.getNoteChapterList();
   };
 
   useEffect(() => {

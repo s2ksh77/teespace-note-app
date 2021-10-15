@@ -37,6 +37,7 @@ const PageStore = observable({
   recoverInfo: {}, // 복원 팝업에서 '복구'클릭시 필요
   pageList: [],
   selectedPages: new Map(),
+  isMove: false, // 모바일 웹뷰 -> 페이지 이동 Container Flag
 
   setPageList(arr, color) {
     this.pageList = arr.map(page => ({ ...page, color }));
@@ -160,6 +161,9 @@ const PageStore = observable({
   },
   setIsRecycleBin(flag) {
     this.isRecycleBin = flag;
+  },
+  setIsMove(flag) {
+    this.isMove = flag;
   },
 
   async getNoteInfoList(noteId) {

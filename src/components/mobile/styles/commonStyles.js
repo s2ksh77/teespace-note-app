@@ -12,7 +12,8 @@ export const TextButtonWrapper = styled.div`
   display: flex;
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${props => props.theme.TextPoinGreen};
+  color: ${props => (props.disabled ? '#CCCCCC' : props.theme.TextPoinGreen)};
+  cursor: ${props => (props.disabled ? 'not-allowed' : null)};
 `;
 
 export const SearchBarWrapper = styled.div`

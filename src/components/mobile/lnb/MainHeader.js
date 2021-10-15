@@ -11,6 +11,7 @@ import {
   TrashIcon,
   ShareIcon,
   EditIcon,
+  MoveIcon,
 } from '../../icons';
 
 const MainHeader = ({
@@ -75,6 +76,15 @@ const MainHeader = ({
             disabled={disabled}
           />
         );
+      case 'move':
+        return (
+          <MoveIcon
+            width="1.25"
+            height="1.25"
+            color={isLongPress ? '#FFFFFF' : themeContext.IconNormal2}
+            isButton={true}
+          />
+        );
       default:
         return null;
     }
@@ -91,7 +101,11 @@ const MainHeader = ({
           );
         case 'text':
           return (
-            <TextButtonWrapper key={button.text} onClick={button.onClick}>
+            <TextButtonWrapper
+              key={button.text}
+              onClick={button.onClick}
+              disabled={button.disabled}
+            >
               {button.text}
             </TextButtonWrapper>
           );

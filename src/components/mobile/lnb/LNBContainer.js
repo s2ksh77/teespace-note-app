@@ -168,7 +168,11 @@ const LNBContainer = () => {
         </LongPressable>
         <LNBTag flexOrder={4} />
       </LNBBody>
-      <NewAddIcon id="newChapter" onClick={handleChapterCreate} />
+      <NewAddIcon
+        id="newChapter"
+        onClick={handleChapterCreate}
+        display={NoteStore.isLongPress ? 'none' : 'flex'}
+      />
     </LNBWrapper>
   ));
 };
