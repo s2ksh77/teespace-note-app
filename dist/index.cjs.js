@@ -3545,6 +3545,8 @@ var PageStore = mobx.observable({
   // 복원 팝업에서 '복구'클릭시 필요
   pageList: [],
   selectedPages: new Map(),
+  isMove: false,
+  // 모바일 웹뷰 -> 페이지 이동 Container Flag
   setPageList: function setPageList(arr, color) {
     this.pageList = arr.map(function (page) {
       return _objectSpread2(_objectSpread2({}, page), {}, {
@@ -3670,6 +3672,9 @@ var PageStore = mobx.observable({
   },
   setIsRecycleBin: function setIsRecycleBin(flag) {
     this.isRecycleBin = flag;
+  },
+  setIsMove: function setIsMove(flag) {
+    this.isMove = flag;
   },
   getNoteInfoList: function getNoteInfoList(noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
