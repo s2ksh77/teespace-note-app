@@ -80,6 +80,11 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
       <Wrapper>
         <Container targetLayout={NoteStore.targetLayout} />
         {NoteStore.showDialog && <NoteModal isWeb={false} />}
+        <Toast
+          visible={NoteStore.isVisibleToast}
+          children={NoteStore.toastText}
+          onClose={() => NoteStore.setIsVisibleToast(false)}
+        />
       </Wrapper>
     </I18nextProvider>
   ));
