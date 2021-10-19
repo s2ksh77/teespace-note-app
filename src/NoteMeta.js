@@ -251,6 +251,33 @@ const NoteMeta = {
           ChapterStore.selectedChapters.clear();
         });
         break;
+      case 'deleteSharedPage':
+        eventList.push(() => {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push(async () => {
+          await PageStore.deleteNotePage(data);
+          const { children, color } = await ChapterStore.getChapterInfoList(
+            ChapterStore.currentChapterId,
+          );
+          PageStore.setPageList(children, color);
+          NoteStore.setModalInfo(null);
+          NoteStore.setLongPress(false);
+          PageStore.selectedPages.clear();
+        });
+        break;
+      case 'emptySharedPage':
+        eventList.push(() => {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push(async () => {
+          await ChapterStore.deleteNoteChapter(data);
+          NoteStore.setModalInfo(null);
+          NoteStore.setLongPress(false);
+          PageStore.selectedPages.clear();
+          NoteStore.setTargetLayout('LNB');
+        });
+        break;
       default:
         break;
     }
@@ -299,6 +326,8 @@ const NoteMeta = {
       case 'renameChapter':
         return [defaultBtn2, { ...defaultBtn1, text: '변경' }];
       case 'deleteChapter':
+      case 'deleteSharedPage':
+      case 'emptySharedPage':
         return [defaultBtn2, { ...defaultBtn1, text: '삭제' }];
       default:
         return;
@@ -436,6 +465,15 @@ const NoteMeta = {
       case 'deleteChapter':
         dialogType.type = 'error';
         dialogType.title = `${data.chapterList.length}개의 챕터를 삭제하시겠습니까?`;
+        dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'deleteSharedPage':
+      case 'emptySharedPage':
+        dialogType.type = 'error';
+        dialogType.title = `${
+          type === 'deleteSharedPage' ? data.pageList.length : data.count
+        }개의 페이지를 삭제하시겠습니까?`;
         dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
         dialogType.btns = this.setBtns(type);
         break;
