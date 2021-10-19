@@ -33,10 +33,6 @@ const ListViewContainer = () => {
     NoteStore.setLongPress(true);
   };
 
-  useEffect(() => {
-    return () => NoteStore.setLongPress(false);
-  }, []);
-
   const handlePageCreate = async () => {
     try {
       PageStore.setCreatePageParent(ChapterStore.currentChapterId);
