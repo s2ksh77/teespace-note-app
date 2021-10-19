@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { Checkbox } from 'antd';
 import LongPressable from 'react-longpressable';
+import { useCoreStores } from 'teespace-core';
 import useNoteStore from '../../../store/useStore';
 
 import {
@@ -23,6 +24,7 @@ import ChapterItem from '../lnb/ChapterItem';
 
 const ListViewContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { userStore } = useCoreStores();
   const { getChapterNumType } = NoteUtil;
 
   const onShortPress = () => {}; // event prevent
@@ -42,6 +44,41 @@ const ListViewContainer = () => {
       NoteStore.setTargetLayout('Editor');
     } catch (e) {
       console.log(`Create Page Error ${e}`);
+    }
+  };
+
+  const handlePageDelete = async () => {
+    const editingUserIdList = [];
+    const pageList = await Promise.all(
+      [...PageStore.selectedPages].map(async ([id]) => {
+        const {
+          is_edit: editingUserId,
+          parent_notebook: chapterId,
+        } = await PageStore.getNoteInfoList(id);
+        if (editingUserId) editingUserIdList.push(editingUserId);
+        return { note_id: id, restoreChapterId: chapterId };
+      }),
+    );
+
+    if (editingUserIdList.length === 1) {
+      const { displayName } = await userStore.getProfile(editingUserIdList[0]);
+      NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName }, false);
+    } else if (editingUserIdList.length > 1) {
+      NoteStore.setModalInfo(
+        'nonDeletableMultiPage',
+        { count: editingUserIdList.length },
+        false,
+      );
+    } else {
+      // TODO: 전달받은 페이지를 삭제하는 경우
+      // TODO: 전달받은 페이지를 모두 삭제하는 경우
+      await PageStore.throwNotePage({ pageList });
+      const { children, color } = await ChapterStore.getChapterInfoList(
+        ChapterStore.currentChapterId,
+      );
+      PageStore.setPageList(children, color);
+      NoteStore.setLongPress(false);
+      PageStore.selectedPages.clear();
     }
   };
 
@@ -70,7 +107,11 @@ const ListViewContainer = () => {
                   PageStore.setIsMove(true);
                 },
               },
-              { type: 'icon', action: 'remove' },
+              {
+                type: 'icon',
+                action: 'remove',
+                onClick: handlePageDelete,
+              },
               { type: 'icon', action: 'share' },
             ]}
             isLongPress={NoteStore.isLongPress}
