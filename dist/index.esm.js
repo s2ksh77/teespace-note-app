@@ -785,6 +785,44 @@ var PageModel = /*#__PURE__*/function () {
   return PageModel;
 }();
 
+/* eslint-disable no-underscore-dangle */
+var ChapterModel = /*#__PURE__*/function () {
+  function ChapterModel(data) {
+    _classCallCheck(this, ChapterModel);
+
+    this._data = data;
+  }
+
+  _createClass(ChapterModel, [{
+    key: "id",
+    get: function get() {
+      return this._data.id;
+    }
+  }, {
+    key: "children",
+    get: function get() {
+      return this._data.children;
+    }
+  }, {
+    key: "title",
+    get: function get() {
+      return this._data.text;
+    }
+  }, {
+    key: "type",
+    get: function get() {
+      return this._data.type;
+    }
+  }, {
+    key: "color",
+    get: function get() {
+      return this._data.color;
+    }
+  }]);
+
+  return ChapterModel;
+}();
+
 // isNil : Checks if the input value is null or undefined.
 // isEmpty : Returns true if the given value is its type's empty value; false otherwise.
 
@@ -807,6 +845,7 @@ var checkDuplicateIgnoreCase = function checkDuplicateIgnoreCase(targetArr, key,
 };
 
 var ChapterStore = observable({
+  chapterInfo: new ChapterModel({}),
   loadingPageInfo: false,
   // 2panel(pageContainer용)
   chapterList: [],
@@ -1757,6 +1796,31 @@ var ChapterStore = observable({
       NoteStore.setIsDragging(false);
     }
   },
+  fetchChapterInfo: function fetchChapterInfo(id) {
+    var _this14 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
+      var dto;
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        while (1) {
+          switch (_context18.prev = _context18.next) {
+            case 0:
+              _context18.next = 2;
+              return _this14.getChapterInfoList(id);
+
+            case 2:
+              dto = _context18.sent;
+              _this14.chapterInfo = new ChapterModel(dto);
+              return _context18.abrupt("return", _this14.chapterInfo);
+
+            case 5:
+            case "end":
+              return _context18.stop();
+          }
+        }
+      }, _callee18);
+    }))();
+  },
 
   /* 
     - search 관련
@@ -1771,14 +1835,14 @@ var ChapterStore = observable({
     this.setSearchStr('');
   },
   getChapterFirstPage: function getChapterFirstPage(targetId) {
-    var _this14 = this;
+    var _this15 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
-          switch (_context18.prev = _context18.next) {
+          switch (_context19.prev = _context19.next) {
             case 0:
-              _this14.getChapterList().then(function (chapterList) {
+              _this15.getChapterList().then(function (chapterList) {
                 var targetChapter = chapterList.filter(function (chapter) {
                   return chapter.id === targetId;
                 })[0];
@@ -1791,63 +1855,63 @@ var ChapterStore = observable({
 
             case 1:
             case "end":
-              return _context18.stop();
-          }
-        }
-      }, _callee18);
-    }))();
-  },
-  getSearchResult: function getSearchResult() {
-    var _arguments2 = arguments,
-        _this15 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
-      var _dto$chapterList;
-
-      var keyword, dto, filtered;
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
-        while (1) {
-          switch (_context19.prev = _context19.next) {
-            case 0:
-              keyword = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this15.searchStr.trim();
-
-              _this15.setIsSearching(true);
-
-              _this15.setIsLoadingSearchResult(true);
-
-              _context19.next = 5;
-              return _this15.getSearchList(keyword);
-
-            case 5:
-              dto = _context19.sent;
-              filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
-                return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
-              });
-              _this15.searchResult = {
-                keyword: keyword,
-                chapter: (filtered === null || filtered === void 0 ? void 0 : filtered.length) > 0 ? filtered : null,
-                page: _this15.preProcessPageList(dto.pageList, keyword),
-                tag: dto.tagList
-              };
-
-              _this15.setIsLoadingSearchResult(false);
-
-              return _context19.abrupt("return", _this15.searchResult);
-
-            case 10:
-            case "end":
               return _context19.stop();
           }
         }
       }, _callee19);
     }))();
   },
+  getSearchResult: function getSearchResult() {
+    var _arguments2 = arguments,
+        _this16 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+      var _dto$chapterList;
+
+      var keyword, dto, filtered;
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
+        while (1) {
+          switch (_context20.prev = _context20.next) {
+            case 0:
+              keyword = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this16.searchStr.trim();
+
+              _this16.setIsSearching(true);
+
+              _this16.setIsLoadingSearchResult(true);
+
+              _context20.next = 5;
+              return _this16.getSearchList(keyword);
+
+            case 5:
+              dto = _context20.sent;
+              filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
+                return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
+              });
+              _this16.searchResult = {
+                keyword: keyword,
+                chapter: (filtered === null || filtered === void 0 ? void 0 : filtered.length) > 0 ? filtered : null,
+                page: _this16.preProcessPageList(dto.pageList, keyword),
+                tag: dto.tagList
+              };
+
+              _this16.setIsLoadingSearchResult(false);
+
+              return _context20.abrupt("return", _this16.searchResult);
+
+            case 10:
+            case "end":
+              return _context20.stop();
+          }
+        }
+      }, _callee20);
+    }))();
+  },
   preProcessPageList: function preProcessPageList(pageList, keyword) {
-    var _this16 = this;
+    var _this17 = this;
 
     if (pageList) {
       pageList.forEach(function (page) {
-        if (page.text_content.includes(keyword)) page.contentPreview = _this16.getContentPreview(page.text_content, keyword);
+        if (page.text_content.includes(keyword)) page.contentPreview = _this17.getContentPreview(page.text_content, keyword);
       });
     }
 
@@ -1858,31 +1922,31 @@ var ChapterStore = observable({
     return content.length === result.length ? result : "...".concat(result);
   },
   createShareChapter: function createShareChapter(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
       var _yield$NoteRepository13, dto;
 
-      return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      return regeneratorRuntime.wrap(function _callee21$(_context21) {
         while (1) {
-          switch (_context20.prev = _context20.next) {
+          switch (_context21.prev = _context21.next) {
             case 0:
-              _context20.next = 2;
+              _context21.next = 2;
               return NoteRepository$1.createShareChapter(targetList);
 
             case 2:
-              _yield$NoteRepository13 = _context20.sent;
+              _yield$NoteRepository13 = _context21.sent;
               dto = _yield$NoteRepository13.data.dto;
-              return _context20.abrupt("return", dto);
+              return _context21.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context20.stop();
+              return _context21.stop();
           }
         }
-      }, _callee20);
+      }, _callee21);
     }))();
   },
   createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
-    var _this17 = this;
+    var _this18 = this;
 
     if (!targetChapterList) return;
     var targetChId = NoteStore.getTargetChId(targetRoomId);
@@ -1904,7 +1968,7 @@ var ChapterStore = observable({
       };
     });
     this.createShareChapter(targetList).then(function () {
-      _this17.getNoteChapterList();
+      _this18.getNoteChapterList();
 
       NoteStore.setIsDragging(false);
     });
@@ -1926,54 +1990,54 @@ var ChapterStore = observable({
     }
   },
   setFirstNoteInfo: function setFirstNoteInfo() {
-    var _this18 = this;
+    var _this19 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
       var targetChapter, pageId;
-      return regeneratorRuntime.wrap(function _callee21$(_context21) {
+      return regeneratorRuntime.wrap(function _callee22$(_context22) {
         while (1) {
-          switch (_context21.prev = _context21.next) {
+          switch (_context22.prev = _context22.next) {
             case 0:
-              targetChapter = _this18.chapterList.length > 0 ? _this18.chapterList[0] : null;
+              targetChapter = _this19.chapterList.length > 0 ? _this19.chapterList[0] : null;
 
               if (targetChapter) {
-                _context21.next = 5;
+                _context22.next = 5;
                 break;
               }
 
-              _this18.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
+              _this19.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
 
 
               PageStore.fetchCurrentPageData('');
-              return _context21.abrupt("return");
+              return _context22.abrupt("return");
 
             case 5:
-              _this18.setFirstDragData(targetChapter);
+              _this19.setFirstDragData(targetChapter);
 
               pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
               // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
 
               if (!pageId) {
-                _context21.next = 12;
+                _context22.next = 12;
                 break;
               }
 
-              _context21.next = 10;
+              _context22.next = 10;
               return PageStore.fetchCurrentPageData(pageId);
 
             case 10:
-              _context21.next = 13;
+              _context22.next = 13;
               break;
 
             case 12:
-              _this18.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+              _this19.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
 
             case 13:
             case "end":
-              return _context21.stop();
+              return _context22.stop();
           }
         }
-      }, _callee21);
+      }, _callee22);
     }))();
   },
 
@@ -1982,66 +2046,66 @@ var ChapterStore = observable({
   */
   // 처음 축소 상태에서 확대 상태로 바꿀 때
   fetchFirstNote: function fetchFirstNote() {
-    var _this19 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
-      return regeneratorRuntime.wrap(function _callee22$(_context22) {
-        while (1) {
-          switch (_context22.prev = _context22.next) {
-            case 0:
-              _this19.setLoadingPageInfo(true);
-
-              _context22.next = 3;
-              return _this19.setFirstNoteInfo();
-
-            case 3:
-              _this19.setLoadingPageInfo(false);
-
-            case 4:
-            case "end":
-              return _context22.stop();
-          }
-        }
-      }, _callee22);
-    }))();
-  },
-  // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
-  fetchChapterList: function fetchChapterList() {
-    var _arguments3 = arguments,
-        _this20 = this;
+    var _this20 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
-      var isInit;
       return regeneratorRuntime.wrap(function _callee23$(_context23) {
         while (1) {
           switch (_context23.prev = _context23.next) {
             case 0:
-              isInit = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : false;
-
-              // 한 군데에서만 부르긴하지만 일단 param 추가
               _this20.setLoadingPageInfo(true);
 
-              _context23.next = 4;
-              return _this20.getNoteChapterList(isInit);
-
-            case 4:
-              if (!(_this20.chapterList.length > 0)) {
-                _context23.next = 7;
-                break;
-              }
-
-              _context23.next = 7;
+              _context23.next = 3;
               return _this20.setFirstNoteInfo();
 
-            case 7:
+            case 3:
               _this20.setLoadingPageInfo(false);
 
-            case 8:
+            case 4:
             case "end":
               return _context23.stop();
           }
         }
       }, _callee23);
+    }))();
+  },
+  // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
+  fetchChapterList: function fetchChapterList() {
+    var _arguments3 = arguments,
+        _this21 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
+      var isInit;
+      return regeneratorRuntime.wrap(function _callee24$(_context24) {
+        while (1) {
+          switch (_context24.prev = _context24.next) {
+            case 0:
+              isInit = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : false;
+
+              // 한 군데에서만 부르긴하지만 일단 param 추가
+              _this21.setLoadingPageInfo(true);
+
+              _context24.next = 4;
+              return _this21.getNoteChapterList(isInit);
+
+            case 4:
+              if (!(_this21.chapterList.length > 0)) {
+                _context24.next = 7;
+                break;
+              }
+
+              _context24.next = 7;
+              return _this21.setFirstNoteInfo();
+
+            case 7:
+              _this21.setLoadingPageInfo(false);
+
+            case 8:
+            case "end":
+              return _context24.stop();
+          }
+        }
+      }, _callee24);
     }))();
   },
   // localStorage에서 page 얻기
@@ -2080,62 +2144,62 @@ var ChapterStore = observable({
     if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
   },
   openNote: function openNote() {
-    var _this21 = this;
+    var _this22 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25() {
       var pageId;
-      return regeneratorRuntime.wrap(function _callee24$(_context24) {
+      return regeneratorRuntime.wrap(function _callee25$(_context25) {
         while (1) {
-          switch (_context24.prev = _context24.next) {
+          switch (_context25.prev = _context25.next) {
             case 0:
-              _context24.prev = 0;
-              _context24.t0 = NoteStore.metaTagInfo.type;
-              _context24.next = _context24.t0 === 'chapter' ? 4 : _context24.t0 === 'page' ? 13 : 17;
+              _context25.prev = 0;
+              _context25.t0 = NoteStore.metaTagInfo.type;
+              _context25.next = _context25.t0 === 'chapter' ? 4 : _context25.t0 === 'page' ? 13 : 17;
               break;
 
             case 4:
               // chapter, page 선택
               NoteStore.setTargetLayout('LNB');
 
-              _this21.setScrollIntoViewId(NoteStore.metaTagInfo.id);
+              _this22.setScrollIntoViewId(NoteStore.metaTagInfo.id);
 
-              _context24.next = 8;
-              return _this21.getNoteChapterList();
+              _context25.next = 8;
+              return _this22.getNoteChapterList();
 
             case 8:
               // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
-              _this21.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
+              _this22.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
 
-              pageId = _this21.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+              pageId = _this22.getChapterFirstPageId(NoteStore.metaTagInfo.id);
               /**
                * 현재 챕터 클릭 로직과 동일하게 함
                * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
                * 확대버튼 눌렀을 때 다시 getNoteInfo 하지 않음
                */
 
-              _context24.next = 12;
+              _context25.next = 12;
               return PageStore.fetchCurrentPageData(pageId ? pageId : '');
 
             case 12:
-              return _context24.abrupt("break", 17);
+              return _context25.abrupt("break", 17);
 
             case 13:
-              _context24.next = 15;
+              _context25.next = 15;
               return PageStore.fetchCurrentPageData(NoteStore.metaTagInfo.id);
 
             case 15:
               NoteStore.setTargetLayout('Content'); // 챕터 없습니다 페이지 나오지 않게 하기
 
-              return _context24.abrupt("break", 17);
+              return _context25.abrupt("break", 17);
 
             case 17:
-              _context24.next = 22;
+              _context25.next = 22;
               break;
 
             case 19:
-              _context24.prev = 19;
-              _context24.t1 = _context24["catch"](0);
-              console.log('e', _context24.t1);
+              _context25.prev = 19;
+              _context25.t1 = _context25["catch"](0);
+              console.log('e', _context25.t1);
 
             case 22:
               NoteStore.setMetaTagInfo({
@@ -2146,10 +2210,10 @@ var ChapterStore = observable({
 
             case 23:
             case "end":
-              return _context24.stop();
+              return _context25.stop();
           }
         }
-      }, _callee24, null, [[0, 19]]);
+      }, _callee25, null, [[0, 19]]);
     }))();
   },
   getRoomChapterList: function getRoomChapterList() {
