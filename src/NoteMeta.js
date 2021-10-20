@@ -87,7 +87,6 @@ const NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           PageStore.deleteNotePage(data);
-          if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -199,7 +198,6 @@ const NoteMeta = {
           e.stopPropagation();
           const { fileList: target } = await EditorStore.getRecycleBinAllFile();
           PageStore.deleteNotePage(data);
-          if (target) EditorStore.deleteAllFile(target);
         });
         eventList.push(function (e) {
           e.stopPropagation();
