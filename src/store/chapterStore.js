@@ -1,4 +1,5 @@
 import { observable } from 'mobx';
+import ChapterModel from './model/ChapterModel';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
@@ -8,6 +9,7 @@ import NoteUtil from '../NoteUtil';
 import i18n from '../i18n/i18n';
 
 const ChapterStore = observable({
+  chapterInfo: new ChapterModel({}),
   loadingPageInfo: false, // 2panel(pageContainer용)
   chapterList: [],
   currentChapterId: '',
@@ -586,6 +588,13 @@ const ChapterStore = observable({
       NoteStore.setIsDragging(false);
     }
   },
+
+  async fetchChapterInfo(id) {
+    const dto = await this.getChapterInfoList(id);
+    this.chapterInfo = new ChapterModel(dto);
+    return this.chapterInfo;
+  },
+
   /* 
     - search 관련
     - 방 바꼈을 때 변수 init 필요
