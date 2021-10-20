@@ -326,35 +326,34 @@ const PageStore = observable({
     NoteStore.setShowModal(false);
   },
 
-  deleteNotePage({ pageList, selectablePageId }) {
-    this.deletePage(pageList).then(() => {
-      if (!this.isNewPage) {
-        if (this.currentPageId === pageList[0].note_id) {
-          this.setCurrentPageId(selectablePageId);
-          this.fetchCurrentPageData(selectablePageId);
-        }
+  async deleteNotePage({ pageList, selectablePageId }) {
+    await this.deletePage(pageList);
+    if (!this.isNewPage) {
+      if (this.currentPageId === pageList[0].note_id) {
+        this.setCurrentPageId(selectablePageId);
+        this.fetchCurrentPageData(selectablePageId);
+      }
+    } else {
+      if (NoteStore.layoutState === 'collapse') {
+        NoteStore.setTargetLayout('LNB');
+        this.setIsNewPage(false);
+        this.fetchCurrentPageData('');
+        ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
       } else {
-        if (NoteStore.layoutState === 'collapse') {
-          NoteStore.setTargetLayout('LNB');
-          this.setIsNewPage(false);
-          this.fetchCurrentPageData('');
-          ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
+        const currentChapter = ChapterStore.chapterList.find(
+          chapter => chapter.id === this.createParent,
+        );
+        if (currentChapter.children.length > 1) {
+          const pageId = currentChapter.children[currentChapter.children.length - 2].id;
+          this.setCurrentPageId(pageId);
+          this.fetchCurrentPageData(pageId);
         } else {
-          const currentChapter = ChapterStore.chapterList.find(
-            chapter => chapter.id === this.createParent,
-          );
-          if (currentChapter.children.length > 1) {
-            const pageId = currentChapter.children[currentChapter.children.length - 2].id;
-            this.setCurrentPageId(pageId);
-            this.fetchCurrentPageData(pageId);
-          } else {
-            this.fetchCurrentPageData('');
-          }
+          this.fetchCurrentPageData('');
         }
       }
-      ChapterStore.getNoteChapterList();
-      NoteStore.setShowModal(false);
-    });
+    }
+    ChapterStore.getNoteChapterList();
+    NoteStore.setShowModal(false);
   },
 
   async renameNotePage({ id, title, chapterId }) {

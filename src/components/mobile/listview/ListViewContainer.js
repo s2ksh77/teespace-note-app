@@ -33,10 +33,6 @@ const ListViewContainer = () => {
     NoteStore.setLongPress(true);
   };
 
-  useEffect(() => {
-    return () => NoteStore.setLongPress(false);
-  }, []);
-
   const handlePageCreate = async () => {
     try {
       PageStore.setCreatePageParent(ChapterStore.currentChapterId);
@@ -70,16 +66,32 @@ const ListViewContainer = () => {
         false,
       );
     } else {
-      // TODO: 전달받은 페이지를 삭제하는 경우
-      // TODO: 전달받은 페이지를 모두 삭제하는 경우
-      await PageStore.throwNotePage({ pageList });
-      const { children, color } = await ChapterStore.getChapterInfoList(
-        ChapterStore.currentChapterId,
-      );
-      PageStore.setPageList(children, color);
-      NoteStore.setLongPress(false);
-      PageStore.selectedPages.clear();
+      const isShared = [...PageStore.selectedPages][0][1]?.type === 'shared';
+      if (!isShared) {
+        await PageStore.throwNotePage({ pageList });
+        const { children, color } = await ChapterStore.getChapterInfoList(
+          ChapterStore.currentChapterId,
+        );
+        PageStore.setPageList(children, color);
+        NoteStore.setLongPress(false);
+        PageStore.selectedPages.clear();
+        return;
+      }
+
+      if (pageList.length === PageStore.pageList.length) {
+        NoteStore.setModalInfo(
+          'emptySharedPage',
+          {
+            chapterList: [{ id: ChapterStore.currentChapterId }],
+            count: pageList.length,
+          },
+          false,
+        );
+      } else {
+        NoteStore.setModalInfo('deleteSharedPage', { pageList }, false);
+      }
     }
+    NoteStore.setShowDialog(true);
   };
 
   return useObserver(() => (
