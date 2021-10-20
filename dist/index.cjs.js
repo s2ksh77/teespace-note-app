@@ -4041,65 +4041,80 @@ var PageStore = mobx.observable({
   deleteNotePage: function deleteNotePage(_ref3) {
     var _this3 = this;
 
-    var pageList = _ref3.pageList,
-        selectablePageId = _ref3.selectablePageId;
-    this.deletePage(pageList).then(function () {
-      if (!_this3.isNewPage) {
-        if (_this3.currentPageId === pageList[0].note_id) {
-          _this3.setCurrentPageId(selectablePageId);
-
-          _this3.fetchCurrentPageData(selectablePageId);
-        }
-      } else {
-        if (NoteStore.layoutState === 'collapse') {
-          NoteStore.setTargetLayout('LNB');
-
-          _this3.setIsNewPage(false);
-
-          _this3.fetchCurrentPageData('');
-
-          ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
-        } else {
-          var currentChapter = ChapterStore.chapterList.find(function (chapter) {
-            return chapter.id === _this3.createParent;
-          });
-
-          if (currentChapter.children.length > 1) {
-            var pageId = currentChapter.children[currentChapter.children.length - 2].id;
-
-            _this3.setCurrentPageId(pageId);
-
-            _this3.fetchCurrentPageData(pageId);
-          } else {
-            _this3.fetchCurrentPageData('');
-          }
-        }
-      }
-
-      ChapterStore.getNoteChapterList();
-      NoteStore.setShowModal(false);
-    });
-  },
-  renameNotePage: function renameNotePage(_ref4) {
-    var _this4 = this;
-
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var id, title, chapterId, dto;
+      var pageList, selectablePageId, currentChapter, pageId;
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
           switch (_context12.prev = _context12.next) {
             case 0:
-              id = _ref4.id, title = _ref4.title, chapterId = _ref4.chapterId;
+              pageList = _ref3.pageList, selectablePageId = _ref3.selectablePageId;
               _context12.next = 3;
+              return _this3.deletePage(pageList);
+
+            case 3:
+              if (!_this3.isNewPage) {
+                if (_this3.currentPageId === pageList[0].note_id) {
+                  _this3.setCurrentPageId(selectablePageId);
+
+                  _this3.fetchCurrentPageData(selectablePageId);
+                }
+              } else {
+                if (NoteStore.layoutState === 'collapse') {
+                  NoteStore.setTargetLayout('LNB');
+
+                  _this3.setIsNewPage(false);
+
+                  _this3.fetchCurrentPageData('');
+
+                  ChapterStore.setCurrentChapterInfo('', false); // chapterId='', isRecycleBin=false
+                } else {
+                  currentChapter = ChapterStore.chapterList.find(function (chapter) {
+                    return chapter.id === _this3.createParent;
+                  });
+
+                  if (currentChapter.children.length > 1) {
+                    pageId = currentChapter.children[currentChapter.children.length - 2].id;
+
+                    _this3.setCurrentPageId(pageId);
+
+                    _this3.fetchCurrentPageData(pageId);
+                  } else {
+                    _this3.fetchCurrentPageData('');
+                  }
+                }
+              }
+
+              ChapterStore.getNoteChapterList();
+              NoteStore.setShowModal(false);
+
+            case 6:
+            case "end":
+              return _context12.stop();
+          }
+        }
+      }, _callee12);
+    }))();
+  },
+  renameNotePage: function renameNotePage(_ref4) {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+      var id, title, chapterId, dto;
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+        while (1) {
+          switch (_context13.prev = _context13.next) {
+            case 0:
+              id = _ref4.id, title = _ref4.title, chapterId = _ref4.chapterId;
+              _context13.next = 3;
               return _this4.renamePage(id, title.trim(), chapterId);
 
             case 3:
-              dto = _context12.sent;
+              dto = _context13.sent;
               if (_this4.dragData.get(id)) _this4.dragData.get(id).item.text = dto.note_title;
 
               _this4.fetchNoteInfoList(id);
 
-              _context12.next = 8;
+              _context13.next = 8;
               return ChapterStore.getNoteChapterList();
 
             case 8:
@@ -4107,10 +4122,10 @@ var PageStore = mobx.observable({
 
             case 9:
             case "end":
-              return _context12.stop();
+              return _context13.stop();
           }
         }
-      }, _callee12);
+      }, _callee13);
     }))();
   },
   createDragData: function createDragData(pageId, chapterId) {
@@ -4141,27 +4156,27 @@ var PageStore = mobx.observable({
     this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
       var _yield$NoteRepository10, dto;
 
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
-              _context13.next = 2;
+              _context14.next = 2;
               return NoteRepository$1.movePage(movePageId, moveTargetChapterId);
 
             case 2:
-              _yield$NoteRepository10 = _context13.sent;
+              _yield$NoteRepository10 = _context14.sent;
               dto = _yield$NoteRepository10.data.dto;
-              return _context13.abrupt("return", dto);
+              return _context14.abrupt("return", dto);
 
             case 5:
             case "end":
-              return _context13.stop();
+              return _context14.stop();
           }
         }
-      }, _callee13);
+      }, _callee14);
     }))();
   },
   getSortedDragDataList: function getSortedDragDataList() {
@@ -4177,11 +4192,11 @@ var PageStore = mobx.observable({
   moveNotePage: function moveNotePage(moveTargetChapterId, moveTargetChapterIdx, moveTargetPageIdx) {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var item, sortedDragDataList, sortedMovePages, pageIds, moveCntInSameChapter, moveCntToAnotherChapter, startIdx, moveCnt;
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
-          switch (_context14.prev = _context14.next) {
+          switch (_context15.prev = _context15.next) {
             case 0:
               item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
               sortedDragDataList = _this5.getSortedDragDataList();
@@ -4195,7 +4210,7 @@ var PageStore = mobx.observable({
                 if (!_this5.dragData.get(pageId)) pageIds.push(pageId);
               });
               if (moveTargetPageIdx >= pageIds.length) pageIds.push.apply(pageIds, _toConsumableArray(sortedMovePages));
-              _context14.next = 8;
+              _context15.next = 8;
               return Promise.all(sortedDragDataList.slice().reverse().map(function (data) {
                 if (data.chapterId !== moveTargetChapterId && ChapterStore.pageMap.get(data.item.id)) {
                   item[data.chapterIdx].children.splice(data.pageIdx, 1);
@@ -4223,16 +4238,16 @@ var PageStore = mobx.observable({
               moveCnt = moveCntInSameChapter + moveCntToAnotherChapter;
 
               if (!(moveCnt > 0)) {
-                _context14.next = 24;
+                _context15.next = 24;
                 break;
               }
 
               localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(item));
-              _context14.next = 18;
+              _context15.next = 18;
               return ChapterStore.getNoteChapterList();
 
             case 18:
-              _context14.next = 20;
+              _context15.next = 20;
               return _this5.fetchCurrentPageData(sortedMovePages[0]);
 
             case 20:
@@ -4249,7 +4264,7 @@ var PageStore = mobx.observable({
               }
 
               NoteStore.setIsVisibleToast(true);
-              _context14.next = 25;
+              _context15.next = 25;
               break;
 
             case 24:
@@ -4261,45 +4276,45 @@ var PageStore = mobx.observable({
 
             case 26:
             case "end":
-              return _context14.stop();
+              return _context15.stop();
           }
         }
-      }, _callee14);
+      }, _callee15);
     }))();
   },
   fetchNoteInfoList: function fetchNoteInfoList(noteId) {
     var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
       var dto;
-      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
-          switch (_context15.prev = _context15.next) {
+          switch (_context16.prev = _context16.next) {
             case 0:
-              _context15.next = 2;
+              _context16.next = 2;
               return _this6.getNoteInfoList(noteId);
 
             case 2:
-              dto = _context15.sent;
+              dto = _context16.sent;
 
               if (isFilled(dto.note_id)) {
-                _context15.next = 6;
+                _context16.next = 6;
                 break;
               }
 
               if (_this6.currentPageId === noteId) _this6.currentPageId = '';
-              return _context15.abrupt("return");
+              return _context16.abrupt("return");
 
             case 6:
               _this6.setCurrentPageId(dto.note_id);
 
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook);
               dto.note_content = NoteUtil.decodeStr(dto.note_content);
-              _context15.next = 11;
+              _context16.next = 11;
               return getUserDisplayName(dto.USER_ID);
 
             case 11:
-              dto.modUserName = _context15.sent;
+              dto.modUserName = _context16.sent;
               _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
               EditorStore.setFileList(dto.fileList);
@@ -4327,30 +4342,30 @@ var PageStore = mobx.observable({
 
             case 17:
             case "end":
-              return _context15.stop();
+              return _context16.stop();
           }
         }
-      }, _callee15);
+      }, _callee16);
     }))();
   },
   fetchCurrentPageData: function fetchCurrentPageData(pageId) {
     var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      return regeneratorRuntime.wrap(function _callee16$(_context16) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+      return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
-          switch (_context16.prev = _context16.next) {
+          switch (_context17.prev = _context17.next) {
             case 0:
               if (!pageId) {
-                _context16.next = 5;
+                _context17.next = 5;
                 break;
               }
 
-              _context16.next = 3;
+              _context17.next = 3;
               return _this7.fetchNoteInfoList(pageId);
 
             case 3:
-              _context16.next = 7;
+              _context17.next = 7;
               break;
 
             case 5:
@@ -4360,10 +4375,10 @@ var PageStore = mobx.observable({
 
             case 7:
             case "end":
-              return _context16.stop();
+              return _context17.stop();
           }
         }
-      }, _callee16);
+      }, _callee17);
     }))();
   },
   // 저장 후 지우기
@@ -4375,20 +4390,20 @@ var PageStore = mobx.observable({
   checkEditingPage: function checkEditingPage() {
     var _this8 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
       var target, noteId, dto;
-      return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      return regeneratorRuntime.wrap(function _callee18$(_context18) {
         while (1) {
-          switch (_context17.prev = _context17.next) {
+          switch (_context18.prev = _context18.next) {
             case 0:
-              _context17.prev = 0;
+              _context18.prev = 0;
 
               if (!(!NoteStore.notechannel_id || !NoteStore.user_id)) {
-                _context17.next = 3;
+                _context18.next = 3;
                 break;
               }
 
-              return _context17.abrupt("return");
+              return _context18.abrupt("return");
 
             case 3:
               // 수정 중인 노트 하나만 찾는다, Note_autosave_625be3d3-ca73-429a-8f87-34936d31e9a4_ee884b85-3c77-43f2-8c93-c2c10eccb5fa
@@ -4397,11 +4412,11 @@ var PageStore = mobx.observable({
               });
 
               if (target) {
-                _context17.next = 6;
+                _context18.next = 6;
                 break;
               }
 
-              return _context17.abrupt("return");
+              return _context18.abrupt("return");
 
             case 6:
               noteId = target.replace(/^(Note_autosave_)(.+)_(.+)$/, '$3');
@@ -4410,11 +4425,11 @@ var PageStore = mobx.observable({
                * 페이지 선택 효과가 깜빡이게 돼 fetchCurrentPageData 쓸 수 없음
                */
 
-              _context17.next = 9;
+              _context18.next = 9;
               return _this8.getNoteInfoList(noteId);
 
             case 9:
-              dto = _context17.sent;
+              dto = _context18.sent;
 
               if ((dto === null || dto === void 0 ? void 0 : dto.is_edit) === NoteStore.user_id) {
                 _this8.setRecoverInfo({
@@ -4431,20 +4446,20 @@ var PageStore = mobx.observable({
                 localStorage.removeItem(target);
               }
 
-              _context17.next = 16;
+              _context18.next = 16;
               break;
 
             case 13:
-              _context17.prev = 13;
-              _context17.t0 = _context17["catch"](0);
+              _context18.prev = 13;
+              _context18.t0 = _context18["catch"](0);
               console.log('checkEditingPage, 노트 진입시 수정 중인 노트 확인하기');
 
             case 16:
             case "end":
-              return _context17.stop();
+              return _context18.stop();
           }
         }
-      }, _callee17, null, [[0, 13]]);
+      }, _callee18, null, [[0, 13]]);
     }))();
   },
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
@@ -4503,16 +4518,16 @@ var PageStore = mobx.observable({
   handleNoneEdit: function handleNoneEdit() {
     var _this12 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
-      return regeneratorRuntime.wrap(function _callee18$(_context18) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+      return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
-          switch (_context18.prev = _context18.next) {
+          switch (_context19.prev = _context19.next) {
             case 0:
               _this12.removeLocalContent(); // 로컬 스토리지에서 내용도 지워야
 
 
               if (!_this12.isNewPage) {
-                _context18.next = 5;
+                _context19.next = 5;
                 break;
               }
 
@@ -4522,26 +4537,26 @@ var PageStore = mobx.observable({
                 }]
               });
 
-              _context18.next = 10;
+              _context19.next = 10;
               break;
 
             case 5:
               if (!_this12.otherEdit) {
-                _context18.next = 9;
+                _context19.next = 9;
                 break;
               }
 
-              return _context18.abrupt("return");
+              return _context19.abrupt("return");
 
             case 9:
               _this12.noteNoneEdit(_this12.currentPageId);
 
             case 10:
             case "end":
-              return _context18.stop();
+              return _context19.stop();
           }
         }
-      }, _callee18);
+      }, _callee19);
     }))();
   },
   getSaveDto: function getSaveDto(isAutoSave) {
@@ -4644,27 +4659,27 @@ var PageStore = mobx.observable({
     return targetTd === null || targetTd === void 0 ? void 0 : targetTd.textContent;
   },
   createSharePage: function createSharePage(targetList) {
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
       var _yield$NoteRepository11, noteList;
 
-      return regeneratorRuntime.wrap(function _callee19$(_context19) {
+      return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
-          switch (_context19.prev = _context19.next) {
+          switch (_context20.prev = _context20.next) {
             case 0:
-              _context19.next = 2;
+              _context20.next = 2;
               return NoteRepository$1.createSharePage(targetList);
 
             case 2:
-              _yield$NoteRepository11 = _context19.sent;
+              _yield$NoteRepository11 = _context20.sent;
               noteList = _yield$NoteRepository11.data.dto.noteList;
-              return _context19.abrupt("return", noteList);
+              return _context20.abrupt("return", noteList);
 
             case 5:
             case "end":
-              return _context19.stop();
+              return _context20.stop();
           }
         }
-      }, _callee19);
+      }, _callee20);
     }))();
   },
   createNoteSharePage: function createNoteSharePage(targetRoomId, targetPageList) {
@@ -4700,18 +4715,18 @@ var PageStore = mobx.observable({
   restorePageLogic: function restorePageLogic(_ref5) {
     var _this16 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21() {
       var chapterId, pageId, toastTxt, res;
-      return regeneratorRuntime.wrap(function _callee20$(_context20) {
+      return regeneratorRuntime.wrap(function _callee21$(_context21) {
         while (1) {
-          switch (_context20.prev = _context20.next) {
+          switch (_context21.prev = _context21.next) {
             case 0:
               chapterId = _ref5.chapterId, pageId = _ref5.pageId, toastTxt = _ref5.toastTxt;
-              _context20.next = 3;
+              _context21.next = 3;
               return _this16.restorePage(pageId, chapterId);
 
             case 3:
-              res = _context20.sent;
+              res = _context21.sent;
 
               if (res.resultMsg === 'Success') {
                 NoteStore.setModalInfo(null);
@@ -4729,10 +4744,10 @@ var PageStore = mobx.observable({
 
             case 5:
             case "end":
-              return _context20.stop();
+              return _context21.stop();
           }
         }
-      }, _callee20);
+      }, _callee21);
     }))();
   },
   editCancel: function editCancel() {
@@ -6587,6 +6602,69 @@ var NoteMeta = {
           }, _callee6);
         })));
         break;
+
+      case 'deleteSharedPage':
+        eventList.push(function () {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+          var _yield$ChapterStore$g, children, color;
+
+          return regeneratorRuntime.wrap(function _callee7$(_context7) {
+            while (1) {
+              switch (_context7.prev = _context7.next) {
+                case 0:
+                  _context7.next = 2;
+                  return PageStore.deleteNotePage(data);
+
+                case 2:
+                  _context7.next = 4;
+                  return ChapterStore.getChapterInfoList(ChapterStore.currentChapterId);
+
+                case 4:
+                  _yield$ChapterStore$g = _context7.sent;
+                  children = _yield$ChapterStore$g.children;
+                  color = _yield$ChapterStore$g.color;
+                  PageStore.setPageList(children, color);
+                  NoteStore.setModalInfo(null);
+                  NoteStore.setLongPress(false);
+                  PageStore.selectedPages.clear();
+
+                case 11:
+                case "end":
+                  return _context7.stop();
+              }
+            }
+          }, _callee7);
+        })));
+        break;
+
+      case 'emptySharedPage':
+        eventList.push(function () {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+          return regeneratorRuntime.wrap(function _callee8$(_context8) {
+            while (1) {
+              switch (_context8.prev = _context8.next) {
+                case 0:
+                  _context8.next = 2;
+                  return ChapterStore.deleteNoteChapter(data);
+
+                case 2:
+                  NoteStore.setModalInfo(null);
+                  NoteStore.setLongPress(false);
+                  PageStore.selectedPages.clear();
+                  NoteStore.setTargetLayout('LNB');
+
+                case 6:
+                case "end":
+                  return _context8.stop();
+              }
+            }
+          }, _callee8);
+        })));
+        break;
     }
 
     return eventList;
@@ -6647,6 +6725,8 @@ var NoteMeta = {
         })];
 
       case 'deleteChapter':
+      case 'deleteSharedPage':
+      case 'emptySharedPage':
         return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '삭제'
         })];
@@ -6810,6 +6890,14 @@ var NoteMeta = {
       case 'deleteChapter':
         dialogType.type = 'error';
         dialogType.title = "".concat(data.chapterList.length, "\uAC1C\uC758 \uCC55\uD130\uB97C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
+        dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
+        dialogType.btns = this.setBtns(type);
+        break;
+
+      case 'deleteSharedPage':
+      case 'emptySharedPage':
+        dialogType.type = 'error';
+        dialogType.title = "".concat(type === 'deleteSharedPage' ? data.pageList.length : data.count, "\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?");
         dialogType.subtitle = '전달받은 페이지는 영구 삭제됩니다.';
         dialogType.btns = this.setBtns(type);
         break;
