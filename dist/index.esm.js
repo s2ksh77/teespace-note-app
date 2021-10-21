@@ -6310,7 +6310,6 @@ var NoteMeta = {
         eventList.push(function (e) {
           e.stopPropagation();
           PageStore.deleteNotePage(data);
-          if (EditorStore.fileList) EditorStore.deleteAllFile();
         });
         eventList.push(function (e) {
           e.stopPropagation();
@@ -6511,9 +6510,8 @@ var NoteMeta = {
                     _yield$EditorStore$ge = _context3.sent;
                     target = _yield$EditorStore$ge.fileList;
                     PageStore.deleteNotePage(data);
-                    if (target) EditorStore.deleteAllFile(target);
 
-                  case 7:
+                  case 6:
                   case "end":
                     return _context3.stop();
                 }
