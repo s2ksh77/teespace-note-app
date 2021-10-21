@@ -132,7 +132,10 @@ const ListViewContainer = () => {
                 onClick: () => NoteStore.setTargetLayout('LNB'),
               },
             ]}
-            title={ChapterStore.chapterName}
+            title={getI18nChapterTitle(
+              ChapterStore.chapterInfo.type,
+              ChapterStore.chapterInfo.title,
+            )}
             rightButtons={[
               { type: 'icon', action: 'search' },
               { type: 'text', text: '🎅🏻' },

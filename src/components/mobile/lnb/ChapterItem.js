@@ -13,6 +13,7 @@ import { SharedPageIcon, ShareIcon, TrashIcon, NormalIcon } from '../../icons';
 import { ChapterItemContainer } from '../styles/lnbStyles';
 import { CheckBoxContainer } from '../styles/listviewStyles';
 import { CHAPTER_TYPE } from '../../../GlobalVariable';
+import { getI18nChapterTitle } from '../../../NoteUtil';
 
 const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
@@ -105,7 +106,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) 
                     : '2.63rem'
                 }
               >
-                {title}
+                {getI18nChapterTitle(type, title)}
               </ChapterTextSpan>
             </Tooltip>
           </ChapterTitle>
