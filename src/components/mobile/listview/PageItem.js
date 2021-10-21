@@ -30,16 +30,6 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
     }
   };
 
-  const fetchChapterInfo = async () => {
-    try {
-      const res = await ChapterStore.getChapterInfoList(page.parent_notebook);
-      PageStore.setPageList(res.children, res.color);
-      ChapterStore.setChapterName(res.text);
-    } catch (e) {
-      console.warn('Fetch ChapterInfo error', e);
-    }
-  };
-
   const fetchPageInfo = async () => {
     try {
       await PageStore.fetchNoteInfoList(page.id || page.note_id);
@@ -56,7 +46,7 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
       return;
     }
 
-    if (isSearching) fetchChapterInfo();
+    if (isSearching) await ChapterStore.fetchChapterInfo(page.parent_notebook);
     fetchPageInfo();
   };
 
@@ -73,7 +63,7 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
         </CheckBoxContainer>
       )}
       <PageItemWrapper onClick={handlePageClick}>
-        <Color color={page.color} />
+        <Color color={isSearching ? page.color : ChapterStore.chapterInfo.color} />
         <PageContentContainer>
           {isSearching && (
             <ChapterTitle>{getI18nChapterTitle(page.type, page.text)}</ChapterTitle>

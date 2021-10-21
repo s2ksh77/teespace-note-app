@@ -24,11 +24,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
 
   const handleRecycleBinClick = async e => {
     try {
-      const res = await ChapterStore.getChapterInfoList(id);
-      if (res && res.children) {
-        PageStore.setPageList(res.children);
-        ChapterStore.setChapterName(t('NOTE_BIN_01'));
-      }
+      await ChapterStore.fetchChapterInfo(id);
       PageStore.setIsRecycleBin(true);
       NoteStore.setTargetLayout('List');
     } catch (e) {

@@ -8,7 +8,7 @@ class ChapterModel {
     return this._data.id;
   }
 
-  get children() {
+  get pageList() {
     return this._data.children;
   }
 

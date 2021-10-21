@@ -25,8 +25,7 @@ const MobileEditorHeader = () => {
       const updateDTO = PageStore.getSaveDto();
       await PageStore.editDone(updateDTO);
     }
-    const res = await ChapterStore.getChapterInfoList(ChapterStore.currentChapterId);
-    if (res && res.children) PageStore.setPageList(res.children, res.color);
+    await ChapterStore.fetchChapterInfo(PageStore.pageInfo.chapterId);
     NoteStore.setTargetLayout('List');
   };
 

@@ -17,7 +17,7 @@ import LongPressHeader from '../lnb/MainHeader';
 import PageItem from './PageItem';
 import NoContent from '../../page/NoContent';
 import { NewAddIcon } from '../../icons';
-import NoteUtil from '../../../NoteUtil';
+import { isNormalChapter, getI18nChapterTitle } from '../../../NoteUtil';
 import MoveListViewContainer from './MoveListViewContainer';
 import { LNBWrapper } from '../../../styles/lnbStyle';
 import ChapterItem from '../lnb/ChapterItem';
@@ -25,7 +25,6 @@ import ChapterItem from '../lnb/ChapterItem';
 const ListViewContainer = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore } = useCoreStores();
-  const { getChapterNumType } = NoteUtil;
 
   const onShortPress = () => {}; // event prevent
 
@@ -35,7 +34,7 @@ const ListViewContainer = () => {
 
   const handlePageCreate = async () => {
     try {
-      PageStore.setCreatePageParent(ChapterStore.currentChapterId);
+      PageStore.setCreatePageParent(ChapterStore.chapterInfo.id);
       await PageStore.createNotePage(false);
       NoteStore.setTargetLayout('Editor');
     } catch (e) {
@@ -66,23 +65,19 @@ const ListViewContainer = () => {
         false,
       );
     } else {
-      const isShared = [...PageStore.selectedPages][0][1]?.type === 'shared';
-      if (!isShared) {
+      if (isNormalChapter(ChapterStore.chapterInfo.type)) {
         await PageStore.throwNotePage({ pageList });
-        const { children, color } = await ChapterStore.getChapterInfoList(
-          ChapterStore.currentChapterId,
-        );
-        PageStore.setPageList(children, color);
+        await ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
         NoteStore.setLongPress(false);
         PageStore.selectedPages.clear();
         return;
       }
 
-      if (pageList.length === PageStore.pageList.length) {
+      if (pageList.length === ChapterStore.chapterInfo.pageList.length) {
         NoteStore.setModalInfo(
           'emptySharedPage',
           {
-            chapterList: [{ id: ChapterStore.currentChapterId }],
+            chapterList: [{ id: ChapterStore.chapterInfo.id }],
             count: pageList.length,
           },
           false,
@@ -137,7 +132,10 @@ const ListViewContainer = () => {
                 onClick: () => NoteStore.setTargetLayout('LNB'),
               },
             ]}
-            title={ChapterStore.chapterName}
+            title={getI18nChapterTitle(
+              ChapterStore.chapterInfo.type,
+              ChapterStore.chapterInfo.title,
+            )}
             rightButtons={[
               { type: 'icon', action: 'search' },
               { type: 'text', text: '🎅🏻' },
@@ -146,7 +144,7 @@ const ListViewContainer = () => {
         )}
         <ListViewBody style={{ padding: '0.625rem 1rem' }}>
           <LongPressable onShortPress={onShortPress} onLongPress={onLongPress}>
-            {PageStore.pageList?.map((item, index) => {
+            {ChapterStore.chapterInfo.pageList?.map((item, index) => {
               return (
                 <PageItem
                   key={item.id}
@@ -157,13 +155,13 @@ const ListViewContainer = () => {
               );
             })}
           </LongPressable>
-          {PageStore.pageList.length === 0 && <NoContent isWeb={false} />}
+          {ChapterStore.chapterInfo.pageList.length === 0 && <NoContent isWeb={false} />}
         </ListViewBody>
         <NewAddIcon
           id="newPage"
           onClick={handlePageCreate}
           display={
-            getChapterNumType(ChapterStore.chapterType) <= 1 && !NoteStore.isLongPress
+            isNormalChapter(ChapterStore.chapterInfo.type) && !NoteStore.isLongPress
               ? 'flex'
               : 'none'
           }

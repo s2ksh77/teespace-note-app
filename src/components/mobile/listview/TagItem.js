@@ -16,7 +16,7 @@ import NoteUtil, { getI18nChapterTitle } from '../../../NoteUtil';
 const TagItem = ({ tag, listIdx }) => {
   return useObserver(() => (
     <TagItemContainer>
-      <Color />
+      <Color color={tag.color} />
       <PageContentContainer>
         <ChapterTitle>{getI18nChapterTitle(tag.TYPE, tag.text)}</ChapterTitle>
         <PageTitle>{tag.note_title}</PageTitle>
