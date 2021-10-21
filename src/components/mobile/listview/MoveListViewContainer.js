@@ -10,7 +10,6 @@ import MoveHeader from '../lnb/MainHeader';
 import { LNBBody as MoveBody } from '../styles/lnbStyles';
 import ChapterItem from '../lnb/ChapterItem';
 import NoteUtil from '../../../NoteUtil';
-import { toJS } from 'mobx';
 
 const MoveListViewContainer = () => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
@@ -23,31 +22,28 @@ const MoveListViewContainer = () => {
     NoteStore.setLongPress(true);
   };
 
-  const handlePageMove = async () => {
-    try {
-      const { parent_notebook: pageChapterId } = [...PageStore.selectedPages][0][1];
-      const chapterId = [...ChapterStore.selectedChapters][0][0];
-
-      if (pageChapterId === chapterId) {
-        initialMoveData();
-        return;
-      } else {
-        const target = Array.from(PageStore.selectedPages.keys());
-        await Promise.all(target.map(pageId => PageStore.movePage(pageId, chapterId)));
-        const res = await ChapterStore.getChapterInfoList(ChapterStore.currentChapterId);
-        if (res && res.children) PageStore.setPageList(res.children, res.color);
-        initialMoveData();
-      }
-    } catch (e) {
-      console.log(`Page Move Error ${e}`);
-    }
-  };
-
   const initialMoveData = () => {
     PageStore.selectedPages.clear();
     ChapterStore.selectedChapters.clear();
     NoteStore.setLongPress(false);
     PageStore.setIsMove(false);
+  };
+
+  const handlePageMove = async () => {
+    try {
+      const chapterId = [...ChapterStore.selectedChapters][0][0];
+      if (chapterId === ChapterStore.chapterInfo.id) {
+        initialMoveData();
+        return;
+      }
+
+      const target = Array.from(PageStore.selectedPages.keys());
+      await Promise.all(target.map(pageId => PageStore.movePage(pageId, chapterId)));
+      await ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
+      initialMoveData();
+    } catch (e) {
+      console.log(`Page Move Error ${e}`);
+    }
   };
 
   return useObserver(() => (
@@ -94,7 +90,7 @@ const MoveListViewContainer = () => {
                       chapter={item}
                       index={index}
                       flexOrder={1}
-                      moveFlag={true}
+                      moveFlag
                     />
                   );
                 default:

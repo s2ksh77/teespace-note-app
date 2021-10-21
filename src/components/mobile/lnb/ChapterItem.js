@@ -1,5 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
+import { Tooltip, Checkbox } from 'antd';
 import useNoteStore from '../../../store/useStore';
 import {
   ChapterColor,
@@ -8,12 +9,10 @@ import {
   ChapterTextSpan,
   ChapterTitle,
 } from '../../../styles/chpaterStyle';
-import { Tooltip } from 'antd';
 import { SharedPageIcon, ShareIcon, TrashIcon, NormalIcon } from '../../icons';
-import { CHAPTER_TYPE } from '../../../GlobalVariable';
 import { ChapterItemContainer } from '../styles/lnbStyles';
 import { CheckBoxContainer } from '../styles/listviewStyles';
-import { Checkbox } from 'antd';
+import { CHAPTER_TYPE } from '../../../GlobalVariable';
 
 const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) => {
   const { ChapterStore, NoteStore, PageStore } = useNoteStore();
@@ -42,13 +41,8 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) 
     }
     try {
       // 이미 그릴 때 받아온 pageList 보다 최신으로
-      const res = await ChapterStore.getChapterInfoList(id);
-      if (res && res.children) {
-        PageStore.setPageList(res.children, color);
-        ChapterStore.setChapterName(title);
-        ChapterStore.setCurrentChapterId(id);
-        ChapterStore.setChapterType(res.type);
-      }
+      const res = await ChapterStore.fetchChapterInfo(id);
+      if (res) ChapterStore.setCurrentChapterId(id);
       NoteStore.setTargetLayout('List');
     } catch (e) {
       console.warn('Fetch PageList error', e);
