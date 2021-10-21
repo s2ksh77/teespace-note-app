@@ -92,7 +92,9 @@ export const CheckBoxContainer = styled.div`
 
 export const TagItemContainer = styled.div`
   display: flex;
+  position: relative;
   width: 100%;
+  height: fit-content;
   align-items: center;
   margin-bottom: 0.625rem;
   border-radius: 15px;
