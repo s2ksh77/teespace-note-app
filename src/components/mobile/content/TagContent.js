@@ -6,7 +6,7 @@ import TagContainer from '../../tag/TagContainer';
 const TagContent = () => {
   const { ChapterStore, PageStore } = useNoteStore();
 
-  return useObserver(() => <TagContainer />);
+  return useObserver(() => <TagContainer isWeb={false} />);
 };
 
 export default TagContent;
