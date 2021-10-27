@@ -16,7 +16,7 @@ import waplWorking from '../../../assets/wapl_working.svg';
 import MainHeader from '../lnb/MainHeader';
 
 const MobileEditorHeader = () => {
-  const { ChapterStore, PageStore, NoteStore } = useNoteStore();
+  const { ChapterStore, PageStore, NoteStore, TagStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
 
@@ -25,7 +25,11 @@ const MobileEditorHeader = () => {
       const updateDTO = PageStore.getSaveDto();
       await PageStore.editDone(updateDTO);
     }
-    await ChapterStore.fetchChapterInfo(PageStore.pageInfo.chapterId);
+    if (ChapterStore.isTagSearching) {
+      TagStore.handleTagNoteList();
+    } else {
+      await ChapterStore.fetchChapterInfo(PageStore.pageInfo.chapterId);
+    }
     NoteStore.setTargetLayout('List');
   };
 

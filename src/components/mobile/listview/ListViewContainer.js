@@ -23,7 +23,7 @@ import { LNBWrapper } from '../../../styles/lnbStyle';
 import ChapterItem from '../lnb/ChapterItem';
 
 const ListViewContainer = () => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, TagStore } = useNoteStore();
   const { userStore } = useCoreStores();
 
   const onShortPress = () => {}; // event prevent
@@ -132,6 +132,7 @@ const ListViewContainer = () => {
                 onClick: () => {
                   if (ChapterStore.isTagSearching) {
                     NoteStore.setTargetLayout('Tag');
+                    TagStore.setSearchTagId('');
                     ChapterStore.setIsTagSearching(false);
                     return;
                   }

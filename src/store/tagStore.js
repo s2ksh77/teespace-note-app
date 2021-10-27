@@ -3,6 +3,8 @@ import NoteRepository from './noteRepository';
 import ChapterStore from './chapterStore';
 import { checkDuplicateIgnoreCase } from '../components/common/validators';
 import NoteUtil from '../NoteUtil';
+import NoteStore from './noteStore';
+import ChapterModel from './model/ChapterModel';
 
 const TagStore = observable({
   // note에 딸린 tagList
@@ -25,6 +27,7 @@ const TagStore = observable({
   isSearchLoading: false,
   searchStr: '',
   tagPanelLoading: false,
+  searchTagId: '',
   // tag가 있는 노트 가져오기
   async getTagNoteList(tagId) {
     const {
@@ -104,6 +107,10 @@ const TagStore = observable({
   setTagPanelLoading(isLoading) {
     this.tagPanelLoading = isLoading;
   },
+  setSearchTagId(id) {
+    this.searchTagId = id;
+  },
+
   async createTag(createTagList, noteId) {
     const createTagArr = createTagList.map(tag => {
       return {
@@ -373,6 +380,19 @@ const TagStore = observable({
 
   isValidTag(text) {
     return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
+  },
+
+  // for mobile
+  async handleTagNoteList(tagId) {
+    this.setSearchTagId(tagId ? tagId : this.searchTagId);
+    ChapterStore.setIsTagSearching(true);
+
+    const pageList = await TagStore.getTagNoteList(this.searchTagId);
+    pageList.map(page => (page.id = page.note_id));
+
+    const obj = { children: pageList };
+    ChapterStore.chapterInfo = new ChapterModel(obj);
+    NoteStore.setTargetLayout('List');
   },
 });
 

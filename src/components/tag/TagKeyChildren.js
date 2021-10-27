@@ -14,7 +14,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
 
   const onClickTagBtn = (tagId, tagName) => async () => {
     if (!NoteStore.isWeb) {
-      handleTagClick(tagId, tagName);
+      TagStore.handleTagNoteList(tagId);
       return;
     }
     ChapterStore.setIsTagSearching(true);
@@ -29,15 +29,6 @@ const TagKeyChildren = ({ category, tagKey }) => {
       NoteStore.setTargetLayout('LNB');
     }
     logEvent('note', 'clickTagBtn');
-  };
-  // for mobile
-  const handleTagClick = async (tagId, tagName) => {
-    ChapterStore.setIsTagSearching(true);
-    const pageList = await TagStore.getTagNoteList(tagId);
-    pageList.map(page => (page.id = page.note_id));
-    const obj = { children: pageList };
-    ChapterStore.chapterInfo = new ChapterModel(obj);
-    NoteStore.setTargetLayout('List');
   };
 
   const handleTooltip = e => {
