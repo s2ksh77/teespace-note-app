@@ -317,4 +317,10 @@ export const RestoreModalFooter = styled.div`
   height: 4.38rem;
   justify-content: center;
   align-items: center;
+`;export const Divider = styled.div`
+  display: flex;
+  width: 100%;
+  height: 1rem;
+  min-height: 1rem;
+  background-color: #f7f4ef;
 `;
