@@ -68,7 +68,8 @@ const LNBSearchResult = ({ isMobile }) => {
     await PageStore.fetchCurrentPageData(pageId);
 
     instance.unmark();
-    instance.mark(ChapterStore.searchResult?.keyword);
+    if (ChapterStore.searchResult?.keyword)
+      instance.mark(ChapterStore.searchResult?.keyword);
     NoteStore.setShowPage(true);
     if (NoteStore.layoutState === 'collapse') {
       if (!ChapterStore.isTagSearching) ChapterStore.initSearchVar();
