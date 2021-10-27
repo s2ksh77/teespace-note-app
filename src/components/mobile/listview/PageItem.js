@@ -63,12 +63,20 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
         </CheckBoxContainer>
       )}
       <PageItemWrapper onClick={handlePageClick}>
-        <Color color={isSearching ? page.color : ChapterStore.chapterInfo.color} />
+        <Color
+          color={
+            isSearching || ChapterStore.isTagSearching
+              ? page.color
+              : ChapterStore.chapterInfo.color
+          }
+        />
         <PageContentContainer>
           {isSearching && (
             <ChapterTitle>{getI18nChapterTitle(page.type, page.text)}</ChapterTitle>
           )}
-          <PageTitle>{isSearching ? page.note_title : page.text}</PageTitle>
+          <PageTitle>
+            {isSearching || ChapterStore.isTagSearching ? page.note_title : page.text}
+          </PageTitle>
           <PagePreviewWrapper>
             <PagePreview className="lnb-result-context">
               {NoteUtil.decodeStr(

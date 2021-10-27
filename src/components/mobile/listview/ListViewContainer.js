@@ -129,7 +129,14 @@ const ListViewContainer = () => {
               {
                 type: 'icon',
                 action: 'back',
-                onClick: () => NoteStore.setTargetLayout('LNB'),
+                onClick: () => {
+                  if (ChapterStore.isTagSearching) {
+                    NoteStore.setTargetLayout('Tag');
+                    ChapterStore.setIsTagSearching(false);
+                    return;
+                  }
+                  NoteStore.setTargetLayout('LNB');
+                },
               },
             ]}
             title={getI18nChapterTitle(
@@ -155,7 +162,7 @@ const ListViewContainer = () => {
               );
             })}
           </LongPressable>
-          {ChapterStore.chapterInfo.pageList.length === 0 && <NoContent isWeb={false} />}
+          {ChapterStore.chapterInfo.pageList?.length === 0 && <NoContent isWeb={false} />}
         </ListViewBody>
         <NewAddIcon
           id="newPage"
