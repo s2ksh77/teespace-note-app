@@ -27,13 +27,19 @@ const TagStore = observable({
   tagPanelLoading: false,
   // tag가 있는 노트 가져오기
   async getTagNoteList(tagId) {
-    const res = await NoteRepository.getTagNoteList(tagId);
-    return res.status === 200 ? res.data.dto : null;
+    const {
+      status,
+      data: { dto },
+    } = await NoteRepository.getTagNoteList(tagId);
+    return status === 200 ? dto.noteList : null;
   },
   // notetagList
   async getNoteTagList(noteId) {
-    const res = await NoteRepository.getNoteTagList(noteId);
-    return res.status === 200 ? res.data.dto : null;
+    const {
+      status,
+      data: { dto },
+    } = await NoteRepository.getNoteTagList(noteId);
+    return status === 200 ? dto : null;
   },
   setNoteTagList(tagArr) {
     this.notetagList = tagArr;
@@ -320,8 +326,7 @@ const TagStore = observable({
   getSearchTagObjs(tagList, searchTagText) {
     const searchTagObjs = tagList.reduce((obj, tag) => {
       const tagText = NoteUtil.decodeStr(tag.text);
-      if (!tagText.toUpperCase().includes(searchTagText.toUpperCase()))
-        return obj;
+      if (!tagText.toUpperCase().includes(searchTagText.toUpperCase())) return obj;
       if (obj.hasOwnProperty(tagText)) {
         obj[tagText]['note_id'].push(tag.note_id);
       } else {

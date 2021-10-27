@@ -33,9 +33,9 @@ const TagKeyChildren = ({ category, tagKey }) => {
   // for mobile
   const handleTagClick = async (tagId, tagName) => {
     ChapterStore.setIsTagSearching(true);
-    await TagStore.setTagNoteSearchResult(tagName);
-    ChapterStore.searchResult?.page.map(page => (page.id = page.note_id));
-    const obj = { children: ChapterStore.searchResult?.page };
+    const pageList = await TagStore.getTagNoteList(tagId);
+    pageList.map(page => (page.id = page.note_id));
+    const obj = { children: pageList };
     ChapterStore.chapterInfo = new ChapterModel(obj);
     NoteStore.setTargetLayout('List');
   };
