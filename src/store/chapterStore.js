@@ -617,7 +617,7 @@ const ChapterStore = observable({
     });
   },
 
-  async getSearchResult(keyword = this.searchStr.trim()) {
+  async getSearchResult(keyword = this.searchStr.trim(), chapterId) {
     this.setIsSearching(true);
 
     this.setIsLoadingSearchResult(true);
@@ -628,7 +628,12 @@ const ChapterStore = observable({
     this.searchResult = {
       keyword,
       chapter: filtered?.length > 0 ? filtered : null,
-      page: this.preProcessPageList(dto.pageList, keyword),
+      page: this.preProcessPageList(
+        chapterId
+          ? dto.pageList?.filter(page => page.parent_notebook === chapterId)
+          : dto.pageList,
+        keyword,
+      ),
       tag: dto.tagList,
     };
     this.setIsLoadingSearchResult(false);
@@ -644,7 +649,7 @@ const ChapterStore = observable({
       });
     }
 
-    return pageList;
+    return pageList?.length ? pageList : null;
   },
 
   getContentPreview(content, keyword) {

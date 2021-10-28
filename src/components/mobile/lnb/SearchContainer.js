@@ -4,9 +4,10 @@ import useNoteStore from '../../../store/useStore';
 
 import { LNBBody as SearchBody } from '../styles/lnbStyles';
 import SearchHeader from './SearchHeader';
+import PageSearchResult from './PageSearchResult';
 import SearchResult from '../../lnb/LNBSearchResult';
 
-const SearchContainer = () => {
+const SearchContainer = ({ isPageSearching }) => {
   const { ChapterStore } = useNoteStore();
 
   useEffect(() => {
@@ -15,9 +16,9 @@ const SearchContainer = () => {
 
   return useObserver(() => (
     <>
-      <SearchHeader />
+      <SearchHeader isPageSearching={isPageSearching} />
       <SearchBody style={{ padding: '0.625rem 0' }}>
-        <SearchResult isMobile />
+        {isPageSearching ? <PageSearchResult /> : <SearchResult isMobile />}
       </SearchBody>
     </>
   ));

@@ -14,7 +14,7 @@ import {
 } from '../styles/commonStyles';
 import { SearchIcon, CloseIcon } from '../../icons';
 
-const SearchHeader = () => {
+const SearchHeader = ({ isPageSearching }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -25,14 +25,20 @@ const SearchHeader = () => {
 
   const handleCloseButtonClick = () => setSearchValue('');
 
-  const handleCancelButtonClick = () => NoteStore.setTargetLayout('LNB');
+  const handleCancelButtonClick = () => {
+    if (isPageSearching) NoteStore.setTargetLayout('List');
+    else NoteStore.setTargetLayout('LNB');
+  };
 
   useEffect(() => {
     if (!debouncedSearchValue.trim()) {
       ChapterStore.setSearchResult({});
       return;
     }
-    ChapterStore.getSearchResult(debouncedSearchValue.trim());
+    ChapterStore.getSearchResult(
+      debouncedSearchValue.trim(),
+      isPageSearching && ChapterStore.chapterInfo.id,
+    );
   }, [debouncedSearchValue]);
 
   return useObserver(() => (
@@ -40,7 +46,7 @@ const SearchHeader = () => {
       <SearchBarWrapper>
         <SearchIcon width="1.25" height="1.25" color={themeContext.IconNormal2} />
         <SearchBarInput
-          placeholder="노트 검색"
+          placeholder={isPageSearching ? '페이지 검색' : '노트 검색'}
           value={searchValue}
           onChange={handleSearchValueChange}
         />
