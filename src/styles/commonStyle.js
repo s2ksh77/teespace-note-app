@@ -313,11 +313,13 @@ export const RestoreChapterText = styled.div`
 `;
 
 export const RestoreModalFooter = styled.div`
-  display: flex;  
+  display: flex;
   height: 4.38rem;
   justify-content: center;
   align-items: center;
-`;export const Divider = styled.div`
+`;
+
+export const Divider = styled.div`
   display: flex;
   width: 100%;
   height: 1rem;

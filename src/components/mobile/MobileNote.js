@@ -47,12 +47,14 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
     );
     fetchData();
     PageStore.checkEditingPage();
+    NoteStore.setIsWeb(false);
 
     return () => {
       EditorStore.setInitialSearchState();
       NoteStore.initVariables();
       WWMS.removeHandler('CHN0003', 'NoteWWMSHandler');
       NoteStore.setTargetLayout('LNB');
+      NoteStore.setIsWeb(true);
     };
   }, [roomId, channelId]);
 

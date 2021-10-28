@@ -47,6 +47,7 @@ const NoteStore = observable({
   isSlashCmd: false,
   appType: 'wapl',
   isLongPress: false,
+  isWeb: true,
 
   setAppType(appType) {
     this.appType = appType;
@@ -91,6 +92,9 @@ const NoteStore = observable({
   },
   getUserId() {
     return this.user_id;
+  },
+  setIsWeb(flag) {
+    this.isWeb = flag;
   },
   // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init(roomId, channelId, userId, userName, userEmail, callback) {

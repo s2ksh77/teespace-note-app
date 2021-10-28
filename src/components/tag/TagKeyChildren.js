@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 import { Tooltip } from 'antd';
-import {
-  TagChipGroup,
-  TagChip,
-  TagText,
-  TagChipNum,
-} from '../../styles/tagStyle';
+import { TagChipGroup, TagChip, TagText, TagChipNum } from '../../styles/tagStyle';
 import NoteUtil from '../../NoteUtil';
 import { logEvent } from 'teespace-core';
+import ChapterModel from '../../store/model/ChapterModel';
 
 // "ㄱ", ["가나다", "고교구"]
 const TagKeyChildren = ({ category, tagKey }) => {
   const { NoteStore, ChapterStore, TagStore } = useNoteStore();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+
   const onClickTagBtn = (tagId, tagName) => async () => {
+    if (!NoteStore.isWeb) {
+      TagStore.handleTagNoteList(tagId);
+      return;
+    }
     ChapterStore.setIsTagSearching(true);
     ChapterStore.setIsSearching(true);
     // lnb search창에 검색 시도(클릭)한 태그이름 나오고 검색 실행중 화면 보이기
@@ -29,10 +30,9 @@ const TagKeyChildren = ({ category, tagKey }) => {
     }
     logEvent('note', 'clickTagBtn');
   };
+
   const handleTooltip = e => {
-    setIsEllipsisActive(
-      e.currentTarget.offsetWidth < e.currentTarget.scrollWidth,
-    );
+    setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
   return useObserver(() => (
     <>
@@ -42,10 +42,7 @@ const TagKeyChildren = ({ category, tagKey }) => {
           const tagInfo = TagStore.sortedTagList[category][tagKey][tagName];
           return (
             <Tooltip key={tagInfo.id} title={isEllipsisActive ? tagName : null}>
-              <TagChip
-                onClick={onClickTagBtn(tagInfo.id, tagName)}
-                key={tagInfo.id}
-              >
+              <TagChip onClick={onClickTagBtn(tagInfo.id, tagName)} key={tagInfo.id}>
                 <TagText onMouseOver={handleTooltip}>{tagName}</TagText>
                 <TagChipNum>{tagInfo.note_id.length}</TagChipNum>
               </TagChip>

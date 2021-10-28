@@ -23,7 +23,7 @@ import { LNBWrapper } from '../../../styles/lnbStyle';
 import ChapterItem from '../lnb/ChapterItem';
 
 const ListViewContainer = () => {
-  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { NoteStore, ChapterStore, PageStore, TagStore } = useNoteStore();
   const { userStore } = useCoreStores();
 
   const onShortPress = () => {}; // event prevent
@@ -129,7 +129,15 @@ const ListViewContainer = () => {
               {
                 type: 'icon',
                 action: 'back',
-                onClick: () => NoteStore.setTargetLayout('LNB'),
+                onClick: () => {
+                  if (ChapterStore.isTagSearching) {
+                    NoteStore.setTargetLayout('Tag');
+                    TagStore.setSearchTagId('');
+                    ChapterStore.setIsTagSearching(false);
+                    return;
+                  }
+                  NoteStore.setTargetLayout('LNB');
+                },
               },
             ]}
             title={getI18nChapterTitle(
@@ -155,7 +163,7 @@ const ListViewContainer = () => {
               );
             })}
           </LongPressable>
-          {ChapterStore.chapterInfo.pageList.length === 0 && <NoContent isWeb={false} />}
+          {ChapterStore.chapterInfo.pageList?.length === 0 && <NoContent isWeb={false} />}
         </ListViewBody>
         <NewAddIcon
           id="newPage"
