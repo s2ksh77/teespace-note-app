@@ -2279,10 +2279,12 @@ var TagStore = mobx.observable({
   isSearchLoading: false,
   searchStr: '',
   tagPanelLoading: false,
+  searchTagId: '',
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var res;
+      var _yield$NoteRepository, status, dto;
+
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -2291,10 +2293,12 @@ var TagStore = mobx.observable({
               return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
-              res = _context.sent;
-              return _context.abrupt("return", res.status === 200 ? res.data.dto : null);
+              _yield$NoteRepository = _context.sent;
+              status = _yield$NoteRepository.status;
+              dto = _yield$NoteRepository.data.dto;
+              return _context.abrupt("return", status === 200 ? dto.noteList : null);
 
-            case 4:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -2305,7 +2309,8 @@ var TagStore = mobx.observable({
   // notetagList
   getNoteTagList: function getNoteTagList(noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var res;
+      var _yield$NoteRepository2, status, dto;
+
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -2314,10 +2319,12 @@ var TagStore = mobx.observable({
               return NoteRepository$1.getNoteTagList(noteId);
 
             case 2:
-              res = _context2.sent;
-              return _context2.abrupt("return", res.status === 200 ? res.data.dto : null);
+              _yield$NoteRepository2 = _context2.sent;
+              status = _yield$NoteRepository2.status;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", status === 200 ? dto : null);
 
-            case 4:
+            case 6:
             case "end":
               return _context2.stop();
           }
@@ -2410,11 +2417,14 @@ var TagStore = mobx.observable({
   setTagPanelLoading: function setTagPanelLoading(isLoading) {
     this.tagPanelLoading = isLoading;
   },
+  setSearchTagId: function setSearchTagId(id) {
+    this.searchTagId = id;
+  },
   createTag: function createTag(createTagList, noteId) {
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var createTagArr, _yield$NoteRepository, dto;
+      var createTagArr, _yield$NoteRepository3, dto;
 
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
@@ -2431,8 +2441,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.createTag(createTagArr);
 
             case 3:
-              _yield$NoteRepository = _context4.sent;
-              dto = _yield$NoteRepository.data.dto;
+              _yield$NoteRepository3 = _context4.sent;
+              dto = _yield$NoteRepository3.data.dto;
 
               _this.setAddTagList([]);
 
@@ -2448,7 +2458,7 @@ var TagStore = mobx.observable({
   },
   deleteTag: function deleteTag(deleteTagList, noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      var deleteTagArray, _yield$NoteRepository2, dto;
+      var deleteTagArray, _yield$NoteRepository4, dto;
 
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
@@ -2465,8 +2475,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.deleteTag(deleteTagArray);
 
             case 3:
-              _yield$NoteRepository2 = _context5.sent;
-              dto = _yield$NoteRepository2.data.dto;
+              _yield$NoteRepository4 = _context5.sent;
+              dto = _yield$NoteRepository4.data.dto;
               return _context5.abrupt("return", dto);
 
             case 6:
@@ -2481,7 +2491,7 @@ var TagStore = mobx.observable({
     var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var updateTagArray, _yield$NoteRepository3, dto;
+      var updateTagArray, _yield$NoteRepository5, dto;
 
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
@@ -2498,8 +2508,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.updateTag(updateTagArray);
 
             case 3:
-              _yield$NoteRepository3 = _context6.sent;
-              dto = _yield$NoteRepository3.data.dto;
+              _yield$NoteRepository5 = _context6.sent;
+              dto = _yield$NoteRepository5.data.dto;
 
               _this2.setUpdateTagList([]);
 
@@ -2523,7 +2533,7 @@ var TagStore = mobx.observable({
     var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-      var createTagArr, _yield$NoteRepository4, dto;
+      var createTagArr, _yield$NoteRepository6, dto;
 
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
@@ -2540,8 +2550,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.createTag(createTagArr);
 
             case 3:
-              _yield$NoteRepository4 = _context7.sent;
-              dto = _yield$NoteRepository4.data.dto;
+              _yield$NoteRepository6 = _context7.sent;
+              dto = _yield$NoteRepository6.data.dto;
               _context7.next = 7;
               return _this3.fetchNoteTagList(noteId);
 
@@ -2566,7 +2576,7 @@ var TagStore = mobx.observable({
     var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var updateTagArr, _yield$NoteRepository5, dto;
+      var updateTagArr, _yield$NoteRepository7, dto;
 
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
@@ -2584,8 +2594,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.updateTag(updateTagArr);
 
             case 3:
-              _yield$NoteRepository5 = _context8.sent;
-              dto = _yield$NoteRepository5.data.dto;
+              _yield$NoteRepository7 = _context8.sent;
+              dto = _yield$NoteRepository7.data.dto;
               _context8.next = 7;
               return _this4.fetchNoteTagList(noteId);
 
@@ -2610,7 +2620,7 @@ var TagStore = mobx.observable({
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var deleteTagArray, _yield$NoteRepository6, dto;
+      var deleteTagArray, _yield$NoteRepository8, dto;
 
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
@@ -2627,8 +2637,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.deleteTag(deleteTagArray);
 
             case 3:
-              _yield$NoteRepository6 = _context9.sent;
-              dto = _yield$NoteRepository6.data.dto;
+              _yield$NoteRepository8 = _context9.sent;
+              dto = _yield$NoteRepository8.data.dto;
 
               _this5.fetchNoteTagList(noteId);
 
@@ -2709,7 +2719,7 @@ var TagStore = mobx.observable({
    */
   getAllsortedTagList: function getAllsortedTagList() {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$NoteRepository7, tag_index_list_dto;
+      var _yield$NoteRepository9, tag_index_list_dto;
 
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
@@ -2719,8 +2729,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository7 = _context12.sent;
-              tag_index_list_dto = _yield$NoteRepository7.data.dto.tag_index_list_dto;
+              _yield$NoteRepository9 = _context12.sent;
+              tag_index_list_dto = _yield$NoteRepository9.data.dto.tag_index_list_dto;
               return _context12.abrupt("return", tag_index_list_dto);
 
             case 5:
@@ -2891,7 +2901,7 @@ var TagStore = mobx.observable({
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagName) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var _yield$NoteRepository8, tagList;
+      var _yield$NoteRepository10, tagList;
 
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
@@ -2901,8 +2911,8 @@ var TagStore = mobx.observable({
               return NoteRepository$1.getSearchList(tagName);
 
             case 2:
-              _yield$NoteRepository8 = _context14.sent;
-              tagList = _yield$NoteRepository8.data.dto.tagList;
+              _yield$NoteRepository10 = _context14.sent;
+              tagList = _yield$NoteRepository10.data.dto.tagList;
               ChapterStore.setSearchResult({
                 chapter: null,
                 page: tagList
@@ -2918,6 +2928,41 @@ var TagStore = mobx.observable({
   },
   isValidTag: function isValidTag(text) {
     return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
+  },
+  // for mobile
+  handleTagNoteList: function handleTagNoteList(tagId) {
+    var _this10 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var pageList, obj;
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _this10.setSearchTagId(tagId ? tagId : _this10.searchTagId);
+
+              ChapterStore.setIsTagSearching(true);
+              _context15.next = 4;
+              return TagStore.getTagNoteList(_this10.searchTagId);
+
+            case 4:
+              pageList = _context15.sent;
+              pageList.map(function (page) {
+                return page.id = page.note_id;
+              });
+              obj = {
+                children: pageList
+              };
+              ChapterStore.chapterInfo = new ChapterModel(obj);
+              NoteStore.setTargetLayout('List');
+
+            case 9:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15);
+    }))();
   }
 });
 
@@ -7094,6 +7139,7 @@ var NoteStore = mobx.observable({
   isSlashCmd: false,
   appType: 'wapl',
   isLongPress: false,
+  isWeb: true,
   setAppType: function setAppType(appType) {
     this.appType = appType;
   },
@@ -7147,6 +7193,9 @@ var NoteStore = mobx.observable({
   },
   getUserId: function getUserId() {
     return this.user_id;
+  },
+  setIsWeb: function setIsWeb(flag) {
+    this.isWeb = flag;
   },
   // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init: function init(roomId, channelId, userId, userName, userEmail, callback) {
