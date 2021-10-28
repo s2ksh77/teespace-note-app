@@ -22,7 +22,8 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
       case 'List':
         return <ListViewContainer />;
       case 'Search':
-        return <SearchContainer />;
+      case 'PageSearch':
+        return <SearchContainer isPageSearching={targetLayout === 'PageSearch'} />;
       case 'Editor':
       case 'Tag':
         return <ContentContainer />;

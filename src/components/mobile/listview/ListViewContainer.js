@@ -145,7 +145,11 @@ const ListViewContainer = () => {
               ChapterStore.chapterInfo.title,
             )}
             rightButtons={[
-              { type: 'icon', action: 'search' },
+              {
+                type: 'icon',
+                action: 'search',
+                onClick: () => NoteStore.setTargetLayout('PageSearch'),
+              },
               { type: 'text', text: '🎅🏻' },
             ]}
           />
