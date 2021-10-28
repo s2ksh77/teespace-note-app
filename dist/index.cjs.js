@@ -1899,23 +1899,24 @@ var ChapterStore = mobx.observable({
         _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
-      var _dto$chapterList;
+      var _dto$chapterList, _dto$pageList;
 
-      var keyword, dto, filtered;
+      var keyword, chapterId, dto, filtered;
       return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
           switch (_context20.prev = _context20.next) {
             case 0:
               keyword = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this16.searchStr.trim();
+              chapterId = _arguments2.length > 1 ? _arguments2[1] : undefined;
 
               _this16.setIsSearching(true);
 
               _this16.setIsLoadingSearchResult(true);
 
-              _context20.next = 5;
+              _context20.next = 6;
               return _this16.getSearchList(keyword);
 
-            case 5:
+            case 6:
               dto = _context20.sent;
               filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
                 return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
@@ -1923,7 +1924,9 @@ var ChapterStore = mobx.observable({
               _this16.searchResult = {
                 keyword: keyword,
                 chapter: (filtered === null || filtered === void 0 ? void 0 : filtered.length) > 0 ? filtered : null,
-                page: _this16.preProcessPageList(dto.pageList, keyword),
+                page: _this16.preProcessPageList(chapterId ? (_dto$pageList = dto.pageList) === null || _dto$pageList === void 0 ? void 0 : _dto$pageList.filter(function (page) {
+                  return page.parent_notebook === chapterId;
+                }) : dto.pageList, keyword),
                 tag: dto.tagList
               };
 
@@ -1931,7 +1934,7 @@ var ChapterStore = mobx.observable({
 
               return _context20.abrupt("return", _this16.searchResult);
 
-            case 10:
+            case 11:
             case "end":
               return _context20.stop();
           }
@@ -1948,7 +1951,7 @@ var ChapterStore = mobx.observable({
       });
     }
 
-    return pageList;
+    return pageList !== null && pageList !== void 0 && pageList.length ? pageList : null;
   },
   getContentPreview: function getContentPreview(content, keyword) {
     var result = content.substring(content.indexOf(keyword) - 10);
