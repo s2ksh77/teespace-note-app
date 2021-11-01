@@ -4808,6 +4808,7 @@ var PageStore = mobx.observable({
   noteEditStart: function noteEditStart(noteId) {
     var _this9 = this;
 
+    var editorFocus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     this.editStart(noteId, this.pageInfo.chapterId).then(function (dto) {
       var _EditorStore$tinymce3;
 
@@ -4817,7 +4818,7 @@ var PageStore = mobx.observable({
       if ((_EditorStore$tinymce3 = EditorStore.tinymce) !== null && _EditorStore$tinymce3 !== void 0 && _EditorStore$tinymce3.selection) {
         var _EditorStore$tinymce4;
 
-        EditorStore.tinymce.focus();
+        if (editorFocus) EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
         (_EditorStore$tinymce4 = EditorStore.tinymce) === null || _EditorStore$tinymce4 === void 0 ? void 0 : _EditorStore$tinymce4.setContent(_this9.pageInfo.content);
       }
@@ -15524,7 +15525,9 @@ var MainHeader = function MainHeader(_ref) {
 
 var MainHeader$1 = /*#__PURE__*/React__default['default'].memo(MainHeader);
 
-var MobileEditorHeader = function MobileEditorHeader() {
+var MobileEditorHeader = function MobileEditorHeader(_ref) {
+  var handleModeChange = _ref.handleModeChange;
+
   var _useNoteStore = useNoteStore(),
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore,
@@ -15534,10 +15537,11 @@ var MobileEditorHeader = function MobileEditorHeader() {
   var _useTranslation = reactI18next.useTranslation(),
       t = _useTranslation.t;
 
+  var inputRef = React.useRef(null);
   var themeContext = React.useContext(styled.ThemeContext);
 
   var handleBackButtonClick = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var updateDTO;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -15578,7 +15582,7 @@ var MobileEditorHeader = function MobileEditorHeader() {
     }));
 
     return function handleBackButtonClick() {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -15602,12 +15606,13 @@ var MobileEditorHeader = function MobileEditorHeader() {
       }]
     }), /*#__PURE__*/React__default['default'].createElement(EditorTitleCover, null, /*#__PURE__*/React__default['default'].createElement(EditorTitle, {
       id: "editorTitle",
+      ref: inputRef,
       maxLength: "200",
       placeholder: t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
       value: PageStore.noteTitle,
       onChange: handleTitleInput,
-      disabled: !!PageStore.isReadMode(),
-      autoComplete: "off"
+      autoComplete: "off",
+      onClick: handleModeChange.bind(null, inputRef)
     })), /*#__PURE__*/React__default['default'].createElement(EditorModCover, null, /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(ModifiedTime, {
       style: {
         fontSize: '0.75rem',
@@ -16085,10 +16090,13 @@ var EditorContainer = function EditorContainer(_ref2) {
     }
   };
 
-  var handleEditorMode = function handleEditorMode() {
+  var handleModeChange = function handleModeChange(ref) {
     if (PageStore.isReadMode()) {
       try {
-        PageStore.noteEditStart(PageStore.pageInfo.id);
+        var _PageStore$pageInfo, _ref$current;
+
+        PageStore.noteEditStart((_PageStore$pageInfo = PageStore.pageInfo) === null || _PageStore$pageInfo === void 0 ? void 0 : _PageStore$pageInfo.id, false);
+        ref === null || ref === void 0 ? void 0 : (_ref$current = ref.current) === null || _ref$current === void 0 ? void 0 : _ref$current.focus();
       } catch (e) {
         console.log("EditStart Error ".concat(e));
       }
@@ -16103,7 +16111,7 @@ var EditorContainer = function EditorContainer(_ref2) {
 
         (_EditorStore$tinymce6 = EditorStore.tinymce) === null || _EditorStore$tinymce6 === void 0 ? void 0 : _EditorStore$tinymce6.setMode('readonly');
         (_EditorStore$editor = EditorStore.editor) === null || _EditorStore$editor === void 0 ? void 0 : _EditorStore$editor.addEventListener('click', handleUnselect);
-        if (!isWeb) (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : (_EditorStore$tinymce8 = _EditorStore$tinymce7.getBody()) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.addEventListener('click', handleEditorMode);
+        if (!isWeb) (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : (_EditorStore$tinymce8 = _EditorStore$tinymce7.getBody()) === null || _EditorStore$tinymce8 === void 0 ? void 0 : _EditorStore$tinymce8.addEventListener('click', handleModeChange);
       }, 100);
     } else {
       setTimeout(function () {
@@ -16112,7 +16120,7 @@ var EditorContainer = function EditorContainer(_ref2) {
         (_EditorStore$tinymce9 = EditorStore.tinymce) === null || _EditorStore$tinymce9 === void 0 ? void 0 : _EditorStore$tinymce9.setMode('design');
         (_EditorStore$tinymce10 = EditorStore.tinymce) === null || _EditorStore$tinymce10 === void 0 ? void 0 : (_EditorStore$tinymce11 = _EditorStore$tinymce10.undoManager) === null || _EditorStore$tinymce11 === void 0 ? void 0 : _EditorStore$tinymce11.add();
         (_EditorStore$editor2 = EditorStore.editor) === null || _EditorStore$editor2 === void 0 ? void 0 : _EditorStore$editor2.removeEventListener('click', handleUnselect);
-        if (!isWeb) (_EditorStore$tinymce12 = EditorStore.tinymce) === null || _EditorStore$tinymce12 === void 0 ? void 0 : (_EditorStore$tinymce13 = _EditorStore$tinymce12.getBody()) === null || _EditorStore$tinymce13 === void 0 ? void 0 : _EditorStore$tinymce13.removeEventListener('click', handleEditorMode);
+        if (!isWeb) (_EditorStore$tinymce12 = EditorStore.tinymce) === null || _EditorStore$tinymce12 === void 0 ? void 0 : (_EditorStore$tinymce13 = _EditorStore$tinymce12.getBody()) === null || _EditorStore$tinymce13 === void 0 ? void 0 : _EditorStore$tinymce13.removeEventListener('click', handleModeChange);
       }, 100);
     }
   }, [PageStore.isReadMode()]);
@@ -16252,7 +16260,9 @@ var EditorContainer = function EditorContainer(_ref2) {
       }
     }, /*#__PURE__*/React__default['default'].createElement(FoldBtnImg, {
       src: img$4
-    })), isWeb ? /*#__PURE__*/React__default['default'].createElement(EditorHeader$1, null) : /*#__PURE__*/React__default['default'].createElement(MobileEditorHeader, null), PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
+    })), isWeb ? /*#__PURE__*/React__default['default'].createElement(EditorHeader$1, null) : /*#__PURE__*/React__default['default'].createElement(MobileEditorHeader, {
+      handleModeChange: handleModeChange
+    }), PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? /*#__PURE__*/React__default['default'].createElement(ReadModeContainer, {
       style: {
         display: 'flex'
       }
