@@ -2092,23 +2092,24 @@ var ChapterStore = observable({
         _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
-      var _dto$chapterList;
+      var _dto$chapterList, _dto$pageList;
 
-      var keyword, dto, filtered;
+      var keyword, chapterId, dto, filtered;
       return regeneratorRuntime.wrap(function _callee20$(_context20) {
         while (1) {
           switch (_context20.prev = _context20.next) {
             case 0:
               keyword = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this16.searchStr.trim();
+              chapterId = _arguments2.length > 1 ? _arguments2[1] : undefined;
 
               _this16.setIsSearching(true);
 
               _this16.setIsLoadingSearchResult(true);
 
-              _context20.next = 5;
+              _context20.next = 6;
               return _this16.getSearchList(keyword);
 
-            case 5:
+            case 6:
               dto = _context20.sent;
               filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
                 return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
@@ -2116,7 +2117,9 @@ var ChapterStore = observable({
               _this16.searchResult = {
                 keyword: keyword,
                 chapter: (filtered === null || filtered === void 0 ? void 0 : filtered.length) > 0 ? filtered : null,
-                page: _this16.preProcessPageList(dto.pageList, keyword),
+                page: _this16.preProcessPageList(chapterId ? (_dto$pageList = dto.pageList) === null || _dto$pageList === void 0 ? void 0 : _dto$pageList.filter(function (page) {
+                  return page.parent_notebook === chapterId;
+                }) : dto.pageList, keyword),
                 tag: dto.tagList
               };
 
@@ -2124,7 +2127,7 @@ var ChapterStore = observable({
 
               return _context20.abrupt("return", _this16.searchResult);
 
-            case 10:
+            case 11:
             case "end":
               return _context20.stop();
           }
@@ -2141,7 +2144,7 @@ var ChapterStore = observable({
       });
     }
 
-    return pageList;
+    return pageList !== null && pageList !== void 0 && pageList.length ? pageList : null;
   },
   getContentPreview: function getContentPreview(content, keyword) {
     var result = content.substring(content.indexOf(keyword) - 10);
@@ -2472,10 +2475,12 @@ var TagStore = observable({
   isSearchLoading: false,
   searchStr: '',
   tagPanelLoading: false,
+  searchTagId: '',
   // tag가 있는 노트 가져오기
   getTagNoteList: function getTagNoteList(tagId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var res;
+      var _yield$NoteRepository, status, dto;
+
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -2484,10 +2489,12 @@ var TagStore = observable({
               return NoteRepository$1.getTagNoteList(tagId);
 
             case 2:
-              res = _context.sent;
-              return _context.abrupt("return", res.status === 200 ? res.data.dto : null);
+              _yield$NoteRepository = _context.sent;
+              status = _yield$NoteRepository.status;
+              dto = _yield$NoteRepository.data.dto;
+              return _context.abrupt("return", status === 200 ? dto.noteList : null);
 
-            case 4:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -2498,7 +2505,8 @@ var TagStore = observable({
   // notetagList
   getNoteTagList: function getNoteTagList(noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var res;
+      var _yield$NoteRepository2, status, dto;
+
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -2507,10 +2515,12 @@ var TagStore = observable({
               return NoteRepository$1.getNoteTagList(noteId);
 
             case 2:
-              res = _context2.sent;
-              return _context2.abrupt("return", res.status === 200 ? res.data.dto : null);
+              _yield$NoteRepository2 = _context2.sent;
+              status = _yield$NoteRepository2.status;
+              dto = _yield$NoteRepository2.data.dto;
+              return _context2.abrupt("return", status === 200 ? dto : null);
 
-            case 4:
+            case 6:
             case "end":
               return _context2.stop();
           }
@@ -2603,11 +2613,14 @@ var TagStore = observable({
   setTagPanelLoading: function setTagPanelLoading(isLoading) {
     this.tagPanelLoading = isLoading;
   },
+  setSearchTagId: function setSearchTagId(id) {
+    this.searchTagId = id;
+  },
   createTag: function createTag(createTagList, noteId) {
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var createTagArr, _yield$NoteRepository, dto;
+      var createTagArr, _yield$NoteRepository3, dto;
 
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
@@ -2624,8 +2637,8 @@ var TagStore = observable({
               return NoteRepository$1.createTag(createTagArr);
 
             case 3:
-              _yield$NoteRepository = _context4.sent;
-              dto = _yield$NoteRepository.data.dto;
+              _yield$NoteRepository3 = _context4.sent;
+              dto = _yield$NoteRepository3.data.dto;
 
               _this.setAddTagList([]);
 
@@ -2641,7 +2654,7 @@ var TagStore = observable({
   },
   deleteTag: function deleteTag(deleteTagList, noteId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      var deleteTagArray, _yield$NoteRepository2, dto;
+      var deleteTagArray, _yield$NoteRepository4, dto;
 
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
@@ -2658,8 +2671,8 @@ var TagStore = observable({
               return NoteRepository$1.deleteTag(deleteTagArray);
 
             case 3:
-              _yield$NoteRepository2 = _context5.sent;
-              dto = _yield$NoteRepository2.data.dto;
+              _yield$NoteRepository4 = _context5.sent;
+              dto = _yield$NoteRepository4.data.dto;
               return _context5.abrupt("return", dto);
 
             case 6:
@@ -2674,7 +2687,7 @@ var TagStore = observable({
     var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var updateTagArray, _yield$NoteRepository3, dto;
+      var updateTagArray, _yield$NoteRepository5, dto;
 
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
@@ -2691,8 +2704,8 @@ var TagStore = observable({
               return NoteRepository$1.updateTag(updateTagArray);
 
             case 3:
-              _yield$NoteRepository3 = _context6.sent;
-              dto = _yield$NoteRepository3.data.dto;
+              _yield$NoteRepository5 = _context6.sent;
+              dto = _yield$NoteRepository5.data.dto;
 
               _this2.setUpdateTagList([]);
 
@@ -2716,7 +2729,7 @@ var TagStore = observable({
     var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-      var createTagArr, _yield$NoteRepository4, dto;
+      var createTagArr, _yield$NoteRepository6, dto;
 
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
@@ -2733,8 +2746,8 @@ var TagStore = observable({
               return NoteRepository$1.createTag(createTagArr);
 
             case 3:
-              _yield$NoteRepository4 = _context7.sent;
-              dto = _yield$NoteRepository4.data.dto;
+              _yield$NoteRepository6 = _context7.sent;
+              dto = _yield$NoteRepository6.data.dto;
               _context7.next = 7;
               return _this3.fetchNoteTagList(noteId);
 
@@ -2759,7 +2772,7 @@ var TagStore = observable({
     var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      var updateTagArr, _yield$NoteRepository5, dto;
+      var updateTagArr, _yield$NoteRepository7, dto;
 
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
@@ -2777,8 +2790,8 @@ var TagStore = observable({
               return NoteRepository$1.updateTag(updateTagArr);
 
             case 3:
-              _yield$NoteRepository5 = _context8.sent;
-              dto = _yield$NoteRepository5.data.dto;
+              _yield$NoteRepository7 = _context8.sent;
+              dto = _yield$NoteRepository7.data.dto;
               _context8.next = 7;
               return _this4.fetchNoteTagList(noteId);
 
@@ -2803,7 +2816,7 @@ var TagStore = observable({
     var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var deleteTagArray, _yield$NoteRepository6, dto;
+      var deleteTagArray, _yield$NoteRepository8, dto;
 
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
@@ -2820,8 +2833,8 @@ var TagStore = observable({
               return NoteRepository$1.deleteTag(deleteTagArray);
 
             case 3:
-              _yield$NoteRepository6 = _context9.sent;
-              dto = _yield$NoteRepository6.data.dto;
+              _yield$NoteRepository8 = _context9.sent;
+              dto = _yield$NoteRepository8.data.dto;
 
               _this5.fetchNoteTagList(noteId);
 
@@ -2902,7 +2915,7 @@ var TagStore = observable({
    */
   getAllsortedTagList: function getAllsortedTagList() {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$NoteRepository7, tag_index_list_dto;
+      var _yield$NoteRepository9, tag_index_list_dto;
 
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
@@ -2912,8 +2925,8 @@ var TagStore = observable({
               return NoteRepository$1.getAllSortedTagList();
 
             case 2:
-              _yield$NoteRepository7 = _context12.sent;
-              tag_index_list_dto = _yield$NoteRepository7.data.dto.tag_index_list_dto;
+              _yield$NoteRepository9 = _context12.sent;
+              tag_index_list_dto = _yield$NoteRepository9.data.dto.tag_index_list_dto;
               return _context12.abrupt("return", tag_index_list_dto);
 
             case 5:
@@ -3084,7 +3097,7 @@ var TagStore = observable({
   },
   setTagNoteSearchResult: function setTagNoteSearchResult(tagName) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var _yield$NoteRepository8, tagList;
+      var _yield$NoteRepository10, tagList;
 
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
@@ -3094,8 +3107,8 @@ var TagStore = observable({
               return NoteRepository$1.getSearchList(tagName);
 
             case 2:
-              _yield$NoteRepository8 = _context14.sent;
-              tagList = _yield$NoteRepository8.data.dto.tagList;
+              _yield$NoteRepository10 = _context14.sent;
+              tagList = _yield$NoteRepository10.data.dto.tagList;
               ChapterStore.setSearchResult({
                 chapter: null,
                 page: tagList
@@ -3111,6 +3124,41 @@ var TagStore = observable({
   },
   isValidTag: function isValidTag(text) {
     return checkDuplicateIgnoreCase(this.notetagList, 'text', text);
+  },
+  // for mobile
+  handleTagNoteList: function handleTagNoteList(tagId) {
+    var _this10 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var pageList, obj;
+      return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _this10.setSearchTagId(tagId ? tagId : _this10.searchTagId);
+
+              ChapterStore.setIsTagSearching(true);
+              _context15.next = 4;
+              return TagStore.getTagNoteList(_this10.searchTagId);
+
+            case 4:
+              pageList = _context15.sent;
+              pageList.map(function (page) {
+                return page.id = page.note_id;
+              });
+              obj = {
+                children: pageList
+              };
+              ChapterStore.chapterInfo = new ChapterModel(obj);
+              NoteStore.setTargetLayout('List');
+
+            case 9:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, _callee15);
+    }))();
   }
 });
 
@@ -7287,6 +7335,7 @@ var NoteStore = observable({
   isSlashCmd: false,
   appType: 'wapl',
   isLongPress: false,
+  isWeb: true,
   setAppType: function setAppType(appType) {
     this.appType = appType;
   },
@@ -7340,6 +7389,9 @@ var NoteStore = observable({
   },
   getUserId: function getUserId() {
     return this.user_id;
+  },
+  setIsWeb: function setIsWeb(flag) {
+    this.isWeb = flag;
   },
   // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init: function init(roomId, channelId, userId, userName, userEmail, callback) {
@@ -8058,8 +8110,18 @@ var TagTitleSearchContainer = styled.div(_templateObject19(), function (props) {
   return props.theme.SubStateNormal;
 });
 
+function _templateObject41() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  height: 1rem;\n  min-height: 1rem;\n  background-color: #f7f4ef;\n"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject40() {
-  var data = _taggedTemplateLiteral(["\n  display: flex;  \n  height: 4.38rem;\n  justify-content: center;\n  align-items: center;\n"]);
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  height: 4.38rem;\n  justify-content: center;\n  align-items: center;\n"]);
 
   _templateObject40 = function _templateObject40() {
     return data;
@@ -8535,6 +8597,7 @@ var RestoreModalBody = styled.div(_templateObject38(), function (props) {
 });
 var RestoreChapterText = styled.div(_templateObject39());
 var RestoreModalFooter = styled.div(_templateObject40());
+var Divider = styled.div(_templateObject41());
 
 function _templateObject20$1() {
   var data = _taggedTemplateLiteral(["\n  font-size: 0.688rem;\n  margin-left: auto;\n  color: ", ";\n  padding-left: 0.4rem;\n  line-height: normal;\n"]);
@@ -10308,8 +10371,8 @@ var PageItem = function PageItem(_ref) {
     })), /*#__PURE__*/React.createElement(PageItemWrapper, {
       onClick: handlePageClick
     }, /*#__PURE__*/React.createElement(Color, {
-      color: isSearching ? page.color : ChapterStore.chapterInfo.color
-    }), /*#__PURE__*/React.createElement(PageContentContainer, null, isSearching && /*#__PURE__*/React.createElement(ChapterTitle$1, null, getI18nChapterTitle(page.type, page.text)), /*#__PURE__*/React.createElement(PageTitle, null, isSearching ? page.note_title : page.text), /*#__PURE__*/React.createElement(PagePreviewWrapper, null, /*#__PURE__*/React.createElement(PagePreview, {
+      color: isSearching || ChapterStore.isTagSearching ? page.color : ChapterStore.chapterInfo.color
+    }), /*#__PURE__*/React.createElement(PageContentContainer, null, isSearching && /*#__PURE__*/React.createElement(ChapterTitle$1, null, getI18nChapterTitle(page.type, page.text)), /*#__PURE__*/React.createElement(PageTitle, null, isSearching || ChapterStore.isTagSearching ? page.note_title : page.text), /*#__PURE__*/React.createElement(PagePreviewWrapper, null, /*#__PURE__*/React.createElement(PagePreview, {
       className: "lnb-result-context"
     }, NoteUtil.decodeStr((page.contentPreview || page.note_content).replace(/[<][^>]*[>]|&nbsp;|&zwj;/gi, '').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/\n/gi, ' ')))))));
   });
@@ -10343,7 +10406,7 @@ function _templateObject$7() {
 }
 
 var LNBSearchResult = function LNBSearchResult(_ref) {
-  var _EditorStore$tinymce, _ChapterStore$searchR4;
+  var _EditorStore$tinymce, _ChapterStore$searchR5;
 
   var isMobile = _ref.isMobile;
 
@@ -10423,7 +10486,7 @@ var LNBSearchResult = function LNBSearchResult(_ref) {
 
   var handlePageClick = function handlePageClick(pageId, type) {
     return /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var _ChapterStore$searchR;
+      var _ChapterStore$searchR, _ChapterStore$searchR2;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -10442,7 +10505,7 @@ var LNBSearchResult = function LNBSearchResult(_ref) {
 
             case 4:
               instance.unmark();
-              instance.mark((_ChapterStore$searchR = ChapterStore.searchResult) === null || _ChapterStore$searchR === void 0 ? void 0 : _ChapterStore$searchR.keyword);
+              if ((_ChapterStore$searchR = ChapterStore.searchResult) !== null && _ChapterStore$searchR !== void 0 && _ChapterStore$searchR.keyword) instance.mark((_ChapterStore$searchR2 = ChapterStore.searchResult) === null || _ChapterStore$searchR2 === void 0 ? void 0 : _ChapterStore$searchR2.keyword);
               NoteStore.setShowPage(true);
 
               if (NoteStore.layoutState === 'collapse') {
@@ -10465,20 +10528,20 @@ var LNBSearchResult = function LNBSearchResult(_ref) {
   };
 
   useEffect(function () {
-    var _ChapterStore$searchR2, _ChapterStore$searchR3;
+    var _ChapterStore$searchR3, _ChapterStore$searchR4;
 
-    if (!((_ChapterStore$searchR2 = ChapterStore.searchResult) !== null && _ChapterStore$searchR2 !== void 0 && _ChapterStore$searchR2.keyword)) return;
+    if (!((_ChapterStore$searchR3 = ChapterStore.searchResult) !== null && _ChapterStore$searchR3 !== void 0 && _ChapterStore$searchR3.keyword)) return;
     var mark = new Mark$1(document.querySelectorAll('.lnb-result-context'));
     mark.unmark();
-    mark.mark((_ChapterStore$searchR3 = ChapterStore.searchResult) === null || _ChapterStore$searchR3 === void 0 ? void 0 : _ChapterStore$searchR3.keyword);
-  }, [(_ChapterStore$searchR4 = ChapterStore.searchResult) === null || _ChapterStore$searchR4 === void 0 ? void 0 : _ChapterStore$searchR4.keyword]);
+    mark.mark((_ChapterStore$searchR4 = ChapterStore.searchResult) === null || _ChapterStore$searchR4 === void 0 ? void 0 : _ChapterStore$searchR4.keyword);
+  }, [(_ChapterStore$searchR5 = ChapterStore.searchResult) === null || _ChapterStore$searchR5 === void 0 ? void 0 : _ChapterStore$searchR5.keyword]);
   return useObserver(function () {
-    var _ChapterStore$searchR5, _ChapterStore$searchR6, _ChapterStore$searchR7, _ChapterStore$searchR8, _ChapterStore$searchR9, _ChapterStore$searchR10, _ChapterStore$searchR11, _ChapterStore$searchR12, _ChapterStore$searchR13, _ChapterStore$searchR14, _ChapterStore$searchR15, _ChapterStore$searchR16, _ChapterStore$searchR17;
+    var _ChapterStore$searchR6, _ChapterStore$searchR7, _ChapterStore$searchR8, _ChapterStore$searchR9, _ChapterStore$searchR10, _ChapterStore$searchR11, _ChapterStore$searchR12, _ChapterStore$searchR13, _ChapterStore$searchR14, _ChapterStore$searchR15, _ChapterStore$searchR16, _ChapterStore$searchR17, _ChapterStore$searchR18;
 
-    return /*#__PURE__*/React.createElement(React.Fragment, null, ((_ChapterStore$searchR5 = ChapterStore.searchResult) === null || _ChapterStore$searchR5 === void 0 ? void 0 : _ChapterStore$searchR5.chapter) === null && ((_ChapterStore$searchR6 = ChapterStore.searchResult) === null || _ChapterStore$searchR6 === void 0 ? void 0 : _ChapterStore$searchR6.page) === null && ((_ChapterStore$searchR7 = ChapterStore.searchResult) === null || _ChapterStore$searchR7 === void 0 ? void 0 : _ChapterStore$searchR7.tag) === null ? /*#__PURE__*/React.createElement(NoContent, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, ((_ChapterStore$searchR6 = ChapterStore.searchResult) === null || _ChapterStore$searchR6 === void 0 ? void 0 : _ChapterStore$searchR6.chapter) === null && ((_ChapterStore$searchR7 = ChapterStore.searchResult) === null || _ChapterStore$searchR7 === void 0 ? void 0 : _ChapterStore$searchR7.page) === null && ((_ChapterStore$searchR8 = ChapterStore.searchResult) === null || _ChapterStore$searchR8 === void 0 ? void 0 : _ChapterStore$searchR8.tag) === null ? /*#__PURE__*/React.createElement(NoContent, {
       content: "search",
-      value: (_ChapterStore$searchR8 = ChapterStore.searchResult) === null || _ChapterStore$searchR8 === void 0 ? void 0 : _ChapterStore$searchR8.keyword
-    }) : /*#__PURE__*/React.createElement(SearchResultContainer, null, ((_ChapterStore$searchR9 = ChapterStore.searchResult) === null || _ChapterStore$searchR9 === void 0 ? void 0 : _ChapterStore$searchR9.chapter) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_META_TAG_01')), (_ChapterStore$searchR10 = ChapterStore.searchResult) === null || _ChapterStore$searchR10 === void 0 ? void 0 : (_ChapterStore$searchR11 = _ChapterStore$searchR10.chapter) === null || _ChapterStore$searchR11 === void 0 ? void 0 : _ChapterStore$searchR11.map(function (chapter) {
+      value: (_ChapterStore$searchR9 = ChapterStore.searchResult) === null || _ChapterStore$searchR9 === void 0 ? void 0 : _ChapterStore$searchR9.keyword
+    }) : /*#__PURE__*/React.createElement(SearchResultContainer, null, ((_ChapterStore$searchR10 = ChapterStore.searchResult) === null || _ChapterStore$searchR10 === void 0 ? void 0 : _ChapterStore$searchR10.chapter) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_META_TAG_01')), (_ChapterStore$searchR11 = ChapterStore.searchResult) === null || _ChapterStore$searchR11 === void 0 ? void 0 : (_ChapterStore$searchR12 = _ChapterStore$searchR11.chapter) === null || _ChapterStore$searchR12 === void 0 ? void 0 : _ChapterStore$searchR12.map(function (chapter) {
       return isMobile ? /*#__PURE__*/React.createElement(ChapterItem, {
         key: chapter.id,
         chapter: chapter,
@@ -10494,7 +10557,7 @@ var LNBSearchResult = function LNBSearchResult(_ref) {
           marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem'
         }
       }, chapter.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : chapter.text));
-    }), ((_ChapterStore$searchR12 = ChapterStore.searchResult) === null || _ChapterStore$searchR12 === void 0 ? void 0 : _ChapterStore$searchR12.page) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_META_TAG_02')), (_ChapterStore$searchR13 = ChapterStore.searchResult) === null || _ChapterStore$searchR13 === void 0 ? void 0 : (_ChapterStore$searchR14 = _ChapterStore$searchR13.page) === null || _ChapterStore$searchR14 === void 0 ? void 0 : _ChapterStore$searchR14.map(function (page) {
+    }), ((_ChapterStore$searchR13 = ChapterStore.searchResult) === null || _ChapterStore$searchR13 === void 0 ? void 0 : _ChapterStore$searchR13.page) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_META_TAG_02')), (_ChapterStore$searchR14 = ChapterStore.searchResult) === null || _ChapterStore$searchR14 === void 0 ? void 0 : (_ChapterStore$searchR15 = _ChapterStore$searchR14.page) === null || _ChapterStore$searchR15 === void 0 ? void 0 : _ChapterStore$searchR15.map(function (page) {
       return isMobile ? /*#__PURE__*/React.createElement(PageItem, {
         key: page.note_id,
         page: page,
@@ -10507,7 +10570,7 @@ var LNBSearchResult = function LNBSearchResult(_ref) {
         className: "lnb-result-context",
         isContent: true
       }, page.contentPreview));
-    }), ((_ChapterStore$searchR15 = ChapterStore.searchResult) === null || _ChapterStore$searchR15 === void 0 ? void 0 : _ChapterStore$searchR15.tag) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_PAGE_LIST_CMPNT_DEF_06')), (_ChapterStore$searchR16 = ChapterStore.searchResult) === null || _ChapterStore$searchR16 === void 0 ? void 0 : (_ChapterStore$searchR17 = _ChapterStore$searchR16.tag) === null || _ChapterStore$searchR17 === void 0 ? void 0 : _ChapterStore$searchR17.map(function (tag, pageListIdx) {
+    }), ((_ChapterStore$searchR16 = ChapterStore.searchResult) === null || _ChapterStore$searchR16 === void 0 ? void 0 : _ChapterStore$searchR16.tag) && /*#__PURE__*/React.createElement(SearchDivision, null, t('NOTE_PAGE_LIST_CMPNT_DEF_06')), (_ChapterStore$searchR17 = ChapterStore.searchResult) === null || _ChapterStore$searchR17 === void 0 ? void 0 : (_ChapterStore$searchR18 = _ChapterStore$searchR17.tag) === null || _ChapterStore$searchR18 === void 0 ? void 0 : _ChapterStore$searchR18.map(function (tag, pageListIdx) {
       return isMobile ? /*#__PURE__*/React.createElement(TagItem, {
         key: pageListIdx,
         tag: tag,
@@ -15428,7 +15491,8 @@ var MobileEditorHeader = function MobileEditorHeader() {
   var _useNoteStore = useNoteStore(),
       ChapterStore = _useNoteStore.ChapterStore,
       PageStore = _useNoteStore.PageStore,
-      NoteStore = _useNoteStore.NoteStore;
+      NoteStore = _useNoteStore.NoteStore,
+      TagStore = _useNoteStore.TagStore;
 
   var _useTranslation = useTranslation(),
       t = _useTranslation.t;
@@ -15452,13 +15516,23 @@ var MobileEditorHeader = function MobileEditorHeader() {
               return PageStore.editDone(updateDTO);
 
             case 4:
-              _context.next = 6;
+              if (!ChapterStore.isTagSearching) {
+                _context.next = 8;
+                break;
+              }
+
+              TagStore.handleTagNoteList();
+              _context.next = 10;
+              break;
+
+            case 8:
+              _context.next = 10;
               return ChapterStore.fetchChapterInfo(PageStore.pageInfo.chapterId);
 
-            case 6:
+            case 10:
               NoteStore.setTargetLayout('List');
 
-            case 7:
+            case 11:
             case "end":
               return _context.stop();
           }
@@ -16729,16 +16803,25 @@ var TagKeyChildren$1 = function TagKeyChildren(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              if (NoteStore.isWeb) {
+                _context.next = 3;
+                break;
+              }
+
+              TagStore.handleTagNoteList(tagId);
+              return _context.abrupt("return");
+
+            case 3:
               ChapterStore.setIsTagSearching(true);
               ChapterStore.setIsSearching(true); // lnb search창에 검색 시도(클릭)한 태그이름 나오고 검색 실행중 화면 보이기
 
               ChapterStore.setSearchingTagName(tagName); // isTagSearching이고 isLoadingSearchResult일 때 검색 실행중 화면이 보인다
 
               ChapterStore.setIsLoadingSearchResult(true);
-              _context.next = 6;
+              _context.next = 9;
               return TagStore.setTagNoteSearchResult(tagName);
 
-            case 6:
+            case 9:
               ChapterStore.setIsLoadingSearchResult(false);
 
               if (NoteStore.layoutState === 'collapse') {
@@ -16747,7 +16830,7 @@ var TagKeyChildren$1 = function TagKeyChildren(_ref) {
 
               logEvent('note', 'clickTagBtn');
 
-            case 9:
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -16794,7 +16877,10 @@ var customExpandIcon = function customExpandIcon(props) {
   });
 };
 
-var TagContentContainer = observer(function () {
+var TagContentContainer = observer(function (_ref) {
+  var _ref$isWeb = _ref.isWeb,
+      isWeb = _ref$isWeb === void 0 ? true : _ref$isWeb;
+
   var _useTranslation = useTranslation(),
       t = _useTranslation.t;
 
@@ -16804,19 +16890,27 @@ var TagContentContainer = observer(function () {
     NUM: t('NOTE_TAG_TAG_MENU_03'),
     ETC: t('NOTE_TAG_TAG_MENU_04')
   };
+
+  var renderDivider = function renderDivider(category) {
+    if (isWeb) return null;else if (category) return null;else return /*#__PURE__*/React.createElement(Divider, null);
+  };
+
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(StyledCollapse, {
     defaultActiveKey: defaultActiveArr,
     expandIcon: function expandIcon(panelProps) {
       return customExpandIcon(panelProps);
     },
-    expandIconPosition: 'right'
+    expandIconPosition: 'right',
+    style: isWeb ? null : {
+      backgroundColor: 'white'
+    }
   }, Object.keys(TagStore.sortedTagList).map(function (category) {
     var _Object$keys;
 
     return (
       /*#__PURE__*/
       // "ㄱ~ㅎ"
-      React.createElement(PanelHeader, {
+      React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(PanelHeader, {
         header: categoryInfo[category],
         key: category
       }, (_Object$keys = Object.keys(TagStore.sortedTagList[category])) === null || _Object$keys === void 0 ? void 0 : _Object$keys.map(function (tagKey) {
@@ -16827,13 +16921,16 @@ var TagContentContainer = observer(function () {
           category: category,
           tagKey: tagKey
         }));
-      }))
+      })), renderDivider(categoryInfo[category] === t('NOTE_TAG_TAG_MENU_04')))
     );
   })));
 });
 var TagContentContainer$1 = /*#__PURE__*/React.memo(TagContentContainer);
 
-var TagContainer = function TagContainer() {
+var TagContainer = function TagContainer(_ref) {
+  var _ref$isWeb = _ref.isWeb,
+      isWeb = _ref$isWeb === void 0 ? true : _ref$isWeb;
+
   var _useNoteStore = useNoteStore(),
       NoteStore = _useNoteStore.NoteStore,
       TagStore = _useNoteStore.TagStore;
@@ -16851,7 +16948,9 @@ var TagContainer = function TagContainer() {
         content: "searching"
       }); // search는 검색 결과 없으면 KOR, ENG, NUM, ETC property가 없음
 
-      if (Object.keys(TagStore.sortedTagList).length > 0) return /*#__PURE__*/React.createElement(TagContentContainer$1, null); // 태그 선택 결과 없는 경우
+      if (Object.keys(TagStore.sortedTagList).length > 0) return /*#__PURE__*/React.createElement(TagContentContainer$1, {
+        isWeb: isWeb
+      }); // 태그 선택 결과 없는 경우
 
       return /*#__PURE__*/React.createElement(NoContent, {
         content: "search",
@@ -16860,10 +16959,16 @@ var TagContainer = function TagContainer() {
     } // 초기 태그 화면 rendering
 
 
-    if (TagStore.allSortedTagList.length > 0) return /*#__PURE__*/React.createElement(TagContentContainer$1, null);
+    if (TagStore.allSortedTagList.length > 0) return /*#__PURE__*/React.createElement(TagContentContainer$1, {
+      isWeb: isWeb
+    });
     return /*#__PURE__*/React.createElement(NoContent, {
       content: "tag"
     });
+  };
+
+  var handleBackButtonClick = function handleBackButtonClick() {
+    return NoteStore.setTargetLayout('LNB');
   };
 
   return useObserver(function () {
@@ -16873,9 +16978,25 @@ var TagContainer = function TagContainer() {
       } : {
         display: 'flex'
       }
-    }, /*#__PURE__*/React.createElement(TagHeader, null), /*#__PURE__*/React.createElement(ContentBodyWrapper, {
-      style: {
+    }, isWeb ? /*#__PURE__*/React.createElement(TagHeader, null) : /*#__PURE__*/React.createElement(MainHeader$1, {
+      leftButtons: [{
+        type: 'icon',
+        action: 'back',
+        onClick: handleBackButtonClick
+      }],
+      title: "\uD0DC\uADF8",
+      rightButtons: [{
+        type: 'icon',
+        action: 'search'
+      }, {
+        type: 'text',
+        text: '🎅🏻'
+      }]
+    }), /*#__PURE__*/React.createElement(ContentBodyWrapper, {
+      style: isWeb ? {
         padding: '0.25rem 1rem'
+      } : {
+        padding: '0rem'
       }
     }, renderContent()));
   });
