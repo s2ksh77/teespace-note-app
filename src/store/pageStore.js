@@ -597,12 +597,12 @@ const PageStore = observable({
   },
 
   // 이미 전에 currentPageID가 set되어 있을거라고 가정
-  noteEditStart(noteId) {
+  noteEditStart(noteId, editorFocus = true) {
     this.editStart(noteId, this.pageInfo.chapterId).then(dto => {
       this.fetchNoteInfoList(dto.note_id);
       // focus에서 getRng error가 나서 selection부터 체크
       if (EditorStore.tinymce?.selection) {
-        EditorStore.tinymce.focus();
+        if (editorFocus) EditorStore.tinymce.focus();
         EditorStore.tinymce.selection.setCursorLocation();
         EditorStore.tinymce?.setContent(this.pageInfo.content);
       }
