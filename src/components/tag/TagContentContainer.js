@@ -1,22 +1,21 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { PanelHeader, StyledCollapse } from '../../styles/tagStyle';
-import TagStore from '../../store/tagStore';
-import { TagKeyContainer, PanelArrow } from '../../styles/tagStyle';
-import TagKeyChildren from './TagKeyChildren';
+import { useTranslation } from 'react-i18next';
+import useNoteStore from '../../store/useStore';
+
+import {
+  PanelHeader,
+  StyledCollapse,
+  TagKeyContainer,
+  PanelArrow,
+} from '../../styles/tagStyle';
+import { Divider } from '../../styles/commonStyle';
 import arrowUp from '../../assets/ts_arrow_up_line@3x.png';
 import arrowDown from '../../assets/ts_arrow_down_line@3x.png';
-import NoteStore from '../../store/noteStore';
-import { useTranslation } from 'react-i18next';
-import { Divider } from '../../styles/commonStyle';
-
-
-const customExpandIcon = props => {
-  if (props.isActive) return <PanelArrow src={arrowUp} alt="arrow-up" />;
-  return <PanelArrow src={arrowDown} alt="arrow-down" />;
-};
+import TagKeyChildren from './TagKeyChildren';
 
 const TagContentContainer = observer(({ isWeb = true }) => {
+  const { TagStore } = useNoteStore();
   const { t } = useTranslation();
 
   const defaultActiveKey = Object.entries(TagStore.sortedTagList)
@@ -32,23 +31,29 @@ const TagContentContainer = observer(({ isWeb = true }) => {
 
   const renderDivider = category => {
     if (isWeb) return null;
-    else if (category) return null;
-    else return <Divider />;
+    if (category) return null;
+    return <Divider />;
   };
 
   return (
     <>
       <StyledCollapse
-        expandIcon={panelProps => customExpandIcon(panelProps)}
-        expandIconPosition={'right'}
-        style={isWeb ? null : { backgroundColor: 'white' }}
         defaultActiveKey={defaultActiveKey}
+        expandIcon={({ isActive }) =>
+          isActive ? <PanelArrow src={arrowUp} /> : <PanelArrow src={arrowDown} />
+        }
+        expandIconPosition="right"
+        style={isWeb ? null : { backgroundColor: 'white', border: 'none' }}
       >
         {Object.keys(TagStore.sortedTagList).map(category => {
           return (
             // "ㄱ~ㅎ"
             <>
-              <PanelHeader header={categoryInfo[category]} key={category}>
+              <PanelHeader
+                header={categoryInfo[category]}
+                key={category}
+                style={{ border: 'none' }}
+              >
                 {Object.keys(TagStore.sortedTagList[category])?.map(tagKey => {
                   // "ㄱ", "ㄴ" ...
                   return (
