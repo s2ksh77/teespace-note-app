@@ -10,7 +10,6 @@ import NoteStore from '../../store/noteStore';
 import { useTranslation } from 'react-i18next';
 import { Divider } from '../../styles/commonStyle';
 
-const defaultActiveArr = ['KOR', 'ENG', 'NUM', 'ETC'];
 
 const customExpandIcon = props => {
   if (props.isActive) return <PanelArrow src={arrowUp} alt="arrow-up" />;
@@ -19,6 +18,11 @@ const customExpandIcon = props => {
 
 const TagContentContainer = observer(({ isWeb = true }) => {
   const { t } = useTranslation();
+
+  const defaultActiveKey = Object.entries(TagStore.sortedTagList)
+    .filter(([, tags]) => Object.keys(tags).length)
+    .map(([category]) => category);
+
   const categoryInfo = {
     KOR: t('NOTE_TAG_TAG_MENU_01'),
     ENG: t('NOTE_TAG_TAG_MENU_02'),
@@ -35,10 +39,10 @@ const TagContentContainer = observer(({ isWeb = true }) => {
   return (
     <>
       <StyledCollapse
-        defaultActiveKey={defaultActiveArr}
         expandIcon={panelProps => customExpandIcon(panelProps)}
         expandIconPosition={'right'}
         style={isWeb ? null : { backgroundColor: 'white' }}
+        defaultActiveKey={defaultActiveKey}
       >
         {Object.keys(TagStore.sortedTagList).map(category => {
           return (
