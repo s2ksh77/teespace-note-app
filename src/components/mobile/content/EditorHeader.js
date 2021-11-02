@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -15,9 +15,10 @@ import { EditorModCover, EditorTitleCover } from '../styles/editorStyles';
 import waplWorking from '../../../assets/wapl_working.svg';
 import MainHeader from '../lnb/MainHeader';
 
-const MobileEditorHeader = () => {
+const MobileEditorHeader = ({ handleModeChange }) => {
   const { ChapterStore, PageStore, NoteStore, TagStore } = useNoteStore();
   const { t } = useTranslation();
+  const inputRef = useRef(null);
   const themeContext = useContext(ThemeContext);
 
   const handleBackButtonClick = async () => {
@@ -49,12 +50,13 @@ const MobileEditorHeader = () => {
       <EditorTitleCover>
         <EditorTitle
           id="editorTitle"
+          ref={inputRef}
           maxLength="200"
           placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_03')}
           value={PageStore.noteTitle}
           onChange={handleTitleInput}
-          disabled={!!PageStore.isReadMode()}
           autoComplete="off"
+          onClick={handleModeChange.bind(null, inputRef)}
         />
       </EditorTitleCover>
       <EditorModCover>

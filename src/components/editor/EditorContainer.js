@@ -255,10 +255,11 @@ const EditorContainer = ({ isWeb = true }) => {
     }
   };
 
-  const handleEditorMode = () => {
+  const handleModeChange = ref => {
     if (PageStore.isReadMode()) {
       try {
-        PageStore.noteEditStart(PageStore.pageInfo.id);
+        PageStore.noteEditStart(PageStore.pageInfo?.id, false);
+        ref?.current?.focus();
       } catch (e) {
         console.log(`EditStart Error ${e}`);
       }
@@ -272,7 +273,7 @@ const EditorContainer = ({ isWeb = true }) => {
         EditorStore.tinymce?.setMode('readonly');
         EditorStore.editor?.addEventListener('click', handleUnselect);
         if (!isWeb)
-          EditorStore.tinymce?.getBody()?.addEventListener('click', handleEditorMode);
+          EditorStore.tinymce?.getBody()?.addEventListener('click', handleModeChange);
       }, 100);
     } else {
       setTimeout(() => {
@@ -280,7 +281,7 @@ const EditorContainer = ({ isWeb = true }) => {
         EditorStore.tinymce?.undoManager?.add();
         EditorStore.editor?.removeEventListener('click', handleUnselect);
         if (!isWeb)
-          EditorStore.tinymce?.getBody()?.removeEventListener('click', handleEditorMode);
+          EditorStore.tinymce?.getBody()?.removeEventListener('click', handleModeChange);
       }, 100);
     }
   }, [PageStore.isReadMode()]);
@@ -392,7 +393,11 @@ const EditorContainer = ({ isWeb = true }) => {
         >
           <FoldBtnImg src={foldImg} />
         </FoldBtn>
-        {isWeb ? <EditorHeader /> : <MobileEditorHeader />}
+        {isWeb ? (
+          <EditorHeader />
+        ) : (
+          <MobileEditorHeader handleModeChange={handleModeChange} />
+        )}
         {PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             {authStore.hasPermission('notePage', 'U') ? (
