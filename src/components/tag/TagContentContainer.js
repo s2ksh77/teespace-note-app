@@ -48,7 +48,7 @@ const TagContentContainer = observer(({ isWeb = true }) => {
         {Object.keys(TagStore.sortedTagList).map(category => {
           return (
             // "ㄱ~ㅎ"
-            <>
+            <React.Fragment key={category}>
               <PanelHeader
                 header={categoryInfo[category]}
                 key={category}
@@ -65,7 +65,7 @@ const TagContentContainer = observer(({ isWeb = true }) => {
                 })}
               </PanelHeader>
               {renderDivider(categoryInfo[category] === t('NOTE_TAG_TAG_MENU_04'))}
-            </>
+            </React.Fragment>
           );
         })}
       </StyledCollapse>
