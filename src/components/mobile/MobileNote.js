@@ -6,6 +6,7 @@ import i18n from '../../i18n/i18n';
 import useNoteStore from '../../store/useStore';
 
 import { LNBWrapper as Wrapper } from '../../styles/lnbStyle';
+import GlobalStyle from './GlobalStyle';
 import LNBContainer from './lnb/LNBContainer';
 import ListViewContainer from './listview/ListViewContainer';
 import SearchContainer from './lnb/SearchContainer';
@@ -80,6 +81,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
 
   return useObserver(() => (
     <I18nextProvider i18n={i18n}>
+      <GlobalStyle />
       <Wrapper>
         <Container targetLayout={NoteStore.targetLayout} />
         {NoteStore.showDialog && <NoteModal isWeb={false} />}

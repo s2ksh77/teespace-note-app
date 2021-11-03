@@ -51,7 +51,13 @@ const TagContainer = ({ isWeb = true }) => {
           ]}
         />
       )}
-      <TagBodyWrapper style={isWeb ? { padding: '0.25rem 1rem' } : { padding: '0rem' }}>
+      <TagBodyWrapper
+        style={
+          isWeb
+            ? { padding: '0.25rem 1rem' }
+            : { padding: '0.625rem 1rem', border: 'none' }
+        }
+      >
         {renderContent()}
       </TagBodyWrapper>
     </TagContainerCover>
