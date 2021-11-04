@@ -455,7 +455,7 @@ export const GlobalStyle = createGlobalStyle`
     border: 1px solid ${props => props.theme.LineOut} !important;
   }
 
-  .tox .tox-button {
+  .tox .tox-button:not(.tox-button--naked) {
     font-weight: 500 !important;
     font-size: 0.75rem !important;
     border-radius: 4px !important;
@@ -463,6 +463,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 4.5rem;
     height: 1.875rem;
   }
+
   .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {
     background-color: ${props => props.theme.CoreNormal} !important;
     border-color: ${props => props.theme.CoreNormal} !important;
