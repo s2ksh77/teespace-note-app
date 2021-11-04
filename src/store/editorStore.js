@@ -6,6 +6,7 @@ import PageStore from './pageStore';
 import TagStore from './tagStore';
 import NoteStore from './noteStore';
 import NoteUtil from '../NoteUtil';
+import GlobalVariable from '../GlobalVariable';
 
 const EditorStore = observable({
   contents: '',
@@ -517,6 +518,15 @@ const EditorStore = observable({
     )
       return false;
     return true;
+  },
+  handleMenuHidden(inEditor = false) {
+    const floatingMenu = GlobalVariable.editorWrapper.querySelector(
+      '.tox-tbtn[aria-owns]',
+    );
+    if (floatingMenu !== null) {
+      floatingMenu?.click();
+      if (inEditor) EditorStore.tinymce.focus();
+    }
   },
 });
 

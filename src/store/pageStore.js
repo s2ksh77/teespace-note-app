@@ -271,7 +271,6 @@ const PageStore = observable({
     EditorStore.setFileList(dto.fileList); // null
     this.noteTitle = '';
 
-
     if (isWeb) {
       NoteStore.setTargetLayout('Content');
       NoteStore.setShowPage(true);
@@ -626,11 +625,7 @@ const PageStore = observable({
   noteNoneEdit(noteId) {
     this.noneEdit(noteId, this.pageInfo.chapterId).then(dto => {
       this.fetchCurrentPageData(dto.note_id);
-
-      const floatingMenu = GlobalVariable.editorWrapper.querySelector(
-        '.tox-tbtn[aria-owns]',
-      );
-      if (floatingMenu !== null) floatingMenu.click();
+      EditorStore.handleMenuHidden();
       EditorStore.tinymce?.setContent(this.pageInfo.content);
       NoteStore.setShowModal(false);
       EditorStore.setIsSearch(false);
@@ -691,10 +686,7 @@ const PageStore = observable({
     NoteStore.setShowModal(false);
     EditorStore.setIsAttatch(false);
     EditorStore.setInitialSearchState();
-    const floatingMenu = GlobalVariable.editorWrapper.querySelector(
-      '.tox-tbtn[aria-owns]',
-    );
-    if (floatingMenu !== null) floatingMenu.click();
+    EditorStore.handleMenuHidden();
     EditorStore.tinymce?.selection.setCursorLocation();
     EditorStore.tinymce?.undoManager.clear();
   },

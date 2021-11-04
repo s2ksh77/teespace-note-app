@@ -536,6 +536,7 @@ export const handleUnselect = () => {
   if (ChapterStore.dragData.size > 1) {
     ChapterStore.handleClickOutside();
   }
+  EditorStore.handleMenuHidden(true);
   //ref 귀찮 - 임시 구현
   const contextMenuList = document.querySelectorAll('div.ant-dropdown');
   [...contextMenuList].forEach(el => {
