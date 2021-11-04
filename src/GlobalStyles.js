@@ -463,6 +463,11 @@ export const GlobalStyle = createGlobalStyle`
     width: 4.5rem;
     height: 1.875rem;
   }
+  .tox .tox-button--naked{
+    width: fit-content;
+  }
+
+
   .tox .tox-button:not(.tox-button--icon, .tox-button--secondary) {
     background-color: ${props => props.theme.CoreNormal} !important;
     border-color: ${props => props.theme.CoreNormal} !important;
