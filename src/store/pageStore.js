@@ -701,8 +701,8 @@ const PageStore = observable({
     });
   },
 
-  getTitleFromPageContent() {
-    return this._getFirstTxtOfPage() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
+  getTitleFromPageContent(data) {
+    return this._getFirstTxtOfPage(data) || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
   },
 
   /**
@@ -710,10 +710,8 @@ const PageStore = observable({
    * 단, 테이블인 경우에는 여러 셀 중 처음으로 나타나는 txt를 반환한다.
    * @returns 가장 처음으로 표시되는 txt
    */
-  _getFirstTxtOfPage() {
-    const targetNode = [...EditorStore.tinymce.getBody().children].find(node =>
-      this._hasTxt(node),
-    );
+  _getFirstTxtOfPage(data = EditorStore.tinymce.getBody().children) {
+    const targetNode = [...data].find(node => this._hasTxt(node));
 
     return targetNode?.tagName === 'TABLE'
       ? this._getTxtFromTable(targetNode)
