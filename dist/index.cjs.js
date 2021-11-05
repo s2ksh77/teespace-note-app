@@ -4978,8 +4978,8 @@ var PageStore = mobx.observable({
       return NoteUtil.encodeStr(m);
     });
   },
-  getTitleFromPageContent: function getTitleFromPageContent() {
-    return this._getFirstTxtOfPage() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
+  getTitleFromPageContent: function getTitleFromPageContent(data) {
+    return this._getFirstTxtOfPage(data) || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
   },
 
   /**
@@ -4990,7 +4990,9 @@ var PageStore = mobx.observable({
   _getFirstTxtOfPage: function _getFirstTxtOfPage() {
     var _this14 = this;
 
-    var targetNode = _toConsumableArray(EditorStore.tinymce.getBody().children).find(function (node) {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : EditorStore.tinymce.getBody().children;
+
+    var targetNode = _toConsumableArray(data).find(function (node) {
       return _this14._hasTxt(node);
     });
 
