@@ -33,7 +33,6 @@ const PageItem = ({ page, index, isLongPress = false, isSearching }) => {
   const fetchPageInfo = async () => {
     try {
       await PageStore.fetchNoteInfoList(page.id || page.note_id);
-      PageStore.setIsRecycleBin((page.type || page.TYPE) === 'recycle');
       NoteStore.setTargetLayout('Editor');
     } catch (e) {
       console.warn('Fetch PageInfo error', e);

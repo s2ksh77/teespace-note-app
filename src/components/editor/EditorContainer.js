@@ -256,7 +256,7 @@ const EditorContainer = ({ isWeb = true }) => {
   };
 
   const handleModeChange = ref => {
-    if (PageStore.isReadMode()) {
+    if (PageStore.isReadMode() && !PageStore.isRecycleBin) {
       try {
         PageStore.noteEditStart(PageStore.pageInfo?.id, false);
         ref?.current?.focus();
