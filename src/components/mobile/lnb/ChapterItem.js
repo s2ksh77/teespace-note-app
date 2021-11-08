@@ -44,6 +44,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared, moveFlag = false }) 
       // 이미 그릴 때 받아온 pageList 보다 최신으로
       const res = await ChapterStore.fetchChapterInfo(id);
       if (res) ChapterStore.setCurrentChapterId(id);
+      PageStore.setIsRecycleBin(false);
       NoteStore.setTargetLayout('List');
     } catch (e) {
       console.warn('Fetch PageList error', e);

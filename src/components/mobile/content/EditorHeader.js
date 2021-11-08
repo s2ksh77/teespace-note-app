@@ -57,6 +57,7 @@ const MobileEditorHeader = ({ handleModeChange }) => {
           onChange={handleTitleInput}
           autoComplete="off"
           onClick={handleModeChange.bind(null, inputRef)}
+          disabled={PageStore.isRecycleBin}
         />
       </EditorTitleCover>
       <EditorModCover>
