@@ -6695,8 +6695,6 @@ var NoteMeta = {
           NoteStore.setModalInfo(null);
         });
         eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-          var _yield$ChapterStore$g, children, color;
-
           return regeneratorRuntime.wrap(function _callee7$(_context7) {
             while (1) {
               switch (_context7.prev = _context7.next) {
@@ -6706,18 +6704,14 @@ var NoteMeta = {
 
                 case 2:
                   _context7.next = 4;
-                  return ChapterStore.getChapterInfoList(ChapterStore.currentChapterId);
+                  return ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
 
                 case 4:
-                  _yield$ChapterStore$g = _context7.sent;
-                  children = _yield$ChapterStore$g.children;
-                  color = _yield$ChapterStore$g.color;
-                  PageStore.setPageList(children, color);
                   NoteStore.setModalInfo(null);
                   NoteStore.setLongPress(false);
                   PageStore.selectedPages.clear();
 
-                case 11:
+                case 7:
                 case "end":
                   return _context7.stop();
               }
