@@ -271,11 +271,6 @@ const PageStore = observable({
     EditorStore.setFileList(dto.fileList); // null
     this.noteTitle = '';
 
-    if (isWeb) {
-      NoteStore.setTargetLayout('Content');
-      NoteStore.setShowPage(true);
-    }
-
     // initialize editor properties
     this.initializeBoxColor();
     EditorStore.tinymce?.undoManager?.clear();
@@ -296,22 +291,7 @@ const PageStore = observable({
       this.setCurrentPageId(pageId);
       await this.fetchCurrentPageData(pageId);
 
-      ChapterStore.setDragData(
-        new Map([
-          [
-            ChapterStore.currentChapterId,
-            ChapterStore.createDragData(ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
-      this.setDragData(
-        new Map([
-          [
-            this.currentPageId,
-            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
+      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       ChapterStore.setIsCtrlKeyDown(false);
       this.setIsCtrlKeyDown(false);
     }
@@ -499,22 +479,7 @@ const PageStore = observable({
     TagStore.setNoteTagList(dto.tagList);
 
     if (this.isNewPage) {
-      ChapterStore.setDragData(
-        new Map([
-          [
-            ChapterStore.currentChapterId,
-            ChapterStore.createDragData(ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
-      this.setDragData(
-        new Map([
-          [
-            this.currentPageId,
-            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
+      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId)
       this.dragData.get(dto.note_id).item.text = dto.note_title;
 
       import('teespace-core')

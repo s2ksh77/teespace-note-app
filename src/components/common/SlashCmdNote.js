@@ -27,6 +27,8 @@ const SlashCmdNote = () => {
     const _newPage = () => {
         PageStore.setCreatePageParent(chapterId);
         PageStore.createNotePage();
+        NoteStore.setTargetLayout('Content');
+        NoteStore.setShowPage(true);
         logEvent('note', 'clickNewPageBtn');
     }
 
