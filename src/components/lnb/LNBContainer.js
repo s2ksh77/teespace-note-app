@@ -25,7 +25,8 @@ const LNBContainer = () => {
     // dialog 클릭시 blur이벤트 동작
     if (NoteStore.showModal) return;
     if (!ChapterStore.isNewChapter) return;
-    await ChapterStore.createNoteChapter();
+    const { chapterId, pageId } = await ChapterStore.createNoteChapter();
+    NoteStore.modifyDragData(chapterId, pageId);
   };
   const handleEditMode = () => {
     if (EditorStore.isUploading) {
@@ -41,12 +42,8 @@ const LNBContainer = () => {
   };
 
   const handleClickOutside = e => {
-    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1) {
-      ChapterStore.handleClickOutside();
-    }
-    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) {
-      PageStore.handleClickOutside();
-    }
+    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1) NoteStore.handleClickOutside('Chapter');
+    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) NoteStore.handleClickOutside('Page');
   };
 
   useEffect(() => {

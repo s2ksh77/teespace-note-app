@@ -72,9 +72,10 @@ const NoteMeta = {
       case 'chapter':
       case 'draggedChapter':
         // 삭제 함수 추가
-        eventList.push(function (e) {
+        eventList.push(async function (e) {
           e.stopPropagation();
-          ChapterStore.deleteNoteChapter(data);
+          const { chapterId, pageId } = await ChapterStore.deleteNoteChapter(data);
+          NoteStore.modifyDragData(chapterId, pageId);
         });
         eventList.push(function (e) {
           e.stopPropagation();

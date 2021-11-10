@@ -114,10 +114,8 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
         PageStore.setIsCtrlKeyDown(true);
         return;
       }
-
-      ChapterStore.setDragData(new Map([[chapter.id, chapterDragData]]));
       ChapterStore.setIsCtrlKeyDown(false);
-      PageStore.setDragData(new Map([[id, pageDragData]]));
+      NoteStore.modifyDragData(chapter.id, id)
       PageStore.setIsCtrlKeyDown(false);
       onClick(id);
     },

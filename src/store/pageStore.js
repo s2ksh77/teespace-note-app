@@ -380,18 +380,6 @@ const PageStore = observable({
     };
   },
 
-  handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-    if (!this.currentPageId) {
-      this.clearDragData();
-      return;
-    }
-    const currentDragData =
-      this.dragData.get(this.currentPageId) ||
-      this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
-    this.setDragData(new Map([[this.currentPageId, currentDragData]]));
-  },
-
   async movePage(movePageId, moveTargetChapterId) {
     const {
       data: { dto },
@@ -488,7 +476,7 @@ const PageStore = observable({
       NoteStore.setIsVisibleToast(true);
     } else {
       // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
-      this.handleClickOutside();
+      NoteStore.handleClickOutside('Page');
     }
 
     NoteStore.setIsDragging(false);
