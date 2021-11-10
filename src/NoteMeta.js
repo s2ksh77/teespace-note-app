@@ -255,10 +255,7 @@ const NoteMeta = {
         });
         eventList.push(async () => {
           await PageStore.deleteNotePage(data);
-          const { children, color } = await ChapterStore.getChapterInfoList(
-            ChapterStore.currentChapterId,
-          );
-          PageStore.setPageList(children, color);
+          await ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
           NoteStore.setModalInfo(null);
           NoteStore.setLongPress(false);
           PageStore.selectedPages.clear();

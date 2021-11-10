@@ -89,6 +89,15 @@ const ListViewContainer = () => {
     NoteStore.setShowDialog(true);
   };
 
+  const handleRecycleBinEmpty = () => {
+    NoteStore.setModalInfo(
+      'deleteSharedPage',
+      { pageList: ChapterStore.chapterInfo.pageList.map(page => ({ note_id: page.id })) },
+      false,
+    );
+    NoteStore.setShowDialog(true);
+  };
+
   return useObserver(() => (
     <>
       {PageStore.isMove ? <MoveListViewContainer /> : null}
@@ -150,7 +159,9 @@ const ListViewContainer = () => {
                 action: 'search',
                 onClick: () => NoteStore.setTargetLayout('PageSearch'),
               },
-              { type: 'text', text: '🎅🏻' },
+              PageStore.isRecycleBin
+                ? { type: 'icon', action: 'remove', onClick: handleRecycleBinEmpty }
+                : { type: 'text', text: '🎅🏻' },
             ]}
           />
         )}
