@@ -253,17 +253,12 @@ const PageStore = observable({
   async createNotePage(isWeb = true) {
     const dto = await this.createPage(
       i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
-      null,
+      '<p><br></p>',
       this.createParent,
     );
-    this.pageInfo = new PageModel({
-      ...dto,
-      note_content: NoteUtil.decodeStr('<p><br></p>'),
-    });
+    this.pageInfo = new PageModel(dto);
 
     this.setIsNewPage(true);
-    EditorStore.setIsSearch(false);
-
     if (isWeb) ChapterStore.getNoteChapterList();
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
     this.currentPageId = dto.note_id;

@@ -26,9 +26,10 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
     },
   });
 
-  const handleNewBtnClick = targetId => () => {
-    PageStore.setCreatePageParent(targetId);
-    PageStore.createNotePage();
+  const handlePageCreate = chapterId => async () => {
+    PageStore.setCreatePageParent(chapterId);
+    EditorStore.setIsSearch(false);
+    await PageStore.createNotePage();
     NoteStore.setTargetLayout('Content');
     NoteStore.setShowPage(true);
     logEvent('note', 'clickNewPageBtn');
@@ -80,7 +81,7 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
         show={showNewPage && authStore.hasPermission('notePage', 'C')}
       >
         <PageMargin appType={NoteStore.appType} />
-        <NewPageBtn onClick={handleNewBtnClick(chapter.id)}>
+        <NewPageBtn onClick={handlePageCreate(chapter.id)}>
           + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
         </NewPageBtn>
       </NewPage>
