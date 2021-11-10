@@ -115,7 +115,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
         return;
       }
       ChapterStore.setIsCtrlKeyDown(false);
-      NoteStore.modifyDragData(chapter.id, id)
+      NoteStore.updateDragData(chapter.id, id)
       PageStore.setIsCtrlKeyDown(false);
       onClick(id);
     },

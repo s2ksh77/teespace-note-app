@@ -26,7 +26,7 @@ const LNBContainer = () => {
     if (NoteStore.showModal) return;
     if (!ChapterStore.isNewChapter) return;
     const { chapterId, pageId } = await ChapterStore.createNoteChapter();
-    NoteStore.modifyDragData(chapterId, pageId);
+    NoteStore.updateDragData(chapterId, pageId);
   };
   const handleEditMode = () => {
     if (EditorStore.isUploading) {

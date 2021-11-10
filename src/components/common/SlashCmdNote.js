@@ -34,7 +34,7 @@ const SlashCmdNote = () => {
         ChapterStore.setChapterTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
         ChapterStore.getChapterRandomColor();
         const { chapterId, pageId } = await ChapterStore.createNoteChapter();
-        NoteStore.modifyDragData(chapterId, pageId);
+        NoteStore.updateDragData(chapterId, pageId);
         logEvent('note', 'clickNewChapterBtn');
     }
 

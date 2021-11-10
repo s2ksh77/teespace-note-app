@@ -318,7 +318,7 @@ const NoteStore = observable({
     this.setIsVisibleToast(true);
   },
 
-  modifyDragData(chapterId, pageId){
+  updateDragData(chapterId, pageId){
     ChapterStore.setDragData(new Map([[chapterId, ChapterStore.createDragData(chapterId)]]));
     PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, chapterId)]]));
   },

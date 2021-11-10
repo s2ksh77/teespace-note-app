@@ -75,7 +75,7 @@ const NoteMeta = {
         eventList.push(async function (e) {
           e.stopPropagation();
           const { chapterId, pageId } = await ChapterStore.deleteNoteChapter(data);
-          NoteStore.modifyDragData(chapterId, pageId);
+          NoteStore.updateDragData(chapterId, pageId);
         });
         eventList.push(function (e) {
           e.stopPropagation();
