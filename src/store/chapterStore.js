@@ -464,8 +464,8 @@ const ChapterStore = observable({
 
     return {
       chapterId: id,
-      pageId: PageStore.pageInfo?.id
-    }
+      pageId: PageStore.pageInfo?.id,
+    };
   },
 
   async deleteNoteChapter({ chapterList, selectablePageId, isDnd }) {
@@ -487,8 +487,8 @@ const ChapterStore = observable({
     // 위에는 좀 더 보고 분리
     return {
       chapterId: this.currentChapterId,
-      pageId: PageStore.currentPageId
-    }
+      pageId: PageStore.currentPageId,
+    };
   },
 
   async renameNoteChapter({ id, title, color }) {
@@ -659,7 +659,8 @@ const ChapterStore = observable({
         text: chapter.text,
         color: chapter.color,
         type:
-          chapter.type === 'shared_page' || chapter.type === 'shared'
+          chapter.type === CHAPTER_TYPE.SHARED_PAGE ||
+          chapter.type === CHAPTER_TYPE.SHARED
             ? DRAG_TYPE.SHARED_CHAPTER
             : DRAG_TYPE.CHAPTER,
         USER_ID: NoteRepository.USER_ID,
@@ -807,7 +808,8 @@ const ChapterStore = observable({
 
   getRoomChapterList() {
     const roomChapterList = this.chapterList.filter(
-      chapter => chapter.type === 'notebook' || chapter.type === 'default',
+      chapter =>
+        chapter.type === CHAPTER_TYPE.NOTEBOOK || chapter.type === CHAPTER_TYPE.DEFAULT,
     );
     return roomChapterList;
   },

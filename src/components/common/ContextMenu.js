@@ -11,7 +11,7 @@ import {
 } from '../../styles/commonStyle';
 import viewMoreIcon from '../../assets/view_more.svg';
 import { exportData, exportPageAsTxt, exportChapterAsTxt } from './NoteFile';
-import GlobalVariable from '../../GlobalVariable';
+import GlobalVariable, { CHAPTER_TYPE } from '../../GlobalVariable';
 
 const { SubMenu, Item } = Menu;
 
@@ -54,7 +54,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           });
         } else {
           NoteStore.setModalInfo(
-            note.type === 'shared' || note.type === 'shared_page'
+            note.type === CHAPTER_TYPE.SHARED || note.type === CHAPTER_TYPE.SHARED_PAGE
               ? 'sharedChapter'
               : 'chapter',
             {
@@ -75,7 +75,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
         if (
           PageStore.pageInfo.id === note.id &&
-          parent.type === 'shared_page' &&
+          parent.type === CHAPTER_TYPE.SHARED_PAGE &&
           parent.children.length === 1
         ) {
           ChapterStore.deleteNoteChapter({
@@ -89,7 +89,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
           pageList: [{ note_id: note.id, restoreChapterId: parent.id }],
           selectablePageId: getAdjacentPageId(),
         };
-        if (note.type === 'shared') {
+        if (note.type === CHAPTER_TYPE.SHARED) {
           NoteStore.setModalInfo('sharedPage', data);
           return;
         }
@@ -208,7 +208,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
   const menu = (() => {
     switch (note.type) {
-      case 'recycle_bin':
+      case CHAPTER_TYPE.RECYCLE_BIN:
         return (
           <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
             <Item key="emptyRecycleBin">{t('NOTE_CONTEXT_MENU_03')}</Item>
@@ -224,9 +224,10 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       default:
         return (
           <Menu style={{ borderRadius: 5 }} onClick={onClickContextMenu}>
-            {note.type !== 'shared_page' && authStore.hasPermission('notePage', 'U') && (
-              <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
-            )}
+            {note.type !== CHAPTER_TYPE.SHARED_PAGE &&
+              authStore.hasPermission('notePage', 'U') && (
+                <Item key="rename">{t('NOTE_DELIVER_CONTEXT_MENU_01')}</Item>
+              )}
             {authStore.hasPermission('noteSharePage', 'C') && (
               <Item key="forward">{t('NOTE_CONTEXT_MENU_01')}</Item>
             )}
@@ -243,7 +244,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
                 <Item key="exportTXT">{t('NOTE_PAGE_LIST_DL_PAGE_CHAPTER_02')}</Item>
               </SubMenu>
             )}
-            {note.type === 'shared' && (
+            {note.type === CHAPTER_TYPE.SHARED && (
               <Item key="viewInfo">{t('NOTE_DELIVER_CONTEXT_MENU_04')}</Item>
             )}
             {authStore.hasPermission('notePage', 'D') && (

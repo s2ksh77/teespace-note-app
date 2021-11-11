@@ -11,6 +11,7 @@ import { ChapterColor, ChapterShareIcon } from '../../styles/chpaterStyle';
 import sharedPageIcon from '../../assets/page_shared.svg';
 import sharedIcon from '../../assets/share_1.svg';
 import { useTranslation } from 'react-i18next';
+import { CHAPTER_TYPE } from '../../GlobalVariable';
 
 let subscribedToOffsetChange = false;
 let dragPreviewRef = null;
@@ -50,7 +51,8 @@ const DragPreview = ({ items }) => {
 
   const renderChapterIcon = item => {
     if (item.color) return <ChapterColor background={item.color} />;
-    if (item.type === 'shared_page') return <ChapterShareIcon src={sharedPageIcon} />;
+    if (item.type === CHAPTER_TYPE.SHARED_PAGE)
+      return <ChapterShareIcon src={sharedPageIcon} />;
     return <ChapterShareIcon src={sharedIcon} />;
   };
 
@@ -84,7 +86,9 @@ const DragPreview = ({ items }) => {
           >
             {NoteStore.draggedType === 'chapter' && renderChapterIcon(item)}
             <DraggedComponentTitle>
-              {item.type === 'shared_page' ? t('NOTE_PAGE_LIST_CMPNT_DEF_07') : item.text}
+              {item.type === CHAPTER_TYPE.SHARED_PAGE
+                ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
+                : item.text}
             </DraggedComponentTitle>
           </DraggedComponent>
         );

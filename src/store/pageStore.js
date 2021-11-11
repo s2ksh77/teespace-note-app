@@ -8,7 +8,7 @@ import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
-import GlobalVariable, { DRAG_TYPE } from '../GlobalVariable';
+import GlobalVariable, { CHAPTER_TYPE, DRAG_TYPE } from '../GlobalVariable';
 import NoteUtil, { get12HourFormat, getUserDisplayName } from '../NoteUtil';
 import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
 import emojiRegex from 'emoji-regex/index.js';
@@ -474,7 +474,7 @@ const PageStore = observable({
     this.noteTitle = dto.note_title;
 
     if (this.isNewPage) {
-      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId)
+      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       this.dragData.get(dto.note_id).item.text = dto.note_title;
 
       import('teespace-core')
@@ -695,7 +695,7 @@ const PageStore = observable({
         note_id: page.note_id || page.id,
         note_title: page.text,
         modified_date: page.date,
-        TYPE: page.type === 'shared' ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
+        TYPE: page.type === CHAPTER_TYPE.SHARED ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
         note_channel_id: NoteRepository.chId,
         USER_ID: NoteRepository.USER_ID,
         shared_user_id: NoteRepository.USER_ID,

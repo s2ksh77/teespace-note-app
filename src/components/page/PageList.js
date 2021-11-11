@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import PageItem from './PageItem';
 import { NewPage, NewPageBtn, PageMargin } from '../../styles/pageStyle';
 import { logEvent } from 'teespace-core';
-import { DRAG_TYPE } from '../../GlobalVariable';
+import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
 
@@ -67,8 +67,8 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
             className={
               PageStore.dragEnterChapterIdx === chapterIdx &&
               PageStore.dragEnterPageIdx === chapter.children.length &&
-              chapter.type !== 'shared_page' &&
-              chapter.type !== 'shared'
+              chapter.type !== CHAPTER_TYPE.SHARED_PAGE &&
+              chapter.type !== CHAPTER_TYPE.SHARED
                 ? 'borderTopLine'
                 : ''
             }

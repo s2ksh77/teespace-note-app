@@ -17,7 +17,7 @@ import {
   PageTextInput,
 } from '../../styles/pageStyle';
 import NoteUtil from '../../NoteUtil';
-import { DRAG_TYPE } from '../../GlobalVariable';
+import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import { checkMaxLength } from '../common/validators';
 
 const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
@@ -115,7 +115,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
         return;
       }
       ChapterStore.setIsCtrlKeyDown(false);
-      NoteStore.updateDragData(chapter.id, id)
+      NoteStore.updateDragData(chapter.id, id);
       PageStore.setIsCtrlKeyDown(false);
       onClick(id);
     },
@@ -211,7 +211,8 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
               <PageText onMouseOver={handleTooltip}>{title}</PageText>
             </Tooltip>
             {/* {(page.modified_date && moment().isBefore(moment(page.modified_date).add(72,'hours'))) && <NewNoteMark />} */}
-            {(authStore.hasPermission('notePage', 'U') || page.type === 'shared') && (
+            {(authStore.hasPermission('notePage', 'U') ||
+              page.type === CHAPTER_TYPE.SHARED) && (
               <ContextMenu
                 noteType="page"
                 note={page}

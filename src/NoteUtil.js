@@ -70,7 +70,8 @@ const NoteUtil = {
   },
 
   setLocalChapterFoldedState({ channelId, chapterId, isFolded, isTheRest }) {
-    if (isTheRest) { // default, notebook 아닌 것
+    if (isTheRest) {
+      // default, notebook 아닌 것
       this.setLocalRestFoldedState({ channelId, chapterId, isFolded });
       return;
     }
@@ -127,8 +128,7 @@ export const get12HourFormat = (date, showsAllDates = false) => {
       : i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_02', { time: hhmm });
 
   if (mYear === curDate.getFullYear() && !showsAllDates) {
-    if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate())
-      return basicDate;
+    if (mMonth === curDate.getMonth() + 1 && mDay === curDate.getDate()) return basicDate;
     return `${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
   }
   return `${mYear}.${convertTwoDigit(mMonth)}.${convertTwoDigit(mDay)} ${basicDate}`;
@@ -148,9 +148,9 @@ export const isNormalChapter = type => {
 
 export const getI18nChapterTitle = (type, title) => {
   switch (type) {
-    case 'shared_page':
+    case CHAPTER_TYPE.SHARED_PAGE:
       return i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_07');
-    case 'recycle_bin':
+    case CHAPTER_TYPE.RECYCLE_BIN:
       return i18n.t('NOTE_BIN_01');
     default:
       return title;

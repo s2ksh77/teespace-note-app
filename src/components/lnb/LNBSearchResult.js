@@ -25,6 +25,7 @@ import NoteUtil, { isNormalChapter } from '../../NoteUtil';
 import ChapterItem from '../mobile/lnb/ChapterItem';
 import PageItem from '../mobile/listview/PageItem';
 import TagItem from '../mobile/listview/TagItem';
+import { CHAPTER_TYPE } from '../../GlobalVariable';
 
 const LNBSearchResult = ({ isMobile }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
@@ -54,9 +55,9 @@ const LNBSearchResult = ({ isMobile }) => {
 
   const ChapterIcon = React.memo(({ type, color }) => {
     switch (type) {
-      case 'shared_page':
+      case CHAPTER_TYPE.SHARED_PAGE:
         return <SharedPageIcon color={themeContext.SubStateVivid} />;
-      case 'shared':
+      case CHAPTER_TYPE.SHARED:
         return <ShareIcon color={themeContext.SubStateVivid} />;
       default:
         return <ChapterColor background={color} />;
@@ -110,7 +111,7 @@ const LNBSearchResult = ({ isMobile }) => {
                     marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem',
                   }}
                 >
-                  {chapter.type === 'shared_page'
+                  {chapter.type === CHAPTER_TYPE.SHARED_PAGE
                     ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
                     : chapter.text}
                 </ChapterSearchResultTitle>
@@ -130,9 +131,9 @@ const LNBSearchResult = ({ isMobile }) => {
                 onClick={handlePageClick(page.note_id, 'page')}
               >
                 <PageSearchResultChapterTitle>
-                  {page.TYPE === 'shared_page'
+                  {page.TYPE === CHAPTER_TYPE.SHARED_PAGE
                     ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : page.TYPE === 'recycle_bin'
+                    : page.TYPE === CHAPTER_TYPE.RECYCLE_BIN
                     ? t('NOTE_BIN_01')
                     : page.text}
                 </PageSearchResultChapterTitle>
@@ -158,9 +159,9 @@ const LNBSearchResult = ({ isMobile }) => {
                 onClick={handlePageClick(tag.note_id, 'tag')}
               >
                 <PageSearchResultChapterTitle>
-                  {tag.TYPE === 'shared_page'
+                  {tag.TYPE === CHAPTER_TYPE.SHARED_PAGE
                     ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : tag.TYPE === 'recycle_bin'
+                    : tag.TYPE === CHAPTER_TYPE.RECYCLE_BIN
                     ? t('NOTE_BIN_01')
                     : tag.text}
                 </PageSearchResultChapterTitle>
