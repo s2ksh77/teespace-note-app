@@ -170,6 +170,8 @@ const PageStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.getNoteInfoList(noteId);
+    TagStore.setNoteTagList(dto?.tagList);
+    EditorStore.setFileList(dto?.fileList);
     return dto;
   },
 
@@ -470,8 +472,6 @@ const PageStore = observable({
     dto.modUserName = await getUserDisplayName(dto.USER_ID);
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
-    EditorStore.setFileList(dto.fileList);
-    TagStore.setNoteTagList(dto.tagList);
 
     if (this.isNewPage) {
       NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId)
