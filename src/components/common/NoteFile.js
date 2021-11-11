@@ -530,12 +530,8 @@ export const handleUnselect = () => {
   // if (TagStore.selectTagIdx !== '') {
   //     TagStore.setSelectTagIndex('')
   // }
-  if (PageStore.dragData.size > 1) {
-    PageStore.handleClickOutside();
-  }
-  if (ChapterStore.dragData.size > 1) {
-    ChapterStore.handleClickOutside();
-  }
+  if (PageStore.dragData.size > 1) NoteStore.handleClickOutside('Page');
+  if (ChapterStore.dragData.size > 1) NoteStore.handleClickOutside('Chapter');
   EditorStore.handleMenuHidden(true);
   //ref 귀찮 - 임시 구현
   const contextMenuList = document.querySelectorAll('div.ant-dropdown');

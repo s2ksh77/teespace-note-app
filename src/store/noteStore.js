@@ -317,6 +317,23 @@ const NoteStore = observable({
     this.setToastText(message);
     this.setIsVisibleToast(true);
   },
+
+  updateDragData(chapterId, pageId){
+    ChapterStore.setDragData(new Map([[chapterId, ChapterStore.createDragData(chapterId)]]));
+    PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, chapterId)]]));
+  },
+
+  handleClickOutside(type) {
+    const Store = type === 'Chapter' ? ChapterStore : PageStore ;
+    const Id = type === 'Chapter' ? Store.currentChapterId : Store.currentPageId ;
+    Store.setIsCtrlKeyDown(false);
+    if (!Id) {
+      Store.clearDragData();
+      return;
+    }
+    const currentDragData = Store.dragData.get(Id) || Store.createDragData(Id, type === 'Page' ? ChapterStore.currentChapterId : null);
+    Store.setDragData(new Map([[Id, currentDragData]]));
+  },
 });
 
 export default NoteStore;

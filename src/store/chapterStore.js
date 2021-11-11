@@ -462,9 +462,10 @@ const ChapterStore = observable({
     this.setChapterTempUl(false);
     await PageStore.fetchCurrentPageData(children[0].id);
 
-    this.setDragData(new Map([[id, this.createDragData(id)]]));
-    const pageId = PageStore.pageInfo.id;
-    PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, id)]]));
+    return {
+      chapterId: id,
+      pageId: PageStore.pageInfo?.id
+    }
   },
 
   async deleteNoteChapter({ chapterList, selectablePageId, isDnd }) {
@@ -476,25 +477,18 @@ const ChapterStore = observable({
           ? this.chapterList[0]?.children[0]?.id
           : selectablePageId;
       await PageStore.fetchCurrentPageData(pageId);
-      this.setDragData(
-        new Map([[this.currentChapterId, this.createDragData(this.currentChapterId)]]),
-      );
-      PageStore.setDragData(
-        new Map([
-          [
-            PageStore.currentPageId,
-            PageStore.createDragData(PageStore.currentPageId, this.currentChapterId),
-          ],
-        ]),
-      );
       ChapterStore.setIsCtrlKeyDown(false);
       this.setIsCtrlKeyDown(false);
     }
-
     NoteStore.setIsDragging(false);
     NoteStore.setShowModal(false);
     NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
     NoteStore.setIsVisibleToast(true);
+    // 위에는 좀 더 보고 분리
+    return {
+      chapterId: this.currentChapterId,
+      pageId: PageStore.currentPageId
+    }
   },
 
   async renameNoteChapter({ id, title, color }) {
@@ -511,18 +505,6 @@ const ChapterStore = observable({
       item: this.chapterList[chapterIdx],
       chapterIdx: chapterIdx,
     };
-  },
-
-  handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-    if (!this.currentChapterId) {
-      this.clearDragData();
-      return;
-    }
-    const currentDragData =
-      this.dragData.get(this.currentChapterId) ||
-      this.createDragData(this.currentChapterId);
-    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
   },
 
   getSortedDragDataList() {
@@ -584,7 +566,7 @@ const ChapterStore = observable({
         });
       });
     } else {
-      this.handleClickOutside();
+      NoteStore.handleClickOutside('Chapter');
       NoteStore.setIsDragging(false);
     }
   },

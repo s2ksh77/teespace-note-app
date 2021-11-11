@@ -27,13 +27,16 @@ const SlashCmdNote = () => {
     const _newPage = () => {
         PageStore.setCreatePageParent(chapterId);
         PageStore.createNotePage();
+        NoteStore.setTargetLayout('Content');
+        NoteStore.setShowPage(true);
         logEvent('note', 'clickNewPageBtn');
     }
 
     const _newChapter = async () => {
         ChapterStore.setChapterTitle(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'));
         ChapterStore.getChapterRandomColor();
-        await ChapterStore.createNoteChapter();
+        const { chapterId, pageId } = await ChapterStore.createNoteChapter();
+        NoteStore.updateDragData(chapterId, pageId);
         logEvent('note', 'clickNewChapterBtn');
     }
 

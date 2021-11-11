@@ -253,28 +253,18 @@ const PageStore = observable({
   async createNotePage(isWeb = true) {
     const dto = await this.createPage(
       i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
-      null,
+      '<p><br></p>',
       this.createParent,
     );
-    this.pageInfo = new PageModel({
-      ...dto,
-      note_content: NoteUtil.decodeStr('<p><br></p>'),
-    });
+    this.pageInfo = new PageModel(dto);
 
     this.setIsNewPage(true);
-    EditorStore.setIsSearch(false);
-
     if (isWeb) ChapterStore.getNoteChapterList();
     ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
     this.currentPageId = dto.note_id;
     TagStore.setNoteTagList(dto.tagList); // []
     EditorStore.setFileList(dto.fileList); // null
     this.noteTitle = '';
-
-    if (isWeb) {
-      NoteStore.setTargetLayout('Content');
-      NoteStore.setShowPage(true);
-    }
 
     // initialize editor properties
     this.initializeBoxColor();
@@ -296,22 +286,7 @@ const PageStore = observable({
       this.setCurrentPageId(pageId);
       await this.fetchCurrentPageData(pageId);
 
-      ChapterStore.setDragData(
-        new Map([
-          [
-            ChapterStore.currentChapterId,
-            ChapterStore.createDragData(ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
-      this.setDragData(
-        new Map([
-          [
-            this.currentPageId,
-            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
+      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       ChapterStore.setIsCtrlKeyDown(false);
       this.setIsCtrlKeyDown(false);
     }
@@ -378,18 +353,6 @@ const PageStore = observable({
       chapterId: chapterId,
       chapterIdx: chapterIdx,
     };
-  },
-
-  handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-    if (!this.currentPageId) {
-      this.clearDragData();
-      return;
-    }
-    const currentDragData =
-      this.dragData.get(this.currentPageId) ||
-      this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
-    this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
 
   async movePage(movePageId, moveTargetChapterId) {
@@ -488,7 +451,7 @@ const PageStore = observable({
       NoteStore.setIsVisibleToast(true);
     } else {
       // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
-      this.handleClickOutside();
+      NoteStore.handleClickOutside('Page');
     }
 
     NoteStore.setIsDragging(false);
@@ -511,22 +474,7 @@ const PageStore = observable({
     TagStore.setNoteTagList(dto.tagList);
 
     if (this.isNewPage) {
-      ChapterStore.setDragData(
-        new Map([
-          [
-            ChapterStore.currentChapterId,
-            ChapterStore.createDragData(ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
-      this.setDragData(
-        new Map([
-          [
-            this.currentPageId,
-            this.createDragData(this.currentPageId, ChapterStore.currentChapterId),
-          ],
-        ]),
-      );
+      NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId)
       this.dragData.get(dto.note_id).item.text = dto.note_title;
 
       import('teespace-core')
