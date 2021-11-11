@@ -453,9 +453,9 @@ const ChapterStore = observable({
     return sharedChapters;
   },
 
-  async createNoteChapter() {
+  async createNoteChapter(title = this.chapterNewTitle.trim()) {
     const { children, id } = await this.createChapter(
-      this.chapterNewTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'),
+      title || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'),
       this.isNewChapterColor,
     );
     await this.getNoteChapterList();

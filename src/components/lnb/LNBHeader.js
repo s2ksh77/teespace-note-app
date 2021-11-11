@@ -38,16 +38,9 @@ const LNBHeader = ({ createNewChapter }) => {
   };
 
   const handleNewChapterClick = async () => {
-    if (!PageStore.isReadMode()) return;
-    if (!ChapterStore.isNewChapter) {
-      ChapterStore.setChapterTempUl(true); // isNewChapter = true;
-      ChapterStore.getChapterRandomColor();
-    } else {
-      await createNewChapter();
-      ChapterStore.getChapterRandomColor();
-      ChapterStore.setChapterTempUl(true);
-    }
-    // else ChapterStore.setChapterTempUl(false);
+    if (!PageStore.isReadMode() || ChapterStore.isNewChapter) return;
+    ChapterStore.setChapterTempUl(true); // isNewChapter = true;
+    ChapterStore.getChapterRandomColor();
   };
 
   const onSubmitSearchBtn = async e => {
