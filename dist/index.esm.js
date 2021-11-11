@@ -1602,7 +1602,9 @@ var ChapterStore = observable({
     var _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-      var _yield$_this10$create, children, id, pageId;
+      var _PageStore$pageInfo;
+
+      var _yield$_this10$create, children, id;
 
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
@@ -1625,12 +1627,12 @@ var ChapterStore = observable({
               return PageStore.fetchCurrentPageData(children[0].id);
 
             case 10:
-              _this10.setDragData(new Map([[id, _this10.createDragData(id)]]));
+              return _context15.abrupt("return", {
+                chapterId: id,
+                pageId: (_PageStore$pageInfo = PageStore.pageInfo) === null || _PageStore$pageInfo === void 0 ? void 0 : _PageStore$pageInfo.id
+              });
 
-              pageId = PageStore.pageInfo.id;
-              PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, id)]]));
-
-            case 13:
+            case 11:
             case "end":
               return _context15.stop();
           }
@@ -1660,7 +1662,7 @@ var ChapterStore = observable({
               if (!chapterList.find(function (chapter) {
                 return chapter.id === _this11.currentChapterId;
               })) {
-                _context16.next = 13;
+                _context16.next = 11;
                 break;
               }
 
@@ -1669,20 +1671,22 @@ var ChapterStore = observable({
               return PageStore.fetchCurrentPageData(pageId);
 
             case 9:
-              _this11.setDragData(new Map([[_this11.currentChapterId, _this11.createDragData(_this11.currentChapterId)]]));
-
-              PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this11.currentChapterId)]]));
               ChapterStore.setIsCtrlKeyDown(false);
 
               _this11.setIsCtrlKeyDown(false);
 
-            case 13:
+            case 11:
               NoteStore.setIsDragging(false);
               NoteStore.setShowModal(false);
               NoteStore.setToastText(i18n.t('NOTE_BIN_04'));
-              NoteStore.setIsVisibleToast(true);
+              NoteStore.setIsVisibleToast(true); // 위에는 좀 더 보고 분리
 
-            case 17:
+              return _context16.abrupt("return", {
+                chapterId: _this11.currentChapterId,
+                pageId: PageStore.currentPageId
+              });
+
+            case 16:
             case "end":
               return _context16.stop();
           }
@@ -1729,17 +1733,6 @@ var ChapterStore = observable({
       item: this.chapterList[chapterIdx],
       chapterIdx: chapterIdx
     };
-  },
-  handleClickOutside: function handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-
-    if (!this.currentChapterId) {
-      this.clearDragData();
-      return;
-    }
-
-    var currentDragData = this.dragData.get(this.currentChapterId) || this.createDragData(this.currentChapterId);
-    this.setDragData(new Map([[this.currentChapterId, currentDragData]]));
   },
   getSortedDragDataList: function getSortedDragDataList() {
     var dragDataList = _toConsumableArray(this.dragData).map(function (keyValue) {
@@ -1792,7 +1785,7 @@ var ChapterStore = observable({
         });
       });
     } else {
-      this.handleClickOutside();
+      NoteStore.handleClickOutside('Chapter');
       NoteStore.setIsDragging(false);
     }
   },
@@ -4023,17 +4016,14 @@ var PageStore = observable({
             case 0:
               isWeb = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : true;
               _context10.next = 3;
-              return _this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), null, _this.createParent);
+              return _this.createPage(i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'), '<p><br></p>', _this.createParent);
 
             case 3:
               dto = _context10.sent;
-              _this.pageInfo = new PageModel(_objectSpread2(_objectSpread2({}, dto), {}, {
-                note_content: NoteUtil.decodeStr('<p><br></p>')
-              }));
+              _this.pageInfo = new PageModel(dto);
 
               _this.setIsNewPage(true);
 
-              EditorStore.setIsSearch(false);
               if (isWeb) ChapterStore.getNoteChapterList();
               ChapterStore.setCurrentChapterInfo(dto.parent_notebook, false);
               _this.currentPageId = dto.note_id;
@@ -4041,20 +4031,14 @@ var PageStore = observable({
 
               EditorStore.setFileList(dto.fileList); // null
 
-              _this.noteTitle = '';
-
-              if (isWeb) {
-                NoteStore.setTargetLayout('Content');
-                NoteStore.setShowPage(true);
-              } // initialize editor properties
-
+              _this.noteTitle = ''; // initialize editor properties
 
               _this.initializeBoxColor();
 
               (_EditorStore$tinymce = EditorStore.tinymce) === null || _EditorStore$tinymce === void 0 ? void 0 : (_EditorStore$tinymce$ = _EditorStore$tinymce.undoManager) === null || _EditorStore$tinymce$ === void 0 ? void 0 : _EditorStore$tinymce$.clear();
               if ((_EditorStore$tinymce2 = EditorStore.tinymce) !== null && _EditorStore$tinymce2 !== void 0 && _EditorStore$tinymce2.selection) EditorStore.tinymce.focus();
 
-            case 17:
+            case 15:
             case "end":
               return _context10.stop();
           }
@@ -4089,7 +4073,7 @@ var PageStore = observable({
               if (!pageList.find(function (page) {
                 return page.note_id === _this2.currentPageId;
               })) {
-                _context11.next = 14;
+                _context11.next = 13;
                 break;
               }
 
@@ -4101,15 +4085,12 @@ var PageStore = observable({
               return _this2.fetchCurrentPageData(pageId);
 
             case 10:
-              ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
-
-              _this2.setDragData(new Map([[_this2.currentPageId, _this2.createDragData(_this2.currentPageId, ChapterStore.currentChapterId)]]));
-
+              NoteStore.updateDragData(ChapterStore.currentChapterId, _this2.currentPageId);
               ChapterStore.setIsCtrlKeyDown(false);
 
               _this2.setIsCtrlKeyDown(false);
 
-            case 14:
+            case 13:
               NoteStore.setIsDragging(false);
               num = pageList.length;
               NoteStore.setToastText(num > 1 ? i18n.t('NOTE_BIN_03', {
@@ -4118,7 +4099,7 @@ var PageStore = observable({
               NoteStore.setIsVisibleToast(true);
               NoteStore.setShowModal(false);
 
-            case 19:
+            case 18:
             case "end":
               return _context11.stop();
           }
@@ -4231,17 +4212,6 @@ var PageStore = observable({
       chapterId: chapterId,
       chapterIdx: chapterIdx
     };
-  },
-  handleClickOutside: function handleClickOutside() {
-    this.setIsCtrlKeyDown(false);
-
-    if (!this.currentPageId) {
-      this.clearDragData();
-      return;
-    }
-
-    var currentDragData = this.dragData.get(this.currentPageId) || this.createDragData(this.currentPageId, ChapterStore.currentChapterId);
-    this.setDragData(new Map([[this.currentPageId, currentDragData]]));
   },
   movePage: function movePage(movePageId, moveTargetChapterId) {
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
@@ -4357,7 +4327,7 @@ var PageStore = observable({
 
             case 24:
               // 이동한 페이지가 없는 경우: 기존 선택되어 있던 페이지 select
-              _this5.handleClickOutside();
+              NoteStore.handleClickOutside('Page');
 
             case 25:
               NoteStore.setIsDragging(false);
@@ -4409,10 +4379,7 @@ var PageStore = observable({
               TagStore.setNoteTagList(dto.tagList);
 
               if (_this6.isNewPage) {
-                ChapterStore.setDragData(new Map([[ChapterStore.currentChapterId, ChapterStore.createDragData(ChapterStore.currentChapterId)]]));
-
-                _this6.setDragData(new Map([[_this6.currentPageId, _this6.createDragData(_this6.currentPageId, ChapterStore.currentChapterId)]]));
-
+                NoteStore.updateDragData(ChapterStore.currentChapterId, _this6.currentPageId);
                 _this6.dragData.get(dto.note_id).item.text = dto.note_title;
                 import('teespace-core').then(function (module) {
                   try {
@@ -6351,10 +6318,36 @@ var NoteMeta = {
       case 'chapter':
       case 'draggedChapter':
         // 삭제 함수 추가
-        eventList.push(function (e) {
-          e.stopPropagation();
-          ChapterStore.deleteNoteChapter(data);
-        });
+        eventList.push( /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+            var _yield$ChapterStore$d, chapterId, pageId;
+
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    e.stopPropagation();
+                    _context.next = 3;
+                    return ChapterStore.deleteNoteChapter(data);
+
+                  case 3:
+                    _yield$ChapterStore$d = _context.sent;
+                    chapterId = _yield$ChapterStore$d.chapterId;
+                    pageId = _yield$ChapterStore$d.pageId;
+                    NoteStore.updateDragData(chapterId, pageId);
+
+                  case 7:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee);
+          }));
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }());
         eventList.push(function (e) {
           e.stopPropagation();
           NoteStore.setIsDragging(false);
@@ -6433,31 +6426,31 @@ var NoteMeta = {
 
       case 'recover':
         eventList.push( /*#__PURE__*/function () {
-          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+          var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
             var _EditorStore$tinymce2, _PageStore$recoverInf, id, note_content, _EditorStore$tinymce3;
 
-            return regeneratorRuntime.wrap(function _callee$(_context) {
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
               while (1) {
-                switch (_context.prev = _context.next) {
+                switch (_context2.prev = _context2.next) {
                   case 0:
                     // 복구 로직
                     e.stopPropagation();
-                    _context.prev = 1;
+                    _context2.prev = 1;
                     _PageStore$recoverInf = PageStore.recoverInfo, id = _PageStore$recoverInf.id, note_content = _PageStore$recoverInf.note_content;
 
                     if (id) {
-                      _context.next = 5;
+                      _context2.next = 5;
                       break;
                     }
 
-                    return _context.abrupt("return");
+                    return _context2.abrupt("return");
 
                   case 5:
                     NoteStore.setShowPage(true);
                     if (NoteStore.layoutState === 'collapse') NoteStore.setTargetLayout('Content'); // [todo] 이게 왜 ChapterStore에 있을까
 
                     ChapterStore.setLoadingPageInfo(true);
-                    _context.next = 10;
+                    _context2.next = 10;
                     return PageStore.fetchCurrentPageData(id);
 
                   case 10:
@@ -6473,48 +6466,48 @@ var NoteMeta = {
                       PageStore.setRecoverInfo({});
                     }
 
-                    _context.next = 17;
+                    _context2.next = 17;
                     break;
 
                   case 14:
-                    _context.prev = 14;
-                    _context.t0 = _context["catch"](1);
-                    console.log('err', _context.t0);
+                    _context2.prev = 14;
+                    _context2.t0 = _context2["catch"](1);
+                    console.log('err', _context2.t0);
 
                   case 17:
-                    _context.prev = 17;
+                    _context2.prev = 17;
                     NoteStore.setModalInfo(null);
-                    return _context.finish(17);
+                    return _context2.finish(17);
 
                   case 20:
                   case "end":
-                    return _context.stop();
+                    return _context2.stop();
                 }
               }
-            }, _callee, null, [[1, 14, 17, 20]]);
+            }, _callee2, null, [[1, 14, 17, 20]]);
           }));
 
-          return function (_x) {
-            return _ref.apply(this, arguments);
+          return function (_x2) {
+            return _ref2.apply(this, arguments);
           };
         }());
         eventList.push( /*#__PURE__*/function () {
-          var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+          var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
             var _PageStore$recoverInf2, parentId, id, dto;
 
-            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
               while (1) {
-                switch (_context2.prev = _context2.next) {
+                switch (_context3.prev = _context3.next) {
                   case 0:
                     e.stopPropagation();
                     _PageStore$recoverInf2 = PageStore.recoverInfo, parentId = _PageStore$recoverInf2.parentId, id = _PageStore$recoverInf2.id;
 
                     if (id) {
-                      _context2.next = 4;
+                      _context3.next = 4;
                       break;
                     }
 
-                    return _context2.abrupt("return");
+                    return _context3.abrupt("return");
 
                   case 4:
                     NoteStore.setShowPage(true);
@@ -6525,12 +6518,12 @@ var NoteMeta = {
                     // current chapterId 없으면 에디터를 안 띄워서 await 필요
 
                     ChapterStore.setLoadingPageInfo(true);
-                    _context2.next = 11;
+                    _context3.next = 11;
                     return PageStore.noneEdit(id, parentId);
 
                   case 11:
-                    dto = _context2.sent;
-                    _context2.next = 14;
+                    dto = _context3.sent;
+                    _context3.next = 14;
                     return PageStore.fetchCurrentPageData(id);
 
                   case 14:
@@ -6538,38 +6531,6 @@ var NoteMeta = {
                     PageStore.setRecoverInfo({});
 
                   case 16:
-                  case "end":
-                    return _context2.stop();
-                }
-              }
-            }, _callee2);
-          }));
-
-          return function (_x2) {
-            return _ref2.apply(this, arguments);
-          };
-        }());
-        break;
-
-      case 'emptyRecycleBin':
-        eventList.push( /*#__PURE__*/function () {
-          var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-            var _yield$EditorStore$ge, target;
-
-            return regeneratorRuntime.wrap(function _callee3$(_context3) {
-              while (1) {
-                switch (_context3.prev = _context3.next) {
-                  case 0:
-                    e.stopPropagation();
-                    _context3.next = 3;
-                    return EditorStore.getRecycleBinAllFile();
-
-                  case 3:
-                    _yield$EditorStore$ge = _context3.sent;
-                    target = _yield$EditorStore$ge.fileList;
-                    PageStore.deleteNotePage(data);
-
-                  case 6:
                   case "end":
                     return _context3.stop();
                 }
@@ -6579,6 +6540,38 @@ var NoteMeta = {
 
           return function (_x3) {
             return _ref3.apply(this, arguments);
+          };
+        }());
+        break;
+
+      case 'emptyRecycleBin':
+        eventList.push( /*#__PURE__*/function () {
+          var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+            var _yield$EditorStore$ge, target;
+
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    e.stopPropagation();
+                    _context4.next = 3;
+                    return EditorStore.getRecycleBinAllFile();
+
+                  case 3:
+                    _yield$EditorStore$ge = _context4.sent;
+                    target = _yield$EditorStore$ge.fileList;
+                    PageStore.deleteNotePage(data);
+
+                  case 6:
+                  case "end":
+                    return _context4.stop();
+                }
+              }
+            }, _callee4);
+          }));
+
+          return function (_x4) {
+            return _ref4.apply(this, arguments);
           };
         }());
         eventList.push(function (e) {
@@ -6594,13 +6587,13 @@ var NoteMeta = {
           ChapterStore.setChapterTitle('');
         });
         eventList.push( /*#__PURE__*/function () {
-          var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
-            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
               while (1) {
-                switch (_context4.prev = _context4.next) {
+                switch (_context5.prev = _context5.next) {
                   case 0:
                     ChapterStore.getChapterRandomColor();
-                    _context4.next = 3;
+                    _context5.next = 3;
                     return ChapterStore.createNoteChapter();
 
                   case 3:
@@ -6610,14 +6603,14 @@ var NoteMeta = {
 
                   case 5:
                   case "end":
-                    return _context4.stop();
+                    return _context5.stop();
                 }
               }
-            }, _callee4);
+            }, _callee5);
           }));
 
-          return function (_x4) {
-            return _ref4.apply(this, arguments);
+          return function (_x5) {
+            return _ref5.apply(this, arguments);
           };
         }());
         break;
@@ -6629,14 +6622,14 @@ var NoteMeta = {
           ChapterStore.setChapterTitle('');
         });
         eventList.push( /*#__PURE__*/function () {
-          var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+          var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(e) {
             var id, color;
-            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
               while (1) {
-                switch (_context5.prev = _context5.next) {
+                switch (_context6.prev = _context6.next) {
                   case 0:
                     id = data.id, color = data.color;
-                    _context5.next = 3;
+                    _context6.next = 3;
                     return ChapterStore.renameNoteChapter({
                       id: id,
                       title: ChapterStore.chapterNewTitle,
@@ -6652,45 +6645,19 @@ var NoteMeta = {
 
                   case 8:
                   case "end":
-                    return _context5.stop();
+                    return _context6.stop();
                 }
               }
-            }, _callee5);
+            }, _callee6);
           }));
 
-          return function (_x5) {
-            return _ref5.apply(this, arguments);
+          return function (_x6) {
+            return _ref6.apply(this, arguments);
           };
         }());
         break;
 
       case 'deleteChapter':
-        eventList.push(function () {
-          NoteStore.setModalInfo(null);
-        });
-        eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-          return regeneratorRuntime.wrap(function _callee6$(_context6) {
-            while (1) {
-              switch (_context6.prev = _context6.next) {
-                case 0:
-                  _context6.next = 2;
-                  return ChapterStore.deleteNoteChapter(data);
-
-                case 2:
-                  NoteStore.setModalInfo(null);
-                  NoteStore.setLongPress(false);
-                  ChapterStore.selectedChapters.clear();
-
-                case 5:
-                case "end":
-                  return _context6.stop();
-              }
-            }
-          }, _callee6);
-        })));
-        break;
-
-      case 'deleteSharedPage':
         eventList.push(function () {
           NoteStore.setModalInfo(null);
         });
@@ -6700,18 +6667,14 @@ var NoteMeta = {
               switch (_context7.prev = _context7.next) {
                 case 0:
                   _context7.next = 2;
-                  return PageStore.deleteNotePage(data);
+                  return ChapterStore.deleteNoteChapter(data);
 
                 case 2:
-                  _context7.next = 4;
-                  return ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
-
-                case 4:
                   NoteStore.setModalInfo(null);
                   NoteStore.setLongPress(false);
-                  PageStore.selectedPages.clear();
+                  ChapterStore.selectedChapters.clear();
 
-                case 7:
+                case 5:
                 case "end":
                   return _context7.stop();
               }
@@ -6720,7 +6683,7 @@ var NoteMeta = {
         })));
         break;
 
-      case 'emptySharedPage':
+      case 'deleteSharedPage':
         eventList.push(function () {
           NoteStore.setModalInfo(null);
         });
@@ -6730,6 +6693,36 @@ var NoteMeta = {
               switch (_context8.prev = _context8.next) {
                 case 0:
                   _context8.next = 2;
+                  return PageStore.deleteNotePage(data);
+
+                case 2:
+                  _context8.next = 4;
+                  return ChapterStore.fetchChapterInfo(ChapterStore.chapterInfo.id);
+
+                case 4:
+                  NoteStore.setModalInfo(null);
+                  NoteStore.setLongPress(false);
+                  PageStore.selectedPages.clear();
+
+                case 7:
+                case "end":
+                  return _context8.stop();
+              }
+            }
+          }, _callee8);
+        })));
+        break;
+
+      case 'emptySharedPage':
+        eventList.push(function () {
+          NoteStore.setModalInfo(null);
+        });
+        eventList.push( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+          return regeneratorRuntime.wrap(function _callee9$(_context9) {
+            while (1) {
+              switch (_context9.prev = _context9.next) {
+                case 0:
+                  _context9.next = 2;
                   return ChapterStore.deleteNoteChapter(data);
 
                 case 2:
@@ -6740,10 +6733,10 @@ var NoteMeta = {
 
                 case 6:
                 case "end":
-                  return _context8.stop();
+                  return _context9.stop();
               }
             }
-          }, _callee8);
+          }, _callee9);
         })));
         break;
     }
@@ -7466,6 +7459,23 @@ var NoteStore = observable({
   floatToast: function floatToast(message) {
     this.setToastText(message);
     this.setIsVisibleToast(true);
+  },
+  updateDragData: function updateDragData(chapterId, pageId) {
+    ChapterStore.setDragData(new Map([[chapterId, ChapterStore.createDragData(chapterId)]]));
+    PageStore.setDragData(new Map([[pageId, PageStore.createDragData(pageId, chapterId)]]));
+  },
+  handleClickOutside: function handleClickOutside(type) {
+    var Store = type === 'Chapter' ? ChapterStore : PageStore;
+    var Id = type === 'Chapter' ? Store.currentChapterId : Store.currentPageId;
+    Store.setIsCtrlKeyDown(false);
+
+    if (!Id) {
+      Store.clearDragData();
+      return;
+    }
+
+    var currentDragData = Store.dragData.get(Id) || Store.createDragData(Id, type === 'Page' ? ChapterStore.currentChapterId : null);
+    Store.setDragData(new Map([[Id, currentDragData]]));
   }
 });
 
