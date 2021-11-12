@@ -95,7 +95,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
             text: item.text,
             date: item.modified_date,
             type:
-              item.type === 'shared' || item.type === 'shared_page'
+              item.type === CHAPTER_TYPE.SHARED || item.type === CHAPTER_TYPE.SHARED_PAGE
                 ? DRAG_TYPE.SHARED_CHAPTER
                 : DRAG_TYPE.CHAPTER,
           };

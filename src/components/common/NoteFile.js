@@ -120,8 +120,7 @@ const initialFileList = () => {
     EditorStore.setProcessCount(0);
     EditorStore.setFailCount(0);
   } else {
-    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-      EditorStore.setFileList(dto.fileList);
+    PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(() => {
       EditorStore.setProcessCount(0);
       EditorStore.setFailCount(0);
     });
@@ -204,10 +203,9 @@ export const handleDriveCopy = async () => {
               EditorStore.driveFileList = [];
               if (EditorStore.failCount > 0) NoteStore.setModalInfo('multiFileSomeFail');
               else if (EditorStore.failCount === 0) {
-                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(dto => {
-                  EditorStore.setFileList(dto.fileList);
-                  EditorStore.processCount = 0;
-                });
+                PageStore.getNoteInfoList(PageStore.getCurrentPageId()).then(
+                  () => (EditorStore.processCount = 0),
+                );
                 EditorStore.setIsAttatch(false);
               }
             }

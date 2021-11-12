@@ -76,10 +76,7 @@ const LNBContainer = () => {
           <LNBHeader createNewChapter={createNewChapter} />
         ) : null}
         <LNBChapterCover ref={LNBRef}>
-          <LNBNewChapterForm
-            show={ChapterStore.isNewChapter}
-            createNewChapter={createNewChapter}
-          />
+          <LNBNewChapterForm isVisible={ChapterStore.isNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
           ChapterStore.isLoadingSearchResult ? (
             <Searching content="searching" />

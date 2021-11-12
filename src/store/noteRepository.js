@@ -1,4 +1,5 @@
 import { API } from 'teespace-core';
+import { CHAPTER_TYPE } from '../GlobalVariable';
 import NoteStore from './noteStore';
 import PageStore from './pageStore';
 
@@ -142,7 +143,7 @@ class NoteRepository {
             note_channel_id: this.chId,
             text: chapterTitle,
             children: [],
-            type: 'notebook',
+            type: CHAPTER_TYPE.NOTEBOOK,
             USER_ID: this.USER_ID,
             user_name: this.USER_NAME,
             color: chapterColor,
@@ -164,7 +165,7 @@ class NoteRepository {
           note_channel_id: this.chId,
           text: chapterTitle,
           children: [],
-          type: 'notebook',
+          type: CHAPTER_TYPE.NOTEBOOK,
           USER_ID: this.USER_ID,
           user_name: this.USER_NAME,
           color: chapterColor,
