@@ -204,6 +204,35 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
+var GlobalVariable = {
+  editorWrapper: null,
+  isBasicPlan: false,
+  isMailApp: false,
+  setEditorWrapper: function setEditorWrapper(ref) {
+    this.editorWrapper = ref;
+  },
+  setIsBasicPlan: function setIsBasicPlan(isBasicPlan) {
+    this.isBasicPlan = isBasicPlan;
+  },
+  setIsMailApp: function setIsMailApp(isMailApp) {
+    this.isMailApp = isMailApp;
+  }
+};
+
+var CHAPTER_TYPE = {
+  DEFAULT: 'default',
+  NOTEBOOK: 'notebook',
+  SHARED_PAGE: 'shared_page',
+  SHARED: 'shared',
+  RECYCLE_BIN: 'recycle_bin'
+};
+var DRAG_TYPE = {
+  CHAPTER: 'Item:Note:Chapters',
+  PAGE: 'Item:Note:Pages',
+  SHARED_CHAPTER: 'Item:Note:SharedChapters',
+  SHARED_PAGE: 'Item:Note:SharedPages'
+};
+
 var languageSet = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: '새 챕터',
   NOTE_PAGE_LIST_CMPNT_DEF_02: '새 페이지',
@@ -517,35 +546,6 @@ i18n.use(initReactI18next).init({
     useSuspense: false
   }
 });
-
-var GlobalVariable = {
-  editorWrapper: null,
-  isBasicPlan: false,
-  isMailApp: false,
-  setEditorWrapper: function setEditorWrapper(ref) {
-    this.editorWrapper = ref;
-  },
-  setIsBasicPlan: function setIsBasicPlan(isBasicPlan) {
-    this.isBasicPlan = isBasicPlan;
-  },
-  setIsMailApp: function setIsMailApp(isMailApp) {
-    this.isMailApp = isMailApp;
-  }
-};
-
-var CHAPTER_TYPE = {
-  DEFAULT: 'default',
-  NOTEBOOK: 'notebook',
-  SHARED_PAGE: 'shared_page',
-  SHARED: 'shared',
-  RECYCLE_BIN: 'recycle_bin'
-};
-var DRAG_TYPE = {
-  CHAPTER: 'Item:Note:Chapters',
-  PAGE: 'Item:Note:Pages',
-  SHARED_CHAPTER: 'Item:Note:SharedChapters',
-  SHARED_PAGE: 'Item:Note:SharedPages'
-};
 
 var NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -1599,40 +1599,42 @@ var ChapterStore = observable({
     return sharedChapters;
   },
   createNoteChapter: function createNoteChapter() {
-    var _this10 = this;
+    var _arguments2 = arguments,
+        _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var _PageStore$pageInfo;
 
-      var _yield$_this10$create, children, id;
+      var title, _yield$_this10$create, children, id;
 
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
           switch (_context15.prev = _context15.next) {
             case 0:
-              _context15.next = 2;
-              return _this10.createChapter(_this10.chapterNewTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'), _this10.isNewChapterColor);
+              title = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this10.chapterNewTitle.trim();
+              _context15.next = 3;
+              return _this10.createChapter(title || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'), _this10.isNewChapterColor);
 
-            case 2:
+            case 3:
               _yield$_this10$create = _context15.sent;
               children = _yield$_this10$create.children;
               id = _yield$_this10$create.id;
-              _context15.next = 7;
+              _context15.next = 8;
               return _this10.getNoteChapterList();
 
-            case 7:
+            case 8:
               _this10.setChapterTempUl(false);
 
-              _context15.next = 10;
+              _context15.next = 11;
               return PageStore.fetchCurrentPageData(children[0].id);
 
-            case 10:
+            case 11:
               return _context15.abrupt("return", {
                 chapterId: id,
                 pageId: (_PageStore$pageInfo = PageStore.pageInfo) === null || _PageStore$pageInfo === void 0 ? void 0 : _PageStore$pageInfo.id
               });
 
-            case 11:
+            case 12:
             case "end":
               return _context15.stop();
           }
@@ -1855,7 +1857,7 @@ var ChapterStore = observable({
     }))();
   },
   getSearchResult: function getSearchResult() {
-    var _arguments2 = arguments,
+    var _arguments3 = arguments,
         _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
@@ -1866,8 +1868,8 @@ var ChapterStore = observable({
         while (1) {
           switch (_context20.prev = _context20.next) {
             case 0:
-              keyword = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this16.searchStr.trim();
-              chapterId = _arguments2.length > 1 ? _arguments2[1] : undefined;
+              keyword = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : _this16.searchStr.trim();
+              chapterId = _arguments3.length > 1 ? _arguments3[1] : undefined;
 
               _this16.setIsSearching(true);
 
@@ -1954,7 +1956,7 @@ var ChapterStore = observable({
         note_channel_id: NoteRepository$1.chId,
         text: chapter.text,
         color: chapter.color,
-        type: chapter.type === 'shared_page' || chapter.type === 'shared' ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
+        type: chapter.type === CHAPTER_TYPE.SHARED_PAGE || chapter.type === CHAPTER_TYPE.SHARED ? DRAG_TYPE.SHARED_CHAPTER : DRAG_TYPE.CHAPTER,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
         shared_room_name: NoteRepository$1.WS_ID,
@@ -2067,7 +2069,7 @@ var ChapterStore = observable({
   },
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
   fetchChapterList: function fetchChapterList() {
-    var _arguments3 = arguments,
+    var _arguments4 = arguments,
         _this21 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
@@ -2076,7 +2078,7 @@ var ChapterStore = observable({
         while (1) {
           switch (_context24.prev = _context24.next) {
             case 0:
-              isInit = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : false;
+              isInit = _arguments4.length > 0 && _arguments4[0] !== undefined ? _arguments4[0] : false;
 
               // 한 군데에서만 부르긴하지만 일단 param 추가
               _this21.setLoadingPageInfo(true);
@@ -2214,7 +2216,7 @@ var ChapterStore = observable({
   },
   getRoomChapterList: function getRoomChapterList() {
     var roomChapterList = this.chapterList.filter(function (chapter) {
-      return chapter.type === 'notebook' || chapter.type === 'default';
+      return chapter.type === CHAPTER_TYPE.NOTEBOOK || chapter.type === CHAPTER_TYPE.DEFAULT;
     });
     return roomChapterList;
   }
@@ -3771,9 +3773,11 @@ var PageStore = observable({
             case 2:
               _yield$NoteRepository = _context.sent;
               dto = _yield$NoteRepository.data.dto;
+              TagStore.setNoteTagList(dto === null || dto === void 0 ? void 0 : dto.tagList);
+              EditorStore.setFileList(dto === null || dto === void 0 ? void 0 : dto.fileList);
               return _context.abrupt("return", dto);
 
-            case 5:
+            case 7:
             case "end":
               return _context.stop();
           }
@@ -4375,8 +4379,6 @@ var PageStore = observable({
               dto.modUserName = _context16.sent;
               _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
-              EditorStore.setFileList(dto.fileList);
-              TagStore.setNoteTagList(dto.tagList);
 
               if (_this6.isNewPage) {
                 NoteStore.updateDragData(ChapterStore.currentChapterId, _this6.currentPageId);
@@ -4395,7 +4397,7 @@ var PageStore = observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 17:
+            case 15:
             case "end":
               return _context16.stop();
           }
@@ -4748,7 +4750,7 @@ var PageStore = observable({
         note_id: page.note_id || page.id,
         note_title: page.text,
         modified_date: page.date,
-        TYPE: page.type === 'shared' ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
+        TYPE: page.type === CHAPTER_TYPE.SHARED ? DRAG_TYPE.SHARED_PAGE : DRAG_TYPE.PAGE,
         note_channel_id: NoteRepository$1.chId,
         USER_ID: NoteRepository$1.USER_ID,
         shared_user_id: NoteRepository$1.USER_ID,
@@ -5110,7 +5112,7 @@ var NoteRepository = /*#__PURE__*/function () {
                     note_channel_id: this.chId,
                     text: chapterTitle,
                     children: [],
-                    type: 'notebook',
+                    type: CHAPTER_TYPE.NOTEBOOK,
                     USER_ID: this.USER_ID,
                     user_name: this.USER_NAME,
                     color: chapterColor
@@ -5160,7 +5162,7 @@ var NoteRepository = /*#__PURE__*/function () {
                     note_channel_id: this.chId,
                     text: chapterTitle,
                     children: [],
-                    type: 'notebook',
+                    type: CHAPTER_TYPE.NOTEBOOK,
                     USER_ID: this.USER_ID,
                     user_name: this.USER_NAME,
                     color: chapterColor
