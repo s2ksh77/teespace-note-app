@@ -21,7 +21,7 @@ import { ChapterColor } from '../../styles/chpaterStyle';
 import { ShareIcon, SharedPageIcon } from '../icons';
 import NoContent from '../common/NoContent';
 import { TagChip, TagList, TagText } from '../../styles/tagStyle';
-import NoteUtil, { isNormalChapter } from '../../NoteUtil';
+import NoteUtil, { isNormalChapter, getI18nChapterTitle } from '../../NoteUtil';
 import ChapterItem from '../mobile/lnb/ChapterItem';
 import PageItem from '../mobile/listview/PageItem';
 import TagItem from '../mobile/listview/TagItem';
@@ -111,9 +111,7 @@ const LNBSearchResult = ({ isMobile }) => {
                     marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem',
                   }}
                 >
-                  {chapter.type === CHAPTER_TYPE.SHARED_PAGE
-                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : chapter.text}
+                  {getI18nChapterTitle(chapter.type, chapter.text)}
                 </ChapterSearchResultTitle>
               </ChapterSearchResult>
             );
@@ -131,11 +129,7 @@ const LNBSearchResult = ({ isMobile }) => {
                 onClick={handlePageClick(page.note_id, 'page')}
               >
                 <PageSearchResultChapterTitle>
-                  {page.TYPE === CHAPTER_TYPE.SHARED_PAGE
-                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : page.TYPE === CHAPTER_TYPE.RECYCLE_BIN
-                    ? t('NOTE_BIN_01')
-                    : page.text}
+                  {getI18nChapterTitle(page.TYPE, page.text)}
                 </PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>{page.note_title}</PageSearchResultPageTitle>
                 {page.contentPreview && (
@@ -159,11 +153,7 @@ const LNBSearchResult = ({ isMobile }) => {
                 onClick={handlePageClick(tag.note_id, 'tag')}
               >
                 <PageSearchResultChapterTitle>
-                  {tag.TYPE === CHAPTER_TYPE.SHARED_PAGE
-                    ? t('NOTE_PAGE_LIST_CMPNT_DEF_07')
-                    : tag.TYPE === CHAPTER_TYPE.RECYCLE_BIN
-                    ? t('NOTE_BIN_01')
-                    : tag.text}
+                  {getI18nChapterTitle(tag.TYPE, tag.text)}
                 </PageSearchResultChapterTitle>
                 <PageSearchResultPageTitle>{tag.note_title}</PageSearchResultPageTitle>
                 <TagList>
