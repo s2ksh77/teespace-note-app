@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../store/useStore';
 import { LNBWrapper, LNBChapterCover, LNBEditModeCover } from '../../styles/lnbStyle';
 import LNBHeader from './LNBHeader';
@@ -18,16 +17,8 @@ const { getChapterNumType } = NoteUtil;
 
 const LNBContainer = () => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
-  const { t } = useTranslation();
   const LNBRef = useRef(null);
 
-  const createNewChapter = async () => {
-    // dialog 클릭시 blur이벤트 동작
-    if (NoteStore.showModal) return;
-    if (!ChapterStore.isNewChapter) return;
-    const { chapterId, pageId } = await ChapterStore.createNoteChapter();
-    NoteStore.updateDragData(chapterId, pageId);
-  };
   const handleEditMode = () => {
     if (EditorStore.isUploading) {
       NoteStore.setModalInfo('uploadingFiles');
@@ -72,9 +63,7 @@ const LNBContainer = () => {
           mode={PageStore.isReadMode().toString()}
           onClick={!PageStore.isReadMode() ? handleEditMode : null}
         />
-        {NoteStore.appType === 'wapl' ? (
-          <LNBHeader createNewChapter={createNewChapter} />
-        ) : null}
+        {NoteStore.appType === 'wapl' && <LNBHeader />}
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm isVisible={ChapterStore.isNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
