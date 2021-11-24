@@ -194,12 +194,13 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
     setRenameTitle(checkMaxLength(e));
   };
 
-  const handleTitleUpdate = isEscape => () => {
+  const handleTitleUpdate = isEscape => async () => {
     if (isEscape || !renameTitle) {
       setRenameTitle(title);
       ChapterStore.setRenameId('');
     } else if (renameTitle !== title) {
-      ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
+      await ChapterStore.renameNoteChapter({ id, title: renameTitle, color });
+      ChapterStore.setRenameId('');
     }
 
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);

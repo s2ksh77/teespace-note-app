@@ -126,16 +126,17 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
     setRenameTitle(checkMaxLength(e));
   };
 
-  const handleRename = isEscape => {
+  const handleRename = async isEscape => {
     if (isEscape || !renameTitle) {
       setRenameTitle(title);
       PageStore.setRenameId('');
     } else if (renameTitle !== title) {
-      PageStore.renameNotePage({
+      await PageStore.renameNotePage({
         id,
         title: renameTitle,
         chapterId: chapter.id,
       });
+      PageStore.setRenameId('');
     }
 
     NoteStore.LNBChapterCoverRef.removeEventListener('wheel', NoteStore.disableScroll);
