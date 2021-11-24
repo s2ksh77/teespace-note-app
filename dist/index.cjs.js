@@ -1733,7 +1733,8 @@ var ChapterStore = mobx.observable({
     var _this12 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      var id, title, color, dto;
+      var id, title, color, _yield$_this12$rename, text;
+
       return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
           switch (_context17.prev = _context17.next) {
@@ -1743,13 +1744,11 @@ var ChapterStore = mobx.observable({
               return _this12.renameChapter(id, title.trim(), color);
 
             case 3:
-              dto = _context17.sent;
-              if (_this12.dragData.get(id)) _this12.dragData.get(id).item.text = dto.text;
-              _context17.next = 7;
+              _yield$_this12$rename = _context17.sent;
+              text = _yield$_this12$rename.text;
+              if (_this12.dragData.get(id)) _this12.dragData.get(id).item.text = text;
+              _context17.next = 8;
               return _this12.getNoteChapterList();
-
-            case 7:
-              _this12.renameId = '';
 
             case 8:
             case "end":
@@ -4205,7 +4204,8 @@ var PageStore = mobx.observable({
     var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-      var id, title, chapterId, dto;
+      var id, title, chapterId, _yield$_this4$renameP, text;
+
       return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
           switch (_context13.prev = _context13.next) {
@@ -4215,16 +4215,14 @@ var PageStore = mobx.observable({
               return _this4.renamePage(id, title.trim(), chapterId);
 
             case 3:
-              dto = _context13.sent;
-              if (_this4.dragData.get(id)) _this4.dragData.get(id).item.text = dto.note_title;
+              _yield$_this4$renameP = _context13.sent;
+              text = _yield$_this4$renameP.note_title;
+              if (_this4.dragData.get(id)) _this4.dragData.get(id).item.text = text;
 
               _this4.fetchNoteInfoList(id);
 
-              _context13.next = 8;
+              _context13.next = 9;
               return ChapterStore.getNoteChapterList();
-
-            case 8:
-              _this4.renameId = '';
 
             case 9:
             case "end":
