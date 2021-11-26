@@ -7136,15 +7136,11 @@ var NoteStore = mobx.observable({
   i18nLanguage: 'ko-KR',
   i18nKeyMap: '',
   isExporting: false,
-  isSlashCmd: false,
   appType: 'wapl',
   isLongPress: false,
   isWeb: true,
   setAppType: function setAppType(appType) {
     this.appType = appType;
-  },
-  setIsSlashCmd: function setIsSlashCmd(flag) {
-    this.isSlashCmd = flag;
   },
   setMetaTagInfo: function setMetaTagInfo(_ref) {
     var _ref$isOpen = _ref.isOpen,
