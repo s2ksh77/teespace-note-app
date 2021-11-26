@@ -87,11 +87,6 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   }, [language]);
 
   useEffect(() => {
-    if (NoteStore.isSlashCmd) SlashCmdNote();
-    return () => NoteStore.setIsSlashCmd(false);
-  }, [NoteStore.isSlashCmd]);
-
-  useEffect(() => {
     if (NoteStore.metaTagInfo.isOpen) {
       NoteStore.setLoadingNoteApp(true);
       ChapterStore.openNote();
