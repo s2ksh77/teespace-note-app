@@ -13,6 +13,7 @@ const SlashCmdNote = () => {
   const getFirstChapterInfo = async (chId = NoteStore.getChannelId()) => {
     const targetItem = JSON.parse(localStorage.getItem('NoteSortData_' + chId));
     // 챕터가 하나라도 있는 경우
+    if (!targetItem) return false;
     if (targetItem.length !== 0) {
       // 전달된 챕터인지 확인
       const chapterInfo = await ChapterStore.getChapterInfoList(targetItem[0].id);
@@ -52,8 +53,7 @@ const SlashCmdNote = () => {
   };
 
   const slashCmdInit = () => {
-    if (NoteStore.isSlashCmd) createTarget();
-    else NoteStore.setIsSlashCmd(true);
+    createTarget();
   };
 
   slashCmdInit();
