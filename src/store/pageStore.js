@@ -238,6 +238,24 @@ const PageStore = observable({
     }
   },
 
+  async bookmarkPage(pageId) {
+    const {
+      data: { dto },
+    } = await NoteRepository.bookmarkPage(pageId);
+    if (dto.resultMsg === 'Success') {
+      return dto;
+    }
+  },
+
+  async unbookmarkPage(pageId) {
+    const {
+      data: { dto },
+    } = await NoteRepository.unbookmarkPage(pageId);
+    if (dto.resultMsg === 'Success') {
+      return dto;
+    }
+  },
+
   /**
    * 에디터의 텍스트/배경 색상을 초기화한다.
    */

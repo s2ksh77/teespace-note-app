@@ -622,6 +622,30 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+
+  async bookmarkPage(pageId) {
+    try {
+      return await API.post(`note-api/bookmark`, {
+        dto: {
+          note_id: pageId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async unbookmarkPage(pageId) {
+    try {
+      return await API.post(`note-api/bookmark?action=Delete`, {
+        dto: {
+          note_id: pageId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
