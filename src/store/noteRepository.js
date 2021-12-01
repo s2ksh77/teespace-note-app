@@ -646,6 +646,15 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+
+  async getbookmarkList(chId) {
+    const query = chId ? `&note_channel_id=${chId}` : '';
+    try {
+      return await API.post(`note-api/bookmark?action=List${query}`);
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
