@@ -655,6 +655,17 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+
+  async getRecentList(num) {
+    const query = num ? `&rownum=${num}` : '';
+    try {
+      return await API.get(
+        `note-api/noteRecent?action=List&note_channel_id=${this.chId}${query}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
