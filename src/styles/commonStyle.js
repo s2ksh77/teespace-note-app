@@ -21,7 +21,7 @@ export const HeaderButtonContainer = styled.div`
   margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"};
 `;
 
-export const ContentHeaderCover = styled.div`
+export const ContentHeaderWrapper = styled.div`
   height: 3rem;
   width: 100%;
   display: flex;
@@ -250,8 +250,8 @@ export const LoadingImage = styled.img`
 `;
 
 export const RightAligned = styled.div`
-  display:flex;
-  margin-left:auto;
+  display: flex;
+  margin-left: auto;
 `;
 
 export const DraggedComponentContainer = styled.div`
