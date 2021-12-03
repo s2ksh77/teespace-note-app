@@ -119,7 +119,7 @@ export const EditorSearchIcon = styled.img`
     contrast(92%);
 `;
 
-export const LnbTitleCover = styled.div`
+export const LNBHeaderWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;

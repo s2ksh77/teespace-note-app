@@ -32,13 +32,13 @@ export const ContentHeaderCover = styled.div`
   box-sizing: border-box;
 `;
 
-export const PreBtnWrapper = styled.div`
-  display: ${props => (props.show ? "flex" : "none")};
+export const BackBtnWrapper = styled.div`
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
   margin-right: 0.5rem;
-  cursor:pointer;
+  cursor: pointer;
   padding: 8px;
-  &:hover{
+  &:hover {
     background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
     cursor: pointer;

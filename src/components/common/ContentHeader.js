@@ -4,8 +4,8 @@ import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import {
   ContentHeaderCover,
-  PreBtnWrapper,
   Button,
+  BackBtnWrapper,
   RightAligned,
 } from '../../styles/commonStyle';
 import HeaderButtons from './buttons';
