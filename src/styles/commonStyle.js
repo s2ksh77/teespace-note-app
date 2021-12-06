@@ -21,7 +21,7 @@ export const HeaderButtonContainer = styled.div`
   margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"};
 `;
 
-export const ContentHeaderCover = styled.div`
+export const ContentHeaderWrapper = styled.div`
   height: 3rem;
   width: 100%;
   display: flex;
@@ -32,13 +32,13 @@ export const ContentHeaderCover = styled.div`
   box-sizing: border-box;
 `;
 
-export const PreBtnWrapper = styled.div`
-  display: ${props => (props.show ? "flex" : "none")};
+export const BackBtnWrapper = styled.div`
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
   margin-right: 0.5rem;
-  cursor:pointer;
+  cursor: pointer;
   padding: 8px;
-  &:hover{
+  &:hover {
     background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
     cursor: pointer;
@@ -250,8 +250,8 @@ export const LoadingImage = styled.img`
 `;
 
 export const RightAligned = styled.div`
-  display:flex;
-  margin-left:auto;
+  display: flex;
+  margin-left: auto;
 `;
 
 export const DraggedComponentContainer = styled.div`

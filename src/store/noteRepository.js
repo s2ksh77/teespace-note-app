@@ -622,6 +622,50 @@ class NoteRepository {
       throw Error(JSON.stringify(e));
     }
   }
+
+  async bookmarkPage(pageId) {
+    try {
+      return await API.post(`note-api/bookmark`, {
+        dto: {
+          note_id: pageId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async unbookmarkPage(pageId) {
+    try {
+      return await API.post(`note-api/bookmark?action=Delete`, {
+        dto: {
+          note_id: pageId,
+        },
+      });
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async getbookmarkList(chId) {
+    const query = chId ? `&note_channel_id=${chId}` : '';
+    try {
+      return await API.get(`note-api/bookmark?action=List${query}`);
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
+
+  async getRecentList(num) {
+    const query = num ? `&rownum=${num}` : '';
+    try {
+      return await API.get(
+        `note-api/noteRecent?action=List&note_channel_id=${this.chId}${query}`,
+      );
+    } catch (e) {
+      throw Error(JSON.stringify(e));
+    }
+  }
 }
 
 export default new NoteRepository();
