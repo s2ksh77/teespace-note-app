@@ -30,7 +30,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
     ],
     drop: async item => {
       const { type, data } = item;
-      const editingNoteList = [];
+      let editingUserIds = [];
 
       switch (type) {
         case DRAG_TYPE.CHAPTER: {
@@ -42,19 +42,20 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           const deleteChapterList = await Promise.all(
             data.map(async note => {
               const dto = await ChapterStore.getChapterChildren(note.id);
-              editingNoteList.push(...dto.noteList.filter(page => page.is_edit));
+              editingUserIds.push(
+                ...dto.noteList.filter(page => page.is_edit).map(page => page.is_edit),
+              );
               return { id: note.id };
             }),
           );
 
-          if (editingNoteList.length === 1) {
-            const { displayName } = await userStore.getProfile(
-              editingNoteList[0].is_edit,
-            );
+          editingUserIds = [...new Set(editingUserIds)];
+          if (editingUserIds.length === 1) {
+            const { displayName } = await userStore.getProfile(editingUserIds[0]);
             NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
-          } else if (editingNoteList.length > 1) {
+          } else if (editingUserIds.length > 1) {
             NoteStore.setModalInfo('nonDeletableMultiPage', {
-              count: editingNoteList.length,
+              count: editingUserIds.length,
             });
           } else {
             NoteStore.setModalInfo('draggedChapter', {
@@ -73,7 +74,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
           const deletePageList = await Promise.all(
             data.map(async note => {
               const dto = await PageStore.getNoteInfoList(note.id);
-              if (dto.is_edit) editingNoteList.push(dto);
+              if (dto.is_edit) editingUserIds.push(dto.is_edit);
               return {
                 note_id: note.id,
                 restoreChapterId: note.chapterId,
@@ -81,14 +82,13 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
             }),
           );
 
-          if (editingNoteList.length === 1) {
-            const { displayName } = await userStore.getProfile(
-              editingNoteList[0].is_edit,
-            );
+          editingUserIds = [...new Set(editingUserIds)];
+          if (editingUserIds.length === 1) {
+            const { displayName } = await userStore.getProfile(editingUserIds[0]);
             NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
-          } else if (editingNoteList.length > 1) {
+          } else if (editingUserIds.length > 1) {
             NoteStore.setModalInfo('nonDeletableMultiPage', {
-              count: editingNoteList.length,
+              count: editingUserIds.length,
             });
           } else {
             PageStore.throwNotePage({ pageList: deletePageList, isDnd: true });
@@ -147,7 +147,7 @@ const RecycleBin = ({ chapter, index, flexOrder }) => {
         }`}
         onClick={handleRecycleBinClick}
         style={ChapterStore.dragEnterChapterIdx === index ? { color: '#205855' } : null}
-        isRecycleBin={true}
+        isRecycleBin
       >
         <TrashIcon color={themeContext.SubStateVivid} />
         <ChapterText

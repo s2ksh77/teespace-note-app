@@ -43,14 +43,16 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
     switch (noteType) {
       case 'chapter': {
         const { noteList } = await ChapterStore.getChapterChildren(note.id);
-        const editingPageList = noteList.filter(page => page.is_edit);
+        const editingUserIds = [
+          ...new Set(noteList.filter(page => page.is_edit).map(page => page.is_edit)),
+        ];
 
-        if (editingPageList.length === 1) {
-          const { displayName } = await userStore.getProfile(editingPageList[0].is_edit);
+        if (editingUserIds.length === 1) {
+          const { displayName } = await userStore.getProfile(editingUserIds[0]);
           NoteStore.setModalInfo('nonDeletableSinglePage', { name: displayName });
-        } else if (editingPageList.length > 1) {
+        } else if (editingUserIds.length > 1) {
           NoteStore.setModalInfo('nonDeletableMultiPage', {
-            count: editingPageList.length,
+            count: editingUserIds.length,
           });
         } else {
           NoteStore.setModalInfo(

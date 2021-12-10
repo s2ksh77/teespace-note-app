@@ -24,8 +24,7 @@ const languageSet = {
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: `{{moveCnt}}개의 챕터가 이동하였습니다.`,
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: `{{moveCnt}}개의 페이지가 이동하였습니다.`,
   NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: '페이지가 없습니다.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02:
-    "시작하려면 '새 페이지 추가' 버튼을 클릭하세요.",
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: "시작하려면 '새 페이지 추가' 버튼을 클릭하세요.",
   NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(탈퇴한 멤버)',
   NOTE_EDIT_PAGE_SEARCH_01: '검색 결과가 없습니다.',
   NOTE_EDIT_PAGE_SEARCH_02: '검색 중...',
@@ -40,10 +39,8 @@ const languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_08: '링크 삭제',
   NOTE_EDIT_PAGE_ATTACH_FILE_01: 'Drive에서 첨부',
   NOTE_EDIT_PAGE_ATTACH_FILE_02: '내 PC에서 첨부',
-  NOTE_EDIT_PAGE_ATTACH_FILE_03:
-    '그룹 공간이 부족하여\\n 파일을 첨부할 수 없습니다.',
-  NOTE_EDIT_PAGE_ATTACH_FILE_04:
-    '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_03: '그룹 공간이 부족하여\\n 파일을 첨부할 수 없습니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_04: '파일 첨부는 한 번에 최대 20GB까지 가능합니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_05: '파일 첨부는 한 번에 30개까지 가능합니다.',
   NOTE_EDIT_PAGE_COMPLETE_01: '페이지를 저장하고 나가시겠습니까?',
   NOTE_EDIT_PAGE_COMPLETE_02: '저장 안 함',
@@ -145,8 +142,7 @@ const languageSet = {
   NOTE_BIN_02: '휴지통으로 이동되었습니다.',
   NOTE_BIN_03: `{{num}}개의 페이지가 휴지통으로 이동되었습니다.`,
   NOTE_BIN_04: '챕터가 삭제되었습니다.',
-  NOTE_BIN_05:
-    '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
+  NOTE_BIN_05: '휴지통에 있는 페이지는 30일 동안 보관되며 이후 휴지통에서 삭제됩니다.',
   NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
   NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
   NOTE_BIN_08: `{{num}}개의 페이지를 영구 삭제하시겠습니까?`,
@@ -156,8 +152,7 @@ const languageSet = {
   NOTE_BIN_RESTORE_03: `{{num}}개의 페이지가 복원되었습니다.`,
 
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
-  NOTE_RECOVER_DATA_01:
-    '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
+  NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
   NOTE_META_TAG_01: '챕터',
   NOTE_META_TAG_02: '페이지',
   NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
