@@ -388,9 +388,7 @@ var languageSet = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.'
 };
 
-var _languageSet;
-
-var languageSet$1 = (_languageSet = {
+var languageSet$1 = {
   NOTE_PAGE_LIST_CMPNT_DEF_01: 'New Chapter',
   NOTE_PAGE_LIST_CMPNT_DEF_02: 'New Page',
   NOTE_PAGE_LIST_CMPNT_DEF_03: '(Untitled)',
@@ -416,7 +414,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_02: "{{moveCnt}} chapters moved.",
   NOTE_PAGE_LIST_MOVE_PGE_CHPT_03: "{{moveCnt}} pages moved.",
   NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01: 'No page exists.',
-  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: 'To create one, click \'Add New Page\'.',
+  NOTE_PAGE_LIST_NO_PGE_IN_CHPT_02: "To create one, click 'Add New Page'.",
   NOTE_EDIT_PAGE_WORK_AREA_DEF_01: '(Unregistered Member)',
   NOTE_EDIT_PAGE_SEARCH_01: 'No search results found.',
   NOTE_EDIT_PAGE_SEARCH_02: 'Searching...',
@@ -492,7 +490,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_09: 'Move to Link',
   NOTE_EDIT_PAGE_ADD_TAG_01: 'The tag name already exists.',
   NOTE_PAGE_LIST_NO_CHPT_01: 'No chapter exists.',
-  NOTE_PAGE_LIST_NO_CHPT_02: 'To create one, click \'New Chapter\'.',
+  NOTE_PAGE_LIST_NO_CHPT_02: "To create one, click 'New Chapter'.",
   NOTE_EDIT_PAGE_MENUBAR_32: 'Save to Drive',
   NOTE_EDIT_PAGE_MENUBAR_33: 'Save to My PC',
   NOTE_EDIT_PAGE_MENUBAR_34: 'Download',
@@ -506,7 +504,7 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
-  NOTE_EDIT_PAGE_INSERT_LINK_13: 'Add \'mailto:\' in an email.',
+  NOTE_EDIT_PAGE_INSERT_LINK_13: "Add 'mailto:' in an email.",
   NOTE_EDIT_PAGE_AUTO_SAVE_01: 'Saving…',
   NOTE_EDIT_PAGE_AUTO_SAVE_02: 'Page saved.',
   NOTE_EDIT_PAGE_CANT_EDIT_01: 'Unable to Modify.',
@@ -515,12 +513,35 @@ var languageSet$1 = (_languageSet = {
   NOTE_EDIT_PAGE_MENUBAR_35: 'Align',
   NOTE_GUEST_01: 'Guests cannot edit chapters and pages.',
   NOTE_GUEST_02: 'This feature is not available to guests.',
-  NOTE_CONTEXT_MENU_01: 'Forward',
   DRIVE_UPLOAD_BTN_04: 'The name of the file cannot exceed the limit of 70 characters. ',
   NOTE_EDIT_PAGE_UPDATE_TIME_01: "{{time}} AM",
   NOTE_EDIT_PAGE_UPDATE_TIME_02: "{{time}} PM",
-  NOTE_EXPORT_TITLE: 'Title'
-}, _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_01", 'Forwarded to another room.'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_02", 'Recover'), _defineProperty(_languageSet, "NOTE_CONTEXT_MENU_03", 'Empty Trash'), _defineProperty(_languageSet, "NOTE_DND_ACTION_01", 'Cannot move.'), _defineProperty(_languageSet, "NOTE_DND_ACTION_02", ''), _defineProperty(_languageSet, "NOTE_BIN_01", 'Trash'), _defineProperty(_languageSet, "NOTE_BIN_02", 'Moved to Trash.'), _defineProperty(_languageSet, "NOTE_BIN_03", "{{num}} pages have been moved to Trash."), _defineProperty(_languageSet, "NOTE_BIN_04", 'Chapter deleted.'), _defineProperty(_languageSet, "NOTE_BIN_05", 'After 30 days, pages are deleted from the Trash.'), _defineProperty(_languageSet, "NOTE_BIN_06", 'Do you want to permanently delete this page?'), _defineProperty(_languageSet, "NOTE_BIN_07", 'This action cannot be undone.'), _defineProperty(_languageSet, "NOTE_BIN_08", "Do you want to permanently delete {{num}} pages?"), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_01", 'Which chapter do you want to restore to?'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_02", 'Page has been restored.'), _defineProperty(_languageSet, "NOTE_BIN_RESTORE_03", "{{num}} pages have been restored."), _defineProperty(_languageSet, "NOTE_EDIT_PAGE_MENUBAR_36", 'Source Code'), _defineProperty(_languageSet, "NOTE_RECOVER_DATA_01", 'There is a page being created.\\nDo you want to recover?'), _defineProperty(_languageSet, "NOTE_META_TAG_01", 'Chapter'), _defineProperty(_languageSet, "NOTE_META_TAG_02", 'Page'), _defineProperty(_languageSet, "NOTE_META_TAG_03", 'Unable to load the page because it has been deleted.'), _defineProperty(_languageSet, "NOTE_META_TAG_04", 'Unable to load the chapter because it has been deleted.'), _defineProperty(_languageSet, "NOTE_SAVE_PAGE", 'Page saved.'), _defineProperty(_languageSet, "NOTE_PAGE_LIST_DEL_PGE_CHPT_09", 'Pages forwarded will be permanently deleted.'), _languageSet);
+  NOTE_EXPORT_TITLE: 'Title',
+  NOTE_CONTEXT_MENU_01: 'Forwarded to another room.',
+  NOTE_CONTEXT_MENU_02: 'Recover',
+  NOTE_CONTEXT_MENU_03: 'Empty Trash',
+  NOTE_DND_ACTION_01: 'Cannot move.',
+  NOTE_DND_ACTION_02: 'Received chapters and pages cannot be moved.',
+  NOTE_BIN_01: 'Trash',
+  NOTE_BIN_02: 'Moved to Trash.',
+  NOTE_BIN_03: "{{num}} pages have been moved to Trash.",
+  NOTE_BIN_04: 'Chapter deleted.',
+  NOTE_BIN_05: 'After 30 days, pages are deleted from the Trash.',
+  NOTE_BIN_06: 'Do you want to permanently delete this page?',
+  NOTE_BIN_07: 'This action cannot be undone.',
+  NOTE_BIN_08: "Do you want to permanently delete {{num}} pages?",
+  NOTE_BIN_RESTORE_01: 'Which chapter do you want to restore to?',
+  NOTE_BIN_RESTORE_02: 'Page has been restored.',
+  NOTE_BIN_RESTORE_03: "{{num}} pages have been restored.",
+  NOTE_EDIT_PAGE_MENUBAR_36: 'Source Code',
+  NOTE_RECOVER_DATA_01: 'There is a page being created.\\nDo you want to recover?',
+  NOTE_META_TAG_01: 'Chapter',
+  NOTE_META_TAG_02: 'Page',
+  NOTE_META_TAG_03: 'Unable to load the page because it has been deleted.',
+  NOTE_META_TAG_04: 'Unable to load the chapter because it has been deleted.',
+  NOTE_SAVE_PAGE: 'Page saved.',
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.'
+};
 
 var resources = {
   ko: {
