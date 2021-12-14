@@ -147,8 +147,8 @@ const languageSet = {
   NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
   NOTE_BIN_08: `{{num}}개의 페이지를 영구 삭제하시겠습니까?`,
 
-  NOTE_BIN_RESTORE_01: '어느 챕터로 복원하시겠습니까?',
-  NOTE_BIN_RESTORE_02: '복원되었습니다.',
+  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다.\\n어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_02: '{{name}}(으)로 복원되었습니다.',
   NOTE_BIN_RESTORE_03: `{{num}}개의 페이지가 복원되었습니다.`,
 
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
@@ -160,6 +160,10 @@ const languageSet = {
 
   NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.',
+
+  NOTE_NOTICENTER_01: '챕터를 공유했습니다.',
+  NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
+  NOTE_NOTICENTER_03: `{{title}}을 생성했습니다.`,
 };
 
 export default languageSet;
