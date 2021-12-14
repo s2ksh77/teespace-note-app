@@ -160,6 +160,10 @@ const languageSet = {
 
   NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.',
+
+  NOTE_NOTICENTER_01: '챕터를 공유했습니다.',
+  NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
+  NOTE_NOTICENTER_03: `{{title}}을 생성했습니다.`,
 };
 
 export default languageSet;

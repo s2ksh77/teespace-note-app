@@ -161,6 +161,10 @@ const languageSet = {
 
   NOTE_SAVE_PAGE: 'Page saved.',
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.',
+
+  NOTE_NOTICENTER_01: 'The chapter has been shared.',
+  NOTE_NOTICENTER_02: 'The page has been shared.',
+  NOTE_NOTICENTER_03: `{{title}} has been created.`,
 };
 
 export default languageSet;
