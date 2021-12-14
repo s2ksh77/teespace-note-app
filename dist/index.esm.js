@@ -375,8 +375,8 @@ var languageSet = {
   NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
   NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
   NOTE_BIN_08: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC601\uAD6C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
-  NOTE_BIN_RESTORE_01: '어느 챕터로 복원하시겠습니까?',
-  NOTE_BIN_RESTORE_02: '복원되었습니다.',
+  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다.\\n어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_02: '{{name}}(으)로 복원되었습니다.',
   NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uC6D0\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
   NOTE_RECOVER_DATA_01: '작성 중인 페이지가 있습니다.\\n내용을 복원하시겠습니까?',
@@ -385,7 +385,10 @@ var languageSet = {
   NOTE_META_TAG_03: '페이지가 삭제되어 불러올 수 없습니다.',
   NOTE_META_TAG_04: '챕터가 삭제되어 불러올 수 없습니다.',
   NOTE_SAVE_PAGE: '페이지가 저장되었습니다.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.'
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.',
+  NOTE_NOTICENTER_01: '챕터를 공유했습니다.',
+  NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
+  NOTE_NOTICENTER_03: "{{title}}\uC744 \uC0DD\uC131\uD588\uC2B5\uB2C8\uB2E4."
 };
 
 var languageSet$1 = {
@@ -540,7 +543,10 @@ var languageSet$1 = {
   NOTE_META_TAG_03: 'Unable to load the page because it has been deleted.',
   NOTE_META_TAG_04: 'Unable to load the chapter because it has been deleted.',
   NOTE_SAVE_PAGE: 'Page saved.',
-  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.'
+  NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.',
+  NOTE_NOTICENTER_01: 'The chapter has been shared.',
+  NOTE_NOTICENTER_02: 'The page has been shared.',
+  NOTE_NOTICENTER_03: "{{title}} has been created."
 };
 
 var resources = {
