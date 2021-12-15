@@ -147,7 +147,7 @@ const languageSet = {
   NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
   NOTE_BIN_08: `{{num}}개의 페이지를 영구 삭제하시겠습니까?`,
 
-  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다.\\n어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다. \n어느 챕터로 복원하시겠습니까?',
   NOTE_BIN_RESTORE_02: '{{name}}(으)로 복원되었습니다.',
   NOTE_BIN_RESTORE_03: `{{num}}개의 페이지가 복원되었습니다.`,
 

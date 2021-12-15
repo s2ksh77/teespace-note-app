@@ -66,7 +66,7 @@ const NoteModal = observer(({ isWeb = true }) => {
         return (
           <>
             <StyledInfoIcon />
-            <div>{title}</div>
+            <div style={{ whiteSpace: 'pre-line' }}>{title}</div>
           </>
         );
       default:
