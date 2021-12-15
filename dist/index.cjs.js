@@ -408,7 +408,7 @@ var languageSet = {
   NOTE_BIN_06: '페이지를 영구 삭제하시겠습니까?',
   NOTE_BIN_07: '삭제된 페이지는 복원할 수 없습니다.',
   NOTE_BIN_08: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uB97C \uC601\uAD6C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
-  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다.\\n어느 챕터로 복원하시겠습니까?',
+  NOTE_BIN_RESTORE_01: '복원될 챕터가 존재하지 않습니다. \n어느 챕터로 복원하시겠습니까?',
   NOTE_BIN_RESTORE_02: '{{name}}(으)로 복원되었습니다.',
   NOTE_BIN_RESTORE_03: "{{num}}\uAC1C\uC758 \uD398\uC774\uC9C0\uAC00 \uBCF5\uC6D0\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
   NOTE_EDIT_PAGE_MENUBAR_36: '소스 코드',
