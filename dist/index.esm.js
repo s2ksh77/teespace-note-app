@@ -11927,7 +11927,7 @@ var handleClickImg = function handleClickImg(el) {
     roomId: NoteRepository$1.WS_ID,
     fileId: el.id,
     fileName: file[0],
-    fileExtension: file[1]
+    fileExtension: file[1].toLowerCase()
   });
   EditorStore.setIsPreview(true);
 };
@@ -15285,7 +15285,7 @@ var FileLayout = function FileLayout() {
         roomId: NoteRepository$1.WS_ID,
         fileId: file_id,
         fileName: file_name,
-        fileExtension: extension
+        fileExtension: extension.toLowerCase()
       });
       EditorStore.setIsPreview(true);
       return;
