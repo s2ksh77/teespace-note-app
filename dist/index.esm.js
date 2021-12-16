@@ -14266,18 +14266,18 @@ var EditorHeader = function EditorHeader() {
   useEffect(function () {
     // 수정모드 시 룸 생성 버튼 및 메일 탭 임시 editCancel 적용
     if (!PageStore.isReadMode() && NoteStore.appType === 'wapl') {
-      var _document$querySelect;
+      var _document$querySelect, _document$querySelect2;
 
-      document.querySelector('.rooms__create-button').addEventListener('click', handleOnEditCancel);
-      (_document$querySelect = document.querySelectorAll('.ant-tabs-tab')[2]) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.addEventListener('click', handleOnEditCancel);
+      (_document$querySelect = document.querySelector('.rooms__create-button')) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.addEventListener('click', handleOnEditCancel);
+      (_document$querySelect2 = document.querySelectorAll('.ant-tabs-tab')[2]) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.addEventListener('click', handleOnEditCancel);
     }
 
     return function () {
       if (PageStore.isReadMode() && NoteStore.appType === 'wapl') {
-        var _document$querySelect2;
+        var _document$querySelect3, _document$querySelect4;
 
-        document.querySelector('.rooms__create-button').removeEventListener('click', handleOnEditCancel);
-        (_document$querySelect2 = document.querySelectorAll('.ant-tabs-tab')[2]) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.removeEventListener('click', handleOnEditCancel);
+        (_document$querySelect3 = document.querySelector('.rooms__create-button')) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.removeEventListener('click', handleOnEditCancel);
+        (_document$querySelect4 = document.querySelectorAll('.ant-tabs-tab')[2]) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.removeEventListener('click', handleOnEditCancel);
       }
     };
   }, [PageStore.isReadMode()]);
