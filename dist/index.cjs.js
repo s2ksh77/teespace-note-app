@@ -11953,7 +11953,7 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
 }();
 
 var handleClickImg = function handleClickImg(el) {
-  var _el$getAttribute;
+  var _el$getAttribute, _file$;
 
   if (!PageStore.isReadMode()) return;
   var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
@@ -11964,7 +11964,7 @@ var handleClickImg = function handleClickImg(el) {
     roomId: NoteRepository$1.WS_ID,
     fileId: el.id,
     fileName: file[0],
-    fileExtension: file[1].toLowerCase()
+    fileExtension: file[1] ? (_file$ = file[1]) === null || _file$ === void 0 ? void 0 : _file$.toLowerCase() : 'jpg'
   });
   EditorStore.setIsPreview(true);
 };
@@ -15322,7 +15322,7 @@ var FileLayout = function FileLayout() {
         roomId: NoteRepository$1.WS_ID,
         fileId: file_id,
         fileName: file_name,
-        fileExtension: extension.toLowerCase()
+        fileExtension: extension === null || extension === void 0 ? void 0 : extension.toLowerCase()
       });
       EditorStore.setIsPreview(true);
       return;
