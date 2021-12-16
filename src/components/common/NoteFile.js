@@ -495,7 +495,7 @@ const handleClickImg = el => {
     roomId: NoteRepository.WS_ID,
     fileId: el.id,
     fileName: file[0],
-    fileExtension: file[1],
+    fileExtension: file[1].toLowerCase(),
   });
   EditorStore.setIsPreview(true);
 };
