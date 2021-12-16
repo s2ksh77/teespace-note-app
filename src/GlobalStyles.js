@@ -429,8 +429,8 @@ export const GlobalStyle = createGlobalStyle`
     color: ${props => props.theme.TextMain};
   }
   .ant-radio-inner::after{
-    border-top: 0;
-    border-left: 0;
+    margin-top: 0;
+    margin-left: 0;
   } 
   
   .restoreModal .ant-modal-footer{
