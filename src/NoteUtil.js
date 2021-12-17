@@ -111,13 +111,20 @@ const NoteUtil = {
 export const get12HourFormat = (date, showsAllDates = false) => {
   if (!date) return '';
   const [mDate, mTime] = date.split(' ');
-  const mYear = parseInt(mDate.split('.')[0], 10);
-  const mMonth = parseInt(mDate.split('.')[1], 10);
-  const mDay = parseInt(mDate.split('.')[2], 10);
+  let mYear = parseInt(mDate.split('.')[0], 10);
+  let mMonth = parseInt(mDate.split('.')[1], 10);
+  let mDay = parseInt(mDate.split('.')[2], 10);
   const mHour = parseInt(mTime.split(':')[0], 10);
   const mMinute = parseInt(mTime.split(':')[1], 10);
   const curDate = new Date();
   const convertTwoDigit = digit => `0${digit}`.slice(-2);
+
+  if (isNaN(mMonth)) {
+    // for spring
+    mYear = parseInt(mDate.split('-')[0], 10);
+    mMonth = parseInt(mDate.split('-')[1], 10);
+    mDay = parseInt(mDate.split('-')[2], 10);
+  }
 
   const hhmm = `${convertTwoDigit(
     mHour > 12 ? mHour - 12 : mHour === 0 ? 12 : mHour,
