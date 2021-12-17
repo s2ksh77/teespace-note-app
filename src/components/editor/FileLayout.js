@@ -148,7 +148,7 @@ const FileLayout = () => {
         roomId: NoteRepository.WS_ID,
         fileId: file_id,
         fileName: file_name,
-        fileExtension: extension,
+        fileExtension: extension?.toLowerCase(),
       });
       EditorStore.setIsPreview(true);
       return;

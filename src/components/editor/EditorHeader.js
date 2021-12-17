@@ -105,7 +105,7 @@ const EditorHeader = () => {
     if (!PageStore.isReadMode() && NoteStore.appType === 'wapl') {
       document
         .querySelector('.rooms__create-button')
-        .addEventListener('click', handleOnEditCancel);
+        ?.addEventListener('click', handleOnEditCancel);
       document
         .querySelectorAll('.ant-tabs-tab')[2]
         ?.addEventListener('click', handleOnEditCancel);
@@ -114,7 +114,7 @@ const EditorHeader = () => {
       if (PageStore.isReadMode() && NoteStore.appType === 'wapl') {
         document
           .querySelector('.rooms__create-button')
-          .removeEventListener('click', handleOnEditCancel);
+          ?.removeEventListener('click', handleOnEditCancel);
         document
           .querySelectorAll('.ant-tabs-tab')[2]
           ?.removeEventListener('click', handleOnEditCancel);

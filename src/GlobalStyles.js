@@ -428,6 +428,11 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 0.813rem;
     color: ${props => props.theme.TextMain};
   }
+  .ant-radio-inner::after{
+    margin-top: 0;
+    margin-left: 0;
+  } 
+  
   .restoreModal .ant-modal-footer{
     border-top: 0px;
   }
