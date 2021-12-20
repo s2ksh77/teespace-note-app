@@ -53,11 +53,12 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
         {/* {isNew(chapter) && <NewNoteMark isChapter={true} />} */}
         {(authStore.hasPermission('noteChapter', 'U') ||
           chapter.type === CHAPTER_TYPE.SHARED) &&
-          (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length) && (
+          (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN ||
+            chapter.children.length !== 0) && (
             <ContextMenu noteType="chapter" note={chapter} chapterIdx={index} />
           )}
       </ChapterTitle>
-      {(chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length) && (
+      {(chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length !== 0) && (
         <ButtonWrapper style={{ marginLeft: '0.15rem' }} onClick={handleFoldBtnClick}>
           {isFolded ? (
             <ArrowBottomIcon color={themeContext.IconNormal} />
