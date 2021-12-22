@@ -860,6 +860,13 @@ var get12HourFormat = function get12HourFormat(date) {
     return "0".concat(digit).slice(-2);
   };
 
+  if (isNaN(mMonth)) {
+    // for spring
+    mYear = parseInt(mDate.split('-')[0], 10);
+    mMonth = parseInt(mDate.split('-')[1], 10);
+    mDay = parseInt(mDate.split('-')[2], 10);
+  }
+
   var hhmm = "".concat(convertTwoDigit(mHour > 12 ? mHour - 12 : mHour === 0 ? 12 : mHour), ":").concat(convertTwoDigit(mMinute));
   var basicDate = mHour < 12 ? i18n.t('NOTE_EDIT_PAGE_UPDATE_TIME_01', {
     time: hhmm
@@ -12569,11 +12576,11 @@ var ChapterText = function ChapterText(_ref) {
     }, /*#__PURE__*/React.createElement(ChapterTextSpan, {
       onMouseOver: handleTooltip,
       marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem'
-    }, getI18nChapterTitle(chapter.type, chapter.text))), (authStore.hasPermission('noteChapter', 'U') || chapter.type === CHAPTER_TYPE.SHARED) && (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length) && /*#__PURE__*/React.createElement(ContextMenu$1, {
+    }, getI18nChapterTitle(chapter.type, chapter.text))), (authStore.hasPermission('noteChapter', 'U') || chapter.type === CHAPTER_TYPE.SHARED) && (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length !== 0) && /*#__PURE__*/React.createElement(ContextMenu$1, {
       noteType: "chapter",
       note: chapter,
       chapterIdx: index
-    })), (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length) && /*#__PURE__*/React.createElement(ButtonWrapper, {
+    })), (chapter.type !== CHAPTER_TYPE.RECYCLE_BIN || chapter.children.length !== 0) && /*#__PURE__*/React.createElement(ButtonWrapper, {
       style: {
         marginLeft: '0.15rem'
       },
