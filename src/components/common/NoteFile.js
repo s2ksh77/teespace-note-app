@@ -20,7 +20,7 @@ import docs from '../../assets/word.svg';
 import hangul from '../../assets/hangul.svg';
 import video from '../../assets/movie.svg';
 import audio from '../../assets/audio.svg';
-import NoteUtil from '../../NoteUtil';
+import NoteUtil, { getExtension, getRelativeUrl, isAvailableUrl } from '../../NoteUtil';
 // import { defineBoundAction } from 'mobx/lib/internal';
 
 // @flow
@@ -488,6 +488,9 @@ const handleClickImg = el => {
   if (!PageStore.isReadMode()) return;
 
   const file = el.getAttribute('data-name')?.split('.');
+  const fileExtension = getExtension(el.getAttribute('data-name'))
+    ? getExtension(el.getAttribute('data-name'))
+    : 'jpg';
   if (file === undefined) return;
   EditorStore.setPreviewFileMeta({
     userId: NoteRepository.USER_ID,
@@ -495,7 +498,7 @@ const handleClickImg = el => {
     roomId: NoteRepository.WS_ID,
     fileId: el.id,
     fileName: file[0],
-    fileExtension: file[1] ? file[1]?.toLowerCase() : 'jpg',
+    fileExtension,
   });
   EditorStore.setIsPreview(true);
 };
@@ -512,6 +515,10 @@ export const handleEditorContentsListener = () => {
         if (el.getAttribute('hasListener')) return;
         if (el.tagName === 'IMG') {
           el.addEventListener('click', handleClickImg.bind(null, el));
+          if (!isAvailableUrl(el.getAttribute('src'))) {
+            el.setAttribute('src', getRelativeUrl(el.getAttribute('src')));
+            el.removeAttribute('data-mce-src');
+          }
         } else if (el.tagName === 'PRE') {
           el.style.backgroundColor =
             EditorStore.tinymce.settings.skin === 'oxide' ? '#f7f4ef' : '#171819';

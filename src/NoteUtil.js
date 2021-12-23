@@ -164,4 +164,22 @@ export const getI18nChapterTitle = (type, title) => {
   }
 };
 
+export const isAvailableUrl = url => {
+  const isUploadedUrl = /\/CMS\/Storage\//.test(url);
+  const isRelativeUrl = /..\/..\/CMS\/Storage\//.test(url);
+  return !isUploadedUrl || isRelativeUrl;
+};
+
+export const getRelativeUrl = url => {
+  return url.replace(url.split('/CMS/Storage')[0], '../..');
+};
+
+export const getExtension = fileName => {
+  const reg = /[^\s]+\.(.*)*/;
+  const result = reg.exec(fileName);
+  if (!result || result.length < 1) return false;
+  const extension = result[1]?.toLowerCase();
+  return extension;
+};
+
 export default NoteUtil;
