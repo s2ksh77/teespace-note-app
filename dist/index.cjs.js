@@ -967,6 +967,23 @@ var getI18nChapterTitle = function getI18nChapterTitle(type, title) {
       return title;
   }
 };
+var isAvailableUrl = function isAvailableUrl(url) {
+  var isUploadedUrl = /\/CMS\/Storage\//.test(url);
+  var isRelativeUrl = /..\/..\/CMS\/Storage\//.test(url);
+  return !isUploadedUrl || isRelativeUrl;
+};
+var getRelativeUrl = function getRelativeUrl(url) {
+  return url.replace(url.split('/CMS/Storage')[0], '../..');
+};
+var getExtension = function getExtension(fileName) {
+  var _result$;
+
+  var reg = /[^\s]+\.(.*)*/;
+  var result = reg.exec(fileName);
+  if (!result || result.length < 1) return false;
+  var extension = (_result$ = result[1]) === null || _result$ === void 0 ? void 0 : _result$.toLowerCase();
+  return extension;
+};
 
 var PageModel = /*#__PURE__*/function () {
   function PageModel(data) {
@@ -3840,11 +3857,11 @@ var EditorStore = mobx.observable({
     NoteStore.setModalInfo(null);
   },
   createDriveElement: function createDriveElement(type, fileId, fileName) {
-    var targetSRC = "".concat(teespaceCore.API.baseURL, "/Storage/StorageFile?action=Download&fileID=").concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
+    var targetSRC = "../../CMS/Storage/StorageFile?action=Download&fileID=".concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
 
     switch (type) {
       case 'image':
-        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"data-mce-src="' + targetSRC + '"crossorigin="' + '*' + '"/>');
+        EditorStore.tinymce.execCommand('mceInsertContent', false, '<img id="' + fileId + '" src="' + targetSRC + '" data-name="' + fileName + '"crossorigin="' + '*' + '"/>');
         break;
 
       case 'video':
@@ -11960,10 +11977,11 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
 }();
 
 var handleClickImg = function handleClickImg(el) {
-  var _el$getAttribute, _file$;
+  var _el$getAttribute;
 
   if (!PageStore.isReadMode()) return;
   var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
+  var fileExtension = getExtension(el.getAttribute('data-name')) ? getExtension(el.getAttribute('data-name')) : 'jpg';
   if (file === undefined) return;
   EditorStore.setPreviewFileMeta({
     userId: NoteRepository$1.USER_ID,
@@ -11971,7 +11989,7 @@ var handleClickImg = function handleClickImg(el) {
     roomId: NoteRepository$1.WS_ID,
     fileId: el.id,
     fileName: file[0],
-    fileExtension: file[1] ? (_file$ = file[1]) === null || _file$ === void 0 ? void 0 : _file$.toLowerCase() : 'jpg'
+    fileExtension: fileExtension
   });
   EditorStore.setIsPreview(true);
 };
@@ -11990,6 +12008,11 @@ var handleEditorContentsListener = function handleEditorContentsListener() {
 
         if (el.tagName === 'IMG') {
           el.addEventListener('click', handleClickImg.bind(null, el));
+
+          if (!isAvailableUrl(el.getAttribute('src'))) {
+            el.setAttribute('src', getRelativeUrl(el.getAttribute('src')));
+            el.removeAttribute('data-mce-src');
+          }
         } else if (el.tagName === 'PRE') {
           el.style.backgroundColor = EditorStore.tinymce.settings.skin === 'oxide' ? '#f7f4ef' : '#171819';
         }
