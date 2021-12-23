@@ -459,7 +459,7 @@ const EditorStore = observable({
   },
 
   createDriveElement(type, fileId, fileName) {
-    const targetSRC = `${API.baseURL}/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+    const targetSRC = `../../CMS/Storage/StorageFile?action=Download&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
     switch (type) {
       case 'image':
         EditorStore.tinymce.execCommand(
@@ -471,8 +471,6 @@ const EditorStore = observable({
             targetSRC +
             '" data-name="' +
             fileName +
-            '"data-mce-src="' +
-            targetSRC +
             '"crossorigin="' +
             '*' +
             '"/>',
