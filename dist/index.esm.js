@@ -7282,7 +7282,9 @@ var handleWebsocket = function handleWebsocket(message) {
     EDIT_START: 'EDIT',
     EDIT_DONE: 'EDITDONE',
     NONEDIT: 'NONEDIT',
-    MOVE: 'MOVE'
+    MOVE: 'MOVE',
+    THROW: 'THROW',
+    RESTORE: 'RESTORE'
   };
 
   if (!message.NOTI_ETC) {
@@ -7345,6 +7347,21 @@ var handleWebsocket = function handleWebsocket(message) {
       if (device === 'PC' && targetUserId === loginUserId) return;
 
       if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+      }
+
+      ChapterStore.getNoteChapterList();
+      break;
+
+    case EVENT_TYPE.MOVE:
+      // 서버에서 곧 넣을 예정
+      break;
+
+    case EVENT_TYPE.THROW:
+    case EVENT_TYPE.RESTORE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (targetId.split(':').includes(PageStore.pageInfo.id)) {
         PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
       }
 
