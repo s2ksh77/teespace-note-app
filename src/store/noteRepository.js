@@ -282,6 +282,7 @@ class NoteRepository {
         dto: {
           WS_ID: this.WS_ID,
           CH_TYPE: 'CHN0003',
+          note_channel_id: this.chId,
           note_id: pageId,
           parent_notebook: chapterId,
           user_name: this.USER_NAME,
