@@ -15,19 +15,17 @@ export const handleWebsocket = message => {
     EDIT_DONE: 'EDITDONE',
     NONEDIT: 'NONEDIT',
     MOVE: 'MOVE',
+    THROW: 'THROW',
+    RESTORE: 'RESTORE',
   };
   if (!message.NOTI_ETC) {
     console.warn('NOTE_ETC is empty');
     return;
   }
   const loginUserId = NoteRepository.USER_ID;
-  const [
-    eventType,
-    targetId,
-    parentId,
-    targetUserId,
-    device,
-  ] = message.NOTI_ETC.split(',');
+  const [eventType, targetId, parentId, targetUserId, device] = message.NOTI_ETC.split(
+    ',',
+  );
 
   switch (eventType) {
     case EVENT_TYPE.CHAPTER_CREATE:
@@ -45,9 +43,7 @@ export const handleWebsocket = message => {
             const firstChapter = ChapterStore.chapterList[0];
             ChapterStore.setCurrentChapterInfo(firstChapter.id);
             PageStore.fetchCurrentPageData(
-              firstChapter.children?.length > 0
-                ? firstChapter.children[0].id
-                : '',
+              firstChapter.children?.length > 0 ? firstChapter.children[0].id : '',
             );
           } else NoteStore.setShowPage(false);
         }, 200);
@@ -71,6 +67,14 @@ export const handleWebsocket = message => {
       ChapterStore.getNoteChapterList();
       break;
     case EVENT_TYPE.MOVE: // 서버에서 곧 넣을 예정
+      break;
+    case EVENT_TYPE.THROW:
+    case EVENT_TYPE.RESTORE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+      if (targetId.split(':').includes(PageStore.pageInfo.id)) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+      }
+      ChapterStore.getNoteChapterList();
       break;
     default:
       break;
