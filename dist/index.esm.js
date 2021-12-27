@@ -5824,6 +5824,7 @@ var NoteRepository = /*#__PURE__*/function () {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
+                    note_channel_id: this.chId,
                     note_id: pageId,
                     parent_notebook: chapterId,
                     user_name: this.USER_NAME,
@@ -7525,7 +7526,9 @@ var handleWebsocket = function handleWebsocket(message) {
     EDIT_START: 'EDIT',
     EDIT_DONE: 'EDITDONE',
     NONEDIT: 'NONEDIT',
-    MOVE: 'MOVE'
+    MOVE: 'MOVE',
+    THROW: 'THROW',
+    RESTORE: 'RESTORE'
   };
 
   if (!message.NOTI_ETC) {
@@ -7533,6 +7536,7 @@ var handleWebsocket = function handleWebsocket(message) {
     return;
   }
 
+  console.log(message.NOTI_ETC);
   var loginUserId = NoteRepository$1.USER_ID;
 
   var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
@@ -7588,6 +7592,28 @@ var handleWebsocket = function handleWebsocket(message) {
       if (device === 'PC' && targetUserId === loginUserId) return;
 
       if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+      }
+
+      ChapterStore.getNoteChapterList();
+      break;
+
+    case EVENT_TYPE.MOVE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+        NoteStore.updateDragData(parentId, targetId);
+      }
+
+      ChapterStore.getNoteChapterList();
+      break;
+
+    case EVENT_TYPE.THROW:
+    case EVENT_TYPE.RESTORE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (targetId.split(':').includes(PageStore.pageInfo.id)) {
         PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
       }
 
@@ -12364,14 +12390,14 @@ var ContextMenu = function ContextMenu(_ref) {
 
   var restoreComponent = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var newChapter, _yield$ChapterStore$g2, restoreChapterId;
+      var _yield$ChapterStore$c, id, title, _yield$ChapterStore$g2, restoreChapterId, _title;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               if (!(ChapterStore.getRoomChapterList().length === 0)) {
-                _context2.next = 7;
+                _context2.next = 8;
                 break;
               }
 
@@ -12379,47 +12405,52 @@ var ContextMenu = function ContextMenu(_ref) {
               return ChapterStore.createRestoreChapter(t('NOTE_PAGE_LIST_CMPNT_DEF_01'), ChapterStore.getChapterRandomColor());
 
             case 3:
-              newChapter = _context2.sent;
+              _yield$ChapterStore$c = _context2.sent;
+              id = _yield$ChapterStore$c.id;
+              title = _yield$ChapterStore$c.text;
               PageStore.restorePageLogic({
-                chapterId: newChapter.id,
+                chapterId: id,
                 pageId: note.id,
-                toastTxt: t('NOTE_BIN_RESTORE_02')
+                toastTxt: t('NOTE_BIN_RESTORE_02', {
+                  name: title
+                })
               });
-              _context2.next = 17;
-              break;
+              return _context2.abrupt("return");
 
-            case 7:
+            case 8:
               if (!note.restoreChapterId) {
-                _context2.next = 15;
+                _context2.next = 16;
                 break;
               }
 
-              _context2.next = 10;
+              _context2.next = 11;
               return ChapterStore.getChapterInfoList(note.restoreChapterId);
 
-            case 10:
+            case 11:
               _yield$ChapterStore$g2 = _context2.sent;
               restoreChapterId = _yield$ChapterStore$g2.id;
+              _title = _yield$ChapterStore$g2.text;
 
               if (restoreChapterId) {
                 PageStore.restorePageLogic({
                   chapterId: restoreChapterId,
                   pageId: note.id,
-                  toastTxt: t('NOTE_BIN_RESTORE_02')
+                  toastTxt: t('NOTE_BIN_RESTORE_02', {
+                    name: _title
+                  })
                 });
               } else {
                 PageStore.setRestorePageId(note.id);
                 NoteStore.setModalInfo('restore');
               }
 
-              _context2.next = 17;
-              break;
+              return _context2.abrupt("return");
 
-            case 15:
+            case 16:
               PageStore.setRestorePageId(note.id);
               NoteStore.setModalInfo('restore');
 
-            case 17:
+            case 18:
             case "end":
               return _context2.stop();
           }
@@ -17625,18 +17656,18 @@ var RestoreModal = function RestoreModal() {
   var _useTranslation = useTranslation(),
       t = _useTranslation.t;
 
-  var _useState = useState(''),
+  var _useState = useState({}),
       _useState2 = _slicedToArray(_useState, 2),
-      selectedId = _useState2[0],
-      setSelectedId = _useState2[1];
-
-  var handleChange = function handleChange(e) {
-    return setSelectedId(e.target.value);
-  };
+      selectedChapter = _useState2[0],
+      setSelctedChapter = _useState2[1];
 
   var chapterList = ChapterStore.chapterList.filter(function (chapter) {
     return NoteUtil.getChapterNumType(chapter.type) <= 1;
   });
+
+  var handleChange = function handleChange(e) {
+    return setSelctedChapter(e.target.value);
+  };
 
   var handleCancel = function handleCancel(e) {
     e.stopPropagation();
@@ -17651,9 +17682,11 @@ var RestoreModal = function RestoreModal() {
             case 0:
               try {
                 PageStore.restorePageLogic({
-                  chapterId: selectedId,
+                  chapterId: selectedChapter.id,
                   pageId: PageStore.restorePageId,
-                  toastTxt: t('NOTE_BIN_RESTORE_02')
+                  toastTxt: t('NOTE_BIN_RESTORE_02', {
+                    name: selectedChapter.text
+                  })
                 });
               } catch (error) {
                 console.log("Error is ".concat(error));
@@ -17676,19 +17709,19 @@ var RestoreModal = function RestoreModal() {
 
   return /*#__PURE__*/React.createElement(RestoreModalWrapper, null, /*#__PURE__*/React.createElement(RestoreModalBody, null, /*#__PURE__*/React.createElement(Radio.Group, {
     onChange: handleChange,
-    value: selectedId
+    value: selectedChapter
   }, /*#__PURE__*/React.createElement(Space, {
     direction: "vertical"
   }, chapterList.map(function (chapter) {
     return /*#__PURE__*/React.createElement(Radio, {
       key: chapter.id,
-      value: chapter.id
+      value: chapter
     }, chapter.text);
   })))), /*#__PURE__*/React.createElement(RestoreModalFooter, null, /*#__PURE__*/React.createElement(LeftButton, {
     key: "confirm",
     type: "solid",
     shape: "defualt",
-    disabled: selectedId === '',
+    disabled: !selectedChapter.id,
     onClick: handleClickRestore
   }, t('NOTE_CONTEXT_MENU_02')), /*#__PURE__*/React.createElement(RightButton, {
     key: "cancel",
