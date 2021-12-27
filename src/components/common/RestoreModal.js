@@ -8,7 +8,6 @@ import useNoteStore from '../../store/useStore';
 import {
   RestoreModalWrapper,
   RestoreModalBody,
-  RestoreChapterText,
   RestoreModalFooter,
 } from '../../styles/commonStyle';
 
@@ -26,12 +25,13 @@ const RightButton = styled(Button)`
 const RestoreModal = () => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { t } = useTranslation();
-  const [selectedId, setSelectedId] = useState('');
-  const handleChange = e => setSelectedId(e.target.value);
-
+  const [selectedChapter, setSelctedChapter] = useState({});
   const chapterList = ChapterStore.chapterList.filter(
     chapter => NoteUtil.getChapterNumType(chapter.type) <= 1,
   );
+
+  const handleChange = e => setSelctedChapter(e.target.value);
+
   const handleCancel = e => {
     e.stopPropagation();
     NoteStore.setModalInfo(null);
@@ -40,9 +40,9 @@ const RestoreModal = () => {
   const handleClickRestore = async () => {
     try {
       PageStore.restorePageLogic({
-        chapterId: selectedId, 
-        pageId: PageStore.restorePageId, 
-        toastTxt: t('NOTE_BIN_RESTORE_02'),
+        chapterId: selectedChapter.id,
+        pageId: PageStore.restorePageId,
+        toastTxt: t('NOTE_BIN_RESTORE_02', { name: selectedChapter.text }),
       });
     } catch (error) {
       console.log(`Error is ${error}`);
@@ -54,10 +54,10 @@ const RestoreModal = () => {
   return (
     <RestoreModalWrapper>
       <RestoreModalBody>
-        <Radio.Group onChange={handleChange} value={selectedId}>
+        <Radio.Group onChange={handleChange} value={selectedChapter}>
           <Space direction="vertical">
             {chapterList.map(chapter => (
-              <Radio key={chapter.id} value={chapter.id}>
+              <Radio key={chapter.id} value={chapter}>
                 {chapter.text}
               </Radio>
             ))}
@@ -69,17 +69,12 @@ const RestoreModal = () => {
           key="confirm"
           type="solid"
           shape="defualt"
-          disabled={selectedId === ''}
+          disabled={!selectedChapter.id}
           onClick={handleClickRestore}
         >
           {t('NOTE_CONTEXT_MENU_02')}
         </LeftButton>
-        <RightButton
-          key="cancel"
-          type="oulined"
-          shape="defualt"
-          onClick={handleCancel}
-        >
+        <RightButton key="cancel" type="oulined" shape="defualt" onClick={handleCancel}>
           {t('NOTE_PAGE_LIST_DEL_PGE_CHPT_05')}
         </RightButton>
       </RestoreModalFooter>

@@ -22,6 +22,8 @@ export const handleWebsocket = message => {
     console.warn('NOTE_ETC is empty');
     return;
   }
+  console.log(message.NOTI_ETC);
+
   const loginUserId = NoteRepository.USER_ID;
   const [eventType, targetId, parentId, targetUserId, device] = message.NOTI_ETC.split(
     ',',
@@ -66,7 +68,13 @@ export const handleWebsocket = message => {
       }
       ChapterStore.getNoteChapterList();
       break;
-    case EVENT_TYPE.MOVE: // 서버에서 곧 넣을 예정
+    case EVENT_TYPE.MOVE:
+      if (device === 'PC' && targetUserId === loginUserId) return;
+      if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+        NoteStore.updateDragData(parentId, targetId);
+      }
+      ChapterStore.getNoteChapterList();
       break;
     case EVENT_TYPE.THROW:
     case EVENT_TYPE.RESTORE:

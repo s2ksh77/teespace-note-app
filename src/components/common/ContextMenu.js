@@ -104,37 +104,39 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   };
 
   const restoreComponent = async () => {
-    // 휴지통만 있는 경우
     if (ChapterStore.getRoomChapterList().length === 0) {
-      const newChapter = await ChapterStore.createRestoreChapter(
+      // 생성된 챕터가 없는 경우
+      const { id, text: title } = await ChapterStore.createRestoreChapter(
         t('NOTE_PAGE_LIST_CMPNT_DEF_01'),
         ChapterStore.getChapterRandomColor(),
       );
       PageStore.restorePageLogic({
-        chapterId: newChapter.id,
+        chapterId: id,
         pageId: note.id,
-        toastTxt: t('NOTE_BIN_RESTORE_02'),
+        toastTxt: t('NOTE_BIN_RESTORE_02', { name: title }),
       });
-    } else {
-      if (note.restoreChapterId) {
-        const { id: restoreChapterId } = await ChapterStore.getChapterInfoList(
-          note.restoreChapterId,
-        );
-        if (restoreChapterId) {
-          PageStore.restorePageLogic({
-            chapterId: restoreChapterId,
-            pageId: note.id,
-            toastTxt: t('NOTE_BIN_RESTORE_02'),
-          });
-        } else {
-          PageStore.setRestorePageId(note.id);
-          NoteStore.setModalInfo('restore');
-        }
+      return;
+    }
+
+    if (note.restoreChapterId) {
+      const { id: restoreChapterId, text: title } = await ChapterStore.getChapterInfoList(
+        note.restoreChapterId,
+      );
+      if (restoreChapterId) {
+        PageStore.restorePageLogic({
+          chapterId: restoreChapterId,
+          pageId: note.id,
+          toastTxt: t('NOTE_BIN_RESTORE_02', { name: title }),
+        });
       } else {
         PageStore.setRestorePageId(note.id);
         NoteStore.setModalInfo('restore');
       }
+      return;
     }
+
+    PageStore.setRestorePageId(note.id);
+    NoteStore.setModalInfo('restore');
   };
 
   const shareComponent = () => {
