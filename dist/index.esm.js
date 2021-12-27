@@ -5581,6 +5581,7 @@ var NoteRepository = /*#__PURE__*/function () {
                   dto: {
                     WS_ID: this.WS_ID,
                     CH_TYPE: 'CHN0003',
+                    note_channel_id: this.chId,
                     note_id: pageId,
                     parent_notebook: chapterId,
                     user_name: this.USER_NAME,
@@ -7292,6 +7293,7 @@ var handleWebsocket = function handleWebsocket(message) {
     return;
   }
 
+  console.log(message.NOTI_ETC);
   var loginUserId = NoteRepository$1.USER_ID;
 
   var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
@@ -7354,7 +7356,14 @@ var handleWebsocket = function handleWebsocket(message) {
       break;
 
     case EVENT_TYPE.MOVE:
-      // 서버에서 곧 넣을 예정
+      if (device === 'PC' && targetUserId === loginUserId) return;
+
+      if (PageStore.pageInfo.id === targetId) {
+        PageStore.fetchCurrentPageData(PageStore.pageInfo.id);
+        NoteStore.updateDragData(parentId, targetId);
+      }
+
+      ChapterStore.getNoteChapterList();
       break;
 
     case EVENT_TYPE.THROW:
