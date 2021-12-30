@@ -676,8 +676,7 @@ const PageStore = observable({
     const regText = emojiRegexText();
 
     this.noteContent = this.noteContent.replace(regRGI && reg && regText, (m, idx) => {
-      const noEnCode = /[\#(\d)]/.test(m);
-      return noEnCode ? m : NoteUtil.encodeStr(m);
+      return NoteUtil.encodeStr(m);
     });
   },
 
