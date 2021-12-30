@@ -5101,8 +5101,7 @@ var PageStore = mobx.observable({
     var reg = emojiRegex__default['default']();
     var regText = emojiRegexText__default['default']();
     this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
-      var noEnCode = /[\#(\d)]/.test(m);
-      return noEnCode ? m : NoteUtil.encodeStr(m);
+      return NoteUtil.encodeStr(m);
     });
   },
   getTitleFromPageContent: function getTitleFromPageContent(data) {
