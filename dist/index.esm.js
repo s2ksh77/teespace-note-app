@@ -5064,7 +5064,8 @@ var PageStore = observable({
     var reg = emojiRegex();
     var regText = emojiRegexText();
     this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
-      return NoteUtil.encodeStr(m);
+      var noEnCode = /[\#(\d)]/.test(m);
+      return noEnCode ? m : NoteUtil.encodeStr(m);
     });
   },
   getTitleFromPageContent: function getTitleFromPageContent(data) {
