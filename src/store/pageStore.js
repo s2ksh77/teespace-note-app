@@ -679,8 +679,6 @@ const PageStore = observable({
       return NoteUtil.encodeStr(m);
     });
   },
-    });
-  },
 
   getTitleFromPageContent(data) {
     return this._getFirstTxtOfPage(data) || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03');
