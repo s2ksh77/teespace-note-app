@@ -13,9 +13,9 @@ var teespaceCore = require('teespace-core');
 var moment = require('moment-timezone');
 var i18next = require('i18next');
 var ramda = require('ramda');
-var emojiRegexRGI = require('emoji-regex/RGI_Emoji.js');
+require('emoji-regex/RGI_Emoji.js');
 var emojiRegex = require('emoji-regex/index.js');
-var emojiRegexText = require('emoji-regex/text.js');
+require('emoji-regex/text.js');
 var Mark$1 = require('mark.js');
 var styled = require('styled-components');
 var antd = require('antd');
@@ -51,9 +51,7 @@ function _interopNamespace(e) {
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
 var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
-var emojiRegexRGI__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegexRGI);
 var emojiRegex__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegex);
-var emojiRegexText__default = /*#__PURE__*/_interopDefaultLegacy(emojiRegexText);
 var Mark__default = /*#__PURE__*/_interopDefaultLegacy(Mark$1);
 var styled__default = /*#__PURE__*/_interopDefaultLegacy(styled);
 var html2pdf__default = /*#__PURE__*/_interopDefaultLegacy(html2pdf);
@@ -756,7 +754,7 @@ var NoteUtil = {
   // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
   // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
   encodeStr: function encodeStr(str) {
-    return escape(encodeURIComponent(this.decodeStr(str)));
+    return encodeURIComponent(this.decodeStr(str));
   },
   decodeStr: function decodeStr(str) {
     var pre = str,
@@ -764,14 +762,14 @@ var NoteUtil = {
 
     try {
       while (true) {
-        cur = decodeURIComponent(pre);
+        cur = decodeURIComponent(pre.replace(/%(?![0-9a-fA-F]+)/g, '%25'));
         if (cur === pre) return cur;
         pre = cur;
       }
     } catch (e) {
       // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다.
       // 이때 decode가 완료된것으로 보이므로 그대로 return한다
-      return pre;
+      return pre.replace(/%(?![0-9a-fA-F]+)/g, '%25');
     }
   },
   // encoding해서 일치 비교
@@ -5097,10 +5095,8 @@ var PageStore = mobx.observable({
     (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   },
   _checkEmojiContent: function _checkEmojiContent() {
-    var regRGI = emojiRegexRGI__default['default']();
     var reg = emojiRegex__default['default']();
-    var regText = emojiRegexText__default['default']();
-    this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
+    this.noteContent = this.noteContent.replace(reg, function (m) {
       return NoteUtil.encodeStr(m);
     });
   },
