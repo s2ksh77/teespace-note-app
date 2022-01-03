@@ -503,7 +503,6 @@ const PageStore = observable({
     dto.modUserName = await getUserDisplayName(dto.USER_ID);
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
-
     if (this.isNewPage) {
       NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       this.dragData.get(dto.note_id).item.text = dto.note_title;
@@ -671,11 +670,9 @@ const PageStore = observable({
   },
 
   _checkEmojiContent() {
-    const regRGI = emojiRegexRGI();
     const reg = emojiRegex();
-    const regText = emojiRegexText();
 
-    this.noteContent = this.noteContent.replace(regRGI && reg && regText, (m, idx) => {
+    this.noteContent = this.noteContent.replace(reg, m => {
       return NoteUtil.encodeStr(m);
     });
   },
