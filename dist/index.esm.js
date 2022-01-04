@@ -2,11 +2,10 @@ import { observable } from 'mobx';
 import { UserStore, API, WWMS, RoomStore, i18nInit } from 'teespace-core';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import { isNil, isEmpty } from 'ramda';
-import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
+import { isNil, isEmpty as isEmpty$1 } from 'ramda';
+import 'emoji-regex/RGI_Emoji.js';
 import emojiRegex from 'emoji-regex/index.js';
-import emojiRegexText from 'emoji-regex/text.js';
+import 'emoji-regex/text.js';
 import Mark$1 from 'mark.js';
 
 function _typeof(obj) {
@@ -580,7 +579,7 @@ var NoteUtil = {
   // 따라서 쿼리스트링 구분자로 사용되는 =,?,&은 인코딩하지 않는다
   // encodeURIComponent는 위 세 개까지 인코딩한다(쿼리스트링의 일부로 간주하여)
   encodeStr: function encodeStr(str) {
-    return escape(encodeURIComponent(this.decodeStr(str)));
+    return encodeURIComponent(this.decodeStr(str));
   },
   decodeStr: function decodeStr(str) {
     var pre = str,
@@ -588,14 +587,14 @@ var NoteUtil = {
 
     try {
       while (true) {
-        cur = decodeURIComponent(pre);
+        cur = decodeURIComponent(pre.replace(/%(?![0-9a-fA-F]+)/g, '%25'));
         if (cur === pre) return cur;
         pre = cur;
       }
     } catch (e) {
       // 노트 내용 중에 url이나 mail이 있으면 URI malformed error가 발생한다.
       // 이때 decode가 완료된것으로 보이므로 그대로 return한다
-      return pre;
+      return pre.replace(/%(?![0-9a-fA-F]+)/g, '%25');
     }
   },
   // encoding해서 일치 비교
@@ -4817,10 +4816,8 @@ var PageStore = observable({
     (_EditorStore$tinymce7 = EditorStore.tinymce) === null || _EditorStore$tinymce7 === void 0 ? void 0 : _EditorStore$tinymce7.undoManager.clear();
   },
   _checkEmojiContent: function _checkEmojiContent() {
-    var regRGI = emojiRegexRGI();
     var reg = emojiRegex();
-    var regText = emojiRegexText();
-    this.noteContent = this.noteContent.replace(regRGI && reg && regText, function (m, idx) {
+    this.noteContent = this.noteContent.replace(reg, function (m) {
       return NoteUtil.encodeStr(m);
     });
   },
