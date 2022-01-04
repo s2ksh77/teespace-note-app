@@ -8,9 +8,7 @@ var moment = require('moment-timezone');
 var i18next = require('i18next');
 var reactI18next = require('react-i18next');
 var ramda = require('ramda');
-require('emoji-regex/RGI_Emoji.js');
 var emojiRegex = require('emoji-regex/index.js');
-require('emoji-regex/text.js');
 var Mark$1 = require('mark.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }

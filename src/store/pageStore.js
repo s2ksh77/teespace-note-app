@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { observable, action } from 'mobx';
-import { UserStore } from 'teespace-core';
+import { observable } from 'mobx';
 import PageModel from './model/PageModel';
 import NoteRepository from './noteRepository';
 import NoteStore from './noteStore';
@@ -8,11 +7,9 @@ import ChapterStore from './chapterStore';
 import TagStore from './tagStore';
 import EditorStore from './editorStore';
 import { isFilled } from '../components/common/validators';
-import GlobalVariable, { CHAPTER_TYPE, DRAG_TYPE } from '../GlobalVariable';
-import NoteUtil, { get12HourFormat, getUserDisplayName } from '../NoteUtil';
-import emojiRegexRGI from 'emoji-regex/RGI_Emoji.js';
+import { CHAPTER_TYPE, DRAG_TYPE } from '../GlobalVariable';
+import NoteUtil, { getUserDisplayName } from '../NoteUtil';
 import emojiRegex from 'emoji-regex/index.js';
-import emojiRegexText from 'emoji-regex/text.js';
 import i18n from '../i18n/i18n';
 
 const PageStore = observable({
