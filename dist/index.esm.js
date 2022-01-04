@@ -2,7 +2,8 @@ import { observable } from 'mobx';
 import { UserStore, API, WWMS, RoomStore, i18nInit } from 'teespace-core';
 import moment from 'moment-timezone';
 import i18next from 'i18next';
-import { isNil, isEmpty as isEmpty$1 } from 'ramda';
+import { initReactI18next } from 'react-i18next';
+import { isNil, isEmpty } from 'ramda';
 import emojiRegex from 'emoji-regex/index.js';
 import Mark$1 from 'mark.js';
 
