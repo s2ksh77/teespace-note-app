@@ -9,9 +9,7 @@ import { UserStore, API, WWMS, RoomStore, EventBus, useCoreStores, logEvent, Che
 import moment from 'moment-timezone';
 import i18next from 'i18next';
 import { isNil, isEmpty as isEmpty$1 } from 'ramda';
-import 'emoji-regex/RGI_Emoji.js';
 import emojiRegex from 'emoji-regex/index.js';
-import 'emoji-regex/text.js';
 import Mark$1 from 'mark.js';
 import styled, { css, ThemeContext, createGlobalStyle } from 'styled-components';
 import { Dropdown, Collapse, Tag, Checkbox, Tooltip, Menu, Progress, Upload, Button as Button$2, Radio, Space, Modal } from 'antd';
