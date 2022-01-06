@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import PageStore from './store/pageStore';
 import SlashCmdNote from './components/common/SlashCmdNote';
 
+import SLNB from './components/lnb/LNB';
+
 const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
   const { i18n } = useTranslation();
@@ -101,9 +103,10 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
         <LoadingContent />
       ) : (
         <>
-          <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
+          <SLNB />
+          {/* <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
             <LNBContainer />
-          </LNB>
+          </LNB> */}
           <Content
             id="note-content"
             show={renderCondition('Content')}
