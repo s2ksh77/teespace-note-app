@@ -258,3 +258,16 @@ export const TagTitleSearchContainer = styled.div`
   background-color: ${props => props.theme.SubStateNormal};
   border: 1px solid transparent;
 `;
+
+export const Wrapper = styled.div`
+  display: flex;
+  border-bottom: 1px solid #ebebeb;
+  width: 100%;
+  height: 3.5rem;
+  padding: 12px 24px;
+`;
+
+export const Title = styled.div`
+  width: 70%;
+  margin: auto;
+`;

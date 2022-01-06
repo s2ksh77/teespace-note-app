@@ -7,7 +7,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType = 'wapl' })
   return (
     <I18nextProvider i18n={i18n}>
       <Note
-        layoutState={layoutState}
+        layoutState={'expand'}
         roomId={roomId}
         channelId={channelId}
         language={language}

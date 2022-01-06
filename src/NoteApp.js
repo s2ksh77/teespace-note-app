@@ -6,7 +6,7 @@ import { GlobalStyle, LNB, Content } from './GlobalStyles';
 import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
 import { useObserver } from 'mobx-react';
-import { WWMS, useCoreStores, Toast, ComponentStore } from 'teespace-core';
+import { WWMS, useCoreStores, Toast, ComponentStore, EventBus } from 'teespace-core';
 import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
 import Overlay from './components/common/Overlay';
@@ -17,6 +17,8 @@ import PageStore from './store/pageStore';
 import SlashCmdNote from './components/common/SlashCmdNote';
 
 import SLNB from './components/lnb/LNB';
+import Header from './components/common/Header';
+import { ContentWrapper, HeaderWrapper, Wrapper } from './styles/commonStyle';
 
 const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
@@ -74,6 +76,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
 
   useEffect(() => {
     NoteStore.setLayoutState(layoutState);
+    EventBus.dispatch('onLayoutExpand');
   }, [layoutState]);
 
   useEffect(() => {
@@ -104,43 +107,50 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
       ) : (
         <>
           <SLNB />
-          {/* <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
-            <LNBContainer />
-          </LNB> */}
-          <Content
-            id="note-content"
-            show={renderCondition('Content')}
-            isBorderLeft={
-              NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
-            }
-          >
-            <PageContainer />
-            <TagContainer />
-          </Content>
-          <Toast
-            visible={NoteStore.isVisibleToast}
-            children={NoteStore.toastText}
-            onClose={() => NoteStore.setIsVisibleToast(false)}
-          />
-          {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? (
-            <DragPreview items={NoteStore.draggedItems} />
-          ) : null}
-          {/* <TempEditor /> */}
-          {NoteStore.isExporting && <Overlay />}
-          {NoteStore.showModal && <NoteModal />}
-          {NoteStore.isMailShare && (
-            <MailWriteModal
-              uploadFiles={NoteStore.mailShareFileObjs}
-              toReceiver={NoteStore.mailReceiver}
-              onClose={handleCloseMailModal}
-              visible={true}
-              totalSize={
-                NoteStore.mailShareFileObjs[0]
-                  ? NoteStore.mailShareFileObjs[0].fileSize
-                  : 0
-              }
-            />
-          )}
+          <Wrapper>
+            <HeaderWrapper>
+              <Header />
+            </HeaderWrapper>
+            <ContentWrapper>
+              <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
+                <LNBContainer />
+              </LNB>
+              <Content
+                id="note-content"
+                show={renderCondition('Content')}
+                isBorderLeft={
+                  NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
+                }
+              >
+                <PageContainer />
+                <TagContainer />
+              </Content>
+              <Toast
+                visible={NoteStore.isVisibleToast}
+                children={NoteStore.toastText}
+                onClose={() => NoteStore.setIsVisibleToast(false)}
+              />
+              {NoteStore.isDragging && Object.keys(NoteStore.draggedOffset).length ? (
+                <DragPreview items={NoteStore.draggedItems} />
+              ) : null}
+              {/* <TempEditor /> */}
+              {NoteStore.isExporting && <Overlay />}
+              {NoteStore.showModal && <NoteModal />}
+              {NoteStore.isMailShare && (
+                <MailWriteModal
+                  uploadFiles={NoteStore.mailShareFileObjs}
+                  toReceiver={NoteStore.mailReceiver}
+                  onClose={handleCloseMailModal}
+                  visible={true}
+                  totalSize={
+                    NoteStore.mailShareFileObjs[0]
+                      ? NoteStore.mailShareFileObjs[0].fileSize
+                      : 0
+                  }
+                />
+              )}
+            </ContentWrapper>
+          </Wrapper>
         </>
       )}
     </>

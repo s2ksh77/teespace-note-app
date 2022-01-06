@@ -18,7 +18,10 @@ export const ButtonWrapper = styled.span`
 export const HeaderButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: ${props => (props.layoutState === "collapse" && props.targetLayout === "LNB") ? "0.75rem" : "0rem"};
+  margin-left: ${props =>
+    props.layoutState === 'collapse' && props.targetLayout === 'LNB'
+      ? '0.75rem'
+      : '0rem'};
 `;
 
 export const ContentHeaderWrapper = styled.div`
@@ -88,14 +91,14 @@ export const ButtonDiv = styled.div`
   padding: 0 0.25rem;
   height: 1.5rem;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background: ${props => props.theme.StateLight};
     border-radius: 0.25rem;
   }
   & + div {
     margin-left: 0.5rem;
   }
-`
+`;
 // 1rem인 button
 export const Button = styled.img`
   width: 1rem;
@@ -116,28 +119,31 @@ export const SmallButtonWrapper = styled.div`
   width: 0.75rem;
   height: 0.75rem;
   cursor: pointer;
-  visibility: ${props => props.visible ? 'visible' : 'hidden'};
+  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
 `;
 
 export const CancelBtn = styled.img`
   width: 0.75rem;
   height: 0.75rem;
-  cursor:pointer;
+  cursor: pointer;
   ${props =>
     !props.visible &&
-      css`display:none;`
-  }
+    css`
+      display: none;
+    `}
 `;
 
 // 돋보기모양 submit btn
 export const SearchImgInput = styled.input`
   width: 1rem;
   height: 1rem;
-  cursor:pointer;
-  margin-right:0.43rem;
-  filter: invert(31%) sepia(0%) saturate(1197%) hue-rotate(255deg) brightness(97%) contrast(85%);
-  &:hover{
-    filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%) contrast(93%);
+  cursor: pointer;
+  margin-right: 0.43rem;
+  filter: invert(31%) sepia(0%) saturate(1197%) hue-rotate(255deg) brightness(97%)
+    contrast(85%);
+  &:hover {
+    filter: invert(26%) sepia(5%) saturate(1127%) hue-rotate(352deg) brightness(93%)
+      contrast(93%);
   }
 `;
 
@@ -163,7 +169,8 @@ export const ContextMenuIconCover = styled.span``;
 export const ContextMenuIcon = styled.img`
   width: 1rem;
   height: 1rem;
-  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%) contrast(84%);
+  filter: invert(46%) sepia(9%) saturate(281%) hue-rotate(349deg) brightness(98%)
+    contrast(84%);
 `;
 
 // ShareNoteMessage
@@ -260,7 +267,7 @@ export const DraggedComponentContainer = styled.div`
   position: absolute;
   align-items: center;
   font-size: 0.81rem;
-  z-index:20;
+  z-index: 20;
 `;
 
 export const DraggedComponent = styled.div`
@@ -268,7 +275,7 @@ export const DraggedComponent = styled.div`
   height: 2.81rem;
   align-items: center;
   padding-left: 1.25rem;
-  background-color: rgba(242,239,236,0.6);
+  background-color: rgba(242, 239, 236, 0.6);
   border-radius: 0.31rem;
 `;
 
@@ -281,12 +288,12 @@ export const DraggedComponentTitle = styled.span`
 
 export const OverlayCover = styled.div`
   position: fixed;
-  right:0;
-  bottom:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background-color: rgba(250,250,250,.7);
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(250, 250, 250, 0.7);
   z-index: 1000;
 `;
 
@@ -325,4 +332,21 @@ export const Divider = styled.div`
   height: 1rem;
   min-height: 1rem;
   background-color: #f7f4ef;
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+export const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: calc(100% - 3.5rem);
 `;

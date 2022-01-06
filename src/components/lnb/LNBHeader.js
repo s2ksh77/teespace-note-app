@@ -72,49 +72,14 @@ const LNBHeader = () => {
         <ArrowBackIcon color={themeContext.IconNormal} />
       </BackBtn>
       {authStore.hasPermission('noteChapter', 'C') && (
-        <LnbTitleNewButton data-btn="noteNewChapterBtn" onClick={handleNewChapterClick}>
+        <LnbTitleNewButton
+          data-btn="noteNewChapterBtn"
+          onClick={handleNewChapterClick}
+          style={{ width: '100%' }}
+        >
           {t('NOTE_PAGE_LIST_CMPNT_DEF_01')}
         </LnbTitleNewButton>
       )}
-      <LnbTitleSearchContainer
-        onSubmit={handleSearchSubmit}
-        isTagSearching={ChapterStore.isTagSearching}
-      >
-        <SearchBtn onClick={handleSearchSubmit}>
-          <SearchIcon
-            color={
-              ChapterStore.searchStr !== '' || ChapterStore.isSearching
-                ? themeContext.Iconmain
-                : themeContext.IconHinted
-            }
-          />
-        </SearchBtn>
-        {ChapterStore.isTagSearching ? (
-          <SearchTagChip closable onClose={handleTagSearchCancel}>
-            <TagText>{ChapterStore.searchingTagName}</TagText>
-          </SearchTagChip>
-        ) : (
-          <LnbTitleSearchInput
-            ref={inputRef}
-            value={ChapterStore.searchStr}
-            onChange={handleSearchValueChange}
-            placeholder={
-              ChapterStore.isTagSearching ? '' : t('NOTE_PAGE_LIST_CMPNT_DEF_05')
-            }
-            disabled={!!ChapterStore.isTagSearching}
-            onKeyDown={e => (e.key === 'Escape' ? handleCancelBtnClick() : null)}
-          />
-        )}
-        <CloseBtn
-          onClick={handleCancelBtnClick}
-          visible={
-            (ChapterStore.isSearching || ChapterStore.searchStr !== '') &&
-            !ChapterStore.isTagSearching
-          }
-        >
-          <CloseIcon width={0.75} height={0.75} />
-        </CloseBtn>
-      </LnbTitleSearchContainer>
       {NoteStore.layoutState === 'collapse' && <HeaderButtons />}
     </LNBHeaderWrapper>
   ));
