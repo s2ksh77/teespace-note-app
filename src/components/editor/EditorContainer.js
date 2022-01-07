@@ -239,7 +239,7 @@ const EditorContainer = ({ isWeb = true }) => {
         ) : (
           <MobileEditorHeader handleModeChange={handleModeChange} />
         )}
-        {PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? (
+        {/* {PageStore.isReadMode() && !EditorStore.isSearch && isWeb ? (
           <ReadModeContainer style={{ display: 'flex' }}>
             {authStore.hasPermission('notePage', 'U') ? (
               PageStore.isRecycleBin ? (
@@ -261,7 +261,7 @@ const EditorContainer = ({ isWeb = true }) => {
               </>
             )}
           </ReadModeContainer>
-        ) : null}
+        ) : null} */}
         {EditorStore.isSearch ? (
           <ReadModeContainer ref={inputRef} style={{ display: 'flex' }}>
             <StyledWaplSearch

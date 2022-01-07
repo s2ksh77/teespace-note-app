@@ -6,18 +6,17 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 import {
-  EditorHeaderContainer1,
-  EditBtn,
+  EditorTitleCover,
   EditorTitle,
-  EditorHeaderContainer2,
+  EditBtn,
   EditingImg,
   AutoSaveMsg,
   ModifiedUser,
   ModifiedTime,
-  EditorSearchIconDiv,
+  EditorModCover,
   HeaderDivider,
 } from '../../styles/titleStyle';
-import { SearchIcon } from '../icons';
+import { BookMarkIcon, SearchIcon } from '../icons';
 import ContentHeader from '../common/ContentHeader';
 import waplWorking from '../../assets/wapl_working.svg';
 import { handleFileSync } from '../common/NoteFile';
@@ -125,14 +124,8 @@ const EditorHeader = () => {
   return useObserver(() => (
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
-        <EditorHeaderContainer1>
-          {authStore.hasPermission('notePage', 'U') && !PageStore.isRecycleBin && (
-            <EditBtn data-btn="editorEditBtn" onClick={handleModifySaveBtnClick}>
-              {PageStore.isReadMode()
-                ? t('NOTE_PAGE_LIST_ADD_NEW_PGE_01')
-                : t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')}
-            </EditBtn>
-          )}
+        <EditorTitleCover>
+          <BookMarkIcon width="1.25" height="1.25" color={'#CCCCCC'} isButton={true} />
           <EditorTitle
             id="editorTitle"
             maxLength="200"
@@ -142,8 +135,24 @@ const EditorHeader = () => {
             disabled={!!PageStore.isReadMode()}
             autoComplete="off"
           />
-        </EditorHeaderContainer1>
-        <EditorHeaderContainer2>
+        </EditorTitleCover>
+        <EditorModCover>
+          <>
+            <ModifiedTime
+              style={{
+                fontSize: '0.75rem',
+                borderLeft: '0px solid #ffffff',
+                marginRight: 'auto',
+              }}
+            >
+              {PageStore.pageInfo.modDate}
+            </ModifiedTime>
+            {PageStore.isReadMode() && (
+              <ModifiedUser style={{ marginLeft: 'auto', fontSize: '0.75rem' }}>
+                {PageStore.pageInfo.modUserName}
+              </ModifiedUser>
+            )}
+          </>
           {PageStore.saveStatus.saving && (
             <AutoSaveMsg>{t('NOTE_EDIT_PAGE_AUTO_SAVE_01')}</AutoSaveMsg>
           )}
@@ -154,17 +163,7 @@ const EditorHeader = () => {
             (!PageStore.isReadMode() || PageStore.otherEdit) && (
               <EditingImg src={waplWorking} />
             )}
-          {PageStore.isReadMode() && (
-            <>
-              <ModifiedUser>{PageStore.pageInfo.modUserName}</ModifiedUser>
-              <ModifiedTime>{PageStore.pageInfo.modDate}</ModifiedTime>
-            </>
-          )}
-          <EditorSearchIconDiv onClick={handleSearchEditor}>
-            <SearchIcon width={1} height={1} color={themeContext.IconNormal} />
-          </EditorSearchIconDiv>
-        </EditorHeaderContainer2>
-        {NoteStore.appType === 'wapl' ? <HeaderDivider /> : null}
+        </EditorModCover>
       </ContentHeader>
     </>
   ));

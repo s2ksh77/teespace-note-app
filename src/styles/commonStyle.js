@@ -25,13 +25,13 @@ export const HeaderButtonContainer = styled.div`
 `;
 
 export const ContentHeaderWrapper = styled.div`
-  height: 3rem;
+  height: 7.263rem;
   width: 100%;
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  flex-direction: row;
-  padding: 0 0.75rem 0 1rem;
+  flex-direction: column;
+  padding: 0 3.895rem;
   box-sizing: border-box;
 `;
 

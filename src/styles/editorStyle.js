@@ -7,7 +7,7 @@ export const EditorContainerWrapper = styled.div`
   width: 100%;
   height: 100%;
   .tox-tinymce {
-    border-left: 0px solid black;
+    border: 0px solid black;
     border-color: ${props => props.theme.LineMain};
     flex: 1;
     min-height: ${props => (props.isWorks ? '500px' : '')};
@@ -286,7 +286,7 @@ export const FileCloseBtn = styled.img`
 
 export const editorContentCSS = ` 
   html,body{
-    height:calc(100% - 16px);
+    height:calc(100% - 2.895rem);
   }
   body{
     font-family : "Noto Sans KR,sans-serif";

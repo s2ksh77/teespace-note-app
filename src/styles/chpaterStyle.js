@@ -20,7 +20,7 @@ export const ChapterContainer = styled.ul`
 }
 `;
 export const ChapterCover = styled.div`
-  height: 2.81rem;
+  height: 2.3rem;
   display: ${props =>
     props.appType === 'wapl' || props.isRecycleBin === true ? 'flex' : 'none'};
   margin: 4px 0 4px 0;

@@ -21,7 +21,6 @@ export const LNBChapterCover = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid ${props => props.theme.LineMain};
   color: ${props => props.theme.TextMain};
 `;
 

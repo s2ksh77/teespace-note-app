@@ -10,7 +10,7 @@ export const PageContainerCover = styled.div`
 export const PageCover = styled.li`
   display: flex;
   width: 100%;
-  height: 2.81rem;
+  height: 2.3rem;
   cursor: pointer;
   &:hover .ellipsisBtn {
     visibility: visible;
@@ -79,7 +79,7 @@ export const PageTextInput = styled.input`
 
 export const NewPage = styled.span`
   display: ${props => (props.show ? 'flex' : 'none')};
-  height: 2.81rem;
+  height: 2.3rem;
 `;
 export const NewPageBtn = styled.div`
   width: 100%;

@@ -429,10 +429,9 @@ const Editor = () => {
           editorContentCSS +
           `
             .mce-content-body {
-            background: radial-gradient(rgba(0, 0, 0, ${
-              themeContext.name === 'dark' ? 0.9 : 0.04
-            }) 0.063rem, ${themeContext.StateNormal} 0rem);
-            color: ${themeContext.TextMain};
+                background: ${themeContext.StateNormal};
+                color: ${themeContext.TextMain};
+                margin: 2.895rem 4.625rem 0rem 4.625rem;
             }
           `,
       }}

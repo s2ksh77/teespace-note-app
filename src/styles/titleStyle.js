@@ -38,6 +38,26 @@ export const EditBtn = styled.button`
   }
 `;
 
+export const EditorTitleCover = styled.div`
+  margin: 3.5rem 1rem 0 1rem;
+  height: 2.5rem;
+  border-bottom: 1px solid #ddd9d4;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const EditorModCover = styled.div`
+  display: flex;
+  height: 1.538rem;
+  align-items: center;
+  margin: 0.375rem 1rem;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+`;
+
 export const EditorTitle = styled.input`
   display: inline-block;
   width: 100%;
@@ -47,15 +67,16 @@ export const EditorTitle = styled.input`
   text-overflow: ellipsis;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 0.1875rem 0.1875rem 0.1875rem 0rem;
+  padding: 0 0.1875rem 0.1875rem 0rem;
   background-image: none;
   border-radius: 0.125rem;
   color: inherit;
-  font-size: 0.875rem;
+  font-size: 32px;
   font-style: inherit;
-  font-weight: inherit;
+  font-weight: bold;
   background-color: inherit;
   border: 0rem solid #d3dbdf !important;
+  margin-left: 11px;
 `;
 
 export const EditorHeaderContainer2 = styled.div`
@@ -123,8 +144,8 @@ export const LNBHeaderWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  height: 3rem;
-  padding: 0 0.75rem 0 1rem;
+  height: 2.5rem;
+  padding: 0 0.789rem;
   align-items: center;
   box-sizing: border-box;
 `;
@@ -137,7 +158,6 @@ export const LnbTitleNewButton = styled.button`
   padding-left: 12px;
   padding-right: 12px;
   line-height: 100%;
-  margin-right: 0.63rem;
   color: #ffffff;
   font-size: 0.75rem;
   justify-content: center;

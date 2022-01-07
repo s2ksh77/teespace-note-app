@@ -580,28 +580,36 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 4px !important;
   }
   .tox .tox-pop.tox-pop--bottom::after {
-    border-color: ${props => props.theme.StateNormal} transparent transparent transparent !important;
+    border-color: ${props =>
+      props.theme.StateNormal} transparent transparent transparent !important;
   }
   .tox .tox-pop.tox-pop--bottom::before {
-    border-color: ${props => props.theme.LineOut} transparent transparent transparent !important;
+    border-color: ${props =>
+      props.theme.LineOut} transparent transparent transparent !important;
   }
   .tox .tox-pop.tox-pop--top::after {
-    border-color: transparent transparent ${props => props.theme.StateNormal} transparent !important;
+    border-color: transparent transparent ${props =>
+      props.theme.StateNormal} transparent !important;
   }
   .tox .tox-pop.tox-pop--top::before {
-    border-color: transparent transparent ${props => props.theme.LineOut} transparent !important;
+    border-color: transparent transparent ${props =>
+      props.theme.LineOut} transparent !important;
   }
   .tox .tox-pop.tox-pop--left::after {
-    border-color: transparent ${props => props.theme.StateNormal} transparent transparent !important;
+    border-color: transparent ${props =>
+      props.theme.StateNormal} transparent transparent !important;
   }
   .tox .tox-pop.tox-pop--left::before {
-    border-color: transparent ${props => props.theme.LineOut} transparent transparent !important;
+    border-color: transparent ${props =>
+      props.theme.LineOut} transparent transparent !important;
   }
   .tox .tox-pop.tox-pop--right::after {
-    border-color: transparent transparent transparent ${props => props.theme.StateNormal} !important;
+    border-color: transparent transparent transparent ${props =>
+      props.theme.StateNormal} !important;
   }
   .tox .tox-pop.tox-pop--right::before {
-    border-color: transparent transparent transparent ${props => props.theme.LineOut} !important;
+    border-color: transparent transparent transparent ${props =>
+      props.theme.LineOut} !important;
   }
 
   mark {
@@ -615,6 +623,7 @@ export const LNB = styled.div`
   height: 100%;
   flex: 1 1 17.06rem;
   min-width: 17.06rem;
+  max-width: 17.06rem;
   background-color: ${props => props.theme.StateNormal};
 `;
 export const Content = styled.div`
@@ -622,9 +631,11 @@ export const Content = styled.div`
   flex-direction: column;
   flex: 2 2 42rem;
   height: 100%;
+  max-width: 63.6rem;
   overflow-x: hidden;
   position: relative;
-  border-left: ${props => (props.isBorderLeft ? `1px solid ${props.theme.LineMain}` : '0px')};
+  border-left: ${props =>
+    props.isBorderLeft ? `1px solid ${props.theme.LineMain}` : '0px'};
   background-color: ${props => props.theme.StateNormal};
 `;
 

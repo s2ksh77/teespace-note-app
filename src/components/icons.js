@@ -539,3 +539,35 @@ export const MyNoteIcon = React.memo(({ width = 1, height = 1, color = '#191919'
     </svg>
   );
 });
+
+export const BookMarkIcon = React.memo(
+  ({ width = 1, height = 1, color = '#CCCCCC', onClick, disabled }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * SUPERAPP_REM_UNIT} ${height * SUPERAPP_REM_UNIT}`}
+        version="1.1"
+        onClick={onClick}
+      >
+        <g
+          id="Icon/system/star"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+          transform={`scale(${(width * SUPERAPP_REM_UNIT) / defaultWidth},
+          ${(height * SUPERAPP_REM_UNIT) / defaultHeight})`}
+        >
+          <path
+            d="M10,16.236987 L14.3648692,18.8458454 C15.1642188,19.3239628 16.1423702,18.6171805 15.9320151,17.7233087 L14.7750618,12.8174077 L18.6350786,9.51216087 C19.3397684,8.90931711 18.9611291,7.76599273 18.0355665,7.69323572 L12.9554898,6.26708754 L10.9676337,1.63142687 C10.6100299,0.789524375 9.38997008,0.789524375 9.03236634,1.63142687 L7.04451023,6.25669369 L1.96443351,7.68284187 C1.03887088,7.75559887 0.660231623,8.89892325 1.36492135,9.50176702 L5.22493824,12.8070139 L4.06798495,17.7129148 C3.85762981,18.6067866 4.83578122,19.313569 5.63513077,18.8354515 L10,16.236987 Z"
+            id="Path"
+            fill={color}
+          />
+        </g>
+      </svg>
+    );
+  },
+);
