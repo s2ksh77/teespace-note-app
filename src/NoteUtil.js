@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
-import i18n from './i18n/i18n';
-import { CHAPTER_TYPE } from './GlobalVariable';
 import { UserStore } from 'teespace-core';
+import i18n from './i18n/i18n';
+import { CHAPTER_TYPE, MENU_TYPE } from './GlobalVariable';
 
 const NoteUtil = {
   // 인코딩 대상 : 알파벳, 0~9의 숫자, -_.!~*' 제외하고 이스케이프 처리(아스키 문자셋으로 변경)
@@ -181,6 +181,23 @@ export const getExtension = fileName => {
   if (!result || result.length < 1) return false;
   const extension = result[1]?.toLowerCase();
   return extension;
+};
+
+export const getMenuTitle = type => {
+  switch (type) {
+    case MENU_TYPE.MY:
+      return '내 노트';
+    case MENU_TYPE.TALK:
+      return '톡 노트';
+    case MENU_TYPE.SHARED:
+      return '공유 노트';
+    case MENU_TYPE.RECENT:
+      return '최근';
+    case MENU_TYPE.BOOKMARK:
+      return '즐겨찾기';
+    default:
+      return '노트';
+  }
 };
 
 export default NoteUtil;

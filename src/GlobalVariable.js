@@ -30,3 +30,11 @@ export const DRAG_TYPE = {
   SHARED_CHAPTER: 'Item:Note:SharedChapters',
   SHARED_PAGE: 'Item:Note:SharedPages',
 };
+
+export const MENU_TYPE = {
+  MY: 'my',
+  TALK: 'talk',
+  SHARED: 'shared',
+  RECENT: 'recent',
+  BOOKMARK: 'bookmark',
+};

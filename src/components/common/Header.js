@@ -1,4 +1,6 @@
 import React, { useRef, useContext } from 'react';
+import { ThemeContext } from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import { useNoteStore } from '../../external';
 import {
   Wrapper,
@@ -11,10 +13,9 @@ import {
   SmallButtonWrapper as CloseBtn,
 } from '../../styles/commonStyle';
 import { CloseIcon, SearchIcon } from '../icons';
-import { ThemeContext } from 'styled-components';
-import { useTranslation } from 'react-i18next';
+import { getMenuTitle } from '../../NoteUtil';
 
-const Header = ({ title }) => {
+const Header = ({ selectedMenu }) => {
   const { ChapterStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -43,7 +44,7 @@ const Header = ({ title }) => {
 
   return (
     <Wrapper>
-      <Title> 내 노트 </Title>
+      <Title>{getMenuTitle(selectedMenu)}</Title>
       <LnbTitleSearchContainer
         onSubmit={handleSearchSubmit}
         isTagSearching={ChapterStore.isTagSearching}

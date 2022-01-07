@@ -1,22 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useObserver } from 'mobx-react';
+import { WWMS, useCoreStores, Toast, ComponentStore, EventBus } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import LNBContainer from './components/lnb/LNBContainer';
 import useNoteStore from './store/useStore';
 import { GlobalStyle, LNB, Content } from './GlobalStyles';
 import PageContainer from './components/page/PageContainer';
 import TagContainer from './components/tag/TagContainer';
-import { useObserver } from 'mobx-react';
-import { WWMS, useCoreStores, Toast, ComponentStore, EventBus } from 'teespace-core';
 import DragPreview from './components/common/DragPreview';
 import NoteModal from './components/common/NoteModal';
 import Overlay from './components/common/Overlay';
 import LoadingContent from './components/common/LoadingContent';
 import GlobalVariable from './GlobalVariable';
-import { useTranslation } from 'react-i18next';
 import PageStore from './store/pageStore';
 import SlashCmdNote from './components/common/SlashCmdNote';
 
-import SLNB from './components/lnb/LNB';
+import GNB from './components/gnb/GNB';
 import Header from './components/common/Header';
 import { ContentWrapper, HeaderWrapper, Wrapper } from './styles/commonStyle';
 
@@ -30,6 +30,8 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const MailWriteModal = ComponentStore.get('Mail:MailWriteModal');
   const { id: userId, name: userName, email: userEmail } = userStore.myProfile;
   const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
+
+  const [selectedMenu, setSelectedMenu] = useState('my');
 
   const fetchData = async () => {
     const targetLayout = layoutState === 'collapse';
@@ -55,7 +57,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
       userId,
       userName,
       userEmail,
-      NoteStore.addWWMSHandler(authStore.sessionInfo.deviceType === 'PC' ? true : false),
+      NoteStore.addWWMSHandler(authStore.sessionInfo.deviceType === 'PC'),
     );
     fetchData();
     PageStore.checkEditingPage();
@@ -106,10 +108,10 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
         <LoadingContent />
       ) : (
         <>
-          <SLNB />
+          <GNB selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
           <Wrapper>
             <HeaderWrapper>
-              <Header />
+              <Header selectedMenu={selectedMenu} />
             </HeaderWrapper>
             <ContentWrapper>
               <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
@@ -141,7 +143,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
                   uploadFiles={NoteStore.mailShareFileObjs}
                   toReceiver={NoteStore.mailReceiver}
                   onClose={handleCloseMailModal}
-                  visible={true}
+                  visible
                   totalSize={
                     NoteStore.mailShareFileObjs[0]
                       ? NoteStore.mailShareFileObjs[0].fileSize

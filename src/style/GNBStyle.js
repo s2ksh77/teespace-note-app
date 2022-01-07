@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const LNBWrapper = styled.div`
+export const GNBWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 19.375rem;
@@ -27,7 +27,7 @@ export const ItemTitle = styled.div`
   white-space: nowrap;
 `;
 
-export const NoteTitle = styled.div`
+export const MenuTitle = styled.div`
   height: 3.5rem;
   color: #191919;
   font-weight: 500;
