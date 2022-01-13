@@ -125,7 +125,12 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorTitleCover>
-          <BookMarkIcon width="1.25" height="1.25" color={'#CCCCCC'} isButton={true} />
+          <BookMarkIcon
+            width="1.25"
+            height="1.25"
+            color={PageStore.bookMark ? '#FECB38' : '#CCCCCC'}
+            isButton={true}
+          />
           <EditorTitle
             id="editorTitle"
             maxLength="200"

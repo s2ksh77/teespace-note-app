@@ -4,6 +4,7 @@ export const GNBWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 19.375rem;
+  min-width: 16.3rem;
   height: 100%;
   font-size: 0.938rem;
   border-right: 1px solid #ebebeb;

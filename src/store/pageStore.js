@@ -35,6 +35,7 @@ const PageStore = observable({
   pageList: [],
   selectedPages: new Map(),
   isMove: false, // 모바일 웹뷰 -> 페이지 이동 Container Flag
+  bookMark: false,
 
   setPageList(arr, color) {
     this.pageList = arr.map(page => ({ ...page, color }));
@@ -500,6 +501,7 @@ const PageStore = observable({
     dto.modUserName = await getUserDisplayName(dto.USER_ID);
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
+    this.bookMark = dto.is_favorite === 'TRUE' ? true : false;
     if (this.isNewPage) {
       NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       this.dragData.get(dto.note_id).item.text = dto.note_title;

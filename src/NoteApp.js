@@ -19,6 +19,7 @@ import SlashCmdNote from './components/common/SlashCmdNote';
 import GNB from './components/gnb/GNB';
 import Header from './components/common/Header';
 import { ContentWrapper, HeaderWrapper, Wrapper } from './styles/commonStyle';
+import LNBPageContainer from './components/lnb/LNBPageContainer';
 
 const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const { NoteStore, ChapterStore, EditorStore } = useNoteStore();
@@ -47,6 +48,22 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
     NoteStore.setIsMailShare(false);
     NoteStore.setMailShareFileObjs([]);
     NoteStore.setMailReceiver([]);
+  };
+
+  const renderLNB = () => {
+    switch (selectedMenu) {
+      case 'my':
+        return <LNBContainer />;
+      case 'talk':
+        return <div>talk table</div>;
+      case 'shared':
+        return <div>shared</div>;
+      case 'recent':
+      case 'bookmark':
+        return <LNBPageContainer selectedMenu={selectedMenu} />;
+      default:
+        return <div>test22</div>;
+    }
   };
 
   useEffect(() => {
@@ -115,7 +132,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
             </HeaderWrapper>
             <ContentWrapper>
               <LNB show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
-                <LNBContainer />
+                {renderLNB()}
               </LNB>
               <Content
                 id="note-content"
