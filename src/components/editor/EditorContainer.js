@@ -49,7 +49,7 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-const EditorContainer = ({ isWeb = true }) => {
+const EditorContainer = ({ isWeb = true, selectedMenu }) => {
   const { NoteStore, PageStore, EditorStore, TagStore } = useNoteStore();
   const { configStore, authStore } = useCoreStores();
   const { t } = useTranslation();
@@ -235,7 +235,7 @@ const EditorContainer = ({ isWeb = true }) => {
           <FoldBtnImg src={foldImg} />
         </FoldBtn>
         {isWeb ? (
-          <EditorHeader />
+          <EditorHeader selectedMenu={selectedMenu} />
         ) : (
           <MobileEditorHeader handleModeChange={handleModeChange} />
         )}
