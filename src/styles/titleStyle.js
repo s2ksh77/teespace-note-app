@@ -291,5 +291,3 @@ export const Title = styled.div`
   width: 70%;
   margin: auto;
 `;
-
-export const BookMarkCover = styled.div``;

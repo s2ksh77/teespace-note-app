@@ -36,11 +36,6 @@ const PageStore = observable({
   selectedPages: new Map(),
   isMove: false, // 모바일 웹뷰 -> 페이지 이동 Container Flag
   bookMark: false,
-  lnbPageList: [],
-
-  setLNBPageList(arr) {
-    this.lnbPageList = arr;
-  },
 
   setPageList(arr, color) {
     this.pageList = arr.map(page => ({ ...page, color }));
@@ -168,9 +163,6 @@ const PageStore = observable({
   setIsMove(flag) {
     this.isMove = flag;
   },
-  setBookMark(flag) {
-    this.bookMark = flag;
-  },
 
   async getNoteInfoList(noteId) {
     const {
@@ -248,17 +240,21 @@ const PageStore = observable({
     const {
       data: { dto },
     } = await NoteRepository.bookmarkPage(pageId);
-    if (dto.resultMsg === 'Success') return dto;
+    if (dto.resultMsg === 'Success') {
+      return dto;
+    }
   },
 
   async unbookmarkPage(pageId) {
     const {
       data: { dto },
     } = await NoteRepository.unbookmarkPage(pageId);
-    if (dto.resultMsg === 'Success') return dto;
+    if (dto.resultMsg === 'Success') {
+      return dto;
+    }
   },
 
-  async getbookmarkList(chId = NoteRepository.chId) {
+  async getbookmarkList(chId) {
     const {
       data: { dto },
     } = await NoteRepository.getbookmarkList(chId);
@@ -275,19 +271,6 @@ const PageStore = observable({
   /**
    * 에디터의 텍스트/배경 색상을 초기화한다.
    */
-
-  async fetchLNBPageList(selectedMenu, changeMenu = false) {
-    const { noteList } = await this.getLNBPageList(selectedMenu);
-    this.setLNBPageList(noteList);
-    if (changeMenu) this.fetchNoteInfoList(noteList[0]?.note_id);
-  },
-
-  async getLNBPageList(selectedMenu) {
-    if (selectedMenu === 'recent') return this.getRecentList(10);
-    else if (selectedMenu === 'bookmark')
-      return this.getbookmarkList(NoteRepository.chId);
-  },
-
   initializeBoxColor() {
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');

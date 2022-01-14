@@ -141,7 +141,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
                   NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
                 }
               >
-                <PageContainer selectedMenu={selectedMenu} />
+                <PageContainer />
                 <TagContainer />
               </Content>
               <Toast
