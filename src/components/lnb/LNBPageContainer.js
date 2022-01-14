@@ -13,22 +13,6 @@ const LNBPageContainer = ({ selectedMenu }) => {
   const { PageStore, NoteStore } = useNoteStore();
   const { authStore } = useCoreStores();
   const [isEllipsisActive, setIsEllipsisActive] = useState(false);
-  const [pageList, setPageList] = useState([]);
-
-  const fetchPageData = async () => {
-    let { noteList } = await fetchFunc();
-    setPageList(noteList);
-  };
-
-  const fetchFunc = () => {
-    if (selectedMenu === 'recent') return PageStore.getRecentList(10);
-    else if (selectedMenu === 'bookmark')
-      return PageStore.getbookmarkList(NoteRepository.chId);
-  };
-
-  const fetchFirstNote = () => {
-    if (pageList) PageStore.fetchNoteInfoList(pageList[0].note_id);
-  };
 
   const handleSelectPage = async id => {
     await PageStore.fetchCurrentPageData(id);
@@ -40,17 +24,13 @@ const LNBPageContainer = ({ selectedMenu }) => {
   };
 
   useEffect(() => {
-    fetchPageData();
+    PageStore.fetchLNBPageList(selectedMenu, true);
   }, [selectedMenu]);
-
-  useEffect(() => {
-    if (pageList.length > 0) fetchFirstNote();
-  }, [pageList]);
 
   return useObserver(() => (
     <>
       <div style={{ flexDirection: 'column', width: '100%' }}>
-        {pageList?.map((item, index) => (
+        {PageStore.lnbPageList?.map((item, index) => (
           <PageCover
             key={item.note_id}
             id={item.note_id}
@@ -98,7 +78,11 @@ const LNBPageContainer = ({ selectedMenu }) => {
                   onClick={async e => {
                     e.stopPropagation();
                     const data = await PageStore.unbookmarkPage(item.note_id);
-                    if (data.resultMsg === 'Success') await fetchFunc();
+                    if (data.resultMsg === 'Success')
+                      await PageStore.fetchLNBPageList(
+                        selectedMenu,
+                        PageStore.currentPageId === item.note_id,
+                      );
                   }}
                 >
                   <BookMarkIcon

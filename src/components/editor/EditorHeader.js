@@ -15,6 +15,7 @@ import {
   ModifiedTime,
   EditorModCover,
   HeaderDivider,
+  BookMarkCover,
 } from '../../styles/titleStyle';
 import { BookMarkIcon, SearchIcon } from '../icons';
 import ContentHeader from '../common/ContentHeader';
@@ -22,7 +23,7 @@ import waplWorking from '../../assets/wapl_working.svg';
 import { handleFileSync } from '../common/NoteFile';
 import { checkMaxLength } from '../common/validators';
 
-const EditorHeader = () => {
+const EditorHeader = ({ selectedMenu }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
@@ -99,6 +100,17 @@ const EditorHeader = () => {
     PageStore.editCancel();
   };
 
+  const toggleBookMark = async e => {
+    e.stopPropagation();
+    const { resultMsg } = PageStore.bookMark
+      ? await PageStore.unbookmarkPage(PageStore.currentPageId)
+      : await PageStore.bookmarkPage(PageStore.currentPageId);
+    if (resultMsg === 'Success') {
+      PageStore.fetchCurrentPageData(PageStore.currentPageId);
+      PageStore.fetchLNBPageList(selectedMenu, selectedMenu === 'bookmark');
+    }
+  };
+
   useEffect(() => {
     // 수정모드 시 룸 생성 버튼 및 메일 탭 임시 editCancel 적용
     if (!PageStore.isReadMode() && NoteStore.appType === 'wapl') {
@@ -125,12 +137,14 @@ const EditorHeader = () => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorTitleCover>
-          <BookMarkIcon
-            width="1.25"
-            height="1.25"
-            color={PageStore.bookMark ? '#FECB38' : '#CCCCCC'}
-            isButton={true}
-          />
+          <BookMarkCover onClick={toggleBookMark}>
+            <BookMarkIcon
+              width="1.25"
+              height="1.25"
+              color={PageStore.bookMark ? '#FECB38' : '#CCCCCC'}
+              isButton={true}
+            />
+          </BookMarkCover>
           <EditorTitle
             id="editorTitle"
             maxLength="200"
