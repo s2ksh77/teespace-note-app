@@ -55,7 +55,6 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
       case 'my':
         return <LNBContainer isShared={false} />;
       case 'talk':
-        PageStore.setShowLNB(false);
         return <div>talk table</div>;
       case 'shared':
         return <LNBContainer isShared={true} />;
