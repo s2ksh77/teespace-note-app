@@ -15,7 +15,7 @@ import NoteUtil from '../../NoteUtil';
 
 const { getChapterNumType } = NoteUtil;
 
-const LNBContainer = () => {
+const LNBContainer = ({ isShared }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
 
@@ -33,8 +33,10 @@ const LNBContainer = () => {
   };
 
   const handleClickOutside = e => {
-    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1) NoteStore.handleClickOutside('Chapter');
-    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1) NoteStore.handleClickOutside('Page');
+    if (!e.target.closest('.chapter-div') && ChapterStore.dragData.size > 1)
+      NoteStore.handleClickOutside('Chapter');
+    if (!e.target.closest('.page-li') && PageStore.dragData.size > 1)
+      NoteStore.handleClickOutside('Page');
   };
 
   useEffect(() => {
@@ -56,6 +58,8 @@ const LNBContainer = () => {
     }
   }, [ChapterStore.scrollIntoViewId]);
 
+  console.log(isShared);
+
   return useObserver(() => (
     <>
       <LNBWrapper>
@@ -63,7 +67,7 @@ const LNBContainer = () => {
           mode={PageStore.isReadMode().toString()}
           onClick={!PageStore.isReadMode() ? handleEditMode : null}
         />
-        {NoteStore.appType === 'wapl' && <LNBHeader />}
+        {NoteStore.appType === 'wapl' && !isShared && <LNBHeader />}
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm isVisible={ChapterStore.isNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
@@ -78,17 +82,18 @@ const LNBContainer = () => {
                 switch (getChapterNumType(item.type)) {
                   case 0:
                   case 1: // default, NOTEBOOK
-                    return (
+                    return !isShared ? (
                       <ChapterItem
                         key={item.id}
                         chapter={item}
                         index={index}
                         flexOrder={1}
                       />
-                    );
+                    ) : null;
+                    break;
                   case 2: // SHARED_PAGE
                     if (item.children.length > 0)
-                      return (
+                      return isShared ? (
                         <ChapterItem
                           key={item.id}
                           chapter={item}
@@ -96,10 +101,10 @@ const LNBContainer = () => {
                           flexOrder={2}
                           isShared
                         />
-                      );
+                      ) : null;
                     break;
                   case 3:
-                    return (
+                    return isShared ? (
                       <ChapterItem
                         key={item.id}
                         chapter={item}
@@ -107,21 +112,23 @@ const LNBContainer = () => {
                         flexOrder={2}
                         isShared
                       />
-                    );
+                    ) : null;
+                    break;
                   case 4:
-                    return (
+                    return !isShared ? (
                       <RecycleBin
                         key={item.id}
                         chapter={item}
                         index={index}
                         flexOrder={3}
                       />
-                    );
+                    ) : null;
+
                   default:
                     break;
                 }
               })}
-              <LNBTag flexOrder={4} />
+              {!isShared ? <LNBTag flexOrder={4} /> : null}
             </DndProvider>
           )}
         </LNBChapterCover>

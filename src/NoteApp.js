@@ -53,11 +53,12 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const renderLNB = () => {
     switch (selectedMenu) {
       case 'my':
-        return <LNBContainer />;
+        return <LNBContainer isShared={false} />;
       case 'talk':
+        PageStore.setShowLNB(false);
         return <div>talk table</div>;
       case 'shared':
-        return <div>shared</div>;
+        return <LNBContainer isShared={true} />;
       case 'recent':
       case 'bookmark':
         return <LNBPageContainer selectedMenu={selectedMenu} />;
