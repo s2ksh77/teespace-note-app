@@ -53,7 +53,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
   const renderLNB = () => {
     switch (selectedMenu) {
       case 'my':
-        return <LNBContainer isShared={false} />;
+        return <LNBContainer />;
       case 'talk':
         return <div>talk table</div>;
       case 'shared':

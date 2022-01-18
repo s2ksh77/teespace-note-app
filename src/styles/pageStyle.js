@@ -26,8 +26,8 @@ export const PageMargin = styled.span`
 export const PageTextCover = styled.span`
   width: 100%;
   display: flex;
-  max-width: ${props =>
-    props.appType === 'wapl' ? 'calc(100% - 1.875rem)' : 'calc(100%)'}; ;
+  /* max-width: ${props =>
+    props.appType === 'wapl' ? 'calc(100% - 1.875rem)' : 'calc(100%)'}; ; */
 `;
 
 export const PageTextContainer = styled.span`
@@ -49,7 +49,7 @@ export const PageTextContainer = styled.span`
 export const PageText = styled.span`
   display: inline-block;
   cursor: pointer;
-  margin-left: 1.25rem;
+  margin-left: 2.875rem;
   line-height: 1.1rem;
   align-self: center;
   overflow: hidden;
@@ -86,8 +86,9 @@ export const NewPageBtn = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  padding-left: 1.25rem;
+  padding-left: 2.875rem;
   border-radius: 0.31rem;
+  color: #999999;
   cursor: pointer;
   &:hover {
     background-color: ${props => props.theme.StateBright};

@@ -91,13 +91,12 @@ export const LnbTagContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  width: calc(100% - 1.62rem);
+  width: 100%;
   height: 2.81rem;
   min-height: 2.81rem;
   padding: 0rem 0.81rem 0rem 0rem;
   font-size: 0.81rem;
   cursor: pointer;
-  margin: 0 0.81rem;
   order: ${props => props.order};
   color: ${props => props.color || ''};
   &:hover {

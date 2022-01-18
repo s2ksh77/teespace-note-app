@@ -167,7 +167,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
       className="page-li"
       onClick={handlePageSelect}
     >
-      <PageMargin appType={NoteStore.appType} />
+      {/* <PageMargin appType={NoteStore.appType} /> */}
       {PageStore.getRenameId() === id ? (
         <PageTextInput
           maxLength="200"

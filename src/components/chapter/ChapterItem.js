@@ -20,7 +20,12 @@ import {
   ChapterColor,
   ChapterTextInput,
 } from '../../styles/chpaterStyle';
-import { TrashIcon, ShareIcon, SharedPageIcon } from '../icons';
+import {
+  TrashIcon,
+  ShareIcon,
+  SharedPageIcon,
+  ChapterIcon as ChapterImage,
+} from '../icons';
 import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import NoteUtil from '../../NoteUtil';
 import { checkMaxLength } from '../common/validators';
@@ -186,7 +191,7 @@ const ChapterItem = ({ chapter, index, flexOrder, isShared }) => {
       case CHAPTER_TYPE.RECYCLE_BIN:
         return <TrashIcon color={themeContext.SubStateVivid} />;
       default:
-        return <ChapterColor background={color} />;
+        return <ChapterImage backgroundColor={color} />;
     }
   });
 

@@ -80,9 +80,9 @@ const PageList = ({ showNewPage, chapter, chapterIdx }) => {
         className={'page-li'}
         show={showNewPage && authStore.hasPermission('notePage', 'C')}
       >
-        <PageMargin appType={NoteStore.appType} />
+        {/* <PageMargin appType={NoteStore.appType} /> */}
         <NewPageBtn onClick={handlePageCreate(chapter.id)}>
-          + {t('NOTE_PAGE_LIST_CMPNT_DEF_04')}
+          {t('NOTE_PAGE_LIST_CMPNT_DEF_04')} +
         </NewPageBtn>
       </NewPage>
     </>

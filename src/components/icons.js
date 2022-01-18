@@ -191,11 +191,11 @@ export const TrashIcon = React.memo(
 
     return (
       <svg
-        style={isButton ? {} : { position: 'absolute', left: '1rem' }}
         width={`${width}rem`}
         height={`${height}rem`}
         viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
         version="1.1"
+        style={{ position: 'absolute', left: '0.842rem' }}
       >
         <g
           id="Icon/common/trash"
@@ -224,7 +224,7 @@ export const ShareIcon = React.memo(
 
     return (
       <svg
-        style={isButton ? {} : { position: 'absolute', left: '1rem' }}
+        style={isButton ? {} : { position: 'absolute', left: '0.842rem' }}
         width={`${width}rem`}
         height={`${height}rem`}
         viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
@@ -283,13 +283,35 @@ export const SharedPageIcon = React.memo(
   },
 );
 
+export const TagIcon = React.memo(({ width = 1, height = 1, color = '#666' }) => {
+  const defaultWidth = 24;
+  const defaultHeight = 24;
+
+  return (
+    <svg
+      style={{ position: 'absolute', left: '0.842rem' }}
+      width={`${width}rem`}
+      height={`${height}rem`}
+      viewBox={`0 0 ${width * SUPERAPP_REM_UNIT} ${height * SUPERAPP_REM_UNIT}`}
+      version="1.1"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M19.9289 15.4089C21.0051 14.3326 21.0025 12.5869 19.923 11.5139L10.545 2.19282C9.96928 1.62054 9.17009 1.3319 8.36153 1.40419L3.43148 1.84496C2.60957 1.91844 1.95068 2.55609 1.85031 3.37515L1.22039 8.51548C1.1171 9.3584 1.40903 10.2018 2.01135 10.8004L11.3641 20.0964C12.439 21.1648 14.1756 21.1622 15.2472 20.0905L19.9289 15.4089ZM18.8655 12.5778C19.3562 13.0655 19.3574 13.859 18.8682 14.3482L14.1866 19.0299C13.6995 19.517 12.9101 19.5182 12.4215 19.0326L3.06878 9.73654C2.795 9.46442 2.6623 9.08108 2.70925 8.69793L3.33917 3.5576C3.35351 3.44059 3.44764 3.3495 3.56505 3.339L8.4951 2.89823C8.86263 2.86537 9.2259 2.99657 9.48761 3.2567L18.8655 12.5778ZM5.56215 6.5C5.56215 6.08578 5.89794 5.75 6.31215 5.75C6.72636 5.75 7.06215 6.08578 7.06215 6.5C7.06215 6.91421 6.72636 7.25 6.31215 7.25C5.89794 7.25 5.56215 6.91421 5.56215 6.5ZM6.31215 4.25C5.06951 4.25 4.06215 5.25736 4.06215 6.5C4.06215 7.74264 5.06951 8.75 6.31215 8.75C7.55479 8.75 8.56215 7.74264 8.56215 6.5C8.56215 5.25736 7.55479 4.25 6.31215 4.25Z"
+        fill={color}
+      />
+    </svg>
+  );
+});
+
 export const AddTagIcon = React.memo(({ width = 1, height = 1, color = '#666' }) => {
   const defaultWidth = 24;
   const defaultHeight = 24;
 
   return (
     <svg
-      style={{ position: 'absolute', left: '1rem' }}
+      style={{ position: 'absolute', left: '0.842rem' }}
       width={`${width}rem`}
       height={`${height}rem`}
       viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
@@ -539,6 +561,32 @@ export const MyNoteIcon = React.memo(({ width = 1, height = 1, color = '#191919'
     </svg>
   );
 });
+
+export const ChapterIcon = React.memo(
+  ({ width = 1, height = 1, color = 'white', backgroundColor = '#191919' }) => {
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${width}rem`}
+        viewBox={`0 0 ${width * SUPERAPP_REM_UNIT} ${height * SUPERAPP_REM_UNIT}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ position: 'absolute', left: '0.842rem' }}
+      >
+        <path
+          d="M3 6C3 4.34315 4.34315 3 6 3H16C17.6569 3 19 4.34315 19 6V16C19 17.6569 17.6569 19 16 19H6C4.34315 19 3 17.6569 3 16V6Z"
+          fill={color}
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M6 0C2.68629 0 0 2.68629 0 6V16C0 19.3137 2.68629 22 6 22H16C19.3137 22 22 19.3137 22 16V6C22 2.68629 19.3137 0 16 0H6ZM5.5 6.96667C5.5 5.85289 6.42341 4.95 7.5625 4.95H14.4375C15.5766 4.95 16.5 5.85289 16.5 6.96667V15.0334C16.5 16.1471 15.5766 17.05 14.4375 17.05H7.5625C6.42341 17.05 5.5 16.1471 5.5 15.0334V14.5444H4.79722C4.42596 14.5444 4.125 14.2435 4.125 13.8722C4.125 13.501 4.42596 13.2 4.79722 13.2H5.5V9.34999H4.79722C4.42596 9.34999 4.125 9.04903 4.125 8.67777C4.125 8.30651 4.42596 8.00555 4.79722 8.00555H5.5V6.96667ZM11.9318 7.69178C12.1766 7.39256 12.6176 7.34843 12.9168 7.59323L14.0045 8.48308C14.3037 8.72788 14.3479 9.16889 14.1031 9.46811L10.3913 14.0052C10.2585 14.1676 10.0598 14.2618 9.84995 14.2619L8.94166 14.2625C8.60821 14.2627 8.32091 14.0276 8.25504 13.7007L8.07561 12.8104C8.03416 12.6047 8.08717 12.3912 8.22002 12.2288L11.9318 7.69178Z"
+          fill={backgroundColor}
+        />
+      </svg>
+    );
+  },
+);
 
 export const BookMarkIcon = React.memo(
   ({ width = 1, height = 1, color = '#CCCCCC', onClick, disabled }) => {

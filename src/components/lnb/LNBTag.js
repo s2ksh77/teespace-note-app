@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components';
 import useNoteStore from '../../store/useStore';
 
 import { LnbTagContainer, TagTxt } from '../../styles/tagStyle';
-import { AddTagIcon } from '../icons';
+import { TagIcon } from '../icons';
 
 const LNBTag = memo(({ flexOrder }) => {
   const { NoteStore, PageStore, ChapterStore } = useNoteStore();
@@ -28,7 +28,7 @@ const LNBTag = memo(({ flexOrder }) => {
       order={flexOrder}
       onClick={onClickTagMenuBtn}
     >
-      <AddTagIcon color={themeContext.SubStateVivid} />
+      <TagIcon color={themeContext.SubStateVivid} />
       <TagTxt>{t('NOTE_PAGE_LIST_CMPNT_DEF_06')}</TagTxt>
     </LnbTagContainer>
   ));

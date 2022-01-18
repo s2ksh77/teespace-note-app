@@ -1,10 +1,8 @@
 import styled from 'styled-components';
-import { Dropdown } from 'antd';
 
 export const ChapterContainer = styled.ul`
   position: relative;
   user-select: none;
-  margin: 0rem 0.81rem 0rem 0.81rem;
   padding: 0rem;
   display: block;
   flex-direction: column;
@@ -89,7 +87,7 @@ export const ChapterTitle = styled.span`
   font-weight: 500;
   align-items: center;
   cursor: pointer;
-  max-width: calc(100% - 1.93rem);
+  max-width: calc(100% - 2.25rem);
 `;
 
 export const ChapterTextSpan = styled.span`

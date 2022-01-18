@@ -17,6 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   .selected{
     background-color: ${props => props.theme.StateDark};
+    font-weight:700;
   }
   .selectedMenu {
     color: ${props => props.theme.TextPoinGreen};
