@@ -44,6 +44,9 @@ export const PageTextContainer = styled.span`
   &:active:not(.ellipsisBtn) {
     background-color: ${props => props.theme.StateDark};
   }
+  &:hover {
+    padding-right: 4.1rem;
+  }
 `;
 
 export const PageText = styled.span`

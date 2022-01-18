@@ -137,7 +137,7 @@ const EditorHeader = ({ selectedMenu }) => {
     <>
       <ContentHeader handleBackBtn={handleLayoutBtn} alignment="center">
         <EditorTitleCover>
-          <BookMarkCover onClick={toggleBookMark}>
+          <BookMarkCover isItem={false} visible={true} onClick={toggleBookMark}>
             <BookMarkIcon
               width="1.25"
               height="1.25"

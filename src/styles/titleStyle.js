@@ -292,4 +292,11 @@ export const Title = styled.div`
   margin: auto;
 `;
 
-export const BookMarkCover = styled.div``;
+export const BookMarkCover = styled.div`
+  right: 0.875rem;
+  position: ${props => (props.isItem ? 'absolute' : 'none')};
+  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
+  flex: 0 0 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+`;

@@ -156,7 +156,7 @@ export const ContextMenuCover = styled(Dropdown)`
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
-  border-radius: 0.38rem;
+  border-radius: 1rem;
   align-items: center;
   justify-content: center;
   &:hover {

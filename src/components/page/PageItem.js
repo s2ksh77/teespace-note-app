@@ -19,6 +19,8 @@ import {
 import NoteUtil from '../../NoteUtil';
 import { CHAPTER_TYPE, DRAG_TYPE } from '../../GlobalVariable';
 import { checkMaxLength } from '../common/validators';
+import { BookMarkCover } from '../../styles/titleStyle';
+import { BookMarkIcon } from '../icons';
 
 const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
@@ -148,6 +150,10 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const handleFocus = e => e.target.select();
 
+  const toggleBookMark = async e => {
+    e.stopPropagation();
+  };
+
   useEffect(() => {
     setRenameTitle(title);
   }, [title]);
@@ -222,6 +228,19 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
                 parent={chapter}
               />
             )}
+            <BookMarkCover
+              className="ellipsisBtn"
+              onClick={toggleBookMark}
+              isItem={true}
+              visible={PageStore.bookMark} // 서버에서 같이 줘야 될 듯
+            >
+              <BookMarkIcon
+                width="1.25"
+                height="1.25"
+                color={PageStore.bookMark ? '#FECB38' : '#CCCCCC'}
+                isButton={true}
+              />
+            </BookMarkCover>
           </PageTextContainer>
         </PageTextCover>
       )}

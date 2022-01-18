@@ -43,7 +43,7 @@ const ChapterText = ({ chapter, index, handleFoldBtnClick, isFolded }) => {
     <>
       <ChapterTitle>
         <Tooltip title={isEllipsisActive ? chapter.text : null} placement="bottomLeft">
-          <ChapterTextSpan onMouseOver={handleTooltip} marginLeft={'2.63rem'}>
+          <ChapterTextSpan onMouseOver={handleTooltip} marginLeft={'2.875rem'}>
             {getI18nChapterTitle(chapter.type, chapter.text)}
           </ChapterTextSpan>
         </Tooltip>
