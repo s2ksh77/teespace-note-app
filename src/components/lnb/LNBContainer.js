@@ -12,10 +12,11 @@ import Searching from '../common/NoContent';
 import ChapterItem from '../chapter/ChapterItem';
 import RecycleBin from '../chapter/RecycleBin';
 import NoteUtil from '../../NoteUtil';
+import { CHAPTER_TYPE } from '../../GlobalVariable';
 
 const { getChapterNumType } = NoteUtil;
 
-const LNBContainer = () => {
+const LNBContainer = ({ selectedMenu }) => {
   const { NoteStore, ChapterStore, PageStore, EditorStore } = useNoteStore();
   const LNBRef = useRef(null);
 
@@ -65,7 +66,7 @@ const LNBContainer = () => {
           mode={PageStore.isReadMode().toString()}
           onClick={!PageStore.isReadMode() ? handleEditMode : null}
         />
-        {NoteStore.appType === 'wapl' && <LNBHeader />}
+        {NoteStore.appType === 'wapl' && selectedMenu !== 'shared' && <LNBHeader />}
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm isVisible={ChapterStore.isNewChapter} />
           {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
@@ -76,58 +77,85 @@ const LNBContainer = () => {
           )}
           {!ChapterStore.isSearching && !ChapterStore.isTagSearching && (
             <DndProvider backend={HTML5Backend}>
-              {ChapterStore.chapterList.map((item, index) => {
-                switch (getChapterNumType(item.type)) {
-                  case 0:
-                  case 1: // default, NOTEBOOK
-                    return (
-                      <ChapterItem
-                        key={item.id}
-                        chapter={item}
-                        index={index}
-                        flexOrder={1}
-                      />
-                    );
-                    break;
-                  case 2: // SHARED_PAGE
-                    if (item.children.length > 0)
-                      return (
-                        <ChapterItem
-                          key={item.id}
-                          chapter={item}
-                          index={index}
-                          flexOrder={2}
-                          isShared
-                        />
-                      );
-                    break;
-                  case 3:
-                    return (
-                      <ChapterItem
-                        key={item.id}
-                        chapter={item}
-                        index={index}
-                        flexOrder={2}
-                        isShared
-                      />
-                    );
+              {selectedMenu !== 'shared'
+                ? ChapterStore.chapterList.map((item, index) => {
+                    switch (getChapterNumType(item.type)) {
+                      case 0:
+                      case 1: // default, NOTEBOOK
+                        return (
+                          <ChapterItem
+                            key={item.id}
+                            chapter={item}
+                            index={index}
+                            flexOrder={1}
+                          />
+                        );
+                        break;
+                      case 2: // SHARED_PAGE
+                        if (item.children.length > 0)
+                          return (
+                            <ChapterItem
+                              key={item.id}
+                              chapter={item}
+                              index={index}
+                              flexOrder={2}
+                              isShared
+                            />
+                          );
+                        break;
+                      case 3:
+                        return (
+                          <ChapterItem
+                            key={item.id}
+                            chapter={item}
+                            index={index}
+                            flexOrder={2}
+                            isShared
+                          />
+                        );
 
-                    break;
-                  case 4:
-                    return (
-                      <RecycleBin
-                        key={item.id}
-                        chapter={item}
-                        index={index}
-                        flexOrder={3}
-                      />
-                    );
+                        break;
+                      case 4:
+                        return (
+                          <RecycleBin
+                            key={item.id}
+                            chapter={item}
+                            index={index}
+                            flexOrder={3}
+                          />
+                        );
 
-                  default:
-                    break;
-                }
-              })}
-              <LNBTag flexOrder={4} />
+                      default:
+                        break;
+                    }
+                  })
+                : ChapterStore.sharedChapterList?.map((item, index) => {
+                    switch (getChapterNumType(item.type)) {
+                      case 2: // SHARED_PAGE
+                        if (item.children.length > 0)
+                          return (
+                            <ChapterItem
+                              key={item.id}
+                              chapter={item}
+                              index={index}
+                              flexOrder={2}
+                              isShared
+                            />
+                          );
+                        break;
+                      case 3:
+                        return (
+                          <ChapterItem
+                            key={item.id}
+                            chapter={item}
+                            index={index}
+                            flexOrder={2}
+                            isShared
+                          />
+                        );
+                    }
+                  })}
+              {selectedMenu !== 'shared' && <LNBTag flexOrder={4} />}
             </DndProvider>
           )}
         </LNBChapterCover>

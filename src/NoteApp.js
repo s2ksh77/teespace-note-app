@@ -57,7 +57,7 @@ const NoteApp = ({ layoutState, roomId, channelId, language, appType }) => {
       case 'talk':
         return <div>talk table</div>;
       case 'shared':
-        return <LNBContainer isShared={true} />;
+        return <LNBContainer selectedMenu={selectedMenu} />;
       case 'recent':
       case 'bookmark':
         return <LNBPageContainer selectedMenu={selectedMenu} />;

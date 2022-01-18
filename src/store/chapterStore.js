@@ -49,6 +49,7 @@ const ChapterStore = observable({
   chapterName: '',
   selectedChapters: new Map(),
   chapterType: '',
+  sharedChapterList: [],
 
   getLoadingPageInfo() {
     return this.loadingPageInfo;
@@ -420,6 +421,9 @@ const ChapterStore = observable({
     }
     // sharedChapters = shared, recylce_bin
     sharedChapters = this.getTheRestFoldedState(isInit, sharedChapters);
+    this.sharedChapterList = sharedChapters.filter(
+      chapter => chapter.type !== CHAPTER_TYPE.RECYCLE_BIN,
+    );
 
     this.setChapterList(normalChapters.concat(sharedChapters));
     return this.chapterList;
