@@ -288,6 +288,13 @@ const PageStore = observable({
       return this.getbookmarkList(NoteRepository.chId);
   },
 
+  async toggleBookMark(id = this.currentPageId, isBookmark = this.bookMark) {
+    const { resultMsg } = isBookmark
+      ? await this.unbookmarkPage(id)
+      : await this.bookmarkPage(id);
+    return resultMsg;
+  },
+
   initializeBoxColor() {
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('stroke');

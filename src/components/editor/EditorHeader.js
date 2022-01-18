@@ -102,12 +102,12 @@ const EditorHeader = ({ selectedMenu }) => {
 
   const toggleBookMark = async e => {
     e.stopPropagation();
-    const { resultMsg } = PageStore.bookMark
-      ? await PageStore.unbookmarkPage(PageStore.currentPageId)
-      : await PageStore.bookmarkPage(PageStore.currentPageId);
-    if (resultMsg === 'Success') {
+    const result = await PageStore.toggleBookMark();
+    if (result === 'Success') {
       PageStore.fetchCurrentPageData(PageStore.currentPageId);
-      PageStore.fetchLNBPageList(selectedMenu, selectedMenu === 'bookmark');
+      if (selectedMenu === 'recent' || selectedMenu === 'bookmark') {
+        PageStore.fetchLNBPageList(selectedMenu, selectedMenu === 'bookmark');
+      } else ChapterStore.getNoteChapterList();
     }
   };
 

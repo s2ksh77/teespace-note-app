@@ -87,7 +87,7 @@ export const ChapterTitle = styled.span`
   font-weight: 500;
   align-items: center;
   cursor: pointer;
-  max-width: calc(100% - 2.25rem);
+  max-width: calc(100% - 2.5rem);
 `;
 
 export const ChapterTextSpan = styled.span`

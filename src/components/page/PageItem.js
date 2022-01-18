@@ -29,7 +29,7 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
   chapter.text = NoteUtil.decodeStr(chapter.text);
   page.text = NoteUtil.decodeStr(page.text);
 
-  const { id, type, text: title } = page;
+  const { id, type, text: title, is_favorite: isFavorite } = page;
   const [renameTitle, setRenameTitle] = useState(title);
 
   const chapterDragData = {
@@ -150,8 +150,14 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
 
   const handleFocus = e => e.target.select();
 
-  const toggleBookMark = async e => {
+  const toggleBookMark = async (id, isFavorite, e) => {
     e.stopPropagation();
+    const result = await PageStore.toggleBookMark(id, isFavorite === 'TRUE');
+    if (result === 'Success') {
+      ChapterStore.getNoteChapterList();
+      if (id === PageStore.currentPageId)
+        PageStore.fetchCurrentPageData(PageStore.currentPageId);
+    }
   };
 
   useEffect(() => {
@@ -230,14 +236,14 @@ const PageItem = ({ page, index, chapter, chapterIdx, onClick }) => {
             )}
             <BookMarkCover
               className="ellipsisBtn"
-              onClick={toggleBookMark}
+              onClick={toggleBookMark.bind(this, id, isFavorite)}
               isItem={true}
-              visible={PageStore.bookMark} // 서버에서 같이 줘야 될 듯
+              visible={isFavorite === 'TRUE'}
             >
               <BookMarkIcon
                 width="1.25"
                 height="1.25"
-                color={PageStore.bookMark ? '#FECB38' : '#CCCCCC'}
+                color={isFavorite === 'TRUE' ? '#FECB38' : '#CCCCCC'}
                 isButton={true}
               />
             </BookMarkCover>
