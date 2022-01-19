@@ -8,6 +8,7 @@ import NoteRepository from '../../store/noteRepository';
 import ContextMenu from '../common/ContextMenu';
 import PageItem from '../page/PageItem';
 import { BookMarkIcon } from '../icons';
+import { BookMarkCover } from '../../styles/titleStyle';
 
 const LNBPageContainer = ({ selectedMenu }) => {
   const { PageStore, NoteStore } = useNoteStore();
@@ -27,9 +28,17 @@ const LNBPageContainer = ({ selectedMenu }) => {
     PageStore.fetchLNBPageList(selectedMenu, true);
   }, [selectedMenu]);
 
+  const toggleBookMark = async (id, isFavorite, e) => {
+    e.stopPropagation();
+    const result = await PageStore.toggleBookMark(id, isFavorite === 'TRUE');
+    if (result === 'Success') {
+      await PageStore.fetchLNBPageList(selectedMenu, PageStore.currentPageId === id);
+    }
+  };
+
   return useObserver(() => (
     <>
-      <div style={{ flexDirection: 'column', width: '100%' }}>
+      <div style={{ flexDirection: 'column', width: '100%', position: 'relative' }}>
         {PageStore.lnbPageList?.map((item, index) => (
           <PageCover
             key={item.note_id}
@@ -63,36 +72,29 @@ const LNBPageContainer = ({ selectedMenu }) => {
                   {item.note_title}
                 </PageText>
               </Tooltip>
-              {/* {(authStore.hasPermission('notePage', 'U') ||
-              item.type === CHAPTER_TYPE.SHARED) && (
-              <ContextMenu
-                noteType="page"
-                note={page}
-                chapterIdx={chapterIdx}
-                pageIdx={index}
-                parent={chapter}
-              />
-            )} */}
-              {item.is_favorite === 'TRUE' ? (
-                <div
-                  onClick={async e => {
-                    e.stopPropagation();
-                    const data = await PageStore.unbookmarkPage(item.note_id);
-                    if (data.resultMsg === 'Success')
-                      await PageStore.fetchLNBPageList(
-                        selectedMenu,
-                        PageStore.currentPageId === item.note_id,
-                      );
-                  }}
-                >
-                  <BookMarkIcon
-                    width="1.25"
-                    height="1.25"
-                    color={item.is_favorite ? '#FECB38' : null}
-                    isButton={true}
-                  />
-                </div>
-              ) : null}
+              {(authStore.hasPermission('notePage', 'U') ||
+                item.type === CHAPTER_TYPE.SHARED) && (
+                <ContextMenu
+                  noteType="page"
+                  note={item}
+                  // chapterIdx={chapterIdx}
+                  pageIdx={index}
+                  // parent={chapter}
+                />
+              )}
+              <BookMarkCover
+                className="ellipsisBtn"
+                isItem={true}
+                visible={item.is_favorite === 'TRUE'}
+                onClick={toggleBookMark.bind(this, item.note_id, item.is_favorite)}
+              >
+                <BookMarkIcon
+                  width="1.25"
+                  height="1.25"
+                  color={item.is_favorite === 'TRUE' ? '#FECB38' : '#CCCCCC'}
+                  isButton={true}
+                />
+              </BookMarkCover>
             </PageTextContainer>
           </PageCover>
         ))}
