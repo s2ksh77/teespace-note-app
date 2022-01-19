@@ -1,12 +1,10 @@
 import { Tooltip } from 'antd';
 import { useObserver } from 'mobx-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { useNoteStore } from '../../external';
 import { PageCover, PageText, PageTextContainer } from '../../styles/pageStyle';
-import NoteRepository from '../../store/noteRepository';
 import ContextMenu from '../common/ContextMenu';
-import PageItem from '../page/PageItem';
 import { BookMarkIcon } from '../icons';
 import { BookMarkCover } from '../../styles/titleStyle';
 
@@ -24,7 +22,7 @@ const LNBPageContainer = ({ selectedMenu }) => {
     setIsEllipsisActive(e.currentTarget.offsetWidth < e.currentTarget.scrollWidth);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     PageStore.fetchLNBPageList(selectedMenu, true);
   }, [selectedMenu]);
 
@@ -84,7 +82,7 @@ const LNBPageContainer = ({ selectedMenu }) => {
               )}
               <BookMarkCover
                 className="ellipsisBtn"
-                isItem={true}
+                isItem
                 visible={item.is_favorite === 'TRUE'}
                 onClick={toggleBookMark.bind(this, item.note_id, item.is_favorite)}
               >
@@ -92,7 +90,7 @@ const LNBPageContainer = ({ selectedMenu }) => {
                   width="1.25"
                   height="1.25"
                   color={item.is_favorite === 'TRUE' ? '#FECB38' : '#CCCCCC'}
-                  isButton={true}
+                  isButton
                 />
               </BookMarkCover>
             </PageTextContainer>

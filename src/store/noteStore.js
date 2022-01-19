@@ -47,6 +47,7 @@ const NoteStore = observable({
   appType: 'wapl',
   isLongPress: false,
   isWeb: true,
+  isFetchingGNBContent: false,
 
   setAppType(appType) {
     this.appType = appType;
@@ -92,6 +93,10 @@ const NoteStore = observable({
   setIsWeb(flag) {
     this.isWeb = flag;
   },
+  setIsFetchingGNBContent(isFetching) {
+    this.isFetchingGNBContent = isFetching;
+  },
+
   // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기
   init(roomId, channelId, userId, userName, userEmail, callback) {
     this.setWsId(roomId);

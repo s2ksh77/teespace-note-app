@@ -340,10 +340,6 @@ export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
-export const HeaderWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
 export const ContentWrapper = styled.div`
   display: flex;
