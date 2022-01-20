@@ -16,6 +16,8 @@ const PageContainer = observer(() => {
     if (ChapterStore.currentChapterId) {
       if (PageStore.currentPageId) return <EditorContainer />;
       if (!PageStore.isRecycleBin) return <NoContent header content="page" />;
+      if (ChapterStore.chapterList?.length > 1)
+        return <NoContent header content="recycle" />;
     }
     return <NoContent header content="chapter" />;
   })();
