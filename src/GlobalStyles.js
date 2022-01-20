@@ -30,7 +30,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     align-items:center;
     border-bottom: 1px solid ${props => props.theme.LineSub} !important;
-    padding: 0 0.75rem !important;
+    padding: 0.75rem 1rem !important;
     background-color: ${props => props.theme.StateNormal};
     color: ${props => props.theme.TextMain} !important;
     font-size: 0.8125rem;
@@ -53,6 +53,26 @@ export const GlobalStyle = createGlobalStyle`
   .ant-tooltip-arrow-content {
     background-color: ${props => props.theme.CoreLight};
   }
+
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+    height: 32px;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #7F7F7F;
+    background-color: inherit;
+    border: 0px solid #d0ccc7;
+    border-radius: 0.25rem;
+    &:hover{
+      background-color: inherit;
+    }
+  }
+
+  .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-right-width: 0px !important;
+  }
+
   .mce-tinymce iframe{
     flex: 1;
   }

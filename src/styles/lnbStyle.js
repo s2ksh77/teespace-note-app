@@ -48,6 +48,8 @@ export const SearchResultContainer = styled.div`
     padding: 0;
     background-color: #ffe362;
   }
+  width: 100%;
+  overflow-y: scroll;
 `;
 
 export const SearchDivision = styled.div`
@@ -69,10 +71,11 @@ export const ChapterSearchResult = styled.div`
   &:hover {
     background-color: ${props => props.theme.StateBright};
   }
+  min-height: 2.875rem;
 `;
 
 export const ChapterSearchResultTitle = styled.span`
-  margin-left: 1.69rem;
+  margin-left: 2.69rem;
   font-size: 0.813rem;
   font-weight: bold;
   text-overflow: ellipsis;

@@ -166,6 +166,7 @@ const languageSet = {
   NOTE_NOTICENTER_02: 'The page has been shared.',
   NOTE_NOTICENTER_03: `{{title}} has been created.`,
   NOTE_TITLE: 'Note',
+  NOTE_SEARCH_ALL: 'All',
 };
 
 export default languageSet;

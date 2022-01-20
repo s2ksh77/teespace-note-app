@@ -4,12 +4,11 @@ import useNoteStore from '../../store/useStore';
 
 import { TagContainerCover } from '../../styles/tagStyle';
 import { ContentBodyWrapper as TagBodyWrapper } from '../../styles/commonStyle';
-import TagHeader from './TagHeader';
 import TagContentContainer from './TagContentContainer';
 import NoContent from '../common/NoContent';
-import MainHeader from '../mobile/lnb/MainHeader';
+import TagHeader from './TagHeader';
 
-const TagContainer = ({ isWeb = true }) => {
+const TagContainer = () => {
   const { NoteStore, TagStore } = useNoteStore();
 
   useEffect(() => {
@@ -22,14 +21,12 @@ const TagContainer = ({ isWeb = true }) => {
     if (TagStore.isSearching) {
       if (TagStore.isSearchLoading) return <NoContent content="searching" />;
       // search는 검색 결과 없으면 KOR, ENG, NUM, ETC property가 없음
-      if (Object.keys(TagStore.sortedTagList).length > 0)
-        return <TagContentContainer isWeb={isWeb} />;
+      if (Object.keys(TagStore.sortedTagList).length > 0) return <TagContentContainer />;
       // 태그 선택 결과 없는 경우
       return <NoContent content="search" value={TagStore.searchStr} />;
     }
     // 초기 태그 화면 rendering
-    if (TagStore.allSortedTagList.length > 0)
-      return <TagContentContainer isWeb={isWeb} />;
+    if (TagStore.allSortedTagList.length > 0) return <TagContentContainer />;
     return <NoContent content="tag" />;
   };
 
@@ -39,25 +36,8 @@ const TagContainer = ({ isWeb = true }) => {
     <TagContainerCover
       style={NoteStore.showPage ? { display: 'none' } : { display: 'flex' }}
     >
-      {isWeb ? (
-        <TagHeader />
-      ) : (
-        <MainHeader
-          leftButtons={[{ type: 'icon', action: 'back', onClick: handleBackButtonClick }]}
-          title="태그"
-          rightButtons={[
-            { type: 'icon', action: 'search' },
-            { type: 'text', text: '🎅🏻' },
-          ]}
-        />
-      )}
-      <TagBodyWrapper
-        style={
-          isWeb
-            ? { padding: '0.25rem 1rem' }
-            : { padding: '0.625rem 1rem', border: 'none' }
-        }
-      >
+      {/* <TagHeader /> */}
+      <TagBodyWrapper style={{ padding: '0.25rem 1rem' }}>
         {renderContent()}
       </TagBodyWrapper>
     </TagContainerCover>

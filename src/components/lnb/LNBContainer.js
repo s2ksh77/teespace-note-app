@@ -7,8 +7,6 @@ import { LNBWrapper, LNBChapterCover, LNBEditModeCover } from '../../styles/lnbS
 import LNBHeader from './LNBHeader';
 import LNBNewChapterForm from './LNBNewChapterForm';
 import LNBTag from './LNBTag';
-import LNBSearchResult from './LNBSearchResult';
-import Searching from '../common/NoContent';
 import ChapterItem from '../chapter/ChapterItem';
 import RecycleBin from '../chapter/RecycleBin';
 import NoteUtil from '../../NoteUtil';
@@ -69,12 +67,6 @@ const LNBContainer = ({ selectedMenu }) => {
         {NoteStore.appType === 'wapl' && selectedMenu !== 'shared' && <LNBHeader />}
         <LNBChapterCover ref={LNBRef}>
           <LNBNewChapterForm isVisible={ChapterStore.isNewChapter} />
-          {(ChapterStore.isSearching || ChapterStore.isTagSearching) &&
-          ChapterStore.isLoadingSearchResult ? (
-            <Searching content="searching" />
-          ) : (
-            <LNBSearchResult />
-          )}
           {!ChapterStore.isSearching && !ChapterStore.isTagSearching && (
             <DndProvider backend={HTML5Backend}>
               {selectedMenu !== 'shared'

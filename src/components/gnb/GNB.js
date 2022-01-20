@@ -13,6 +13,7 @@ const GNB = ({ selectedMenu, setSelectedMenu }) => {
       <MenuTitle>{t('NOTE_TITLE')}</MenuTitle>
       {Object.values(MENU_TYPE).map(type => (
         <GNBItem
+          key={type}
           selectedMenu={selectedMenu}
           setSelectedMenu={setSelectedMenu}
           type={type}

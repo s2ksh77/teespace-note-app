@@ -165,6 +165,7 @@ const languageSet = {
   NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
   NOTE_NOTICENTER_03: `{{title}}을 생성했습니다.`,
   NOTE_TITLE: '노트',
+  NOTE_SEARCH_ALL: '전체',
 };
 
 export default languageSet;

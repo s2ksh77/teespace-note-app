@@ -222,7 +222,7 @@ export const SearchTagChip = styled(Tag)`
 export const TagChipNum = styled.div`
   font-size: 0.688rem;
   margin-left: auto;
-  color: ${props => props.theme.BeigeVivid};
+  color: #ff6258;
   padding-left: 0.4rem;
   line-height: normal;
 `;

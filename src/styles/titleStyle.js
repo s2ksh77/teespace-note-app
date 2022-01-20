@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Select } from 'antd';
 
 // contents가 tag일 때
 export const EditorHeaderContainer1 = styled.div`
@@ -248,6 +249,8 @@ export const LnbTitleSearchInput = styled.input`
     color: ${props => props.theme.TextHinted};
   }
 `;
+
+export const LnbTitleSelect = styled(Select)``;
 
 export const TagSearchForm = styled.form`
   display: ${props => (props.show ? 'block' : 'none')};

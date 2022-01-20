@@ -10,9 +10,11 @@ import LNBContainer from '../lnb/LNBContainer';
 import PageContainer from '../page/PageContainer';
 import TagContainer from '../tag/TagContainer';
 import LNBPageContainer from '../lnb/LNBPageContainer';
+import LNBSearchResult from '../lnb/LNBSearchResult';
+import Searching from '../common/NoContent';
 
 const GNBContent = ({ selectedMenu }) => {
-  const { NoteStore } = useNoteStore();
+  const { NoteStore, ChapterStore } = useNoteStore();
 
   const renderCondition = target =>
     !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
@@ -37,20 +39,29 @@ const GNBContent = ({ selectedMenu }) => {
     <Wrapper>
       <Header selectedMenu={selectedMenu} />
       <ContentWrapper>
-        <Overlay backgroundColor="#fff" />
-        <LNBWrapper show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
-          <LNB />
-        </LNBWrapper>
-        <Content
-          id="note-content"
-          show={renderCondition('Content')}
-          isBorderLeft={
-            NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
-          }
-        >
-          <PageContainer selectedMenu={selectedMenu} />
-          <TagContainer />
-        </Content>
+        {!ChapterStore.isSearching && !ChapterStore.isTagSearching ? (
+          <>
+            <Overlay backgroundColor="#fff" />
+            <LNBWrapper show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
+              <LNB />
+            </LNBWrapper>
+            <Content
+              id="note-content"
+              show={renderCondition('Content')}
+              isBorderLeft={
+                NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
+              }
+            >
+              <PageContainer selectedMenu={selectedMenu} />
+              <TagContainer />
+            </Content>
+          </>
+        ) : (ChapterStore.isSearching || ChapterStore.isTagSearching) &&
+          ChapterStore.isLoadingSearchResult ? (
+          <Searching content="searching" />
+        ) : (
+          <LNBSearchResult />
+        )}
       </ContentWrapper>
     </Wrapper>
   ));

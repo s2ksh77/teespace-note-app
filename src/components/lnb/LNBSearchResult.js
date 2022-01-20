@@ -17,8 +17,7 @@ import {
   PageSearchResultChapterTitle as SubText,
   PageSearchResult as TagSearchResult,
 } from '../../styles/lnbStyle';
-import { ChapterColor } from '../../styles/chpaterStyle';
-import { ShareIcon, SharedPageIcon } from '../icons';
+import { ShareIcon, SharedPageIcon, ChapterIcon as ChapterImage } from '../icons';
 import NoContent from '../common/NoContent';
 import { TagChip, TagList, TagText } from '../../styles/tagStyle';
 import NoteUtil, { isNormalChapter, getI18nChapterTitle } from '../../NoteUtil';
@@ -60,7 +59,7 @@ const LNBSearchResult = ({ isMobile }) => {
       case CHAPTER_TYPE.SHARED:
         return <ShareIcon color={themeContext.SubStateVivid} />;
       default:
-        return <ChapterColor background={color} />;
+        return <ChapterImage backgroundColor={color} />;
     }
   });
 
@@ -106,11 +105,7 @@ const LNBSearchResult = ({ isMobile }) => {
                 onClick={handleChapterClick(chapter.id)}
               >
                 <ChapterIcon type={chapter.type} color={chapter.color} />
-                <ChapterSearchResultTitle
-                  style={{
-                    marginLeft: isNormalChapter(chapter.type) ? '1.69rem' : '2.63rem',
-                  }}
-                >
+                <ChapterSearchResultTitle>
                   {getI18nChapterTitle(chapter.type, chapter.text)}
                 </ChapterSearchResultTitle>
               </ChapterSearchResult>
