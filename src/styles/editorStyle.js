@@ -51,15 +51,32 @@ export const PageContentLayoutChangeBtnArea = styled.span`
   z-index: 1;
 `;
 
-export const ReadModeContainer = styled.div`
+export const WaplSearchWrapper = styled.div`
+  display: flex;
   width: 100%;
-  height: 2.81rem;
-  border-top: 1px solid ${props => props.theme.LineMain};
+  flex-direction: row;
+`;
+
+export const SearchContainer = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: row;
   color: #999999;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 `;
+
+export const WaplSearchCancel = styled.div`
+  font-size: 15px;
+  color: #b4b4b4;
+  margin-right: 15px;
+  cursor: pointer;
+`;
+
+export const SearchIconCover = styled.div``;
+
 export const ReadModeIcon = styled.img`
   margin-left: 16px;
 `;

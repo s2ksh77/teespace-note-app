@@ -26,9 +26,9 @@ import {
   driveSuccessCb,
   handleUnselect,
 } from '../common/NoteFile';
-import { ComponentStore, useCoreStores, WaplSearch } from 'teespace-core';
+import { ComponentStore, useCoreStores } from 'teespace-core';
 import Mark from 'mark.js';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import EditorStore from '../../store/editorStore';
 import useSave from './useSave';
@@ -62,76 +62,6 @@ const EditorContainer = ({ isWeb = true, selectedMenu }) => {
   const editorWrapperRef = useRef(null);
   const editorRef = useRef(null);
   const instance = new Mark(EditorStore.tinymce?.getBody());
-  let eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
-
-  const [searchValue, setSearchValue] = useState('');
-  const instanceOption = {
-    accuracy: {
-      value: 'partially',
-      limiters: [],
-    },
-    done: function (count) {
-      EditorStore.setSearchTotalCount(count);
-    },
-  };
-
-  const handleSearchInputChange = value => {
-    EditorStore.setSearchValue(value);
-  };
-
-  const handleSearchEditor = () => {
-    if (searchValue === EditorStore.searchValue) {
-      handleSearchNext();
-    } else {
-      instance.unmark();
-      setSearchValue(EditorStore.searchValue);
-      instance.mark(EditorStore.searchValue, instanceOption);
-      eleArr = EditorStore.tinymce?.getBody()?.querySelectorAll('mark');
-      if (EditorStore.searchTotalCount === 0) EditorStore.setSearchCurrentCount(0);
-      else {
-        EditorStore.setSearchCurrentCount(1);
-        eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
-      }
-      EditorStore.setSearchResultState(true);
-    }
-  };
-
-  const handleClearSearch = () => {
-    EditorStore.setSearchValue('');
-    setSearchValue('');
-    EditorStore.setIsSearch(false);
-    EditorStore.setSearchResultState(false);
-    instance.unmark();
-  };
-  const handleSearchPrev = () => {
-    if (EditorStore.searchTotalCount === 0) return;
-    else {
-      if (EditorStore.searchCurrentCount > 1) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
-        EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount - 1);
-      } else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
-        EditorStore.setSearchCurrentCount(EditorStore.searchTotalCount);
-      }
-      eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
-    }
-  };
-
-  const handleSearchNext = () => {
-    if (EditorStore.searchTotalCount === 0) return;
-    else {
-      if (EditorStore.searchCurrentCount < EditorStore.searchTotalCount) {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
-        EditorStore.setSearchCurrentCount(EditorStore.searchCurrentCount + 1);
-      } else {
-        eleArr[EditorStore.searchCurrentCount - 1].classList.remove('searchselected');
-        EditorStore.setSearchCurrentCount(1);
-      }
-      eleArr[EditorStore.searchCurrentCount - 1].scrollIntoView(false);
-      eleArr[EditorStore.searchCurrentCount - 1].classList.add('searchselected');
-    }
-  };
 
   const handleModeChange = ref => {
     if (PageStore.isReadMode() && !PageStore.isRecycleBin) {
@@ -173,18 +103,8 @@ const EditorContainer = ({ isWeb = true, selectedMenu }) => {
     };
   }, [editorWrapperRef.current]);
 
-  // Search Toggle 시 reset
-  useEffect(() => {
-    return () => setSearchValue('');
-  }, [EditorStore.isSearch]);
-
   // auto save
   useSave();
-
-  useEffect(() => {
-    // WaplSearch ref prop이 없음.
-    if (EditorStore.isSearch) inputRef.current?.lastChild?.lastChild.focus();
-  }, [EditorStore.isSearch]);
 
   const changeTheme = () => {
     if (!EditorStore.tinymce) return;
@@ -262,32 +182,6 @@ const EditorContainer = ({ isWeb = true, selectedMenu }) => {
             )}
           </ReadModeContainer>
         ) : null} */}
-        {EditorStore.isSearch ? (
-          <ReadModeContainer ref={inputRef} style={{ display: 'flex' }}>
-            <StyledWaplSearch
-              searchIconColor={{
-                default: !EditorStore.searchValue
-                  ? themeContext.IconHinted
-                  : themeContext.Iconmain,
-              }}
-              clearIconColor={{
-                default: !EditorStore.searchValue
-                  ? themeContext.IconHinted
-                  : themeContext.Iconmain,
-              }}
-              onChange={handleSearchInputChange}
-              placeholder={t('NOTE_EDIT_PAGE_SEARCH_03')}
-              onEnterDown={handleSearchEditor}
-              onClear={handleClearSearch}
-              onSearchPrev={handleSearchPrev}
-              onSearchNext={handleSearchNext}
-              className=""
-              isCountExist={EditorStore.searchResultState ? true : false}
-              SearchNumber={EditorStore.searchCurrentCount}
-              TotalNumber={EditorStore.searchTotalCount}
-            />
-          </ReadModeContainer>
-        ) : null}
         <Editor />
         {EditorStore.isFile ? <FileLayout /> : null}
         {(authStore.hasPermission('notePage', 'U') ||
@@ -320,26 +214,3 @@ const EditorContainer = ({ isWeb = true, selectedMenu }) => {
 };
 
 export default React.memo(EditorContainer);
-
-const StyledWaplSearch = styled(WaplSearch)`
-  width: 100%;
-  margin: 0 0.438rem;
-  border-radius: 0.375rem;
-  padding: 0.38rem 0.625rem;
-  &:hover:not(:focus-within) {
-    background-color: ${props => props.theme.SubStateBright};
-    path {
-      fill: ${props => props.theme.IconNormal};
-    }
-  }
-  &:focus-within {
-    background-color: ${props => props.theme.StateNormal};
-    border: 1px solid ${props => props.theme.SubStateVivid};
-    path {
-      fill: ${props => props.theme.IconActive};
-    }
-  }
-  color: ${props => props.theme.TextMain};
-  border: 1px solid transparent;
-  background-color: ${props => props.theme.SubStateNormal};
-`;

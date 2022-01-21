@@ -40,9 +40,8 @@ export const EditBtn = styled.button`
 `;
 
 export const EditorTitleCover = styled.div`
-  margin: 3.5rem 1rem 0 1rem;
-  height: 2.5rem;
-  border-bottom: 1px solid #ddd9d4;
+  margin: 3rem 1rem 0.5rem 1rem;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -53,10 +52,11 @@ export const EditorModCover = styled.div`
   display: flex;
   height: 1.538rem;
   align-items: center;
-  margin: 0.375rem 1rem;
+  padding: 1rem 0;
   justify-content: space-between;
   flex-direction: row;
   width: 100%;
+  border-top: 1px solid #ddd9d4;
 `;
 
 export const EditorTitle = styled.input`

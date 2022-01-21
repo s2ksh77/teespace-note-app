@@ -25,7 +25,7 @@ export const HeaderButtonContainer = styled.div`
 `;
 
 export const ContentHeaderWrapper = styled.div`
-  height: 7.263rem;
+  height: 8rem;
   width: 100%;
   display: flex;
   flex-shrink: 0;
