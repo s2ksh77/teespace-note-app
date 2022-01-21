@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 
@@ -34,6 +34,11 @@ const GNBContent = ({ selectedMenu }) => {
         return <div>test22</div>;
     }
   };
+
+  useEffect(() => {
+    if (ChapterStore.isSearching || ChapterStore.isTagSearching)
+      ChapterStore.initSearchVar();
+  }, [selectedMenu]);
 
   return useObserver(() => (
     <Wrapper>
