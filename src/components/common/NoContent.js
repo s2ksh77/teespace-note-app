@@ -29,6 +29,8 @@ const NoContent = ({ header, content, value }) => {
         return `'${value}'`;
       case 'searching':
         return t('NOTE_EDIT_PAGE_SEARCH_02');
+      case 'recycle':
+        return t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01');
       default:
         return '';
     }
