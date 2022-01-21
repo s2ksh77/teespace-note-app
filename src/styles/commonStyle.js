@@ -339,6 +339,8 @@ export const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  max-width: 80.5rem;
+  overflow: hidden;
 `;
 
 export const ContentWrapper = styled.div`
