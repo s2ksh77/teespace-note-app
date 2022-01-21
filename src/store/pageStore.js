@@ -277,11 +277,13 @@ const PageStore = observable({
    */
 
   async fetchLNBPageList(selectedMenu, changeMenu = false) {
-    NoteStore.setIsFetchingGNBContent(true);
+    if (changeMenu) NoteStore.setIsFetchingGNBContent(true);
     const { noteList } = await this.getLNBPageList(selectedMenu);
     this.setLNBPageList(noteList);
-    if (changeMenu) await this.fetchNoteInfoList(noteList[0]?.note_id);
-    NoteStore.setIsFetchingGNBContent(false);
+    if (changeMenu) {
+      await this.fetchNoteInfoList(noteList[0]?.note_id);
+      NoteStore.setIsFetchingGNBContent(false);
+    }
   },
 
   async getLNBPageList(selectedMenu) {
