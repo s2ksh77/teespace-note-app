@@ -115,7 +115,7 @@ export const TagImg = styled.img`
 
 export const TagTxt = styled.div`
   font-weight: 500;
-  margin-left: 2.63rem;
+  margin-left: 2.875rem;
 `;
 
 export const { Panel } = Collapse;
@@ -196,7 +196,7 @@ export const SearchTagChip = styled(Tag)`
   padding: 0 0.63rem;
   height: calc(100% - 0.26rem);
   width: fit-content;
-  max-width: calc(100% - 1.88rem) !important;
+  max-width: calc(100% - 6.88rem) !important;
   color: ${props => props.theme.TextSub};
   font-size: 0.81rem;
   cursor: pointer;

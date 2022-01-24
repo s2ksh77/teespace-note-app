@@ -20,6 +20,7 @@ import { Select } from 'antd';
 import { useObserver } from 'mobx-react';
 import Mark from 'mark.js';
 import { isFilled } from './validators';
+import { SearchTagChip, TagText } from '../../styles/tagStyle';
 
 const { Option } = Select;
 
@@ -78,22 +79,28 @@ const Header = ({ selectedMenu }) => {
             }
           />
         </SearchBtn>
-        <LnbTitleSearchInput
-          ref={inputRef}
-          value={ChapterStore.searchStr}
-          onChange={handleSearchValueChange}
-          placeholder={
-            ChapterStore.isTagSearching ? '' : t('NOTE_PAGE_LIST_CMPNT_DEF_05')
-          }
-          disabled={!!ChapterStore.isTagSearching}
-          onKeyDown={e =>
-            e.key === 'Escape'
-              ? handleCancelBtnClick()
-              : e.key === 'Enter'
-              ? handleSearchSubmit()
-              : null
-          }
-        />
+        {ChapterStore.isTagSearching ? (
+          <SearchTagChip closable onClose={handleTagSearchCancel}>
+            <TagText>{ChapterStore.searchingTagName}</TagText>
+          </SearchTagChip>
+        ) : (
+          <LnbTitleSearchInput
+            ref={inputRef}
+            value={ChapterStore.searchStr}
+            onChange={handleSearchValueChange}
+            placeholder={
+              ChapterStore.isTagSearching ? '' : t('NOTE_PAGE_LIST_CMPNT_DEF_05')
+            }
+            disabled={!!ChapterStore.isTagSearching}
+            onKeyDown={e =>
+              e.key === 'Escape'
+                ? handleCancelBtnClick()
+                : e.key === 'Enter'
+                ? handleSearchSubmit()
+                : null
+            }
+          />
+        )}
         <CloseBtn
           onClick={handleCancelBtnClick}
           visible={
