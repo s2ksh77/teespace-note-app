@@ -4,7 +4,8 @@ import { logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import useNoteStore from '../../store/useStore';
 import { LNBNewChapter } from '../../styles/lnbStyle';
-import { ChapterColor, ChapterInput, ChapterTitle } from '../../styles/chpaterStyle';
+import { ChapterInput, ChapterTitle } from '../../styles/chpaterStyle';
+import { ChapterIcon as ChapterImage } from '../icons';
 
 const LNBNewChapterForm = ({ isVisible }) => {
   const { NoteStore, ChapterStore } = useNoteStore();
@@ -64,7 +65,7 @@ const LNBNewChapterForm = ({ isVisible }) => {
       {isVisible && (
         <LNBNewChapter>
           <ChapterTitle>
-            <ChapterColor background={ChapterStore.isNewChapterColor} />
+            <ChapterImage backgroundColor={ChapterStore.isNewChapterColor} />
             <ChapterInput
               ref={titleRef}
               placeholder={t('NOTE_PAGE_LIST_CMPNT_DEF_01')}

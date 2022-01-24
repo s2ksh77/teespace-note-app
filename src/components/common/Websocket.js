@@ -22,7 +22,6 @@ export const handleWebsocket = message => {
     console.warn('NOTE_ETC is empty');
     return;
   }
-  console.log(message.NOTI_ETC);
 
   const loginUserId = NoteRepository.USER_ID;
   const [eventType, targetId, parentId, targetUserId, device] = message.NOTI_ETC.split(

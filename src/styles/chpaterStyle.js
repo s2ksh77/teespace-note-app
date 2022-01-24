@@ -122,7 +122,7 @@ export const ChapterInput = styled.input`
   align-self: center;
   border: 0rem !important;
   background-color: transparent;
-  padding-left: 1.69rem;
+  padding-left: 2.89rem;
   &::placeholder {
     color: ${props => props.theme.TextHinted};
   }
