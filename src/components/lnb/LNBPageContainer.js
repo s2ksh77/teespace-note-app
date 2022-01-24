@@ -1,6 +1,6 @@
 import { Tooltip } from 'antd';
 import { useObserver } from 'mobx-react';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { useNoteStore } from '../../external';
 import { PageCover, PageText, PageTextContainer } from '../../styles/pageStyle';
@@ -33,6 +33,10 @@ const LNBPageContainer = ({ selectedMenu }) => {
       await PageStore.fetchLNBPageList(selectedMenu, PageStore.currentPageId === id);
     }
   };
+
+  useEffect(() => {
+    if (!NoteStore.showPage) NoteStore.setShowPage(true);
+  }, []);
 
   return useObserver(() => (
     <>
