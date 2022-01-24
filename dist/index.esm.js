@@ -10235,6 +10235,9 @@ var NoContent = function NoContent(_ref) {
       case 'searching':
         return t('NOTE_EDIT_PAGE_SEARCH_02');
 
+      case 'recycle':
+        return t('NOTE_PAGE_LIST_NO_PGE_IN_CHPT_01');
+
       default:
         return '';
     }
@@ -17090,10 +17093,16 @@ var PageContainer = observer(function () {
     if (ChapterStore.loadingPageInfo) return /*#__PURE__*/React.createElement(LoadingContent, null);
 
     if (ChapterStore.currentChapterId) {
+      var _ChapterStore$chapter;
+
       if (PageStore.currentPageId) return /*#__PURE__*/React.createElement(EditorContainer$1, null);
       if (!PageStore.isRecycleBin) return /*#__PURE__*/React.createElement(NoContent, {
         header: true,
         content: "page"
+      });
+      if (((_ChapterStore$chapter = ChapterStore.chapterList) === null || _ChapterStore$chapter === void 0 ? void 0 : _ChapterStore$chapter.length) > 1) return /*#__PURE__*/React.createElement(NoContent, {
+        header: true,
+        content: "recycle"
       });
     }
 
