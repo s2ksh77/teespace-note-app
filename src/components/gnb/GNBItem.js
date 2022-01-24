@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCoreStores } from 'teespace-core';
 import useNoteStore from '../../store/useStore';
 
 import { MENU_TYPE } from '../../GlobalVariable';
@@ -7,8 +8,20 @@ import { MyNoteIcon } from '../icons';
 import { getMenuTitle } from '../../NoteUtil';
 
 const GNBItem = ({ selectedMenu, setSelectedMenu, type }) => {
-  const handleItemClick = () => {
+  const { NoteStore, ChapterStore } = useNoteStore();
+  const { roomStore } = useCoreStores();
+
+  const handleItemClick = async () => {
+    if (selectedMenu === type) return;
     setSelectedMenu(type);
+    if (type === MENU_TYPE.MY) {
+      const { myRoom } = roomStore;
+      NoteStore.setWsId(myRoom.id);
+      NoteStore.setChannelId(roomStore.getChannelIds(myRoom.id).CHN0003);
+      NoteStore.setIsFetchingGNBContent(true);
+      await ChapterStore.fetchChapterList(true);
+      NoteStore.setIsFetchingGNBContent(false);
+    }
   };
 
   const ItemIcon = () => {
