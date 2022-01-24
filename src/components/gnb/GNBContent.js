@@ -3,35 +3,22 @@ import { useObserver } from 'mobx-react';
 import useNoteStore from '../../store/useStore';
 
 import { Wrapper, ContentWrapper } from '../../styles/commonStyle';
-import { LNB as LNBWrapper, Content } from '../../GlobalStyles';
 import Header from '../common/Header';
 import Overlay from '../common/Overlay';
-import LNBContainer from '../lnb/LNBContainer';
-import PageContainer from '../page/PageContainer';
-import TagContainer from '../tag/TagContainer';
-import LNBPageContainer from '../lnb/LNBPageContainer';
+import TalkSearch from './TalkSearch';
 import LNBSearchResult from '../lnb/LNBSearchResult';
 import Searching from '../common/NoContent';
+import Content from '../lnb/Content';
 
 const GNBContent = ({ selectedMenu }) => {
-  const { NoteStore, ChapterStore } = useNoteStore();
+  const { ChapterStore } = useNoteStore();
 
-  const renderCondition = target =>
-    !(NoteStore.layoutState === 'collapse' && NoteStore.targetLayout !== target);
-
-  const LNB = () => {
+  const ContentBody = () => {
     switch (selectedMenu) {
-      case 'my':
-        return <LNBContainer />;
       case 'talk':
-        return <div>talk table</div>;
-      case 'shared':
-        return <LNBContainer selectedMenu={selectedMenu} />;
-      case 'recent':
-      case 'bookmark':
-        return <LNBPageContainer selectedMenu={selectedMenu} />;
+        return <TalkSearch />;
       default:
-        return <div>test22</div>;
+        return <Content selectedMenu={selectedMenu} />;
     }
   };
 
@@ -47,22 +34,9 @@ const GNBContent = ({ selectedMenu }) => {
         {!ChapterStore.isSearching && !ChapterStore.isTagSearching ? (
           <>
             <Overlay backgroundColor="#fff" />
-            <LNBWrapper show={!NoteStore.isContentExpanded && renderCondition('LNB')}>
-              <LNB />
-            </LNBWrapper>
-            <Content
-              id="note-content"
-              show={renderCondition('Content')}
-              isBorderLeft={
-                NoteStore.layoutState !== 'collapse' && !NoteStore.isContentExpanded
-              }
-            >
-              <PageContainer selectedMenu={selectedMenu} />
-              <TagContainer />
-            </Content>
+            <ContentBody />
           </>
-        ) : (ChapterStore.isSearching || ChapterStore.isTagSearching) &&
-          ChapterStore.isLoadingSearchResult ? (
+        ) : ChapterStore.isLoadingSearchResult ? (
           <Searching content="searching" />
         ) : (
           <LNBSearchResult />

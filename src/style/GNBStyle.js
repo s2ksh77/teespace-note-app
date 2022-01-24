@@ -36,3 +36,7 @@ export const MenuTitle = styled.div`
   font-size: 20px;
   line-height: 24px;
 `;
+
+export const TalkTableWrapper = styled.div`
+  padding: 0 1.5rem;
+`;
