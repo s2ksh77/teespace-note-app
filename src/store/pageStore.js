@@ -272,16 +272,13 @@ const PageStore = observable({
     return dto;
   },
 
-  /**
-   * 에디터의 텍스트/배경 색상을 초기화한다.
-   */
-
   async fetchLNBPageList(selectedMenu, changeMenu = false) {
     if (changeMenu) NoteStore.setIsFetchingGNBContent(true);
-    const { noteList } = await this.getLNBPageList(selectedMenu);
+    let { noteList } = await this.getLNBPageList(selectedMenu);
+    noteList = this.convertListItem(noteList);
     this.setLNBPageList(noteList);
     if (changeMenu) {
-      await this.fetchNoteInfoList(noteList[0]?.note_id);
+      await this.fetchNoteInfoList(noteList[0]?.id);
       NoteStore.setIsFetchingGNBContent(false);
     }
   },
@@ -298,6 +295,25 @@ const PageStore = observable({
       : await this.bookmarkPage(id);
     return resultMsg;
   },
+
+  convertListItem(pageList) {
+    // 서버에서 준 list 를 render용 page Obj로 변환
+    const result = [];
+    pageList.reduce((obj, page) => {
+      if (page.hasOwnProperty('note_id')) {
+        page.id = page.note_id;
+        page.text = page.note_title;
+        delete page.note_id;
+        delete page.note_title;
+        result.push(page);
+      }
+    }, {});
+    return result;
+  },
+
+  /**
+   * 에디터의 텍스트/배경 색상을 초기화한다.
+   */
 
   initializeBoxColor() {
     document.getElementById('tox-icon-text-color__color')?.removeAttribute('fill');
@@ -390,11 +406,12 @@ const PageStore = observable({
     NoteStore.setShowModal(false);
   },
 
-  async renameNotePage({ id, title, chapterId }) {
+  async renameNotePage({ id, title, chapterId, selectedMenu, pageOnly = false }) {
     const { note_title: text } = await this.renamePage(id, title.trim(), chapterId);
     if (this.dragData.get(id)) this.dragData.get(id).item.text = text;
     this.fetchNoteInfoList(id);
-    await ChapterStore.getNoteChapterList();
+    if (!pageOnly) await ChapterStore.getNoteChapterList();
+    else await PageStore.fetchLNBPageList(selectedMenu);
   },
 
   createDragData(pageId, chapterId) {

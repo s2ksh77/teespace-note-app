@@ -15,7 +15,14 @@ import GlobalVariable, { CHAPTER_TYPE } from '../../GlobalVariable';
 
 const { SubMenu, Item } = Menu;
 
-const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
+const ContextMenu = ({
+  noteType,
+  note,
+  chapterIdx,
+  pageIdx,
+  parent,
+  pageOnly = false,
+}) => {
   const { NoteStore, ChapterStore, PageStore } = useNoteStore();
   const { userStore, authStore } = useCoreStores();
   const { t } = useTranslation();
@@ -35,8 +42,13 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
       : ChapterStore.chapterList[1];
   };
 
-  const getAdjacentPageId = () => {
-    return pageIdx > 0 ? parent.children[pageIdx - 1].id : parent.children[1]?.id;
+  const getAdjacentPageId = pageOnly => {
+    if (!pageOnly)
+      return pageIdx > 0 ? parent.children[pageIdx - 1].id : parent.children[1]?.id;
+    else
+      return pageIdx > 0
+        ? PageStore.lnbPageList[pageIdx - 1].id
+        : PageStore.lnbPageList[1]?.id;
   };
 
   const throwNoteInRecycleBin = async () => {
@@ -89,7 +101,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
 
         const data = {
           pageList: [{ note_id: note.id, restoreChapterId: parent.id }],
-          selectablePageId: getAdjacentPageId(),
+          selectablePageId: getAdjacentPageId(pageOnly),
         };
         if (note.type === CHAPTER_TYPE.SHARED) {
           NoteStore.setModalInfo('sharedPage', data);
@@ -184,7 +196,7 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
   const deletePagePermanently = () => {
     NoteStore.setModalInfo('deletePage', {
       pageList: [{ note_id: note.id }],
-      selectablePageId: getAdjacentPageId(),
+      selectablePageId: getAdjacentPageId(pageOnly),
     });
   };
 
