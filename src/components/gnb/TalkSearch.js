@@ -7,12 +7,11 @@ import { TalkTableWrapper as TableWrapper } from '../../style/GNBStyle';
 import Content from '../lnb/Content';
 
 const TalkSearch = () => {
-  const { NoteStore, ChapterStore } = useNoteStore();
-  const { roomStore } = useCoreStores();
+  const { NoteStore, ChapterStore, PageStore } = useNoteStore();
+  const { roomStore, userStore } = useCoreStores();
 
   const [isRowSelected, setIsRowSelected] = useState(false);
-
-  useLayoutEffect(() => {}, []);
+  const [roomData, setRoomData] = useState([]);
 
   const handleRowClick = roomId => async () => {
     NoteStore.setWsId(roomId);
@@ -20,6 +19,30 @@ const TalkSearch = () => {
     await ChapterStore.fetchChapterList(true);
     setIsRowSelected(true);
   };
+
+  const fetchRoomData = async () => {
+    NoteStore.setIsFetchingGNBContent(true);
+    setRoomData(
+      await Promise.all(
+        roomStore.getRoomArray().map(async room => {
+          const admin = await userStore.getProfile(room.adminId);
+          const { noteList } = await PageStore.getRecentList(1, roomStore.getChannelIds(room.id).CHN0003);
+          const modifier = noteList[0]?.USER_ID ? await userStore.getProfile(noteList[0]?.USER_ID) : undefined;
+          return {
+            key: room.id,
+            name: room.name,
+            adminName: admin.displayName,
+            modifiedDate: `${noteList[0]?.modified_date?.split(' ')[0] ?? ''} ${modifier?.displayName ?? ''}`,
+          };
+        }),
+      ),
+    );
+    NoteStore.setIsFetchingGNBContent(false);
+  };
+
+  useLayoutEffect(() => {
+    fetchRoomData();
+  }, []);
 
   return (
     <>
@@ -33,6 +56,7 @@ const TalkSearch = () => {
                 title: '룸 이름',
                 dataIndex: 'name',
                 fixed: 'top',
+                width: '75%',
               },
               {
                 title: '룸 관리자',
@@ -41,13 +65,11 @@ const TalkSearch = () => {
               },
               {
                 title: '최종 수정 날짜',
-                dataIndex: 'modefiedDate',
+                dataIndex: 'modifiedDate',
                 fixed: 'top',
               },
             ]}
-            dataSource={roomStore
-              .getRoomArray()
-              .map(room => ({ key: room.id, name: room.name }))}
+            dataSource={roomData}
             onRow={room => ({
               onClick: handleRowClick(room.key),
             })}

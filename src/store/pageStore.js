@@ -265,10 +265,10 @@ const PageStore = observable({
     return dto;
   },
 
-  async getRecentList(num) {
+  async getRecentList(num, chId = NoteRepository.chId) {
     const {
       data: { dto },
-    } = await NoteRepository.getRecentList(num);
+    } = await NoteRepository.getRecentList(num, chId);
     return dto;
   },
 

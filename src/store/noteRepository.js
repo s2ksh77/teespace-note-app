@@ -657,11 +657,11 @@ class NoteRepository {
     }
   }
 
-  async getRecentList(num) {
+  async getRecentList(num, chId) {
     const query = num ? `&rownum=${num}` : '';
     try {
       return await API.get(
-        `note-api/noteRecent?action=List&note_channel_id=${this.chId}${query}`,
+        `note-api/noteRecent?action=List&note_channel_id=${chId}${query}`,
       );
     } catch (e) {
       throw Error(JSON.stringify(e));
