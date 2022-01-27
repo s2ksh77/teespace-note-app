@@ -48,6 +48,7 @@ const NoteStore = observable({
   isLongPress: false,
   isWeb: true,
   isFetchingGNBContent: false,
+  talkTitle: '',
 
   setAppType(appType) {
     this.appType = appType;
@@ -95,6 +96,9 @@ const NoteStore = observable({
   },
   setIsFetchingGNBContent(isFetching) {
     this.isFetchingGNBContent = isFetching;
+  },
+  setTalkTitle(talkTitle) {
+    this.talkTitle = talkTitle;
   },
 
   // todo : mobile이랑 ptask에 알리고 parameter를 객체로 바꾸기

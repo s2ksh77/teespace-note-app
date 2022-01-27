@@ -73,6 +73,17 @@ export const GlobalStyle = createGlobalStyle`
     border-right-width: 0px !important;
   }
 
+  .ant-breadcrumb {
+    color: rgba(0, 0, 0, 0.85);
+    font-size:1rem;
+  }
+  .ant-breadcrumb-link {
+    &:hover{
+      cursor:pointer;
+      text-decoration: underline;
+    }
+  }
+
   .mce-tinymce iframe{
     flex: 1;
   }

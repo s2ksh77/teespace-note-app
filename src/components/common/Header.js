@@ -16,7 +16,7 @@ import {
 } from '../../styles/commonStyle';
 import { CloseIcon, SearchIcon } from '../icons';
 import { getMenuTitle } from '../../NoteUtil';
-import { Select } from 'antd';
+import { Select, Breadcrumb } from 'antd';
 import { useObserver } from 'mobx-react';
 import Mark from 'mark.js';
 import { isFilled } from './validators';
@@ -24,8 +24,8 @@ import { SearchTagChip, TagText } from '../../styles/tagStyle';
 
 const { Option } = Select;
 
-const Header = ({ selectedMenu }) => {
-  const { ChapterStore, EditorStore } = useNoteStore();
+const Header = ({ selectedMenu, onClick }) => {
+  const { ChapterStore, EditorStore, NoteStore } = useNoteStore();
   const { t } = useTranslation();
   const themeContext = useContext(ThemeContext);
   const inputRef = useRef(null);
@@ -59,7 +59,18 @@ const Header = ({ selectedMenu }) => {
 
   return useObserver(() => (
     <Wrapper>
-      <Title>{getMenuTitle(selectedMenu)}</Title>
+      {!NoteStore.talkTitle ? (
+        <Title>{getMenuTitle(selectedMenu)}</Title>
+      ) : (
+        <Title>
+          <Breadcrumb separator=">">
+            <Breadcrumb.Item onClick={onClick}>
+              {getMenuTitle(selectedMenu)}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{NoteStore.talkTitle}</Breadcrumb.Item>
+          </Breadcrumb>
+        </Title>
+      )}
       <LnbTitleSearchContainer
         onSubmit={handleSearchSubmit}
         isTagSearching={ChapterStore.isTagSearching}

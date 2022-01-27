@@ -13,11 +13,12 @@ const TalkSearch = () => {
   const [isRowSelected, setIsRowSelected] = useState(false);
   const [roomData, setRoomData] = useState([]);
 
-  const handleRowClick = roomId => async () => {
+  const handleRowClick = (roomId, roomName) => async () => {
     NoteStore.setWsId(roomId);
     NoteStore.setChannelId(roomStore.getChannelIds(roomId).CHN0003);
     await ChapterStore.fetchChapterList(true);
     setIsRowSelected(true);
+    NoteStore.setTalkTitle(roomName);
   };
 
   const fetchRoomData = async () => {
@@ -71,7 +72,7 @@ const TalkSearch = () => {
             ]}
             dataSource={roomData}
             onRow={room => ({
-              onClick: handleRowClick(room.key),
+              onClick: handleRowClick(room.key, room.name),
             })}
             scroll={{ y: 700 }}
             pagination={{
