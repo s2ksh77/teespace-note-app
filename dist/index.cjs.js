@@ -3400,28 +3400,30 @@ var EditorStore = mobx.observable({
     }))();
   },
   getDuflicateFile: function getDuflicateFile(fileName, fileExt) {
+    var _arguments = arguments;
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-      var _yield$NoteRepository8, dto, _dto$file$;
+      var pageId, _yield$NoteRepository8, dto, _dto$file$;
 
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              _context9.next = 2;
-              return NoteRepository$1.getDuflicateFile(fileName, fileExt);
+              pageId = _arguments.length > 2 && _arguments[2] !== undefined ? _arguments[2] : PageStore.pageInfo.id;
+              _context9.next = 3;
+              return NoteRepository$1.getDuflicateFile(fileName, fileExt, pageId);
 
-            case 2:
+            case 3:
               _yield$NoteRepository8 = _context9.sent;
               dto = _yield$NoteRepository8.data.dto;
 
               if (!(dto.result === 'Y')) {
-                _context9.next = 6;
+                _context9.next = 7;
                 break;
               }
 
               return _context9.abrupt("return", (_dto$file$ = dto.file[0]) === null || _dto$file$ === void 0 ? void 0 : _dto$file$.user_context_1);
 
-            case 6:
+            case 7:
             case "end":
               return _context9.stop();
           }
@@ -6346,13 +6348,13 @@ var NoteRepository = /*#__PURE__*/function () {
   }, {
     key: "getDuflicateFile",
     value: function () {
-      var _getDuflicateFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(fileName, fileExt) {
+      var _getDuflicateFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(fileName, fileExt, pageId) {
         var query;
         return regeneratorRuntime.wrap(function _callee30$(_context30) {
           while (1) {
             switch (_context30.prev = _context30.next) {
               case 0:
-                query = "/drive-api/files/".concat(PageStore.pageInfo.id, "?");
+                query = "/drive-api/files/".concat(pageId, "?");
                 query += "type=0";
                 query += "&name=".concat(fileName);
                 if (fileExt) query += "&ext=".concat(fileExt);
@@ -6376,7 +6378,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee30, null, [[4, 10]]);
       }));
 
-      function getDuflicateFile(_x47, _x48) {
+      function getDuflicateFile(_x47, _x48, _x49) {
         return _getDuflicateFile.apply(this, arguments);
       }
 
@@ -6448,7 +6450,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee32, null, [[0, 6]]);
       }));
 
-      function bookmarkPage(_x49) {
+      function bookmarkPage(_x50) {
         return _bookmarkPage.apply(this, arguments);
       }
 
@@ -6486,7 +6488,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee33, null, [[0, 6]]);
       }));
 
-      function unbookmarkPage(_x50) {
+      function unbookmarkPage(_x51) {
         return _unbookmarkPage.apply(this, arguments);
       }
 
@@ -6522,7 +6524,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee34, null, [[1, 7]]);
       }));
 
-      function getbookmarkList(_x51) {
+      function getbookmarkList(_x52) {
         return _getbookmarkList.apply(this, arguments);
       }
 
@@ -6558,7 +6560,7 @@ var NoteRepository = /*#__PURE__*/function () {
         }, _callee35, this, [[1, 7]]);
       }));
 
-      function getRecentList(_x52) {
+      function getRecentList(_x53) {
         return _getRecentList.apply(this, arguments);
       }
 
