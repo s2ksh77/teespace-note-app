@@ -603,8 +603,8 @@ class NoteRepository {
     }
   }
 
-  async getDuflicateFile(fileName, fileExt) {
-    let query = `/drive-api/files/${PageStore.pageInfo.id}?`;
+  async getDuflicateFile(fileName, fileExt, pageId) {
+    let query = `/drive-api/files/${pageId}?`;
     query += `type=0`;
     query += `&name=${fileName}`;
     if (fileExt) query += `&ext=${fileExt}`;
