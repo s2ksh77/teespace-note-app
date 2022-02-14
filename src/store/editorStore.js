@@ -289,10 +289,10 @@ const EditorStore = observable({
     }
   },
 
-  async getDuflicateFile(fileName, fileExt) {
+  async getDuflicateFile(fileName, fileExt, pageId = PageStore.pageInfo.id) {
     const {
       data: { dto },
-    } = await NoteRepository.getDuflicateFile(fileName, fileExt);
+    } = await NoteRepository.getDuflicateFile(fileName, fileExt, pageId);
     if (dto.result === 'Y') {
       return dto.file[0]?.user_context_1;
     }
