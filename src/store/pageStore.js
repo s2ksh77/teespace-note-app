@@ -500,6 +500,7 @@ const PageStore = observable({
     dto.modUserName = await getUserDisplayName(dto.USER_ID);
     this.pageInfo = new PageModel(dto);
     this.noteTitle = dto.note_title;
+    this.noteContent = dto.note_content;
     if (this.isNewPage) {
       NoteStore.updateDragData(ChapterStore.currentChapterId, this.currentPageId);
       this.dragData.get(dto.note_id).item.text = dto.note_title;
@@ -622,7 +623,7 @@ const PageStore = observable({
       dto: {
         note_id: this.pageInfo.id,
         note_title: this.noteTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
-        note_content: this.noteContent ? this.noteContent : '<p><br></p>',
+        note_content: this.noteContent || '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({ format: 'text' }),
         parent_notebook: this.pageInfo.chapterId,
         is_edit: isAutoSave ? this.pageInfo.editingUserId : '',
