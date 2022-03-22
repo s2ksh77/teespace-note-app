@@ -4797,6 +4797,7 @@ var PageStore = mobx.observable({
               dto.modUserName = _context20.sent;
               _this6.pageInfo = new PageModel(dto);
               _this6.noteTitle = dto.note_title;
+              _this6.noteContent = dto.note_content;
 
               if (_this6.isNewPage) {
                 NoteStore.updateDragData(ChapterStore.currentChapterId, _this6.currentPageId);
@@ -4815,7 +4816,7 @@ var PageStore = mobx.observable({
                 _this6.setIsNewPage(false);
               }
 
-            case 15:
+            case 16:
             case "end":
               return _context20.stop();
           }
@@ -5039,7 +5040,7 @@ var PageStore = mobx.observable({
       dto: {
         note_id: this.pageInfo.id,
         note_title: this.noteTitle.trim() || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_03'),
-        note_content: this.noteContent ? this.noteContent : '<p><br></p>',
+        note_content: this.noteContent || '<p><br></p>',
         text_content: EditorStore.tinymce.getContent({
           format: 'text'
         }),
@@ -16994,9 +16995,9 @@ var EditorContainer = function EditorContainer(_ref) {
     if (themeContext.name !== 'dark' && themeContext.name !== 'white') return; // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
 
     tinymce.settings.language = NoteStore.i18nLanguage;
-    tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
-    tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
-    tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor'); // theme에 맞춰 배경 및 글자색을 변경한다.
+    tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide'; // tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
+    // tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
+    // theme에 맞춰 배경 및 글자색을 변경한다.
 
     var opacity = themeContext.name === 'dark' ? 0.9 : 0.04;
     EditorStore.tinymce.editorManager.DOM.setStyle(EditorStore.tinymce.getBody(), {
