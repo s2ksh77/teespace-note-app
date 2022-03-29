@@ -193,8 +193,8 @@ const EditorContainer = ({ isWeb = true }) => {
     // 변경된 settings을 적용하기 위해 에디터 reinit이 필요하다.
     tinymce.settings.language = NoteStore.i18nLanguage;
     tinymce.settings.skin = themeContext.name === 'dark' ? 'oxide-dark' : 'oxide';
-    tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
-    tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
+    // tinymce.EditorManager.execCommand('mceRemoveEditor', false, 'noteEditor');
+    // tinymce.EditorManager.execCommand('mceAddEditor', false, 'noteEditor');
 
     // theme에 맞춰 배경 및 글자색을 변경한다.
     const opacity = themeContext.name === 'dark' ? 0.9 : 0.04;
