@@ -235,10 +235,10 @@ const ContextMenu = ({ noteType, note, chapterIdx, pageIdx, parent }) => {
             {authStore.hasPermission('noteSharePage', 'C') && (
               <Item key="forward">{t('NOTE_CONTEXT_MENU_01')}</Item>
             )}
-            {GlobalVariable.isMailApp &&
+            {/* {GlobalVariable.isMailApp &&
               authStore.hasPermission('noteMailShare', 'C') && (
                 <Item key="sendEmail">{t('NOTE_DELIVER_CONTEXT_MENU_02')}</Item>
-              )}
+              )} */}
             {authStore.hasPermission('notePage', 'C') && (
               <SubMenu
                 title={t('NOTE_DELIVER_CONTEXT_MENU_03')}
