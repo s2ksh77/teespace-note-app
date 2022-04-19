@@ -12565,9 +12565,7 @@ var ContextMenu = function ContextMenu(_ref) {
           key: "rename"
         }, t('NOTE_DELIVER_CONTEXT_MENU_01')), authStore.hasPermission('noteSharePage', 'C') && /*#__PURE__*/React.createElement(Item, {
           key: "forward"
-        }, t('NOTE_CONTEXT_MENU_01')), GlobalVariable.isMailApp && authStore.hasPermission('noteMailShare', 'C') && /*#__PURE__*/React.createElement(Item, {
-          key: "sendEmail"
-        }, t('NOTE_DELIVER_CONTEXT_MENU_02')), authStore.hasPermission('notePage', 'C') && /*#__PURE__*/React.createElement(SubMenu, {
+        }, t('NOTE_CONTEXT_MENU_01')), authStore.hasPermission('notePage', 'C') && /*#__PURE__*/React.createElement(SubMenu, {
           title: t('NOTE_DELIVER_CONTEXT_MENU_03'),
           onTitleClick: handleSubMenuClick
         }, /*#__PURE__*/React.createElement(Item, {
