@@ -602,15 +602,15 @@ export const isAudio = {
   isPreview: true,
 };
 // 오피스(파워포인트)
-export const isPowerPoint = { ext: ['ppt', 'pptx', 'tpt'], isPreview: false };
+export const isPowerPoint = { ext: ['ppt', 'pptx', 'tpt'], isPreview: true };
 // 오피스(워드)
-export const isWord = { ext: ['doc', 'docx', 'toc'], isPreview: false };
+export const isWord = { ext: ['doc', 'docx', 'toc'], isPreview: true };
 // 오피스(엑셀)
-export const isExcel = { ext: ['xls', 'xlsx', 'tls', 'csv'], isPreview: false };
+export const isExcel = { ext: ['xls', 'xlsx', 'tls', 'csv'], isPreview: true };
 // 오피스(한글)
 export const isHangul = { ext: ['hwp'], isPreview: false };
 export const isTxt = { ext: ['txt'], isPreview: false };
-export const isPdf = { ext: ['pdf'], isPreview: false };
+export const isPdf = { ext: ['pdf'], isPreview: true };
 export const isZip = {
   ext: [
     'zip',
@@ -644,7 +644,7 @@ export const isZip = {
     'xxe',
     'zoo',
   ],
-  isPreview: false,
+  isPreview: true,
 };
 export const isEtc = { ext: ['exe', 'psd', 'mui', 'dll'], isPreview: false };
 
