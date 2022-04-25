@@ -351,6 +351,14 @@ const ChapterStore = observable({
     });
   },
 
+  getLocalOrderPageList(targetChannelId, chapterId, pageList) {
+    const item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    const chapterIdx = this.chapterMap.get(chapterId);
+    return item[chapterIdx].children.map(
+      pageId => pageList[this.pageMap.get(pageId).idx],
+    );
+  },
+
   async checkDefaultChapterColor(notebookList) {
     if (notebookList.length === 0) return notebookList;
     if (notebookList[0].color === null && notebookList[0].id) {

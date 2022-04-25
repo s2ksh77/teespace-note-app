@@ -293,12 +293,18 @@ export const getChapterHtml = async exportId => {
     },
   } = await NoteRepository.getChapterChildren(exportId);
 
-  if (noteList.length > 0) {
-    noteList.forEach((page, idx) => {
+  const orderedPageList = ChapterStore.getLocalOrderPageList(
+    NoteStore.getChannelId(),
+    exportId,
+    noteList,
+  );
+
+  if (orderedPageList.length > 0) {
+    orderedPageList.forEach((page, idx) => {
       html += `<span style="font-size:24px;">${i18n.t('NOTE_EXPORT_TITLE')} : ${
         page.note_title
       }</span><p><br></p>${NoteUtil.decodeStr(page.note_content)}<span class=${
-        idx === noteList.length - 1 ? '' : 'afterClass'
+        idx === orderedPageList.length - 1 ? '' : 'afterClass'
       }></span>`;
     });
   } else
@@ -464,12 +470,19 @@ export const exportChapterAsTxt = async (chapterTitle, chapterId) => {
       dto: { noteList },
     },
   } = await NoteRepository.getChapterChildren(chapterId);
-  if (noteList.length > 0) {
-    noteList.forEach((page, idx) => {
+
+  const orderedPageList = ChapterStore.getLocalOrderPageList(
+    NoteStore.getChannelId(),
+    chapterId,
+    noteList,
+  );
+
+  if (orderedPageList.length > 0) {
+    orderedPageList.forEach((page, idx) => {
       returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${
         page.note_title
       }</p>\n${NoteUtil.decodeStr(page.note_content)}${
-        idx === noteList.length - 1 ? '' : '\n\n'
+        idx === orderedPageList.length - 1 ? '' : '\n\n'
       }`;
     });
   } else returnData += `<p>${i18n.t('NOTE_EXPORT_TITLE')} : ${chapterTitle}</p>`;
