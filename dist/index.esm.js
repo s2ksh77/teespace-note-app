@@ -1674,11 +1674,20 @@ var ChapterStore = observable({
       });
     });
   },
-  checkDefaultChapterColor: function checkDefaultChapterColor(notebookList) {
+  getLocalOrderPageList: function getLocalOrderPageList(targetChannelId, chapterId, pageList) {
     var _this7 = this;
 
+    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    var chapterIdx = this.chapterMap.get(chapterId);
+    return item[chapterIdx].children.map(function (pageId) {
+      return pageList[_this7.pageMap.get(pageId).idx];
+    });
+  },
+  checkDefaultChapterColor: function checkDefaultChapterColor(notebookList) {
+    var _this8 = this;
+
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-      var _yield$_this7$updateC, color;
+      var _yield$_this8$updateC, color;
 
       return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
@@ -1698,11 +1707,11 @@ var ChapterStore = observable({
               }
 
               _context12.next = 5;
-              return _this7.updateChapterColor(notebookList[0].id);
+              return _this8.updateChapterColor(notebookList[0].id);
 
             case 5:
-              _yield$_this7$updateC = _context12.sent;
-              color = _yield$_this7$updateC.color;
+              _yield$_this8$updateC = _context12.sent;
+              color = _yield$_this8$updateC.color;
               notebookList[0].color = color;
 
             case 8:
@@ -1719,7 +1728,7 @@ var ChapterStore = observable({
   // type : defalut, notebook, shared_page, shared
   // default chapterColor도 null이면 update 해준다
   sortServerChapterList: function sortServerChapterList(notebookList) {
-    var _this8 = this;
+    var _this9 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
       var normalChapters, sharedChapters, getChapterNumType, firstSharedIdx;
@@ -1746,7 +1755,7 @@ var ChapterStore = observable({
                 return getChapterNumType(a.type) - getChapterNumType(b.type);
               });
               _context13.next = 7;
-              return _this8.checkDefaultChapterColor(notebookList);
+              return _this9.checkDefaultChapterColor(notebookList);
 
             case 7:
               notebookList = _context13.sent;
@@ -1789,10 +1798,10 @@ var ChapterStore = observable({
   },
   getNoteChapterList: function getNoteChapterList() {
     var _arguments = arguments,
-        _this9 = this;
+        _this10 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-      var isInit, _yield$NoteRepository12, notbookList, _yield$_this9$sortSer, normalChapters, sharedChapters;
+      var isInit, _yield$NoteRepository12, notbookList, _yield$_this10$sortSe, normalChapters, sharedChapters;
 
       return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
@@ -1806,16 +1815,16 @@ var ChapterStore = observable({
               _yield$NoteRepository12 = _context14.sent;
               notbookList = _yield$NoteRepository12.data.dto.notbookList;
               _context14.next = 7;
-              return _this9.sortServerChapterList(notbookList);
+              return _this10.sortServerChapterList(notbookList);
 
             case 7:
-              _yield$_this9$sortSer = _context14.sent;
-              normalChapters = _yield$_this9$sortSer.normalChapters;
-              sharedChapters = _yield$_this9$sortSer.sharedChapters;
+              _yield$_this10$sortSe = _context14.sent;
+              normalChapters = _yield$_this10$sortSe.normalChapters;
+              sharedChapters = _yield$_this10$sortSe.sharedChapters;
 
-              _this9.createMap(normalChapters);
+              _this10.createMap(normalChapters);
 
-              _this9.sharedCnt = sharedChapters.length;
+              _this10.sharedCnt = sharedChapters.length;
 
               if (localStorage.getItem('NoteSortData_' + NoteStore.getChannelId())) {
                 _context14.next = 17;
@@ -1823,23 +1832,23 @@ var ChapterStore = observable({
               }
 
               // 비순수함수... normalChapter에 변경이 일어남(isFolded: false 추가)
-              _this9.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
+              _this10.setLocalStorageItem(NoteStore.getChannelId(), normalChapters);
 
-              return _context14.abrupt("return", _this9.getNoteChapterList(true));
+              return _context14.abrupt("return", _this10.getNoteChapterList(true));
 
             case 17:
-              _this9.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
+              _this10.applyDifference(NoteStore.getChannelId(), normalChapters); // isFolded state 추가
 
 
-              normalChapters = _this9.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
+              normalChapters = _this10.getLocalOrderChapterList(NoteStore.getChannelId(), normalChapters);
 
             case 19:
               // sharedChapters = shared, recylce_bin
-              sharedChapters = _this9.getTheRestFoldedState(isInit, sharedChapters);
+              sharedChapters = _this10.getTheRestFoldedState(isInit, sharedChapters);
 
-              _this9.setChapterList(normalChapters.concat(sharedChapters));
+              _this10.setChapterList(normalChapters.concat(sharedChapters));
 
-              return _context14.abrupt("return", _this9.chapterList);
+              return _context14.abrupt("return", _this10.chapterList);
 
             case 22:
             case "end":
@@ -1875,30 +1884,30 @@ var ChapterStore = observable({
   },
   createNoteChapter: function createNoteChapter() {
     var _arguments2 = arguments,
-        _this10 = this;
+        _this11 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
       var _PageStore$pageInfo;
 
-      var title, _yield$_this10$create, children, id;
+      var title, _yield$_this11$create, children, id;
 
       return regeneratorRuntime.wrap(function _callee15$(_context15) {
         while (1) {
           switch (_context15.prev = _context15.next) {
             case 0:
-              title = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this10.chapterNewTitle.trim();
+              title = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : _this11.chapterNewTitle.trim();
               _context15.next = 3;
-              return _this10.createChapter(title || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'), _this10.isNewChapterColor);
+              return _this11.createChapter(title || i18n.t('NOTE_PAGE_LIST_CMPNT_DEF_01'), _this11.isNewChapterColor);
 
             case 3:
-              _yield$_this10$create = _context15.sent;
-              children = _yield$_this10$create.children;
-              id = _yield$_this10$create.id;
+              _yield$_this11$create = _context15.sent;
+              children = _yield$_this11$create.children;
+              id = _yield$_this11$create.id;
               _context15.next = 8;
-              return _this10.getNoteChapterList();
+              return _this11.getNoteChapterList();
 
             case 8:
-              _this10.setChapterTempUl(false);
+              _this11.setChapterTempUl(false);
 
               _context15.next = 11;
               return PageStore.fetchCurrentPageData(children[0].id);
@@ -1918,10 +1927,10 @@ var ChapterStore = observable({
     }))();
   },
   deleteNoteChapter: function deleteNoteChapter(_ref) {
-    var _this11 = this;
+    var _this12 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
-      var chapterList, selectablePageId, isDnd, _this11$chapterList$, _this11$chapterList$2, _this11$chapterList$3, pageId;
+      var chapterList, selectablePageId, isDnd, _this12$chapterList$, _this12$chapterList$2, _this12$chapterList$3, pageId;
 
       return regeneratorRuntime.wrap(function _callee16$(_context16) {
         while (1) {
@@ -1929,28 +1938,28 @@ var ChapterStore = observable({
             case 0:
               chapterList = _ref.chapterList, selectablePageId = _ref.selectablePageId, isDnd = _ref.isDnd;
               _context16.next = 3;
-              return _this11.deleteChapter(chapterList);
+              return _this12.deleteChapter(chapterList);
 
             case 3:
               _context16.next = 5;
-              return _this11.getNoteChapterList();
+              return _this12.getNoteChapterList();
 
             case 5:
               if (!chapterList.find(function (chapter) {
-                return chapter.id === _this11.currentChapterId;
+                return chapter.id === _this12.currentChapterId;
               })) {
                 _context16.next = 11;
                 break;
               }
 
-              pageId = isDnd || ((_this11$chapterList$ = _this11.chapterList[0]) === null || _this11$chapterList$ === void 0 ? void 0 : _this11$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this11$chapterList$2 = _this11.chapterList[0]) === null || _this11$chapterList$2 === void 0 ? void 0 : (_this11$chapterList$3 = _this11$chapterList$2.children[0]) === null || _this11$chapterList$3 === void 0 ? void 0 : _this11$chapterList$3.id : selectablePageId;
+              pageId = isDnd || ((_this12$chapterList$ = _this12.chapterList[0]) === null || _this12$chapterList$ === void 0 ? void 0 : _this12$chapterList$.type) === CHAPTER_TYPE.RECYCLE_BIN ? (_this12$chapterList$2 = _this12.chapterList[0]) === null || _this12$chapterList$2 === void 0 ? void 0 : (_this12$chapterList$3 = _this12$chapterList$2.children[0]) === null || _this12$chapterList$3 === void 0 ? void 0 : _this12$chapterList$3.id : selectablePageId;
               _context16.next = 9;
               return PageStore.fetchCurrentPageData(pageId);
 
             case 9:
               ChapterStore.setIsCtrlKeyDown(false);
 
-              _this11.setIsCtrlKeyDown(false);
+              _this12.setIsCtrlKeyDown(false);
 
             case 11:
               NoteStore.setIsDragging(false);
@@ -1959,7 +1968,7 @@ var ChapterStore = observable({
               NoteStore.setIsVisibleToast(true); // 위에는 좀 더 보고 분리
 
               return _context16.abrupt("return", {
-                chapterId: _this11.currentChapterId,
+                chapterId: _this12.currentChapterId,
                 pageId: PageStore.currentPageId
               });
 
@@ -1972,10 +1981,10 @@ var ChapterStore = observable({
     }))();
   },
   renameNoteChapter: function renameNoteChapter(_ref2) {
-    var _this12 = this;
+    var _this13 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17() {
-      var id, title, color, _yield$_this12$rename, text;
+      var id, title, color, _yield$_this13$rename, text;
 
       return regeneratorRuntime.wrap(function _callee17$(_context17) {
         while (1) {
@@ -1983,14 +1992,14 @@ var ChapterStore = observable({
             case 0:
               id = _ref2.id, title = _ref2.title, color = _ref2.color;
               _context17.next = 3;
-              return _this12.renameChapter(id, title.trim(), color);
+              return _this13.renameChapter(id, title.trim(), color);
 
             case 3:
-              _yield$_this12$rename = _context17.sent;
-              text = _yield$_this12$rename.text;
-              if (_this12.dragData.get(id)) _this12.dragData.get(id).item.text = text;
+              _yield$_this13$rename = _context17.sent;
+              text = _yield$_this13$rename.text;
+              if (_this13.dragData.get(id)) _this13.dragData.get(id).item.text = text;
               _context17.next = 8;
-              return _this12.getNoteChapterList();
+              return _this13.getNoteChapterList();
 
             case 8:
             case "end":
@@ -2020,7 +2029,7 @@ var ChapterStore = observable({
     });
   },
   moveChapter: function moveChapter() {
-    var _this13 = this;
+    var _this14 = this;
 
     var item = JSON.parse(localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()));
     var sortedDragDataList = this.getSortedDragDataList();
@@ -2029,8 +2038,8 @@ var ChapterStore = observable({
     });
     var chapters = [];
     item.forEach(function (chapter, idx) {
-      if (idx === _this13.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
-      if (!_this13.dragData.get(chapter.id)) chapters.push(chapter);
+      if (idx === _this14.dragEnterChapterIdx) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
+      if (!_this14.dragData.get(chapter.id)) chapters.push(chapter);
     });
     if (this.dragEnterChapterIdx >= chapters.length) chapters.push.apply(chapters, _toConsumableArray(sortedMoveChapters));
     var moveCnt = 0;
@@ -2040,7 +2049,7 @@ var ChapterStore = observable({
     sortedDragDataList.forEach(function (data, idx) {
       if (data.chapterIdx !== startIdx + idx) moveCnt++;
 
-      _this13.dragData.set(data.item.id, {
+      _this14.dragData.set(data.item.id, {
         item: data.item,
         chapterIdx: startIdx + idx
       });
@@ -2049,10 +2058,10 @@ var ChapterStore = observable({
     if (moveCnt > 0) {
       localStorage.setItem('NoteSortData_' + NoteStore.getChannelId(), JSON.stringify(chapters));
       this.getNoteChapterList().then(function () {
-        _this13.currentChapterId = sortedMoveChapters[0].id;
+        _this14.currentChapterId = sortedMoveChapters[0].id;
         PageStore.currentPageId = sortedMoveChapters[0].children[0];
         NoteStore.setIsDragging(false);
-        if (!PageStore.currentPageId) PageStore.clearDragData();else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this13.currentChapterId)]]));
+        if (!PageStore.currentPageId) PageStore.clearDragData();else PageStore.setDragData(new Map([[PageStore.currentPageId, PageStore.createDragData(PageStore.currentPageId, _this14.currentChapterId)]]));
         PageStore.fetchCurrentPageData(sortedMoveChapters[0].children[0]).then(function () {
           NoteStore.setToastText(i18n.t('NOTE_PAGE_LIST_MOVE_PGE_CHPT_02', {
             moveCnt: moveCnt
@@ -2066,7 +2075,7 @@ var ChapterStore = observable({
     }
   },
   fetchChapterInfo: function fetchChapterInfo(id) {
-    var _this14 = this;
+    var _this15 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18() {
       var dto;
@@ -2075,12 +2084,12 @@ var ChapterStore = observable({
           switch (_context18.prev = _context18.next) {
             case 0:
               _context18.next = 2;
-              return _this14.getChapterInfoList(id);
+              return _this15.getChapterInfoList(id);
 
             case 2:
               dto = _context18.sent;
-              _this14.chapterInfo = new ChapterModel(dto);
-              return _context18.abrupt("return", _this14.chapterInfo);
+              _this15.chapterInfo = new ChapterModel(dto);
+              return _context18.abrupt("return", _this15.chapterInfo);
 
             case 5:
             case "end":
@@ -2104,14 +2113,14 @@ var ChapterStore = observable({
     this.setSearchStr('');
   },
   getChapterFirstPage: function getChapterFirstPage(targetId) {
-    var _this15 = this;
+    var _this16 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19() {
       return regeneratorRuntime.wrap(function _callee19$(_context19) {
         while (1) {
           switch (_context19.prev = _context19.next) {
             case 0:
-              _this15.getChapterList().then(function (chapterList) {
+              _this16.getChapterList().then(function (chapterList) {
                 var targetChapter = chapterList.filter(function (chapter) {
                   return chapter.id === targetId;
                 })[0];
@@ -2132,7 +2141,7 @@ var ChapterStore = observable({
   },
   getSearchResult: function getSearchResult() {
     var _arguments3 = arguments,
-        _this16 = this;
+        _this17 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20() {
       var _dto$chapterList, _dto$pageList;
@@ -2142,33 +2151,33 @@ var ChapterStore = observable({
         while (1) {
           switch (_context20.prev = _context20.next) {
             case 0:
-              keyword = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : _this16.searchStr.trim();
+              keyword = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : _this17.searchStr.trim();
               chapterId = _arguments3.length > 1 ? _arguments3[1] : undefined;
 
-              _this16.setIsSearching(true);
+              _this17.setIsSearching(true);
 
-              _this16.setIsLoadingSearchResult(true);
+              _this17.setIsLoadingSearchResult(true);
 
               _context20.next = 6;
-              return _this16.getSearchList(keyword);
+              return _this17.getSearchList(keyword);
 
             case 6:
               dto = _context20.sent;
               filtered = (_dto$chapterList = dto.chapterList) === null || _dto$chapterList === void 0 ? void 0 : _dto$chapterList.filter(function (chapter) {
                 return chapter.type !== CHAPTER_TYPE.RECYCLE_BIN;
               });
-              _this16.searchResult = {
+              _this17.searchResult = {
                 keyword: keyword,
                 chapter: (filtered === null || filtered === void 0 ? void 0 : filtered.length) > 0 ? filtered : null,
-                page: _this16.preProcessPageList(chapterId ? (_dto$pageList = dto.pageList) === null || _dto$pageList === void 0 ? void 0 : _dto$pageList.filter(function (page) {
+                page: _this17.preProcessPageList(chapterId ? (_dto$pageList = dto.pageList) === null || _dto$pageList === void 0 ? void 0 : _dto$pageList.filter(function (page) {
                   return page.parent_notebook === chapterId;
                 }) : dto.pageList, keyword),
                 tag: dto.tagList
               };
 
-              _this16.setIsLoadingSearchResult(false);
+              _this17.setIsLoadingSearchResult(false);
 
-              return _context20.abrupt("return", _this16.searchResult);
+              return _context20.abrupt("return", _this17.searchResult);
 
             case 11:
             case "end":
@@ -2179,11 +2188,11 @@ var ChapterStore = observable({
     }))();
   },
   preProcessPageList: function preProcessPageList(pageList, keyword) {
-    var _this17 = this;
+    var _this18 = this;
 
     if (pageList) {
       pageList.forEach(function (page) {
-        if (page.text_content.includes(keyword)) page.contentPreview = _this17.getContentPreview(page.text_content, keyword);
+        if (page.text_content.includes(keyword)) page.contentPreview = _this18.getContentPreview(page.text_content, keyword);
       });
     }
 
@@ -2218,7 +2227,7 @@ var ChapterStore = observable({
     }))();
   },
   createNoteShareChapter: function createNoteShareChapter(targetRoomId, targetChapterList) {
-    var _this18 = this;
+    var _this19 = this;
 
     if (!targetChapterList) return;
     var targetChId = NoteStore.getTargetChId(targetRoomId);
@@ -2240,7 +2249,7 @@ var ChapterStore = observable({
       };
     });
     this.createShareChapter(targetList).then(function () {
-      _this18.getNoteChapterList();
+      _this19.getNoteChapterList();
 
       NoteStore.setIsDragging(false);
     });
@@ -2262,7 +2271,7 @@ var ChapterStore = observable({
     }
   },
   setFirstNoteInfo: function setFirstNoteInfo() {
-    var _this19 = this;
+    var _this20 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22() {
       var targetChapter, pageId;
@@ -2270,21 +2279,21 @@ var ChapterStore = observable({
         while (1) {
           switch (_context22.prev = _context22.next) {
             case 0:
-              targetChapter = _this19.chapterList.length > 0 ? _this19.chapterList[0] : null;
+              targetChapter = _this20.chapterList.length > 0 ? _this20.chapterList[0] : null;
 
               if (targetChapter) {
                 _context22.next = 5;
                 break;
               }
 
-              _this19.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
+              _this20.setCurrentChapterInfo('', false); //chapterId='', isRecycleBin=false
 
 
               PageStore.fetchCurrentPageData('');
               return _context22.abrupt("return");
 
             case 5:
-              _this19.setFirstDragData(targetChapter);
+              _this20.setFirstDragData(targetChapter);
 
               pageId = targetChapter.children.length > 0 ? targetChapter.children[0].id : ''; // pageContainer에서 currentChapterId만 있고 pageId가 없으면 render pageNotFound component
               // fetch page data 끝날 때까지 loading img 띄우도록 나중에 set chapter id
@@ -2302,7 +2311,7 @@ var ChapterStore = observable({
               break;
 
             case 12:
-              _this19.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
+              _this20.setCurrentChapterInfo(targetChapter.id, targetChapter.type === CHAPTER_TYPE.RECYCLE_BIN ? true : false);
 
             case 13:
             case "end":
@@ -2318,20 +2327,20 @@ var ChapterStore = observable({
   */
   // 처음 축소 상태에서 확대 상태로 바꿀 때
   fetchFirstNote: function fetchFirstNote() {
-    var _this20 = this;
+    var _this21 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23() {
       return regeneratorRuntime.wrap(function _callee23$(_context23) {
         while (1) {
           switch (_context23.prev = _context23.next) {
             case 0:
-              _this20.setLoadingPageInfo(true);
+              _this21.setLoadingPageInfo(true);
 
               _context23.next = 3;
-              return _this20.setFirstNoteInfo();
+              return _this21.setFirstNoteInfo();
 
             case 3:
-              _this20.setLoadingPageInfo(false);
+              _this21.setLoadingPageInfo(false);
 
             case 4:
             case "end":
@@ -2344,7 +2353,7 @@ var ChapterStore = observable({
   // chapterList 가져와서 첫 번째 노트 set해주고 보여주기
   fetchChapterList: function fetchChapterList() {
     var _arguments4 = arguments,
-        _this21 = this;
+        _this22 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24() {
       var isInit;
@@ -2355,22 +2364,22 @@ var ChapterStore = observable({
               isInit = _arguments4.length > 0 && _arguments4[0] !== undefined ? _arguments4[0] : false;
 
               // 한 군데에서만 부르긴하지만 일단 param 추가
-              _this21.setLoadingPageInfo(true);
+              _this22.setLoadingPageInfo(true);
 
               _context24.next = 4;
-              return _this21.getNoteChapterList(isInit);
+              return _this22.getNoteChapterList(isInit);
 
             case 4:
-              if (!(_this21.chapterList.length > 0)) {
+              if (!(_this22.chapterList.length > 0)) {
                 _context24.next = 7;
                 break;
               }
 
               _context24.next = 7;
-              return _this21.setFirstNoteInfo();
+              return _this22.setFirstNoteInfo();
 
             case 7:
-              _this21.setLoadingPageInfo(false);
+              _this22.setLoadingPageInfo(false);
 
             case 8:
             case "end":
@@ -2416,7 +2425,7 @@ var ChapterStore = observable({
     if (recycleBin && recycleBin.id === chapterId) PageStore.setIsRecycleBin(true);else PageStore.setIsRecycleBin(false);
   },
   openNote: function openNote() {
-    var _this22 = this;
+    var _this23 = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25() {
       var pageId;
@@ -2433,16 +2442,16 @@ var ChapterStore = observable({
               // chapter, page 선택
               NoteStore.setTargetLayout('LNB');
 
-              _this22.setScrollIntoViewId(NoteStore.metaTagInfo.id);
+              _this23.setScrollIntoViewId(NoteStore.metaTagInfo.id);
 
               _context25.next = 8;
-              return _this22.getNoteChapterList();
+              return _this23.getNoteChapterList();
 
             case 8:
               // 혹시 휴지통이 챕터 메타태그로 공유되었을 경우 대비
-              _this22.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
+              _this23.setCurrentChapterInfo(NoteStore.metaTagInfo.id);
 
-              pageId = _this22.getChapterFirstPageId(NoteStore.metaTagInfo.id);
+              pageId = _this23.getChapterFirstPageId(NoteStore.metaTagInfo.id);
               /**
                * 현재 챕터 클릭 로직과 동일하게 함
                * lnb만 보이고 있어도 선택효과 주기 위해 noteInfo를 이때 가져옴
@@ -11696,7 +11705,7 @@ var exportData = /*#__PURE__*/function () {
 }();
 var getChapterHtml = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(exportId) {
-    var html, _yield$NoteRepository, noteList;
+    var html, _yield$NoteRepository, noteList, orderedPageList;
 
     return regeneratorRuntime.wrap(function _callee5$(_context6) {
       while (1) {
@@ -11709,16 +11718,17 @@ var getChapterHtml = /*#__PURE__*/function () {
           case 3:
             _yield$NoteRepository = _context6.sent;
             noteList = _yield$NoteRepository.data.dto.noteList;
+            orderedPageList = ChapterStore.getLocalOrderPageList(NoteStore.getChannelId(), exportId, noteList);
 
-            if (noteList.length > 0) {
-              noteList.forEach(function (page, idx) {
-                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><p><br></p>").concat(NoteUtil.decodeStr(page.note_content), "<span class=").concat(idx === noteList.length - 1 ? '' : 'afterClass', "></span>");
+            if (orderedPageList.length > 0) {
+              orderedPageList.forEach(function (page, idx) {
+                html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</span><p><br></p>").concat(NoteUtil.decodeStr(page.note_content), "<span class=").concat(idx === orderedPageList.length - 1 ? '' : 'afterClass', "></span>");
               });
             } else html += "<span style=\"font-size:24px;\">".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(ChapterStore.exportChapterTitle, "</span>");
 
             return _context6.abrupt("return", "".concat(html, "</div>"));
 
-          case 7:
+          case 8:
           case "end":
             return _context6.stop();
         }
@@ -11932,7 +11942,7 @@ var exportPageAsTxt = /*#__PURE__*/function () {
 }();
 var exportChapterAsTxt = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(chapterTitle, chapterId) {
-    var returnData, _yield$NoteRepository3, noteList;
+    var returnData, _yield$NoteRepository3, noteList, orderedPageList;
 
     return regeneratorRuntime.wrap(function _callee9$(_context10) {
       while (1) {
@@ -11945,16 +11955,17 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
           case 3:
             _yield$NoteRepository3 = _context10.sent;
             noteList = _yield$NoteRepository3.data.dto.noteList;
+            orderedPageList = ChapterStore.getLocalOrderPageList(NoteStore.getChannelId(), chapterId, noteList);
 
-            if (noteList.length > 0) {
-              noteList.forEach(function (page, idx) {
-                returnData += "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</p>\n").concat(NoteUtil.decodeStr(page.note_content)).concat(idx === noteList.length - 1 ? '' : '\n\n');
+            if (orderedPageList.length > 0) {
+              orderedPageList.forEach(function (page, idx) {
+                returnData += "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(page.note_title, "</p>\n").concat(NoteUtil.decodeStr(page.note_content)).concat(idx === orderedPageList.length - 1 ? '' : '\n\n');
               });
             } else returnData += "<p>".concat(i18n.t('NOTE_EXPORT_TITLE'), " : ").concat(chapterTitle, "</p>");
 
             getTxtFormat(chapterTitle, returnData);
 
-          case 7:
+          case 8:
           case "end":
             return _context10.stop();
         }
@@ -12089,17 +12100,17 @@ var isAudio = {
 
 var isPowerPoint = {
   ext: ['ppt', 'pptx', 'tpt'],
-  isPreview: false
+  isPreview: true
 }; // 오피스(워드)
 
 var isWord = {
   ext: ['doc', 'docx', 'toc'],
-  isPreview: false
+  isPreview: true
 }; // 오피스(엑셀)
 
 var isExcel = {
   ext: ['xls', 'xlsx', 'tls', 'csv'],
-  isPreview: false
+  isPreview: true
 }; // 오피스(한글)
 
 var isHangul = {
@@ -12112,11 +12123,11 @@ var isTxt = {
 };
 var isPdf = {
   ext: ['pdf'],
-  isPreview: false
+  isPreview: true
 };
 var isZip = {
   ext: ['zip', 'tar', 'rar', 'tgz', 'war', 'alz', 'ace', 'arc', 'arj', 'b64', 'bh', 'bhx', 'bin', 'bz2', 'cab', 'ear', 'enc', 'gz', 'ha', 'hqx', 'ice', 'img', 'jar', 'lha', 'lzh', 'mim', 'pak', 'uue', 'xxe', 'zoo'],
-  isPreview: false
+  isPreview: true
 };
 var isEtc = {
   ext: ['exe', 'psd', 'mui', 'dll'],
@@ -15340,6 +15351,7 @@ var FileLayout = function FileLayout() {
         user_context_2 = item.user_context_2; // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
 
     if (!PageStore.isReadMode() && !isPreview(extension)) return;
+    if (PageStore.isRecycleBin) return;
 
     if (isPreview(extension)) {
       EditorStore.setPreviewFileMeta({
@@ -15472,7 +15484,7 @@ var FileLayout = function FileLayout() {
         tabIndex: index,
         className: index === clickFileIdx ? 'noteFile fileSelected' : 'noteFile',
         closable: !PageStore.isReadMode()
-      }, /*#__PURE__*/React.createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') ? /*#__PURE__*/React.createElement(FileDownloadIcon, null, /*#__PURE__*/React.createElement(FileExtensionBtn, {
+      }, /*#__PURE__*/React.createElement(FileContent, null, !authStore.hasPermission('notePage', 'U') || PageStore.isRecycleBin ? /*#__PURE__*/React.createElement(FileDownloadIcon, null, /*#__PURE__*/React.createElement(FileExtensionBtn, {
         src: fileExtension(item.file_extension)
       })) : /*#__PURE__*/React.createElement(Dropdown, {
         overlay: menu,
