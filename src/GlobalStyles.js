@@ -608,6 +608,10 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     background-color: #FFE362;
   }
+
+  #root{ 
+    overflow: hidden;
+  }
 `;
 
 export const LNB = styled.div`

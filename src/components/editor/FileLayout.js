@@ -140,6 +140,7 @@ const FileLayout = () => {
     const { file_id, file_name, file_extension: extension, user_context_2 } = item;
     // 수정모드에서 preview 가능한 동영상 파일 아닌 경우 아무 반응 없음
     if (!PageStore.isReadMode() && !isPreview(extension)) return;
+    if (PageStore.isRecycleBin) return;
 
     if (isPreview(extension)) {
       EditorStore.setPreviewFileMeta({
@@ -240,7 +241,7 @@ const FileLayout = () => {
             closable={!PageStore.isReadMode()}
           >
             <FileContent>
-              {!authStore.hasPermission('notePage', 'U') ? (
+              {!authStore.hasPermission('notePage', 'U') || PageStore.isRecycleBin ? (
                 <FileDownloadIcon>
                   <FileExtensionBtn src={fileExtension(item.file_extension)} />
                 </FileDownloadIcon>
