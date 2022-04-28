@@ -369,16 +369,12 @@ const EditorStore = observable({
   },
 
   getFileInfo(file) {
-    let fileName = file.name;
-    let dotIndex = fileName.lastIndexOf('.');
-    let fileExtension = '';
-    let fileSize = file.size;
-    // 확장자 없으면 file.type === ""
-    if (file.type && dotIndex !== -1) {
-      fileExtension = fileName.slice(dotIndex + 1);
-      fileName = fileName.slice(0, dotIndex);
-    }
-    return { fileName, fileExtension, fileSize };
+    const lastDotIdx = file.name.lastIndexOf('.');
+    return {
+      fileName: lastDotIdx < 0 ? file.name : file.name.slice(0, lastDotIdx),
+      fileExtension: lastDotIdx < 0 ? '' : file.name.slice(lastDotIdx + 1),
+      fileSize: file.size,
+    };
   },
 
   setFileIndex(idx) {
