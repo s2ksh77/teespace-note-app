@@ -11972,7 +11972,7 @@ var exportChapterAsTxt = /*#__PURE__*/function () {
 var handleClickImg = function handleClickImg(el) {
   var _el$getAttribute;
 
-  if (!PageStore.isReadMode()) return;
+  if (!PageStore.isReadMode() || PageStore.isRecycleBin) return;
   var file = (_el$getAttribute = el.getAttribute('data-name')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.split('.');
   var fileExtension = getExtension(el.getAttribute('data-name')) ? getExtension(el.getAttribute('data-name')) : 'jpg';
   if (file === undefined) return;
