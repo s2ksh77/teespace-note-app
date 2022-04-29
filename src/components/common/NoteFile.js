@@ -498,7 +498,7 @@ const handleClickLink = el => {
 };
 
 const handleClickImg = el => {
-  if (!PageStore.isReadMode()) return;
+  if (!PageStore.isReadMode() || PageStore.isRecycleBin) return;
 
   const file = el.getAttribute('data-name')?.split('.');
   const fileExtension = getExtension(el.getAttribute('data-name'))
