@@ -248,24 +248,23 @@ export const handleFileDelete = async () => {
 };
 export const downloadFile = async fileId => {
   if (fileId) {
-    window.open(
-      API.baseURL +
-        '/Storage/StorageFile?action=Download' +
-        '&fileID=' +
-        fileId +
-        '&workspaceID=' +
-        NoteRepository.WS_ID +
-        '&channelID=' +
-        NoteRepository.chId +
-        '&userID=' +
-        NoteRepository.USER_ID,
-    );
+    const url =
+      `${API.baseURL}/Storage/StorageFile?action=Download` +
+      `&fileID=${fileId}&workspaceID=${NoteRepository.WS_ID}&channelID=${NoteRepository.chId}&userID=${NoteRepository.USER_ID}`;
+
+    const a = document.createElement('a');
+    a.style = 'display: none';
+    a.href = url;
+    a.target = '_blank';
+    a.download = '';
+    a.click();
+    a.remove();
     return;
   }
   const res = await fetch(EditorStore.tinymce.selection.getNode().src);
   const blob = await res.blob();
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
   a.style = 'display: none';
   a.href = url;
   a.download = EditorStore.tinymce.selection.getNode().getAttribute('data-name')
