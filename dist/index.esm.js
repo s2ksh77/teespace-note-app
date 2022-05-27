@@ -11596,29 +11596,40 @@ var handleFileDelete = /*#__PURE__*/function () {
 }();
 var downloadFile = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(fileId) {
-    var res, blob, url, a;
+    var _url, _a, res, blob, url, a;
+
     return regeneratorRuntime.wrap(function _callee3$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             if (!fileId) {
-              _context4.next = 3;
+              _context4.next = 10;
               break;
             }
 
-            window.open(API.baseURL + '/Storage/StorageFile?action=Download' + '&fileID=' + fileId + '&workspaceID=' + NoteRepository$1.WS_ID + '&channelID=' + NoteRepository$1.chId + '&userID=' + NoteRepository$1.USER_ID);
+            _url = "".concat(API.baseURL, "/Storage/StorageFile?action=Download") + "&fileID=".concat(fileId, "&workspaceID=").concat(NoteRepository$1.WS_ID, "&channelID=").concat(NoteRepository$1.chId, "&userID=").concat(NoteRepository$1.USER_ID);
+            _a = document.createElement('a');
+            _a.style = 'display: none';
+            _a.href = _url;
+            _a.target = '_blank';
+            _a.download = '';
+
+            _a.click();
+
+            _a.remove();
+
             return _context4.abrupt("return");
 
-          case 3:
-            _context4.next = 5;
+          case 10:
+            _context4.next = 12;
             return fetch(EditorStore.tinymce.selection.getNode().src);
 
-          case 5:
+          case 12:
             res = _context4.sent;
-            _context4.next = 8;
+            _context4.next = 15;
             return res.blob();
 
-          case 8:
+          case 15:
             blob = _context4.sent;
             url = URL.createObjectURL(blob);
             a = document.createElement('a');
@@ -11629,7 +11640,7 @@ var downloadFile = /*#__PURE__*/function () {
             a.click();
             document.body.removeChild(a);
 
-          case 17:
+          case 24:
           case "end":
             return _context4.stop();
         }
