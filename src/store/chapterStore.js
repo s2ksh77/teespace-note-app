@@ -352,7 +352,8 @@ const ChapterStore = observable({
   },
 
   getLocalOrderPageList(targetChannelId, chapterId, pageList) {
-    const item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    if (!this.chapterMap.get(chapterId)) return pageList;
+    const item = JSON.parse(localStorage.getItem(`NoteSortData_${targetChannelId}`));
     const chapterIdx = this.chapterMap.get(chapterId);
     return item[chapterIdx].children.map(
       pageId => pageList[this.pageMap.get(pageId).idx],
