@@ -1712,7 +1712,8 @@ var ChapterStore = mobx.observable({
   getLocalOrderPageList: function getLocalOrderPageList(targetChannelId, chapterId, pageList) {
     var _this7 = this;
 
-    var item = JSON.parse(localStorage.getItem('NoteSortData_' + targetChannelId));
+    if (!this.chapterMap.get(chapterId)) return pageList;
+    var item = JSON.parse(localStorage.getItem("NoteSortData_".concat(targetChannelId)));
     var chapterIdx = this.chapterMap.get(chapterId);
     return item[chapterIdx].children.map(function (pageId) {
       return pageList[_this7.pageMap.get(pageId).idx];
