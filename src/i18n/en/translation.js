@@ -138,6 +138,7 @@ const languageSet = {
   NOTE_CONTEXT_MENU_03: 'Empty Trash',
   NOTE_DND_ACTION_01: 'Cannot move.',
   NOTE_DND_ACTION_02: 'Received chapters and pages cannot be moved.',
+  NOTE_DND_ACTION_03: 'Unable to move.',
 
   NOTE_BIN_01: 'Trash',
   NOTE_BIN_02: 'Moved to Trash.',
