@@ -17,12 +17,13 @@ export const handleWebsocket = message => {
     MOVE: 'MOVE',
     THROW: 'THROW',
     RESTORE: 'RESTORE',
+    SHARECHAPTER: 'SHARECHAPTER',
+    SHAREPAGE: 'SHAREPAGE',
   };
   if (!message.NOTI_ETC) {
     console.warn('NOTE_ETC is empty');
     return;
   }
-  console.log(message.NOTI_ETC);
 
   const loginUserId = NoteRepository.USER_ID;
   const [eventType, targetId, parentId, targetUserId, device] = message.NOTI_ETC.split(
@@ -32,6 +33,8 @@ export const handleWebsocket = message => {
   switch (eventType) {
     case EVENT_TYPE.CHAPTER_CREATE:
     case EVENT_TYPE.CHAPTER_RENAME:
+    case EVENT_TYPE.SHARECHAPTER:
+    case EVENT_TYPE.SHAREPAGE:
     case EVENT_TYPE.CREATE:
       if (device === 'PC' && targetUserId === loginUserId) return;
       ChapterStore.getNoteChapterList();
