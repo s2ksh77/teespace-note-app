@@ -7563,7 +7563,9 @@ var handleWebsocket = function handleWebsocket(message) {
     NONEDIT: 'NONEDIT',
     MOVE: 'MOVE',
     THROW: 'THROW',
-    RESTORE: 'RESTORE'
+    RESTORE: 'RESTORE',
+    SHARECHAPTER: 'SHARECHAPTER',
+    SHAREPAGE: 'SHAREPAGE'
   };
 
   if (!message.NOTI_ETC) {
@@ -7571,7 +7573,6 @@ var handleWebsocket = function handleWebsocket(message) {
     return;
   }
 
-  console.log(message.NOTI_ETC);
   var loginUserId = NoteRepository$1.USER_ID;
 
   var _message$NOTI_ETC$spl = message.NOTI_ETC.split(','),
@@ -7585,6 +7586,8 @@ var handleWebsocket = function handleWebsocket(message) {
   switch (eventType) {
     case EVENT_TYPE.CHAPTER_CREATE:
     case EVENT_TYPE.CHAPTER_RENAME:
+    case EVENT_TYPE.SHARECHAPTER:
+    case EVENT_TYPE.SHAREPAGE:
     case EVENT_TYPE.CREATE:
       if (device === 'PC' && targetUserId === loginUserId) return;
       ChapterStore.getNoteChapterList();
