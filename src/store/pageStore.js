@@ -405,10 +405,28 @@ const PageStore = observable({
       localStorage.getItem('NoteSortData_' + NoteStore.getChannelId()),
     );
 
+    let editingUserIds = [];
     const sortedDragDataList = this.getSortedDragDataList();
-    const sortedMovePages = sortedDragDataList.map(
-      data => item[data.chapterIdx].children[data.pageIdx],
+    const sortedMovePages = await Promise.all(
+      sortedDragDataList.map(async data => {
+        const pageId = item[data.chapterIdx].children[data.pageIdx];
+        const dto = await this.getNoteInfoList(pageId);
+        if (dto.is_edit) editingUserIds.push(dto.is_edit);
+        return pageId;
+      }),
     );
+
+    editingUserIds = [...new Set(editingUserIds)];
+    if (editingUserIds.length === 1) {
+      const name = await getUserDisplayName(editingUserIds[0]);
+      NoteStore.setModalInfo('unMovableSinglePage', { name });
+      return;
+    } else if (editingUserIds.length > 1) {
+      NoteStore.setModalInfo('unMovableMultiPage', {
+        count: editingUserIds.length,
+      });
+      return;
+    }
 
     const pageIds = []; // 갈아 끼울 페이지 아이디 리스트
     item[moveTargetChapterIdx].children.forEach((pageId, idx) => {

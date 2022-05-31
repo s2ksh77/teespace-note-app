@@ -125,6 +125,8 @@ const NoteMeta = {
         break;
       case 'nonDeletableSinglePage':
       case 'nonDeletableMultiPage':
+      case 'unMovableSinglePage':
+      case 'unMovableMultiPage':
       case 'editingPage':
       case 'titleDuplicate':
       case 'duplicateTagName':
@@ -303,6 +305,8 @@ const NoteMeta = {
         return [{ ...defaultBtn1, text: i18n.t('NOTE_CONTEXT_MENU_02') }, defaultBtn2];
       case 'nonDeletableSinglePage':
       case 'nonDeletableMultiPage':
+      case 'unMovableSinglePage':
+      case 'unMovableMultiPage':
       case 'editingPage':
       case 'titleDuplicate':
       case 'duplicateTagName':
@@ -382,6 +386,22 @@ const NoteMeta = {
       case 'nonDeletableMultiPage':
         dialogType.type = 'info';
         dialogType.title = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_01');
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
+          count: data.count,
+        });
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'unMovableSinglePage':
+        dialogType.type = 'info';
+        dialogType.title = i18n.t('NOTE_DND_ACTION_03');
+        dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_02', {
+          userName: data.name,
+        });
+        dialogType.btns = this.setBtns(type);
+        break;
+      case 'unMovableMultiPage':
+        dialogType.type = 'info';
+        dialogType.title = i18n.t('NOTE_DND_ACTION_03');
         dialogType.subtitle = i18n.t('NOTE_PAGE_LIST_DEL_PGE_CHPT_08', {
           count: data.count,
         });
