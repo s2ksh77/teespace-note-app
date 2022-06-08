@@ -490,14 +490,20 @@ const EditorStore = observable({
 
   async uploadingFileallCancel() {
     await Promise.all(
-      EditorStore.uploadDTO.map((file, idx) => {
-        if (EditorStore.fileLayoutList[idx].status === 'pending') {
-          EditorStore.fileLayoutList[idx].deleted = true;
-          return file?.cancelSource?.cancel();
-        }
+      this.uploadDTO.map((file, idx) => {
+        if (file.type !== 'image') {
+          if (this.fileLayoutList[idx].status === 'pending') {
+            this.fileLayoutList[idx].deleted = true;
+            return file?.cancelSource?.cancel();
+          }
+        } else file?.cancelSource?.cancel();
       }),
     ).then(() => {
       this.uploadFileCancelStatus = true;
+      this.setIsUploading(false);
+      NoteStore.setModalInfo(null);
+      PageStore.handleSave();
+      this.uploadDTO = [];
     });
   },
 
