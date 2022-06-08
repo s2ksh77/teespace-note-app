@@ -111,7 +111,7 @@ const languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_07: `({{uploadCnt}}개 항목 중 {{failCnt}}개 실패)`,
   NOTE_EDIT_PAGE_ATTACH_FILE_08:
     '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: '업로드 완료된 파일은 페이지에 저장됩니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: '업로드되지 않은 파일은 저장되지 않습니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
@@ -165,6 +165,7 @@ const languageSet = {
   NOTE_NOTICENTER_01: '챕터를 공유했습니다.',
   NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
   NOTE_NOTICENTER_03: `{{title}}을 생성했습니다.`,
+  NOTE_NONEDIT: '나가기',
 };
 
 export default languageSet;

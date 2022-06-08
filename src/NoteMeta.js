@@ -1,8 +1,8 @@
+import Mark from 'mark.js';
 import NoteStore from './store/noteStore';
 import PageStore from './store/pageStore';
 import ChapterStore from './store/chapterStore';
 import EditorStore from './store/editorStore';
-import Mark from 'mark.js';
 import i18n from './i18n/i18n';
 
 const NoteMeta = {
@@ -36,7 +36,6 @@ const NoteMeta = {
           className: 'restoreModal',
         };
       default:
-        return;
     }
   },
   // core - Modal prop 설정
@@ -317,10 +316,7 @@ const NoteMeta = {
       case 'failUploadByFileNameLen':
         return [defaultBtn1];
       case 'uploadingFiles':
-        return [
-          { ...defaultBtn1, text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04') },
-          defaultBtn2,
-        ];
+        return [{ ...defaultBtn1, text: i18n.t('NOTE_NONEDIT') }, defaultBtn2];
       case 'createChapter': // mobile
         return [defaultBtn2, { ...defaultBtn1, text: '생성' }];
       case 'renameChapter':
@@ -330,7 +326,6 @@ const NoteMeta = {
       case 'emptySharedPage':
         return [defaultBtn2, { ...defaultBtn1, text: '삭제' }];
       default:
-        return;
     }
   },
   setMessageInfoConfig(type, data) {

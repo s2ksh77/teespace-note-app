@@ -113,7 +113,7 @@ const languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_07: `({{failCnt}} out of {{uploadCnt}} failed)`,
   NOTE_EDIT_PAGE_ATTACH_FILE_08:
     'There is a file currently being uploaded.\\nDo you want to save and exit?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'Unuploaded files will not be saved.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
@@ -166,6 +166,7 @@ const languageSet = {
   NOTE_NOTICENTER_01: 'The chapter has been shared.',
   NOTE_NOTICENTER_02: 'The page has been shared.',
   NOTE_NOTICENTER_03: `{{title}} has been created.`,
+  NOTE_NONEDIT: 'Exit',
 };
 
 export default languageSet;
