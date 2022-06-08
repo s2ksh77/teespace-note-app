@@ -517,7 +517,7 @@ var languageSet = {
   NOTE_EDIT_PAGE_ATTACH_FILE_06: '일부 파일이 업로드되지 못하였습니다.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{uploadCnt}}\uAC1C \uD56D\uBAA9 \uC911 {{failCnt}}\uAC1C \uC2E4\uD328)",
   NOTE_EDIT_PAGE_ATTACH_FILE_08: '업로드 중인 파일이 있습니다.\\n페이지를 저장하고 나가시겠습니까?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: '업로드 완료된 파일은 페이지에 저장됩니다.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: '업로드되지 않은 파일은 저장되지 않습니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: '올바르지 않은 주소입니다.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: '텍스트를 입력해 주세요.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: '링크를 입력해 주세요.',
@@ -561,7 +561,8 @@ var languageSet = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: '전달받은 페이지는 영구 삭제됩니다.',
   NOTE_NOTICENTER_01: '챕터를 공유했습니다.',
   NOTE_NOTICENTER_02: '페이지를 공유했습니다.',
-  NOTE_NOTICENTER_03: "{{title}}\uC744 \uC0DD\uC131\uD588\uC2B5\uB2C8\uB2E4."
+  NOTE_NOTICENTER_03: "{{title}}\uC744 \uC0DD\uC131\uD588\uC2B5\uB2C8\uB2E4.",
+  NOTE_NONEDIT: '나가기'
 };
 
 var languageSet$1 = {
@@ -676,7 +677,7 @@ var languageSet$1 = {
   NOTE_EDIT_PAGE_ATTACH_FILE_06: 'Unable to upload some files.',
   NOTE_EDIT_PAGE_ATTACH_FILE_07: "({{failCnt}} out of {{uploadCnt}} failed)",
   NOTE_EDIT_PAGE_ATTACH_FILE_08: 'There is a file currently being uploaded.\\nDo you want to save and exit?',
-  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'The uploaded file is saved on the page.',
+  NOTE_EDIT_PAGE_ATTACH_FILE_09: 'Unuploaded files will not be saved.',
   NOTE_EDIT_PAGE_INSERT_LINK_10: 'Invalid address.',
   NOTE_EDIT_PAGE_INSERT_LINK_11: 'Enter a text.',
   NOTE_EDIT_PAGE_INSERT_LINK_12: 'Enter a link.',
@@ -720,7 +721,8 @@ var languageSet$1 = {
   NOTE_PAGE_LIST_DEL_PGE_CHPT_09: 'Pages forwarded will be permanently deleted.',
   NOTE_NOTICENTER_01: 'The chapter has been shared.',
   NOTE_NOTICENTER_02: 'The page has been shared.',
-  NOTE_NOTICENTER_03: "{{title}} has been created."
+  NOTE_NOTICENTER_03: "{{title}} has been created.",
+  NOTE_NONEDIT: 'Exit'
 };
 
 var resources = {
@@ -3879,15 +3881,25 @@ var EditorStore = mobx.observable({
           switch (_context11.prev = _context11.next) {
             case 0:
               _context11.next = 2;
-              return Promise.all(EditorStore.uploadDTO.map(function (file, idx) {
-                if (EditorStore.fileLayoutList[idx].status === 'pending') {
-                  var _file$cancelSource;
+              return Promise.all(_this4.uploadDTO.map(function (file, idx) {
+                var _file$cancelSource2;
 
-                  EditorStore.fileLayoutList[idx].deleted = true;
-                  return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
-                }
+                if (file.type !== 'image') {
+                  if (_this4.fileLayoutList[idx].status === 'pending') {
+                    var _file$cancelSource;
+
+                    _this4.fileLayoutList[idx].deleted = true;
+                    return file === null || file === void 0 ? void 0 : (_file$cancelSource = file.cancelSource) === null || _file$cancelSource === void 0 ? void 0 : _file$cancelSource.cancel();
+                  }
+                } else file === null || file === void 0 ? void 0 : (_file$cancelSource2 = file.cancelSource) === null || _file$cancelSource2 === void 0 ? void 0 : _file$cancelSource2.cancel();
               })).then(function () {
                 _this4.uploadFileCancelStatus = true;
+
+                _this4.setIsUploading(false);
+
+                NoteStore.setModalInfo(null);
+                PageStore.handleSave();
+                _this4.uploadDTO = [];
               });
 
             case 2:
@@ -6913,9 +6925,6 @@ var NoteMeta = {
           title: i18n.t('NOTE_BIN_RESTORE_01'),
           className: 'restoreModal'
         });
-
-      default:
-        return;
     }
   },
   // core - Modal prop 설정
@@ -7418,7 +7427,7 @@ var NoteMeta = {
 
       case 'uploadingFiles':
         return [_objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
-          text: i18n.t('NOTE_PAGE_LIST_ADD_NEW_PGE_04')
+          text: i18n.t('NOTE_NONEDIT')
         }), defaultBtn2];
 
       case 'createChapter':
@@ -7438,9 +7447,6 @@ var NoteMeta = {
         return [defaultBtn2, _objectSpread2(_objectSpread2({}, defaultBtn1), {}, {
           text: '삭제'
         })];
-
-      default:
-        return;
     }
   },
   setMessageInfoConfig: function setMessageInfoConfig(type, data) {
